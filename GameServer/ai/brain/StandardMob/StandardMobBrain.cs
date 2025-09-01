@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
             if (Body.ambientTexts != null && Body.ambientTexts.Any(item => item.Trigger == "seeing"))
             {
                 // Check if we can "see" players and fire off ambient text
-                List<GamePlayer> currentPlayersSeen = new();
+                List<GamePlayer> currentPlayersSeen = GameLoop.GetListForTick<GamePlayer>();
 
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
                 {

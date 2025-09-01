@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using DOL.AI;
 using DOL.AI.Brain;
@@ -3862,11 +3863,8 @@ namespace DOL.GS
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			base.Notify(e, sender, args);
-
 			ABrain brain = Brain;
-			if (brain != null)
-				brain.Notify(e, sender, args);
-
+			brain?.Notify(e, sender, args);
 		}
 
 		/// <summary>
@@ -3876,116 +3874,99 @@ namespace DOL.GS
 		/// <param name="living">The entity triggering the action (e.g., a player)</param>
 		public virtual void FireAmbientSentence(eAmbientTrigger trigger, GameObject living)
 		{
-			if (IsSilent || ambientTexts == null || ambientTexts.Count == 0) return;
-			if (trigger == eAmbientTrigger.interact && living == null) return; // Do not trigger interact messages with a corpse
-			List<DbMobXAmbientBehavior> mxa = (from i in ambientTexts where i.Trigger == trigger.ToString() select i).ToList();
-			if (mxa.Count == 0) return;
+			if (IsSilent || ambientTexts == null || ambientTexts.Count == 0)
+				return;
 
-			// grab random sentence
-			var chosen = mxa[Util.Random(mxa.Count - 1)];
-			if (!Util.Chance(chosen.Chance)) return;
+			if (trigger is eAmbientTrigger.interact && living == null)
+				return;
 
-			string controller = string.Empty;
-			if (Brain is IControlledBrain) // Used for '{controller}' trigger keyword, use the name of the mob's owner (else returns blank)--this is used when a pet has an ambient trigger.
+			string triggerName = trigger.ToString();
+			List<DbMobXAmbientBehavior> candidates = null;
+
+			foreach (var ambient in ambientTexts)
 			{
-				GamePlayer playerOwner = ((IControlledBrain) Brain).GetPlayerOwner();
-				if (playerOwner != null)
-					controller = playerOwner.Name;
+				if (ambient.Trigger == triggerName)
+				{
+					candidates ??= new();
+					candidates.Add(ambient);
+				}
 			}
 
-			string text = chosen.Text;
+			if (candidates == null || candidates.Count == 0)
+				return;
 
-			if (TargetObject == null)
+			DbMobXAmbientBehavior chosen = candidates[Util.Random(candidates.Count - 1)];
+
+			if (!Util.Chance(chosen.Chance))
+				return;
+
+			string controllerName = string.Empty;
+
+			if (Brain is IControlledBrain controlledBrain)
+				controllerName = controlledBrain.GetPlayerOwner()?.Name ?? string.Empty;
+
+			GameObject effectiveTarget = TargetObject ?? living;
+			StringBuilder sb = new(chosen.Text);
+
+			sb.Replace("{sourcename}", Brain?.Body?.Name ?? string.Empty);
+			sb.Replace("{targetname}", effectiveTarget?.Name ?? string.Empty);
+			sb.Replace("{controller}", controllerName);
+
+			if (effectiveTarget is GamePlayer player)
 			{
-				text = chosen.Text.Replace("{sourcename}", Brain?.Body?.Name) // '{sourcename}' returns the mob or NPC name
-					.Replace("{targetname}", living?.Name) // '{targetname}' returns the mob/NPC target's name
-					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
-				
-				// Replace trigger keywords
-				if (living is GamePlayer)
-					text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
-				if (living is GameNPC)
-					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
+				sb.Replace("{class}", player.CharacterClass.Name);
+				sb.Replace("{race}", player.RaceName);
 			}
-			else
+			else if (effectiveTarget is GameNPC)
 			{
-				text = chosen.Text.Replace("{sourcename}", Brain.Body.Name) // '{sourcename}' returns the mob or NPC name
-					.Replace("{targetname}", TargetObject == null ? string.Empty : TargetObject.Name) // '{targetname}' returns the mob/NPC target's name
-					.Replace("{controller}", controller); // '{controller}' returns the result of the controller var (use this when pets have dialogue)
-				
-				// Replace trigger keywords
-				if (TargetObject is GamePlayer)
-					text = text.Replace("{class}", ((GamePlayer) TargetObject).CharacterClass.Name).Replace("{race}", ((GamePlayer) TargetObject).RaceName);
-				if (TargetObject is GameNPC)
-					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
+				sb.Replace("{class}", "NPC");
+				sb.Replace("{race}", "NPC");
 			}
-			// Replace trigger keywords
+
+			string text = sb.ToString();
 
 			if (chosen.Emote != 0)
-			{
-				Emote((eEmote)chosen.Emote);
-			}
-			
-			// Replace trigger keywords
-			if (TargetObject is GamePlayer && living is GamePlayer)
-				text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
-			if (TargetObject is GameNPC && living is GameNPC)
-				text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
-			
-			/*// Determines message delivery method for trigger voice
-			if (chosen.Voice.StartsWith("b")) // Broadcast message without "[Broadcast] {0}:" string start
-			{
-				foreach (GamePlayer player in CurrentRegion.GetPlayersInRadius(X, Y, Z, 25000, false, false))
-				{
-					player.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-				}
-				return;
-			}
-			if (chosen.Voice.StartsWith("y")) // Yell message (increased range) without "{0} yells," string start
-			{
-				Yell(text);
-				return;
-			}*/
-			
-			// Determines message delivery method for triggers
+				Emote((eEmote) chosen.Emote);
+
 			switch (chosen.Voice)
 			{
-				case "b": // Broadcast message without "[Broadcast] {0}:" string start
+				case "b": // Broadcast
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(25000))
-					{
-					  player.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-					}
-					return;
+					foreach (GamePlayer playerInRadius in GetPlayersInRadius(25000))
+						playerInRadius.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+
+					break;
 				}
-				case "y": // Yell message (increased range) without "{0} yells," string start
+				case "y": // Yell
 				{
 					Yell(text);
-					return;
+					break;
 				}
-				case "s": // Return custom System message in System/Combat window to all players within range
+				case "s": // System message
 				{
 					Message.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512);
-					return;
+					break;
 				}
-				case "c": // Return custom Say message in Chat window to all players within range, without "{0} says," string start
+				case "c": // Custom Say
 				{
 					Message.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512);
-					return;
+					break;
 				}
-				case "p": // Return custom System message in popup dialog only to player interating with the NPC
-					// For interact triggers
+				case "p": // Popup to interactor
 				{
-					((GamePlayer) living).Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
-					return;
+					if (living is GamePlayer livingPlayer)
+						livingPlayer.Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+
+					break;
 				}
-				default: // Return Say message with "{0} says," string start included (contrary to parameter description)
+				default: // Standard Say
 				{
 					Say(text);
-					return;
+					break;
 				}
 			}
 		}
+
 		#endregion
 
 		#region ControlledNPCs
