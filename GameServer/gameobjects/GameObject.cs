@@ -962,24 +962,18 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		private const int MAX_POOL_SIZE_PER_TYPE = 10;
 		private readonly Lock _objectInRadiusCachesLock = new();
 		private readonly Dictionary<eGameObjectType, ObjectsInRadiusCache> _objectsInRadiusCaches = new();
-		private readonly Dictionary<eGameObjectType, List<IList>> _listPools = new();
-		private readonly Dictionary<eGameObjectType, int> _poolIndexes = new();
-		private long _lastPoolCleanupTime = 0;
 
 		public void ClearObjectsInRadiusCache()
 		{
 			lock (_objectInRadiusCachesLock)
 			{
 				_objectsInRadiusCaches.Clear();
-				_listPools.Clear();
-				_poolIndexes.Clear();
 			}
 		}
 
-		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
+		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject, IPooledList<T>
 		{
 			if (CurrentRegion == null)
 				return new(); // Should never happen.
@@ -988,7 +982,7 @@ namespace DOL.GS
 			{
 				if (!_objectsInRadiusCaches.TryGetValue(objectType, out ObjectsInRadiusCache cache))
 				{
-					cache = new ObjectsInRadiusCache(new List<T>(), 0, 0);
+					cache = new(new List<T>(), 0, 0);
 					_objectsInRadiusCaches[objectType] = cache;
 				}
 
@@ -997,7 +991,7 @@ namespace DOL.GS
 					// If the radius being checked is smaller than the cached radius, build a filtered list.
 					if (cache.Radius > radiusToCheck)
 					{
-						List<T> filtered = RentPooledList<T>(objectType);
+						List<T> filtered = GameLoop.GetListForTick<T>();
 
 						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
 						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
@@ -1012,7 +1006,7 @@ namespace DOL.GS
 					}
 					else if (cache.Radius == radiusToCheck)
 					{
-						List<T> copy = RentPooledList<T>(objectType);
+						List<T> copy = GameLoop.GetListForTick<T>();
 						copy.AddRange((List<T>) cache.List);
 						return copy;
 					}
@@ -1023,7 +1017,7 @@ namespace DOL.GS
 				cachedList.Clear();
 				CurrentRegion.GetInRadius(this, objectType, radiusToCheck, cachedList);
 				cache.Set(cachedList, radiusToCheck, GameLoop.GameLoopTime + 500);
-				List<T> result = RentPooledList<T>(objectType);
+				List<T> result = GameLoop.GetListForTick<T>();
 				result.AddRange(cachedList);
 				return result;
 			}
@@ -1047,54 +1041,6 @@ namespace DOL.GS
 		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
-		}
-
-		private void CleanupPoolsIfNeeded()
-		{
-			long currentTime = GameLoop.GameLoopTime;
-
-			if (currentTime <= _lastPoolCleanupTime)
-				return;
-
-			_lastPoolCleanupTime = currentTime;
-
-			foreach (var pair in _poolIndexes)
-			{
-				if (pair.Value <= 0)
-					continue;
-
-				List<IList> pool = _listPools[pair.Key];
-
-				for (int i = 0; i < pool.Count; i++)
-					pool[i].Clear();
-
-				_poolIndexes[pair.Key] = 0;
-			}
-		}
-
-		private List<T> RentPooledList<T>(eGameObjectType objectType)
-		{
-			CleanupPoolsIfNeeded();
-
-			if (!_listPools.TryGetValue(objectType, out var pool))
-			{
-				pool = new();
-				_listPools[objectType] = pool;
-				_poolIndexes[objectType] = 0;
-			}
-
-			int currentIndex = _poolIndexes[objectType]++;
-
-			if (currentIndex < pool.Count)
-				return (List<T>) pool[currentIndex];
-			else if (pool.Count < MAX_POOL_SIZE_PER_TYPE)
-			{
-				List<T> newList = new();
-				pool.Add(newList);
-				return newList;
-			}
-			else
-				return new(); // Pool is at max size, fallback to untracked allocation.
 		}
 
 		private class ObjectsInRadiusCache
