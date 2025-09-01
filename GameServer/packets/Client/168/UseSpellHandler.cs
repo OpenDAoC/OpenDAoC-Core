@@ -88,23 +88,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
             player.GroundTargetInView = (flagSpeedData & 0x1000) != 0;
 
-            List<Tuple<SpellLine, List<Skill>>> snap = player.GetAllUsableListSpells();
-            Skill sk = null;
-            SpellLine sl = null;
-
-            // is spelline in index ?
-            if (spellLineIndex < snap.Count)
-            {
-                int index = snap[spellLineIndex].Item2.FindIndex(s => s is Spell ? s.Level == spellLevel :
-                                                                (s is Styles.Style style ? style.SpecLevelRequirement == spellLevel :
-                                                                (s is Ability ability ? ability.SpecLevelRequirement == spellLevel :
-                                                                false)));
-
-                if (index > -1)
-                    sk = snap[spellLineIndex].Item2[index];
-
-                sl = snap[spellLineIndex].Item1;
-            }
+            GetSkill(player, spellLineIndex, spellLevel, out Skill sk, out SpellLine sl);
 
             if (sk is Spell spell && sl != null)
                 player.CastSpell(spell, sl);
@@ -119,6 +103,48 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 player.Out.SendMessage($"Error : Spell (Line {spellLineIndex}, Level {spellLevel}) can't be resolved...", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
             }
+        }
+
+        private static void GetSkill(GamePlayer player, int spellLineIndex, int spellLevel, out Skill sk, out SpellLine sl)
+        {
+            sk = null;
+            sl = null;
+
+            List<Tuple<SpellLine, List<Skill>>> snap = player.GetAllUsableListSpells();
+
+            if (spellLineIndex >= snap.Count)
+                return;
+
+            int index = -1;
+            List<Skill> skills = snap[spellLineIndex].Item2;
+
+            for (int i = 0; i < skills.Count; i++)
+            {
+                Skill skill = skills[i];
+
+                if (skill is Spell spell && spell.Level == spellLevel)
+                {
+                    index = i;
+                    break;
+                }
+
+                if (skill is Styles.Style style && style.SpecLevelRequirement == spellLevel)
+                {
+                    index = i;
+                    break;
+                }
+
+                if (skill is Ability ability && ability.SpecLevelRequirement == spellLevel)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index > -1)
+                sk = snap[spellLineIndex].Item2[index];
+
+            sl = snap[spellLineIndex].Item1;
         }
     }
 }
