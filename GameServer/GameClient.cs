@@ -16,7 +16,7 @@ using DOL.Network;
 
 namespace DOL.GS
 {
-    public class GameClient : BaseClient, ICustomParamsValuable, IServiceObject
+    public class GameClient : BaseClient, ICustomParamsValuable, IServiceObject, IPooledList<GameClient>
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 

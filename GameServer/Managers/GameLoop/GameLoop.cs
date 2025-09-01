@@ -75,12 +75,12 @@ namespace DOL.GS
 
         public static T GetObjectForTick<T>() where T : IPooledObject<T>, new()
         {
-            return _threadPool == null ? new() : _threadPool.GetObjectForTick<T>();
+            return _threadPool != null ? _threadPool.GetObjectForTick<T>() : new();
         }
 
         public static List<T> GetListForTick<T>() where T : IPooledList<T>
         {
-            return _threadPool == null ? new() : _threadPool.GetListForTick<T>();
+            return _threadPool != null ? _threadPool.GetListForTick<T>() : new();
         }
 
         private static void Run()

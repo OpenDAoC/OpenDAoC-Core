@@ -264,7 +264,7 @@ namespace DOL.GS
 
         public List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
         {
-            List<GamePlayer> players = new();
+            var players = GameLoop.GetListForTick<GamePlayer>();
 
             using (_lock)
             {
@@ -321,7 +321,7 @@ namespace DOL.GS
 
         public List<GameClient> GetClients<T>(CheckClientAction<T> action, T actionArgument)
         {
-            List<GameClient> clients = new();
+            var clients = GameLoop.GetListForTick<GameClient>();
 
             using (_lock)
             {

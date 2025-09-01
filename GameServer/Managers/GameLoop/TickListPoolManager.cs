@@ -10,6 +10,7 @@ namespace DOL.GS
         private static readonly FrozenDictionary<Type, PooledListKey> _typeToKeyMap =
             new Dictionary<Type, PooledListKey>
             {
+                { typeof(GameClient), PooledListKey.Client },
                 { typeof(GamePlayer), PooledListKey.Player },
                 { typeof(GameNPC), PooledListKey.Npc },
                 { typeof(GameStaticItem), PooledListKey.Item },
@@ -24,6 +25,7 @@ namespace DOL.GS
         private readonly FrozenDictionary<PooledListKey, ITickListPool> _pools =
             new Dictionary<PooledListKey, ITickListPool>
             {
+                { PooledListKey.Client, new TickListPool<GameClient>() },
                 { PooledListKey.Player, new TickListPool<GamePlayer>() },
                 { PooledListKey.Npc, new TickListPool<GameNPC>() },
                 { PooledListKey.Item, new TickListPool<GameStaticItem>() },
@@ -85,8 +87,9 @@ namespace DOL.GS
 
     public enum PooledListKey
     {
-        Npc,
+        Client,
         Player,
+        Npc,
         Item,
         Door,
         KeepComponent,
