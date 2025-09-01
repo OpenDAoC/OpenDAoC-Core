@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 
 namespace DOL.GS
@@ -17,7 +18,7 @@ namespace DOL.GS
         /// <summary>
         ///   Returns a path that prevents collisions with the navmesh, but floats freely otherwise
         /// </summary>
-        WrappedPathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end);
+        PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination);
 
         /// <summary>
         ///   Returns a random point on the navmesh around the given position

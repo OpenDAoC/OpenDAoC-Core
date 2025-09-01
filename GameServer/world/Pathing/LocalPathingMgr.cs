@@ -239,10 +239,10 @@ namespace DOL.GS
             return true;
         }
 
-        public WrappedPathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end)
+        public PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
-                return new(EPathingError.NoPathFound, []);
+                return new(EPathingError.NoPathFound, 0);
 
             Span<float> startFloats = stackalloc float[3];
             FillRecastFloats(start + Vector3.UnitZ * 8, startFloats);
@@ -266,16 +266,22 @@ namespace DOL.GS
                 Span<EDtPolyFlags> flags = rentedFlags.AsSpan(0, MAX_POLY);
 
                 EDtStatus status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, out int numNodes, buffer, flags);
+                EPathingError error;
 
-                if ((status & EDtStatus.DT_SUCCESS) == 0)
-                    return new(EPathingError.NoPathFound, []);
+                if ((status & EDtStatus.DT_SUCCESS) != 0)
+                    error = EPathingError.PathFound;
+                else if ((status & EDtStatus.DT_PARTIAL_RESULT) != 0)
+                    error = EPathingError.PartialPathFound;
+                else
+                    return new(EPathingError.NoPathFound, 0);
 
-                WrappedPathPoint[] points = new WrappedPathPoint[numNodes];
+                if (destination.Length < numNodes)
+                    return new(EPathingError.BufferTooSmall, numNodes);
 
                 for (int i = 0; i < numNodes; i++)
-                    points[i] = new(new(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR), flags[i]);
+                    destination[i] = new(new(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR), flags[i]);
 
-                return new(EPathingError.PartialPathFound, points);
+                return new(error, numNodes);
             }
             finally
             {

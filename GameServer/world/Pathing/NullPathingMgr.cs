@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace DOL.GS
 {
@@ -11,9 +12,9 @@ namespace DOL.GS
 
         public void Stop() { }
 
-        public WrappedPathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end)
+        public PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination)
         {
-            return new WrappedPathingResult(EPathingError.NavmeshUnavailable, []);
+            return new(EPathingError.NavmeshUnavailable, 0);
         }
 
         public Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius)

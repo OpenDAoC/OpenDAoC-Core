@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
@@ -79,42 +80,42 @@ namespace DOL.GS
 
         private void ReplotPath(Vector3 target)
         {
-            // Try acquiring a pathing lock.
             if (Interlocked.CompareExchange(ref _isReplottingPath, REPLOTTING, IDLE) != IDLE)
                 return;
+
+            const int MAX_PATH_NODES = 32;
+            WrappedPathPoint[] rentedPathBuffer = ArrayPool<WrappedPathPoint>.Shared.Rent(MAX_PATH_NODES);
 
             try
             {
                 Zone currentZone = Owner.CurrentZone;
                 Vector3 currentPos = new(Owner.X, Owner.Y, Owner.Z);
-                WrappedPathingResult pathingResult = PathingMgr.Instance.GetPathStraight(currentZone, currentPos, target);
+                PathingResult pathingResult = PathingMgr.Instance.GetPathStraight(currentZone, currentPos, target, rentedPathBuffer);
+
                 _pathNodes.Clear();
                 _doorsOnPath.Clear();
 
-                if (pathingResult.Error is not EPathingError.NoPathFound && pathingResult.Error is not EPathingError.NavmeshUnavailable && pathingResult.Points != null)
+                if (pathingResult.Error is EPathingError.PathFound or EPathingError.PartialPathFound)
                 {
                     DidFindPath = true;
-                    int to = pathingResult.Points.Length - 1; // Remove target node only if no partial path.
+                    int nodeCount = pathingResult.PointCount;
 
-                    if (pathingResult.Error is EPathingError.PartialPathFound)
-                        to = pathingResult.Points.Length;
-
-                    for (int i = 0; i < to; i++)
+                    // Keep track of doors on the path.
+                    // Skip the first node if it isn't a door.
+                    for (int i = 0; i < nodeCount; i++)
                     {
-                        WrappedPathPoint pathPoint = pathingResult.Points[i];
+                        WrappedPathPoint pathPoint = rentedPathBuffer[i];
                         bool isDoor = (pathPoint.Flags & EDtPolyFlags.DOOR) != 0;
 
-                        // Skip the first node if it isn't a door.
                         if (i == 0 && !isDoor)
                             continue;
 
                         _pathNodes.Enqueue(pathPoint);
 
-                        // Keep track of doors on the path.
                         if (!isDoor)
                             continue;
 
-                        Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z); // Should find a way to avoid this conversion.
+                        Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z);
                         _doorsOnPath[pathPoint] = new();
                         Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[pathPoint]);
                     }
@@ -122,13 +123,23 @@ namespace DOL.GS
                     _pathVisualization?.Visualize(_pathNodes, Owner.CurrentRegion);
                 }
                 else
+                {
+                    if (pathingResult.Error is EPathingError.BufferTooSmall)
+                    {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Path buffer for {Owner} was too small. Needed {pathingResult.PointCount}, had {MAX_PATH_NODES}.");
+                    }
+
                     DidFindPath = false;
+                }
 
                 _lastTarget = target;
                 ForceReplot = false;
             }
             finally
             {
+                ArrayPool<WrappedPathPoint>.Shared.Return(rentedPathBuffer);
+
                 if (Interlocked.Exchange(ref _isReplottingPath, IDLE) != REPLOTTING)
                 {
                     if (log.IsErrorEnabled)

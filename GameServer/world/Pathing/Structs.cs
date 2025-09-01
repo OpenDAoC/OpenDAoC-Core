@@ -3,15 +3,15 @@ using System.Numerics;
 
 namespace DOL.GS
 {
-    public readonly struct WrappedPathingResult
+    public readonly struct PathingResult
     {
         public EPathingError Error { get; }
-        public WrappedPathPoint[] Points { get; }
+        public int PointCount { get; }
 
-        public WrappedPathingResult(EPathingError error, WrappedPathPoint[] points)
+        public PathingResult(EPathingError error, int pointCount)
         {
             Error = error;
-            Points = points;
+            PointCount = pointCount;
         }
     }
 
@@ -73,10 +73,11 @@ namespace DOL.GS
 
     public enum EPathingError
     {
-        UNKNOWN = 0,
-        PathFound = 1,
-        PartialPathFound = 2,
-        NoPathFound = 3,
-        NavmeshUnavailable = 4
+        Unknown,
+        PathFound,
+        PartialPathFound,
+        NoPathFound,
+        NavmeshUnavailable,
+        BufferTooSmall
     }
 }
