@@ -70,6 +70,10 @@ namespace DOL.GS
                 _workerCycle = new long[_workerCount];
                 _workerStartLatch = new(_workerCount);
                 _workReady = new ManualResetEventSlim[_workerCount];
+
+                for (int i = 0; i < _workerCount; i++)
+                    _workReady[i] = new(false);
+
                 _shutdownToken = new();
                 base.Init();
             }
@@ -172,8 +176,6 @@ namespace DOL.GS
             (int Id, bool Restart) = ((int, bool)) obj;
             _workers[Id] = Thread.CurrentThread;
             _workerCycle[Id] = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
-            _workReady[Id]?.Dispose();
-            _workReady[Id] = new ManualResetEventSlim();
             base.InitWorker(obj);
             _workerStartLatch.Signal();
 
