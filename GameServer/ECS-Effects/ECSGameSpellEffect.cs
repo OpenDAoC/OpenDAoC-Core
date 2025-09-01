@@ -9,7 +9,7 @@ namespace DOL.GS
     /// <summary>
     /// Spell-Based Effect
     /// </summary>
-    public class ECSGameSpellEffect : ECSGameEffect, IConcentrationEffect
+    public class ECSGameSpellEffect : ECSGameEffect, IConcentrationEffect, IPooledList<ECSGameSpellEffect>
     {
         public new ISpellHandler SpellHandler;
         string IConcentrationEffect.Name => Name;

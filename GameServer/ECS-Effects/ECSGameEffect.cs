@@ -8,7 +8,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public abstract class ECSGameEffect : IServiceObject
+    public abstract class ECSGameEffect : IServiceObject, IPooledList<ECSGameEffect>
     {
         private State _state;
         private TransitionalState _transitionalState;

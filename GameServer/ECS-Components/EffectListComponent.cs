@@ -131,15 +131,19 @@ namespace DOL.GS
 
         public List<ECSGameSpellEffect> GetConcentrationEffects()
         {
+            List<ECSGameSpellEffect> temp = GameLoop.GetListForTick<ECSGameSpellEffect>();
+
             lock (_concentrationEffectsLock)
             {
-                return _concentrationEffects.ToList();
+                temp.AddRange(_concentrationEffects);
             }
+
+            return temp;
         }
 
         public List<ECSGameEffect> GetEffects()
         {
-            List<ECSGameEffect> temp = new();
+            List<ECSGameEffect> temp = GameLoop.GetListForTick<ECSGameEffect>();
 
             foreach (var pair in _effects)
             {
@@ -157,7 +161,7 @@ namespace DOL.GS
 
         public List<ECSGameEffect> GetEffects(eEffect effectType)
         {
-            List<ECSGameEffect> temp = new();
+            List<ECSGameEffect> temp = GameLoop.GetListForTick<ECSGameEffect>();
 
             if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
             {
@@ -173,7 +177,7 @@ namespace DOL.GS
 
         public List<ECSPulseEffect> GetPulseEffects()
         {
-            List<ECSPulseEffect> temp = new();
+            List<ECSPulseEffect> temp = GameLoop.GetListForTick<ECSPulseEffect>();
 
             foreach (var pair in _effects)
             {
@@ -191,7 +195,7 @@ namespace DOL.GS
 
         public ECSGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType)
         {
-            List<ECSGameSpellEffect> effects = GetSpellEffects(effectType);
+            List<ECSGameSpellEffect> effects = GameLoop.GetListForTick<ECSGameSpellEffect>();
 
             if (effects == null || effects.Count == 0)
                 return null;
@@ -220,7 +224,7 @@ namespace DOL.GS
 
         public List<ECSGameSpellEffect> GetSpellEffects()
         {
-            List<ECSGameSpellEffect> temp = new();
+            List<ECSGameSpellEffect> temp = GameLoop.GetListForTick<ECSGameSpellEffect>();
 
             foreach (var pair in _effects)
             {
@@ -238,7 +242,7 @@ namespace DOL.GS
 
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType)
         {
-            List<ECSGameSpellEffect> temp = new();
+            List<ECSGameSpellEffect> temp = GameLoop.GetListForTick<ECSGameSpellEffect>();
 
             if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
             {
@@ -254,7 +258,7 @@ namespace DOL.GS
 
         public List<ECSGameAbilityEffect> GetAbilityEffects()
         {
-            List<ECSGameAbilityEffect> temp = new();
+            List<ECSGameAbilityEffect> temp = GameLoop.GetListForTick<ECSGameAbilityEffect>();
 
             foreach (var pair in _effects)
             {
@@ -272,7 +276,7 @@ namespace DOL.GS
 
         public List<ECSGameAbilityEffect> GetAbilityEffects(eEffect effectType)
         {
-            List<ECSGameAbilityEffect> temp = new();
+            List<ECSGameAbilityEffect> temp = GameLoop.GetListForTick<ECSGameAbilityEffect>();
 
             if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
             {
@@ -600,13 +604,13 @@ namespace DOL.GS
                                     {
                                         if (!existingEffect.IsDisabled && !existingEffect.IsDisabling)
                                         {
-                                            effectsToDisable ??= new(1);
+                                            effectsToDisable ??= GameLoop.GetListForTick<ECSGameEffect>();
                                             effectsToDisable.Add(existingEffect);
                                         }
                                     }
                                     else
                                     {
-                                        effectsToStop ??= new(1);
+                                        effectsToStop ??= GameLoop.GetListForTick<ECSGameEffect>();
                                         effectsToStop.Add(existingEffect);
                                     }
                                 }
