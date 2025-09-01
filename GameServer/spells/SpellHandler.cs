@@ -2014,8 +2014,10 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			foreach (GameLiving targetInList in targets)
+			for (int i = 0; i < targets.Count; i++)
 			{
+				GameLiving targetInList = targets[i];
+
 				if (CheckSpellResist(targetInList))
 					continue;
 

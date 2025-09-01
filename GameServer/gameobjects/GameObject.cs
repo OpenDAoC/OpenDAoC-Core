@@ -996,8 +996,10 @@ namespace DOL.GS
 						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
 						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
 						// But whether that would be faster or not is debatable, and would depend on how often the cache is hit with a smaller radius.
-						foreach (T obj in cache.List)
+						for (int i = 0; i < cache.List.Count; i++)
 						{
+							T obj = (T) cache.List[i];
+
 							if (IsWithinRadius(obj, radiusToCheck))
 								filtered.Add(obj);
 						}
