@@ -61,7 +61,7 @@ namespace DOL.GS
 
         private class ServiceObjectArray<T> : IServiceObjectArray where T : class, IServiceObject
         {
-            private SortedSet<int> _invalidIndexes = new();
+            private PriorityQueue<int, int> _invalidIndexes = new();
             private DrainArray<T> _itemsToAdd  = new();
             private DrainArray<T> _itemsToRemove = new();
             private int _updating = new();
@@ -123,11 +123,13 @@ namespace DOL.GS
                 if (!id.IsPendingRemoval || !id.IsSet)
                     return;
 
-                if (id.Value == Items.Count)
+                int idValue = id.Value;
+
+                if (idValue == Items.Count - 1)
                     _lastValidIndex--;
 
-                _invalidIndexes.Add(id.Value);
-                Items[id.Value] = null;
+                _invalidIndexes.Enqueue(idValue, idValue);
+                Items[idValue] = null;
                 id.Unset();
             }
 
@@ -145,8 +147,8 @@ namespace DOL.GS
 
                 if (_invalidIndexes.Count > 0)
                 {
-                    int index = _invalidIndexes.Min;
-                    _invalidIndexes.Remove(index);
+                    int index = _invalidIndexes.Peek();
+                    _invalidIndexes.Dequeue();
                     Items[index] = item;
 
                     if (index > _lastValidIndex)
@@ -183,7 +185,7 @@ namespace DOL.GS
                 // Only compact if there are invalid indexes and at least one valid item above the lowest invalid index.
                 while (_invalidIndexes.Count > 0)
                 {
-                    int lowestInvalidIndex = _invalidIndexes.Min;
+                    int lowestInvalidIndex = _invalidIndexes.Peek();
                     bool foundItemToMove = false;
 
                     for (int i = _lastValidIndex; i > lowestInvalidIndex; i--)
@@ -191,11 +193,11 @@ namespace DOL.GS
                         if (Items[i]?.ServiceObjectId.IsSet != true)
                             continue;
 
+                        _invalidIndexes.Dequeue();
                         T item = Items[i];
                         Items[lowestInvalidIndex] = item;
                         Items[i] = null;
-                        _invalidIndexes.Remove(lowestInvalidIndex);
-                        _invalidIndexes.Add(i);
+                        _invalidIndexes.Enqueue(i, i);
                         item.ServiceObjectId.Value = lowestInvalidIndex;
 
                         // Update last valid index if we just moved the last item.
