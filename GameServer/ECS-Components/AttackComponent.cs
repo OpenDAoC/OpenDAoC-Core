@@ -2021,7 +2021,7 @@ namespace DOL.GS
                 }
             }
 
-            static void SendLocalizedMessage(GamePlayer player, string key, params object[] args)
+            static void SendLocalizedMessage(GamePlayer player, string key, params ReadOnlySpan<object> args)
             {
                 string message = LanguageMgr.GetTranslation(player.Client.Account.Language, key, args);
                 player.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -2073,7 +2073,7 @@ namespace DOL.GS
                 // Note: Most of the missing logic here is currently handled by `GameLiving.OnAttackedByEnemy`.
             }
 
-            static void SendLocalizedMessage(GamePlayer player, string key, double chance, params object[] args)
+            static void SendLocalizedMessage(GamePlayer player, string key, double chance, params ReadOnlySpan<object> args)
             {
                 string message = LanguageMgr.GetTranslation(player.Client.Account.Language, key, args);
 

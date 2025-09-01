@@ -1,7 +1,7 @@
 ﻿Mid.Frontiers.CheckPlayerAbortQuest.Text1:	Das ist eine gute Entscheidung! Also dann, beendet Euren Auftrag.
 Mid.Frontiers.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt immer wieder anfangen, solange Ihr die Erfahrungsstufe 4 nicht überschritten habt.
 Mid.Frontiers.CheckPlayerAcceptQuest.Text1:	In Ordnung, falls Ihre Eure Meinung ändert, kommt bitte zurück!
-Mid.Frontiers.CheckPlayerAcceptQuest.Text2:	Sehr gut, [0}. Nun hier, nehmt diese Pläne und auch das Schreiben an Greifenabrichter Njiedi. Gebt ihm das Schreiben, damit er weiß, wer Euch schickt. Ihr findet ihn in der Nähe des Tores von Jordheim. Ich wünsche Euch viel Glück auf der Reise, {0}.
+Mid.Frontiers.CheckPlayerAcceptQuest.Text2:	Sehr gut, {0}. Nun hier, nehmt diese Pläne und auch das Schreiben an Greifenabrichter Njiedi. Gebt ihm das Schreiben, damit er weiß, wer Euch schickt. Ihr findet ihn in der Nähe des Tores von Jordheim. Ich wünsche Euch viel Glück auf der Reise, {0}.
 Mid.Frontiers.CheckPlayerAcceptQuest.Text3:	Ihr erhaltet {0} als Reisekosten.
 Mid.Frontiers.Description.Text1:		Ihr müsst die Askefruer Pläne, die Euch Dalikor gab, zur Wahrsagerin Idora an die Reichsgrenze bringen. Aber zuerst müsst Ihr dem Greifenabrichter Njiedi sein Schreiben bringen. Er befindet sich in der Nähe des Tores von Jordheim.
 Mid.Frontiers.Description.Text2:		Leiht Euch ein Pferd beim Stallmeister Gularg in Mularn und reitet zur Svasud Faste. Sprecht dort mit Stor Gothi Annark und lasst Euch zur Wahrsagerin Idora teleportieren.

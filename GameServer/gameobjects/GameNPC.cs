@@ -3965,12 +3965,12 @@ namespace DOL.GS
 				}
 				case "s": // Return custom System message in System/Combat window to all players within range
 				{
-					Message.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512, null);
+					Message.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512);
 					return;
 				}
 				case "c": // Return custom Say message in Chat window to all players within range, without "{0} says," string start
 				{
-					Message.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512, null);
+					Message.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512);
 					return;
 				}
 				case "p": // Return custom System message in popup dialog only to player interating with the NPC

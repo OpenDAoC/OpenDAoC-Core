@@ -104,7 +104,7 @@ Scripts.Players.Cmdhelp.PlvlCommands:		Commandes disponibles pour le niveau de p
 Scripts.Players.Cmdhelp.Usage:				Usage pour {0}
 
 # /Disband
-Scripts.Players.Disband.Disbanded:			{o} a quitté le groupe.
+Scripts.Players.Disband.Disbanded:			{0} a quitté le groupe.
 Scripts.Players.Disband.NoPlayer:			Pas de joueur de ce nom dans le groupe.
 Scripts.Players.Disband.NotInGroup:			Vous n'êtes pas dans un groupe.
 Scripts.Players.Disband.NotLeader:			Vous n'êtes pas le chef du groupe.

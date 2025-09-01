@@ -5,12 +5,13 @@ using System.Linq;
 using System.Reflection;
 using DOL.Database.Attributes;
 using DOL.Database.UniqueID;
+using DOL.Logging;
 
 namespace DOL.Database
 {
     public abstract class DataObject : ICloneable
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private DataObject _snapshot;
         private bool _allowAdd = true;

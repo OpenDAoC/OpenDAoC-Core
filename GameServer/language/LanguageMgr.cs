@@ -1,112 +1,37 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using DOL.Database;
 using DOL.GS;
+using DOL.GS.ServerProperties;
+using DOL.Logging;
 
 namespace DOL.Language
 {
     public class LanguageMgr
     {
-        private static LanguageMgr soleInstance = new();
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void LoadTestDouble(LanguageMgr testDouble) { soleInstance = testDouble; }
-
-        protected virtual bool TryGetTranslationImpl(out string translation, ref string language, string translationId, ref object[] args)
-        {
-            if (string.IsNullOrEmpty(translationId))
-            {
-                translation = TRANSLATION_ID_EMPTY;
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(language))
-                language = DefaultLanguage;
-
-            LanguageDataObject result = GetLanguageDataObject(language, translationId, LanguageDataObject.eTranslationIdentifier.eSystem);
-
-            if (result == null)
-            {
-                translation = GetTranslationErrorText(language, translationId);
-                return false;
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(((DbLanguageSystem) result).Text))
-                    translation = ((DbLanguageSystem) result).Text;
-                else
-                {
-                    translation = GetTranslationErrorText(language, translationId);
-                    return false;
-                }
-            }
-
-            args ??= Array.Empty<object>();
-
-            try
-            {
-                if (args.Length > 0)
-                    translation = string.Format(translation, args);
-            }
-            catch
-            {
-                if (log.IsErrorEnabled)
-                    log.ErrorFormat("[Language-Manager] Parameter number incorrect: {0} for language {1}, Arg count = {2}, sentence = '{3}', args[0] = '{4}'", translationId, language, args.Length, translation, args.Length > 0 ? args[0] : "null");
-            }
-
-            return true;
-        }
-
-        #region Variables
         private const string TRANSLATION_ID_EMPTY = "No translation ID could be found for this message.";
 
-        /// <summary>
-        /// Translation ID for the sentence, array position 0
-        /// </summary>
-        private const int ID = 0;
+        private static LanguageMgr _soleInstance = new();
+        protected string _langPathImpl = string.Empty;
 
-        /// <summary>
-        /// The translated sentence, array position 1
-        /// </summary>
-        private const int TEXT = 1;
-
-        /// <summary>
-        /// The sentence language, array position 2
-        /// </summary>
-        private const int LANGUAGE = 2;
-
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        /// <summary>
-        /// Give a way to change or relocate the lang files
-        /// </summary>
-        private static string LangPath {
+        private static string LangPath
+        {
             get
             {
-                if (soleInstance.LangPathImpl == string.Empty)
-                    soleInstance.LangPathImpl = Path.Combine(GameServer.Instance.Configuration.RootDirectory, "languages");
+                if (_soleInstance._langPathImpl == string.Empty)
+                    _soleInstance._langPathImpl = Path.Combine(GameServer.Instance.Configuration.RootDirectory, "languages");
 
-                return soleInstance.LangPathImpl;
+                return _soleInstance._langPathImpl;
             }
         }
-        protected string LangPathImpl = string.Empty;
-        #endregion Variables
 
-        #region Properties
-        /// <summary>
-        /// Returns the default language.
-        /// </summary>
-        public static string DefaultLanguage => GS.ServerProperties.Properties.SERV_LANGUAGE;
+        public static string DefaultLanguage => Properties.SERV_LANGUAGE;
 
-        /// <summary>
-        /// Returns all registered languages.
-        /// </summary>
         public static IEnumerable<string> Languages
         {
             get
@@ -118,36 +43,50 @@ namespace DOL.Language
             }
         }
 
-        /// <summary>
-        /// Returns the translations collection. MODIFY AT YOUR OWN RISK!!!
-        /// </summary>
         public static Dictionary<string, Dictionary<LanguageDataObject.eTranslationIdentifier, Dictionary<string, LanguageDataObject>>> Translations { get; private set; }
-        #endregion Properties
 
-        #region Initialization
-        /// <summary>
-        /// Initial function
-        /// </summary>
-        /// <returns></returns>
+        public static void LoadTestDouble(LanguageMgr testDouble)
+        {
+            _soleInstance = testDouble;
+        }
+
+        protected virtual bool TryGetRawTranslation(out DbLanguageSystem translationObject, string language, string translationId)
+        {
+            translationObject = null;
+
+            if (string.IsNullOrEmpty(language))
+                language = DefaultLanguage;
+
+            LanguageDataObject result = GetLanguageDataObject(language, translationId, LanguageDataObject.eTranslationIdentifier.eSystem);
+
+            if (result is DbLanguageSystem dbResult && !string.IsNullOrEmpty(dbResult.Text))
+            {
+                translationObject = dbResult;
+                return true;
+            }
+
+            return false;
+        }
+
         public static bool Init()
         {
             Translations = new();
             return LoadTranslations();
         }
 
-        #region LoadTranslations
         private static bool LoadTranslations()
         {
-            #region Load system translations
             if (log.IsInfoEnabled)
-                log.Info("[Language-Manager] Loading system sentences...");
+                log.Info("Loading language system...");
 
-            ArrayList fileSentences = new();
+            List<TranslationEntry> fileSentences = new();
             bool defaultLanguageDirectoryFound = false;
             bool defaultLanguageFilesFound = false;
+
             foreach (string langDir in Directory.GetDirectories(LangPath, "*", SearchOption.TopDirectoryOnly))
             {
                 string language = langDir[(langDir.LastIndexOf(Path.DirectorySeparatorChar) + 1)..].ToUpper();
+
                 if (language != DefaultLanguage)
                 {
                     if (language != "CU") // Ignore the custom language folder. This check should be removed in the future! (code written: may 2012)
@@ -156,7 +95,7 @@ namespace DOL.Language
                 else
                 {
                     defaultLanguageDirectoryFound = true;
-                    ArrayList sentences = ReadLanguageDirectory(Path.Combine(LangPath, language), language);
+                    List<TranslationEntry> sentences = ReadLanguageDirectory(Path.Combine(LangPath, language), language);
 
                     if (sentences.Count < 1)
                         break;
@@ -171,7 +110,7 @@ namespace DOL.Language
             if (!defaultLanguageDirectoryFound)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("Could not find default '" + DefaultLanguage + "' language directory, server can't start without it!");
+                    log.Error($"Could not find default '{DefaultLanguage}' language directory, server can't start without it");
 
                 return false;
             }
@@ -179,41 +118,40 @@ namespace DOL.Language
             if (!defaultLanguageFilesFound)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("Default '" + DefaultLanguage + "' language files missing, server can't start without those files!");
+                    log.Error($"Default '{DefaultLanguage}' language files missing, server can't start without those files");
 
                 return false;
             }
 
-            if (DOL.GS.ServerProperties.Properties.USE_DBLANGUAGE)
+            if (Properties.USE_DBLANGUAGE)
             {
                 int newEntries = 0;
                 int updatedEntries = 0;
 
                 IList<DbLanguageSystem> dbos = GameServer.Database.SelectAllObjects<DbLanguageSystem>();
 
-                if (GS.ServerProperties.Properties.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
+                if (Properties.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
                 {
-                    foreach (string[] sentence in fileSentences)
+                    foreach (TranslationEntry sentence in fileSentences)
                     {
                         bool found = false;
                         foreach (DbLanguageSystem dbo in dbos)
                         {
-                            if (dbo.TranslationId != sentence[ID])
+                            if (dbo.TranslationId != sentence.Id)
                                 continue;
 
-                            if (dbo.Language != sentence[LANGUAGE])
+                            if (dbo.Language != sentence.Language)
                                 continue;
 
-                            if (dbo.Text != sentence[TEXT])
+                            if (dbo.Text != sentence.Text)
                             {
-                                dbo.Text = sentence[TEXT];
-                                GameServer.Database.SaveObject(dbo); // Please be sure to use the UTF-8 format for your language files, otherwise
-                                // some database rows will be updated on each server start, because one char
-                                // differs from the one within the database.
+                                dbo.Text = sentence.Text;
+                                dbo.PrepareForFormatting(); // Reparse if text changes.
+                                GameServer.Database.SaveObject(dbo);
                                 updatedEntries++;
 
                                 if (log.IsWarnEnabled)
-                                    log.Warn("[Language-Manager] Language <" + sentence[LANGUAGE] + "> TranslationId <" + dbo.TranslationId + "> updated in database!");
+                                    log.Warn($"Language {sentence.Language} TranslationId {dbo.TranslationId} updated in database");
                             }
 
                             found = true;
@@ -224,31 +162,29 @@ namespace DOL.Language
                         {
                             DbLanguageSystem dbo = new()
                             {
-                                TranslationId = sentence[ID],
-                                Text = sentence[TEXT],
-                                Language = sentence[LANGUAGE]
+                                TranslationId = sentence.Id,
+                                Text = sentence.Text,
+                                Language = sentence.Language
                             };
 
+                            dbo.PrepareForFormatting();
                             GameServer.Database.AddObject(dbo);
-                            RegisterLanguageDataObject(dbo);
+                            _ = RegisterLanguageDataObject(dbo);
                             newEntries++;
 
                             if (log.IsWarnEnabled)
-                                log.Warn("[Language-Manager] Language <" + dbo.Language + "> TranslationId <" + dbo.TranslationId + "> added into the database.");
+                                log.Warn($"Language {dbo.Language} TranslationId {dbo.TranslationId} added into the database");
                         }
                     }
                 }
                 else // Add missing translations.
                 {
-                    foreach (string[] sentence in fileSentences)
+                    foreach (TranslationEntry sentence in fileSentences)
                     {
                         bool found = false;
                         foreach (DbLanguageSystem lngObj in dbos)
                         {
-                            if (lngObj.TranslationId != sentence[ID])
-                                continue;
-
-                            if (lngObj.Language != sentence[LANGUAGE])
+                            if (lngObj.TranslationId != sentence.Id || lngObj.Language != sentence.Language)
                                 continue;
 
                             found = true;
@@ -259,152 +195,117 @@ namespace DOL.Language
                         {
                             DbLanguageSystem dbo = new()
                             {
-                                TranslationId = sentence[ID],
-                                Text = sentence[TEXT],
-                                Language = sentence[LANGUAGE]
+                                TranslationId = sentence.Id,
+                                Text = sentence.Text,
+                                Language = sentence.Language
                             };
 
+                            dbo.PrepareForFormatting();
                             GameServer.Database.AddObject(dbo);
-                            RegisterLanguageDataObject(dbo);
+                            _ = RegisterLanguageDataObject(dbo);
                             newEntries++;
 
                             if (log.IsWarnEnabled)
-                                log.Warn("[Language-Manager] Language <" + dbo.Language + "> TranslationId <" + dbo.TranslationId + "> added into the database.");
+                                log.Warn($"Language {dbo.Language} TranslationId {dbo.TranslationId} added into the database");
                         }
                     }
                 }
 
-                // Register all DBLanguageSystem rows. Must be done in this way to
-                // register ALL database rows. The reason for this is simple:
-                //
-                // If a user adds new rows into the database without also adding those
-                // data into the language files, the above foreach loop just adds the
-                // sentences which have been added in the language files.
                 foreach (DbLanguageSystem dbo in dbos)
-                    RegisterLanguageDataObject(dbo);
+                {
+                    dbo.PrepareForFormatting();
+                    _ = RegisterLanguageDataObject(dbo);
+                }
 
                 if (newEntries > 0)
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn("[Language-Manager] Added <" + newEntries + "> new entries into the Database.");
+                        log.Warn($"Added {newEntries} new entries into the database");
                 }
 
                 if (updatedEntries > 0)
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn("[Language-Manager] Updated <" + updatedEntries + "> entries in Database.");
+                        log.Warn($"Updated {updatedEntries} entries in database");
                 }
             }
             else
             {
-                foreach (string[] sentence in fileSentences)
+                foreach (TranslationEntry sentence in fileSentences)
                 {
                     DbLanguageSystem obj = new()
                     {
-                        TranslationId = sentence[ID],
-                        Text = sentence[TEXT],
-                        Language = sentence[LANGUAGE]
+                        TranslationId = sentence.Id,
+                        Text = sentence.Text,
+                        Language = sentence.Language
                     };
 
-                    RegisterLanguageDataObject(obj);
+                    obj.PrepareForFormatting();
+                    _ = RegisterLanguageDataObject(obj);
                 }
             }
 
-            #endregion Load system translations
-
-            #region Load object translations
             if (log.IsInfoEnabled)
-                log.Info("[Language-Manager] Loading object translations...");
+                log.Info("Loading object translations...");
 
-            List<LanguageDataObject> lngObjs = new();
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageArea>());
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageGameObject>());
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageGameNpc>());
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageZone>());
+            List<LanguageDataObject> lngObjs =
+            [
+                .. GameServer.Database.SelectAllObjects<DbLanguageArea>(),
+                .. GameServer.Database.SelectAllObjects<DbLanguageGameObject>(),
+                .. GameServer.Database.SelectAllObjects<DbLanguageGameNpc>(),
+                .. GameServer.Database.SelectAllObjects<DbLanguageZone>(),
+            ];
 
             foreach (LanguageDataObject lngObj in lngObjs)
-                RegisterLanguageDataObject(lngObj);
+                _ = RegisterLanguageDataObject(lngObj);
 
-            #endregion Load object translations
             return true;
         }
-        #endregion LoadTranslations
 
-        #region ReadLanguageDirectory
-        private static ArrayList ReadLanguageDirectory(string path, string language)
+        private static List<TranslationEntry> ReadLanguageDirectory(string path, string language)
         {
-            ArrayList sentences = new();
+            List<TranslationEntry> sentences = new();
+            HashSet<(string, string)> uniqueKeys = new();
+
             foreach (string languageFile in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
             {
                 if (!languageFile.EndsWith(".txt"))
                     continue;
 
                 string[] lines = File.ReadAllLines(languageFile, Encoding.GetEncoding("utf-8"));
-                ArrayList textList = new(lines);
+                string[] translation = new string[3];
 
-                foreach (string line in textList)
+                foreach (string line in lines)
                 {
-                    // do not read comments
-                    if (line.StartsWith("#"))
+                    if (line.StartsWith('#') || !line.Contains(':'))
                         continue;
 
-                    // ignore any line that is not formatted  'identifier: sentence'
-                    if (!line.Contains(':'))
-                        continue;
+                    string id = line[..line.IndexOf(':')];
+                    string text = line[(line.IndexOf(':') + 1)..].Replace("\t", " ").Trim();
+                    TranslationEntry entry = new(id, text, language);
 
-                    string[] translation = new string[3];
-
-                    // 0 is the identifier for the sentence
-                    translation[ID] = line[..line.IndexOf(':')];
-                    translation[TEXT] = line[(line.IndexOf(':') + 1)..];
-
-                    // 1 is the sentence with any tabs (used for readability in language file) removed
-                    translation[TEXT] = translation[TEXT].Replace("\t", " ");
-                    translation[TEXT] = translation[TEXT].Trim();
-
-                    // 2 is the language of the sentence
-                    translation[LANGUAGE] = language;
-
-                    // Ignore duplicates
-                    bool ignore = false;
-                    foreach (string[] sentence in sentences)
-                    {
-                        if (sentence[ID] != translation[ID])
-                            continue;
-
-                        if (sentence[LANGUAGE] != translation[LANGUAGE])
-                            continue;
-
-                        ignore = true;
-                        break;
-                    }
-
-                    if (ignore)
-                        continue;
-
-                    sentences.Add(translation);
+                    if (uniqueKeys.Add((id, language)))
+                        sentences.Add(entry);
                 }
             }
 
             return sentences;
         }
-        #endregion ReadLanguageDirectory
 
-        #endregion Initialization
-
-        #region GetLanguageDataObject
         public static LanguageDataObject GetLanguageDataObject(string language, string translationId, LanguageDataObject.eTranslationIdentifier translationIdentifier)
         {
             if (string.IsNullOrEmpty(translationId))
                 return null;
 
             if (!Translations.TryGetValue(language, out var languages) && language != DefaultLanguage)
-                Translations.TryGetValue(DefaultLanguage, out languages);
+                _ = Translations.TryGetValue(DefaultLanguage, out languages);
 
             if (languages == null)
             {
                 lock (Translations)
-                    Translations.Remove(language);
+                {
+                    _ = Translations.Remove(language);
+                }
 
                 return null;
             }
@@ -415,24 +316,22 @@ namespace DOL.Language
             if (translationIdentifiers == null)
             {
                 lock (Translations)
-                    languages.Remove(translationIdentifier);
+                {
+                    _ = languages.Remove(translationIdentifier);
+                }
 
                 return null;
             }
 
             return !translationIdentifiers.TryGetValue(translationId, out LanguageDataObject result) ? null : result;
         }
-        #endregion GetLanguageDataObject
 
-        #region GetTranslation / TryGetTranslation
-
-        #region GetTranslation
         public static LanguageDataObject GetTranslation(GameClient client, ITranslatableObject obj)
         {
-            TryGetTranslation(out LanguageDataObject translation, client, obj);
+            _ = TryGetTranslation(out LanguageDataObject translation, client, obj);
             return translation;
         }
-        
+
         public static LanguageDataObject GetTranslation(GamePlayer player, ITranslatableObject obj)
         {
             return GetTranslation(player.Client, obj);
@@ -440,24 +339,70 @@ namespace DOL.Language
 
         public static LanguageDataObject GetTranslation(string language, ITranslatableObject obj)
         {
-            TryGetTranslation(out LanguageDataObject translation, language, obj);
+            _ = TryGetTranslation(out LanguageDataObject translation, language, obj);
             return translation;
         }
 
-        public static string GetTranslation(GameClient client, string translationId, params object[] args)
+        public static string GetTranslation(GameClient client, string translationId)
         {
-            TryGetTranslation(out string translation, client, translationId, args);
-            return translation;
+            _ = TryGetTranslation(out string t, client, translationId);
+            return t;
         }
 
-        public static string GetTranslation(string language, string translationId, params object[] args)
+        public static string GetTranslation(GameClient client, string translationId, object arg1)
         {
-            TryGetTranslation(out string translation, language, translationId, args);
-            return translation;
+            _ = TryGetTranslation(out string t, client, translationId, arg1);
+            return t;
         }
-        #endregion GetTranslation
 
-        #region TryGetTranslation
+        public static string GetTranslation(GameClient client, string translationId, object arg1, object arg2)
+        {
+            _ = TryGetTranslation(out string t, client, translationId, arg1, arg2);
+            return t;
+        }
+
+        public static string GetTranslation(GameClient client, string translationId, object arg1, object arg2, object arg3)
+        {
+            _ = TryGetTranslation(out string t, client, translationId, arg1, arg2, arg3);
+            return t;
+        }
+
+        public static string GetTranslation(GameClient client, string translationId, params ReadOnlySpan<object> args)
+        {
+            _ = TryGetTranslation(out string t, client, translationId, args);
+            return t;
+        }
+
+        public static string GetTranslation(string language, string translationId)
+        {
+            _ = TryGetTranslation(out string t, language, translationId);
+            return t;
+        }
+
+        public static string GetTranslation(string language, string translationId, object arg1)
+        {
+            _ = TryGetTranslation(out string t, language, translationId, arg1);
+            return t;
+        }
+
+        public static string GetTranslation(string language, string translationId, object arg1, object arg2)
+        {
+            _ = TryGetTranslation(out string t, language, translationId, arg1, arg2);
+            return t;
+        }
+
+        public static string GetTranslation(string language, string translationId, object arg1, object arg2, object arg3)
+        {
+            _ = TryGetTranslation(out string t, language, translationId, arg1, arg2, arg3);
+            return t;
+        }
+
+        public static string GetTranslation(string language, string translationId, params ReadOnlySpan<object> args)
+        {
+            _ = TryGetTranslation(out string t, language, translationId, args);
+            return t;
+        }
+
         public static bool TryGetTranslation(out LanguageDataObject translation, GameClient client, ITranslatableObject obj)
         {
             if (client == null)
@@ -466,63 +411,130 @@ namespace DOL.Language
                 return false;
             }
 
-            return TryGetTranslation(out translation, client.Account == null ? string.Empty : client.Account.Language, obj);
+            return TryGetTranslation(out translation, client.Account?.Language ?? string.Empty, obj);
         }
 
         public static bool TryGetTranslation(out LanguageDataObject translation, string language, ITranslatableObject obj)
         {
-            if (obj == null)
-            {
-                translation = null;
-                return false;
-            }
+            translation = null;
 
-            if (string.IsNullOrEmpty(language) || language == DefaultLanguage /*Use the objects base data (e.g. NPC.Name)*/)
-            {
-                translation = null;
+            if (obj == null)
                 return false;
-            }
+
+            if (string.IsNullOrEmpty(language) || language == DefaultLanguage)
+                return false;
 
             translation = GetLanguageDataObject(language, obj.TranslationId, obj.TranslationIdentifier);
             return translation != null;
         }
 
-        public static bool TryGetTranslation(out string translation, GameClient client, string translationId, params object[] args)
+        private static bool TryGetAndFormatTranslation(out string translation, GameClient client, string translationId, ReadOnlySpan<object> args)
         {
-            if (client == null)
-            {
-                translation = null;
-                return true;
-            }
+            string language = client?.Account?.Language ?? DefaultLanguage;
+            bool result = TryGetTranslation(out translation, language, translationId, args);
 
-            bool result = TryGetTranslation(out translation, client.Account == null ? DefaultLanguage : client.Account.Language, translationId, args);
-
-            if (client.Account != null)
+            if (result && client?.Account?.PrivLevel > 1 && client.Player != null && client.ClientState == GameClient.eClientState.Playing)
             {
-                if (client.Account.PrivLevel > 1 && client.Player != null && result)
-                {
-                    if (client.ClientState == GameClient.eClientState.Playing)
-                    {
-                        if (client.Player.TempProperties.GetProperty<bool>("LANGUAGEMGR-DEBUG"))
-                            translation = "Id is " + translationId + " " + translation;
-                    }
-                }
+                if (client.Player.TempProperties.GetProperty<bool>("LANGUAGEMGR-DEBUG"))
+                    translation = $"Id is {translationId} {translation}";
             }
 
             return result;
         }
 
-        /// <summary>
-        /// This returns the last part of the translation text id if actual translation fails
-        /// This helps to avoid returning strings that are too long and overflow the client
-        /// When the name overflows players my not be targetable or even visible!
-        /// PLEASE DO NOT REMOVE THIS FUNCTIONALITY  - tolakram
-        /// </summary>
+        public static bool TryGetTranslation(out string translation, GameClient client, string translationId)
+        {
+            return TryGetAndFormatTranslation(out translation, client, translationId, []);
+        }
+
+        public static bool TryGetTranslation(out string translation, GameClient client, string translationId, object arg1)
+        {
+            return TryGetAndFormatTranslation(out translation, client, translationId, [arg1]);
+        }
+
+        public static bool TryGetTranslation(out string translation, GameClient client, string translationId, object arg1, object arg2)
+        {
+            return TryGetAndFormatTranslation(out translation, client, translationId, [arg1, arg2]);
+        }
+
+        public static bool TryGetTranslation(out string translation, GameClient client, string translationId, object arg1, object arg2, object arg3)
+        {
+            return TryGetAndFormatTranslation(out translation, client, translationId, [arg1, arg2, arg3]);
+        }
+
+        public static bool TryGetTranslation(out string translation, GameClient client, string translationId, params ReadOnlySpan<object> args)
+        {
+            return TryGetAndFormatTranslation(out translation, client, translationId, args);
+        }
+
+        public static bool TryGetTranslation(out string translation, string language, string translationId)
+        {
+            return TryGetTranslation(out translation, language, translationId, []);
+        }
+
+        public static bool TryGetTranslation(out string translation, string language, string translationId, object arg1)
+        {
+            return TryGetTranslation(out translation, language, translationId, [arg1]);
+        }
+
+        public static bool TryGetTranslation(out string translation, string language, string translationId, object arg1, object arg2)
+        {
+            return TryGetTranslation(out translation, language, translationId, [arg1, arg2]);
+        }
+
+        public static bool TryGetTranslation(out string translation, string language, string translationId, object arg1, object arg2, object arg3)
+        {
+            return TryGetTranslation(out translation, language, translationId, [arg1, arg2, arg3]);
+        }
+
+        public static bool TryGetTranslation(out string translation, string language, string translationId, params ReadOnlySpan<object> args)
+        {
+            if (string.IsNullOrEmpty(translationId))
+            {
+                translation = TRANSLATION_ID_EMPTY;
+                return false;
+            }
+
+            if (!_soleInstance.TryGetRawTranslation(out DbLanguageSystem langObj, language, translationId) || langObj == null)
+            {
+                translation = GetTranslationErrorText(language, translationId);
+                return false;
+            }
+
+            if (args.IsEmpty || langObj.FormattableText == null)
+            {
+                translation = langObj.Text;
+                return true;
+            }
+
+            try
+            {
+                translation = args.Length switch
+                {
+                    // For 1-3 args, the dedicated `string.Format` overloads are the fastest path.
+                    // Type inference prioritizes non-generic overloads over generic ones, so we specify <object> explicitly.
+                    1 => string.Format<object>(null, langObj.FormattableText, args[0]),
+                    2 => string.Format<object, object>(null, langObj.FormattableText, args[0], args[1]),
+                    3 => string.Format<object, object, object>(null, langObj.FormattableText, args[0], args[1], args[2]),
+                    _ => string.Format(null, langObj.FormattableText, args)
+                };
+            }
+            catch (FormatException)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Parameter number incorrect: {translationId} for language {language}, Arg count = {args.Length}, sentence = '{langObj.Text}', args[0] = '{(args.Length > 0 ? args[0] : "null")}'");
+
+                translation = langObj.Text;
+            }
+
+            return true;
+        }
+
         public static string GetTranslationErrorText(string lang, string TranslationID)
         {
             try
             {
-                if (TranslationID.Contains('.') && TranslationID.TrimEnd().EndsWith('.') == false && TranslationID.StartsWith('\'') == false)
+                if (TranslationID.Contains('.') && !TranslationID.TrimEnd().EndsWith('.') && !TranslationID.StartsWith('\''))
                     return string.Concat(lang, " ", TranslationID.AsSpan(TranslationID.LastIndexOf('.') + 1));
                 else
                     return TranslationID; // Odds are a literal string was passed with no translation, so just return the string unmodified
@@ -530,52 +542,60 @@ namespace DOL.Language
             catch (Exception ex)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("Error Getting Translation Error Text for " + lang + ":" + TranslationID, ex);
+                    log.Error($"Error getting translation error text for {lang}:{TranslationID}", ex);
             }
 
-            return lang + " Translation Error!";
+            return $"{lang} translation error";
         }
-        
 
-        public static bool TryGetTranslation(out string translation, string language, string translationId, params object[] args)
+        public static string TryTranslateOrDefault(GamePlayer player, string missingDefault, string translationId)
         {
-            return soleInstance.TryGetTranslationImpl(out translation, ref language, translationId, ref args);
+            return player == null || !TryGetTranslation(out string retVal, player.Client, translationId) ? missingDefault : retVal;
         }
-        #endregion TryGetTranslation
 
-        #endregion GetTranslation / TryGetTranslation
-
-        #region utils
-
-        /// <summary>
-        /// Try Translating some Sentence into Player target Language or Default to given String.
-        /// </summary>
-        /// <param name="player">Targeted player</param>
-        /// <param name="missingDefault">Default String if Missing Translation</param>
-        /// <param name="translationId">Translation Sentence ID</param>
-        /// <param name="args">Translation Sentence Params</param>
-        /// <returns>Translated Sentence or Default string.</returns>
-        public static string TryTranslateOrDefault(GamePlayer player, string missingDefault, string translationId, params object[] args)
+        public static string TryTranslateOrDefault(GamePlayer player, string missingDefault, string translationId, object arg1)
         {
-            string missing = missingDefault;
-
-            if (args.Length > 0)
+            if (player != null && TryGetTranslation(out string retVal, player.Client, translationId, arg1))
+                return retVal;
+            try
             {
-                try
-                {
-                    missing = string.Format(missingDefault, args);
-                }
-                catch { }
+                return string.Format(missingDefault, arg1);
             }
-
-            return player == null || player.Client == null || player.Client.Account == null || !TryGetTranslation(out string retval, player.Client.Account.Language, translationId, args)
-                ? missing
-                : retval;
+            catch
+            {
+                return missingDefault;
+            }
         }
 
-        #endregion
+        public static string TryTranslateOrDefault(GamePlayer player, string missingDefault, string translationId, object arg1, object arg2)
+        {
+            if (player != null && TryGetTranslation(out string retVal, player.Client, translationId, arg1, arg2))
+                return retVal;
+            try
+            {
+                return string.Format(missingDefault, arg1, arg2);
+            }
+            catch
+            {
+                return missingDefault;
+            }
+        }
 
-        #region RegisterLanguageDataObject
+        public static string TryTranslateOrDefault(GamePlayer player, string missingDefault, string translationId, ReadOnlySpan<object> args)
+        {
+            if (player != null && TryGetTranslation(out string retVal, player.Client, translationId, args))
+                return retVal;
+
+            try
+            {
+                return string.Format(missingDefault, args);
+            }
+            catch
+            {
+                return missingDefault;
+            }
+        }
+
         public static bool RegisterLanguageDataObject(LanguageDataObject obj)
         {
             if (obj == null)
@@ -595,15 +615,10 @@ namespace DOL.Language
                     languages.Add(obj.TranslationIdentifier, translationIdentifiers);
                 }
 
-                if (!translationIdentifiers.TryGetValue(obj.TranslationId, out LanguageDataObject languageDataObject))
-                {
-                    translationIdentifiers.Add(obj.TranslationId, obj);
-                    return true;
-                }
+                return translationIdentifiers.TryAdd(obj.TranslationId, obj);
             }
-
-            return false; // Object is 'NULL' or already in list.
         }
-        #endregion RegisterLanguageDataObject
+
+        private record struct TranslationEntry(string Id, string Text, string Language);
     }
 }

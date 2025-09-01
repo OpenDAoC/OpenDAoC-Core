@@ -1,23 +1,4 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -36,7 +17,7 @@ namespace DOL.GS
 		/// <param name="message">The message to send</param>
 		/// <param name="chatType">The type of message to send</param>
 		/// <param name="excludes">An optional list of excluded players</param>
-		public static void ChatToArea(GameObject centerObject, string message, eChatType chatType, params GameObject[] excludes)
+		public static void ChatToArea(GameObject centerObject, string message, eChatType chatType, params ReadOnlySpan<GameObject> excludes)
 		{
 			ChatToArea(centerObject, message, chatType, WorldMgr.INFO_DISTANCE, excludes);
 		}
@@ -64,7 +45,7 @@ namespace DOL.GS
 		/// <param name="distance">The distance around the center where players will receive the message</param>
 		/// <param name="excludes">An optional list of excluded players</param>
 		/// <remarks>If the center object is a player, he will get the message too</remarks>
-		public static void ChatToArea(GameObject centerObject, string message, eChatType chatType, ushort distance, params GameObject[] excludes)
+		public static void ChatToArea(GameObject centerObject, string message, eChatType chatType, ushort distance, params ReadOnlySpan<GameObject> excludes)
 		{
 			MessageToArea(centerObject, message, chatType, eChatLoc.CL_ChatWindow, distance, excludes);
 		}
@@ -77,7 +58,7 @@ namespace DOL.GS
 		/// <param name="message">The message to send</param>
 		/// <param name="chatType">The type of message to send</param>
 		/// <param name="excludes">An optional list of players to exclude from receiving the message</param>
-		public static void SystemToArea(GameObject centerObject, string message, eChatType chatType, params GameObject[] excludes)
+		public static void SystemToArea(GameObject centerObject, string message, eChatType chatType, params ReadOnlySpan<GameObject> excludes)
 		{
 			SystemToArea(centerObject, message, chatType, WorldMgr.INFO_DISTANCE, excludes);
 		}
@@ -104,7 +85,7 @@ namespace DOL.GS
 		/// <param name="LanguageMessageID">The language message ID</param>
 		/// <param name="args">The Translation args</param>
 		/// <remarks>If the centerObject is a player, he won't receive the message</remarks>
-		public static void SystemToOthers2(GameObject centerObject, eChatType chatType, string LanguageMessageID, params object[] args)
+		public static void SystemToOthers2(GameObject centerObject, eChatType chatType, string LanguageMessageID, params ReadOnlySpan<object> args)
 		{
 			if (LanguageMessageID == null || LanguageMessageID.Length <= 0) return;
 			foreach (GamePlayer player in centerObject.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
@@ -126,7 +107,7 @@ namespace DOL.GS
 		/// <param name="distance">The distance around the center where players will receive the message</param>
 		/// <param name="excludes">An optional list of excluded players</param>
 		/// <remarks>If the center object is a player, he will get the message too</remarks>
-		public static void SystemToArea(GameObject centerObject, string message, eChatType chatType, ushort distance, params GameObject[] excludes)
+		public static void SystemToArea(GameObject centerObject, string message, eChatType chatType, ushort distance, params ReadOnlySpan<GameObject> excludes)
 		{
 			MessageToArea(centerObject, message, chatType, eChatLoc.CL_SystemWindow, distance, excludes);
 		}
@@ -140,7 +121,7 @@ namespace DOL.GS
 		/// <param name="chatLoc">The UI location to display the message (i.e., chat, combat, popup windows)</param>
 		/// <param name="distance">The maximum distance the message is sent from the centerObject (anyone outside will not receive message)</param>
 		/// <param name="excludes">The entity(ies) that should not receive the message or else 'null'</param>
-		public static void MessageToArea(GameObject centerObject, string message, eChatType chatType, eChatLoc chatLoc, ushort distance, params GameObject[] excludes)
+		public static void MessageToArea(GameObject centerObject, string message, eChatType chatType, eChatLoc chatLoc, ushort distance, params ReadOnlySpan<GameObject> excludes)
 		{
 			if (string.IsNullOrEmpty(message)) return; // Don't send blank messages
 
@@ -152,7 +133,7 @@ namespace DOL.GS
 				{
 					var excluded = false;
 
-					if (excludes != null) // If entities are specified for exclusion (i.e., != null), then perform following actions
+					if (!excludes.IsEmpty) // If entities are specified for exclusion (i.e., != null), then perform following actions
 					{
 						foreach (var obj in excludes) // For each param in excludes, set exclude to true for GamePlayers and don't send message
 						{

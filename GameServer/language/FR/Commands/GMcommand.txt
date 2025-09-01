@@ -69,7 +69,7 @@ GMCommands.Crafting.SkillAdded:				Crafting skill {0} correctly added.
 GMCommands.Crafting.AlreadyHaveSkill:		{0} already have the crafting skill {1}.
 GMCommands.Crafting.NotHaveSkillAddIt:		{0} does not have the crafting skill {1}, add it first.
 GMCommands.Crafting.SkillChanged:			Crafting skill {0} correctly changed.
-GMCommands.Crafting.NowHasSkillPoints:		{0} now has {1 in {2}.
+GMCommands.Crafting.NowHasSkillPoints:		{0} now has {1} in {2}.
 
 
 # /debug Command

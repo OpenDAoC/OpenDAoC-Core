@@ -251,7 +251,7 @@ Scripts.Players.Cmdhelp.PlvlCommands:		Befehle für Berechtigungsstufe {0}
 Scripts.Players.Cmdhelp.Usage:				Befehlsform für {0}
 
 # /Disband
-Scripts.Players.Disband.Disbanded:			{o} wurde aus der Gruppe entlassen.
+Scripts.Players.Disband.Disbanded:			{0} wurde aus der Gruppe entlassen.
 Scripts.Players.Disband.NoPlayer:			In der Gruppe gibt es keinen Spieler mit diesem Namen.
 Scripts.Players.Disband.NotInGroup:			Ihr seid zur Zeit in keiner Gruppe.
 Scripts.Players.Disband.NotLeader:			Ihr seid nicht der Leiter Eurer Gruppe.

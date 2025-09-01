@@ -762,7 +762,7 @@ Scripts.Players.Cmdhelp.PlvlCommands:		Comandi disponibili per plvl {0}
 Scripts.Players.Cmdhelp.Usage:				Utilizzo di {0}
 
 # /Disband
-Scripts.Players.Disband.Disbanded:			{o} e' stato espulso dal gruppo.
+Scripts.Players.Disband.Disbanded:			{0} e' stato espulso dal gruppo.
 Scripts.Players.Disband.NoPlayer:			Non ci sono giocatori nel gruppo con quel nome.
 Scripts.Players.Disband.NotInGroup:			Non sei in un gruppo.
 Scripts.Players.Disband.NotLeader:			Non sei leader del tuo gruppo.

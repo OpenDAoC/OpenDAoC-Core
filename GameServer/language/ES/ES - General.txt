@@ -29,7 +29,7 @@ GamePlayer.Release.NotDead:					No estás muerto!
 GamePlayer.Release.CantReleaseDuel:			Tu cuerpo se recuperará automáticamente en una muerte de duelo.
 GamePlayer.Release.NoLongerReleaseAuto:		Te recuperarás automáticamente en ({0} segundos más).
 GamePlayer.Release.WillReleaseAuto:			Te recuperarás automáticamente en {0} segundos más!
-GamePlayer.Release.WillReleaseAutoCity:		Revivirás automaticamente en un tu ciudad en {o} segundos más!
+GamePlayer.Release.WillReleaseAutoCity:		Revivirás automaticamente en un tu ciudad en {0} segundos más!
 GamePlayer.Release.YouRelease:				Recuperas tu cuerpo desde la muerte.
 GamePlayer.Release.GraveErected:			Una tumba fue levantada donde has sido abatido.
 GamePlayer.Release.ReturnToPray:			Vuelve para rezar usando el comando /pray y recuperar la experiencia perdida.

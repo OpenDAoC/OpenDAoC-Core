@@ -47,14 +47,14 @@ namespace DOL.GS.Spells
 			{
 				// Resisted
 				SendSpellResistAnimation(target);
-				this.MessageToCaster(eChatType.CT_SpellResisted, "{0} is too strong for you to charm!", target.GetName(0, true));
+				MessageToCaster($"{target.GetName(0, true)} is too strong for you to charm!", eChatType.CT_SpellResisted);
 				return;
 			}
 			
 			if (npcTarget.Brain is IControlledBrain)
 			{
 				SendSpellResistAnimation(target);
-				this.MessageToCaster(eChatType.CT_SpellResisted, "{0} is already under control.",  target.GetName(0, true));
+				MessageToCaster($"{target.GetName(0, true)} is already under control.", eChatType.CT_SpellResisted);
 				return;
 			}
 			

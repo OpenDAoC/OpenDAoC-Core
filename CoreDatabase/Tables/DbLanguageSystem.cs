@@ -1,34 +1,48 @@
-﻿using DOL.Database.Attributes;
+﻿using System;
+using System.Reflection;
+using System.Text;
+using DOL.Database.Attributes;
+using DOL.Logging;
 
 namespace DOL.Database
 {
     [DataTable(TableName = "LanguageSystem")]
     public class DbLanguageSystem : LanguageDataObject
     {
-        #region Variables
-        private string m_text = string.Empty;
-        #endregion Variables
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DbLanguageSystem()
-            : base() { }
+        public CompositeFormat FormattableText;
+        private string _text = string.Empty;
 
+        public DbLanguageSystem(): base() { }
 
-        #region Properties
-        public override eTranslationIdentifier TranslationIdentifier
-        {
-            get { return eTranslationIdentifier.eSystem; }
-        }
+        public override eTranslationIdentifier TranslationIdentifier => eTranslationIdentifier.eSystem;
 
         [DataElement(AllowDbNull = false)]
         public string Text
         {
-            get { return m_text; }
+            get => _text;
             set
             {
                 Dirty = true;
-                m_text = value;
+                _text = value;
             }
         }
-        #endregion Properties
+
+        public void PrepareForFormatting()
+        {
+            if (string.IsNullOrEmpty(Text) || !Text.Contains('{'))
+                return;
+
+            try
+            {
+                FormattableText = CompositeFormat.Parse(Text);
+            }
+            catch (FormatException ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Invalid format string in language entry. TranslationId: '{TranslationId}', Text: '{Text}'", ex);
+            }
+        }
     }
 }

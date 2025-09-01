@@ -8,7 +8,7 @@ GameMerchant.OnPlayerBuy.Bought:				Vous venez d'acheter {0} pour {1}.
 GameMerchant.OnPlayerBuy.Bought2:				Vous venez d'acheter {0} pour {1} {2}.
 GameMerchant.OnPlayerBuy.BoughtBP:				Vous venez d'acheter {0} pour {1} points de mérite.
 GameMerchant.OnPlayerBuy.BoughtPieces:			Vous venez d'acheter {0} pièces de {1} pour {2}.
-GameMerchant.OnPlayerBuy.BoughtPieces2:			Vous venez d'acheter {0} pièces de {1} pour {2} {3].
+GameMerchant.OnPlayerBuy.BoughtPieces2:			Vous venez d'acheter {0} pièces de {1} pour {2} {3}.
 GameMerchant.OnPlayerBuy.BoughtPiecesBP:		Vous venez d'acheter {0} pièces de {1} pour {0} primes de royaume.
 GameMerchant.OnPlayerBuy.NotInventorySpace:		Pas assez de place dans votre inventaire pour acheter cela.
 GameMerchant.OnPlayerBuy.YouNeed:				Vous avez besoin de {0} pour acheter cela.

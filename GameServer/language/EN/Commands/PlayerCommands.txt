@@ -271,7 +271,7 @@ Scripts.Players.Cmdhelp.PlvlCommands:		Commands available for plvl {0}
 Scripts.Players.Cmdhelp.Usage:				Usage for
 
 ## /disband
-Scripts.Players.Disband.Disbanded:			{o} was disbanded from group.
+Scripts.Players.Disband.Disbanded:			{0} was disbanded from group.
 Scripts.Players.Disband.NoPlayer:			No players in group with that name.
 Scripts.Players.Disband.NotInGroup:			You are not in a group.
 Scripts.Players.Disband.NotLeader:			You are not the leader of your group.
