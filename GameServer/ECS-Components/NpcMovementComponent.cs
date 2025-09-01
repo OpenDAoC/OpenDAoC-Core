@@ -23,8 +23,8 @@ namespace DOL.GS
         private short _moveOnPathSpeed;
         private long _stopAtWaypointUntil;
         private long _walkingToEstimatedArrivalTime;
-        private MovementRequest _movementRequest = new();
-        private PathCalculator _pathCalculator;
+        private readonly MovementRequest _movementRequest = new();
+        private readonly PathCalculator _pathCalculator;
         private ResetHeadingAction _resetHeadingAction;
         private Vector3 _destinationForClient;
         private long _positionForClientTick;
@@ -112,7 +112,7 @@ namespace DOL.GS
             if (IsFlagSet(MovementState.REQUEST))
             {
                 UnsetFlag(MovementState.REQUEST);
-                _movementRequest.Execute();
+                ProcessMovementRequest();
             }
 
             if (IsFlagSet(MovementState.FOLLOW))
@@ -166,14 +166,14 @@ namespace DOL.GS
 
         public void WalkTo(Vector3 destination, short speed)
         {
-            _movementRequest.Set(destination, speed, WalkToInternal);
+            _movementRequest.Set(MovementRequestType.Walk, destination, speed);
             SetFlag(MovementState.REQUEST);
             AddToServiceObjectStore();
         }
 
         public void PathTo(Vector3 destination, short speed)
         {
-            _movementRequest.Set(destination, speed, PathToInternal);
+            _movementRequest.Set(MovementRequestType.Path, destination, speed);
             SetFlag(MovementState.REQUEST);
             AddToServiceObjectStore();
         }
@@ -447,6 +447,14 @@ namespace DOL.GS
             _lastPositionUpdateTick = GameLoop.GameLoopTime;
         }
 
+        private void ProcessMovementRequest()
+        {
+            if (_movementRequest.Type is MovementRequestType.Walk)
+                WalkToInternal(_movementRequest.Destination, _movementRequest.Speed);
+            else
+                PathToInternal(_movementRequest.Destination, _movementRequest.Speed);
+        }
+
         private void UpdateVelocity(float distanceToTarget)
         {
             MovementStartTick = GameLoop.GameLoopTime;
@@ -552,7 +560,7 @@ namespace DOL.GS
             }
 
             // Walk towards the next pathing node.
-            _movementRequest.Set(destination, speed, PathToInternal);
+            _movementRequest.Set(MovementRequestType.Path, destination, speed);
             SetFlag(MovementState.PATHING);
             WalkToInternal(nextNode.Value, speed);
             return;
@@ -638,7 +646,7 @@ namespace DOL.GS
         {
             if (IsFlagSet(MovementState.PATHING))
             {
-                _movementRequest.Execute();
+                ProcessMovementRequest();
                 return;
             }
 
@@ -814,24 +822,23 @@ namespace DOL.GS
 
         private delegate void MovementRequestAction(Vector3 destination, short speed);
 
+        private enum MovementRequestType
+        {
+            Walk,
+            Path
+        }
+
         private class MovementRequest
         {
+            public MovementRequestType Type { get; private set; }
             public Vector3 Destination { get; private set; }
             public short Speed { get; private set; }
-            public MovementRequestAction Action { get; private set; }
 
-            public MovementRequest() { }
-
-            public void Set(Vector3 destination, short speed, MovementRequestAction action)
+            public void Set(MovementRequestType type, Vector3 destination, short speed)
             {
+                Type = type;
                 Destination = destination;
                 Speed = speed;
-                Action = action;
-            }
-
-            public void Execute()
-            {
-                Action?.Invoke(Destination, Speed);
             }
         }
 
