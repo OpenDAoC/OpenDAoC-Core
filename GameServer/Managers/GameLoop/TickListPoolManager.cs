@@ -1,0 +1,100 @@
+﻿using System;
+using System.Collections.Frozen;
+using System.Collections.Generic;
+using DOL.GS.Keeps;
+
+namespace DOL.GS
+{
+    public sealed class TickListPoolManager
+    {
+        private static readonly FrozenDictionary<Type, PooledListKey> _typeToKeyMap =
+            new Dictionary<Type, PooledListKey>
+            {
+                { typeof(GamePlayer), PooledListKey.Player },
+                { typeof(GameNPC), PooledListKey.Npc },
+                { typeof(GameStaticItem), PooledListKey.Item },
+                { typeof(GameDoorBase), PooledListKey.Door },
+                { typeof(GameKeepComponent), PooledListKey.KeepComponent },
+                { typeof(ECSGameEffect), PooledListKey.Effect },
+                { typeof(ECSGameSpellEffect), PooledListKey.SpellEffect },
+                { typeof(ECSPulseEffect), PooledListKey.PulseEffect },
+                { typeof(ECSGameAbilityEffect), PooledListKey.AbilityEffect }
+            }.ToFrozenDictionary();
+
+        private readonly FrozenDictionary<PooledListKey, ITickListPool> _pools =
+            new Dictionary<PooledListKey, ITickListPool>
+            {
+                { PooledListKey.Player, new TickListPool<GamePlayer>() },
+                { PooledListKey.Npc, new TickListPool<GameNPC>() },
+                { PooledListKey.Item, new TickListPool<GameStaticItem>() },
+                { PooledListKey.Door, new TickListPool<GameDoorBase>() },
+                { PooledListKey.KeepComponent, new TickListPool<GameKeepComponent>() },
+                { PooledListKey.Effect, new TickListPool<ECSGameEffect>() },
+                { PooledListKey.SpellEffect, new TickListPool<ECSGameSpellEffect>() },
+                { PooledListKey.PulseEffect, new TickListPool<ECSPulseEffect>() },
+                { PooledListKey.AbilityEffect, new TickListPool<ECSGameAbilityEffect>() }
+            }.ToFrozenDictionary();
+
+        public List<T> GetForTick<T>() where T : IPooledList<T>
+        {
+            if (!_typeToKeyMap.TryGetValue(typeof(T), out PooledListKey key))
+                throw new ArgumentException($"No pool is registered for lists of type '{typeof(T).Name}'.", nameof(T));
+
+            if (_pools[key] is not TickListPool<T> typedPool)
+                throw new InvalidCastException($"The pool for key '{key}' is not of the expected type '{typeof(T).Name}'.");
+
+            return typedPool.GetForTick();
+        }
+
+        public void Reset()
+        {
+            foreach (var pair in _pools)
+                pair.Value.Reset();
+        }
+
+        public class TickListPool<T> : ITickListPool where T : IPooledList<T>
+        {
+            private readonly List<List<T>> _pool = new();
+            private int _listsInUse;
+
+            public List<T> GetForTick()
+            {
+                if (_listsInUse < _pool.Count)
+                    return _pool[_listsInUse++];
+
+                List<T> newList = new();
+                _pool.Add(newList);
+                _listsInUse++;
+                return newList;
+            }
+
+            public void Reset()
+            {
+                for (int i = 0; i < _listsInUse; i++)
+                    _pool[i].Clear();
+
+                _listsInUse = 0;
+            }
+        }
+
+        private interface ITickListPool
+        {
+            void Reset();
+        }
+    }
+
+    public enum PooledListKey
+    {
+        Npc,
+        Player,
+        Item,
+        Door,
+        KeepComponent,
+        Effect,
+        SpellEffect,
+        PulseEffect,
+        AbilityEffect
+    }
+
+    public interface IPooledList<T> { }
+}

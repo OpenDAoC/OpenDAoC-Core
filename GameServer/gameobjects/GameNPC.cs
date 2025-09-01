@@ -24,7 +24,7 @@ namespace DOL.GS
 	/// This class is the baseclass for all Non Player Characters like
 	/// Monsters, Merchants, Guards, Steeds ...
 	/// </summary>
-	public class GameNPC : GameLiving, ITranslatableObject
+	public class GameNPC : GameLiving, ITranslatableObject, IPooledList<GameNPC>
 	{
 		public static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConcurrentDictionary<Type, Func<AbstractQuest>> _abstractQuestConstructorCache = new();

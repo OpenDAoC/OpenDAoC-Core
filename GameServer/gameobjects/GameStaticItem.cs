@@ -7,7 +7,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public class GameStaticItem : GameObject, ITranslatableObject
+    public class GameStaticItem : GameObject, ITranslatableObject, IPooledList<GameStaticItem>
     {
         private int _emblem;
         protected ECSGameTimer _respawnTimer = null;

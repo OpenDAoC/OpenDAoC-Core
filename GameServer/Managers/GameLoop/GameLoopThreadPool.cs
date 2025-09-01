@@ -7,7 +7,8 @@ namespace DOL.GS
     public abstract class GameLoopThreadPool : IDisposable
     {
         public static GameLoopSynchronizationContext Context { get; } = new();
-        [ThreadStatic] private static GameLoopTickObjectPool _tickObjectPool;
+        [ThreadStatic] private static TickObjectPoolManager _tickObjectPoolManager;
+        [ThreadStatic] private static TickListPoolManager _tickListPoolManager;
         [ThreadStatic] private static long _lastResetTick;
 
         public virtual void Init()
@@ -19,9 +20,14 @@ namespace DOL.GS
 
         public abstract void Dispose();
 
-        public T GetForTick<T>(PooledObjectKey key) where T : IPooledObject<T>, new()
+        public T GetObjectForTick<T>() where T : IPooledObject<T>, new()
         {
-            return _tickObjectPool != null ? _tickObjectPool.GetForTick<T>(key) : new();
+            return _tickObjectPoolManager != null ? _tickObjectPoolManager.GetForTick<T>() : new();
+        }
+
+        public List<T> GetListForTick<T>() where T : IPooledList<T>
+        {
+            return _tickListPoolManager != null ? _tickListPoolManager.GetForTick<T>() : new();
         }
 
         protected virtual void InitWorker(object obj)
@@ -32,7 +38,8 @@ namespace DOL.GS
         private void InitThreadStatics()
         {
             SynchronizationContext.SetSynchronizationContext(Context);
-            _tickObjectPool = new();
+            _tickObjectPoolManager = new();
+            _tickListPoolManager = new();
             _lastResetTick = -1;
         }
 
@@ -41,7 +48,8 @@ namespace DOL.GS
             if (_lastResetTick == GameLoop.GameLoopTime)
                 return;
 
-            _tickObjectPool.Reset();
+            _tickObjectPoolManager.Reset();
+            _tickListPoolManager.Reset();
             _lastResetTick = GameLoop.GameLoopTime;
         }
     }

@@ -135,6 +135,5 @@ namespace DOL.GS
 
         // IPooledObject<T> implementation.
         public long IssuedTimestamp { get; set; }
-        public static PooledObjectKey PooledObjectKey => PooledObjectKey.SubZoneTransition;
     }
 }

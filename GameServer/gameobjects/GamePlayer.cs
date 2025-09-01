@@ -35,7 +35,7 @@ namespace DOL.GS
     /// <summary>
     /// This class represents a player inside the game
     /// </summary>
-    public class GamePlayer : GameLiving, IGameStaticItemOwner
+    public class GamePlayer : GameLiving, IGameStaticItemOwner, IPooledList<GamePlayer>
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 

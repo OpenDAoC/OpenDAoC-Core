@@ -13,7 +13,7 @@ namespace DOL.GS.Keeps
 	/// <summary>
 	/// A keepComponent
 	/// </summary>
-	public class GameKeepComponent : GameLiving, IComparable, IGameKeepComponent
+	public class GameKeepComponent : GameLiving, IComparable, IGameKeepComponent, IPooledList<GameKeepComponent>
 	{
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 

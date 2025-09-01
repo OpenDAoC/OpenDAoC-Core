@@ -33,6 +33,5 @@ namespace DOL.GS.PacketHandler
 
         // IPooledObject<T> implementation.
         public long IssuedTimestamp { get; set; }
-        public static PooledObjectKey PooledObjectKey => PooledObjectKey.UdpOutPacket;
     }
 }
