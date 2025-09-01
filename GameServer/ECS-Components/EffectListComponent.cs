@@ -191,7 +191,31 @@ namespace DOL.GS
 
         public ECSGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType)
         {
-            return GetSpellEffects(effectType)?.Where(x => x.IsDisabled).OrderByDescending(x => x.SpellHandler.Spell.Value).FirstOrDefault();
+            List<ECSGameSpellEffect> effects = GetSpellEffects(effectType);
+
+            if (effects == null || effects.Count == 0)
+                return null;
+
+            ECSGameSpellEffect maxEffect = null;
+            double maxValue = double.MinValue;
+
+            for (int i = 0; i < effects.Count; i++)
+            {
+                ECSGameSpellEffect spellEffect = effects[i];
+
+                if (!spellEffect.IsDisabled)
+                    continue;
+
+                double currentValue = spellEffect.SpellHandler.Spell.Value;
+
+                if (maxEffect != null && currentValue <= maxValue)
+                    continue;
+
+                maxEffect = spellEffect;
+                maxValue = currentValue;
+            }
+
+            return maxEffect;
         }
 
         public List<ECSGameSpellEffect> GetSpellEffects()
