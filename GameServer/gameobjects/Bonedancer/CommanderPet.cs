@@ -882,7 +882,6 @@ namespace DOL.GS
 							controlledNpcBrain.StripCastedBuffs();
 
 						ControlledNpcList[i] = null;
-						UpdatePetCount(controlledBrain.Body as GameSummonedPet, false);
 						break;
 					}
 				}
