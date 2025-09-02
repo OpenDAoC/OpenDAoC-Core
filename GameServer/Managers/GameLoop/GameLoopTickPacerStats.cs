@@ -39,7 +39,7 @@ namespace DOL.GS
             // Fast-path: We are on the game loop, run directly.
             if (SynchronizationContext.Current == GameLoopThreadPool.Context)
             {
-                GetAverageTicksInternal(GameLoop.GameLoopTime, result);
+                GetAverageTicksInternal(result);
                 return result;
             }
 
@@ -47,13 +47,13 @@ namespace DOL.GS
             GameLoopThreadPool.Context.Send(static state =>
             {
                 var (result, tickPacer) = ((List<(int, double)>, GameLoopTickPacerStats)) state;
-                tickPacer.GetAverageTicksInternal(GameLoop.GameLoopTime, result);
+                tickPacer.GetAverageTicksInternal(result);
             }, (result, this));
 
             return result;
         }
 
-        private void GetAverageTicksInternal(long currentTime, List<(int, double)> result)
+        private void GetAverageTicksInternal(List<(int, double)> result)
         {
             List<double> ticks = new((int) _capacity);
 
@@ -76,7 +76,7 @@ namespace DOL.GS
             // Count ticks per interval and calculate averages.
             foreach (int interval in _intervals)
             {
-                double intervalStart = currentTime - interval;
+                double intervalStart = ticks[^1] - interval;
                 int tickCount = 0;
 
                 // Find the number of ticks within this interval.
