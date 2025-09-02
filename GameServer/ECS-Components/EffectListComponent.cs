@@ -197,7 +197,7 @@ namespace DOL.GS
 
         public ECSGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType)
         {
-            List<ECSGameSpellEffect> effects = GameLoop.GetListForTick<ECSGameSpellEffect>();
+            List<ECSGameSpellEffect> effects = GetSpellEffects(effectType);
 
             if (effects == null || effects.Count == 0)
                 return null;
