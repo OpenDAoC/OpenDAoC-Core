@@ -363,11 +363,11 @@ namespace DOL.GS.PacketHandler
                 {
                     if (log.IsErrorEnabled)
                     {
-                        log.Error($"Failed to copy packet data to send buffer." +
-                            $"(Position: {_sendContext.Position})" +
-                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length})" +
+                        log.Error($"Failed to copy packet data to send buffer. " +
+                            $"(Position: {_sendContext.Position}) " +
+                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length}) " +
                             $"(Client: {_client})\n" +
-                            $"({packet.ToHumanReadable()}", e);
+                            $"{packet.ToHumanReadable()}", e);
                     }
 
                     return;
@@ -420,11 +420,11 @@ namespace DOL.GS.PacketHandler
                 {
                     if (log.IsErrorEnabled)
                     {
-                        log.Error($"Failed to copy packet data to send buffer." +
-                            $"(Position: {_sendContext.Position})" +
-                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length})" +
+                        log.Error($"Failed to copy packet data to send buffer. " +
+                            $"(Position: {_sendContext.Position}) " +
+                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length}) " +
                             $"(Client: {_client})\n" +
-                            $"({packet.ToHumanReadable()}", e);
+                            $"{packet.ToHumanReadable()}", e);
                     }
 
                     return;
@@ -478,11 +478,11 @@ namespace DOL.GS.PacketHandler
                 {
                     if (log.IsErrorEnabled)
                     {
-                        log.Error($"Failed to copy packet data to send buffer." +
-                            $"(Position: {_sendContext.Position})" +
-                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length})" +
+                        log.Error($"Failed to copy packet data to send buffer. " +
+                            $"(Position: {_sendContext.Position}) " +
+                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length}) " +
                             $"(Client: {_client})\n" +
-                            $"({packet.ToHumanReadable()}", e);
+                            $"{packet.ToHumanReadable()}", e);
                     }
 
                     return;

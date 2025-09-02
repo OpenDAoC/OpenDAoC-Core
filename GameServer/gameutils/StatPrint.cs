@@ -50,7 +50,7 @@ namespace DOL.GS
 
         public static void PrintStats(object state)
         {
-            int PADDING = 27;
+            const int PADDING = 27;
 
             try
             {
@@ -60,11 +60,11 @@ namespace DOL.GS
                 ThreadPriority oldPriority = Thread.CurrentThread.Priority;
                 Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 
-                // Memory usage
+                // Memory usage.
                 long memUsedMb = GC.GetTotalMemory(false) / 1024 / 1024;
                 long memCommittedMb = GC.GetGCMemoryInfo().TotalCommittedBytes / 1024 / 1024;
 
-                // GC Collection counts (delta since last check)
+                // GC Collection counts (delta since last check).
                 long gen0Total = GC.CollectionCount(0);
                 long gen1Total = GC.CollectionCount(1);
                 long gen2Total = GC.CollectionCount(2);

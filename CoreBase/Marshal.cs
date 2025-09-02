@@ -228,7 +228,10 @@ namespace DOL
 				}
 				hex.Append("  ");
 				hex.Append(text.ToString());
-				hex.Append('\n');
+
+				if (i < end - 16)
+					hex.Append('\n');
+
 				hexDump.Append(hex.ToString());
 			}
 			return hexDump.ToString();
