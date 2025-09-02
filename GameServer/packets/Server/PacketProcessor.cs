@@ -355,7 +355,24 @@ namespace DOL.GS.PacketHandler
                         return;
                 }
 
-                Buffer.BlockCopy(packetBuffer, 0, _sendContext.CurrentArgs.Buffer, _sendContext.Position, packetSize);
+                try
+                {
+                    Buffer.BlockCopy(packetBuffer, 0, _sendContext.CurrentArgs.Buffer, _sendContext.Position, packetSize);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                    {
+                        log.Error($"Failed to copy packet data to send buffer." +
+                            $"(Position: {_sendContext.Position})" +
+                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length})" +
+                            $"(Client: {_client})\n" +
+                            $"({packet.ToHumanReadable()}", e);
+                    }
+
+                    return;
+                }
+
                 _sendContext.Position += packetSize;
             }
             finally
@@ -395,7 +412,24 @@ namespace DOL.GS.PacketHandler
                 }
 
                 // Transform the UDP packet into a TCP one.
-                Buffer.BlockCopy(packetBuffer, 4, _sendContext.CurrentArgs.Buffer, _sendContext.Position + 2, packetSize - 2);
+                try
+                {
+                    Buffer.BlockCopy(packetBuffer, 4, _sendContext.CurrentArgs.Buffer, _sendContext.Position + 2, packetSize - 2);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                    {
+                        log.Error($"Failed to copy packet data to send buffer." +
+                            $"(Position: {_sendContext.Position})" +
+                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length})" +
+                            $"(Client: {_client})\n" +
+                            $"({packet.ToHumanReadable()}", e);
+                    }
+
+                    return;
+                }
+
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position] = packetBuffer[0];
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 1] = packetBuffer[1];
                 _sendContext.Position += packetSize;
@@ -436,9 +470,26 @@ namespace DOL.GS.PacketHandler
                         return;
                 }
 
+                try
+                {
+                    Buffer.BlockCopy(packetBuffer, 0, _sendContext.CurrentArgs.Buffer, _sendContext.Position, packetSize);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                    {
+                        log.Error($"Failed to copy packet data to send buffer." +
+                            $"(Position: {_sendContext.Position})" +
+                            $"(Buffer Size: {_sendContext.CurrentArgs.Buffer.Length})" +
+                            $"(Client: {_client})\n" +
+                            $"({packet.ToHumanReadable()}", e);
+                    }
+
+                    return;
+                }
+
                 // Add `_udpCounter` to the packet's content. Let it overflow.
-                Buffer.BlockCopy(packetBuffer, 0, _sendContext.CurrentArgs.Buffer, _sendContext.Position, packetSize);
-                _udpCounter++; // Let it overflow.
+                _udpCounter++;
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 2] = (byte) (_udpCounter >> 8);
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 3] = (byte) _udpCounter;
                 _sendContext.Position += packetSize;
