@@ -30,7 +30,12 @@
             var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Message));
             pak.WriteByte((byte) type);
 
-            if (loc is eChatLoc.CL_PopupWindow)
+            // The @@ prefix seems to be technically needed only for the send reply feature.
+            // Otherwise the client able to print to the correct window based on eChatType.
+            // We're keeping it here in case something else still needs it (more research needed).
+            if (loc is eChatLoc.CL_ChatWindow)
+                pak.WriteNonNullTerminatedString("@@");
+            else if (loc is eChatLoc.CL_PopupWindow)
                 pak.WriteNonNullTerminatedString("##");
 
             pak.WriteString(msg);
