@@ -428,22 +428,6 @@ namespace DOL.GS
                         // regen barrel
                         WritePotionInfo(delve, AllRegenBuff.RegenList, player.Client);
                         break;
-                    case 31053:
-                        // summon merchant
-                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
-                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
-                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
-                        break;
-                    case 31054:
-                        // bead regen gem
-                        WritePotionInfo(delve, BeadRegen.BeadRegenList, player.Client);
-                        break;
-                    case 34000:
-                        // summon vaultkeeper
-                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.ChargedMagic"));
-                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.Charges", Charges));
-                        delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WritePotionInfo.MaxCharges", MaxCharges));
-                        break;
                     default:
                         WritePotionInfo(delve, player.Client);
                         break;

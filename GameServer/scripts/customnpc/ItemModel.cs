@@ -10,8 +10,6 @@ namespace DOL.GS
         public string DisplayedItem = "ItemDisplay";
         public string TempModelID = "TempModelID";
         public string TempModelPrice = "TempModelPrice";
-        public string currencyName = "Orbs";
-        private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
         private int Chance;
         private Random rnd = new Random();
 
@@ -49,7 +47,7 @@ namespace DOL.GS
                 
                 if (item == null)
                 {
-                    SendReply(player, "Hello there! \n" +
+                    SendReply(player, "Hello there!\n" +
                     "I can offer a variety of aesthetics... for those willing to pay for it.\n" +
                     "Hand me the item and then we can talk prices.");
                 }
@@ -5984,11 +5982,11 @@ namespace DOL.GS
 
                 #region Armor Pads
                 case "armor pad":
-                    SendReply(player, "I can offer the following pad types: \n\n" +
-                        "[Type 1] \n" +
-                        "[Type 2] \n" +
-                        "[Type 3] \n" +
-                        "[Type 4] \n" +
+                    SendReply(player, "I can offer the following pad types:\n\n" +
+                        "[Type 1]\n" +
+                        "[Type 2]\n" +
+                        "[Type 3]\n" +
+                        "[Type 4]\n" +
                         "[Type 5]"
                         );
                     return true;
@@ -6048,7 +6046,10 @@ namespace DOL.GS
         public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
-            if (t == null || item == null|| item.Id_nb == _currencyID) return false;
+
+            if (t == null || item == null)
+                return false;
+
             if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
             {
                 t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -6061,39 +6062,39 @@ namespace DOL.GS
             {
                 case Slot.HELM:
                     StringBuilder sb = new StringBuilder();
-                    sb.Append("A fine piece of headwear. \n" +
-                              "I can apply the following skins: \n\n" +
-                              "***** Catacombs Models Only ***** \n" +
-                              "[Dragonslayer Helm] (" + dragon * 2 + " " + currencyName + ")\n" +
-                              "[Dragonsworn Helm] (" + dragon + " " + currencyName + ")\n" +
-                              "***** End Cata Only ***** \n\n" +
+                    sb.Append("A fine piece of headwear.\n" +
+                              "I can apply the following skins:\n\n" +
+                              "***** Catacombs Models Only *****\n" +
+                              "[Dragonslayer Helm]\n" +
+                              "[Dragonsworn Helm]\n" +
+                              "***** End Cata Only *****\n\n" +
 
-                              "[Crown of Zahur] (" + artifact + " " + currencyName + ")\n" +
-                              "[Crown of Zahur variant] (" + artifact + " " + currencyName + ")\n" +
-                              "[Winged Helm] (" + artifact + " " + currencyName + ")\n" +
-                              "[Oceanus Helm] (" + toageneric + " " + currencyName + ")\n" +
-                              "[Stygia Helm] (" + toageneric + " " + currencyName + ")\n" +
-                              "[Volcanus Helm] (" + toageneric + " " + currencyName + ")\n" +
-                              "[Aerus Helm] (" + toageneric + " " + currencyName + ")\n");
+                              "[Crown of Zahur]\n" +
+                              "[Crown of Zahur variant]\n" +
+                              "[Winged Helm]\n" +
+                              "[Oceanus Helm]\n" +
+                              "[Stygia Helm]\n" +
+                              "[Volcanus Helm]\n" +
+                              "[Aerus Helm]\n");
                     if (item.Object_Type == (int)eObjectType.Cloth)
-                        sb.Append("[Wizard Hat] (" + epic + " " + currencyName + ")\n");
+                        sb.Append("[Wizard Hat]\n");
                     sb.Append("\nAdditionally, I have some realm specific headgear available: ");
                     SendReply(t, sb.ToString());
                     /*
-                    SendReply(t, "A fine piece of headwear. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Helm] (" + dragon * 2 + " " + currencyName + ")\n" +
-                          "[Dragonsworn Helm] (" + dragon + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
+                    SendReply(t, "A fine piece of headwear.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Dragonslayer Helm]\n" +
+                          "[Dragonsworn Helm]\n" +
+                          "***** End Cata Only *****\n\n" +
 
-                        "[Crown of Zahur] (" + artifact + " " + currencyName + ")\n" +
-                        "[Crown of Zahur variant] (" + artifact + " " + currencyName + ")\n" +
-                        "[Winged Helm] (" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Helm] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Stygia Helm] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Volcanus Helm] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Helm] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Crown of Zahur]\n" +
+                        "[Crown of Zahur variant]\n" +
+                        "[Winged Helm]\n" +
+                        "[Oceanus Helm]\n" +
+                        "[Stygia Helm]\n" +
+                        "[Volcanus Helm]\n" +
+                        "[Aerus Helm]\n" +
                         
                         "Additionally, I have some realm specific headgear available:" +
                         "");
@@ -6101,197 +6102,197 @@ namespace DOL.GS
                     switch (source.Realm)
                     {
                         case eRealm.Albion:
-                            SendReply(t, "[Robin Hood Hat] (" + festive + " " + currencyName + ")\n" +
-                                "[Tarboosh] (" + festive + " " + currencyName + ")\n" +
-                                "[Jester Hat] (" + festive + " " + currencyName + ")\n" +
+                            SendReply(t, "[Robin Hood Hat]\n" +
+                                "[Tarboosh]\n" +
+                                "[Jester Hat]\n" +
                                 "");
                             break;
                         case eRealm.Hibernia:
-                            SendReply(t, "[Robin Hood Hat] (" + festive + " " + currencyName + ")\n" +
-                               "[Leaf Hat] (" + festive + " " + currencyName + ")\n" +
-                               "[Stag Helm] (" + festive + " " + currencyName + ")\n" +
+                            SendReply(t, "[Robin Hood Hat]\n" +
+                               "[Leaf Hat]\n" +
+                               "[Stag Helm]\n" +
                                "");
                             break;
                         case eRealm.Midgard:
-                            SendReply(t, "[Fur Cap] (" + festive + " " + currencyName + ")\n" +
-                               "[Wing Hat] (" + festive + " " + currencyName + ")\n" +
-                               "[Wolf Helm] (" + festive + " " + currencyName + ")\n" +
+                            SendReply(t, "[Fur Cap]\n" +
+                               "[Wing Hat]\n" +
+                               "[Wolf Helm]\n" +
                                "");
                             break;
                     }
                     break;
 
                 case Slot.TORSO:
-                    SendReply(t, "This looks like it has protected you nicely. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Breastplate] (" + dragon * 2 + " " + currencyName + ")\n" +
-                          "[Dragonsworn Breastplate](" + dragon + " " + currencyName + ")\n" +
-                          "[Good Shar Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Shar Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "[Good Inconnu Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Inconnu Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "[Good Realm Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Realm Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "[Mino Breastplate](" + festive + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
+                    SendReply(t, "This looks like it has protected you nicely.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Dragonslayer Breastplate]\n" +
+                          "[Dragonsworn Breastplate]\n" +
+                          "[Good Shar Breastplate]\n" +
+                          "[Possessed Shar Breastplate]\n" +
+                          "[Good Inconnu Breastplate]\n" +
+                          "[Possessed Inconnu Breastplate]\n" +
+                          "[Good Realm Breastplate]\n" +
+                          "[Possessed Realm Breastplate]\n" +
+                          "[Mino Breastplate]\n" +
+                          "***** End Cata Only *****\n\n" +
 
-                        "[Class Epic Chestpiece](" + epic + " " + currencyName + ")\n" +
-                        "[Eirene's Chest](" + artifact + " " + currencyName + ")\n" +
-                        "[Naliah's Robe](" + artifact + " " + currencyName + ")\n" +
-                        "[Guard of Valor](" + artifact + " " + currencyName + ")\n" +
-                        "[Golden Scarab Vest](" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Stygia Breastplate] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Volcanus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Breastplate] (" + toageneric + " " + currencyName + ")\n" +
+                        "[Class Epic Chestpiece]\n" +
+                        "[Eirene's Chest]\n" +
+                        "[Naliah's Robe]\n" +
+                        "[Guard of Valor]\n" +
+                        "[Golden Scarab Vest]\n" +
+                        "[Oceanus Breastplate]\n" +
+                        "[Stygia Breastplate]\n" +
+                        "[Volcanus Breastplate]\n" +
+                        "[Aerus Breastplate]\n" +
 
                         "");
-                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options."
+                    SendReply(t, "I can also offer you some [armor pad] options."
                          );
                     break;
 
                 case Slot.ARMS:
-                    SendReply(t, "This looks like it has protected you nicely. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Sleeves] (" + dragon * 2 + " " + currencyName + ")\n" +
-                          "[Dragonsworn Sleeves](" + dragon + " " + currencyName + ")\n" +
-                          "[Good Shar Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Shar Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "[Good Inconnu Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Inconnu Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "[Good Realm Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Realm Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "[Mino Sleeves](" + festive + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
-                        "[Foppish Sleeves] (" + artifact + " " + currencyName + ")\n" +
-                        "[Arms of the Wind] (" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Stygia Sleeves] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Volcanus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Sleeves] (" + toageneric + " " + currencyName + ")\n" +
+                    SendReply(t, "This looks like it has protected you nicely.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Dragonslayer Sleeves]\n" +
+                          "[Dragonsworn Sleeves]\n" +
+                          "[Good Shar Sleeves]\n" +
+                          "[Possessed Shar Sleeves]\n" +
+                          "[Good Inconnu Sleeves]\n" +
+                          "[Possessed Inconnu Sleeves]\n" +
+                          "[Good Realm Sleeves]\n" +
+                          "[Possessed Realm Sleeves]\n" +
+                          "[Mino Sleeves]\n" +
+                          "***** End Cata Only *****\n\n" +
+                        "[Foppish Sleeves]\n" +
+                        "[Arms of the Wind]\n" +
+                        "[Oceanus Sleeves]\n" +
+                        "[Stygia Sleeves]\n" +
+                        "[Volcanus Sleeves]\n" +
+                        "[Aerus Sleeves]\n" +
 
                         "");
                     break;
 
                 case Slot.LEGS:
-                    SendReply(t, "This looks like it has protected you nicely. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Pants] (" + dragon * 2 + " " + currencyName + ")\n" +
-                          "[Dragonsworn Pants](" + dragon + " " + currencyName + ")\n" +
-                          "[Good Shar Pants](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Shar Pants](" + festive + " " + currencyName + ")\n" +
-                          "[Good Inconnu Pants](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Inconnu Pants](" + festive + " " + currencyName + ")\n" +
-                          "[Good Realm Pants](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Realm Pants](" + festive + " " + currencyName + ")\n" +
-                          "[Mino Pants](" + festive + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
-                        "[Wings Dive] (" + artifact + " " + currencyName + ")\n" +
-                        "[Alvarus' Leggings] (" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Pants] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Stygia Pants] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Volcanus Pants] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Pants] (" + toageneric + " " + currencyName + ")\n" +
+                    SendReply(t, "This looks like it has protected you nicely.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Dragonslayer Pants]\n" +
+                          "[Dragonsworn Pants]\n" +
+                          "[Good Shar Pants]\n" +
+                          "[Possessed Shar Pants]\n" +
+                          "[Good Inconnu Pants]\n" +
+                          "[Possessed Inconnu Pants]\n" +
+                          "[Good Realm Pants]\n" +
+                          "[Possessed Realm Pants]\n" +
+                          "[Mino Pants]\n" +
+                          "***** End Cata Only *****\n\n" +
+                        "[Wings Dive]\n" +
+                        "[Alvarus' Leggings]\n" +
+                        "[Oceanus Pants]\n" +
+                        "[Stygia Pants]\n" +
+                        "[Volcanus Pants]\n" +
+                        "[Aerus Pants]\n" +
 
                         "");
                     break;
 
                 case Slot.HANDS:
-                    SendReply(t, "This looks like it has protected you nicely. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Gloves] (" + dragon * 2 + " " + currencyName + ")\n" +
-                          "[Dragonsworn Gloves](" + dragon + " " + currencyName + ")\n" +
-                          "[Good Shar Gloves](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Shar Gloves](" + festive + " " + currencyName + ")\n" +
-                          "[Good Inconnu Gloves](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Inconnu Gloves](" + festive + " " + currencyName + ")\n" +
-                          "[Good Realm Gloves](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Realm Gloves](" + festive + " " + currencyName + ")\n" +
-                          "[Mino Gloves](" + festive + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
-                        "[Maddening Scalars] (" + artifact + " " + currencyName + ")\n" +
-                        "[Sharkskin Gloves] (" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Gloves] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Stygia Gloves] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Volcanus Gloves] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Gloves] (" + toageneric + " " + currencyName + ")\n" +
+                    SendReply(t, "This looks like it has protected you nicely.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Dragonslayer Gloves]\n" +
+                          "[Dragonsworn Gloves]\n" +
+                          "[Good Shar Gloves]\n" +
+                          "[Possessed Shar Gloves]\n" +
+                          "[Good Inconnu Gloves]\n" +
+                          "[Possessed Inconnu Gloves]\n" +
+                          "[Good Realm Gloves]\n" +
+                          "[Possessed Realm Gloves]\n" +
+                          "[Mino Gloves]\n" +
+                          "***** End Cata Only *****\n\n" +
+                        "[Maddening Scalars]\n" +
+                        "[Sharkskin Gloves]\n" +
+                        "[Oceanus Gloves]\n" +
+                        "[Stygia Gloves]\n" +
+                        "[Volcanus Gloves]\n" +
+                        "[Aerus Gloves]\n" +
 
                         "");
-                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options."
+                    SendReply(t, "I can also offer you some [armor pad]  options."
                          );
                     break;
 
                 case Slot.FEET:
-                    SendReply(t, "This looks like it has protected you nicely. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Dragonslayer Boots] (" + dragon * 2 + " " + currencyName + ")\n" +
-                          "[Dragonsworn Boots](" + dragon + " " + currencyName + ")\n" +
-                          "[Good Shar Boots](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Shar Boots](" + festive + " " + currencyName + ")\n" +
-                          "[Good Inconnu Boots](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Inconnu Boots](" + festive + " " + currencyName + ")\n" +
-                          "[Good Realm Boots](" + festive + " " + currencyName + ")\n" +
-                          "[Possessed Realm Boots](" + festive + " " + currencyName + ")\n" +
-                          "[Mino Boots](" + festive + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
-                        "[Enyalio's Boots] (" + artifact + " " + currencyName + ")\n" +
-                        "[Flamedancer's Boots] (" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Boots] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Stygia Boots] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Volcanus Boots] (" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Boots] (" + toageneric + " " + currencyName + ")\n" +
+                    SendReply(t, "This looks like it has protected you nicely.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Dragonslayer Boots]\n" +
+                          "[Dragonsworn Boots]\n" +
+                          "[Good Shar Boots]\n" +
+                          "[Possessed Shar Boots]\n" +
+                          "[Good Inconnu Boots]\n" +
+                          "[Possessed Inconnu Boots]\n" +
+                          "[Good Realm Boots]\n" +
+                          "[Possessed Realm Boots]\n" +
+                          "[Mino Boots]\n" +
+                          "***** End Cata Only *****\n\n" +
+                        "[Enyalio's Boots]\n" +
+                        "[Flamedancer's Boots]\n" +
+                        "[Oceanus Boots]\n" +
+                        "[Stygia Boots]\n" +
+                        "[Volcanus Boots]\n" +
+                        "[Aerus Boots]\n" +
 
                         "");
-                    SendReply(t, "I can also offer you some [armor pad] (" + armorpads + " " + currencyName + ") options."
+                    SendReply(t, "I can also offer you some [armor pad]  options."
                          );
                     break;
 
                 case Slot.CLOAK:
-                    SendReply(t, "This looks like it has protected you nicely. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "***** Catacombs Models Only ***** \n" +
-                          "[Realm Cloak] (" + cloakexpensive + " " + currencyName + ")\n" +
-                          "[Dragonslayer Cloak] (" + cloakexpensive + " " + currencyName + ")\n" +
-                          "[Dragonsworn Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                          "[Valentines Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                          "[Winter Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                          "[Clean Leather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                          "[Corrupt Leather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                          "***** End Cata Only ***** \n\n" +
-                        "[Cloudsong] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Shades of Mist] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Harpy Feather Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Healer's Embrace] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Oceanus Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Magma Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Stygian Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Aerus Cloak] (" + cloakmedium + " " + currencyName + ")\n" +
-                        "[Collared Cloak] (" + cloakcheap + " " + currencyName + ")\n" +
+                    SendReply(t, "This looks like it has protected you nicely.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "***** Catacombs Models Only *****\n" +
+                          "[Realm Cloak]\n" +
+                          "[Dragonslayer Cloak]\n" +
+                          "[Dragonsworn Cloak]\n" +
+                          "[Valentines Cloak]\n" +
+                          "[Winter Cloak]\n" +
+                          "[Clean Leather Cloak]\n" +
+                          "[Corrupt Leather Cloak]\n" +
+                          "***** End Cata Only *****\n\n" +
+                        "[Cloudsong]\n" +
+                        "[Shades of Mist]\n" +
+                        "[Harpy Feather Cloak]\n" +
+                        "[Healer's Embrace]\n" +
+                        "[Oceanus Cloak]\n" +
+                        "[Magma Cloak]\n" +
+                        "[Stygian Cloak]\n" +
+                        "[Aerus Cloak]\n" +
+                        "[Collared Cloak]\n" +
                         "");
                     break;
 
                 case Slot.RIGHTHAND:
-                    SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
-                        "I can apply the following skins: \n\n");
+                    SendReply(t, "Ah, I know a highly lethal weapon when I see it.\n" +
+                        "I can apply the following skins:\n\n");
                     if ((eObjectType)item.Object_Type == eObjectType.HandToHand)
                     {
                         SendReply(t,
-                                    "[Snakecharmer's Fist](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scorched Fist](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Dragonsworn Fist](" + dragon + " " + currencyName + ")\n" +
+                                    "[Snakecharmer's Fist]\n" +
+                                    "[Scorched Fist]\n" +
+                                    "[Dragonsworn Fist]\n" +
                                     "");
                     }
                     if ((eObjectType)item.Object_Type == eObjectType.Flexible)
                     {
                         SendReply(t,
-                                    "[Snakecharmer's Whip](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scorched Whip](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Dragonsworn Whip](" + dragon + " " + currencyName + ")\n" +
+                                    "[Snakecharmer's Whip]\n" +
+                                    "[Scorched Whip]\n" +
+                                    "[Dragonsworn Whip]\n" +
                                     "");
                     }
                     else
@@ -6300,59 +6301,59 @@ namespace DOL.GS
                         {
                             case eDamageType.Thrust:
                                 SendReply(t,
-                                    "[Traitor's Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Croc Tooth Dagger 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Golden Spear 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Wakazashi](" + epic + " " + currencyName + ")\n" +
+                                    "[Traitor's Dagger 1h]\n" +
+                                    "[Croc Tooth Dagger 1h]\n" +
+                                    "[Golden Spear 1h]\n" +
+                                    "[Wakazashi]\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " " + currencyName + ") \n" +
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] \n" +
                                      "");
                                 break;
 
                             case eDamageType.Crush:
                                 SendReply(t,
-                                    "[Battler Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Malice Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Bruiser Hammer 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scepter of the Meritorious](" + artifact + " " + currencyName + ")\n" +
-                                    "[Rolling Pin](" + epic + " " + currencyName + ")\n" +
-                                    "[Stein](" + epic + " " + currencyName + ")\n" +
-                                    "[Turkey Leg](" + champion + " " + currencyName + ")\n" +
+                                    "[Battler Hammer 1h]\n" +
+                                    "[Malice Hammer 1h]\n" +
+                                    "[Bruiser Hammer 1h]\n" +
+                                    "[Scepter of the Meritorious]\n" +
+                                    "[Rolling Pin]\n" +
+                                    "[Stein]\n" +
+                                    "[Turkey Leg]\n" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
-                                    "[Croc Tooth Axe 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Traitor's Axe 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Malice Axe 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Battler Sword 1h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Khopesh](" + epic + " " + currencyName + ")\n" +
-                                    "[Cleaver](" + epic + " " + currencyName + ")\n" +
-                                    "[Wakazashi](" + epic + " " + currencyName + ")\n" +
+                                    "[Croc Tooth Axe 1h]\n" +
+                                    "[Traitor's Axe 1h]\n" +
+                                    "[Malice Axe 1h]\n" +
+                                    "[Battler Sword 1h]\n" +
+                                    "[Khopesh]\n" +
+                                    "[Cleaver]\n" +
+                                    "[Wakazashi]\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] (" + dragon + " " + currencyName + ") \n" +
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 1h] \n" +
                                      "");
                                 break;
                         }
                         
                     }
-                    SendReply(t, "Additionally, I can apply an [class epic 1h] " + champion + " skin. \n");
+                    SendReply(t, "Additionally, I can apply an [class epic 1h] " + champion + " skin.\n");
                     break;
 
 
                 case Slot.LEFTHAND:
                     if ((eObjectType)item.Object_Type == eObjectType.Shield)
                     {
-                        SendReply(t, "A sturdy barricade to ward the blows of your enemies. \n" +
-                        "I can apply the following skins: \n\n" +
-                        "[Aten's Shield](" + artifact + " " + currencyName + ")\n" +
-                        "[Cyclop's Eye](" + artifact + " " + currencyName + ")\n" +
-                        "[Shield of Khaos](" + artifact + " " + currencyName + ")\n" +
-                        "[Oceanus Shield](" + toageneric + " " + currencyName + ")\n" +
-                        "[Aerus Shield](" + toageneric + " " + currencyName + ")\n" +
-                        "[Magma Shield](" + toageneric + " " + currencyName + ")\n" +
-                        "[Minotaur Shield](" + toageneric + " " + currencyName + ")\n" +
+                        SendReply(t, "A sturdy barricade to ward the blows of your enemies.\n" +
+                        "I can apply the following skins:\n\n" +
+                        "[Aten's Shield]\n" +
+                        "[Cyclop's Eye]\n" +
+                        "[Shield of Khaos]\n" +
+                        "[Oceanus Shield]\n" +
+                        "[Aerus Shield]\n" +
+                        "[Magma Shield]\n" +
+                        "[Minotaur Shield]\n" +
                         "");
                     }
                     else
@@ -6363,44 +6364,44 @@ namespace DOL.GS
                     break;
 
                 case Slot.TWOHAND:
-                    SendReply(t, "Ah, I know a highly lethal weapon when I see it. \n" +
-                        "I can apply the following skins: \n\n");
+                    SendReply(t, "Ah, I know a highly lethal weapon when I see it.\n" +
+                        "I can apply the following skins:\n\n");
                     if ((eObjectType)item.Object_Type == eObjectType.Staff)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Staff](" + dragon + " " + currencyName + ")\n" +
-                                    "[Traldor's Oracle](" + artifact + " " + currencyName + ")\n" +
-                                    "[Trident of the Gods](" + artifact + " " + currencyName + ")\n" +
-                                    "[Tartaros Gift](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scorched Staff](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Dragonsworn Staff]\n" +
+                                    "[Traldor's Oracle]\n" +
+                                    "[Trident of the Gods]\n" +
+                                    "[Tartaros Gift]\n" +
+                                    "[Scorched Staff]\n" +
                                     "");
                     }
                     else if ((eObjectType)item.Object_Type == eObjectType.Scythe)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Scythe](" + dragon + " " + currencyName + ")\n" +
-                                    "[Scythe of Kings](" + artifact + " " + currencyName + ")\n" +
-                                    "[Snakechamer's Scythe](" + artifact + " " + currencyName + ")\n" +
-                                    "[Magma Scythe](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Scorched Scythe](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Dragonsworn Scythe]\n" +
+                                    "[Scythe of Kings]\n" +
+                                    "[Snakechamer's Scythe]\n" +
+                                    "[Magma Scythe]\n" +
+                                    "[Scorched Scythe]\n" +
                                     "");
                     }
                     else if ((eObjectType)item.Object_Type == eObjectType.PolearmWeapon)
                     {
                         SendReply(t,
-                                    "[Dragonsworn Pole](" + dragon + " " + currencyName + ")\n" +
-                                    "[Pole of Kings](" + artifact + " " + currencyName + ")\n" +
-                                    "[Golden Pole](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Scorched Pole](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Dragonsworn Pole]\n" +
+                                    "[Pole of Kings]\n" +
+                                    "[Golden Pole]\n" +
+                                    "[Scorched Pole]\n" +
                                     "");
                     }
                     else if ((eObjectType)item.Object_Type == eObjectType.Spear || (eObjectType)item.Object_Type == eObjectType.CelticSpear)
                     {
                         SendReply(t,
-                                    "[Golden Spear 2h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Dragon Spear 2h](" + dragon + " " + currencyName + ")\n" +
-                                    "[Scorched Spear 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Trident Spear 2h](" + toageneric + " " + currencyName + ")\n" +
+                                    "[Golden Spear 2h]\n" +
+                                    "[Dragon Spear 2h]\n" +
+                                    "[Scorched Spear 2h]\n" +
+                                    "[Trident Spear 2h]\n" +
                                     "");
                     }
                     else
@@ -6409,60 +6410,60 @@ namespace DOL.GS
                         {
                             case eDamageType.Thrust:
                                 SendReply(t,
-                                    "[Scorched Thrust 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Dragon Thrust 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Katana 2h](" + epic + " " + currencyName + ")\n" +
-                                    "[Pickaxe](" + epic + " " + currencyName + ")\n" +
+                                    "[Scorched Thrust 2h]\n" +
+                                    "[Dragon Thrust 2h]\n" +
+                                    "[Katana 2h]\n" +
+                                    "[Pickaxe]\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " " + currencyName + ") \n");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] \n");
                                 break;
 
                             case eDamageType.Crush:
                                 SendReply(t,
-                                    "[Battler Hammer 2h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Malice Hammer 2h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Bruiser Hammer 2h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scorched Hammer 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Magma Hammer 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Pickaxe](" + epic + " " + currencyName + ")\n" +
+                                    "[Battler Hammer 2h]\n" +
+                                    "[Malice Hammer 2h]\n" +
+                                    "[Bruiser Hammer 2h]\n" +
+                                    "[Scorched Hammer 2h]\n" +
+                                    "[Magma Hammer 2h]\n" +
+                                    "[Pickaxe]\n" +
                                     "");
                                 break;
 
                             case eDamageType.Slash:
                                 SendReply(t,
-                                    "[Malice Axe 2h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scorched Axe 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Magma Axe 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Battler Sword 2h](" + artifact + " " + currencyName + ")\n" +
-                                    "[Scorched Sword 2h](" + toageneric + " " + currencyName + ")\n" +
-                                    "[Katana 2h](" + epic + " " + currencyName + ")\n" +
+                                    "[Malice Axe 2h]\n" +
+                                    "[Scorched Axe 2h]\n" +
+                                    "[Magma Axe 2h]\n" +
+                                    "[Battler Sword 2h]\n" +
+                                    "[Scorched Sword 2h]\n" +
+                                    "[Katana 2h]\n" +
                                     "");
-                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] (" + epic + " " + currencyName + ") \n");
+                                SendReply(t, "Or, perhaps you'd just prefer a [hilt 2h] \n");
                                 break;
                         }
                     }
-                    SendReply(t, "Additionally, I can apply an [class epic 2h] (" + champion + " " + currencyName + ") skin. \n");
+                    SendReply(t, "Additionally, I can apply an [class epic 2h] skin.\n");
                     break;
 
                 case Slot.RANGED:
                     if ((eObjectType)item.Object_Type == eObjectType.Instrument)
                     {
-                        SendReply(t, "This looks like it plays beautiful music. \n" +
-                        "I can apply the following skins: \n\n" +
-                        //"[Dragonslayer Harp](" + dragon + " " + currencyName + ")\n" + //these too
-                        "[Class Epic Harp](" + epic + " " + currencyName + ")\n" +
-                        "[Labyrinth Harp](" + toageneric + " " + currencyName + ")\n" +
+                        SendReply(t, "This looks like it plays beautiful music.\n" +
+                        "I can apply the following skins:\n\n" +
+                        //"[Dragonslayer Harp]\n" + //these too
+                        "[Class Epic Harp]\n" +
+                        "[Labyrinth Harp]\n" +
                         "");
                     }
                     else
                     {
-                        SendReply(t, "Nothing like bringing death from afar. \n" +
-                        "I can apply the following skins: \n\n" +
-                        //"[Dragonslayer Bow](" + dragon + " " + currencyName + ")\n" +
-                        "[Class Epic Bow](" + epic + " " + currencyName + ")\n" +
-                        "[Braggart's Bow](" + artifact + " " + currencyName + ")\n" +
-                        "[Fool's Bow](" + artifact + " " + currencyName + ")\n" +
-                        "[Labyrinth Bow](" + toageneric + " " + currencyName + ")\n" +
+                        SendReply(t, "Nothing like bringing death from afar.\n" +
+                        "I can apply the following skins:\n\n" +
+                        //"[Dragonslayer Bow]\n" +
+                        "[Class Epic Bow]\n" +
+                        "[Braggart's Bow]\n" +
+                        "[Fool's Bow]\n" +
+                        "[Labyrinth Bow]\n" +
                         "");
                     }
 
@@ -6711,17 +6712,7 @@ namespace DOL.GS
         {
             if (price > 0)
             {
-                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-
-                if (playerOrbs < price)
-                {
-                    SendReply(player, "I'm sorry, but you cannot afford my services currently.");
-                    return false;
-                }
-
-                SendReply(player, "Thanks for your donation. " +
-                                  "I have changed your item's model, you can now use it. \n\n" +
-                                  "I look forward to doing business with you in the future.");
+                SendReply(player, "I have changed your item's model.");
 
                 DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
                 DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
@@ -6745,13 +6736,12 @@ namespace DOL.GS
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
                 //SetRealmLevel(player, (int)player.RealmPoints);
-                player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
                 return true;
             }
 
-            SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
+            SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over.\n" +
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
             return false;
         }
@@ -6760,15 +6750,6 @@ namespace DOL.GS
         {
             if (price > 0)
             {
-                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack);
-                //log.Info("Player Orbs:" + playerOrbs);
-
-                if (playerOrbs < price)
-                {
-                    SendReply(player, "I'm sorry, but you cannot afford my services currently.");
-                    return;
-                }
-
                 DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
                 DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
                 
@@ -6796,18 +6777,17 @@ namespace DOL.GS
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
                 //SetRealmLevel(player, (int)player.RealmPoints);
-                player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
 
                 SendReply(player, "Thanks for your donation. " +
-                                  "I have changed your item's extension, you can now use it. \n\n" +
+                                  "I have changed your item's extension, you can now use it.\n\n" +
                                   "I look forward to doing business with you in the future.");
 
                 return;
             }
 
-            SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over. \n" +
+            SendReply(player, "I'm sorry, I seem to have gotten confused. Please start over.\n" +
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         }
         

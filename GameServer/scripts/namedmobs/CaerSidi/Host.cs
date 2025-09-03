@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Timers;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.ServerProperties;
@@ -83,7 +82,6 @@ namespace DOL.GS
                 Add.CurrentRegion = this.CurrentRegion;
                 Add.Heading = this.Heading;
                 Add.AddToWorld();
-                Add.OrbsReward = 10;
                 Add.PackageID = "HostCopy" + Host.HostCount;
             }
         }
@@ -118,7 +116,6 @@ namespace DOL.GS
                 {
                     GameNPC RealHost = ChooseHost[Util.Random(0, ChooseHost.Count - 1)];
                     RealHost.PackageID = "HostReal";
-                    RealHost.OrbsReward = Properties.EPICBOSS_ORBS;
                     set_realhost = true;
                 }
             }

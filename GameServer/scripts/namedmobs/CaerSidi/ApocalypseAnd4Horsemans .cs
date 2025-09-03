@@ -2098,7 +2098,6 @@ namespace DOL.GS
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsEpicBoss++;
-                player.Achieve(AchievementUtils.AchievementNames.Epic_Boss_Kills);
                 count++;
             }
             return count;

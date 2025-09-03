@@ -3964,11 +3964,6 @@ namespace DOL.GS
                 }
             }
 
-            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) <= (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0))
-            {
-                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0));
-            }
-
             Out.SendUpdatePoints();
         }
 
@@ -10683,11 +10678,6 @@ namespace DOL.GS
                             monthlyQuest.LoadQuestParameters();
                             break;
                         }
-                        case Quests.AtlasQuest atlasQuest:
-                        {
-                            atlasQuest.LoadQuestParameters();
-                            break;
-                        }
                     }
                 }
 
@@ -10848,9 +10838,6 @@ namespace DOL.GS
 
                     if (quest is Quests.MonthlyQuest mq)
                         mq.SaveQuestParameters();
-
-                    if (quest is Quests.AtlasQuest aq)
-                        aq.SaveQuestParameters();
                 }
 
                 if (m_mlSteps != null)
@@ -12572,61 +12559,6 @@ namespace DOL.GS
 
         #endregion
 
-        #region Achievements
-
-        public void Achieve(string achievementName, int count = 1)
-        {
-            //DOL.Database.Achievement
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-
-            if (achievement == null)
-            {
-                achievement = new DbAchievement();
-                achievement.AccountId = this.Client.Account.ObjectId;
-                achievement.AchievementName = achievementName;
-                achievement.Realm = (int) this.Realm;
-                achievement.Count = count;
-                GameServer.Database.AddObject(achievement);
-                return;
-            }
-
-            achievement.Count += count;
-            GameServer.Database.SaveObject(achievement);
-        }
-
-        public void SetAchievementTo(string achievementName, int value)
-        {
-            //DOL.Database.Achievement
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-
-            if (achievement == null)
-            {
-                achievement = new DbAchievement();
-                achievement.AccountId = this.Client.Account.ObjectId;
-                achievement.AchievementName = achievementName;
-                achievement.Realm = (int) this.Realm;
-                achievement.Count = value;
-                GameServer.Database.AddObject(achievement);
-                return;
-            }
-
-            achievement.Count = value;
-            GameServer.Database.SaveObject(achievement);
-        }
-
-        public int GetAchievementProgress(string achievementName)
-        {
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID")
-                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-
-            if (achievement == null)
-                return 0;
-            else
-                return achievement.Count;
-        }
-
-        #endregion
-
         #region Statistics
 
         public virtual int KillsAlbionPlayers
@@ -12835,60 +12767,45 @@ namespace DOL.GS
                     case eRealm.Albion:
                     {
                         KillsAlbionPlayers++;
-                        Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
 
                         if (deathBlow)
                         {
                             KillsAlbionDeathBlows++;
                             m_statistics.AddToDeathblows();
-                            Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
                         }
 
                         if (soloKill)
-                        {
                             KillsAlbionSolo++;
-                            Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
-                        }
 
                         break;
                     }
                     case eRealm.Hibernia:
                     {
                         KillsHiberniaPlayers++;
-                        Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
 
                         if (deathBlow)
                         {
                             KillsHiberniaDeathBlows++;
                             m_statistics.AddToDeathblows();
-                            Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
                         }
 
                         if (soloKill)
-                        {
                             KillsHiberniaSolo++;
-                            Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
-                        }
 
                         break;
                     }
                     case eRealm.Midgard:
                     {
                         KillsMidgardPlayers++;
-                        Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
 
                         if (deathBlow)
                         {
                             KillsMidgardDeathBlows++;
                             m_statistics.AddToDeathblows();
-                            Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
                         }
 
                         if (soloKill)
-                        {
                             KillsMidgardSolo++;
-                            Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
-                        }
 
                         break;
                     }

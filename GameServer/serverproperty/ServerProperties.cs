@@ -2458,12 +2458,6 @@ namespace DOL.GS.ServerProperties
 		public static bool ALLOW_BG_CLAIM;
 
 		/// <summary>
-		/// Atlas Orbs reward for epic boss kills
-		/// </summary>
-		[ServerProperty("atlas", "epicboss_orbs", "Atlas Orbs reward for epic boss kills", 3000)]
-		public static int EPICBOSS_ORBS;
-
-		/// <summary>
 		/// Enables the API endpoints on the port :5000
 		/// </summary>
 		[ServerProperty("atlas", "atlas_api", "Enables the API endpoints on the port :5000", false)]
@@ -2493,38 +2487,29 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "api_password", "Set the password to access certain API commands as shutdown", "")]
 		public static string API_PASSWORD;
 
-		[ServerProperty("beta", "orbs_fire_sale", "All items at the orbs merchant will be free if set to true", false)]
-		public static bool ORBS_FIRE_SALE;
-		
 		[ServerProperty("atlas", "enable_corpsesummoner", "Whether or not to enable the corpse summoner command", true)]
 		public static bool ENABLE_CORPSESUMONNER;
-		
-		[ServerProperty("atlas", "carapace_dropchance", "The base Beetle Carapace drop chance in %", 0.01)]
-		public static double CARAPACE_DROPCHANCE;
-		
+
 		[ServerProperty("atlas", "salvage_yield_multiplier", "The salvage yield multiplier", 0.5)]
 		public static double SALVAGE_YIELD_MULTIPLIER;
-		
+
 		[ServerProperty("atlas", "max_craft_time", "The maximum craft time allowed in seconds. All timers above this value will be normalised to the input value", 0)]
 		public static int MAX_CRAFT_TIME;
 		
 		[ServerProperty("atlas", "of_teleport_interval", "The seconds between OF porting ceremonies", 120)]
 		public static int OF_REPORT_INTERVAL;
 
-        [ServerProperty("atlas", "patch_notes_url", "The URL of the remote patch notes .txt to display with /sn", "")]
-        public static string PATCH_NOTES_URL;
-        
-        [ServerProperty("atlas", "alt_currency_id", "The id_nb of the item to use as alternative currency (i.e. Orbs)", "")]
-        public static string ALT_CURRENCY_ID;
-        
-        [ServerProperty("atlas", "immunity_timer_use_adaptive", "toggle adaptive vs. flat immunity timers", false)]
-        public static bool IMMUNITY_TIMER_USE_ADAPTIVE;
-        
-        [ServerProperty("atlas", "immunity_timer_flat_length", "if non-adapative timers, the duration (in seconds) for immunity", 60)]
-        public static int IMMUNITY_TIMER_FLAT_LENGTH;
-        
-        [ServerProperty("atlas", "immunity_timer_adaptive_length", "if adapative timers, the modifer to apply to length (i.e. stun length * 6)", 6)]
-        public static int IMMUNITY_TIMER_ADAPTIVE_LENGTH;
+		[ServerProperty("atlas", "patch_notes_url", "The URL of the remote patch notes .txt to display with /sn", "")]
+		public static string PATCH_NOTES_URL;
+
+		[ServerProperty("atlas", "immunity_timer_use_adaptive", "toggle adaptive vs. flat immunity timers", false)]
+		public static bool IMMUNITY_TIMER_USE_ADAPTIVE;
+
+		[ServerProperty("atlas", "immunity_timer_flat_length", "if non-adapative timers, the duration (in seconds) for immunity", 60)]
+		public static int IMMUNITY_TIMER_FLAT_LENGTH;
+
+		[ServerProperty("atlas", "immunity_timer_adaptive_length", "if adapative timers, the modifer to apply to length (i.e. stun length * 6)", 6)]
+		public static int IMMUNITY_TIMER_ADAPTIVE_LENGTH;
 
 		#endregion
 

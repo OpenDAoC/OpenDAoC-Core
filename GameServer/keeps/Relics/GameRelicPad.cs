@@ -158,10 +158,7 @@ namespace DOL.GS
                     targets.Add(relic.CurrentCarrier);
 
                 foreach (GamePlayer target in targets)
-                {
                     target.CapturedRelics++;
-                    target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
-                }
 
                 relic.LastCaptureDate = DateTime.Now;
                 Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -1053,11 +1052,6 @@ namespace DOL.GS.ServerRules
             if (playerCountAndDamage.Count == 0)
                 return;
 
-            string killCredit = null;
-
-            if (killedNpc.CanAwardKillCredit)
-                killCredit = $"{Regex.Replace(killedNpc.Name, @"\s+", string.Empty)}-Credit";
-
             // Award experience, faction change, and kill credit to every player involved.
             // Let `AwardExperience` fetch players that are in a group or a BG but didn't attack the target, and decide how experience should be shared.
             foreach (var pair in playerCountAndDamage)
@@ -1065,9 +1059,6 @@ namespace DOL.GS.ServerRules
                 GamePlayer player = pair.Key;
                 AwardPlayerOnNpcKill(player, totalDamage, killedNpc, playerCountAndDamage, groupCountAndDamage, battlegroupCountAndDamage);
                 killedNpc.Faction?.OnMemberKilled(player);
-
-                if (!string.IsNullOrEmpty(killCredit))
-                    player.Achieve(killCredit);
             }
 
             // Camp bonus drops by 2% per kill.

@@ -14,7 +14,6 @@ namespace DOL.GS.Quests
 
         public MonthlyQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
-
         public override bool CheckQuestQualification(GamePlayer player)
         {
             return !player.HasFinishedQuest(this);

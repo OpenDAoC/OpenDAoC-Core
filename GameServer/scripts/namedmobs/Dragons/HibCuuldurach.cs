@@ -110,7 +110,6 @@ namespace DOL.GS
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				player.KillsDragon++;
-				player.Achieve(AchievementUtils.AchievementNames.Dragon_Kills);
 				count++;
 			}
 			return count;

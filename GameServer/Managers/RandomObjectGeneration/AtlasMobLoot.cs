@@ -124,11 +124,6 @@ namespace DOL.GS {
                         loot.AddFixed(item, 1);
                     }
 
-                    if(player.Level < 50 || mob.Level < 50)
-                    {
-                        var item = AtlasROGManager.GenerateBeadOfRegeneration();
-                        loot.AddRandom(2, item, 1);
-                    }
                     //classForLoot = GetRandomClassFromGroup(player.Group);
                     //chance += 4 * player.Group.GetPlayersInTheGroup().Count; //4% extra drop chance per group member
                 }
@@ -165,12 +160,6 @@ namespace DOL.GS {
                     else
                         loot.AddRandom(chance, item, 1);
                         */
-
-                    if(player.Level < 50 || mob.Level < 50)
-                    {
-                        item = AtlasROGManager.GenerateBeadOfRegeneration();
-                        loot.AddRandom(2, item, 1);
-                    }
                 }
 
                 //chance = 100;

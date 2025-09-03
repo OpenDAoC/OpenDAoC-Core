@@ -300,10 +300,7 @@ namespace DOL.GS.Keeps
 					if (pair.Key is GamePlayer player)
 					{
 						if (lord.Component.Keep != null && lord.Component.Keep is GameKeep)
-						{
 							player.CapturedKeeps++;
-							player.Achieve(AchievementUtils.AchievementNames.Keeps_Taken);
-						}
 
 						else player.CapturedTowers++;
 					}

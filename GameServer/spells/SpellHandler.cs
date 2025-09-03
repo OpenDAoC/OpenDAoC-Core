@@ -131,11 +131,9 @@ namespace DOL.GS.Spells
 						case eSpellType.SummonTheurgistPet:
 						case eSpellType.Summon:
 						case eSpellType.SummonJuggernaut:
-						//case eSpellType.SummonMerchant:
 						case eSpellType.SummonMinion:
 						case eSpellType.SummonSimulacrum:
 						case eSpellType.SummonUnderhill:
-						//case eSpellType.SummonVaultkeeper:
 						case eSpellType.SummonAnimistAmbusher:
 						case eSpellType.SummonAnimistPet:
 						case eSpellType.SummonDruidPet:
@@ -149,7 +147,6 @@ namespace DOL.GS.Spells
 						case eSpellType.SummonSiegeTrebuchet:
 						case eSpellType.SummonSpiritFighter:
 						case eSpellType.SummonNecroPet:
-						//case eSpellType.SummonNoveltyPet:
 							return true;
 						default:
 							return false;

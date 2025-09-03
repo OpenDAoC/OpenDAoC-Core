@@ -604,16 +604,7 @@ namespace DOL.GS.Keeps
 				GuildName = "Merchant";
 				return;
 			}
-			else if (this is GuardCurrencyMerchant)
-			{
-				if (IsAlive)
-				{
-					BroadcastLivingEquipmentUpdate();
-				}
 
-				GuildName = "Orb Merchant";
-				return;
-			}
 			Guild guild = Component.Keep.Guild;
 			string guildname = string.Empty;
 			if (guild != null)
@@ -818,10 +809,6 @@ namespace DOL.GS.Keeps
 			else if ((Component.Keep.Guild == null || Component.Keep.Guild != null)&& this is GuardMerchant)
 			{
 				GuildName = "Merchant";
-			}
-			else if ((Component.Keep.Guild == null || Component.Keep.Guild != null) && this is GuardCurrencyMerchant)
-			{
-				GuildName = "Orb Merchant";
 			}
 			else
 			{
