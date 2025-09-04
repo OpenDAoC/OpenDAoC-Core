@@ -22,8 +22,8 @@ namespace DOL.GS
                 { typeof(ECSGameAbilityEffect), PooledListKey.AbilityEffect }
             }.ToFrozenDictionary();
 
-        private readonly FrozenDictionary<PooledListKey, ITickListPool> _pools =
-            new Dictionary<PooledListKey, ITickListPool>
+        private readonly FrozenDictionary<PooledListKey, TickPoolBase> _pools =
+            new Dictionary<PooledListKey, TickPoolBase>
             {
                 { PooledListKey.Client, new TickListPool<GameClient>() },
                 { PooledListKey.Player, new TickListPool<GamePlayer>() },
@@ -52,36 +52,6 @@ namespace DOL.GS
         {
             foreach (var pair in _pools)
                 pair.Value.Reset();
-        }
-
-        public class TickListPool<T> : ITickListPool where T : IPooledList<T>
-        {
-            private readonly List<List<T>> _pool = new();
-            private int _listsInUse;
-
-            public List<T> GetForTick()
-            {
-                if (_listsInUse < _pool.Count)
-                    return _pool[_listsInUse++];
-
-                List<T> newList = new();
-                _pool.Add(newList);
-                _listsInUse++;
-                return newList;
-            }
-
-            public void Reset()
-            {
-                for (int i = 0; i < _listsInUse; i++)
-                    _pool[i].Clear();
-
-                _listsInUse = 0;
-            }
-        }
-
-        private interface ITickListPool
-        {
-            void Reset();
         }
     }
 

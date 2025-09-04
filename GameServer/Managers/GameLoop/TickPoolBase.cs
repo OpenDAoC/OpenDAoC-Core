@@ -1,0 +1,46 @@
+﻿using System;
+
+namespace DOL.GS
+{
+    public abstract class TickPoolBase
+    {
+        protected const int INITIAL_CAPACITY = 64;     // Initial capacity of the pool.
+        private const double TRIM_SAFETY_FACTOR = 2.5; // Trimming allowed when size > smoothed usage * this factor.
+        private const int HALF_LIFE = 30_000;          // Half-life (ms) for EMA decay.
+
+        private static readonly double _decayFactor;   // EMA decay factor based on HALF_LIFE and tick rate.
+
+        protected int _used;                           // Objects rented this tick.
+        protected double _smoothedUsage;               // Smoothed recent peak usage.
+        protected int _logicalSize;                    // Highest non-null index in use.
+
+        static TickPoolBase()
+        {
+            // Will become outdated if `GameLoop.TickDuration` is changed at runtime.
+            _decayFactor = Math.Exp(-Math.Log(2) / (GameLoop.TickDuration * HALF_LIFE / 1000.0));
+        }
+
+        public void Reset()
+        {
+            OnResetItems(_used);
+
+            _smoothedUsage = Math.Max(_used, _smoothedUsage * _decayFactor + _used * (1 - _decayFactor));
+            int newLogicalSize = (int) (_smoothedUsage * TRIM_SAFETY_FACTOR);
+
+            if (newLogicalSize < INITIAL_CAPACITY)
+                newLogicalSize = INITIAL_CAPACITY;
+
+            // If the pool has grown much larger than our smoothed target, trim it.
+            if (_logicalSize > newLogicalSize)
+            {
+                OnTrim(_logicalSize, newLogicalSize);
+                _logicalSize = newLogicalSize;
+            }
+
+            _used = 0;
+        }
+
+        protected abstract void OnResetItems(int itemsInUse);
+        protected abstract void OnTrim(int currentSize, int newSize);
+    }
+}
