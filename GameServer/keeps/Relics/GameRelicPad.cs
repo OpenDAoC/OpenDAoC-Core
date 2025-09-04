@@ -135,30 +135,11 @@ namespace DOL.GS
                 if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
                     BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
 
-                BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                List<GamePlayer> targets = new();
-
-                if (relicBG != null)
+                foreach (GamePlayer player in relic.CurrentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE * 5))
                 {
-                    lock (relicBG.Members)
-                    {
-                        foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
-                        {
-                            if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                                targets.Add(bgPlayer);
-                        }
-                    }
+                    if (player.Realm == relic.CurrentCarrier.Realm)
+                        player.CapturedRelics++;
                 }
-                else if (relic.CurrentCarrier.Group != null)
-                {
-                    foreach (GamePlayer p in relic.CurrentCarrier.Group.GetPlayersInTheGroup())
-                        targets.Add(p);
-                }
-                else
-                    targets.Add(relic.CurrentCarrier);
-
-                foreach (GamePlayer target in targets)
-                    target.CapturedRelics++;
 
                 relic.LastCaptureDate = DateTime.Now;
                 Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
