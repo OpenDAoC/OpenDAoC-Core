@@ -1865,29 +1865,29 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		/// <summary>
-		/// Cast all subspell recursively
-		/// </summary>
-		/// <param name="target"></param>
 		public virtual void CastSubSpells(GameLiving target)
 		{
-			List<int> subSpellList = new List<int>();
 			if (m_spell.SubSpellID > 0)
-				subSpellList.Add(m_spell.SubSpellID);
-			
-			foreach (int spellID in subSpellList.Union(m_spell.MultipleSubSpells))
-			{
-				Spell spell = SkillBase.GetSpellByID(spellID);
-				//we need subspell ID to be 0, we don't want spells linking off the subspell
-				if (target != null && spell != null && spell.SubSpellID == 0)
-				{
-					// We have to scale pet subspells when cast
-					if (Caster is GameSummonedPet pet && !(Caster is NecromancerPet))
-						pet.ScaleSpell(spell, pet.Level, Properties.PET_SCALE_SPELL_MAX_LEVEL);
+				CastSingleSubSpell(target, m_spell.SubSpellID);
 
-					ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-					spellhandler.StartSpell(target);
-				}
+			foreach (int spellID in m_spell.MultipleSubSpells)
+			{
+				if (spellID != m_spell.SubSpellID) // Avoid duplicate casting
+					CastSingleSubSpell(target, spellID);
+			}
+		}
+
+		private void CastSingleSubSpell(GameLiving target, int spellID)
+		{
+			Spell spell = SkillBase.GetSpellByID(spellID);
+
+			if (target != null && spell != null && spell.SubSpellID == 0)
+			{
+				if (Caster is GameSummonedPet pet and not NecromancerPet)
+					pet.ScaleSpell(spell, pet.Level, Properties.PET_SCALE_SPELL_MAX_LEVEL);
+
+				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
+				spellHandler.StartSpell(target);
 			}
 		}
 
