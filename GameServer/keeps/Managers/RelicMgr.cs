@@ -51,7 +51,7 @@ namespace DOL.GS
 				//then we remove all relics from the pads
 				foreach (GameRelicPad pad in m_relicPads)
 				{
-					pad.RemoveRelic();
+					pad.RemoveRelics();
 				}
 
 				// if relics are on the ground during init we will return them to their owners
@@ -104,10 +104,10 @@ namespace DOL.GS
 
 					foreach (GameRelicPad pad in m_relicPads)
 					{
-						if (pad.MountedRelic == null && pad.Realm == returnRealm && pad.PadType == lostRelic.RelicType)
+						if (pad.Realm == returnRealm && pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
 						{
-							lostRelic.RelicPadTakesOver(pad, true);
-							log.Debug("Lost Relic: " + lostRelic.Name + " has returned to last pad: " + pad.Name + ".");
+							if (log.IsDebugEnabled)
+								log.Debug($"Lost relic '{lostRelic.Name}' has returned to last pad '{pad.Name}'");
 						}
 					}
 				}
@@ -120,10 +120,10 @@ namespace DOL.GS
 					{
 						foreach (GameRelicPad pad in m_relicPads)
 						{
-							if (pad.MountedRelic == null && pad.PadType == lostRelic.RelicType)
+							if (pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
 							{
-								lostRelic.RelicPadTakesOver(pad, true);
-								log.Debug("Lost Relic: " + lostRelic.Name + " auto assigned to pad: " + pad.Name + ".");
+								if (log.IsDebugEnabled)
+									log.Debug($"Lost relic '{lostRelic.Name}' auto assigned to pad '{pad.Name}'");
 							}
 						}
 					}

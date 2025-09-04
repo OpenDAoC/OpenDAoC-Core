@@ -129,20 +129,17 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual void RelicPadTakesOver(GameRelicPad pad, bool returning)
+        public bool RelicPadTakesOver(GameRelicPad pad, bool returning)
         {
-            CurrentRelicPad = pad;
-            Realm = pad.Realm;
+            if (!pad.MountRelic(this, returning))
+                return false;
+
             LastRealm = pad.Realm;
-            pad.MountRelic(this, returning);
-            CurrentRegionID = pad.CurrentRegionID;
+            CurrentRelicPad = pad;
             PlayerLoosesRelic(true);
-            X = pad.X;
-            Y = pad.Y;
-            Z = pad.Z;
-            Heading = pad.Heading;
             SaveIntoDatabase();
             AddToWorld();
+            return true;
         }
 
         public override IList GetExamineMessages(GamePlayer player)
