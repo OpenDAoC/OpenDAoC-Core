@@ -1512,7 +1512,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
 		{
-			if (m_gameClient.Player == null || source == null || target == null)
+			if (m_gameClient.ClientState is not GameClient.eClientState.Playing || source == null || target == null)
 				return false;
 
 			return m_gameClient.Player.LosCheckHandler.StartLosCheck(source, target, callback);
