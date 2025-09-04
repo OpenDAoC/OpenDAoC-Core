@@ -22,7 +22,7 @@ namespace DOL.GS
         private static bool _running;
         private static List<TickStep> _tickSequence;
 
-        public static long TickDuration { get; private set; }
+        public static int TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
         public static string ActiveService { get; set; }
 
