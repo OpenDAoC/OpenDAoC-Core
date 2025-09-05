@@ -25,7 +25,7 @@ namespace DOL.GS
 	/// This class holds all information that each
 	/// living object in the world uses
 	/// </summary>
-	public abstract class GameLiving : GameObject
+	public abstract class GameLiving : GameObject, IPooledList<GameLiving>
 	{
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		public static int IN_COMBAT_DURATION = 10000;

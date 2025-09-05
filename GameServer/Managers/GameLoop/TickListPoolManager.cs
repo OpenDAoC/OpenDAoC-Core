@@ -11,6 +11,7 @@ namespace DOL.GS
             new Dictionary<Type, PooledListKey>
             {
                 { typeof(GameClient), PooledListKey.Client },
+                { typeof(GameLiving), PooledListKey.Living },
                 { typeof(GamePlayer), PooledListKey.Player },
                 { typeof(GameNPC), PooledListKey.Npc },
                 { typeof(GameStaticItem), PooledListKey.Item },
@@ -26,6 +27,7 @@ namespace DOL.GS
             new Dictionary<PooledListKey, TickPoolBase>
             {
                 { PooledListKey.Client, new TickListPool<GameClient>() },
+                { PooledListKey.Living, new TickListPool<GameLiving>() },
                 { PooledListKey.Player, new TickListPool<GamePlayer>() },
                 { PooledListKey.Npc, new TickListPool<GameNPC>() },
                 { PooledListKey.Item, new TickListPool<GameStaticItem>() },
@@ -58,6 +60,7 @@ namespace DOL.GS
     public enum PooledListKey
     {
         Client,
+        Living,
         Player,
         Npc,
         Item,
