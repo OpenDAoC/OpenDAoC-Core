@@ -262,7 +262,7 @@ namespace DOL.GS.Commands
                             if (firstrun == 0)
                             {
                                 text.Length = 0;
-                                text.Append($"{i}) {grouped.Group.GroupMemberClassString(grouped)}");
+                                text.Append($"{i}) {grouped.Group.GroupMemberClassString()}");
                                 client.Out.SendMessage(text.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 i++;
                                 firstrun = 1;
@@ -270,7 +270,7 @@ namespace DOL.GS.Commands
                             else if (!ListedPeople.Contains(grouped))
                             {
                                 text.Length = 0;
-                                text.Append($"{i}) {grouped.Group.GroupMemberClassString(grouped)}");
+                                text.Append($"{i}) {grouped.Group.GroupMemberClassString()}");
                                 i++;
                                 client.Out.SendMessage(text.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             }
