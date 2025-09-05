@@ -165,7 +165,7 @@ namespace DOL.GS
                     int newCapacity = (int) (Items.Capacity * 1.2);
 
                     if (log.IsWarnEnabled)
-                        log.Warn($"{typeof(T)} {nameof(Items)} is too short. Resizing it to {newCapacity}.");
+                        log.Warn($"Array for type '{typeof(T)}' is too short. Resizing it to {newCapacity}.");
 
                     Items.Resize(newCapacity);
                 }
