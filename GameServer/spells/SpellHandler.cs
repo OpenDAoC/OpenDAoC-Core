@@ -1868,27 +1868,25 @@ namespace DOL.GS.Spells
 		public virtual void CastSubSpells(GameLiving target)
 		{
 			if (m_spell.SubSpellID > 0)
-				CastSingleSubSpell(target, m_spell.SubSpellID);
+				CastSingleSubSpell(target, m_spell);
 
 			foreach (int spellID in m_spell.MultipleSubSpells)
 			{
-				if (spellID != m_spell.SubSpellID) // Avoid duplicate casting
-					CastSingleSubSpell(target, spellID);
+				if (spellID != m_spell.SubSpellID)
+					CastSingleSubSpell(target, SkillBase.GetSpellByID(spellID));
 			}
 		}
 
-		private void CastSingleSubSpell(GameLiving target, int spellID)
+		private void CastSingleSubSpell(GameLiving target, Spell spell)
 		{
-			Spell spell = SkillBase.GetSpellByID(spellID);
+			if (target == null || spell == null || spell.SubSpellID != 0)
+				return;
 
-			if (target != null && spell != null && spell.SubSpellID == 0)
-			{
-				if (Caster is GameSummonedPet pet and not NecromancerPet)
-					pet.ScaleSpell(spell, pet.Level, Properties.PET_SCALE_SPELL_MAX_LEVEL);
+			if (Caster is GameSummonedPet pet and not NecromancerPet)
+				pet.ScaleSpell(spell, pet.Level, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 
-				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-				spellHandler.StartSpell(target);
-			}
+			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
+			spellHandler.StartSpell(target);
 		}
 
 		public virtual List<GameLiving> GetGroupAndPets(Spell spell)
