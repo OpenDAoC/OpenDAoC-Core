@@ -18,7 +18,6 @@ namespace DOL.Database
 		protected string	m_timetolevel = string.Empty;
 		protected long 	    m_secondstolevel;
 		protected long 	    m_hourstolevel;
-		protected int 	    m_boosted;
 
 		public DbTimeXLevel() { }
 
@@ -91,17 +90,6 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_hardcore = value;
-			}
-		}
-
-		[DataElement(AllowDbNull= false, Unique=false)]
-		public int Boosted
-		{
-			get {return m_boosted;}
-			set
-			{
-				Dirty = true;
-				m_boosted = value;
 			}
 		}
 

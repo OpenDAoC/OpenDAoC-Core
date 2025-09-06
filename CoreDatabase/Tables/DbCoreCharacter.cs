@@ -184,8 +184,6 @@ namespace DOL.Database
         // Atlas
         private bool m_hardcore; // set to true if player is doing the hardcore challenge
         private bool m_hardcoreCompleted; // set to true if player has reached level 50 as hardcore
-        private bool m_receiveROG; // toggle receiving ROGs for the player
-        private bool m_boosted; // set to true if player has used a free level/rr NPC
 
         // Controls automation
         private ushort _automaticBackupStyleId;
@@ -207,7 +205,6 @@ namespace DOL.Database
             m_gainRP = true;
             m_autoloot = true;
             m_lastLevelUp = DateTime.Now;
-            m_receiveROG = true;
         }
 
 		/// <summary>
@@ -2208,20 +2205,6 @@ namespace DOL.Database
 				m_hardcoreCompleted = value;
 			}
 		}
-		
-		/// <summary>
-		/// has the player used any free level/rr npc?
-		/// </summary>
-		[DataElement(AllowDbNull = false)]
-		public bool isBoosted
-		{
-			get { return m_boosted; }
-			set
-			{
-				Dirty = true;
-				m_boosted = value;
-			}
-		}
 
 		[DataElement(AllowDbNull = false)]
 		public ushort AutomaticBackupStyleId
@@ -2313,23 +2296,6 @@ namespace DOL.Database
                 Dirty = true;
                 m_playedTimeSinceLevel = value;
             }
-        }
-        
-        /// <summary>
-        /// Gets/sets the characters option to receive ROGs /eventrog
-        /// </summary>
-        [DataElement(AllowDbNull = false)]
-        public bool ReceiveROG
-        {
-	        get
-	        {
-		        return m_receiveROG;
-	        }
-	        set
-	        {
-		        Dirty = true;
-		        m_receiveROG = value;
-	        }
         }
 
         /// <summary>
