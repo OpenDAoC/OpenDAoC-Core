@@ -124,7 +124,7 @@ namespace DOL.GS
         {
             lock (_concentrationEffectsLock)
             {
-                for (int i = 0; i < _concentrationEffects.Count; i++)
+                for (int i = _concentrationEffects.Count - 1; i >= 0; i--)
                     _concentrationEffects[i].Stop(playerCancelled);
             }
         }
