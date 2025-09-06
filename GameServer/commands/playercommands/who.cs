@@ -138,13 +138,6 @@ namespace DOL.GS.Commands
 					filters.Add(new HCFilter());
 					break;
 				}
-				case "solo":
-				case "nohelp":
-				{
-					filters = new ArrayList(1);
-					filters.Add(new NoHelpFilter());
-					break;
-				}
 				case "frontiers":
 				{
 					filters = new ArrayList();
@@ -289,10 +282,6 @@ namespace DOL.GS.Commands
 			if (player.HCFlag)
 			{
 				result.Append(" <HC>");
-			}
-			if (player.NoHelp)
-			{
-				result.Append(" <SOLO>");
 			}
 			if(player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 			{
@@ -488,7 +477,7 @@ namespace DOL.GS.Commands
 				return player.RPFlag;
 			}
 		}
-		
+
 		private class AdvisorFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)
@@ -496,20 +485,12 @@ namespace DOL.GS.Commands
 				return player.Advisor;
 			}
 		}
-		
+
 		private class HCFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)
 			{
 				return player.HCFlag;
-			}
-		}
-		
-		private class NoHelpFilter : IWhoFilter
-		{
-			public bool ApplyFilter(GamePlayer player)
-			{
-				return player.NoHelp;
 			}
 		}
 
@@ -524,7 +505,7 @@ namespace DOL.GS.Commands
 				return false;
 			}
 		}
-		
+
 		private class BGFilter : IWhoFilter
 		{
 			public bool ApplyFilter(GamePlayer player)

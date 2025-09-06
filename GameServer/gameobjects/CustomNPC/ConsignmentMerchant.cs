@@ -178,7 +178,7 @@ namespace DOL.GS
         public virtual bool HasPermissionToMove(GamePlayer player)
         {
             House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
-            return house != null && house.HasOwnerPermissions(player) && !player.NoHelp;
+            return house != null && house.HasOwnerPermissions(player);
         }
 
         /// <summary>

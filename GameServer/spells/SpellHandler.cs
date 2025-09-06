@@ -1954,12 +1954,6 @@ namespace DOL.GS.Spells
 					CancelFocusSpells();
 					return false;
 				}
-
-				if (HasPositiveEffect && Target is GamePlayer p && Caster is GamePlayer c && Target != Caster && p.NoHelp)
-				{
-					c.Out.SendMessage(Target.Name + " has chosen to walk the path of solitude, and your spell fails.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-					return false;
-				}
 			}
 
 			IList<GameLiving> targets;

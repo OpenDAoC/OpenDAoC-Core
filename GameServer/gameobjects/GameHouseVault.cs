@@ -142,7 +142,7 @@ namespace DOL.GS
         /// </summary>
         public override bool CanView(GamePlayer player)
         {
-            return !player.HCFlag && !player.NoHelp && CurrentHouse.CanUseVault(player, this, VaultPermissions.View);
+            return !player.HCFlag && CurrentHouse.CanUseVault(player, this, VaultPermissions.View);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace DOL.GS
         /// </summary>
         public override bool CanAddItems(GamePlayer player)
         {
-            return !player.HCFlag && !player.NoHelp && CurrentHouse.CanUseVault(player, this, VaultPermissions.Add);
+            return !player.HCFlag && CurrentHouse.CanUseVault(player, this, VaultPermissions.Add);
         }
 
         /// <summary>

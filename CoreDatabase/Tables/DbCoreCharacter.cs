@@ -182,7 +182,6 @@ namespace DOL.Database
         private long m_playedTimeSinceLevel;
 
         // Atlas
-        private bool m_noHelp; // set to true if player is doing the solo challenge
         private bool m_hardcore; // set to true if player is doing the hardcore challenge
         private bool m_hardcoreCompleted; // set to true if player has reached level 50 as hardcore
         private bool m_receiveROG; // toggle receiving ROGs for the player
@@ -2045,13 +2044,6 @@ namespace DOL.Database
 				Dirty = true;
 				m_showXFireInfo = value;
 			}
-		}
-
-		[DataElement(AllowDbNull = false)]
-		public bool NoHelp
-		{
-			get { return m_noHelp; }
-			set { Dirty = true; m_noHelp = value; }
 		}
 
 		[DataElement(AllowDbNull = false)]

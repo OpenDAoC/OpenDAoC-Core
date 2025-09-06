@@ -349,16 +349,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gets or sets the no help flag for this player
-        /// (delegate to property in DBCharacter)
-        /// </summary>
-        public bool NoHelp
-        {
-            get { return DBCharacter != null ? DBCharacter.NoHelp : false; }
-            set { if (DBCharacter != null) DBCharacter.NoHelp = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the show guild logins flag for this player
         /// (delegate to property in DBCharacter)
         /// </summary>
@@ -4747,7 +4737,6 @@ namespace DOL.GS
         public virtual void OnLevelUp(int previouslevel)
         {
             IsLevelSecondStage = false;
-            int isSolo = 0;
             int isHardcore = 0;
             int isBoosted = 0;
             int realm = 0;
@@ -4755,13 +4744,10 @@ namespace DOL.GS
             if (HCFlag)
                 isHardcore = 1;
 
-            if (NoHelp)
-                isSolo = 1;
-
             if (Boosted)
                 isBoosted = 1;
 
-                switch (Realm)
+            switch (Realm)
             {
                 case eRealm._FirstPlayerRealm:
                     realm = 1;
@@ -4798,7 +4784,6 @@ namespace DOL.GS
                     MaxLevelTime.Character_Realm = realm;
                     MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
-                    MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
@@ -4820,7 +4805,6 @@ namespace DOL.GS
                     MaxLevelTime.Character_Realm = realm;
                     MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
-                    MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
@@ -4842,7 +4826,6 @@ namespace DOL.GS
                     MaxLevelTime.Character_Realm = realm;
                     MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
-                    MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
@@ -4864,7 +4847,6 @@ namespace DOL.GS
                     MaxLevelTime.Character_Realm = realm;
                     MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
-                    MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;
@@ -4896,7 +4878,6 @@ namespace DOL.GS
                     MaxLevelTime.Character_Realm = realm;
                     MaxLevelTime.Character_Class = ((eCharacterClass)this.CharacterClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
-                    MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
                     MaxLevelTime.TimeToLevel = playedTime.Days + "d " + playedTime.Hours + "h " + playedTime.Minutes + "m ";
                     MaxLevelTime.SecondsToLevel = PlayedTime;

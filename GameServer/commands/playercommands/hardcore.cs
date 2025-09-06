@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
@@ -92,8 +91,7 @@ namespace DOL.GS.Commands
                 player.Emote(eEmote.StagFrenzy);
                 player.HCFlag = true;
                 player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                NoHelpCommandHandler.NoHelpActivate(player);
-                player.CurrentTitle = player.NoHelp ? new HardCoreSoloTitle() : new HardCoreTitle();
+                player.CurrentTitle = new HardCoreTitle();
             }
             else
                 player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -123,32 +121,6 @@ namespace DOL.GS.PlayerTitles
         public override bool IsSuitable(GamePlayer player)
         {
             return player.HCFlag || player.HCCompleted;
-        }
-    }
-
-    public class HardCoreSoloTitle : SimplePlayerTitle
-    {
-
-        public override string GetDescription(GamePlayer player)
-        {
-            return "Hardcore Solo Beetle";
-        }
-
-        public override string GetValue(GamePlayer source, GamePlayer player)
-        {
-            return "Hardcore Solo Beetle";
-        }
-
-        public override void OnTitleGained(GamePlayer player)
-        {
-            player.Out.SendMessage("You have gained the Hardcore Solo Beetle title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-        }
-
-        public override bool IsSuitable(GamePlayer player)
-        {
-            const string customKey2 = "solo_to_50";
-            DbCoreCharacterXCustomParam solo_to_50 = DOLDB<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
-            return (player.HCFlag || player.HCCompleted) && (player.NoHelp || solo_to_50 != null);
         }
     }
 }

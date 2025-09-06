@@ -67,19 +67,7 @@ namespace DOL.GS.Spells
                 amount *= 0.5;
             }
 
-            GamePlayer playerTarget = target as GamePlayer;
             GamePlayer playerCaster = Caster as GamePlayer;
-
-            if (playerTarget != null && playerTarget.NoHelp && playerCaster != null && target != Caster)
-            {
-                if (playerTarget.Group == null ||
-                    playerCaster.Group == null ||
-                    playerCaster.Group != playerTarget.Group)
-                {
-                    MessageToCaster("That player does not want assistance", eChatType.CT_SpellResisted);
-                    return false;
-                }
-            }
 
             // [Atlas - Takii] Disabling MOC effectiveness scaling in OF.
             /*double mocFactor = 1.0;

@@ -166,20 +166,6 @@ namespace DOL.GS.ServerRules
 				if ((source as GamePlayer).Client.Account.PrivLevel > 1 || (target as GamePlayer).Client.Account.PrivLevel > 1)
 					return true;
 			}
-			
-			if((source as GamePlayer).NoHelp)
-			{
-				if(quiet == false) MessageToLiving(source, "You have renounced to any kind of help!");
-				if(quiet == false) MessageToLiving(target, "This player has chosen to receive no help!");
-				return false;
-			}
-			
-			if((target as GamePlayer).NoHelp)
-			{
-				if(quiet == false) MessageToLiving(target, "You have renounced to any kind of help!");
-				if(quiet == false) MessageToLiving(source, "This player has chosen to receive no help!");
-				return false;
-			}
 
 			//Peace flag NPCs can trade with everyone
 			if (target is GameNPC)

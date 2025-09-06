@@ -120,7 +120,6 @@ namespace DOL.Database
 			this.MLLevel = character.MLLevel;
 			this.MoodType = character.MoodType;
 			this.Name = character.Name;
-			this.NoHelp = character.NoHelp;
             this.NotDisplayedInHerald = character.NotDisplayedInHerald;
 			this.Piety = character.Piety;
 			this.Platinum = character.Platinum;

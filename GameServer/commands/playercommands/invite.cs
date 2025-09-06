@@ -41,12 +41,6 @@ namespace DOL.GS.Commands
 
                 if (!GameServer.ServerRules.IsAllowedToGroup(client.Player, target, false))
                     return;
-
-                if (target.NoHelp)
-                {
-                    client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return;
-                }
             }
             else
             {
@@ -80,12 +74,6 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        if (target.NoHelp)
-                        {
-                            client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
                         break;
                     }
                 }
@@ -106,11 +94,6 @@ namespace DOL.GS.Commands
                     GroupMgr.AddGroup(group);
                     group.AddMember(client.Player);
                     group.AddMember(target);
-                }
-                else if (target.NoHelp)
-                {
-                    client.Out.SendMessage("Grouping this player would void their SOLO challenge", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    return;
                 }
                 else
                     client.Player.Group.AddMember(target);
