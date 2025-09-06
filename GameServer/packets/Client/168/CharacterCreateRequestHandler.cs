@@ -68,7 +68,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         if (string.IsNullOrEmpty(pakdata.CharName))
                         {
                             // Deletion in 1.104+ check for removed character.
-                            needRefresh |= CheckForDeletedCharacter(client.Account.Name, client, pakdata.CharacterSlot);
+                            needRefresh |= HandleDeleteCharacterRequest(client.Account.Name, client, pakdata.CharacterSlot);
                         }
                         break;
                     case 2: // Customize face or stats
@@ -165,7 +165,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         if (string.IsNullOrEmpty(pakdata.CharName))
                         {
                             // Deletion in 1.104+ check for removed character.
-                            needRefresh |= CheckForDeletedCharacter(accountName, client, i);
+                            needRefresh |= HandleDeleteCharacterRequest(accountName, client, i);
                         }
 
                         break;
@@ -838,8 +838,16 @@ namespace DOL.GS.PacketHandler.Client.v168
             return false;
         }
 
-        public static bool CheckForDeletedCharacter(string accountName, GameClient client, int slot)
+        public static bool HandleDeleteCharacterRequest(string accountName, GameClient client, int slot)
         {
+            if (client.ClientState is not GameClient.eClientState.CharScreen)
+                return false;
+
+            DbCoreCharacter[] allChars = client.Account.Characters.ToArray();
+
+            if (allChars == null)
+                return false;
+
             int charSlot = slot;
 
             if (client.Version > GameClient.eClientVersion.Version1124)
@@ -854,14 +862,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     charSlot = 300 + slot;
             }
 
-            DbCoreCharacter[] allChars = client.Account.Characters.ToArray();
-
-            if (allChars == null)
-                return false;
-
-            if (client.ClientState is not GameClient.eClientState.CharScreen)
-                return false;
-
             foreach (DbCoreCharacter character in allChars)
             {
                 if (character.AccountSlot != charSlot)
@@ -872,39 +872,47 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (HouseMgr.GetHouseByCharacterIds([character.ObjectId]) != null)
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn($"Character deletion prevented because the character has a house. (Account {accountName}) (Character: {character.Name}) (Slot position: {character.AccountSlot}) (Client slot {slot})");
+                        log.Warn($"Character deletion prevented because the character has a house. (Account {client.Account.Name}) (Character: {character.Name}) (Slot position: {character.AccountSlot}) (Client slot {slot})");
 
                     return false;
                 }
 
                 if (log.IsInfoEnabled)
-                    log.Info($"Character deletion. (Account {accountName}) (Character: {character.Name}) (Slot position: {character.AccountSlot}) (Client slot {slot})");
+                    log.Info($"Character deletion. (Account {client.Account.Name}) (Character: {character.Name}) (Slot position: {character.AccountSlot}) (Client slot {slot})");
 
                 if (allChars.Length < client.ActiveCharIndex && client.ActiveCharIndex > -1 && allChars[client.ActiveCharIndex] == character)
                     client.ActiveCharIndex = -1;
 
-                GameEventMgr.Notify(DatabaseEvent.CharacterDeleted, null, new CharacterEventArgs(character, client));
-                DbCoreCharacterBackup backupCharacter = new(character);
-
-                foreach (DbCoreCharacterBackupXCustomParam customParam in backupCharacter.CustomParams)
-                    GameServer.Database.AddObject(customParam);
-
-                GameServer.Database.AddObject(backupCharacter);
-                GameServer.Database.DeleteObject(character);
-
-                // Do we really have to do this?
-                client.Account.Characters = null;
-                GameServer.Database.FillObjectRelations(client.Account);
-
-                // The client has no more characters, so we let it choose the realm again.
-                if (client.Account.Characters == null || client.Account.Characters.Length == 0)
-                    client.Account.Realm = 0;
-
-                GameServer.Database.SaveObject(client.Account);
-                AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterDelete, string.Empty, character.Name);
+                DeleteCharacter(client, character);
+                return true;
             }
 
-            return true;
+            return false;
+        }
+
+        public static void DeleteCharacter(GameClient client, DbCoreCharacter character)
+        {
+            // Not meant to be called directly.
+
+            GameEventMgr.Notify(DatabaseEvent.CharacterDeleted, null, new CharacterEventArgs(character, client));
+            DbCoreCharacterBackup backupCharacter = new(character);
+
+            foreach (DbCoreCharacterBackupXCustomParam customParam in backupCharacter.CustomParams)
+                GameServer.Database.AddObject(customParam);
+
+            GameServer.Database.AddObject(backupCharacter);
+            GameServer.Database.DeleteObject(character);
+
+            // Do we really have to do this?
+            client.Account.Characters = null;
+            GameServer.Database.FillObjectRelations(client.Account);
+
+            // The client has no more characters, so we let it choose the realm again.
+            if (client.Account.Characters == null || client.Account.Characters.Length == 0)
+                client.Account.Realm = 0;
+
+            GameServer.Database.SaveObject(client.Account);
+            AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterDelete, string.Empty, character.Name);
         }
 
         /// <summary>

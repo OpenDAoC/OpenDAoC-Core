@@ -6247,12 +6247,7 @@ namespace DOL.GS
             IsSwimming = false;
 
             if (HCFlag)
-            {
-                DbCoreCharacter cha = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(Name));
-                if (cha == null) return;
-                Client.Out.SendPlayerQuit(true);
-                GameServer.Database.DeleteObject(cha);
-            }
+                HardCoreLogin.HandleDeath(this);
         }
 
         public override void EnemyKilled(GameLiving enemy)

@@ -2,6 +2,7 @@
 using System.Reflection;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.PacketHandler.Client.v168;
 using DOL.GS.PlayerTitles;
 using DOL.Logging;
 
@@ -23,6 +24,12 @@ namespace DOL.GS
             GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
         }
 
+        public static void HandleDeath(GamePlayer player)
+        {
+            GameServiceUtils.KickPlayerToCharScreen(player);
+            CharacterCreateRequestHandler.DeleteCharacter(player.Client, player.DBCharacter);
+        }
+
         private static void HCPlayerEntered(DOLEvent e, object sender, EventArgs arguments)
         {
             if (sender is not GamePlayer player || !player.HCFlag || player.DeathCount == 0)
@@ -31,8 +38,7 @@ namespace DOL.GS
             if (Log.IsWarnEnabled)
                 Log.Warn($"[HARDCORE] player {player.Name} has {player.DeathCount} deaths and has been removed from the database.");
 
-            player.Client.Out.SendPlayerQuit(true);
-            GameServer.Database.DeleteObject(player.DBCharacter);
+            HandleDeath(player);
         }
     }
 }
