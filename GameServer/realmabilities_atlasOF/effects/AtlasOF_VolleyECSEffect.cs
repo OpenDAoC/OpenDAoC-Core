@@ -142,7 +142,7 @@ namespace DOL.GS.Effects
 
         protected List<GameLiving> SelectTargets()
         {
-            List<GameLiving> potentialTargets = new();
+            List<GameLiving> potentialTargets = GameLoop.GetListForTick<GameLiving>();
 
             foreach (GamePlayer playerTarget in WorldMgr.GetPlayersCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget.X, OwnerPlayer.GroundTarget.Y, OwnerPlayer.GroundTarget.Z, EFFECT_RADIUS))
             {

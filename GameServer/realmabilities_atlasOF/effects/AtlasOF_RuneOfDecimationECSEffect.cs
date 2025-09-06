@@ -21,7 +21,7 @@ namespace DOL.GS.Effects
         {
             bool shouldDetonate = false;
             GameLiving triggeringLiving = null;
-            List<GameLiving> DetonateTargets = new();
+            List<GameLiving> targets = GameLoop.GetListForTick<GameLiving>();
 
             foreach (GamePlayer player in Owner?.GetPlayersInRadius((ushort)SpellHandler.Spell.Range))
             {
@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
                 {
                     shouldDetonate = true;
                     triggeringLiving ??= player;
-                    DetonateTargets.Add(player);
+                    targets.Add(player);
                 }
             }
 
@@ -39,7 +39,7 @@ namespace DOL.GS.Effects
                 {
                     shouldDetonate = true;
                     triggeringLiving ??= living;
-                    DetonateTargets.Add(living);
+                    targets.Add(living);
                 }
             }
 
@@ -52,7 +52,7 @@ namespace DOL.GS.Effects
 
                 GamePlayer playerCaster = SpellHandler.Caster as GamePlayer;
 
-                foreach (GameLiving target in DetonateTargets)
+                foreach (GameLiving target in targets)
                 {
                     if (triggeringLiving == null)
                         continue;

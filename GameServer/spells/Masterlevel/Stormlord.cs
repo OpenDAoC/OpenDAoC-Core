@@ -102,10 +102,10 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override IList<GameLiving> SelectTargets(GameObject CasterTarget)
+        public override List<GameLiving> SelectTargets(GameObject CasterTarget)
         {
             
-            var list = new List<GameLiving>(8);
+            var list = GameLoop.GetListForTick<GameLiving>();
             foreach (GameNPC storms in Caster.GetNPCsInRadius(350))
             {
                 if ((storms is GameStorm) && (GameServer.ServerRules.IsSameRealm(storms, Caster, true))) list.Add(storms);

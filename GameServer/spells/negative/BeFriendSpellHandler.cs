@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -30,9 +29,11 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="castTarget"></param>
 		/// <returns></returns>
-		public override IList<GameLiving> SelectTargets(GameObject castTarget)
+		public override List<GameLiving> SelectTargets(GameObject castTarget)
 		{
-			return base.SelectTargets(castTarget).Where(t => t is GameNPC).ToList();
+			List<GameLiving> targets = base.SelectTargets(castTarget);
+			targets.RemoveAll(t => t is not GameNPC);
+			return targets;
 		}
 
 		/// <summary>

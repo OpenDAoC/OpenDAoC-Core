@@ -37,9 +37,9 @@ namespace DOL.GS.Spells
 
         #region Targets
 
-        public static IList<GameLiving> SelectTargets(SpellHandler spellHandler, GameLiving target)
+        public static List<GameLiving> SelectTargets(SpellHandler spellHandler, GameLiving target)
         {
-            var list = new List<GameLiving>(8);
+            var list = GameLoop.GetListForTick<GameLiving>();
             Spell spell = spellHandler.Spell;
             GameLiving caster = spellHandler.Caster;
 
@@ -178,7 +178,7 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="castTarget"></param>
         /// <returns></returns>
-        public override IList<GameLiving> SelectTargets(GameObject castTarget)
+        public override List<GameLiving> SelectTargets(GameObject castTarget)
         {
             return SelectTargets(this, castTarget as GameLiving);
         }
@@ -244,7 +244,7 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="castTarget"></param>
         /// <returns></returns>
-        public override IList<GameLiving> SelectTargets(GameObject castTarget)
+        public override List<GameLiving> SelectTargets(GameObject castTarget)
         {
             return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
@@ -292,7 +292,7 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="castTarget"></param>
         /// <returns></returns>
-        public override IList<GameLiving> SelectTargets(GameObject castTarget)
+        public override List<GameLiving> SelectTargets(GameObject castTarget)
         {
             return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
@@ -341,7 +341,7 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="castTarget"></param>
         /// <returns></returns>
-        public override IList<GameLiving> SelectTargets(GameObject castTarget)
+        public override List<GameLiving> SelectTargets(GameObject castTarget)
         {
             return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }
@@ -413,7 +413,7 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="castTarget"></param>
         /// <returns></returns>
-        public override IList<GameLiving> SelectTargets(GameObject castTarget)
+        public override List<GameLiving> SelectTargets(GameObject castTarget)
         {
             return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
         }

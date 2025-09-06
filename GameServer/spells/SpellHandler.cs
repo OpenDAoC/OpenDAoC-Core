@@ -1430,11 +1430,9 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Select all targets for this spell
 		/// </summary>
-		/// <param name="castTarget"></param>
-		/// <returns></returns>
-		public virtual IList<GameLiving> SelectTargets(GameObject castTarget)
+		public virtual List<GameLiving> SelectTargets(GameObject castTarget)
 		{
-			List<GameLiving> list = new();
+			List<GameLiving> list = GameLoop.GetListForTick<GameLiving>();
 			GameLiving target = castTarget as GameLiving;
 			eSpellTarget modifiedTarget = Spell.Target;
 			ushort modifiedRadius = (ushort) Spell.Radius;
@@ -1891,11 +1889,14 @@ namespace DOL.GS.Spells
 
 		public virtual List<GameLiving> GetGroupAndPets(Spell spell)
 		{
-			List<GameLiving> livingsInRange = new();
-			ICollection<GameLiving> groupMembers = Caster.Group?.GetMembersInTheGroup() ?? (Caster as NecromancerPet)?.Owner.Group?.GetMembersInTheGroup();
+			List<GameLiving> livingsInRange = GameLoop.GetListForTick<GameLiving>();
+			List<GameLiving> groupMembers = Caster.Group?.GetMembersInTheGroup() ?? (Caster as NecromancerPet)?.Owner.Group?.GetMembersInTheGroup();
 
 			if (groupMembers == null)
-				groupMembers = new List<GameLiving>(){ Caster };
+			{
+				groupMembers = GameLoop.GetListForTick<GameLiving>();
+				groupMembers.Add(Caster);
+			}
 
 			foreach (GameLiving living in groupMembers)
 			{

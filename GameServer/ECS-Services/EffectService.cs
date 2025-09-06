@@ -176,7 +176,7 @@ namespace DOL.GS
 
                         if (GameServiceUtils.ShouldTick(childEffect.ExpireTick))
                         {
-                            livings ??= new();
+                            livings ??= GameLoop.GetListForTick<GameLiving>();
                             livings.Add(pair.Key);
                             childEffect.Stop();
                         }
@@ -185,9 +185,7 @@ namespace DOL.GS
                     if (livings != null)
                     {
                         foreach (GameLiving living in livings)
-                        {
                             pulseEffect.ChildEffects.Remove(living);
-                        }
                     }
                 }
             }

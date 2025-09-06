@@ -69,7 +69,8 @@ namespace DOL.GS.RealmAbilities
         {
             if (target.IsAlive && m_spell != null)
             {
-                List<GameLiving> targets = new List<GameLiving>();
+                List<GameLiving> targets = GameLoop.GetListForTick<GameLiving>();
+
                 if (target.Group != null)
                 {
                     foreach (var living in target.Group.GetMembersInTheGroup())
@@ -88,7 +89,7 @@ namespace DOL.GS.RealmAbilities
                 }
             }
         }
-        
+
         public override IList<string> DelveInfo
         {
             get
