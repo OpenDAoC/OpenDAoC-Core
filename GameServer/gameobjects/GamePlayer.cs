@@ -4664,10 +4664,15 @@ namespace DOL.GS
             get { return DBCharacter != null ? (byte)DBCharacter.Level : base.Level; }
             set
             {
-                int oldLevel = Level;
-                base.Level = value;
+                // `base.Level` ends up having to call the getter (in `SendLivingDataUpdate`).
+                // Which, in the case of `GamePlayer`, accesses `DBCharacter`.
+                // For this reason, `DBCharacter.Level` must be set first.
                 if (DBCharacter != null)
                     DBCharacter.Level = value;
+
+                int oldLevel = Level;
+                base.Level = value;
+
                 if (oldLevel > 0)
                 {
                     if (value > oldLevel)
