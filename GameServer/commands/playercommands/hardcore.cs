@@ -29,16 +29,11 @@ namespace DOL.GS
             if (sender is not GamePlayer player || !player.HCFlag || player.DeathCount == 0)
                 return;
 
-            DbCoreCharacter character = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
-
-            if (character == null)
-                return;
-
             if (Log.IsWarnEnabled)
                 Log.Warn($"[HARDCORE] player {player.Name} has {player.DeathCount} deaths and has been removed from the database.");
 
-            GameServer.Database.DeleteObject(character);
             player.Client.Out.SendPlayerQuit(true);
+            GameServer.Database.DeleteObject(player.DBCharacter);
         }
     }
 }
