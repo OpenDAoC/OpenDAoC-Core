@@ -1157,9 +1157,9 @@ namespace DOL.GS.ServerProperties
 		public static double NECRO_GREATER_PET_INT_MULTIPLIER;
 
 		/// <summary>
-		/// How often should pets think?  Default 1500 or 1.5 seconds
+		/// How often should pets think?
 		/// </summary>
-		[ServerProperty("npc", "pet_think_interval", "How often should pets think?  Default 1500 (1.5 seconds)", 1500)]
+		[ServerProperty("npc", "pet_think_interval", "How often should pets think?", 600)]
 		public static int PET_THINK_INTERVAL;
 
 		/// <summary>
