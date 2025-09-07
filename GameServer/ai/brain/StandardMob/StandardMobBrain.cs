@@ -245,11 +245,15 @@ namespace DOL.AI.Brain
         protected readonly Lock _orderedAggroListLock = new();
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 
-        public class AggroAmount(long @base = 0)
+        public class AggroAmount
         {
-            public long Base { get; set; } = @base;
+            public AggroAmount(long baseAggro = 0)
+            {
+                Base = baseAggro;
+            }
+
+            public long Base { get; set; }
             public long Effective { get; set; }
-            public long Temporary { get; set; }
         }
 
         /// <summary>
@@ -846,7 +850,12 @@ namespace DOL.AI.Brain
             if (Body == null || Body.Spells == null || Body.Spells.Count == 0)
                 return false;
 
-            bool casted = false;
+            // Becomes true when:
+            // * The NPC is currently casting or is about to cast a spell.
+            // * The spell is waiting for LoS check.
+            // * The spell is blocked by self-interrupt.
+            // In all these cases, the NPC should not start a melee attack.
+            bool isCastingOrWantsToCast = false;
 
             if (type is eCheckSpellType.Defensive)
             {
@@ -857,10 +866,10 @@ namespace DOL.AI.Brain
                     CheckDefensiveSpells(Body.InstantMiscSpells);
 
                 if (Body.CanCastHealSpells)
-                    casted = CheckDefensiveSpells(Body.HealSpells);
+                    isCastingOrWantsToCast = CheckDefensiveSpells(Body.HealSpells);
 
-                if (!casted && Body.CanCastMiscSpells)
-                    casted = CheckDefensiveSpells(Body.MiscSpells);
+                if (!isCastingOrWantsToCast && Body.CanCastMiscSpells)
+                    isCastingOrWantsToCast = CheckDefensiveSpells(Body.MiscSpells);
             }
             else if (type is eCheckSpellType.Offensive)
             {
@@ -869,69 +878,99 @@ namespace DOL.AI.Brain
                     CheckOffensiveSpells(Body.InstantHarmfulSpells);
 
                 if (Body.CanCastHarmfulSpells)
-                    casted = CheckOffensiveSpells(Body.HarmfulSpells);
+                    isCastingOrWantsToCast = CheckOffensiveSpells(Body.HarmfulSpells);
             }
 
-            return casted || Body.IsCasting;
+            return isCastingOrWantsToCast || Body.IsCasting;
         }
 
         private bool CheckOffensiveSpells(List<Spell> spells)
         {
+            bool blockedBySelfInterrupt = false;
             Spell spellToCast = null;
             int castableCount = 0;
 
             foreach (Spell spell in spells)
             {
-                if (CanCastOffensiveSpell(spell))
+                if (!CanCastOffensiveSpell(spell, out bool selfInterrupt))
                 {
-                    // With each valid spell we find, we give it a 1-in-N chance to become the chosen one.
-                    if (Util.Random(castableCount) == 0)
-                        spellToCast = spell;
+                    if (selfInterrupt)
+                        blockedBySelfInterrupt = true;
 
-                    castableCount++;
+                    continue;
                 }
+
+                // With each valid spell we find, we give it a 1-in-N chance to become the chosen one.
+                if (Util.Random(castableCount) == 0)
+                    spellToCast = spell;
+
+                castableCount++;
             }
 
-            return spellToCast != null && Body.CastSpell(spellToCast, m_mobSpellLine);
+            if (spellToCast == null)
+                return blockedBySelfInterrupt;
+
+            return Body.CastSpell(spellToCast, m_mobSpellLine);
         }
 
-        private bool CanCastOffensiveSpell(Spell spell)
+        private bool CanCastOffensiveSpell(Spell spell, out bool blockedBySelfInterrupt)
         {
-            if ((spell.CastTime > 0 && !spell.Uninterruptible && Body.IsBeingInterrupted) ||
-                (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0))
+            bool isInterruptible = spell.CastTime > 0 && !spell.Uninterruptible;
+            blockedBySelfInterrupt = false;
+
+            if (isInterruptible && Body.IsBeingInterruptedByOther)
+                return false;
+
+            if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
+                return false;
+
+            if (Body.TargetObject is not GameLiving target || !Body.IsWithinRadius(target, spell.CalculateEffectiveRange(Body)))
+                return false;
+
+            if (spell.Duration > 0 || spell.IsConcentration)
             {
+                if (spell.SpellType is not eSpellType.DirectDamageWithDebuff and not eSpellType.DamageSpeedDecrease && LivingHasEffect(target, spell))
+                    return false;
+            }
+
+            if (isInterruptible && Body.IsBeingSelfInterrupted)
+            {
+                blockedBySelfInterrupt = true;
                 return false;
             }
 
-            return Body.TargetObject is GameLiving target &&
-                    Body.IsWithinRadius(target, spell.CalculateEffectiveRange(Body)) &&
-                    ((spell.Duration <= 0 && !spell.IsConcentration) || !LivingHasEffect(target, spell) || spell.SpellType is eSpellType.DirectDamageWithDebuff or eSpellType.DamageSpeedDecrease);
+            return true;
         }
 
         private bool CheckDefensiveSpells(List<Spell> spells)
         {
+            bool blockedBySelfInterrupt = false;
             (Spell spell, GameLiving target) candidate = (null, null);
             int validSpellsFound = 0;
 
             foreach (Spell spell in spells)
             {
-                if (CanCastDefensiveSpell(spell, out GameLiving target))
+                if (!CanCastDefensiveSpell(spell, out GameLiving target, out bool selfInterrupt))
                 {
-                    // Reservoir Sampling for a single item (k=1).
-                    // The first valid spell is always chosen.
-                    // The second has a 1/2 chance of replacing the first.
-                    // The third has a 1/3 chance of replacing the current candidate, and so on.
-                    if (Util.Random(validSpellsFound) == 0)
-                        candidate = (spell, target);
+                    if (selfInterrupt)
+                        blockedBySelfInterrupt = true;
 
-                    validSpellsFound++;
+                    continue;
                 }
+
+                // Reservoir Sampling for a single item (k=1).
+                // The first valid spell is always chosen.
+                // The second has a 1/2 chance of replacing the first.
+                // The third has a 1/3 chance of replacing the current candidate, and so on.
+                if (Util.Random(validSpellsFound) == 0)
+                    candidate = (spell, target);
+
+                validSpellsFound++;
             }
 
             if (validSpellsFound == 0)
-                return false;
+                return blockedBySelfInterrupt;
 
-            // We have our randomly selected candidate, now perform the cast
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = candidate.target;
             bool cast = Body.CastSpell(candidate.spell, m_mobSpellLine);
@@ -939,18 +978,30 @@ namespace DOL.AI.Brain
             return cast;
         }
 
-        private bool CanCastDefensiveSpell(Spell spell, out GameLiving target)
+        private bool CanCastDefensiveSpell(Spell spell, out GameLiving target, out bool blockedBySelfInterrupt)
         {
+            bool isInterruptible = spell.CastTime > 0 && !spell.Uninterruptible;
             target = null;
+            blockedBySelfInterrupt = false;
 
-            if ((spell.CastTime > 0 && !spell.Uninterruptible && Body.IsBeingInterrupted) ||
-                (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0))
+            if (isInterruptible && Body.IsBeingInterruptedByOther)
+                return false;
+
+            if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
+                return false;
+
+            target = FindTargetForDefensiveSpell(spell);
+
+            if (target == null)
+                return false;
+
+            if (isInterruptible && Body.IsBeingSelfInterrupted)
             {
+                blockedBySelfInterrupt = true;
                 return false;
             }
 
-            target = FindTargetForDefensiveSpell(spell);
-            return target != null;
+            return true;
         }
 
         protected virtual GameLiving FindTargetForDefensiveSpell(Spell spell)

@@ -91,15 +91,22 @@ namespace DOL.GS
 
         protected override bool PrepareMeleeAttack()
         {
-            // Call `Think` before attacking to allow spell casting opportunity.
+            // Check spells before attacking to allow spell casting opportunity.
             // The NPC service's think cycles are not synchronized with attack cycles,
-            // so without this call, melee-attacking NPCs cannot reliably cast spells
-            // due to self-interrupt timing conflicts.
-            // Special handling for Necromancer pets.
-            if (_npcOwner.Brain is NecromancerPetBrain necroBrain && necroBrain.CheckSpellQueue())
-                return false;
-
-            _npcOwner.Brain.Think();
+            // so without this, melee-attacking NPCs cannot reliably cast spells.
+            if (_npcOwner.Brain is NecromancerPetBrain necroBrain)
+            {
+                if (necroBrain.CheckSpellQueue())
+                    return false;
+            }
+            else if (_npcOwner.Brain is StandardMobBrain brain)
+            {
+                if (brain.CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
+                {
+                    _npcOwner.StopAttack();
+                    return false;
+                }
+            }
 
             if (!_npcOwner.IsAttacking)
                 return false;

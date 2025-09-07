@@ -731,20 +731,16 @@ namespace DOL.GS
 		public GameObject LastInterrupter { get; private set; }
 		public long InterruptTime { get; private set; }
 		public long SelfInterruptTime { get; private set; }
-		public long InterruptRemainingDuration => !IsBeingInterrupted ? 0 : Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime;
+		public long InterruptRemainingDuration => Math.Max(0, Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime);
 		public virtual int SelfInterruptDurationOnMeleeAttack => 3000;
-		public virtual bool IsBeingInterrupted => IsBeingInterruptedIgnoreSelfInterrupt || SelfInterruptTime > GameLoop.GameLoopTime;
-		public virtual bool IsBeingInterruptedIgnoreSelfInterrupt => InterruptTime > GameLoop.GameLoopTime;
+		public virtual bool IsBeingInterrupted => IsBeingInterruptedByOther || IsBeingSelfInterrupted;
+		public bool IsBeingInterruptedByOther => InterruptTime > GameLoop.GameLoopTime;
+		public bool IsBeingSelfInterrupted => SelfInterruptTime > GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// How long does an interrupt last?
 		/// </summary>
 		public virtual int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
-
-		/// <summary>
-		/// Additional interrupt time if interrupted again
-		/// </summary>
-		public virtual int SpellInterruptRecastAgain => Properties.SPELL_INTERRUPT_AGAIN;
 
 		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, eAttackType attackType)
 		{
