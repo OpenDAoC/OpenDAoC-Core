@@ -5,18 +5,13 @@ namespace DOL.GS.Scripts
 {
     public class ShiveringPresence : GameNPC
     {
-        public ShiveringPresence() : base()
-        {
-        }
-
         public override bool AddToWorld()
         {
-            var brain = new ShiveringPresenceBrain();
+            ShiveringPresenceBrain brain = new();
             SetOwnBrain(brain);
             Model = 966;
             return base.AddToWorld();
         }
-
     }
 }
 
@@ -24,16 +19,46 @@ namespace DOL.AI.Brain
 {
     public class ShiveringPresenceBrain : StandardMobBrain
     {
-        public override int ThinkInterval
+        private ShiveringPresenceTimer _timer;
+
+        public override bool Start()
         {
-            get { return 3000; }
+            if (!base.Start())
+                return false;
+
+            _timer ??= new(Body);
+            _timer.Start();
+            return true;
         }
 
-        public override void Think()
+        public override bool Stop()
         {
-            base.Think();
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                player.Out.SendSpellEffectAnimation(Body, Body, 152, 0, false, 1);
+            if (!base.Stop())
+                return false;
+
+            _timer?.Stop();
+            _timer = null;
+            return true;
+        }
+    }
+
+    public class ShiveringPresenceTimer : ECSGameTimerWrapperBase
+    {
+        private GameNPC _owner;
+
+        public ShiveringPresenceTimer(GameNPC owner) : base(owner)
+        {
+            _owner = owner;
+            Start();
+        }
+
+        protected override int OnTick(ECSGameTimer timer)
+        {
+            foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                player.Out.SendSpellEffectAnimation(_owner, _owner, 152, 0, false, 1);
+
+            // Delay the next effect by 6~20 seconds.
+            return 6000 + Util.Random(7000) + Util.Random(7000);
         }
     }
 }
