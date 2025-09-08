@@ -106,9 +106,33 @@ namespace DOL.GS.PacketHandler.Client.v168
                     toClientSlot = (eInventorySlot) item.Item_Type;
 
                     if (toClientSlot is eInventorySlot.LeftBracer or eInventorySlot.RightBracer)
-                        toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null ? eInventorySlot.LeftBracer : eInventorySlot.RightBracer;
+                    {
+                        if (client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null)
+                            toClientSlot = eInventorySlot.LeftBracer;
+                        else
+                            toClientSlot = eInventorySlot.RightBracer;
+                    }
                     else if (toClientSlot is eInventorySlot.LeftRing or eInventorySlot.RightRing)
-                        toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null ? eInventorySlot.LeftRing : eInventorySlot.RightRing;
+                    {
+                        if (client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null)
+                            toClientSlot = eInventorySlot.LeftRing;
+                        else
+                            toClientSlot = eInventorySlot.RightRing;
+                    }
+                    else if (toClientSlot is eInventorySlot.LeftHandWeapon && (eObjectType) item.Object_Type is not eObjectType.Shield)
+                    {
+                        // Simplify the logic by not handling one-handed weapons in the two-handed slot, as this would be confusing even for the player.
+                        if (client.Player.attackComponent.CanUseLefthandedWeapon)
+                        {
+                            // Prioritize right hand slot.
+                            if (client.Player.Inventory.GetItem(eInventorySlot.RightHandWeapon) == null)
+                                toClientSlot = eInventorySlot.RightHandWeapon;
+                            else
+                                toClientSlot = eInventorySlot.LeftHandWeapon;
+                        }
+                        else
+                            toClientSlot = eInventorySlot.RightHandWeapon;
+                    }
 
                     return true;
                 }
