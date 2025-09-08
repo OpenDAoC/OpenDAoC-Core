@@ -83,7 +83,7 @@ namespace DOL.GS
             if (Interlocked.CompareExchange(ref _isReplottingPath, REPLOTTING, IDLE) != IDLE)
                 return;
 
-            const int MAX_PATH_NODES = 64;
+            const int MAX_PATH_NODES = 128;
             WrappedPathPoint[] rentedPathBuffer = ArrayPool<WrappedPathPoint>.Shared.Rent(MAX_PATH_NODES);
 
             try
