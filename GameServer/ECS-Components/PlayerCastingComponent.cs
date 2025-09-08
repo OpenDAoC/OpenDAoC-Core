@@ -23,7 +23,7 @@ namespace DOL.GS
                 return true;
             }
 
-            return base.RequestCastSpell(spell, spellLine, spellCastingAbilityHandler, target);
+            return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target);
         }
 
         protected override bool CanCastSpell()

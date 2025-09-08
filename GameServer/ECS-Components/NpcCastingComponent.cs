@@ -20,7 +20,9 @@ namespace DOL.GS
 
         public override bool RequestCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
-            Spell spellToCast = null;
+            // `spellCastingAbilityHandler` is unused for NPCs.
+
+            Spell spellToCast;
 
             if (spellLine.KeyName is GlobalSpellsLines.Mob_Spells)
             {
@@ -32,7 +34,7 @@ namespace DOL.GS
                 spellToCast = spell;
 
             if (target == _npcOwner || target == null)
-                return base.RequestCastSpell(spellToCast, spellLine);
+                return RequestCastSpellInternal(spellToCast, spellLine, null, target);
 
             GamePlayer losChecker = target as GamePlayer;
 
@@ -48,7 +50,7 @@ namespace DOL.GS
             }
 
             if (losChecker == null)
-                return base.RequestCastSpell(spellToCast, spellLine);
+                return RequestCastSpellInternal(spellToCast, spellLine, null, target);
 
             SpellWaitingForLosCheck spellWaitingForLosCheck = new(spellToCast, spellLine);
 
@@ -75,7 +77,6 @@ namespace DOL.GS
         public override void ClearSpellHandlers()
         {
             // Make sure NPCs don't start casting pending spells after being told to stop.
-
             lock (_spellsWaitingForLosCheckLock)
             {
                 _spellsWaitingForLosCheck.Clear();
@@ -99,7 +100,7 @@ namespace DOL.GS
             return livingTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingTarget.IsWithinRadius(_npcOwner, livingTarget.attackComponent.AttackRange);
         }
 
-        private void CastSpellLosCheckReply(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
+        private void CastSpellLosCheckReply(GamePlayer losChecker, LosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             GameObject target = _npcOwner.CurrentRegion.GetObject(targetOID);
 
@@ -119,7 +120,7 @@ namespace DOL.GS
                     SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
 
                     if (success && spellLine != null && spell != null)
-                        base.RequestCastSpell(spell, spellLine, null, target as GameLiving);
+                        RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
                     else
                         _npcOwner.OnCastSpellLosCheckFail(target);
                 }

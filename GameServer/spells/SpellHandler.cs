@@ -804,7 +804,7 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private void CheckPetLosDuringCastCallback(GameLiving living, LosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void CheckNpcLosDuringCastCallback(GameLiving living, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			HasLos = response is LosCheckResponse.True;
 
@@ -1000,8 +1000,8 @@ namespace DOL.GS.Spells
 
 				if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE and not eSpellTarget.PET && m_spell.Range > 0)
 				{
-					if (Caster is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
-						npcBrain.GetPlayerOwner()?.Out.SendCheckLos(npc, target, CheckPetLosDuringCastCallback);
+					if (Caster is GameNPC npc)
+						LosChecker?.Out.SendCheckLos(npc, target, CheckNpcLosDuringCastCallback);
 					else if (Caster is GamePlayer player)
 						player.Out.SendCheckLos(player, target, CheckPlayerLosDuringCastCallback);
 				}
@@ -2559,6 +2559,8 @@ namespace DOL.GS.Spells
 		{
 			get { return m_caster; }
 		}
+
+		public GamePlayer LosChecker { get; set; }
 
 		/// <summary>
 		/// Is the spell being cast?
