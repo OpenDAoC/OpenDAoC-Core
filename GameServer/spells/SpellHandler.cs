@@ -794,21 +794,13 @@ namespace DOL.GS.Spells
 		private void CheckPlayerLosDuringCastCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			HasLos = response is LosCheckResponse.True;
-
-			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
-			{
-				if (IsInCastingPhase)
-					MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
-
-				InterruptCasting(false);
-			}
 		}
 
 		private void CheckNpcLosDuringCastCallback(GameLiving living, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			HasLos = response is LosCheckResponse.True;
 
-			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+			if (!HasLos)
 				InterruptCasting(false);
 		}
 
