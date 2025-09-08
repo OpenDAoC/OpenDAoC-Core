@@ -3230,26 +3230,6 @@ namespace DOL.GS
 		#region Spell
 
 		private List<Spell> m_spells = [];
-		private ConcurrentDictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
-
-		public void ClearSpellsWaitingForLosCheck()
-		{
-			_spellsWaitingForLosCheck.Clear();
-		}
-
-		public class SpellWaitingForLosCheck
-		{
-			public Spell Spell { get; set; }
-			public SpellLine SpellLine { get; set; }
-			public long RequestTime { get; set; }
-
-			public SpellWaitingForLosCheck(Spell spell, SpellLine spellLine, long requestTime)
-			{
-				Spell = spell;
-				SpellLine = spellLine;
-				RequestTime = requestTime;
-			}
-		}
 
 		/// <summary>
 		/// property of spell array of NPC
@@ -3507,29 +3487,9 @@ namespace DOL.GS
 			return casted;
 		}
 
-		/// <summary>
-		/// Cast a spell with LoS check if possible.
-		/// </summary>
-		/// <returns>True if the spellcast started successfully. False otherwise or if a LoS check was initiated.</returns>
 		public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			// Clean up our '_spellsWaitingForLosCheck'. Entries older than 2 seconds are removed.
-			foreach (var pair in _spellsWaitingForLosCheck)
-			{
-				List<SpellWaitingForLosCheck> list = pair.Value;
-
-				for (int i = list.Count - 1; i >= 0; i--)
-				{
-					if (GameServiceUtils.ShouldTick(list[i].RequestTime + 2000))
-						list.SwapRemoveAt(i);
-				}
-
-				// We can keep the list if we're about to add something to it.
-				if (list.Count == 0 && TargetObject != pair.Key)
-					_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
-			}
-
-			Spell spellToCast = null;
+			Spell spellToCast;
 
 			if (line.KeyName is GlobalSpellsLines.Mob_Spells)
 			{
@@ -3540,67 +3500,7 @@ namespace DOL.GS
 			else
 				spellToCast = spell;
 
-			if (TargetObject == this || TargetObject == null)
-				return base.CastSpell(spellToCast, line);
-
-			GamePlayer LosChecker = TargetObject as GamePlayer;
-
-			if (LosChecker == null && Brain is IControlledBrain controlledBrain)
-				LosChecker = controlledBrain.GetPlayerOwner();
-
-			if (LosChecker == null && Brain is StandardMobBrain brain)
-			{
-				List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
-
-				if (playersInRadius.Count > 0)
-					LosChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
-			}
-
-			if (LosChecker == null)
-				return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
-
-			_spellsWaitingForLosCheck.AddOrUpdate(TargetObject, Add, Update, new SpellWaitingForLosCheck(spellToCast, line, GameLoop.GameLoopTime));
-			LosChecker.Out.SendCheckLos(this, TargetObject, new(CastSpellLosCheckReply));
-			return true; // Consider the NPC is casting while waiting for the reply to prevent it from moving.
-
-			List<SpellWaitingForLosCheck> Add(GameObject key, SpellWaitingForLosCheck arg)
-			{
-				return [arg];
-			}
-
-			List<SpellWaitingForLosCheck> Update(GameObject key, List<SpellWaitingForLosCheck> oldValue, SpellWaitingForLosCheck arg)
-			{
-				oldValue.Add(arg);
-				return oldValue;
-			}
-		}
-
-		public virtual void CastSpellLosCheckReply(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			GameObject target = CurrentRegion.GetObject(targetOID);
-
-			if (target == null || !_spellsWaitingForLosCheck.TryGetValue(target, out List<SpellWaitingForLosCheck> list))
-				return;
-
-			bool success = response is LosCheckResponse.True;
-
-			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
-			{
-				Spell spell = spellWaitingForLosCheck.Spell;
-				SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
-
-				if (success && spellLine != null && spell != null)
-					OnCastSpellLosCheckSuccess(target, spell, spellLine);
-				else
-					OnCastSpellLosCheckFail(target);
-			}
-
-			list.Clear();
-		}
-
-		public virtual void OnCastSpellLosCheckSuccess(GameObject target, Spell spell, SpellLine spellLine)
-		{
-			CastSpell(spell, spellLine, target as GameLiving);
+			return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 		}
 
 		public virtual void OnCastSpellLosCheckFail(GameObject target)
