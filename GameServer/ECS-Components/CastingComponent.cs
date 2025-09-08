@@ -91,7 +91,7 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual void RequestUseAbility(Ability ability)
+        public void RequestUseAbility(Ability ability)
         {
             // Always allowed. The handler will check if the ability can be used or not.
             lock (_startSkillRequestsLock)

@@ -133,16 +133,6 @@ namespace DOL.AI.Brain
             return true;
         }
 
-        public GameLiving GetSpellTarget()
-        {
-            SpellQueueEntry entry = GetSpellFromQueue();
-
-            if (entry != null)
-                return entry.Target;
-            else
-                return null;
-        }
-
         /// <summary>
         /// See if there are any spells queued up and if so, get the first one and cast it.
         /// </summary>
