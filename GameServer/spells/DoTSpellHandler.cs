@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
                 playerCaster.Out.SendMessage($"dot crit chance: {ad.CriticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             // Crit damage for DoTs is up to 100% against players too.
-            if (ad.Damage > 0)
+            if (ad.CriticalChance > randNum && ad.Damage > 0)
                 CriticalDamage = Util.Random(ad.Damage / 10, ad.Damage);
 
             return CriticalDamage;
