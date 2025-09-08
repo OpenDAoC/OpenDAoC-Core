@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.Events;
-using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
@@ -404,25 +403,6 @@ namespace DOL.GS
             }
 
             public virtual void StartSkill() { }
-        }
-
-        public class ChainedSpell : ChainedAction<Func<Spell, SpellLine, ISpellCastingAbilityHandler, GameLiving, GamePlayer, bool>>
-        {
-            public SpellLine _spellLine;
-
-            public Spell Spell { get; private set; }
-            public override Skill Skill => Spell;
-
-            public ChainedSpell(GamePlayer player, Spell spell, SpellLine spellLine) : base(player.castingComponent.RequestCastSpellInternal)
-            {
-                Spell = spell;
-                _spellLine = spellLine;
-            }
-
-            public override void Execute()
-            {
-                Handler.Invoke(Spell, _spellLine, null, null, null);
-            }
         }
     }
 }

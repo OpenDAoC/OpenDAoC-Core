@@ -12,20 +12,6 @@ namespace DOL.GS
             _playerOwner = playerOwner;
         }
 
-        public override bool RequestCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
-        {
-            if (!_playerOwner.ChainedActions.CheckCommandInput(spell, spellLine))
-                return false;
-
-            if (_playerOwner.ChainedActions.Execute(spell))
-            {
-                ServiceObjectStore.Add<CastingComponent>(this);
-                return true;
-            }
-
-            return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target);
-        }
-
         protected override bool CanCastSpell()
         {
             if (_playerOwner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))

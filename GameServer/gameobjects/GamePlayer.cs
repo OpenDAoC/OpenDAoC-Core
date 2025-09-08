@@ -12,7 +12,6 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Appeal;
-using DOL.GS.Commands;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -46,7 +45,6 @@ namespace DOL.GS
         public new PlayerStyleComponent styleComponent;
 
         public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
-        public ChainedActions ChainedActions { get; }
         public double SpecLock { get; set; }
         public long NextWorldUpdate { get; set; }
 
@@ -13610,7 +13608,6 @@ namespace DOL.GS
             }));
 
             m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
-            ChainedActions = new(this);
         }
 
         /// <summary>

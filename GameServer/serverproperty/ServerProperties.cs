@@ -2565,9 +2565,6 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
 		public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
 
-		[ServerProperty("controls_automation", "allow_chained_actions", "Allow players to chain actions with /chainactions. They will be executed consecutively.", false)] 
-		public static bool ALLOW_CHAINED_ACTIONS;
-
 		#endregion
 
 		public static IDictionary<string, object> AllCurrentProperties { get; private set; }
