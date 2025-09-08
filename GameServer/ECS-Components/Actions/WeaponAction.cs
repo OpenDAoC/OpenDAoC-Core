@@ -77,7 +77,7 @@ namespace DOL.GS
             {
                 case eAttackResult.HitStyle:
                 {
-                    if (mainHandAttackData.StyleEffects.Count > 0)
+                    if (mainHandAttackData.StyleEffects != null)
                     {
                         foreach (ISpellHandler proc in mainHandAttackData.StyleEffects)
                             proc.StartSpell(mainHandAttackData.Target);

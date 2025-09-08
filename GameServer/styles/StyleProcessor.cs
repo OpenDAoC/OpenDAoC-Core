@@ -290,15 +290,18 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, DbInventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, List<ISpellHandler> styleEffects, out double styleDamage, out double styleDamageCap, out int animationId)
+		public static bool ExecuteStyle(AttackData attackData, double unstyledDamage, double unstyledDamageCap, out double styleDamage, out double styleDamageCap, out int animationId)
 		{
 			styleDamage = 0;
 			styleDamageCap = 0;
 			animationId = 0;
 
-			// First thing in processors, lock the objects you modify.
-			// This way it makes sure the objects are not modified by several different threads at the same time.
+			// We can't get the base damage from the attack data. It hasn't been set yet.
+			GameLiving living = attackData.Attacker;
 			GamePlayer player = living as GamePlayer;
+			GameLiving target = attackData.Target;
+			Style style = attackData.Style;
+			DbInventoryItem weapon = attackData.Weapon;
 
 			// Used to disable RA styles when they're actually firing.
 			style.OnStyleExecuted?.Invoke(living);
@@ -347,7 +350,7 @@ namespace DOL.GS.Styles
 					// Stealth openers are unaffected by weapon speed.
 					// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
 					// AF isn't taken into account because we don't have a weaponskill to compare it to. This may be a problem.
-					styleDamage *= 1.0 - target.GetArmorAbsorb(armorHitLocation);
+					styleDamage *= 1.0 - target.GetArmorAbsorb(attackData.ArmorHitLocation);
 					styleDamageCap = -1; // Uncapped. Is there supposed to be one?
 				}
 				else
@@ -417,7 +420,10 @@ namespace DOL.GS.Styles
 
 								// Effect could be null if the SpellID is bigger than ushort.
 								if (effect != null)
-									styleEffects.Add(effect);
+								{
+									attackData.StyleEffects ??= new();
+									attackData.StyleEffects.Add(effect);
+								}
 							}
 						}
 					}
@@ -429,7 +435,10 @@ namespace DOL.GS.Styles
 
 						// Effect could be null if the SpellID is bigger than ushort.
 						if (effect != null)
-							styleEffects.Add(effect);
+						{
+							attackData.StyleEffects ??= new();
+							attackData.StyleEffects.Add(effect);
+						}
 					}
 				}
 			}

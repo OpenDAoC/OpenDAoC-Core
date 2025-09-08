@@ -1166,7 +1166,7 @@ namespace DOL.GS
 
                     if (style != null)
                     {
-                        if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preEffectivenessDamage, preEffectivenessBaseDamageCap, ad.ArmorHitLocation, ad.StyleEffects, out double styleDamage, out styleDamageCap, out int animationId))
+                        if (StyleProcessor.ExecuteStyle(ad, preEffectivenessDamage, preEffectivenessBaseDamageCap, out double styleDamage, out styleDamageCap, out int animationId))
                         {
                             double styleDamageBonus = preResistDamage * owner.GetModified(eProperty.StyleDamage) * 0.01;
                             styleDamage += styleDamageBonus;
