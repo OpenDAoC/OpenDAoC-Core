@@ -151,11 +151,9 @@ namespace DOL.GS.Spells
             if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
                 playerCaster.Out.SendMessage($"dot crit chance: {ad.CriticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
+            // Crit damage for DoTs is up to 100% against players too.
             if (ad.Damage > 0)
-            {
-                int critMax = (ad.Target is GamePlayer) ? ad.Damage / 2 : ad.Damage;
-                CriticalDamage = Util.Random(ad.Damage / 10, critMax);
-            }
+                CriticalDamage = Util.Random(ad.Damage / 10, ad.Damage);
 
             return CriticalDamage;
         }
