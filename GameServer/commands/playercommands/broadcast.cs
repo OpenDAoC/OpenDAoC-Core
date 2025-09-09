@@ -105,7 +105,7 @@ namespace DOL.GS.Commands
                     return ClientService.Instance.GetPlayersOfZone(player.CurrentZone);
             }
 
-            return new List<GamePlayer>();
+            return GameLoop.GetListForTick<GamePlayer>();
         }
     }
 }

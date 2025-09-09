@@ -522,9 +522,9 @@ namespace DOL.GS.Housing
 		/// <summary>
 		/// Returns a ArrayList with all players in the house
 		/// </summary>
-		public IList<GamePlayer> GetAllPlayersInHouse()
+		public List<GamePlayer> GetAllPlayersInHouse()
 		{
-			var ret = new List<GamePlayer>();
+			var ret = GameLoop.GetListForTick<GamePlayer>();
 			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(RegionID, X, Y, 25000, WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player.CurrentHouse == this && player.InHouse)

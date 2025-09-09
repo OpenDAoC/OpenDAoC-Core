@@ -875,9 +875,11 @@ namespace DOL.GS
 		/// Returns a list of all online members.
 		/// </summary>
 		/// <returns>ArrayList of members</returns>
-		public IList<GamePlayer> GetListOfOnlineMembers()
+		public List<GamePlayer> GetListOfOnlineMembers()
 		{
-			return new List<GamePlayer>(m_onlineGuildPlayers.Values);
+			var list = GameLoop.GetListForTick<GamePlayer>();
+			list.AddRange(m_onlineGuildPlayers.Values);
+			return list;
 		}
 
 		/// <summary>
@@ -886,17 +888,17 @@ namespace DOL.GS
 		/// <param name="msg">message string</param>
 		/// <param name="type">message type</param>
 		/// <param name="loc">message location</param>
-		public void SendMessageToGuildMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
+		public void SendMessageToGuildMembers(string msg, eChatType type, eChatLoc loc)
 		{
-			List<GamePlayer> guildPlayers = new List<GamePlayer>();
+			var guildPlayers = GameLoop.GetListForTick<GamePlayer>();
 			lock (m_memberListLock)
 			{
-				guildPlayers = m_onlineGuildPlayers.Values.ToList();
+				guildPlayers.AddRange(m_onlineGuildPlayers.Values);
 			}
 			
 			foreach (GamePlayer pl in guildPlayers)
 			{
-				if (!HasRank(pl, Guild.eRank.GcHear))
+				if (!HasRank(pl, eRank.GcHear))
 				{
 					continue;
 				}

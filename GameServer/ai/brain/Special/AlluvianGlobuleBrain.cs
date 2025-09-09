@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DOL.GS;
+﻿using DOL.GS;
 using DOL.GS.Scheduler;
 
 namespace DOL.AI.Brain
@@ -38,7 +37,7 @@ namespace DOL.AI.Brain
 			{
 				if (!Body.attackComponent.AttackState && AggroRange > 0)
 				{
-					var currentPlayersSeen = new List<GamePlayer>();
+					var currentPlayersSeen = GameLoop.GetListForTick<GamePlayer>();
 					foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
 					{
 						if (!PlayersSeen.Contains(player))

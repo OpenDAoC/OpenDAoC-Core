@@ -21,15 +21,15 @@ namespace DOL.GS.RealmAbilities
 				return;
 
 			GamePlayer player = living as GamePlayer;
-			IEnumerable<GamePlayer> playersInGroup;
+			List<GamePlayer> playersInGroup = GameLoop.GetListForTick<GamePlayer>();;
 			bool success;
 
 			SendCastMessage(player);
 
 			if (player.Group != null)
-				playersInGroup = player.Group.GetPlayersInTheGroup().Where(x => x.IsAlive && player.IsWithinRadius(player, m_range));
+				playersInGroup.AddRange(player.Group.GetPlayersInTheGroup().Where(x => x.IsAlive && player.IsWithinRadius(player, m_range)));
 			else
-				playersInGroup = new List<GamePlayer>() { player };
+				playersInGroup.Add(player);
 
 			foreach (GamePlayer playerInGroup in playersInGroup)
 			{

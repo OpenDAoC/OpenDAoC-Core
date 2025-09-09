@@ -25,11 +25,14 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            ICollection<GamePlayer> playersToHeal = new List<GamePlayer>();
+            List<GamePlayer> playersToHeal;
 
             // OF AM works on the caster as well, unlike NF AM.
             if (OwnerPlayer.Group == null)
+            {
+                playersToHeal = GameLoop.GetListForTick<GamePlayer>();
                 playersToHeal.Add(OwnerPlayer);
+            }
             else
                 playersToHeal = OwnerPlayer.Group.GetPlayersInTheGroup();
 

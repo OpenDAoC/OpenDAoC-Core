@@ -2601,7 +2601,7 @@ namespace DOL.GS.Quests
 					if (player == null)
 						return;
 
-					playerKillers = new List<GamePlayer>();
+					playerKillers = GameLoop.GetListForTick<GamePlayer>();
 					playerKillers.Add(player);
 				}
 

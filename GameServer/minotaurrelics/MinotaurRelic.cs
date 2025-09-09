@@ -42,7 +42,7 @@ namespace DOL.GS
 		protected int m_relicID;
 		protected ISpellHandler m_spellHandler;
 		protected GameSpellEffect m_gameSpellEffect;
-		public IList<GamePlayer> Playerlist = new List<GamePlayer>();
+		public List<GamePlayer> Playerlist = new List<GamePlayer>();
         protected string m_protectorClassType;
         protected bool m_spawnLocked;
 
@@ -292,7 +292,7 @@ namespace DOL.GS
 		{
 			if (RelicSpell == null || m_spellHandler==null || m_gameSpellEffect==null) return;
 
-			IList<GamePlayer> newPlayerlist = new List<GamePlayer>();
+			List<GamePlayer> newPlayerlist = GameLoop.GetListForTick<GamePlayer>();
 
 			if (m_owner != null)
 			{
@@ -381,7 +381,9 @@ namespace DOL.GS
 							log.Error("Minotaur Relics : Effect Start : " + e);
 					}
 				}
-				Playerlist = newPlayerlist;
+
+				Playerlist.Clear();
+				Playerlist.AddRange(newPlayerlist);
 			}
 		}
 		protected void StopRelicEffect()

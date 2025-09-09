@@ -1,30 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
-
 using DOL.Events;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS.Quests
 {
@@ -234,24 +213,30 @@ namespace DOL.GS.Quests
 		{
 			get
 			{
+				List<GamePlayer> list = null;
+
 				switch (MissionType)
 				{
 					case eMissionType.Personal:
-						{
-							GamePlayer player = m_owner as GamePlayer;
-							List<GamePlayer> list = new List<GamePlayer>();
-							list.Add(player);
-							return list;
-						}
+					{
+						GamePlayer player = m_owner as GamePlayer;
+						list = GameLoop.GetListForTick<GamePlayer>();
+						list.Add(player);
+						break;
+					}
 					case eMissionType.Group:
-						{
-							Group group = m_owner as Group;
-							return new List<GamePlayer>(group.GetPlayersInTheGroup());
-						}
+					{
+						Group group = m_owner as Group;
+						list = group.GetPlayersInTheGroup();
+						break;
+					}
 					case eMissionType.Realm:
 					case eMissionType.None:
-					default: return new List<GamePlayer>();
+					default:
+						break;
 				}
+
+				return list ?? GameLoop.GetListForTick<GamePlayer>();
 			}
 		}
 
