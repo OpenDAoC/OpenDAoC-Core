@@ -20,6 +20,7 @@ namespace DOL.GS
         // Active effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
         private readonly Dictionary<int, ECSGameEffect> _effectIdToEffect = new();   // Dictionary of effects by their icon ID.
+        private readonly Lock _effectsLock = new();                                  // Lock for synchronizing access to the effect list.
 
         // Pending effects.
         private readonly Queue<PendingEffect> _effectsToStartOrStop = new();         // Queue for effects to start or stop after their state has been finalized.
@@ -27,14 +28,12 @@ namespace DOL.GS
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
         private int _usedConcentration;                                              // Amount of concentration used by the player.
-        private readonly Lock _concentrationEffectsLock = new();                     // Lock for synchronizing access to the concentration effects list.
+        private readonly Lock _concentrationEffectsLock = new();                     // Lock for synchronizing access to the concentration effect list.
 
         // Player updates.
         private EffectHelper.PlayerUpdate _requestedPlayerUpdates;                   // Player updates requested by the effects, to be sent in the next tick.
         private int _lastUpdateEffectsCount;                                         // Number of effects sent in the last player update, used externally.
         private readonly Lock _playerUpdatesLock = new();
-
-        private readonly Lock _processEffectLock = new();
 
         public GameLiving Owner { get; }
         public int UsedConcentration => Volatile.Read(ref _usedConcentration);
@@ -67,46 +66,49 @@ namespace DOL.GS
 
         public void TryEnableBestEffectOfSameType(ECSGameEffect effect)
         {
-            if (!_effects.TryGetValue(effect.EffectType, out var effects) || effects.Count == 0)
-                return;
-
-            ECSGameEffect bestActiveEffect = null;
-            ECSGameEffect disabledEffect = null;
-
-            foreach (ECSGameEffect existingEffect in effects)
+            lock (_effectsLock)
             {
-                if (existingEffect == effect || existingEffect is not ECSGameSpellEffect)
-                    continue;
+                if (!_effects.TryGetValue(effect.EffectType, out var effects) || effects.Count == 0)
+                    return;
 
-                // Keep track of the best active effect.
-                if (!existingEffect.IsDisabled)
+                ECSGameEffect bestActiveEffect = null;
+                ECSGameEffect disabledEffect = null;
+
+                foreach (ECSGameEffect existingEffect in effects)
                 {
-                    if (bestActiveEffect == null || existingEffect.IsBetterThan(bestActiveEffect))
-                        bestActiveEffect = existingEffect;
-
-                    continue;
-                }
-
-                // If this is a disabled concentration effect, check the activation range.
-                if (existingEffect.IsConcentrationEffect())
-                {
-                    ISpellHandler spellHandler = existingEffect.SpellHandler;
-                    int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
-
-                    if (!spellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck))
+                    if (existingEffect == effect || existingEffect is not ECSGameSpellEffect)
                         continue;
+
+                    // Keep track of the best active effect.
+                    if (!existingEffect.IsDisabled)
+                    {
+                        if (bestActiveEffect == null || existingEffect.IsBetterThan(bestActiveEffect))
+                            bestActiveEffect = existingEffect;
+
+                        continue;
+                    }
+
+                    // If this is a disabled concentration effect, check the activation range.
+                    if (existingEffect.IsConcentrationEffect())
+                    {
+                        ISpellHandler spellHandler = existingEffect.SpellHandler;
+                        int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
+
+                        if (!spellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck))
+                            continue;
+                    }
+
+                    // Keep track of the best disabled effect.
+                    if (disabledEffect == null || existingEffect.IsBetterThan(disabledEffect))
+                        disabledEffect = existingEffect;
                 }
 
-                // Keep track of the best disabled effect.
-                if (disabledEffect == null || existingEffect.IsBetterThan(disabledEffect))
-                    disabledEffect = existingEffect;
+                // Only enable the best disabled effect if it's better than the best active effect.
+                if (bestActiveEffect == null)
+                    disabledEffect?.Enable();
+                else if (disabledEffect != null && disabledEffect.IsBetterThan(bestActiveEffect))
+                    disabledEffect.Enable();
             }
-
-            // Only enable the best disabled effect if it's better than the best active effect.
-            if (bestActiveEffect == null)
-                disabledEffect?.Enable();
-            else if (disabledEffect != null && disabledEffect.IsBetterThan(bestActiveEffect))
-                disabledEffect.Enable();
         }
 
         public void StopConcentrationEffect(int index, bool playerCancelled)
@@ -145,14 +147,17 @@ namespace DOL.GS
         {
             List<ECSGameEffect> temp = GameLoop.GetListForTick<ECSGameEffect>();
 
-            foreach (var pair in _effects)
+            lock (_effectsLock)
             {
-                List<ECSGameEffect> effects = pair.Value;
-
-                for (int i = effects.Count - 1; i >= 0; i--)
+                foreach (var pair in _effects)
                 {
-                    if (effects[i] is not ECSPulseEffect)
-                        temp.Add(effects[i]);
+                    List<ECSGameEffect> effects = pair.Value;
+
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is not ECSPulseEffect)
+                            temp.Add(effects[i]);
+                    }
                 }
             }
 
@@ -164,12 +169,15 @@ namespace DOL.GS
         {
             List<ECSGameEffect> temp = GameLoop.GetListForTick<ECSGameEffect>();
 
-            if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
+            lock (_effectsLock)
             {
-                for (int i = effects.Count - 1; i >= 0; i--)
+                if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
                 {
-                    if (effects[i] is not ECSPulseEffect)
-                        temp.Add(effects[i]);
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is not ECSPulseEffect)
+                            temp.Add(effects[i]);
+                    }
                 }
             }
 
@@ -181,14 +189,17 @@ namespace DOL.GS
         {
             List<ECSPulseEffect> temp = GameLoop.GetListForTick<ECSPulseEffect>();
 
-            foreach (var pair in _effects)
+            lock (_effectsLock)
             {
-                List<ECSGameEffect> effects = pair.Value;
-
-                for (int i = effects.Count - 1; i >= 0; i--)
+                foreach (var pair in _effects)
                 {
-                    if (effects[i] is ECSPulseEffect pulseEffect)
-                        temp.Add(pulseEffect);
+                    List<ECSGameEffect> effects = pair.Value;
+
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is ECSPulseEffect pulseEffect)
+                            temp.Add(pulseEffect);
+                    }
                 }
             }
 
@@ -228,14 +239,17 @@ namespace DOL.GS
         {
             List<ECSGameSpellEffect> temp = GameLoop.GetListForTick<ECSGameSpellEffect>();
 
-            foreach (var pair in _effects)
+            lock (_effectsLock)
             {
-                List<ECSGameEffect> effects = pair.Value;
-
-                for (int i = effects.Count - 1; i >= 0; i--)
+                foreach (var pair in _effects)
                 {
-                    if (effects[i] is ECSGameSpellEffect spellEffect)
-                        temp.Add(spellEffect);
+                    List<ECSGameEffect> effects = pair.Value;
+
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is ECSGameSpellEffect spellEffect)
+                            temp.Add(spellEffect);
+                    }
                 }
             }
 
@@ -247,12 +261,15 @@ namespace DOL.GS
         {
             List<ECSGameSpellEffect> temp = GameLoop.GetListForTick<ECSGameSpellEffect>();
 
-            if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
+            lock (_effectsLock)
             {
-                for (int i = effects.Count - 1; i >= 0; i--)
+                if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
                 {
-                    if (effects[i] is ECSGameSpellEffect spellEffect)
-                        temp.Add(spellEffect);
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is ECSGameSpellEffect spellEffect)
+                            temp.Add(spellEffect);
+                    }
                 }
             }
 
@@ -264,14 +281,17 @@ namespace DOL.GS
         {
             List<ECSGameAbilityEffect> temp = GameLoop.GetListForTick<ECSGameAbilityEffect>();
 
-            foreach (var pair in _effects)
+            lock (_effectsLock)
             {
-                List<ECSGameEffect> effects = pair.Value;
-
-                for (int i = effects.Count - 1; i >= 0; i--)
+                foreach (var pair in _effects)
                 {
-                    if (effects[i] is ECSGameAbilityEffect abilityEffect)
-                        temp.Add(abilityEffect);
+                    List<ECSGameEffect> effects = pair.Value;
+
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is ECSGameAbilityEffect abilityEffect)
+                            temp.Add(abilityEffect);
+                    }
                 }
             }
 
@@ -283,12 +303,15 @@ namespace DOL.GS
         {
             List<ECSGameAbilityEffect> temp = GameLoop.GetListForTick<ECSGameAbilityEffect>();
 
-            if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
+            lock (_effectsLock)
             {
-                for (int i = effects.Count - 1; i >= 0; i--)
+                if (_effects.TryGetValue(effectType, out List<ECSGameEffect> effects))
                 {
-                    if (effects[i] is ECSGameAbilityEffect abilityEffect)
-                        temp.Add(abilityEffect);
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        if (effects[i] is ECSGameAbilityEffect abilityEffect)
+                            temp.Add(abilityEffect);
+                    }
                 }
             }
 
@@ -298,7 +321,13 @@ namespace DOL.GS
 
         public ECSGameEffect TryGetEffectFromEffectId(int effectId)
         {
-            _effectIdToEffect.TryGetValue(effectId, out ECSGameEffect effect);
+            ECSGameEffect effect;
+
+            lock (_effectsLock)
+            {
+                _effectIdToEffect.TryGetValue(effectId, out effect);
+            }
+
             return effect;
         }
 
@@ -309,17 +338,23 @@ namespace DOL.GS
 
         public bool ContainsEffectForEffectType(eEffect effectType)
         {
-            return _effects.TryGetValue(effectType, out var effects) && effects.Count > 0;
+            lock (_effectsLock)
+            {
+                return _effects.TryGetValue(effectType, out var effects) && effects.Count > 0;
+            }
         }
 
         public void CancelAll()
         {
-            foreach (var pair in _effects)
+            lock (_effectsLock)
             {
-                List<ECSGameEffect> effects = pair.Value;
+                foreach (var pair in _effects)
+                {
+                    List<ECSGameEffect> effects = pair.Value;
 
-                for (int i = effects.Count - 1; i >= 0; i--)
-                    effects[i].Stop();
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                        effects[i].Stop();
+                }
             }
         }
 
@@ -345,7 +380,7 @@ namespace DOL.GS
 
         public void ProcessEffect(ECSGameEffect effect)
         {
-            lock (_processEffectLock)
+            lock (_effectsLock)
             {
                 ProcessEffectInternal(effect);
             }
@@ -362,7 +397,7 @@ namespace DOL.GS
 
             int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
 
-            lock (_processEffectLock)
+            lock (_effectsLock)
             {
                 // Check if the concentration buff needs to be enabled or disabled, based on its current state and the distance between the player and the caster.
                 if (caster.IsWithinRadius(effectOwner, radiusToCheck))
