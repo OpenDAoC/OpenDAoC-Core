@@ -2,17 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using DOL.Database.Attributes;
 using DOL.Database.UniqueID;
-using DOL.Logging;
 
 namespace DOL.Database
 {
     public abstract class DataObject : ICloneable
     {
-        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         private DataObject _snapshot;
         private bool _allowAdd = true;
         private bool _allowDelete = true;
@@ -76,14 +72,8 @@ namespace DOL.Database
         public List<ElementBinding> GetDirtyBindings(DataTableHandler tableHandler)
         {
             // If there's no snapshot, we can't know what changed.
-            // To be safe, we return all updateable columns (legacy behavior).
             if (_snapshot == null)
-            {
-                if (log.IsWarnEnabled)
-                    log.Warn($"No snapshot was found for {this}");
-
                 return tableHandler.FieldElementBindings.Where(Predicate).ToList();
-            }
 
             List<ElementBinding> dirtyBindings = new();
 
