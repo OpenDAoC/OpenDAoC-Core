@@ -1759,32 +1759,39 @@ namespace DOL.GS
 					removeMez = true;
 			}
 
-			ECSGameEffect effect;
-
-			// Remove Mez
-			if (removeMez)
+			foreach (ECSGameEffect effect in effectListComponent.GetEffects())
 			{
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
-				effect?.Stop();
-			}
+				switch (effect.EffectType)
+				{
+					case eEffect.Mez:
+					{
+						if (removeMez)
+							effect.Stop();
 
-			// Remove Snare/Root
-			if (removeSnare)
-			{
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
-				effect?.Stop();
-			}
+						break;
+					}
+					case eEffect.Snare:
+					{
+						if (removeSnare)
+							effect.Stop();
 
-			// Remove MovementSpeedDebuff
-			if (removeMovementSpeedDebuff)
-			{
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
+						break;
+					}
+					case eEffect.MovementSpeedDebuff:
+					{
+						if (removeMovementSpeedDebuff && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType is not eSpellType.UnbreakableSpeedDecrease)
+							effect.Stop();
 
-				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
-					effect.Stop();
+						break;
+					}
+					case eEffect.Ichor:
+					{
+						if (removeMovementSpeedDebuff)
+							effect.Stop();
 
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
-				effect?.Stop();
+						break;
+					}
+				}
 			}
 
 			return removeMez || removeSnare || removeMovementSpeedDebuff;
