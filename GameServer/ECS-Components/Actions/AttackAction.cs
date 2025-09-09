@@ -145,7 +145,7 @@ namespace DOL.GS
 
         public virtual bool CheckInterruptTimer()
         {
-            if (!_owner.IsBeingSelfInterrupted)
+            if (!_owner.IsBeingInterruptedByOther)
                 return false;
 
             _owner.attackComponent.StopAttack();
