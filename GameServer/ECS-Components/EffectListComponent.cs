@@ -46,8 +46,14 @@ namespace DOL.GS
 
         public void Tick()
         {
-            while (_effectsToStartOrStop.TryDequeue(out PendingEffect pendingEffect))
-                pendingEffect.Process();
+            // Only process up to `Count` in case `Process` adds to `_effectsToStartOrStop`
+            int count = _effectsToStartOrStop.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (_effectsToStartOrStop.TryDequeue(out PendingEffect pendingEffect))
+                    pendingEffect.Process();
+            }
 
             if (_effects.Count == 0)
             {
