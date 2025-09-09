@@ -177,8 +177,7 @@ namespace DOL.GS
                 {
                     if (currentSpell.CastTime > 0)
                     {
-                        if (!Owner.attackComponent.AttackState)
-                            necroBrain.CheckAttackSpellQueue();
+                        necroBrain.CheckAttackSpellQueue();
 
                         if (QueuedSpellHandler != null)
                         {
