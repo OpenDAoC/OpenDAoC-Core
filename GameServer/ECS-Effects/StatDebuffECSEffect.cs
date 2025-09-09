@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using DOL.GS.PlayerClass;
 using DOL.GS.Spells;
 
@@ -29,14 +27,6 @@ namespace DOL.GS
 
             if (EffectType is eEffect.MovementSpeedDebuff)
             {
-                IEnumerable<ECSGameSpellEffect> speedDebuffs = Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff).Where(x => x.SpellHandler.Spell.ID != SpellHandler.Spell.ID);
-
-                if (speedDebuffs.Any(x => x.SpellHandler.Spell.Value > SpellHandler.Spell.Value))
-                    return;
-
-                foreach (ECSGameSpellEffect effect in speedDebuffs)
-                    effect.Disable();
-
                 double effectiveValue = SpellHandler.Spell.Value * Effectiveness;
                 Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, 1.0 - effectiveValue * 0.01);
                 Owner.OnMaxSpeedChange();
@@ -61,8 +51,6 @@ namespace DOL.GS
 
             if (EffectType is eEffect.MovementSpeedDebuff)
             {
-                ECSGameSpellEffect speedDebuff = Owner.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedDebuff);
-                speedDebuff?.Enable();
                 Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, this);
                 Owner.OnMaxSpeedChange();
             }
