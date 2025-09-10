@@ -181,13 +181,14 @@ namespace DOL.GS
                 if (!_groupMembers.Remove(living))
                     return false;
 
-                memberCount = _groupMembers.Count;
                 living.Group = null;
                 living.GroupIndex = 0xFF;
-            }
 
-            if (memberCount < 1)
-                DisbandGroup();
+                if (_groupMembers.Count < 1)
+                    DisbandGroup();
+
+                memberCount = _groupMembers.Count;
+            }
 
             SendMessageToGroupMembers($"{living.Name} has left the group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
