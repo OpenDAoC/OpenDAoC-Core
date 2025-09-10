@@ -10,7 +10,6 @@ using DOL.AI.Brain;
 using DOL.Config;
 using DOL.Events;
 using DOL.GS.Commands;
-using DOL.GS.PacketHandler;
 using DOL.GS.ServerRules;
 using DOL.GS.Spells;
 
@@ -106,21 +105,24 @@ namespace DOL.GS
         /// <summary>
         /// Looking for exact match first, then, if nothing found, trying to guess command using first letters
         /// </summary>
-        /// <param name="commandName">The command to retrieve</param>
         /// <returns>Returns the command if it exists, otherwise the return value is null</returns>
-        public static GameCommand GuessCommand(string commandName)
+        public static GameCommand GuessCommand(string commandName, ePrivLevel maxPrivLevel)
         {
-            GameCommand cmd;
-            if (m_gameCommands.TryGetValue(commandName, out cmd))
-                return cmd;
+            if (m_gameCommands.TryGetValue(commandName, out GameCommand command))
+                return command;
 
-            // Trying to guess the command
-            var commands = m_gameCommands.Where(kv => kv.Value != null && kv.Key.StartsWith(commandName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value);
+            foreach (var pair in m_gameCommands)
+            {
+                if (pair.Value == null || (ePrivLevel) pair.Value.m_lvl > maxPrivLevel || !pair.Key.StartsWith(commandName, StringComparison.OrdinalIgnoreCase))
+                    continue;
 
-            if (commands.Count() == 1)
-                return commands.First();
+                if (command != null)
+                    return null;
 
-            return null;
+                command = pair.Value;
+            }
+
+            return command;
         }
 
         /// <summary>
@@ -177,8 +179,10 @@ namespace DOL.GS
                 foreach (Type type in script.GetTypes())
                 {
                     // Pick up a class
-                    if (type.IsClass != true) continue;
-                    if (type.GetInterface("DOL.GS.Commands.ICommandHandler") == null) continue;
+                    if (type.IsClass != true)
+                        continue;
+                    if (type.GetInterface("DOL.GS.Commands.ICommandHandler") == null)
+                        continue;
 
                     try
                     {
@@ -217,7 +221,7 @@ namespace DOL.GS
                             cmd.m_cmd = attrib.Cmd;
                             cmd.m_lvl = attrib.Level;
                             cmd.m_desc = attrib.Description;
-                            cmd.m_cmdHandler = (ICommandHandler)Activator.CreateInstance(type);
+                            cmd.m_cmdHandler = (ICommandHandler) Activator.CreateInstance(type);
                             m_gameCommands.Add(attrib.Cmd, cmd);
                             if (attrib.Aliases != null)
                             {
@@ -252,26 +256,14 @@ namespace DOL.GS
         {
             try
             {
-                // parse args
                 string[] pars = ParseCmdLine(cmdLine);
-                GameCommand myCommand = GuessCommand(pars[0]);
+                GameCommand myCommand = GuessCommand(pars[0], (ePrivLevel) client.Account.PrivLevel);
 
-                //If there is no such command, return false
-                if (myCommand == null) return false;
+                if (myCommand == null)
+                    return false;
 
-                if (client.Account.PrivLevel < myCommand.m_lvl)
-                {
-                    if (!SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
-                    {
-                        if (pars[0][0] == '&')
-                            pars[0] = '/' + pars[0].Remove(0, 1);
-                        //client.Out.SendMessage("You do not have enough priveleges to use " + pars[0], eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        //why should a player know the existing commands..
-                        client.Out.SendMessage("No such command (" + pars[0] + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return true;
-                    }
-                    //else execute the command
-                }
+                if (client.Account.PrivLevel < myCommand.m_lvl && !SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
+                    return false;
 
                 ExecuteCommand(client, myCommand, pars);
             }
@@ -279,32 +271,6 @@ namespace DOL.GS
             {
                 if (log.IsErrorEnabled)
                     log.Error("HandleCommand", e);
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Called when a command needs to be handled without plvl being taken into consideration
-        /// </summary>
-        /// <param name="client">Client executing the command</param>
-        /// <param name="cmdLine">Args for the command</param>
-        /// <returns>True if succeeded</returns>
-        public static bool HandleCommandNoPlvl(GameClient client, string cmdLine)
-        {
-            try
-            {
-                string[] pars = ParseCmdLine(cmdLine);
-                GameCommand myCommand = GuessCommand(pars[0]);
-
-                //If there is no such command, return false
-                if (myCommand == null) return false;
-
-                ExecuteCommand(client, myCommand, pars);
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error("HandleCommandNoPlvl", e);
             }
             return true;
         }
@@ -331,9 +297,11 @@ namespace DOL.GS
                 switch (state)
                 {
                     case 0: // waiting for first arg char
-                        if (c == ' ') continue;
+                        if (c == ' ')
+                            continue;
                         arg.Length = 0;
-                        if (c == '"') state = 2;
+                        if (c == '"')
+                            state = 2;
                         else
                         {
                             state = 1;
@@ -358,7 +326,8 @@ namespace DOL.GS
                         break;
                 }
             }
-            if (state != 0) args.Add(arg.ToString());
+            if (state != 0)
+                args.Add(arg.ToString());
 
             string[] pars = new string[args.Count];
             args.CopyTo(pars);
@@ -395,7 +364,7 @@ namespace DOL.GS
                 {
                     targetName = client.Player.TargetObject.Name;
                     if (client.Player.TargetObject is GamePlayer)
-                        targetName += "(" + ((GamePlayer)client.Player.TargetObject).Client.Account.Name + ")";
+                        targetName += "(" + ((GamePlayer) client.Player.TargetObject).Client.Account.Name + ")";
                 }
                 GameServer.Instance.LogGMAction("Command: " + playerName + "(" + accountName + ") -> " + targetName + " - \"/" + commandText.Remove(0, 1) + "\"");
 
@@ -515,14 +484,16 @@ namespace DOL.GS
             try
             {
                 var compiler = new DOLScriptCompiler();
-                if (compileVB) compiler.SetToVisualBasicNet();
+                if (compileVB)
+                    compiler.SetToVisualBasicNet();
 
                 var compiledAssembly = compiler.Compile(outputFile, files);
                 foreach (var errorMessage in compiler.GetDetailedErrorMessages())
                 {
                     log.Error(errorMessage);
                 }
-                if (compiler.HasErrors) return false;
+                if (compiler.HasErrors)
+                    return false;
                 compilationSuccessful = true;
 
                 AddOrReplaceAssembly(compiledAssembly);
@@ -534,7 +505,8 @@ namespace DOL.GS
                 m_compiledScripts.Clear();
             }
             //now notify our callbacks
-            if (!compilationSuccessful) return false;
+            if (!compilationSuccessful)
+                return false;
 
             var newconfig = new XmlConfigFile();
             foreach (var finfo in files)
@@ -771,13 +743,16 @@ namespace DOL.GS
                 foreach (Type type in asm.GetTypes())
                 {
                     // Pick up a class
-                    if (type.IsClass != true) continue;
-                    if (!type.IsSubclassOf(typeof(GameNPC))) continue;
+                    if (type.IsClass != true)
+                        continue;
+                    if (!type.IsSubclassOf(typeof(GameNPC)))
+                        continue;
 
                     try
                     {
                         object[] objs = type.GetCustomAttributes(typeof(NPCGuildScriptAttribute), false);
-                        if (objs.Length == 0) continue;
+                        if (objs.Length == 0)
+                            continue;
 
                         foreach (NPCGuildScriptAttribute attrib in objs)
                         {
@@ -798,8 +773,8 @@ namespace DOL.GS
             return ht;
         }
 
-        protected static Hashtable[] m_gs_guilds = new Hashtable[(int)eRealm._Last + 1];
-        protected static Hashtable[] m_script_guilds = new Hashtable[(int)eRealm._Last + 1];
+        protected static Hashtable[] m_gs_guilds = new Hashtable[(int) eRealm._Last + 1];
+        protected static Hashtable[] m_script_guilds = new Hashtable[(int) eRealm._Last + 1];
 
         /// <summary>
         /// searches for a npc guild script
@@ -809,46 +784,49 @@ namespace DOL.GS
         /// <returns>type of class for searched npc guild or null</returns>
         public static Type FindNPCGuildScriptClass(string guild, eRealm realm)
         {
-            if (string.IsNullOrEmpty(guild)) return null;
+            if (string.IsNullOrEmpty(guild))
+                return null;
 
             Type type = null;
-            if (m_script_guilds[(int)realm] == null)
+            if (m_script_guilds[(int) realm] == null)
             {
                 Hashtable allScriptGuilds = new Hashtable();
 
                 foreach (Assembly asm in GameServerScripts)
                 {
                     Hashtable scriptGuilds = FindAllNPCGuildScriptClasses(realm, asm);
-                    if (scriptGuilds == null) continue;
+                    if (scriptGuilds == null)
+                        continue;
                     foreach (DictionaryEntry entry in scriptGuilds)
                     {
-                        if (allScriptGuilds.ContainsKey(entry.Key)) continue; // guild is already found
+                        if (allScriptGuilds.ContainsKey(entry.Key))
+                            continue; // guild is already found
                         allScriptGuilds.Add(entry.Key, entry.Value);
                     }
                 }
-                m_script_guilds[(int)realm] = allScriptGuilds;
+                m_script_guilds[(int) realm] = allScriptGuilds;
             }
 
             //SmallHorse: First test if no realm-guild hashmap is null, then test further
             //Also ... you can not use "nullobject as anytype" ... this crashes!
             //You have to test against NULL result before casting it... read msdn doku
-            if (m_script_guilds[(int)realm] != null && m_script_guilds[(int)realm][guild] != null)
-                type = m_script_guilds[(int)realm][guild] as Type;
+            if (m_script_guilds[(int) realm] != null && m_script_guilds[(int) realm][guild] != null)
+                type = m_script_guilds[(int) realm][guild] as Type;
 
             if (type == null)
             {
-                if (m_gs_guilds[(int)realm] == null)
+                if (m_gs_guilds[(int) realm] == null)
                 {
                     Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-                    m_gs_guilds[(int)realm] = FindAllNPCGuildScriptClasses(realm, gasm);
+                    m_gs_guilds[(int) realm] = FindAllNPCGuildScriptClasses(realm, gasm);
                 }
             }
 
             //SmallHorse: First test if no realm-guild hashmap is null, then test further
             //Also ... you can not use "nullobject as anytype" ... this crashes!
             //You have to test against NULL result before casting it... read msdn doku
-            if (m_gs_guilds[(int)realm] != null && m_gs_guilds[(int)realm][guild] != null)
-                type = m_gs_guilds[(int)realm][guild] as Type;
+            if (m_gs_guilds[(int) realm] != null && m_gs_guilds[(int) realm][guild] != null)
+                type = m_gs_guilds[(int) realm][guild] as Type;
 
             return type;
         }
@@ -870,7 +848,7 @@ namespace DOL.GS
         {
             Type[] constructorParams = new Type[] { typeof(GamePlayer) };
             ConstructorInfo handlerConstructor = m_defaultControlledBrainType.GetConstructor(constructorParams);
-            return (IControlledBrain)handlerConstructor.Invoke(new object[] { owner });
+            return (IControlledBrain) handlerConstructor.Invoke(new object[] { owner });
         }
 
         /// <summary>
@@ -988,14 +966,17 @@ namespace DOL.GS
             {
                 foreach (Type type in script.GetTypes())
                 {
-                    if (type.IsClass == false) continue;
-                    if (type.GetInterface("DOL.GS.ServerRules.IServerRules") == null) continue;
+                    if (type.IsClass == false)
+                        continue;
+                    if (type.GetInterface("DOL.GS.ServerRules.IServerRules") == null)
+                        continue;
 
                     // look for attribute
                     try
                     {
                         object[] objs = type.GetCustomAttributes(typeof(ServerRulesAttribute), false);
-                        if (objs.Length == 0) continue;
+                        if (objs.Length == 0)
+                            continue;
 
                         foreach (ServerRulesAttribute attrib in objs)
                         {
@@ -1011,7 +992,8 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error("CreateServerRules", e);
                     }
-                    if (rules != null) break;
+                    if (rules != null)
+                        break;
                 }
             }
 
@@ -1020,14 +1002,17 @@ namespace DOL.GS
                 // second search in gameserver
                 foreach (Type type in Assembly.GetAssembly(typeof(GameServer)).GetTypes())
                 {
-                    if (type.IsClass == false) continue;
-                    if (type.GetInterface("DOL.GS.ServerRules.IServerRules") == null) continue;
+                    if (type.IsClass == false)
+                        continue;
+                    if (type.GetInterface("DOL.GS.ServerRules.IServerRules") == null)
+                        continue;
 
                     // look for attribute
                     try
                     {
                         object[] objs = type.GetCustomAttributes(typeof(ServerRulesAttribute), false);
-                        if (objs.Length == 0) continue;
+                        if (objs.Length == 0)
+                            continue;
 
                         foreach (ServerRulesAttribute attrib in objs)
                         {
@@ -1043,7 +1028,8 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error("CreateServerRules", e);
                     }
-                    if (rules != null) break;
+                    if (rules != null)
+                        break;
                 }
 
             }
@@ -1052,7 +1038,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    IServerRules rls = (IServerRules)Activator.CreateInstance(rules, null);
+                    IServerRules rls = (IServerRules) Activator.CreateInstance(rules, null);
                     if (log.IsInfoEnabled)
                         log.Info("Found server rules for " + serverType + " server type (" + rls.RulesDescription() + ").");
                     return rls;
@@ -1081,7 +1067,8 @@ namespace DOL.GS
                 foreach (Assembly asm in Scripts)
                 {
                     t = asm.GetType(name);
-                    if (t == null) continue;
+                    if (t == null)
+                        continue;
                     return t;
                 }
             }
