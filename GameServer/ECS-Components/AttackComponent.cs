@@ -748,9 +748,7 @@ namespace DOL.GS
                     if (npc.IsMoving)
                         npc.StopMoving();
 
-                    if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
-                        npc.TurnTo(_startAttackTarget);
-
+                    npc.TurnTo(_startAttackTarget);
                     npc.Follow(_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
                 }
             }
