@@ -20,7 +20,7 @@ namespace DOL.GS
             if (SpellHandler.Caster is GamePlayer playerCaster &&
                 playerCaster.CharacterClass is ClassChampion &&
                 SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Valor &&
-                (EffectHelper.GetPlayerUpdateFromEffect(EffectType) & EffectHelper.PlayerUpdate.STATS) != 0)
+                (EffectHelper.GetPlayerUpdateFromEffect(EffectType) & EffectHelper.PlayerUpdate.Stats) != 0)
             {
                 _isForcedToSpecDebuff = true;
             }

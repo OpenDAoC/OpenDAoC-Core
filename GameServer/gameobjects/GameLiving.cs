@@ -3835,7 +3835,7 @@ namespace DOL.GS
 			rangeAttackComponent = new RangeAttackComponent(this);
 			styleComponent = StyleComponent.Create(this);
 			castingComponent = CastingComponent.Create(this);
-			effectListComponent = new EffectListComponent(this);
+			effectListComponent = EffectListComponent.Create(this);
 			movementComponent = MovementComponent.Create(this);
 
 			m_guildName = string.Empty;

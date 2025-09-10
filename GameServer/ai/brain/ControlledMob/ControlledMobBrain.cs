@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
             set
             {
                 if (m_walkState != value)
-                    Body?.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.ICONS);
+                    Body?.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.Icons);
 
                 m_walkState = value;
             }
@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
             set
             {
                 if (m_aggressionState != value)
-                    Body?.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.ICONS);
+                    Body?.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.Icons);
 
                 m_aggressionState = value;
 

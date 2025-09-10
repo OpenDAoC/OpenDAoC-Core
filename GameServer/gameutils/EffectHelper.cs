@@ -453,7 +453,7 @@ namespace DOL.GS
         public static PlayerUpdate GetPlayerUpdateFromEffect(eEffect effect)
         {
             // Doesn't set PlayerUpdate.CONCENTRATION.
-            PlayerUpdate playerUpdate = PlayerUpdate.ICONS;
+            PlayerUpdate playerUpdate = PlayerUpdate.Icons;
 
             switch (effect)
             {
@@ -461,24 +461,24 @@ namespace DOL.GS
                 case eEffect.StrengthDebuff:
                 case eEffect.Disease:
                 {
-                    playerUpdate |= PlayerUpdate.STATS;
-                    playerUpdate |= PlayerUpdate.ENCUMBERANCE;
+                    playerUpdate |= PlayerUpdate.Stats;
+                    playerUpdate |= PlayerUpdate.Encumberance;
                     break;
                 }
                 case eEffect.StrengthConBuff:
                 case eEffect.StrConDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.STATUS;
-                    playerUpdate |= PlayerUpdate.STATS;
-                    playerUpdate |= PlayerUpdate.ENCUMBERANCE;
+                    playerUpdate |= PlayerUpdate.Status;
+                    playerUpdate |= PlayerUpdate.Stats;
+                    playerUpdate |= PlayerUpdate.Encumberance;
                     break;
                 }
                 case eEffect.ConstitutionBuff:
                 case eEffect.ConstitutionDebuff:
                 case eEffect.WsConDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.STATUS;
-                    playerUpdate |= PlayerUpdate.STATS;
+                    playerUpdate |= PlayerUpdate.Status;
+                    playerUpdate |= PlayerUpdate.Stats;
                     break;
                 }
                 case eEffect.DexterityBuff:
@@ -490,7 +490,7 @@ namespace DOL.GS
                 case eEffect.AcuityBuff:
                 case eEffect.AcuityDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.STATS;
+                    playerUpdate |= PlayerUpdate.Stats;
                     break;
                 }
                 case eEffect.BodyResistBuff:
@@ -517,7 +517,7 @@ namespace DOL.GS
                 case eEffect.AllMeleeResistsBuff:
                 case eEffect.AllMeleeResistsDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.RESISTS;
+                    playerUpdate |= PlayerUpdate.Resists;
                     break;
                 }
                 case eEffect.BaseAFBuff:
@@ -525,7 +525,7 @@ namespace DOL.GS
                 case eEffect.PaladinAf:
                 case eEffect.ArmorFactorDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.WEAPON_ARMOR;
+                    playerUpdate |= PlayerUpdate.WeaponArmor;
                     break;
                 }
             }
@@ -619,16 +619,17 @@ namespace DOL.GS
         }
 
         [Flags]
-        public enum PlayerUpdate : byte
+        public enum PlayerUpdate : ushort
         {
-            ICONS =         1 << 7,
-            STATUS =        1 << 6,
-            STATS =         1 << 5,
-            RESISTS =       1 << 4,
-            WEAPON_ARMOR =  1 << 3,
-            ENCUMBERANCE =  1 << 2,
-            CONCENTRATION = 1,
-            NONE =          0
+            PetWindow =     1 << 8,
+            Icons =         1 << 7,
+            Status =        1 << 6,
+            Stats =         1 << 5,
+            Resists =       1 << 4,
+            WeaponArmor =   1 << 3,
+            Encumberance =  1 << 2,
+            Concentration = 1,
+            None =          0
         }
     }
 }

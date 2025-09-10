@@ -19,8 +19,7 @@ namespace DOL.GS
 
         // Active effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
-        private readonly Dictionary<int, ECSGameEffect> _effectIdToEffect = new();   // Dictionary of effects by their icon ID.
-        private readonly Lock _effectsLock = new();                                  // Lock for synchronizing access to the effect list.
+        protected readonly Lock _effectsLock = new();                                // Lock for synchronizing access to the effect list.
 
         // Pending effects.
         private readonly Queue<PendingEffect> _effectsToStartOrStop = new();         // Queue for effects to start or stop after their state has been finalized.
@@ -30,21 +29,24 @@ namespace DOL.GS
         private int _usedConcentration;                                              // Amount of concentration used by the player.
         private readonly Lock _concentrationEffectsLock = new();                     // Lock for synchronizing access to the concentration effect list.
 
-        // Player updates.
-        private EffectHelper.PlayerUpdate _requestedPlayerUpdates;                   // Player updates requested by the effects, to be sent in the next tick.
-        private int _lastUpdateEffectsCount;                                         // Number of effects sent in the last player update, used externally.
-        private readonly Lock _playerUpdatesLock = new();
-
         public GameLiving Owner { get; }
         public int UsedConcentration => Volatile.Read(ref _usedConcentration);
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.EffectListComponent);
 
-        public EffectListComponent(GameLiving owner)
+        protected EffectListComponent(GameLiving owner)
         {
             Owner = owner;
         }
 
-        public void Tick()
+        public static EffectListComponent Create(GameLiving living)
+        {
+            if (living is GamePlayer player)
+                return new PlayerEffectListComponent(player);
+            else
+                return new EffectListComponent(living);
+        }
+
+        public virtual void Tick()
         {
             // Only process up to `Count` in case `Process` adds to `_effectsToStartOrStop`
             int count = _effectsToStartOrStop.Count;
@@ -58,7 +60,6 @@ namespace DOL.GS
             if (_effects.Count == 0)
             {
                 ServiceObjectStore.Remove(this);
-                SendPlayerUpdates();
                 return;
             }
 
@@ -66,8 +67,6 @@ namespace DOL.GS
             // Keep ticking even if `ObjectState == Inactive` (region change).
             if (Owner.Health <= 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
                 CancelAll();
-
-            SendPlayerUpdates();
         }
 
         public void TryEnableBestEffectOfSameType(ECSGameEffect effect)
@@ -325,21 +324,10 @@ namespace DOL.GS
             return temp;
         }
 
-        public ECSGameEffect TryGetEffectFromEffectId(int effectId)
+        public virtual ECSGameEffect TryGetEffectFromEffectId(int effectId)
         {
-            ECSGameEffect effect;
-
-            lock (_effectsLock)
-            {
-                _effectIdToEffect.TryGetValue(effectId, out effect);
-            }
-
-            return effect;
-        }
-
-        public ref int GetLastUpdateEffectsCount()
-        {
-            return ref _lastUpdateEffectsCount;
+            // Only used by players.
+            return null;
         }
 
         public bool ContainsEffectForEffectType(eEffect effectType)
@@ -375,13 +363,11 @@ namespace DOL.GS
             }
         }
 
-        public void RequestPlayerUpdate(EffectHelper.PlayerUpdate playerUpdate)
+        public virtual void RequestPlayerUpdate(EffectHelper.PlayerUpdate playerUpdate)
         {
-            lock (_playerUpdatesLock)
-            {
-                _requestedPlayerUpdates |= playerUpdate;
-                ServiceObjectStore.Add(this);
-            }
+            // Icon updates on pets propagate to their owner to update the pet window.
+            if ((playerUpdate & EffectHelper.PlayerUpdate.Icons) != 0 && Owner is GameNPC npc && npc.Brain is IControlledBrain brain)
+                (brain.Owner as GamePlayer)?.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.PetWindow);
         }
 
         public void ProcessEffect(ECSGameEffect effect)
@@ -447,6 +433,16 @@ namespace DOL.GS
             }
         }
 
+        protected virtual void SetEffectIdToEffect(ECSGameEffect effect)
+        {
+            // Only used by players.
+        }
+
+        protected virtual void RemoveEffectIdToEffect(ECSGameEffect effect)
+        {
+            // Only used by players.
+        }
+
         private void ProcessEffectInternal(ECSGameEffect effect)
         {
             ServiceObjectStore.Add(this);
@@ -498,7 +494,7 @@ namespace DOL.GS
                         else
                             _effects.TryAdd(effect.EffectType, [effect]);
 
-                        _effectIdToEffect[effect.Icon] = effect;
+                        SetEffectIdToEffect(effect);
                         return AddEffectResult.Added;
                     }
 
@@ -515,7 +511,7 @@ namespace DOL.GS
                         _effects.TryAdd(effect.EffectType, [effect]);
 
                         if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
-                            _effectIdToEffect[effect.Icon] = effect;
+                            SetEffectIdToEffect(effect);
 
                         return AddEffectResult.Added;
                     }
@@ -581,7 +577,7 @@ namespace DOL.GS
                                 }
 
                                 _effects.TryAdd(effect.EffectType, existingEffects);
-                                _effectIdToEffect[effect.Icon] = effect;
+                                SetEffectIdToEffect(effect);
                                 return result;
                             }
                         }
@@ -697,7 +693,7 @@ namespace DOL.GS
                         _effects.TryAdd(effect.EffectType, existingEffects);
 
                         if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
-                            _effectIdToEffect[effect.Icon] = effect;
+                            SetEffectIdToEffect(effect);
 
                         return result;
                     }
@@ -840,7 +836,7 @@ namespace DOL.GS
                     if (effect.IsStopping)
                     {
                         existingEffects.Remove(effect);
-                        _effectIdToEffect.Remove(effect.Icon);
+                        RemoveEffectIdToEffect(effect);
 
                         if (existingEffects.Count == 0)
                             _effects.Remove(effect.EffectType);
@@ -899,7 +895,7 @@ namespace DOL.GS
                 _concentrationEffects.Add(spellEffect);
             }
 
-            RequestPlayerUpdate(EffectHelper.PlayerUpdate.CONCENTRATION);
+            RequestPlayerUpdate(EffectHelper.PlayerUpdate.Concentration);
         }
 
         private void RemoveFromConcentrationEffectList(ECSGameSpellEffect spellEffect)
@@ -910,56 +906,7 @@ namespace DOL.GS
                 _concentrationEffects.Remove(spellEffect);
             }
 
-            RequestPlayerUpdate(EffectHelper.PlayerUpdate.CONCENTRATION);
-        }
-
-        private void SendPlayerUpdates()
-        {
-            if (_requestedPlayerUpdates is EffectHelper.PlayerUpdate.NONE)
-                return;
-
-            EffectHelper.PlayerUpdate requestedUpdates;
-
-            lock (_playerUpdatesLock)
-            {
-                if (_requestedPlayerUpdates is EffectHelper.PlayerUpdate.NONE)
-                    return;
-
-                requestedUpdates = _requestedPlayerUpdates;
-                _requestedPlayerUpdates = EffectHelper.PlayerUpdate.NONE;
-            }
-
-            if (Owner is GamePlayer playerOwner)
-            {
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
-                {
-                    playerOwner.Group?.UpdateMember(playerOwner, true, false);
-                    playerOwner.Out.SendUpdateIcons(GetEffects(), ref GetLastUpdateEffectsCount());
-                }
-
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.STATUS) != 0)
-                    playerOwner.Out.SendStatusUpdate();
-
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.STATS) != 0)
-                    playerOwner.Out.SendCharStatsUpdate();
-
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.RESISTS) != 0)
-                    playerOwner.Out.SendCharResistsUpdate();
-
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.WEAPON_ARMOR) != 0)
-                    playerOwner.Out.SendUpdateWeaponAndArmorStats();
-
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.ENCUMBERANCE) != 0)
-                    playerOwner.UpdateEncumbrance();
-
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.CONCENTRATION) != 0)
-                    playerOwner.Out.SendConcentrationList();
-            }
-            else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain npcOwnerBrain)
-            {
-                if ((requestedUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
-                    npcOwnerBrain.UpdatePetWindow();
-            }
+            RequestPlayerUpdate(EffectHelper.PlayerUpdate.Concentration);
         }
 
         public enum AddEffectResult
