@@ -190,9 +190,6 @@ namespace DOL.GS
 
         protected virtual bool PrepareMeleeAttack()
         {
-            if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
-                _weapon = _leftWeapon;
-
             bool clearOldStyles = false;
 
             if (LastAttackData != null)

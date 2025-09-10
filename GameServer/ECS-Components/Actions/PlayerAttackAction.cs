@@ -1,5 +1,6 @@
 ﻿using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.GS.Styles;
 using DOL.Language;
 
 namespace DOL.GS
@@ -31,6 +32,18 @@ namespace DOL.GS
         protected override bool PrepareMeleeAttack()
         {
             _combatStyle = StyleComponent.GetStyleToUse();
+
+            // Check if we still have enough endurance for the style and update `_weapon` if needed.
+            if (_combatStyle != null)
+            {
+                DbInventoryItem styleWeapon = (eObjectType) _combatStyle.WeaponTypeRequirement is eObjectType.Shield ? _leftWeapon : _weapon;
+
+                if (styleWeapon != null && !StyleProcessor.CheckEnduranceCost(_playerOwner, styleWeapon, _combatStyle))
+                    _combatStyle = null;
+                else
+                    _weapon = styleWeapon;
+            }
+
             return base.PrepareMeleeAttack();
         }
 

@@ -1312,20 +1312,20 @@ namespace DOL.GS.ServerRules
                 GamePlayer highestLevelPlayer = entityCountTotalDamagePair.HighestLevelPlayer;
 
                 /*
-                    * http://www.camelotherald.com/more/110.shtml
-                    * 
-                    * All group experience is divided evenly amongst group members, if they are in the same level range. What's a level range? One color range.
-                    * If everyone in the group cons yellow to each other (or high blue, or low orange), experience will be shared out exactly evenly, with no leftover points.
-                    * How can you determine a color range? Simple - Level divided by ten plus one. So, to a level 40 player (40/10 + 1), 36-40 is yellow, 31-35 is blue,
-                    * 26-30 is green, and 25-less is gray. But for everyone in the group to get the maximum amount of experience possible, the encounter must be a challenge to
-                    * the group. If the group has two people, the monster must at least be (con) yellow to the highest level member. If the group has four people, the monster
-                    * must at least be orange. If the group has eight, the monster must at least be red.
-                    *
-                    * If "challenge code" has been activated, then the experience is divided roughly like so in a group of two (adjust the colors up if the group is bigger): If
-                    * the monster was blue to the highest level player, each lower level group member will ROUGHLY receive experience as if they soloed a blue monster.
-                    * Ditto for green. As everyone knows, a monster that cons gray to the highest level player will result in no exp for anyone. If the monster was high blue,
-                    * challenge code may not kick in. It could also kick in if the monster is low yellow to the high level player, depending on the group strength of the pair.
-                    */
+                * http://www.camelotherald.com/more/110.shtml
+                * 
+                * All group experience is divided evenly amongst group members, if they are in the same level range. What's a level range? One color range.
+                * If everyone in the group cons yellow to each other (or high blue, or low orange), experience will be shared out exactly evenly, with no leftover points.
+                * How can you determine a color range? Simple - Level divided by ten plus one. So, to a level 40 player (40/10 + 1), 36-40 is yellow, 31-35 is blue,
+                * 26-30 is green, and 25-less is gray. But for everyone in the group to get the maximum amount of experience possible, the encounter must be a challenge to
+                * the group. If the group has two people, the monster must at least be (con) yellow to the highest level member. If the group has four people, the monster
+                * must at least be orange. If the group has eight, the monster must at least be red.
+                *
+                * If "challenge code" has been activated, then the experience is divided roughly like so in a group of two (adjust the colors up if the group is bigger): If
+                * the monster was blue to the highest level player, each lower level group member will ROUGHLY receive experience as if they soloed a blue monster.
+                * Ditto for green. As everyone knows, a monster that cons gray to the highest level player will result in no exp for anyone. If the monster was high blue,
+                * challenge code may not kick in. It could also kick in if the monster is low yellow to the high level player, depending on the group strength of the pair.
+                */
 
                 ConColor conColorForHighestLevelPlayerInGroup = ConLevels.GetConColor(highestLevelPlayer.GetConLevel(killedNpc));
 

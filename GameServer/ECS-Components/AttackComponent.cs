@@ -1211,9 +1211,9 @@ namespace DOL.GS
                 case eAttackResult.Parried:
                 case eAttackResult.Missed:
                 {
-                    // Reduce endurance by half the style's cost if we missed.
+                    // Reduce endurance by half the style's cost if we missed or got evaded, parried, blocked.
                     if (ad.Style != null && playerOwner != null && weapon != null)
-                        playerOwner.Endurance -= StyleProcessor.CalculateEnduranceCost(playerOwner, ad.Style, weapon.SPD_ABS) / 2;
+                        StyleProcessor.ApplyEnduranceCost(playerOwner, weapon, ad.Style, true);
 
                     break;
                 }

@@ -195,13 +195,8 @@ namespace DOL.GS.Styles
 				}
 			}
 
-			int fatCost = CalculateEnduranceCost(player, style, weapon.SPD_ABS);
-
-			if (player.Endurance < fatCost)
-			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.Fatigued"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (!CheckEnduranceCost(player, weapon, style))
 				return;
-			}
 
 			Style preRequireStyle = null;
 
@@ -306,13 +301,12 @@ namespace DOL.GS.Styles
 			// Used to disable RA styles when they're actually firing.
 			style.OnStyleExecuted?.Invoke(living);
 
-			if (weapon != null)
-				living.Endurance -= CalculateEnduranceCost(living, style, weapon.SPD_ABS);
+			if (weapon != null && player != null)
+				ApplyEnduranceCost(player, weapon, style, false);
 
 			AttackData lastAttackData = living.attackComponent.attackAction.LastAttackData;
 			bool perfect; // Whether this is a perfectly executed style or not.
 
-			// Did primary and backup style fail?
 			if (!CanUseStyle(lastAttackData, living, style, weapon))
 			{
 				perfect = false;
@@ -461,26 +455,49 @@ namespace DOL.GS.Styles
 		/// <param name="style">The style to be used</param>
 		/// <param name="weaponSpd">The weapon speed</param>
 		/// <returns>Endurance needed to use style</returns>
-		public static int CalculateEnduranceCost(GameLiving living, Style style, int weaponSpd)
+		private static int CalculateEnduranceCost(GameLiving living, Style style, int weaponSpd)
 		{
-
-            //[StephenxPimentel]
-            //1.108 - Valhallas Blessing now has a 75% chance to not use endurance.
-
+			// 1.108 - Valhallas Blessing now has a 75% chance to not use endurance.
 			// Apply Valkyrie RA5L effect
 			ValhallasBlessingEffect ValhallasBlessing = living.EffectList.GetOfType<ValhallasBlessingEffect>();
-			if (ValhallasBlessing != null && Util.Chance(75)) return 0;
 
-            //Camelot Herald 1.90 : Battlemaster styles will now cost a flat amount of Endurance, regardless of weapon speed
-            if (style.Spec == Specs.Battlemaster)
-                return Math.Max(1, (int)Math.Ceiling((30 * style.EnduranceCost / 40) * living.GetModified(eProperty.FatigueConsumption) * 0.01));
-            
-            int fatCost = weaponSpd * style.EnduranceCost / 40;
+			if (ValhallasBlessing != null && Util.Chance(75))
+				return 0;
+
+			// Camelot Herald 1.90 : Battlemaster styles will now cost a flat amount of Endurance, regardless of weapon speed
+			if (style.Spec is Specs.Battlemaster)
+				return Math.Max(1, (int) Math.Ceiling((30 * style.EnduranceCost / 40) * living.GetModified(eProperty.FatigueConsumption) * 0.01));
+
+			int fatCost = weaponSpd * style.EnduranceCost / 40;
+
 			if (weaponSpd < 40)
 				fatCost++;
-			
-            fatCost = (int)Math.Ceiling(fatCost * living.GetModified(eProperty.FatigueConsumption) * 0.01);
-			return Math.Max(1, fatCost);
+
+			return Math.Max(1, (int) Math.Ceiling(fatCost * living.GetModified(eProperty.FatigueConsumption) * 0.01));
+		}
+
+		public static bool CheckEnduranceCost(GamePlayer player, DbInventoryItem weapon, Style style)
+		{
+			int enduranceCost = CalculateEnduranceCost(player, style, weapon.SPD_ABS);
+
+			if (player.Endurance < enduranceCost)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.Fatigued"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			return true;
+		}
+
+		public static bool ApplyEnduranceCost(GamePlayer player, DbInventoryItem weapon, Style style, bool missed)
+		{
+			int enduranceCost = CalculateEnduranceCost(player, style, weapon.SPD_ABS);
+
+			if (missed)
+				enduranceCost /= 2;
+
+			player.Endurance -= enduranceCost;
+			return true;
 		}
 
 		/// <summary>
