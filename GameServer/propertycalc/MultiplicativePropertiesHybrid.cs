@@ -78,15 +78,18 @@ public sealed class MultiplicativePropertiesHybrid : IMultiplicativeProperties
 
     public double Get(int index)
     {
-        return _properties.TryGetValue(index, out PropertyEntry entry) ? entry.CachedValue : 1.0;
+        lock (_lock)
+        {
+            return _properties.TryGetValue(index, out PropertyEntry entry) ? entry.CachedValue : 1.0;
+        }
     }
 
     private static EffectKey GetKey(ECSGameEffect effect)
     {
         if (effect.SpellHandler != null)
-            return new EffectKey(EffectKeyType.Spell, effect.SpellHandler.Spell.ID);
+            return new(EffectKeyType.Spell, effect.SpellHandler.Spell.ID);
         else
-            return new EffectKey(EffectKeyType.Ability, effect.Icon);
+            return new(EffectKeyType.Ability, effect.Icon);
     }
 
     private static EffectKey GetKey(IGameEffect effect)
