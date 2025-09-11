@@ -3089,17 +3089,6 @@ namespace DOL.GS
             }
             else specLine.Level = 1;
 
-            // If BD subpet spells scaled and capped by BD spec, respecing a spell line
-            //	requires re-scaling the spells for all subpets from that line.
-            if (CharacterClass is CharacterClassBoneDancer
-                && DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
-                && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
-                && ControlledBrain is IControlledBrain brain && brain.Body is GameSummonedPet pet
-                && pet.ControlledNpcList != null)
-                foreach (ABrain subBrain in pet.ControlledNpcList)
-                    if (subBrain != null && subBrain.Body is BdSubPet subPet && subPet.PetSpecLine == specLine.KeyName)
-                        subPet.SortSpells();
-
             return specPoints;
         }
 

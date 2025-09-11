@@ -1172,12 +1172,6 @@ namespace DOL.GS.ServerProperties
 		public static int PET_BD_COMMANDER_TAUNT_VALUE;
 
 		/// <summary>
-		/// Scale pet spell values according to their level?
-		/// </summary>
-		[ServerProperty("npc", "pet_cap_bd_minion_spell_scaling_by_spec", "When scaling BD minion spells, do we cap the level they scale do by the BD's spec level?  This provides an incentive to spec darkness and suppression and use items that boost them.", false)]
-		public static bool PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC;
-
-		/// <summary>
 		/// Minimum respawn time for npc's without a set respawninterval
 		/// </summary>
 		[ServerProperty("npc", "npc_min_respawn_interval", "Minimum respawn time, in minutes, for npc's without a set respawninterval", 5)]

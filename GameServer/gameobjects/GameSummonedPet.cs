@@ -131,8 +131,7 @@ namespace DOL.GS
 			// Need to make copies of spells to scale or else it will affect every other pet with the same spell on the server.
 			// Enchanter, Cabalist, Spiritmaster and Theurgist pets need to have their spells scaled.
 			// Note: This excludes every druid pet except the one that contains spirit in its name.
-			if ((this is BdSubPet && Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC) ||
-				Name.StartsWith("underhill") || Name.EndsWith("simulacrum") || Name.StartsWith("spirit") || this is TheurgistPet)
+			if (Name.StartsWith("underhill") || Name.EndsWith("simulacrum") || Name.StartsWith("spirit") || this is TheurgistPet)
 			{
 				if (CanCastHarmfulSpells)
 				{
