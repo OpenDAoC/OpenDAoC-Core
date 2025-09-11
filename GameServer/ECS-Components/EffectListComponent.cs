@@ -57,7 +57,7 @@ namespace DOL.GS
                     pendingEffect.Process();
             }
 
-            if (_effects.Count == 0)
+            if (_effects.Count == 0 && _effectsToStartOrStop.Count == 0)
             {
                 ServiceObjectStore.Remove(this);
                 return;
