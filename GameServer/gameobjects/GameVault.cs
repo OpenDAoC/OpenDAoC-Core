@@ -459,18 +459,17 @@ namespace DOL.GS
                     return;
 
                 _items = new();
-                bool success = true;
 
                 foreach (DbInventoryItem item in _vault.GetDbItems(player))
                 {
                     int slotPosition = GetClientSlotPosition(item.SlotPosition);
 
                     if (!_items.TryAdd(slotPosition, item))
-                        success = false;
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Error during cache validation. Slot already taken. (Added: {_items[slotPosition]}) (Rejected: {item}) (Player {player})");
+                    }
                 }
-
-                if (!success && log.IsErrorEnabled)
-                    log.Error($"Error during cache validation.");
             }
 
             private int GetClientSlotPosition(int slot)
