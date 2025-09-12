@@ -188,38 +188,30 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}*/
 
 			string ipAddress = client.TcpEndpointAddress;
+			bool success = true;
 
-			// check server status
-			if (GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
-			{
-				client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
-
-				if (Log.IsInfoEnabled)
-					Log.Info(ipAddress + " disconnected because game is closed!");
-
-				client.IsConnected = false;
-				return;
-			}
-
-			// check connection allowed with serverrules
 			try
 			{
+				if (GameServer.Instance.ServerStatus is EGameServerStatus.GSS_Closed)
+				{
+					client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
+
+					if (Log.IsInfoEnabled)
+						Log.Info($"{ipAddress} disconnected because game is closed!");
+
+					success = false;
+					return;
+				}
+
 				if (!GameServer.ServerRules.IsAllowedToConnect(client, userName))
 				{
 					if (Log.IsInfoEnabled)
-						Log.Info(ipAddress + " disconnected because IsAllowedToConnect returned false!");
+						Log.Info($"{ipAddress} disconnected because IsAllowedToConnect returned false!");
 
+					success = false;
 					return;
 				}
-			}
-			catch (Exception e)
-			{
-				if (Log.IsErrorEnabled)
-					Log.Error("Error shutting down Client after IsAllowedToConnect failed!", e);
-			}
 
-			try
-			{
 				DbAccount playerAccount;
 				GameClient.eClientState state = client.ClientState;
 
@@ -228,6 +220,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (Log.IsDebugEnabled)
 						Log.DebugFormat($"wrong client state on connect {userName} {state}");
 
+					success = false;
 					return;
 				}
 
@@ -244,7 +237,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Log.Info("User is already connecting, ignored.");
 
 						client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIn);
-						client.IsConnected = false;
+						success = false;
 						return;
 					}
 
@@ -255,7 +248,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Log.Info("User is still being logged out from linkdeath!");
 
 						client.Out.SendLoginDenied(eLoginError.AccountIsInLogoutProcedure);
-						client.IsConnected = false;
+						success = false;
 					}
 					else
 					{
@@ -263,7 +256,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Log.Info("User already logged in!");
 
 						client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIn);
-						client.IsConnected = false;
+						success = false;
 					}
 
 					return;
@@ -280,7 +273,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					else if (Log.IsWarnEnabled)
 						Log.Warn("Client or Client.Out null on invalid name failure.  Disconnecting.");
 
-					client.IsConnected = false;
+					success = false;
 					return;
 				}
 				else
@@ -290,95 +283,93 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					if (playerAccount == null)
 					{
-						if (GameServer.Instance.Configuration.AutoAccountCreation && Properties.ALLOW_AUTO_ACCOUNT_CREATION)
-						{
-							if (string.IsNullOrEmpty(password))
-							{
-								client.Out.SendLoginDenied(eLoginError.InvalidAccount);
-								client.IsConnected = false;
-
-								if (Log.IsInfoEnabled)
-									Log.Info("Account creation failed, no password set for Account: " + userName);
-
-								return;
-							}
-
-							TimeSpan timeSpan;
-							int totalAccount = 0;
-							var accountsFromSameIp = await DOLDB<DbAccount>.SelectObjectsAsync(DB.Column("LastLoginIP").IsEqualTo(ipAddress));
-
-							foreach (DbAccount ac in accountsFromSameIp)
-							{
-								timeSpan = DateTime.Now - ac.CreationDate;
-
-								if (timeSpan.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP)
-								{
-									if (Log.IsWarnEnabled)
-										Log.Warn($"Account creation: too many from same IP within set minutes - {userName}:{ipAddress}");
-
-									client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
-									client.IsConnected = false;
-									return;
-								}
-
-								totalAccount++;
-							}
-
-							if (totalAccount >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
-							{
-								if (Log.IsWarnEnabled)
-									Log.Warn($"Account creation: too many accounts created from same ip - {userName}:{ipAddress}");
-
-								client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
-								client.IsConnected = false;
-								return;
-							}
-
-							if (Properties.TIME_BETWEEN_ACCOUNT_CREATION > 0)
-							{
-								timeSpan = DateTime.Now - _lastAccountCreateTime;
-
-								if (timeSpan.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
-								{
-									if (Log.IsWarnEnabled)
-										Log.Warn($"Account creation: time between account creation too small - {userName}:{ipAddress}");
-
-									client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
-									client.IsConnected = false;
-									return;
-								}
-							}
-
-							_lastAccountCreateTime = DateTime.Now;
-
-							playerAccount = new DbAccount();
-							playerAccount.Name = userName;
-							playerAccount.Password = CryptPassword(password);
-							playerAccount.Realm = 0;
-							playerAccount.CreationDate = DateTime.Now;
-							playerAccount.LastLogin = DateTime.Now;
-							playerAccount.LastLoginIP = ipAddress;
-							playerAccount.LastClientVersion = ((int)client.Version).ToString();
-							playerAccount.Language = Properties.SERV_LANGUAGE;
-							playerAccount.PrivLevel = 1;
-
-							if (Log.IsInfoEnabled)
-								Log.Info("New account created: " + userName);
-
-							GameServer.Database.AddObject(playerAccount);
-
-							// Log account creation
-							AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountCreate, "", userName);
-						}
-						else
+						if (!GameServer.Instance.Configuration.AutoAccountCreation || !Properties.ALLOW_AUTO_ACCOUNT_CREATION)
 						{
 							if (Log.IsInfoEnabled)
 								Log.Info("No such account found and autocreation deactivated!");
 
 							client.Out.SendLoginDenied(eLoginError.AccountNotFound);
-							client.IsConnected = false;
+							success = false;
 							return;
 						}
+
+						if (string.IsNullOrEmpty(password))
+						{
+							client.Out.SendLoginDenied(eLoginError.InvalidAccount);
+							success = false;
+
+							if (Log.IsInfoEnabled)
+								Log.Info("Account creation failed, no password set for Account: " + userName);
+
+							return;
+						}
+
+						TimeSpan timeSpan;
+						int totalAccount = 0;
+						var accountsFromSameIp = await DOLDB<DbAccount>.SelectObjectsAsync(DB.Column("LastLoginIP").IsEqualTo(ipAddress));
+
+						foreach (DbAccount ac in accountsFromSameIp)
+						{
+							timeSpan = DateTime.Now - ac.CreationDate;
+
+							if (timeSpan.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP)
+							{
+								if (Log.IsWarnEnabled)
+									Log.Warn($"Account creation: too many from same IP within set minutes - {userName}:{ipAddress}");
+
+								client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
+								success = false;
+								return;
+							}
+
+							totalAccount++;
+						}
+
+						if (totalAccount >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
+						{
+							if (Log.IsWarnEnabled)
+								Log.Warn($"Account creation: too many accounts created from same ip - {userName}:{ipAddress}");
+
+							client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
+							success = false;
+							return;
+						}
+
+						if (Properties.TIME_BETWEEN_ACCOUNT_CREATION > 0)
+						{
+							timeSpan = DateTime.Now - _lastAccountCreateTime;
+
+							if (timeSpan.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
+							{
+								if (Log.IsWarnEnabled)
+									Log.Warn($"Account creation: time between account creation too small - {userName}:{ipAddress}");
+
+								client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
+								success = false;
+								return;
+							}
+						}
+
+						_lastAccountCreateTime = DateTime.Now;
+
+						playerAccount = new DbAccount();
+						playerAccount.Name = userName;
+						playerAccount.Password = CryptPassword(password);
+						playerAccount.Realm = 0;
+						playerAccount.CreationDate = DateTime.Now;
+						playerAccount.LastLogin = DateTime.Now;
+						playerAccount.LastLoginIP = ipAddress;
+						playerAccount.LastClientVersion = ((int) client.Version).ToString();
+						playerAccount.Language = Properties.SERV_LANGUAGE;
+						playerAccount.PrivLevel = 1;
+
+						if (Log.IsInfoEnabled)
+							Log.Info("New account created: " + userName);
+
+						GameServer.Database.AddObject(playerAccount);
+
+						// Log account creation
+						AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountCreate, "", userName);
 					}
 					else
 					{
@@ -394,7 +385,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								Log.Info("(" + client.TcpEndpointAddress + ") Wrong password!");
 
 							client.Out.SendLoginDenied(eLoginError.IncorrectPassword);
-							client.IsConnected = false;
+							success = false;
 
 							// Log failure
 							AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountFailedLogin, "", userName);
@@ -422,7 +413,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									Log.Info("No such account found in queue service whitelist!");
 
 								client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
-								client.IsConnected = false;
+								success = false;
 								return;
 							}
 						}
@@ -449,7 +440,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						Log.InfoFormat("Too many clients connected, denied login to " + playerAccount.Name);
 
 					client.Out.SendLoginDenied(eLoginError.TooManyPlayersLoggedIn);
-					client.IsConnected = false;
+					success = false;
 					return;
 				}
 
@@ -477,7 +468,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Log.Error("LoginRequestHandler", e);
 
 				client.Out.SendLoginDenied(eLoginError.Error);
-				client.IsConnected = false;
+				success = false;
 			}
 			catch (Exception e)
 			{
@@ -485,13 +476,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Log.Error("LoginRequestHandler", e);
 
 				client.Out.SendLoginDenied(eLoginError.Error);
-				client.IsConnected = false;
+				success = false;
 			}
 			finally
 			{
 				client.PacketProcessor?.SendPendingPackets();
 
-				if (client.IsConnected == false)
+				if (!success)
 					client.Disconnect();
 			}
 		}

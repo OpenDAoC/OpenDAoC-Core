@@ -63,7 +63,6 @@ namespace DOL.GS.ServerRules
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to username " + username);
 
-                client.IsConnected = false;
                 return false;
             }
 
@@ -77,7 +76,6 @@ namespace DOL.GS.ServerRules
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to IP " + accip);
 
-                client.IsConnected = false;
                 return false;
             }
 
@@ -89,7 +87,6 @@ namespace DOL.GS.ServerRules
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to client version (too low) " + client.Version);
 
-                client.IsConnected = false;
                 return false;
             }
 
@@ -101,7 +98,6 @@ namespace DOL.GS.ServerRules
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to client version (too high) " + client.Version);
 
-                client.IsConnected = false;
                 return false;
             }
 
@@ -115,7 +111,6 @@ namespace DOL.GS.ServerRules
                     if (log.IsDebugEnabled)
                         log.Debug("IsAllowedToConnect deny access to expansion pack.");
 
-                    client.IsConnected = false;
                     return false;
                 }
             }
@@ -160,10 +155,8 @@ namespace DOL.GS.ServerRules
                         if (log.IsDebugEnabled)
                             log.Debug("IsAllowedToConnect deny access due to too many players.");
 
-                        client.IsConnected = false;
                         return false;
                     }
-            
                 }
             }
 
@@ -178,11 +171,10 @@ namespace DOL.GS.ServerRules
                     if (log.IsDebugEnabled)
                         log.Debug("IsAllowedToConnect deny access; staff only login");
 
-                    client.IsConnected = false;
                     return false;
                 }
             }
-            
+
             if (Properties.TESTER_LOGIN)
             {
                 if (account == null || !account.IsTester && account.PrivLevel == 1)
@@ -194,11 +186,10 @@ namespace DOL.GS.ServerRules
                     if (log.IsDebugEnabled)
                         log.Debug("IsAllowedToConnect deny access; tester and staff only login");
 
-                    client.IsConnected = false;
                     return false;
                 }
             }
-            
+
             if (Properties.FORCE_DISCORD_LINK)
             {
                 if (account == null || account.PrivLevel == 1 && account.DiscordID is (null or ""))
@@ -210,7 +201,6 @@ namespace DOL.GS.ServerRules
                     if (log.IsDebugEnabled)
                         log.Debug("Denied access, account is not linked to Discord");
 
-                    client.IsConnected = false;
                     return false;
                 }
             }
@@ -228,7 +218,6 @@ namespace DOL.GS.ServerRules
                         if (log.IsDebugEnabled)
                             log.Debug("IsAllowedToConnect deny access; dual login not allowed");
 
-                        client.IsConnected = false;
                         return false;
                     }
                 }

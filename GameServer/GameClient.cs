@@ -100,7 +100,6 @@ namespace DOL.GS
         public bool HasSeenPatchNotes { get; set; }
         public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache { get; set; }
         public long LinkDeathTime { get; set; }
-        public bool IsConnected { get; set; } = true;
         public int ActiveCharIndex { get; set; } = -1;
         public long PingTime { get; set; } = GameLoop.GameLoopTime;
         public string LocalIP { get; set; } = string.Empty;
