@@ -177,7 +177,6 @@ PlayerInitRequestHandler.FreeLevel:			Vous êtes éligible pour un niveau gratui
 PlayerInitRequestHandler.GuildMessage:		Message de Guilde : 
 PlayerInitRequestHandler.LevelCap:			Vous avez excédé la limite de niveau pour ce champs de bataille !
 PlayerInitRequestHandler.OfficerMessage:	Message Officiers : {0}
-PlayerInitRequestHandler.SaferLocation:		Cette zone n'est actuellement pas sécurisée et vous êtes transporté(e) vers un endroit plus sûr.
 
 # /PlayerMoveItemRequestHandler
 PlayerMoveItemRequestHandler.TooFarAway:	Vous êtes trop loin pour donner quoi que ce soit à {0}.

@@ -72,9 +72,6 @@ namespace DOL.GS
 		private static Dictionary<eRealm, Dictionary<string, DbTeleport>> m_teleportLocations;
 		private static readonly Lock _syncTeleport = new();
 
-		// this is used to hold the player ids with timestamp of ld, that ld near an enemy keep structure, to allow grace period relog
-		public static ConcurrentDictionary<string, DateTime> RvrLinkDeadPlayers = new();
-
 		/// <summary>
 		/// Returns the teleport given an ID and a realm
 		/// </summary>

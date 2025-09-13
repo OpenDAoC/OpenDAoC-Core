@@ -212,7 +212,6 @@ PlayerInitRequestHandler.FreeLevel:			Ihr seid nun würdig, eine freie Stufe zu 
 PlayerInitRequestHandler.GuildMessage:			Gildennachricht: 
 PlayerInitRequestHandler.LevelCap:			Ihr habt für dieses Schlachtfeld die Stufenobergrenze erreicht!
 PlayerInitRequestHandler.OfficerMessage:		Offiziersnachricht: {0}
-PlayerInitRequestHandler.SaferLocation:			Diese Gegend ist im Moment nicht sicher. Ihr werdet an einen sicheren Ort versetzt.
 
 # /PlayerMoveItemRequestHandler
 PlayerMoveItemRequestHandler.TooFarAway:		Ihr seid zu weit weg, um {0} etwas zu geben.

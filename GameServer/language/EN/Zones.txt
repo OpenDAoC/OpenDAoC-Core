@@ -2,7 +2,6 @@
 
 ## General
 PlayerInitRequestHandler.LevelCap:			            You have exceeded the level cap of this battleground!
-PlayerInitRequestHandler.SaferLocation:			        This area isn't currently secure and you are being transported to a safer location.
 PlayerPositionUpdateHandler.UnknownZone:		        Unknown zone, moving to bind point.
 
 ## Battlegrounds

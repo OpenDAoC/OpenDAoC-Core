@@ -606,7 +606,6 @@ PlayerInitRequestHandler.FreeLevel:				Sei idoneo per un livello gratuito! Clicc
 PlayerInitRequestHandler.GuildMessage:			Messaggio di Gilda: 
 PlayerInitRequestHandler.LevelCap:				Hai superato il limite massimo del livello di questo battleground!
 PlayerInitRequestHandler.OfficerMessage:		Messaggio degli Ufficiali: {0}
-PlayerInitRequestHandler.SaferLocation:			Quest'area non e' attualmente sicura e stai per essere trasportato in un luogo piu' sicuro.
 
 # /PlayerMoveItemRequestHandler
 PlayerMoveItemRequestHandler.TooFarAway:		Sei troppo lontano per dare qualcosa a {0}.

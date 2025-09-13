@@ -1270,11 +1270,6 @@ namespace DOL.GS.ServerProperties
 		#endregion
 
 		#region PVP / RVR
-		/// <summary>
-		/// Grace period in minutes to allow relog near enemy structure after link death
-		/// </summary>
-		[ServerProperty("pvp", "RvRLinkDeathRelogGracePeriod", "The Grace Period in minutes, to allow to relog near enemy structure after a link death.", "20")]
-		public static string RVR_LINK_DEATH_RELOG_GRACE_PERIOD;
 
 		/// <summary>
 		/// PvP Immunity Timer - Killed by Mobs
@@ -1616,12 +1611,6 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("keeps", "pvp_unclaimed_keeps_enemy", "Are unclaimed keeps considered the enemy in PvP mode?", false)]
 		public static bool PVP_UNCLAIMED_KEEPS_ENEMY;
-
-		/// <summary>
-		/// Should players that log near enemy keeps be teleported to a safe area when logging in?
-		/// </summary>
-		[ServerProperty("keeps", "teleport_login_near_enemy_keep", "Should players that log near enemy keeps be teleported to a safe area?", true)]
-		public static bool TELEPORT_LOGIN_NEAR_ENEMY_KEEP;
 
 		/// <summary>
 		/// Should players that exceed BG level cap be moved out of BG when logging in?

@@ -81,24 +81,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (ServerProperties.Properties.ENABLE_DEBUG)
                 player.Out.SendMessage("Server is running in DEBUG mode!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-            // player.Out.SendPlayerFreeLevelUpdate();
-            // if (player.FreeLevelState == 2)
-            // {
-            // 	player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true,
-            // 	                         LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.FreeLevel"));
-            // }
-            // player.Out.SendMasterLevelWindow(0);
-            // AssemblyName an = Assembly.GetExecutingAssembly().GetName();
-            // player.Out.SendMessage("Dawn of Light " + an.Name + " Version: " + an.Version, eChatType.CT_System,
-            //                        eChatLoc.CL_SystemWindow);
-
-            if (ServerProperties.Properties.TELEPORT_LOGIN_NEAR_ENEMY_KEEP)
-            {
-                CheckIfPlayerLogsNearEnemyKeepAndMoveIfNecessary(player);
-                // Check for logging in near own keep/relic keep if its under attack. Prevents people from logging toons in relic keeps.
-                CheckIfPlayerLogsNearKeepUnderAttackAndMoveIfNecessary(player);
-            }
-
             if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
                 CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
 
@@ -175,61 +157,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
                     }
                 }
-            }
-
-            static void CheckIfPlayerLogsNearEnemyKeepAndMoveIfNecessary(GamePlayer player)
-            {
-                if (player.CurrentRegion.IsInstance)
-                {
-                    WorldMgr.RvrLinkDeadPlayers.TryRemove(player.InternalID, out _);
-                    return;
-                }
-
-                _ = int.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out int gracePeriodInMinutes);
-                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
-
-                if (keep != null && player.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, player))
-                {
-                    if (WorldMgr.RvrLinkDeadPlayers.TryGetValue(player.InternalID, out DateTime value))
-                    {
-                        if (DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > value)
-                            SendMessageAndMoveToSafeLocation(player);
-                    }
-                    else
-                        SendMessageAndMoveToSafeLocation(player);
-                }
-
-                string[] linkDeadPlayerIds = new string[WorldMgr.RvrLinkDeadPlayers.Count];
-                WorldMgr.RvrLinkDeadPlayers.Keys.CopyTo(linkDeadPlayerIds, 0);
-
-                foreach (string playerId in linkDeadPlayerIds)
-                {
-                    if (playerId != null && DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > WorldMgr.RvrLinkDeadPlayers[playerId])
-                        WorldMgr.RvrLinkDeadPlayers.TryRemove(playerId, out _);
-                }
-            }
-
-            static void CheckIfPlayerLogsNearKeepUnderAttackAndMoveIfNecessary(GamePlayer player)
-            {
-                _ = int.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out int gracePeriodInMinutes);
-                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
-
-                if (keep != null && keep.InCombat && player.Client.Account.PrivLevel == 1 && !GameServer.KeepManager.IsEnemy(keep, player))
-                {
-                    if (WorldMgr.RvrLinkDeadPlayers.TryGetValue(player.InternalID, out DateTime value))
-                    {
-                        if (DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > value)
-                            SendMessageAndMoveToSafeLocation(player);
-                    }
-                    else
-                        SendMessageAndMoveToSafeLocation(player);
-                }
-            }
-
-            static void SendMessageAndMoveToSafeLocation(GamePlayer player)
-            {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.SaferLocation"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.MoveTo((ushort) player.BindRegion, player.BindXpos, player.BindYpos, player.BindZpos, (ushort) player.BindHeading);
             }
 
             static void SendHouseRentRemindersToPlayer(GamePlayer player)

@@ -898,17 +898,7 @@ namespace DOL.GS
                         playerInRadius.Out.SendMessage(LanguageMgr.GetTranslation(playerInRadius.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
 
-                CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary();
                 Notify(GamePlayerEvent.Linkdeath, this);
-            }
-        }
-
-        private void CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary()
-        {
-            AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(CurrentRegionID, this, WorldMgr.VISIBILITY_DISTANCE);
-            if(keep != null && Client.Account.PrivLevel == 1 && (GameServer.KeepManager.IsEnemy(keep, this) || keep.IsRelic))
-            {
-                WorldMgr.RvrLinkDeadPlayers[m_InternalID] = DateTime.Now;
             }
         }
 
