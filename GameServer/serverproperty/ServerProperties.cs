@@ -1238,12 +1238,6 @@ namespace DOL.GS.ServerProperties
 		public static int GAMENPC_CHANCES_TO_STYLE;
 
 		/// <summary>
-		/// Chances for npc (including pet) to cast (chance is calculated randomly according to this value + the number of spells the NPC own)
-		/// </summary>
-		[ServerProperty("npc", "gamenpc_chances_to_cast", "Change the chance to cast a spell for a mob or a pet", 25)]
-		public static int GAMENPC_CHANCES_TO_CAST;
-
-		/// <summary>
 		/// NPCs heal when a target is below what percentage of their health?
 		/// </summary>
 		[ServerProperty("npc", "npc_heal_threshold", "NPCs heal targets whose health falls below this percentage.", 75)]
