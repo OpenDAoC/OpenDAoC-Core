@@ -410,19 +410,18 @@ namespace DOL.GS
             if (_lastPositionUpdateTick == GameLoop.GameLoopTime)
                 return;
 
-            Vector3 startPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
-
-            // We still update _ownerPosition if the NPC isn't moving in case it's not moving by itself (teleports, GM tool...)
-            // This also ensures _ownerPosition always has a value.
+            // We still update `_ownerPosition` if the NPC isn't moving in case it's not moving by itself (teleports, GM tool...)
+            // This ensures it always has a value.
             if (!IsMoving)
             {
-                _ownerPosition = startPosition;
+                _ownerPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
                 _lastPositionUpdateTick = GameLoop.GameLoopTime;
                 return;
             }
 
-            Vector3 movementDelta = _velocity * (MovementElapsedTicks * 0.001f);
-            Vector3 potentialPosition = startPosition + movementDelta;
+            long timeDelta = GameLoop.GameLoopTime - _lastPositionUpdateTick;
+            Vector3 movementDelta = _velocity * (timeDelta * 0.001f);
+            Vector3 potentialPosition = _ownerPosition + movementDelta;
 
             if (!IsDestinationValid)
             {
@@ -431,7 +430,7 @@ namespace DOL.GS
                 return;
             }
 
-            Vector3 absToDestination = Vector3.Abs(_destination - startPosition);
+            Vector3 absToDestination = Vector3.Abs(_destination - _ownerPosition);
             Vector3 absMovementDelta = Vector3.Abs(movementDelta);
 
             // Create a "mask" vector (1.0f or 0.0f) for each axis.
@@ -473,8 +472,7 @@ namespace DOL.GS
             }
             else
             {
-                Vector3 ownerRealPos = new(Owner.RealX, Owner.RealY, Owner.RealZ);
-                Vector3 direction = _destination - ownerRealPos;
+                Vector3 direction = _destination - _ownerPosition;
                 float scale = CurrentSpeed / distanceToTarget;
                 _velocity = direction * scale;
             }
@@ -622,24 +620,16 @@ namespace DOL.GS
             Vector3 offset = direction * MinFollowDistance;
             Vector3 destination = targetPos - offset;
 
-            int interval;
             short speed;
 
+            // No smoothing if the NPC is attacking and is out of melee range.
             if (Owner.IsAttacking && distance > Owner.MeleeAttackRange)
-            {
-                // No smoothing if the NPC is attacking and is out of melee range.
                 speed = MaxSpeed;
-                interval = 100;
-            }
             else
-            {
-                // Reduce follow distance slightly for speed calculation for even smoother movement.
-                speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance - 10) * 2);
-                interval = Properties.GAMENPC_FOLLOWCHECK_TIME;
-            }
+                speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance) * 2);
 
             PathToInternal(destination, Math.Min(MaxSpeed, speed));
-            return interval;
+            return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
 
         private void OnArrival()
@@ -683,9 +673,7 @@ namespace DOL.GS
 
             void SetPositionToDestination()
             {
-                Owner.X = (int) _destination.X;
-                Owner.Y = (int) _destination.Y;
-                Owner.Z = (int) _destination.Z;
+                _ownerPosition = _destination;
                 UpdateMovement(0);
             }
         }
@@ -767,9 +755,9 @@ namespace DOL.GS
         private void UpdateMovement(short speed)
         {
             // Save current position.
-            Owner.X = Owner.X;
-            Owner.Y = Owner.Y;
-            Owner.Z = Owner.Z;
+            Owner.X = (int) Math.Round(_ownerPosition.X);
+            Owner.Y = (int) Math.Round(_ownerPosition.Y);
+            Owner.Z = (int) Math.Round(_ownerPosition.Z);
 
             _needsBroadcastUpdate = true;
             IsDestinationValid = false;
@@ -782,9 +770,9 @@ namespace DOL.GS
         private void UpdateMovement(Vector3 destination, float distanceToTarget, short speed)
         {
             // Save current position.
-            Owner.X = Owner.X;
-            Owner.Y = Owner.Y;
-            Owner.Z = Owner.Z;
+            Owner.X = (int) Math.Round(_ownerPosition.X);
+            Owner.Y = (int) Math.Round(_ownerPosition.Y);
+            Owner.Z = (int) Math.Round(_ownerPosition.Z);
 
             IsDestinationValid = distanceToTarget >= 1;
             _destination = destination;

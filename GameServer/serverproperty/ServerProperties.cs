@@ -1222,7 +1222,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// How often, in milliseconds, to check follow distance.  Lower numbers make NPC follow closer but increase load on server.
 		/// </summary>
-		[ServerProperty("npc", "gamenpc_followcheck_time", "How often, in milliseconds, to check follow distance. Lower numbers make NPC follow closer but increase load on server.", 500)]
+		[ServerProperty("npc", "gamenpc_followcheck_time", "How often, in milliseconds, to check follow distance. Lower numbers make NPC follow closer but increase load on server.", 100)]
 		public static int GAMENPC_FOLLOWCHECK_TIME;
 
 		/// <summary>
