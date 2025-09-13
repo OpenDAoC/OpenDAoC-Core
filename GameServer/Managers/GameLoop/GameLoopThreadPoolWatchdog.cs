@@ -33,7 +33,7 @@ namespace DOL.GS
 
             _running = true;
 
-            _watchdogThread = new Thread(WatchdogLoop)
+            _watchdogThread = new(WatchdogLoop)
             {
                 Name = $"{GameLoop.THREAD_NAME}_Watchdog",
                 Priority = ThreadPriority.Lowest,

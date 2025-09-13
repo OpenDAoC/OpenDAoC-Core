@@ -128,7 +128,7 @@ namespace DOL.GS
 
                     for (int i = averageTps.Count - 1; i >= 0; i--)
                     {
-                        double percentOfTarget = averageTps[i].Item2 / (10.0 / GameLoop.TickDuration);
+                        double percentOfTarget = averageTps[i].Item2 / (10 / GameLoop.TickDuration);
                         stats.Append($"{percentOfTarget:F1}%");
 
                         if (i != 0)

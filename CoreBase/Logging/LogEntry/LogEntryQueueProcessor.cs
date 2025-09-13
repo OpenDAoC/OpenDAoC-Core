@@ -23,7 +23,7 @@ namespace DOL.Logging
             _logger = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
             _cancellationTokenSource = new();
             _loggingQueue = new(new ConcurrentQueue<LogEntry>(), CAPACITY);
-            _thread = new Thread(new ThreadStart(Run))
+            _thread = new(new ThreadStart(Run))
             {
                 Name = nameof(LogEntryQueueProcessor),
                 IsBackground = true,

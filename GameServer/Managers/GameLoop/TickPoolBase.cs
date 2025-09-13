@@ -20,8 +20,8 @@ namespace DOL.GS
         static TickPoolBase()
         {
             // Will become outdated if `GameLoop.TickDuration` is changed at runtime.
-            _decayFactor = Math.Exp(-Math.Log(2) / (GameLoop.TickDuration * HALF_LIFE / 1000.0));
-            _trimDelayInTicks = (int) Math.Ceiling(TRIM_DELAY_MS / (double) GameLoop.TickDuration);
+            _decayFactor = Math.Exp(-Math.Log(2) / (GameLoop.TickDuration * HALF_LIFE / 1000));
+            _trimDelayInTicks = (int) Math.Ceiling(TRIM_DELAY_MS / GameLoop.TickDuration);
         }
 
         public void Reset()

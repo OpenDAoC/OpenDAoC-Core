@@ -22,7 +22,7 @@ namespace DOL.GS
         private static bool _running;
         private static List<TickStep> _tickSequence;
 
-        public static int TickDuration { get; private set; }
+        public static double TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
         public static string ActiveService { get; set; }
 
@@ -37,9 +37,9 @@ namespace DOL.GS
             if (Interlocked.CompareExchange(ref _running, true, false))
                 return false;
 
-            TickDuration = Properties.GAME_LOOP_TICK_RATE;
+            TickDuration = 1000 / Properties.GAME_LOOP_TICK_RATE;
 
-            _gameLoopThread = new Thread(new ThreadStart(Run))
+            _gameLoopThread = new(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
                 IsBackground = true

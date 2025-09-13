@@ -271,7 +271,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("system", "use_npcguildscripts", "Use the NPC Guild Scripts", true)]
 		public static bool USE_NPCGUILDSCRIPTS;
 
-		[ServerProperty("system", "game_loop_tick_rate", "Minimum amount of milliseconds that must pass since the current tick started before starting the next one. Higher values reduce CPU usage but make the game less responsive.", 30)]
+		[ServerProperty("system", "game_loop_tick_rate", "How many ticks per second the game loop tries to run at. If it can't keep up, the logic will effectively run slower than intended.", 30)]
 		public static int GAME_LOOP_TICK_RATE;
 
 		#endregion

@@ -72,7 +72,7 @@ namespace DOL.GS
             // We account for processing delay uncertainty by adding a small buffer to the time difference, equal to one game loop tick.
             // Ad a side effect, if the server is lagging, the speed hack detection becomes more lenient.
 
-            long timeDiff = _current.Timestamp - _previous.Timestamp;
+            double timeDiff = _current.Timestamp - _previous.Timestamp;
 
             // Skip if timestamps are invalid (should not happen).
             if (timeDiff <= 0)

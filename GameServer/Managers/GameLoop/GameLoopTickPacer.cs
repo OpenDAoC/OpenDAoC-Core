@@ -12,7 +12,7 @@ namespace DOL.GS
 
         private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true;
 
-        private long _tickDuration;
+        private double _tickDuration;
         private bool _running;
         private Thread _busyWaitThresholdThread;
         private int _busyWaitThreshold;
@@ -23,7 +23,7 @@ namespace DOL.GS
 
         public GameLoopTickPacerStats Stats { get; private set; }
 
-        public GameLoopTickPacer(long tickDuration)
+        public GameLoopTickPacer(double tickDuration)
         {
             if (tickDuration <= 0)
                 throw new ArgumentOutOfRangeException(nameof(tickDuration), "Tick duration must be a positive value.");
@@ -40,7 +40,7 @@ namespace DOL.GS
 
             if (DYNAMIC_BUSY_WAIT_THRESHOLD)
             {
-                _busyWaitThresholdThread = new Thread(new ThreadStart(UpdateBusyWaitThreshold))
+                _busyWaitThresholdThread = new(new ThreadStart(UpdateBusyWaitThreshold))
                 {
                     Name = $"{GameLoop.THREAD_NAME}_BusyWaitThreshold",
                     Priority = ThreadPriority.AboveNormal,
