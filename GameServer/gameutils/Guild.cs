@@ -326,9 +326,6 @@ namespace DOL.GS
 		{
 			// `newBank` should have been validated by `ValidateChangeBankAmount`.
 			m_DBguild.Bank = newBank;
-
-			if (save)
-				SaveIntoDatabase();
 		}
 
 		// Used by the hack to make pets untargetable with tab on a PvP server. Effectively creates a dummy guild to get a unique ID.
@@ -360,7 +357,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.Emblem = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -373,7 +369,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.GuildBanner = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -386,7 +381,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.GuildBannerLostTime = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -399,7 +393,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.oMotd = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -412,7 +405,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.Motd = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -425,7 +417,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.AllianceID = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -456,7 +447,6 @@ namespace DOL.GS
 			set 
 			{
 				m_DBguild.GuildID = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -487,7 +477,6 @@ namespace DOL.GS
 			set 
 			{
 				m_DBguild.GuildName = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -500,7 +489,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.RealmPoints = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -513,7 +501,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.BountyPoints = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -526,7 +513,6 @@ namespace DOL.GS
 			set
 			{
 				m_DBguild.IsStartingGuild = value;
-				SaveIntoDatabase();
 			}
 		}
 
@@ -904,7 +890,6 @@ namespace DOL.GS
 				}
 				pl.Out.SendMessage(msg, type, loc);
 			}
-			
 		}
 
 		/// <summary>
@@ -919,7 +904,6 @@ namespace DOL.GS
 				return false;
 			}
 			this.m_DBguild.BountyPoints -= amount;
-			this.SaveIntoDatabase();
 			return true;
 		}
 
@@ -935,7 +919,6 @@ namespace DOL.GS
 			set 
 			{
 				this.m_DBguild.MeritPoints = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -962,7 +945,6 @@ namespace DOL.GS
 			set 
 			{
 				this.m_DBguild.BonusType = (byte)value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -975,8 +957,6 @@ namespace DOL.GS
 			set
 			{
 				m_DBguild.BonusStartTime = value;
-				TryStartGuildBuffTimer();
-				SaveIntoDatabase();
 			}
 		}
 
@@ -989,7 +969,6 @@ namespace DOL.GS
 			set
 			{
 				this.m_DBguild.Email = value;
-				this.SaveIntoDatabase();
 			}
 		}
 
@@ -1100,7 +1079,6 @@ namespace DOL.GS
 					return Interval;
 
 				_guild.BonusType = eBonusType.None;
-				_guild.SaveIntoDatabase();
 
 				foreach (GamePlayer player in _guild.GetListOfOnlineMembers())
 					player.Out.SendMessage(MESSAGE, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);

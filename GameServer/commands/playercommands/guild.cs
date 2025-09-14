@@ -58,11 +58,11 @@ namespace DOL.GS.Commands
 			}
 			#endregion
 			#region Enough members to form Check - Ensure our group still has enough players in to form
-			if (group.MemberCount < Properties.GUILD_NUM)
+/*			if (group.MemberCount < Properties.GUILD_NUM)
 			{
 				leader.Out.SendMessage(LanguageMgr.GetTranslation(leader.Client.Account.Language, "Scripts.Player.Guild.FormNoMembers", Properties.GUILD_NUM), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
-			}
+			}*/
 			#endregion
 
 			return true;
@@ -1126,11 +1126,11 @@ namespace DOL.GS.Commands
 							}
 							#endregion
 							#region Enough members to form Check
-							if (group.MemberCount < Properties.GUILD_NUM)
+/*							if (group.MemberCount < Properties.GUILD_NUM)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.FormNoMembers", Properties.GUILD_NUM), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
-							}
+							}*/
 							#endregion
 							#region Player already in guild check and Cross Realm Check
 
@@ -2602,9 +2602,9 @@ namespace DOL.GS.Commands
 				alli.Guilds.Add(inviter.Guild);
 				inviter.Guild.alliance = alli;
 				inviter.Guild.AllianceId = inviter.Guild.alliance.Dballiance.ObjectId;
+				inviter.Guild.SaveIntoDatabase();
 			}
 			inviter.Guild.alliance.AddGuild(player.Guild);
-			inviter.Guild.alliance.SaveIntoDatabase();
 		}
 
 		/// <summary>

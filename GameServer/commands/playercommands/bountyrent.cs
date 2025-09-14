@@ -150,7 +150,6 @@ namespace DOL.GS.Commands
                                 house.SaveIntoDatabase();
 
                                 client.Player.Guild.BountyPoints -= BPsToAdd;
-                                client.Player.Guild.SaveIntoDatabase();
 
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.YouSpendGuild", BPsToAdd, ((BPsToAdd * bpWorth) / bpWorth)),
                                     eChatType.CT_System, eChatLoc.CL_SystemWindow);

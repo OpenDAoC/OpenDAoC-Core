@@ -141,7 +141,6 @@ namespace DOL.GS.Commands
                                 house.SaveIntoDatabase();
 
                                 client.Player.Guild.WithdrawFromBank(client.Player, goldToAdd);
-                                client.Player.Guild.SaveIntoDatabase();
 
                                 var message = $"{client.Player.Name} withdrew {amount} gold to pay the guild house's rent.";
                                 

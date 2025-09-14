@@ -23,8 +23,7 @@ namespace DOL.GS.Commands
 		"/WHO <level> <level> - lists players in level range",
 		"/WHO BG - lists all players leading a public BattleGroup",
 		"/WHO nogroup - lists all ungrouped players",
-		"/WHO hc - lists all Hardcore players",
-		"/WHO solo - lists all SOLO players"
+		"/WHO hc - lists all Hardcore players"
 	)]
 	public class WhoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
