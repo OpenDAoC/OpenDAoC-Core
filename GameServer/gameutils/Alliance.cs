@@ -49,11 +49,15 @@ namespace DOL.GS
                 myguild.alliance = this;
                 Guilds.Add(myguild);
                 myguild.AllianceId = m_dballiance.ObjectId;
-                m_dballiance.DBguilds = null;
-                GameServer.Database.AddObject(m_dballiance);
-                GameServer.Database.FillObjectRelations(m_dballiance);
-                GameServer.Database.SaveObject(m_dballiance);
+                m_dballiance.DBguilds = null; // Is there no other way?
                 myguild.SaveIntoDatabase();
+
+                if (m_dballiance.IsPersisted)
+                    GameServer.Database.SaveObject(m_dballiance);
+                else
+                    GameServer.Database.AddObject(m_dballiance);
+
+                GameServer.Database.FillObjectRelations(m_dballiance);
                 SendMessageToAllianceMembers(myguild.Name + " has joined the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
             }
         }
@@ -64,6 +68,10 @@ namespace DOL.GS
                 myguild.alliance = null;
                 myguild.AllianceId = string.Empty;
                 Guilds.Remove(myguild);
+                myguild.SaveIntoDatabase();
+                myguild.SendMessageToGuildMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                SendMessageToAllianceMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+
                 if (myguild.GuildID == m_dballiance.DBguildleader.GuildID)
                 {
                     SendMessageToAllianceMembers(myguild.Name + " has disbanded the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
@@ -86,10 +94,6 @@ namespace DOL.GS
                     GameServer.Database.SaveObject(m_dballiance);
                     GameServer.Database.FillObjectRelations(m_dballiance);
                 }
-
-                myguild.SaveIntoDatabase();
-                myguild.SendMessageToGuildMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
-                SendMessageToAllianceMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
             }
         }
 
