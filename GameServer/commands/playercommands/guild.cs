@@ -606,7 +606,7 @@ namespace DOL.GS.Commands
 
 								if (client.Player.Guild.alliance != null)
 								{
-									string amotd = client.Player.Guild.alliance.Dballiance.Motd;
+									string amotd = client.Player.Guild.alliance.DbAlliance.Motd;
 									if (!string.IsNullOrEmpty(amotd) && client.Player.GuildRank.AcHear)
 									{
 										client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InfoaMotd", amotd), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
@@ -1812,8 +1812,8 @@ namespace DOL.GS.Commands
 								return;
 							}
 							message = String.Join(" ", args, 2, args.Length - 2);
-							client.Player.Guild.alliance.Dballiance.Motd = message;
-							GameServer.Database.SaveObject(client.Player.Guild.alliance.Dballiance);
+							client.Player.Guild.alliance.DbAlliance.Motd = message;
+							GameServer.Database.SaveObject(client.Player.Guild.alliance.DbAlliance);
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AMotdSet"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 						}
 						break;
@@ -1863,8 +1863,8 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceInfo", alliance.Dballiance.AllianceName));
-							DbGuild leader = alliance.Dballiance.DBguildleader;
+							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceInfo", alliance.DbAlliance.AllianceName));
+							DbGuild leader = alliance.DbAlliance.DBguildleader;
 							if (leader != null)
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceLeader", leader.GuildName));
 							else
@@ -1872,7 +1872,7 @@ namespace DOL.GS.Commands
 
 							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMembers"));
 							int i = 0;
-							foreach (DbGuild guild in alliance.Dballiance.DBguilds)
+							foreach (DbGuild guild in alliance.DbAlliance.DBguilds)
 								if (guild != null)
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMember", i++, guild.GuildName));
 							return;
@@ -1961,15 +1961,15 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage("You're not in the same alliance", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (client.Player.Guild.alliance.Dballiance.LeaderGuildID != client.Player.Guild.GuildID)
+							if (client.Player.Guild.alliance.DbAlliance.LeaderGuildID != client.Player.Guild.GuildID)
 							{
 								client.Out.SendMessage("You're not the leader of the alliance", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 								return;
 							}
 							
-							client.Player.Guild.alliance.Dballiance.AllianceName = obj.Guild.Name;
-							client.Player.Guild.alliance.Dballiance.LeaderGuildID = obj.Guild.GuildID;
-							GameServer.Database.SaveObject(client.Player.Guild.alliance.Dballiance);
+							client.Player.Guild.alliance.DbAlliance.AllianceName = obj.Guild.Name;
+							client.Player.Guild.alliance.DbAlliance.LeaderGuildID = obj.Guild.GuildID;
+							GameServer.Database.SaveObject(client.Player.Guild.alliance.DbAlliance);
 							client.Player.Guild.alliance.SendMessageToAllianceMembers(obj.Guild.Name + " is the new leader of the alliance", PacketHandler.eChatType.CT_Alliance, PacketHandler.eChatLoc.CL_SystemWindow);
 							
 							// client.Player.Guild.alliance.PromoteGuild(obj.Guild);
@@ -2062,7 +2062,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceNotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (client.Player.Guild.GuildID != client.Player.Guild.alliance.Dballiance.DBguildleader.GuildID)
+							if (client.Player.Guild.GuildID != client.Player.Guild.alliance.DbAlliance.DBguildleader.GuildID)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceNotLeader"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
@@ -2600,10 +2600,10 @@ namespace DOL.GS.Commands
 				dballi.LeaderGuildID = inviter.GuildID;
 				dballi.DBguildleader = null;
 				dballi.Motd = string.Empty;
-				alli.Dballiance = dballi;
+				alli.DbAlliance = dballi;
 				alli.Guilds.Add(inviter.Guild);
 				inviter.Guild.alliance = alli;
-				inviter.Guild.AllianceId = inviter.Guild.alliance.Dballiance.ObjectId;
+				inviter.Guild.AllianceId = inviter.Guild.alliance.DbAlliance.ObjectId;
 				inviter.Guild.SaveIntoDatabase();
 			}
 			inviter.Guild.alliance.AddGuild(player.Guild);

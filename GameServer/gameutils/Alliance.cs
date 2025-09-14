@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using DOL.Database;
 
@@ -10,72 +12,57 @@ namespace DOL.GS
     /// </summary>
     public class Alliance
     {
-        protected ArrayList m_guilds;
-        protected DbGuildAlliance m_dballiance;
-        public Alliance()
-        {
-            m_dballiance = null;
-            m_guilds = new ArrayList(2);
-        }
-        public ArrayList Guilds
+        private readonly List<Guild> _guilds = new(2);
+        private readonly Lock _lock = new();
+
+        public List<Guild> Guilds
         {
             get
             {
-                return m_guilds;
-            }
-            set
-            {
-                m_guilds = value;
-            }
-        }
-        public readonly Lock GuildsLock = new();
-        public DbGuildAlliance Dballiance
-        {
-            get
-            {
-                return m_dballiance;
-            }
-            set
-            {
-                m_dballiance = value;
-            }
-        }
-
-        #region IList
-        public void AddGuild(Guild myguild)
-        {
-            lock (GuildsLock)
-            {
-                myguild.alliance = this;
-                Guilds.Add(myguild);
-                myguild.AllianceId = m_dballiance.ObjectId;
-                m_dballiance.DBguilds = null; // Is there no other way?
-                myguild.SaveIntoDatabase();
-
-                if (m_dballiance.IsPersisted)
-                    GameServer.Database.SaveObject(m_dballiance);
-                else
-                    GameServer.Database.AddObject(m_dballiance);
-
-                GameServer.Database.FillObjectRelations(m_dballiance);
-                SendMessageToAllianceMembers(myguild.Name + " has joined the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
-            }
-        }
-        public void RemoveGuild(Guild myguild)
-        {
-            lock (GuildsLock)
-            {
-                myguild.alliance = null;
-                myguild.AllianceId = string.Empty;
-                Guilds.Remove(myguild);
-                myguild.SaveIntoDatabase();
-                myguild.SendMessageToGuildMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
-                SendMessageToAllianceMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
-
-                if (myguild.GuildID == m_dballiance.DBguildleader.GuildID)
+                lock (_lock)
                 {
-                    SendMessageToAllianceMembers(myguild.Name + " has disbanded the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
-                    ArrayList mgl = new ArrayList(Guilds);
+                    return _guilds.ToList();
+                }
+            }
+        }
+
+        public DbGuildAlliance DbAlliance { get; set; }
+
+        public void AddGuild(Guild guild)
+        {
+            lock (_lock)
+            {
+                guild.alliance = this;
+                _guilds.Add(guild);
+                guild.AllianceId = DbAlliance.ObjectId;
+                DbAlliance.DBguilds = null; // Is there no other way?
+                guild.SaveIntoDatabase();
+
+                if (DbAlliance.IsPersisted)
+                    GameServer.Database.SaveObject(DbAlliance);
+                else
+                    GameServer.Database.AddObject(DbAlliance);
+
+                GameServer.Database.FillObjectRelations(DbAlliance);
+                SendMessageToAllianceMembers(guild.Name + " has joined the alliance of " + DbAlliance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+            }
+        }
+
+        public void RemoveGuild(Guild guild)
+        {
+            lock (_lock)
+            {
+                guild.alliance = null;
+                guild.AllianceId = string.Empty;
+                _guilds.Remove(guild);
+                guild.SaveIntoDatabase();
+                guild.SendMessageToGuildMembers(guild.Name + " has left the alliance of " + DbAlliance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                SendMessageToAllianceMembers(guild.Name + " has left the alliance of " + DbAlliance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+
+                if (guild.GuildID == DbAlliance.DBguildleader.GuildID)
+                {
+                    SendMessageToAllianceMembers(guild.Name + " has disbanded the alliance of " + DbAlliance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                    ArrayList mgl = new ArrayList(_guilds);
                     foreach (Guild mg in mgl)
                     {
                         try
@@ -86,75 +73,37 @@ namespace DOL.GS
                         {
                         }
                     }
-                    GameServer.Database.DeleteObject(m_dballiance);
+                    GameServer.Database.DeleteObject(DbAlliance);
                 }
                 else
                 {
-                    m_dballiance.DBguilds = null;
-                    GameServer.Database.SaveObject(m_dballiance);
-                    GameServer.Database.FillObjectRelations(m_dballiance);
+                    DbAlliance.DBguilds = null;
+                    GameServer.Database.SaveObject(DbAlliance);
+                    GameServer.Database.FillObjectRelations(DbAlliance);
                 }
             }
         }
 
-        public void PromoteGuild(Guild myguild)
+        public bool Contains(Guild guild)
         {
-            lock (GuildsLock)
+            lock (_lock)
             {
-                m_dballiance.DBguildleader.GuildID = myguild.GuildID;
-                m_dballiance.DBguildleader.GuildName = myguild.Name;
-                GameServer.Database.SaveObject(m_dballiance);
-                SendMessageToAllianceMembers(myguild.Name + " is the new leader of the alliance", PacketHandler.eChatType.CT_Alliance, PacketHandler.eChatLoc.CL_SystemWindow);
+                return _guilds.Contains(guild);
             }
         }
 
-        public void Clear()
-        {
-            lock (GuildsLock)
-            {
-                foreach (Guild guild in Guilds)
-                {
-                    guild.alliance = null;
-                    guild.AllianceId = string.Empty;
-                }
-                Guilds.Clear();
-            }
-        }
-
-        public bool Contains(Guild myguild)
-        {
-            lock (GuildsLock)
-            {
-                return Guilds.Contains(myguild);
-            }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// send message to all member of alliance
-        /// </summary>
         public void SendMessageToAllianceMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
         {
-            lock (GuildsLock)
+            lock (_lock)
             {
-                foreach (Guild guild in Guilds)
-                {
+                foreach (Guild guild in _guilds)
                     guild.SendMessageToGuildMembers(msg, type, loc);
-                }
             }
         }
 
-        /// <summary>
-        /// Loads this alliance from an alliance table
-        /// </summary>
-        /// <param name="obj"></param>
         public void LoadFromDatabase(DataObject obj)
         {
-            if (!(obj is DbGuildAlliance))
-                return;
-
-            m_dballiance = (DbGuildAlliance)obj;
+            DbAlliance = obj as DbGuildAlliance;
         }
     }
 }
