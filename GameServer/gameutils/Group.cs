@@ -8,6 +8,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
+using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using static DOL.GS.GameObject;
@@ -174,8 +175,6 @@ namespace DOL.GS
 
         public bool RemoveMember(GameLiving living)
         {
-            int memberCount;
-
             lock (_groupMembersLock)
             {
                 if (!_groupMembers.Remove(living))
@@ -186,8 +185,6 @@ namespace DOL.GS
 
                 if (_groupMembers.Count < 1)
                     DisbandGroup();
-
-                memberCount = _groupMembers.Count;
             }
 
             SendMessageToGroupMembers($"{living.Name} has left the group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -288,6 +285,8 @@ namespace DOL.GS
 
             lock (_groupMembersLock)
             {
+                int memberCount = _groupMembers.Count;
+
                 if (memberCount == 1)
                 {
                     // Disband the group.
