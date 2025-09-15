@@ -630,14 +630,12 @@ namespace DOL.GS
 			//todo check if bullet
 			return base.ReceiveItem(source, item);
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+
+		public override void ModifyAttack(AttackData attackData)
 		{
-			if (source is GamePlayer)
-			{
-				damageAmount /= 30;
-				criticalAmount /= 30;
-			}
-			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+			attackData.Damage /= 30;
+			attackData.StyleDamage /= 30;
+			attackData.CriticalDamage /= 30;
 		}
 
 		public override bool Interact(GamePlayer player)
