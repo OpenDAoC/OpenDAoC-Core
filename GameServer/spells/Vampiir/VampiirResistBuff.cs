@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
 			{
 				var list = new List<string>(16);
 				list.Add("Name: " + Spell.Name);
-				list.Add("Description: " + Spell.Description);
+				list.Add("Description: " + ShortDescription);
 				list.Add("Target: " + Spell.Target);
 				list.Add("Casting time: " + (Spell.CastTime*0.001).ToString("0.0## sec;-0.0## sec;'instant'"));
 				if (Spell.Duration >= ushort.MaxValue*1000)
@@ -149,7 +149,7 @@ namespace DOL.GS.Spells
 			{
 				var list = new List<string>(16);
 				list.Add("Name: " + Spell.Name);
-				list.Add("Description: " + Spell.Description);
+				list.Add("Description: " + ShortDescription);
 				list.Add("Target: " + Spell.Target);
 				list.Add("Casting time: " + (Spell.CastTime*0.001).ToString("0.0## sec;-0.0## sec;'instant'"));
 				if (Spell.Duration >= ushort.MaxValue*1000)

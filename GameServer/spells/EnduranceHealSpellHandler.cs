@@ -3,13 +3,14 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	///
-	/// </summary>
 	[SpellHandler(eSpellType.EnduranceHeal)]
 	public class EnduranceHealSpellHandler : SpellHandler
 	{
-		// constructor
+		public override string ShortDescription =>
+			Spell.Value > 0 ?
+			$"Replenishes {Spell.Value} endurance." :
+			$"Replenishes {Math.Abs(Spell.Value)}% endurance.";
+
 		public EnduranceHealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 		/// <summary>

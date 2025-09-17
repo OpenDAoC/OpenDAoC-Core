@@ -9,6 +9,8 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.StyleStun)]
 	public class StyleStun : StunSpellHandler
 	{
+		public StyleStun(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StunECSGameEffect(i));
@@ -52,8 +54,5 @@ namespace DOL.GS.Spells
 			if (compare.Spell.SpellType == eSpellType.Stun) return true;
 			return base.HasConflictingEffectWith(compare);
 		}
-
-		// constructor
-		public StyleStun(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }

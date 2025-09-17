@@ -9,6 +9,8 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.AblativeArmor)]
 	public class AblativeArmorSpellHandler : SpellHandler
 	{
+		public override string ShortDescription => $"The target gains a temporary health buffer that absorbs {(Spell.Damage > 0 ? Spell.Damage : 25)}% of the physical damage dealt, up to a maximum of {Spell.Value} damage.";
+
 		public AblativeArmorSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 		// Spell damage represent the absorb% of the ablative buff, but can't be superior to 100 and 0 must default to 25.
@@ -72,7 +74,7 @@ namespace DOL.GS.Spells
 				{
 					LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "AblativeArmor.DelveInfo.Function"),
 					"",
-					Spell.Description,
+					ShortDescription,
 					""
 				};
 
@@ -140,8 +142,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.MagicAblativeArmor)]
 	public class MagicAblativeArmorSpellHandler : AblativeArmorSpellHandler
 	{
+		public override string ShortDescription => $"The target gains a temporary health buffer that absorbs {(Spell.Damage > 0 ? Spell.Damage : 25)}% of the magical damage dealt, up to a maximum of {Spell.Value} damage.";
+
 		public MagicAblativeArmorSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-		
+
 		// Check if Melee
 		public override bool MatchingDamageType(ref AttackData ad)
 		{
@@ -153,7 +157,7 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
-		
+
 		// For delve info.
 		protected override string GetAblativeType()
 		{
@@ -165,6 +169,8 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.BothAblativeArmor)]
 	public class BothAblativeArmorSpellHandler : AblativeArmorSpellHandler
 	{
+		public override string ShortDescription => $"The target gains a temporary health buffer that absorbs {(Spell.Damage > 0 ? Spell.Damage : 25)}% of all damage dealt, up to a maximum of {Spell.Value} damage.";
+
 		public BothAblativeArmorSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 		public override bool MatchingDamageType(ref AttackData ad)

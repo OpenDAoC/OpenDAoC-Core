@@ -11,6 +11,10 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.PetSpell)]
     class PetSpellHandler : SpellHandler
     {
+        public override string ShortDescription => "Servant spell:";
+
+        public PetSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
         /// <summary>
         /// Check if we have a pet to start with.
         /// </summary>
@@ -64,7 +68,5 @@ namespace DOL.GS.Spells
                 }
             }
         }
-
-        public PetSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 }

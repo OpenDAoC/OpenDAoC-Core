@@ -10,6 +10,7 @@ namespace DOL.GS.Spells
     public abstract class SingleStatBuff(GameLiving caster, Spell spell, SpellLine line) : PropertyChangingSpell(caster, spell, line)
     {
         public virtual bool BuffReceivesSpecBonus => false;
+        public override string ShortDescription => $"Increases {TargetPronoun} {PropertyToString(Property1)} by {Spell.Value}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
 
         protected override void SendUpdates(GameLiving target)
@@ -154,6 +155,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.ArmorAbsorptionBuff)]
     public class ArmorAbsorptionBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} physical damage {PropertyToString(Property1)} by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.ArmorAbsorption;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -162,6 +164,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.CombatSpeedBuff)]
     public class CombatSpeedBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} combat speed by {Math.Abs(Spell.Value)}%.";
         public override eProperty Property1 => eProperty.MeleeSpeed;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -176,6 +179,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.FatigueConsumptionBuff)]
     public class FatigueConsumptionBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"{TargetPronounCapitalized} actions require {Spell.Value}% less endurance.";
         public override eProperty Property1 => eProperty.FatigueConsumption;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -184,6 +188,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.MeleeDamageBuff)]
     public class MeleeDamageBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} melee damage by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.MeleeDamage;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -192,6 +197,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.MesmerizeDurationBuff)]
     public class MesmerizeDurationBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"The effectiveness of mesmerize spells is reduced by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.MesmerizeDurationReduction;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -220,24 +226,28 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.EvadeBuff)]
     public class EvadeChanceBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} chance to evade by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.EvadeChance;
     }
 
     [SpellHandler(eSpellType.ParryBuff)]
     public class ParryChanceBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} chance to parry by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.ParryChance;
     }
 
     [SpellHandler(eSpellType.WeaponSkillBuff)]
     public class WeaponSkillBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} weapon skill by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.WeaponSkill;
     }
 
     [SpellHandler(eSpellType.StealthSkillBuff)]
     public class StealthSkillBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} stealth skill by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.Skill_Stealth;
     }
 
@@ -268,12 +278,14 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.FlexibleSkillBuff)]
     public class FlexibleSkillBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} Flexible by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.Skill_Flexible_Weapon;
     }
 
     [SpellHandler(eSpellType.ResiPierceBuff)]
     public class ResiPierceBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Grants you {Spell.Value}% chance to penetrate magical resistances.";
         public override eProperty Property1 => eProperty.ResistPierce;
     }
 }

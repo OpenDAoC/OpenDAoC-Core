@@ -7,6 +7,9 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SavageEnduranceHeal)]
     public class SavageEnduranceHeal : EnduranceHealSpellHandler
     {
+        public override string ShortDescription => $"You regain {Spell.Value} endurance.";
+        public override SpellCostType CostType => SpellCostType.Health;
+
         public SavageEnduranceHeal(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         protected override void RemoveFromStat(int value)

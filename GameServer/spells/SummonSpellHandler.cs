@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.GS.Spells
 {
@@ -20,7 +22,9 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public abstract class SummonSpellHandler : SpellHandler
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+		public override string ShortDescription => $"Summon a pet to serve the caster, with a maximum level of {Math.Abs(Spell.Damage)}% of the caster's level (up to {Math.Min((int) (50 * Math.Abs(Spell.Damage) / 100), Spell.Value)}).";
 
 		protected GameSummonedPet m_pet = null;
 
@@ -203,7 +207,7 @@ namespace DOL.GS.Spells
 				// TODO: Fix no spellType
 				//list.Add("Function: " + (Spell.SpellType == string.Empty ? "(not implemented)" : Spell.SpellType));
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
 				if (Spell.InstrumentRequirement != 0)
 					list.Add("Instrument require: " + GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement));

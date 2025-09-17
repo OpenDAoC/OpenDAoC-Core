@@ -7,6 +7,7 @@ namespace DOL.GS.Spells
     /// </summary>	
     public abstract class DualStatBuff : SingleStatBuff
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} {PropertyToString(Property1)} and {PropertyToString(Property2)} by {Spell.Value}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.SpecBuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.SpecBuff;
 

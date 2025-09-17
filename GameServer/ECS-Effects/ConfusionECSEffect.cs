@@ -72,7 +72,7 @@ namespace DOL.GS
             if (Owner is not GameNPC npc || npc.Brain is not StandardMobBrain brain)
                 return;
 
-            List<GameLiving> targetList = (SpellHandler as ConfusionSpellHandler).targetList;
+            List<GameLiving> targetList = (SpellHandler as ConfusionSpellHandler).TargetList;
             targetList.Clear();
             bool doAttackFriend = SpellHandler.Spell.Value < 0 && Util.Chance(Convert.ToInt32(Math.Abs(SpellHandler.Spell.Value)));
 

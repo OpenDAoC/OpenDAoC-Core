@@ -2,15 +2,20 @@ using System;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.GS.Spells
 {
 	[SpellHandler(eSpellType.DirectDamage)]
 	public class DirectDamageSpellHandler : SpellHandler
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private bool m_castFailed = false;
+
+		public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage to the target.";
+
+		public DirectDamageSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 		/// <summary>
 		/// Execute direct damage spell
@@ -136,8 +141,5 @@ namespace DOL.GS.Spells
 			DamageTarget(ad, true);
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
-
-		// constructor
-		public DirectDamageSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }

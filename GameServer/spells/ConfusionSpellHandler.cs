@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 
@@ -6,11 +7,20 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Confusion)]
     public class ConfusionSpellHandler : SpellHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public override string ShortDescription
+        {
+            get
+            {
+                if (Spell.Value >= 0)
+                    return $"Monster target has a {Spell.Value}% chance to switch which target they are fighting.";
+                else
+                    return $"Monster target has a 100% chance to switch which target they are fighting and a {Math.Abs(Spell.Value)}% chance to attack an ally.";
+            }
+        }
 
         public ConfusionSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        public List<GameLiving> targetList = [];
+        public List<GameLiving> TargetList = [];
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {

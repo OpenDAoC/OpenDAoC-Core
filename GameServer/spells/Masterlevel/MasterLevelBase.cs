@@ -192,7 +192,7 @@ namespace DOL.GS.Spells
             get
             {
                 var list = new List<string>();
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 return list;
             }
         }
@@ -258,7 +258,7 @@ namespace DOL.GS.Spells
             get
             {
                 var list = new List<string>();
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 return list;
             }
         }
@@ -306,7 +306,7 @@ namespace DOL.GS.Spells
             get
             {
                 var list = new List<string>();
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 return list;
             }
         }
@@ -355,7 +355,7 @@ namespace DOL.GS.Spells
             get
             {
                 var list = new List<string>();
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 return list;
             }
         }
@@ -427,7 +427,7 @@ namespace DOL.GS.Spells
             get
             {
                 var list = new List<string>();
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 return list;
             }
         }

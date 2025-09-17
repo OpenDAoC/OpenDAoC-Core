@@ -3,6 +3,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.StyleBleeding)]
     public class StyleBleeding : SpellHandler
     {
+        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds and prevents natural health regeneration.";
+
         public StyleBleeding(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)

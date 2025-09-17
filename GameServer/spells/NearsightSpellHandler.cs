@@ -11,6 +11,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.Nearsight)]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
+		public override string ShortDescription => $"Reduces the target's attack and spell casting range by {Spell.Value}%.";
+
+		public NearsightSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new NearsightECSGameEffect(i));
@@ -122,7 +126,7 @@ namespace DOL.GS.Spells
 
                 list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "NearsightSpellHandler.DelveInfo.Function", (Spell.SpellType.ToString() == string.Empty ? "(not implemented)" : Spell.SpellType.ToString())));
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
                 if (Spell.Damage != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")));
@@ -156,16 +160,18 @@ namespace DOL.GS.Spells
 				return list;
 			}
 		}
-
-		// constructor
-		public NearsightSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
+
 	/// <summary>
 	/// Reduce efficacity of nearsight effect
 	/// </summary>
 	[SpellHandler(eSpellType.NearsightReduction)]
 	public class NearsightReductionSpellHandler : SpellHandler
 	{
+		public override string ShortDescription => $"Nearsight spells cast upon the caster's group are reduced in effectiveness by {Spell.Value}%, or outright resisted.";
+
+		public NearsightReductionSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
 		/// <summary>
 		/// called after normal spell cast is completed and effect has to be started
 		/// </summary>
@@ -173,8 +179,6 @@ namespace DOL.GS.Spells
 		{
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
-		}	
-		// constructor
-		public NearsightReductionSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		}
 	}
 }

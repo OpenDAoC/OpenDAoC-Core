@@ -100,7 +100,7 @@ namespace DOL.GS.Spells
         {
             get
             {
-                List<string> list = [$"  {Spell.Description}"];
+                List<string> list = [ShortDescription];
                 return list;
             }
         }

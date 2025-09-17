@@ -12,6 +12,11 @@ namespace DOL.GS.Spells
 	{
 		private const string EFFECT_PROPERTY = "UnbreakableSpeedDecreaseProperty";
 
+		public override string ShortDescription =>
+			Spell.Value >= 99 ?
+			"The target is rooted in place." :
+			$"The target is slowed by {Spell.Value}%.";
+
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StatDebuffECSEffect(i));

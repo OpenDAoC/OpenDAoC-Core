@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,23 @@ namespace DOL.GS
 {
 	public class Spell : Skill, ICustomParamsValuable
 	{
+		private static FrozenDictionary<eDamageType, string> _damageTypeToStringMap =
+			new Dictionary<eDamageType, string>()
+			{
+				{ eDamageType.Crush, "crush" },
+				{ eDamageType.Slash , "slash" },
+				{ eDamageType.Thrust , "thrust" },
+				{ eDamageType.Body , "body" },
+				{ eDamageType.Cold , "cold" },
+				{ eDamageType.Energy , "energy" },
+				{ eDamageType.Heat , "heat" },
+				{ eDamageType.Matter , "matter" },
+				{ eDamageType.Spirit , "spirit" }
+			}.ToFrozenDictionary();
+
 		protected readonly string m_description = string.Empty;
 		protected readonly eSpellTarget m_target = eSpellTarget.NONE;
-        protected readonly eSpellType m_spelltype;// = "-";
+		protected readonly eSpellType m_spelltype;
 		protected readonly int m_range = 0;
 		protected readonly int m_radius = 0;
 		protected double m_value = 0;
@@ -159,7 +174,6 @@ namespace DOL.GS
 		public eDamageType DamageType
 		{
 			get { return m_damageType; }
-
 		}
 
 		public virtual eSpellType SpellType
@@ -460,59 +474,6 @@ namespace DOL.GS
 		{
 			return (Spell)MemberwiseClone();
 		}
-		
-		/// <summary>
-		/// Fill in spell delve information.
-		/// </summary>
-		/// <param name="delve"></param>
-		public virtual void Delve(List<string> delve)
-		{
-			delve.Add($"Function: {Name}");
-			delve.Add("");
-			delve.Add(Description);
-			delve.Add("");
-			DelveEffect(delve);
-			DelveTarget(delve);
-
-			if (Range > 0)
-				delve.Add(string.Format("Range: {0}", Range));
-
-			if (Duration is > 0 and < 65535)
-				delve.Add(string.Format("Duration: {0}", Duration >= 60000 ? $"{Duration / 60000}:{Duration % 6000} min" : $"{Duration / 100} sec"));
-
-			delve.Add(string.Format("Casting time: {0}", CastTime == 0 ? "instant" : $"{CastTime} sec"));
-
-			if (Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
-				delve.Add(string.Format("Damage: {0}", GlobalConstants.DamageTypeToName(DamageType)));
-
-			delve.Add("");
-		}
-
-		private void DelveEffect(List<string> delve)
-		{
-		}
-
-		private void DelveTarget(List<string> delve)
-		{
-			string target;
-
-			switch (Target)
-			{
-				case eSpellTarget.ENEMY:
-				{
-					target = "Targeted";
-					break;
-				}
-				default:
-				{
-					target = Target.ToString();
-					target = target[0] + target[1..].ToLower();
-					break;
-				}
-			}
-
-			delve.Add($"Target: {target}");
-		}
 
 		#region Spell Helpers
 
@@ -756,6 +717,11 @@ namespace DOL.GS
 		public int CalculateEffectiveRange(GameLiving caster)
 		{
 			return caster.castingComponent.CalculateSpellRange(this);
+		}
+
+		public string DamageTypeToString()
+		{
+			return _damageTypeToStringMap.TryGetValue(DamageType, out string result) ? result : $"<{DamageType}>";
 		}
 
 		#endregion

@@ -5,6 +5,8 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class AbstractResistBuff(GameLiving caster, Spell spell, SpellLine line) : PropertyChangingSpell(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's resistance to {PropertyToString(Property1)} damage by {Spell.Value}%.";
+
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StatBuffECSEffect(i));
@@ -67,6 +69,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.BodySpiritEnergyBuff)]
     public class BodySpiritEnergyBuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's resistance to body, spirit and energy by {Spell.Value}%.";
+
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory3 => eBuffBonusCategory.BaseBuff;
@@ -79,6 +83,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.HeatColdMatterBuff)]
     public class HeatColdMatterBuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's resistance to heat, cold and matter by {Spell.Value}%.";
+
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory3 => eBuffBonusCategory.BaseBuff;
@@ -91,6 +97,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.AllMagicResistsBuff)]
     public class AllMagicResistsBuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's resistance to all magic damage by {Spell.Value}%.";
+
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory3 => eBuffBonusCategory.BaseBuff;
@@ -128,6 +136,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.AllMeleeResistsBuff)]
     public class CrushSlashThrustBuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's resistance to all melee damage by {Spell.Value}%.";
+
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory3 => eBuffBonusCategory.BaseBuff;
@@ -161,6 +171,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.AllResistsBuff)]
     public class AllResistsBuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistBuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's resistance to all damage by {Spell.Value}%.";
+
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.BaseBuff;
         public override eBuffBonusCategory BonusCategory3 => eBuffBonusCategory.BaseBuff;

@@ -179,6 +179,16 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.OffensiveProc)]
     public class OffensiveProcSpellHandler : BaseProcSpellHandler
     {
+        public override string ShortDescription
+        {
+            get
+            {
+                ISpellHandler subSpell = ScriptMgr.CreateSpellHandler(m_caster, SkillBase.GetSpellByID((int)Spell.Value), null);
+                return $"Triggers the following spell with a {Spell.Frequency / 100}% chance on own melee attacks:\n\n" +
+                    (subSpell != null ? subSpell.ShortDescription : $"Spell with ID {Spell.Value} not found.");
+            }
+        }
+
         protected override DOLEvent EventType => GameLivingEvent.AttackFinished;
 
         public OffensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -222,6 +232,16 @@ namespace DOL.GS.Spells
     public class DefensiveProcSpellHandler : BaseProcSpellHandler
     {
         protected override DOLEvent EventType => GameLivingEvent.AttackedByEnemy;
+
+        public override string ShortDescription
+        {
+            get
+            {
+                ISpellHandler subSpell = ScriptMgr.CreateSpellHandler(m_caster, SkillBase.GetSpellByID((int)Spell.Value), null);
+                return $"Triggers the following spell with a {Spell.Frequency / 100}% chance when being hit by melee attacks:\n\n" +
+                    (subSpell != null ? subSpell.ShortDescription : $"Spell with ID {Spell.Value} not found.");
+            }
+        }
 
         public DefensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

@@ -9,6 +9,10 @@ namespace DOL.GS.Spells.Atlantis
 	[SpellHandler(eSpellType.AllStatsDebuff)]
 	public class AllStatsDebuff : SpellHandler
 	{
+		public override string ShortDescription => $"Decreases the target's stats by {Spell.Value}.";
+
+		public AllStatsDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
 		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
@@ -74,6 +78,5 @@ namespace DOL.GS.Spells.Atlantis
 					aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
 			}
 		}
-		public AllStatsDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

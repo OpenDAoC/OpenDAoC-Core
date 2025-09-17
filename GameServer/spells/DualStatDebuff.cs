@@ -5,6 +5,7 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class DualStatDebuff : SingleStatDebuff
     {
+        public override string ShortDescription => $"Decreases the target's {PropertyToString(Property1)} and {PropertyToString(Property2)} by {Spell.Value}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.Debuff;
 

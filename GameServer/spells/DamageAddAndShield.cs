@@ -10,6 +10,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageAdd)]
     public class DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
+        public override string ShortDescription => $"{TargetPronounCapitalized} melee attacks inflict an additional {Spell.Damage} damage per second.";
+
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new DamageAddECSEffect(i));
@@ -65,6 +67,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageShield)]
     public class DamageShieldSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
+        public override string ShortDescription => $"{TargetPronounCapitalized} melee attackers receive {Spell.Damage} damage per second.";
+
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new DamageShieldECSEffect(i));

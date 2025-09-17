@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DOL.GS.Spells
+﻿namespace DOL.GS.Spells
 {
     [SpellHandler(eSpellType.MultiTarget)]
     public class MultiTargetSpellHandler : SpellHandler
     {
-        public MultiTargetSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
-        {
-        }
+        public override string ShortDescription => $"Hits {Spell.Value} additional target(s) within melee range.";
+
+        public MultiTargetSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 }

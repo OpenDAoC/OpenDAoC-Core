@@ -18,9 +18,8 @@ namespace DOL.GS.Spells
 			Rapid = 4
 		}
 
-		/// <summary>
-		/// Does this spell break stealth on start?
-		/// </summary>
+		public override SpellCostType CostType => SpellCostType.Endurance;
+
 		public override bool UnstealthCasterOnStart
 		{
 			get { return false; }
@@ -272,7 +271,7 @@ namespace DOL.GS.Spells
 				var list = new List<string>();
 				//list.Add("Function: " + (Spell.SpellType == string.Empty ? "(not implemented)" : Spell.SpellType));
 				//list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
 				if (Spell.InstrumentRequirement != 0)
 					list.Add("Instrument require: " + GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement));

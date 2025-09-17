@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DOL.GS.Spells
+﻿namespace DOL.GS.Spells
 {
     [SpellHandler(eSpellType.StyleRange)]
     public class LongRangeSpellHandler : SpellHandler
     {
-        public LongRangeSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
-        {
-        }
+        public override string ShortDescription => $"Hits target up to {Spell.Value} units away.";
+
+        public LongRangeSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 }

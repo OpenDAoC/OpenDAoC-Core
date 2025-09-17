@@ -6,6 +6,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Taunt)]
     public class TauntSpellHandler : SpellHandler
     {
+        public override string ShortDescription => $"Taunts the target, increasing your threat against it by {Spell.Value}.";
+
         public TauntSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
         public override void FinishSpellCast(GameLiving target)

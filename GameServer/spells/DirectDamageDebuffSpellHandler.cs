@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DOL.Events;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.Spells
 {
@@ -11,11 +12,14 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.DirectDamageWithDebuff)]
 	public class DirectDamageDebuffSpellHandler : AbstractResistDebuff
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override eProperty Property1 => Caster.GetResistTypeForDamage(Spell.DamageType);
+		public override string ShortDescription => $"Inflicts {Spell.Damage} {PropertyToString(Property1)} damage to the target and decreases its resistance by {Spell.Value}%.";
+		public override eProperty Property1 => GameLiving.GetResistTypeForDamage(Spell.DamageType);
 		public override string DebuffTypeName => GlobalConstants.DamageTypeToName(Spell.DamageType);
 		protected override bool IsDualComponentSpell => true;
+
+		public DirectDamageDebuffSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
@@ -132,7 +136,7 @@ namespace DOL.GS.Spells
 
                 list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DirectDamageDebuffSpellHandler.DelveInfo.Function"));
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
                 if (Spell.Damage != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")));
@@ -166,8 +170,5 @@ namespace DOL.GS.Spells
 				return list;
 			}
 		}
-
-		// constructor
-		public DirectDamageDebuffSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }

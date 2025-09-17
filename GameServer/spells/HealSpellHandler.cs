@@ -8,6 +8,11 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Heal)]
     public class HealSpellHandler : SpellHandler
     {
+        public override string ShortDescription =>
+            Spell.Value > 0 ?
+            $"Heals the target for {Spell.Value} hit points." :
+            $"Heals the target for {Math.Abs(Spell.Value)}% hit points.";
+
         public HealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         public override bool StartSpell(GameLiving target)

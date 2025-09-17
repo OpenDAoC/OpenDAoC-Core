@@ -9,6 +9,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.HealthRegenBuff)]
     public class HealthRegenSpellHandler : PropertyChangingSpell
     {
+        public override string ShortDescription => $"The target regenerates {Spell.Value} extra health.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eProperty Property1 => eProperty.HealthRegenerationAmount;
 
@@ -18,6 +19,12 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.PowerRegenBuff)]
     public class PowerRegenSpellHandler : PropertyChangingSpell
     {
+        public override string ShortDescription => $"The target regenerates {Spell.Value} extra power.";
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
+        public override eProperty Property1 => eProperty.PowerRegenerationAmount;
+
+        public PowerRegenSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
         public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target is GamePlayer playerTarget &&
@@ -33,16 +40,12 @@ namespace DOL.GS.Spells
 
             base.ApplyEffectOnTarget(target);
         }
-
-        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
-        public override eProperty Property1 => eProperty.PowerRegenerationAmount;
-
-        public PowerRegenSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 
     [SpellHandler(eSpellType.EnduranceRegenBuff)]
     public class EnduranceRegenSpellHandler : PropertyChangingSpell
     {
+        public override string ShortDescription => $"The target regenerates {Spell.Value} extra endurance.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eProperty Property1 => eProperty.EnduranceRegenerationAmount;
 

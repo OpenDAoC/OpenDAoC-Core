@@ -107,7 +107,7 @@ namespace DOL.GS.Spells
 			{
 				var list = new List<string>();
 				list.Add("Name: " + Spell.Name);
-				list.Add("Description: " + Spell.Description);
+				list.Add("Description: " + ShortDescription);
 				list.Add("Target: " + Spell.Target);
 				if (Spell.Damage != 0)
 				{

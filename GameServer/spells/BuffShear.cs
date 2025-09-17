@@ -206,7 +206,7 @@ namespace DOL.GS.Spells
 
 				list.Add("Function: " + (Spell.SpellType.ToString() == string.Empty ? "(not implemented)" : Spell.SpellType.ToString()));
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
 				list.Add("Type: " + DelveSpellType);
 				list.Add("Maximum strength of buffs removed: " + Spell.Value);

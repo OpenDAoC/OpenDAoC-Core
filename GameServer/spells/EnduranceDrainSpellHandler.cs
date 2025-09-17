@@ -6,6 +6,8 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.EnduranceDrain)]
 	public class EnduranceDrainSpellHandler : SpellHandler
 	{
+		public override string ShortDescription => $"{Spell.Damage}% endurance is stolen from the target and given to the caster.";
+
 		public EnduranceDrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 		
 		public override void FinishSpellCast(GameLiving target)
@@ -14,7 +16,6 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		
 		public override void OnDirectEffect(GameLiving target)
 		{
 			if (target == null) return;
@@ -32,7 +33,6 @@ namespace DOL.GS.Spells
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
-		
 		public virtual void StealEndurance(GameLiving target,int end)
 		{
 			if(!m_caster.IsAlive) return;
@@ -41,7 +41,6 @@ namespace DOL.GS.Spells
 			
 		}
 
-		
 		public virtual void SendCasterMessage(GameLiving target,int end)
 		{
 			MessageToCaster(string.Format("You steal {0} for {1} endurance!", target.Name, end), eChatType.CT_YouHit);
@@ -55,7 +54,6 @@ namespace DOL.GS.Spells
 			}
 		}
 
-
 		public override IList<string> DelveInfo 
 		{
 			get 
@@ -64,7 +62,7 @@ namespace DOL.GS.Spells
 				//Name
 				list.Add("Name: " + Spell.Name);
 				//Description
-				list.Add("Description: " + Spell.Description);
+				list.Add("Description: " + ShortDescription);
 				//Target
 				list.Add("Target: " + Spell.Target);
 				//Cast

@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
 
 				list.Add("Function: " + (Spell.SpellType.ToString() == string.Empty ? "(not implemented)" : Spell.SpellType.ToString()));
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
 				if(Spell.Duration != 0) list.Add(string.Format("Duration: {0}sec", (int)Spell.Duration/1000));
 				list.Add("Target: " + Spell.Target);

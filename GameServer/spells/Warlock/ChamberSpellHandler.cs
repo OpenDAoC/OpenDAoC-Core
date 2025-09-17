@@ -310,7 +310,7 @@ namespace DOL.GS.Spells
 				list.Add("");
 
 				//Description
-				list.Add("Description: " + Spell.Description);
+				list.Add("Description: " + ShortDescription);
 				list.Add("");
 
 				//SpellType

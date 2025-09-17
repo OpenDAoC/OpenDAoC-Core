@@ -144,7 +144,7 @@ namespace DOL.GS.Spells
             {
                 return new List<string>
                 {
-                    Spell.Description
+                    ShortDescription
                 };
             }
         }

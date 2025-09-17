@@ -7,7 +7,7 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class SingleStatDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
-        // bonus category
+        public override string ShortDescription => $"Decreases the target's {PropertyToString(Property1)} by {Spell.Value}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
@@ -73,6 +73,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.ArmorAbsorptionDebuff)]
     public class ArmorAbsorptionDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatDebuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Decreases the target's physical damage {PropertyToString(Property1)} by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.ArmorAbsorption;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -81,6 +82,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.CombatSpeedDebuff)]
     public class CombatSpeedDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatDebuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Decreases the target's attack speed by {Math.Abs(Spell.Value)}%.";
         public override eProperty Property1 => eProperty.MeleeSpeed;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -89,6 +91,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.MeleeDamageDebuff)]
     public class MeleeDamageDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatDebuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Decreases the target's damage with melee attacks by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.MeleeDamage;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -97,6 +100,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.FatigueConsumptionDebuff)]
     public class FatigueConsumptionDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatDebuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's endurance consumption in combat by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.FatigueConsumption;
 
         protected override void SendUpdates(GameLiving target) { }
@@ -105,8 +109,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.FumbleChanceDebuff)]
     public class FumbleChanceDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatDebuff(caster, spell, line)
     {
+        public override string ShortDescription => $"Increases the target's fumble chance by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.FumbleChance;
-
 
         protected override void SendUpdates(GameLiving target) { }
     }

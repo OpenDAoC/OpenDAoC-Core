@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
 			get
 			{
 				var list = new List<string>();
-				list.Add(string.Format("  {0}", Spell.Description));
+				list.Add(string.Format("  {0}", ShortDescription));
 
 				return list;
 			}

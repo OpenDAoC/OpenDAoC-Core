@@ -18,21 +18,21 @@ namespace DOL.GS
 
         public static void SendSpellAnimation(ECSGameSpellEffect e)
         {
-            if (e != null)
-            {
-                ISpellHandler spellHandler = e.SpellHandler;
-                Spell spell = spellHandler.Spell;
-                GameLiving target;
+            if (e == null)
+                return;
 
-                // Focus damage shield. Need to figure out why this is needed.
-                if (spell.IsPulsing && spell.SpellType == eSpellType.DamageShield)
-                    target = spellHandler.Target;
-                else
-                    target = e.Owner;
+            ISpellHandler spellHandler = e.SpellHandler;
+            Spell spell = spellHandler.Spell;
+            GameLiving target;
 
-                foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    player.Out.SendSpellEffectAnimation(spellHandler.Caster, target, spell.ClientEffect, 0, false, 1);
-            }
+            // Focus damage shield. Need to figure out why this is needed.
+            if (spell.IsPulsing && spell.SpellType == eSpellType.DamageShield)
+                target = spellHandler.Target;
+            else
+                target = e.Owner;
+
+            foreach (GamePlayer player in e.Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                player.Out.SendSpellEffectAnimation(spellHandler.Caster, target, spell.ClientEffect, 0, false, 1);
         }
 
         public static eEffect GetEffectFromSpell(Spell spell)

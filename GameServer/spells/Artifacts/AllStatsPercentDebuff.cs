@@ -18,6 +18,10 @@ namespace DOL.GS.Spells
         protected int ChaDebuff = 0;
         protected int PieDebuff = 0;
 
+		public override string ShortDescription => $"Decreases the target's stats by {Spell.Value}%.";
+
+		public AllStatsPercentDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
 		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
@@ -91,6 +95,5 @@ namespace DOL.GS.Spells
 					aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
 			}
 		}
-        public AllStatsPercentDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

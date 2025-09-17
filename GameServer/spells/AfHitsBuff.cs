@@ -1,22 +1,4 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
+using System;
 using DOL.Database;
 using DOL.GS.Effects;
 
@@ -25,20 +7,23 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.AfHitsBuff)]
     public class AfHitsBuffSpellHandler : SpellHandler
     {
+        public override string ShortDescription => $"The target's armor and health are improved by {Math.Abs(Spell.Value)}% while within range of this aura.";
+
+        public AfHitsBuffSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
         public override void OnEffectStart(GameSpellEffect effect)
         {
-
             base.OnEffectStart(effect);
 
             double playerAF = 0;
             double bonusAF = 0;
             double bonusHP = 0;
 
-			if (effect == null || effect.Owner == null)
-			{
-				effect.Cancel(false);
-				return;
-			}
+            if (effect == null || effect.Owner == null)
+            {
+                effect.Cancel(false);
+                return;
+            }
 
             foreach (DbInventoryItem item in effect.Owner.Inventory.EquippedItems)
             {
@@ -88,7 +73,8 @@ namespace DOL.GS.Spells
             SendUpdates(effect.Owner);
             return 0;
         }
-        public void SendUpdates(GameLiving target)
+
+        public static void SendUpdates(GameLiving target)
         {
             GamePlayer player = target as GamePlayer;
             if (player != null)
@@ -99,7 +85,5 @@ namespace DOL.GS.Spells
                 player.UpdatePlayerStatus();
             }
         }
-
-        public AfHitsBuffSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 }

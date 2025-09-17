@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Bomber)]
     public class BomberSpellHandler : SummonSpellHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public override string ShortDescription => "Summons an elemental spirit to attack the target.";
 
         public BomberSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.GS.Keeps;
@@ -15,7 +16,33 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Charm)]
     public class CharmSpellHandler : SpellHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly FrozenDictionary<eCharmType, string> charmTypeToTextMap =
+            new Dictionary<eCharmType, string>()
+            {
+                {eCharmType.Humanoid, "humanoid"},
+                {eCharmType.Animal, "animal"},
+                {eCharmType.Insect, "insect"},
+                {eCharmType.Reptile, "reptile"},
+                {eCharmType.HumanoidAnimal, "humanoid and animal"},
+                {eCharmType.HumanoidAnimalInsect, "humanoid, animal and insect"},
+                {eCharmType.HumanoidAnimalInsectMagical, "humanoid, animal, insect and magical"},
+                {eCharmType.HumanoidAnimalInsectMagicalUndead, "humanoid, animal, insect, magical and undead"},
+                {eCharmType.All, string.Empty},
+            }.ToFrozenDictionary();
+
+        public override string ShortDescription
+        {
+            get
+            {
+                charmTypeToTextMap.TryGetValue((eCharmType) Spell.AmnesiaChance, out string charmableSpecies);
+                string description = $"Attempt to bring the target {charmableSpecies} monster under the caster's control.";
+
+                if (Spell.Pulse == 0)
+                    description += $" Affects monsters up to {(Spell.Damage == 100 ? string.Empty : Spell.Damage + "% of")} of your level, to a maximum of level 15.";
+
+                return description;
+            }
+        }
 
         public CharmSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
@@ -422,7 +449,7 @@ namespace DOL.GS.Spells
 
                 list.Add(LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpellHandler.DelveInfo.Function", (Spell.SpellType.ToString() == string.Empty ? "(not implemented)" : Spell.SpellType.ToString())));
                 list.Add(" "); //empty line
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 list.Add(" "); //empty line
                 var baseMessage = "Attempts to bring the target monster under the caster's control.";
                 switch ((eCharmType) Spell.AmnesiaChance)

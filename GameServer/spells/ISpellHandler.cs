@@ -6,6 +6,8 @@ namespace DOL.GS.Spells
 {
 	public interface ISpellHandler
 	{
+		string ShortDescription { get; }
+
 		GameLiving Target { get; }
 
 		ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams);
@@ -173,6 +175,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		SpellLine SpellLine { get; }
 
+		SpellCostType CostType { get; }
+
 		/// <summary>
 		/// The DelveInfo
 		/// </summary>
@@ -188,8 +192,6 @@ namespace DOL.GS.Spells
 		int OnRestoredEffectExpires(GameSpellEffect effect, int[] RestoreVars, bool noMessages);
 		bool CheckBeginCast(GameLiving selectedTarget);
 		bool CheckConcentrationCost(bool quiet);
-
-		void TooltipDelve(ref DOL.GS.PacketHandler.MiniDelveWriter dw);
 	}
 
 	/// <summary>

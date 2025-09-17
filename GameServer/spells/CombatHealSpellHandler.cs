@@ -1,50 +1,32 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Palading heal chant works only in combat
-	/// </summary>
-	[SpellHandler(eSpellType.CombatHeal)]
-	public class CombatHealSpellHandler : HealSpellHandler
-	{
-		public CombatHealSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+    /// <summary>
+    /// Paladin heal chant works only in combat
+    /// </summary>
+    [SpellHandler(eSpellType.CombatHeal)]
+    public class CombatHealSpellHandler : HealSpellHandler
+    {
+        public override string ShortDescription => $"Heals the target for {Spell.Value} hit points every {Spell.Frequency / 1000.0} seconds. Only effective in combat.";
 
-		/// <summary>
-		/// Execute heal spell
-		/// </summary>
-		/// <param name="target"></param>
-		public override bool StartSpell(GameLiving target)
-		{
-			m_startReuseTimer = true;
+        public CombatHealSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
-			foreach (GameLiving member in GetGroupAndPets(Spell))
-			{
-				ECSGameEffectFactory.Create(new(member, Spell.Frequency, Caster.Effectiveness, this), static (in ECSGameEffectInitParams i) => new CombatHealECSEffect(i));
-			}
+        /// <summary>
+        /// Execute heal spell
+        /// </summary>
+        /// <param name="target"></param>
+        public override bool StartSpell(GameLiving target)
+        {
+            m_startReuseTimer = true;
 
-			GamePlayer player = Caster as GamePlayer;
+            foreach (GameLiving member in GetGroupAndPets(Spell))
+                ECSGameEffectFactory.Create(new(member, Spell.Frequency, Caster.Effectiveness, this), static (in ECSGameEffectInitParams i) => new CombatHealECSEffect(i));
 
-			if (!Caster.InCombat && (player==null || player.Group==null || !player.Group.IsGroupInCombat()))
-				return false; // Do not start healing if not in combat
+            GamePlayer player = Caster as GamePlayer;
 
-			return base.StartSpell(target);
-		}
-	}
+            if (!Caster.InCombat && (player==null || player.Group==null || !player.Group.IsGroupInCombat()))
+                return false; // Do not start healing if not in combat
+
+            return base.StartSpell(target);
+        }
+    }
 }

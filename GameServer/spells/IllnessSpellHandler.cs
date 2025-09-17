@@ -10,6 +10,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.PveResurrectionIllness)]
 	public class PveResurrectionIllness : AbstractIllnessSpellHandler
 	{
+		public override string ShortDescription => string.Empty;
+
+		public PveResurrectionIllness(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new ResurrectionIllnessECSGameEffect(i));
@@ -70,7 +74,7 @@ namespace DOL.GS.Spells
 				var list = new List<string>();
 
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
 				list.Add("- Effectiveness penality: "+Spell.Value+"%");
 				return list;
@@ -92,7 +96,7 @@ namespace DOL.GS.Spells
 
         /// <summary>
         /// Restart the effects of resurrection illness
-        /// </summary>        
+        /// </summary>
         public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
 		{
 			OnEffectStart(effect);
@@ -100,13 +104,11 @@ namespace DOL.GS.Spells
 
         /// <summary>
         /// Remove the effects of resurrection illness 
-        /// </summary>        
+        /// </summary>
 		public override int OnRestoredEffectExpires(GameSpellEffect effect, int[] vars, bool noMessages)
 		{
 			return OnEffectExpires(effect, false);
-		}		
-
-		public PveResurrectionIllness(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}	
+		}
 	}
 
 	/// <summary>

@@ -9,6 +9,11 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.StyleTaunt)]
     public class StyleTaunt : SpellHandler
     {
+        public override string ShortDescription =>
+            Spell.Value > 0 ?
+            $"Taunts the target, increasing your threat against it by {Spell.Value}." :
+            $"Detaunts the target, decreases your threat against it by {-Spell.Value}.";
+
         public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;

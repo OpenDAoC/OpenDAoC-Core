@@ -5,6 +5,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Lifedrain)]
     public class LifedrainSpellHandler : DirectDamageSpellHandler
     {
+        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage and heals for {Spell.LifeDrainReturn}% of the damage dealt.";
         protected override bool IsDualComponentSpell => true;
 
         public LifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

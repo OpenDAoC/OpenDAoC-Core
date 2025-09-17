@@ -12,6 +12,7 @@ namespace DOL.GS.Spells
 	public class DamageSpeedDecreaseSpellHandler : SpeedDecreaseSpellHandler
 	{
 		protected override bool IsDualComponentSpell => true;
+		public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage to the target and slows it by {Spell.Value}%.";
 
 		public DamageSpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
@@ -111,7 +112,7 @@ namespace DOL.GS.Spells
 				var list = new List<string>();
                 list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DamageSpeedDecrease.DelveInfo.Function"));
                 list.Add(" "); //empty line
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 list.Add(" "); //empty line
                 list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DamageSpeedDecrease.DelveInfo.Decrease", Spell.Value));
                 if (Spell.Damage != 0)

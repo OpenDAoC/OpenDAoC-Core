@@ -7,6 +7,8 @@ namespace DOL.GS.Spells
     {
         private bool _combatBlock;
 
+        public override string ShortDescription => $"A magical bolt shoots toward the target, exploding on impact for {Spell.Damage} {Spell.DamageTypeToString()} damage. Can be blocked.";
+
         public BoltSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         public override void FinishSpellCast(GameLiving target)

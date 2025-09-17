@@ -6,6 +6,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Amnesia)]
     public class AmnesiaSpellHandler : SpellHandler
     {
+        public override string ShortDescription => "Clears the monster's mind, causing it to forget who it was attacking. Negates any spells currently being cast by enemy player targets, but does not interrupt them unless resisted.";
+
         public AmnesiaSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)

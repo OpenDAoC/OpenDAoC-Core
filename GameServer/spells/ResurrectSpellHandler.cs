@@ -16,8 +16,9 @@ namespace DOL.GS.Spells
 		protected readonly ListDictionary m_resTimersByLiving = new ListDictionary();
 		private readonly Lock _lock = new();
 
-		// constructor
-		public ResurrectSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+		public override string ShortDescription => $"Brings the target back to life, restores {Spell.ResurrectHealth}% health and {Spell.ResurrectMana}% power and endurance and suffers no experience or constitution loss.";
+
+		public ResurrectSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
 		public override void FinishSpellCast(GameLiving target)
 		{
@@ -294,7 +295,7 @@ namespace DOL.GS.Spells
 
 				list.Add("Function: " + (Spell.SpellType.ToString() == string.Empty ? "(not implemented)" : Spell.SpellType.ToString()));
 				list.Add(" "); //empty line
-				list.Add(Spell.Description);
+				list.Add(ShortDescription);
 				list.Add(" "); //empty line
 				list.Add("Health restored: " + Spell.ResurrectHealth);
 				if(Spell.ResurrectMana != 0) list.Add("Power restored: " + Spell.ResurrectMana);

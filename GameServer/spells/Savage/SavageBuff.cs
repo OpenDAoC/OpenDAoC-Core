@@ -6,6 +6,7 @@ namespace DOL.GS.Spells
 {
     public abstract class AbstractSavageBuff : PropertyChangingSpell
     {
+        public override SpellCostType CostType => SpellCostType.Health;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
 
         public AbstractSavageBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
@@ -35,7 +36,7 @@ namespace DOL.GS.Spells
                 var list = new List<string>(16);
                 //list.Add("Function: " + (Spell.SpellType == string.Empty ? "(not implemented)" : Spell.SpellType));
                 //list.Add(" "); //empty line
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 list.Add(" "); //empty line
                 if (Spell.InstrumentRequirement != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)));
@@ -95,6 +96,8 @@ namespace DOL.GS.Spells
 
     public abstract class AbstractSavageResistBuff : AbstractSavageBuff
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} resistance to {PropertyToString(Property1)} damage by {Spell.Value}%.";
+
         public AbstractSavageResistBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
         protected override void SendUpdates(GameLiving target)
@@ -110,6 +113,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SavageParryBuff)]
     public class SavageParryBuff : AbstractSavageStatBuff
     {
+        public override string ShortDescription => $"{TargetPronounCapitalized} chance to parry is increased by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.ParryChance;
 
         public SavageParryBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
@@ -118,6 +122,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SavageEvadeBuff)]
     public class SavageEvadeBuff : AbstractSavageStatBuff
     {
+        public override string ShortDescription => $"{TargetPronounCapitalized} chance to evade is increased by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.EvadeChance;
 
         public SavageEvadeBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
@@ -126,6 +131,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SavageCombatSpeedBuff)]
     public class SavageCombatSpeedBuff : AbstractSavageStatBuff
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} combat speed by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.MeleeSpeed;
 
         public SavageCombatSpeedBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -134,6 +140,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SavageDPSBuff)]
     public class SavageDPSBuff : AbstractSavageStatBuff
     {
+        public override string ShortDescription => $"Increases {TargetPronoun} melee damage by {Spell.Value}%.";
         public override eProperty Property1 => eProperty.MeleeDamage;
 
         public SavageDPSBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }

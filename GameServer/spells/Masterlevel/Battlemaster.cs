@@ -82,6 +82,9 @@ namespace DOL.GS.Spells
     public class Grapple : MasterlevelHandling
     {
         private int check = 0;
+
+        public override string ShortDescription => "You are stunned and cannot take any actions.";
+
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
             if (selectedTarget is GameNPC == true)
@@ -606,8 +609,8 @@ namespace DOL.GS.Spells
 
                 damage += ad.Modifier;
 
-                int resist = (int)(damage * GetDamageResist(target, (eResist) target.GetResistTypeForDamage(ad.DamageType)) * -0.01);
-                eProperty property = ad.Target.GetResistTypeForDamage(ad.DamageType);
+                int resist = (int)(damage * GetDamageResist(target, (eResist) GameLiving.GetResistTypeForDamage(ad.DamageType)) * -0.01);
+                eProperty property = GameLiving.GetResistTypeForDamage(ad.DamageType);
                 int secondaryResistModifier = ad.Target.SpecBuffBonusCategory[property];
                 int resistModifier = 0;
                 resistModifier += (int)((ad.Damage + (double)resistModifier) * (double)secondaryResistModifier * -0.01);
@@ -744,7 +747,7 @@ namespace DOL.GS.Spells
             get
             {
                 var list = new List<string>();
-                list.Add(Spell.Description);
+                list.Add(ShortDescription);
                 return list;
             }
         }

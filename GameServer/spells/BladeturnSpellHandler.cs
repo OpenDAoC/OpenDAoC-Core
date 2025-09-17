@@ -10,6 +10,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.Bladeturn)]
 	public class BladeturnSpellHandler : SpellHandler
 	{
+        public override string ShortDescription => "Creates a 'bubble' that absorbs the damage of a single melee hit.";
+
+        public BladeturnSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new BladeturnECSGameEffect(i));
@@ -76,8 +80,5 @@ namespace DOL.GS.Spells
             }
             return 0;
         }
-
-        // constructor
-        public BladeturnSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+    }
 }

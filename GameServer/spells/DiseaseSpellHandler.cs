@@ -8,6 +8,8 @@ namespace DOL.GS.Spells
     {
         private bool _critical;
 
+        public override string ShortDescription => $"Inflicts a wasting disease on the target that slows target by 15%, reduces its strength by 7.5% and inhibits healing by 50%";
+
         public DiseaseSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)

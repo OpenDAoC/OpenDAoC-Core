@@ -9,6 +9,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.HealOverTime)]
 	public class HoTSpellHandler : SpellHandler
 	{
+		public override string ShortDescription => $"The target regenerates {Spell.Value} hit points every {Spell.Frequency / 1000.0} seconds.";
+
+		public HoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new HealOverTimeECSGameEffect(i));
@@ -85,9 +89,5 @@ namespace DOL.GS.Spells
 			}
 			return 0;
 		}
-
-
-		// constructor
-		public HoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }
