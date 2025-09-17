@@ -610,7 +610,6 @@ namespace DOL.Database
                             {
                                 cmd.CommandText = SQLCommand;
                                 FillSQLParameter(parameter, cmd.Parameters);
-                                cmd.Prepare();
 
                                 using (var reader = cmd.ExecuteReader())
                                 {
@@ -684,7 +683,6 @@ namespace DOL.Database
                         {
                             cmd.CommandText = selectFromExpression + whereClause.ParameterizedText;
                             FillSQLParameter(whereClause.Parameters, cmd.Parameters);
-                            cmd.Prepare();
 
                             using (var reader = cmd.ExecuteReader())
                             {
@@ -826,7 +824,6 @@ namespace DOL.Database
                             foreach (var parameter in parameters.Skip(current))
                             {
                                 FillSQLParameter(parameter, cmd.Parameters);
-                                cmd.Prepare();
 
                                 var result = -1;
                                 try

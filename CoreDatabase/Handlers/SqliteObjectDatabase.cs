@@ -604,7 +604,6 @@ namespace DOL.Database.Handlers
                             foreach (var parameter in parameters.Skip(current))
                             {
                                 FillSQLParameter(parameter, cmd.Parameters);
-                                cmd.Prepare();
 
                                 if (retrieveLastInsertID)
                                 {
