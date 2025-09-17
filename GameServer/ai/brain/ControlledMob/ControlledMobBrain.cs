@@ -24,7 +24,7 @@ namespace DOL.AI.Brain
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public const int MAX_PET_AGGRO_DISTANCE = 512; // Tolakram - Live test with caby pet - I was extremely close before auto aggro
-		public const short MIN_OWNER_FOLLOW_DIST = 100;
+		public const short MIN_OWNER_FOLLOW_DIST = 80;
 		public const short MAX_OWNER_FOLLOW_DIST = 10000;
 
 		protected int m_tempX = 0;

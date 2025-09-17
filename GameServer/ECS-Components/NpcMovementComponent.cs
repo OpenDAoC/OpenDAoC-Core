@@ -499,6 +499,7 @@ namespace DOL.GS
                 return;
             }
 
+            TurnTo(FollowTarget);
             float distanceToTarget = Owner.GetDistanceTo(destination);
             int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
 
@@ -509,9 +510,6 @@ namespace DOL.GS
 
                 return;
             }
-
-            if (distanceToTarget > 25)
-                TurnTo((int) destination.X, (int) destination.Y);
 
             // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
@@ -567,7 +565,7 @@ namespace DOL.GS
         private int FollowTick()
         {
             // Stop moving if the NPC is casting or using ranged weapons.
-            if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
+            if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance))
             {
                 StopMoving();
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
@@ -580,17 +578,18 @@ namespace DOL.GS
             }
 
             Vector3 targetPos = new(FollowTarget.X, FollowTarget.Y, FollowTarget.Z);
-            bool isInFormation = false;
 
             if (Owner.Brain is StandardMobBrain brain && FollowTarget.Realm == Owner.Realm)
             {
-                int tx = (int) targetPos.X, ty = (int) targetPos.Y, tz = (int) targetPos.Z;
+                int tx = (int) targetPos.X;
+                int ty = (int) targetPos.Y;
+                int tz = (int) targetPos.Z;
 
                 // Update to formation-adjusted position.
                 if (brain.CheckFormation(ref tx, ref ty, ref tz))
                 {
-                    isInFormation = true;
                     targetPos = new(tx, ty, tz);
+                    MinFollowDistance = 0;
                 }
             }
 
@@ -604,7 +603,7 @@ namespace DOL.GS
                 return 0;
             }
 
-            if (!isInFormation && distanceSquared <= MinFollowDistance * MinFollowDistance)
+            if (distanceSquared <= MinFollowDistance * MinFollowDistance)
             {
                 TurnTo(FollowTarget);
 
@@ -626,9 +625,9 @@ namespace DOL.GS
             if (Owner.IsAttacking && distance > Owner.MeleeAttackRange)
                 speed = MaxSpeed;
             else
-                speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance) * 2);
+                speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance) * 2.5);
 
-            PathToInternal(destination, Math.Min(MaxSpeed, speed));
+            PathToInternal(destination, Math.Max((short) 10, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
 
