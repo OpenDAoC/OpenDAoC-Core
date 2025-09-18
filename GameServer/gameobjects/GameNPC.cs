@@ -3451,16 +3451,17 @@ namespace DOL.GS
 				case eSpellType.StyleTaunt:
 				case eSpellType.CurePoison:
 				case eSpellType.CureDisease:
-					break;
+					return spell;
 				default:
 				{
 					if (log.IsWarnEnabled)
 						log.Warn($"Unhandled spell in {nameof(GetScaledSpell)}: {spell}");
 
-					break;
+					return spell;
 				}
 			}
 
+			spell.IsDynamic = true;
 			return spell;
 		}
 
@@ -3496,22 +3497,6 @@ namespace DOL.GS
 			}
 
 			return casted;
-		}
-
-		public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
-		{
-			Spell spellToCast;
-
-			if (line.KeyName is GlobalSpellsLines.Mob_Spells)
-			{
-				// NPC spells will get the level equal to their caster
-				spellToCast = (Spell) spell.Clone();
-				spellToCast.Level = Level;
-			}
-			else
-				spellToCast = spell;
-
-			return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 		}
 
 		public virtual void OnCastSpellLosCheckFail(GameObject target)

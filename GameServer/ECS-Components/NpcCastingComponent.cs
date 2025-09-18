@@ -22,19 +22,8 @@ namespace DOL.GS
         {
             // `spellCastingAbilityHandler` is unused for NPCs.
 
-            Spell spellToCast;
-
-            if (spellLine.KeyName is GlobalSpellsLines.Mob_Spells)
-            {
-                // NPC spells will get the level equal to their caster
-                spellToCast = (Spell) spell.Clone();
-                spellToCast.Level = _npcOwner.Level;
-            }
-            else
-                spellToCast = spell;
-
             if (target == _npcOwner || target == null)
-                return RequestCastSpellInternal(spellToCast, spellLine, null, target);
+                return RequestCastSpellInternal(spell, spellLine, null, target);
 
             GamePlayer losChecker = target as GamePlayer;
 
@@ -50,9 +39,9 @@ namespace DOL.GS
             }
 
             if (losChecker == null)
-                return RequestCastSpellInternal(spellToCast, spellLine, null, target);
+                return RequestCastSpellInternal(spell, spellLine, null, target);
 
-            SpellWaitingForLosCheck spellWaitingForLosCheck = new(spellToCast, spellLine);
+            SpellWaitingForLosCheck spellWaitingForLosCheck = new(spell, spellLine);
 
             lock (_spellsWaitingForLosCheckLock)
             {

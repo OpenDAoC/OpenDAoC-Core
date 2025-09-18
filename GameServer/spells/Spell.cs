@@ -298,6 +298,8 @@ namespace DOL.GS
 			set { m_isShearable = value; }
 		}
 
+		public bool IsDynamic;
+
 		/// <summary>
 		/// Is this spell harmful?
 		/// </summary>

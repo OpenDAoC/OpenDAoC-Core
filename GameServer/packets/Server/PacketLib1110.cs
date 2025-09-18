@@ -53,8 +53,6 @@ namespace DOL.GS.PacketHandler
 				return;
 			}
 
-			var tooltipSpellHandlers = new List<ISpellHandler>();
-
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.UpdateIcons)))
 			{
 				long initPos = pak.Position;
@@ -81,10 +79,12 @@ namespace DOL.GS.PacketHandler
 					// store tooltip update for gamespelleffect.
 					if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)
 					{
-						tooltipSpellHandlers.Add(gameEffect.SpellHandler);
+						ISpellHandler spellHandler = gameEffect.SpellHandler;
+
+						if (spellHandler.Spell.IsDynamic || m_gameClient.CanSendTooltip(24, spellHandler.Spell.InternalID))
+							SendDelveInfo(DetailDisplayHandler.DelveSpell(spellHandler));
 					}
 
-					//						log.DebugFormat("adding [{0}] '{1}'", fxcount-1, effect.Name);
 					// icon index
 					pak.WriteByte((byte)(fxcount - 1));
 					// Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
@@ -145,13 +145,6 @@ namespace DOL.GS.PacketHandler
 				pak.Seek(0, SeekOrigin.End);
 
 				SendTCP(pak);
-			}
-
-			// force tooltips update
-			foreach (var spellHandler in tooltipSpellHandlers)
-			{
-				if (m_gameClient.CanSendTooltip(24, spellHandler.Spell.InternalID))
-					SendDelveInfo(DetailDisplayHandler.DelveSpell(spellHandler));
 			}
 		}
 
