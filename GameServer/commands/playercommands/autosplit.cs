@@ -64,7 +64,7 @@ namespace DOL.GS.Commands
 					case "loot":
 						{
 							client.Player.Group.AutosplitLoot = !client.Player.Group.AutosplitLoot;
-							client.Player.Group.SendMessageToGroupMembers(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Autosplit.Loot") + (client.Player.Group.AutosplitCoins ? " on" : "off") + " the autosplit coin", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Group.SendMessageToGroupMembers(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Autosplit.Loot") + (client.Player.Group.AutosplitLoot ? " on" : " off") + " the autosplit loot", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							break;
 						}
 				}
