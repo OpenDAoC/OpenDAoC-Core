@@ -533,87 +533,56 @@ namespace DOL.GS
             return playerUpdate;
         }
 
-        public static void RestoreAllEffects(GamePlayer p)
+        public static void RestoreAllEffects(GamePlayer player)
         {
-            GamePlayer player = p;
+            IList<DbPlayerXEffect> savedEffects = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
 
-            if (player == null || player.DBCharacter == null || GameServer.Database == null)
+            if (savedEffects == null)
                 return;
 
-            IList<DbPlayerXEffect> effs = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
-            if (effs == null)
-                return;
+            GameServer.Database.DeleteObject(savedEffects);
 
-            foreach (DbPlayerXEffect eff in effs)
-                GameServer.Database.DeleteObject(eff);
-
-            foreach (DbPlayerXEffect eff in effs.GroupBy(e => e.Var1).Select(e => e.First()))
+            foreach (DbPlayerXEffect savedEffect in savedEffects)
             {
-                if (eff.SpellLine == GlobalSpellsLines.Reserved_Spells)
-                    continue;
-
-                bool good = true;
-                Spell spell = SkillBase.GetSpellByID(eff.Var1);
+                Spell spell = SkillBase.GetSpellByID(savedEffect.Var1);
 
                 if (spell == null)
-                    good = false;
+                    continue;
 
-                SpellLine line = null;
+                SpellLine line = SkillBase.GetSpellLine(savedEffect.SpellLine, false);
 
-                if (!string.IsNullOrEmpty(eff.SpellLine))
-                {
-                    line = SkillBase.GetSpellLine(eff.SpellLine, false);
+                if (line == null)
+                    continue;
 
-                    if (line == null)
-                        good = false;
-                }
-                else
-                    good = false;
-
-                if (good)
-                {
-                    ISpellHandler handler = ScriptMgr.CreateSpellHandler(player, spell, line);
-                    handler.Spell.Duration = eff.Duration;
-                    handler.Spell.CastTime = 1;
-                    handler.StartSpell(player);
-                    player.Out.SendStatusUpdate();
-                }
+                ISpellHandler handler = ScriptMgr.CreateSpellHandler(player, spell, line);
+                handler.Spell.Duration = savedEffect.Duration;
+                handler.StartSpell(player);
+                player.Out.SendStatusUpdate();
             }
         }
 
         public static void SaveAllEffects(GamePlayer player)
         {
-            IList<DbPlayerXEffect> effs = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
-            if (effs != null)
-                GameServer.Database.DeleteObject(effs);
-
-            foreach (ECSGameEffect eff in player.effectListComponent.GetEffects())
+            foreach (ECSGameSpellEffect effect in player.effectListComponent.GetSpellEffects())
             {
                 try
                 {
-                    if (eff is ECSGameSpellEffect gse)
-                    {
-                        // No concentration Effect from other casters.
-                        if (gse.SpellHandler?.Spell?.Concentration > 0 && gse.SpellHandler.Caster != player)
-                            continue;
-                    }
-
-                    DbPlayerXEffect effect = eff.GetSavedEffect();
-
-                    if (effect == null)
+                    // Don't save effects from other players, as we won't be able to restore them correctly (different caster, dynamically scaled spell...)
+                    if (effect.SpellHandler.Caster != player)
                         continue;
 
-                    if (effect.SpellLine == GlobalSpellsLines.Reserved_Spells)
+                    DbPlayerXEffect savedEffect = effect.GetSavedEffect();
+
+                    if (savedEffect == null)
                         continue;
 
-                    effect.ChardID = player.ObjectId;
-
-                    GameServer.Database.AddObject(effect);
+                    savedEffect.ChardID = player.ObjectId;
+                    GameServer.Database.AddObject(savedEffect);
                 }
                 catch (Exception e)
                 {
-                    if (log.IsWarnEnabled)
-                        log.WarnFormat("Could not save effect ({0}) on player: {1}, {2}", eff, player, e);
+                    if (log.IsErrorEnabled)
+                        log.Error($"Could not save effect (Effect: {effect}) (Player: {player})", e);
                 }
             }
         }
