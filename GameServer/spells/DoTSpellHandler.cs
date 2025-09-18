@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageOverTime)]
     public class DoTSpellHandler : SpellHandler
     {
-        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds.";
+        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds for {Spell.Duration / 1000.0} seconds";
         public int CriticalDamage { get; protected set; }
         public bool FirstTick { get; private set; } = true;
 

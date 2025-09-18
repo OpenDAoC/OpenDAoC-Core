@@ -3,7 +3,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.StyleBleeding)]
     public class StyleBleeding : SpellHandler
     {
-        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds and prevents natural health regeneration.";
+        public override string ShortDescription => $"The target bleeds for {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds for {Spell.Duration / 1000.0} seconds.";
 
         public StyleBleeding(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
