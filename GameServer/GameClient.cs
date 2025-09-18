@@ -118,15 +118,12 @@ namespace DOL.GS
 
         public bool CanSendTooltip(int type, int id)
         {
-            _tooltipRequestTimes.TryAdd(type, new());
+            ConcurrentDictionary<int, long> innerDict = _tooltipRequestTimes.GetOrAdd(type, static _ => new());
 
-            foreach (Tuple<int, int> keys in _tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoop.GameLoopTime).Select(el => new Tuple<int, int>(e.Key, el.Key))))
-                _tooltipRequestTimes[keys.Item1].TryRemove(keys.Item2, out _);
-
-            if (_tooltipRequestTimes[type].ContainsKey(id))
+            if (innerDict.TryGetValue(id, out long expiryTime) && expiryTime > GameLoop.GameLoopTime)
                 return false;
 
-            _tooltipRequestTimes[type].TryAdd(id, GameLoop.GameLoopTime + 3600000);
+            innerDict[id] = GameLoop.GameLoopTime + 3600000;
             return true;
         }
 
