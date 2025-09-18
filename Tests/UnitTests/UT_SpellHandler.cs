@@ -313,30 +313,6 @@ namespace DOL.Tests.Unit.Gameserver
         }
 
         [Test]
-        public void CalculateDamageBase_SpellDamageIs100SourceIsAnimistPetWith100IntAndOwnerWith100Int_ReturnAround119()
-        {
-            var spell = NewFakeSpell();
-            spell.Damage = 100;
-            var owner = NewFakePlayer();
-            owner.fakeCharacterClass = new CharacterClassAnimist();
-            owner.modifiedIntelligence = 100;
-            owner.Level = 50; 
-            var brain = new FakeControlledBrain();
-            brain.fakeOwner = owner;
-            GameSummonedPet source = new GameSummonedPet(brain);
-            source.Level = 50; //temporal coupling through AutoSetStat()
-            source.Intelligence = 100;
-            var target = NewFakePlayer();
-            var spellLine = NewSpellLine();
-            var spellHandler = new SpellHandler(source, spell, spellLine);
-
-            double actual = spellHandler.CalculateDamageBase(target);
-
-            double expected = 100 * (100 + 200) / 275.0 * (100 + 200) / 275.0;
-            ClassicAssert.AreEqual(expected, actual, 0.001);
-        }
-
-        [Test]
         public void CalculateDamageBase_SpellDamageIs100FromGameNPCWithoutOwner_ReturnAround119()
         {
             GameLiving.LoadCalculators(); //temporal coupling and global state

@@ -712,8 +712,6 @@ namespace DOL.GS
 			}
 		}
 
-		public bool ScaledToNpcLevel { get; set; }
-
 		public int CalculateEffectiveRange(GameLiving caster)
 		{
 			return caster.castingComponent.CalculateSpellRange(this);

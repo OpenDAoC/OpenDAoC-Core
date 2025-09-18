@@ -1871,8 +1871,9 @@ namespace DOL.GS.Spells
 			if (target == null || spell == null || spell.SubSpellID != 0)
 				return;
 
-			if (Caster is GameSummonedPet pet and not NecromancerPet)
-				pet.ScaleSpell(spell, pet.Level, Properties.PET_SCALE_SPELL_MAX_LEVEL);
+			// Sub spells aren't scaled on initialization.
+			if (Caster is GameNPC npc)
+				spell = npc.GetScaledSpell(spell);
 
 			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
 			spellHandler.StartSpell(target);

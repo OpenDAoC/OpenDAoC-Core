@@ -3360,15 +3360,18 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual void ScaleSpell(Spell spell, int casterLevel, double baseLineLevel)
+		public Spell GetScaledSpell(Spell spell)
 		{
-			if (spell == null || Level < 1 || spell.ScaledToNpcLevel)
-				return;
+			if (spell == null || Level < 1)
+				return spell;
 
-			if (casterLevel < 1)
-				casterLevel = Level;
+			double scalingFactor = GetSpellScalingFactor();
 
-			double scalingFactor = casterLevel / baseLineLevel;
+			if (scalingFactor == 1.0)
+				return spell;
+
+			// Always copy the spell. We don't want to modify the real one.
+			spell = spell.Copy();
 
 			switch (spell.SpellType)
 			{
@@ -3381,8 +3384,7 @@ namespace DOL.GS
 				case eSpellType.DamageSpeedDecrease:
 				case eSpellType.StyleBleeding:
 				{
-					spell.Damage *= scalingFactor;
-					spell.ScaledToNpcLevel = true;
+					spell.Damage = Math.Round(spell.Damage * scalingFactor, 2);
 					break;
 				}
 				// Scale Value.
@@ -3419,8 +3421,7 @@ namespace DOL.GS
 				case eSpellType.SpeedDecrease:
 				case eSpellType.SavageCombatSpeedBuff:
 				{
-					spell.Value *= scalingFactor;
-					spell.ScaledToNpcLevel = true;
+					spell.Value = Math.Round(spell.Value * scalingFactor, 2);
 					break;
 				}
 				// Scale Duration.
@@ -3432,7 +3433,6 @@ namespace DOL.GS
 				case eSpellType.StyleSpeedDecrease:
 				{
 					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
-					spell.ScaledToNpcLevel = true;
 					break;
 				}
 				// Scale Damage and Value.
@@ -3443,10 +3443,9 @@ namespace DOL.GS
 					// For pet level 1-23, the debuff is now 10%.
 					// For pet level 24-43, the debuff is now 20%.
 					// For pet level 44-50, the debuff is now 30%.
-					spell.Value *= scalingFactor;
-					spell.Damage *= scalingFactor;
+					spell.Value = Math.Round(spell.Value * scalingFactor, 2);
+					spell.Damage = Math.Round(spell.Damage * scalingFactor, 2);
 					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
-					spell.ScaledToNpcLevel = true;
 					break;
 				}
 				case eSpellType.StyleTaunt:
@@ -3454,8 +3453,20 @@ namespace DOL.GS
 				case eSpellType.CureDisease:
 					break;
 				default:
+				{
+					if (log.IsWarnEnabled)
+						log.Warn($"Unhandled spell in {nameof(GetScaledSpell)}: {spell}");
+
 					break;
+				}
 			}
+
+			return spell;
+		}
+
+		public virtual double GetSpellScalingFactor()
+		{
+			return Level / 50.0;
 		}
 
 		/// <summary>

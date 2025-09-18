@@ -209,14 +209,6 @@ namespace DOL.GS
 			return new GameSummonedPet(template);
 		}
 
-		/// <summary>
-		/// A new pet has been summoned, do we do anything?
-		/// </summary>
-		/// <param name="pet"></param>
-		public virtual void OnPetSummoned(GameSummonedPet pet)
-		{
-		}
-
 		public virtual long LastAttackTickPvE { get; set; }
 		public virtual long LastAttackTickPvP { get; set; }
 		public virtual long LastAttackedByEnemyTickPvE { get; set; }

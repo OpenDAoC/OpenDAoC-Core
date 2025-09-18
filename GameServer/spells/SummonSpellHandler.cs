@@ -155,7 +155,6 @@ namespace DOL.GS.Spells
 
 			SetBrainToOwner(brain);
 			CreateECSEffect(new(m_pet, CalculateEffectDuration(target), CasterEffectiveness, this));
-			Caster.OnPetSummoned(m_pet);
 		}
 
 		public virtual void OnPetReleased()

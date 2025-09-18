@@ -172,18 +172,17 @@ namespace DOL.GS.Keeps
                 case eRealm.Midgard:
                 case eRealm.Hibernia:
                 {
-                    spell = _spells[ModelRealm].Clone() as Spell;
+                    spell = _spells[ModelRealm];
                     break;
                 }
                 default:
                 {
-                    spell = _spells.Values.ToList()[Util.Random(_spells.Count - 1)].Clone() as Spell;
+                    spell = _spells.Values.ToList()[Util.Random(_spells.Count - 1)];
                     break;
                 }
             }
 
-            ScaleSpell(spell, Level, 50);
-            Spells = [spell];
+            Spells = [GetScaledSpell(spell)];
         }
     }
 }

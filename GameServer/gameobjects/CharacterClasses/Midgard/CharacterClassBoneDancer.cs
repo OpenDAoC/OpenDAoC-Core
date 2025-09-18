@@ -1,4 +1,3 @@
-using DOL.AI;
 using DOL.GS.PlayerClass;
 
 namespace DOL.GS

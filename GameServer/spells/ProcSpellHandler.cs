@@ -6,12 +6,13 @@ using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.Spells
 {
     public abstract class BaseProcSpellHandler : SpellHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         protected readonly SpellLine _buffSpellLine;
         protected readonly Spell _procSpell;
@@ -23,6 +24,10 @@ namespace DOL.GS.Spells
         {
             _buffSpellLine = spellLine;
             _procSpell = SkillBase.GetSpellByID((int) spell.Value);
+
+            // Scale the proc here, since it cannot be scaled on NPC initialization.
+            if (caster is GameNPC npc)
+                _procSpell = npc.GetScaledSpell(_procSpell);
         }
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
@@ -208,8 +213,6 @@ namespace DOL.GS.Spells
 
                 if (handler != null)
                 {
-                    handler.Spell.Level = Spell.Level;
-
                     switch (_procSpell.Target)
                     {
                         case eSpellTarget.ENEMY:
