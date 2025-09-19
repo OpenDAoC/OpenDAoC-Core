@@ -18,39 +18,6 @@ namespace DOL.GS
             Archer = 5
         }
 
-        public bool MinionsAssisting {
-            get { return Owner is CommanderPet commander && commander.MinionsAssisting; }
-        }
-
-        protected string m_PetSpecLine = null;
-        /// <summary>
-        /// Returns the spell line specialization this pet was summoned from
-        /// </summary>
-        public string PetSpecLine {
-            get {
-                // This is really inefficient, so only do it once, and only if we actually need it
-                if (m_PetSpecLine == null && Brain is IControlledBrain brain && brain.GetPlayerOwner() is GamePlayer player)
-                {
-                    // Get the spell that summoned this pet
-                    DbSpell dbSummoningSpell = DOLDB<DbSpell>.SelectObject(DB.Column("LifeDrainReturn").IsEqualTo(NPCTemplate.TemplateId));
-                    if (dbSummoningSpell != null)
-                    {
-                        // Figure out which spell line the summoning spell is from
-                        DbLineXSpell dbLineSpell = DOLDB<DbLineXSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(dbSummoningSpell.SpellID));
-                        if (dbLineSpell != null)
-                        {
-                            // Now figure out what the spec name is
-                            SpellLine line = player.GetSpellLine(dbLineSpell.LineName);
-                            if (line != null)
-                                m_PetSpecLine = line.Spec;
-                        }
-                    }
-                }
-
-                return m_PetSpecLine;
-            }
-        }
-
         /// <summary>
         /// Create a minion.
         /// </summary>
@@ -68,9 +35,8 @@ namespace DOL.GS
             if (itemTemp == null)
                 return;
 
-            DbInventoryItem weapon;
+            DbInventoryItem weapon = GameInventoryItem.Create(itemTemp);
 
-            weapon = GameInventoryItem.Create(itemTemp);
             if (weapon != null)
             {
                 if (Inventory == null)
