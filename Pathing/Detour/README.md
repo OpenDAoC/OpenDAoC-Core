@@ -8,7 +8,7 @@ Detour offers a simple static navmesh data representation which is suitable for 
 This project is based on [recastnavigation](https://github.com/recastnavigation/recastnavigation).
 
 ## How to use with OpenDAoC
-We recommend generating navmeshes (navigation meshes) either with [our own fork of it](https://github.com/OpenDAoC/OpenDAoC-BuildNav). Navmeshes are expected to be generated with DT_POLYREF64 enabled.
+We recommend generating navmeshes (navigation meshes) with [our own fork of it](https://github.com/OpenDAoC/OpenDAoC-BuildNav). Navmeshes are expected to be generated with DT_POLYREF64 enabled.
 
 Create a "pathing" folder in your server's folder (where you have CoreServer.exe) and copy the navmeshes (*.nav) in it.
 
