@@ -42,14 +42,8 @@ namespace DOL.AI.Brain
                 ownerBrain.OnAttackedByEnemy(ad);
         }
 
-        /// <summary>
-        /// Updates the pet window
-        /// </summary>
         public override void UpdatePetWindow() { }
 
-        /// <summary>
-        /// Start following the owner
-        /// </summary>
         public override void FollowOwner()
         {
             if (Body.IsAttacking)
@@ -58,9 +52,6 @@ namespace DOL.AI.Brain
             Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
         }
 
-        /// <summary>
-        /// Checks for the formation position of the BD pet
-        /// </summary>
         public override bool CheckFormation(ref int x, ref int y, ref int z)
         {
             if (Body.IsCasting || Body.attackComponent.AttackState || Body.attackComponent.AttackerTracker.Count != 0)

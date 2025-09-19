@@ -1,4 +1,3 @@
-using System.Reflection;
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -8,11 +7,6 @@ namespace DOL.AI.Brain
     /// </summary>
     public class BdArcherBrain : BdPetBrain
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         /// Constructs new controlled npc brain
         /// </summary>

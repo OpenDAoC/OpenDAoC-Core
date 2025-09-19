@@ -827,6 +827,22 @@ namespace DOL.AI.Brain
 			if (!IsActive || m_aggressionState == eAggressionState.Passive)
 				return;
 
+			GameNPC owner_npc = GetNPCOwner();
+
+			if (owner_npc != null && owner_npc.Brain is StandardMobBrain)
+			{
+				if ((owner_npc.IsCasting || owner_npc.IsAttacking) &&
+					owner_npc.TargetObject != null &&
+					owner_npc.TargetObject is GameLiving &&
+					GameServer.ServerRules.IsAllowedToAttack(owner_npc, owner_npc.TargetObject as GameLiving, false))
+				{
+					if (!CheckSpells(eCheckSpellType.Offensive))
+						Body.StartAttack(owner_npc.TargetObject);
+
+					return;
+				}
+			}
+
 			GameLiving target = CalculateNextAttackTarget();
 
 			if (target != null)

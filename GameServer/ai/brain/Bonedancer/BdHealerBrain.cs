@@ -1,53 +1,24 @@
-using System.Reflection;
 using DOL.GS;
 using DOL.GS.ServerProperties;
 
 namespace DOL.AI.Brain
 {
-    /// <summary>
-    /// A brain that can be controlled
-    /// </summary>
     public class BdHealerBrain : BdPetBrain
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        /// <summary>
-        /// Constructs new controlled npc brain
-        /// </summary>
-        /// <param name="owner"></param>
         public BdHealerBrain(GameLiving owner) : base(owner)
         {
             AggroLevel = 0;
             AggroRange = 0;
         }
 
-        #region Control
-
-        /// <summary>
-        /// Gets or sets the aggression state of the brain
-        /// </summary>
         public override eAggressionState AggressionState
         {
-            get { return eAggressionState.Passive; }
+            get => eAggressionState.Passive;
             set { }
         }
 
-        /// <summary>
-        /// Attack the target on command
-        /// </summary>
-        /// <param name="target"></param>
         public override void Attack(GameObject target) { }
 
-        #endregion
-
-        #region AI
-
-        /// <summary>
-        /// Checks the Abilities
-        /// </summary>
         public override void CheckAbilities() { }
 
         protected override GameLiving FindTargetForDefensiveSpell(Spell spell)
@@ -164,36 +135,17 @@ namespace DOL.AI.Brain
             return target;
         }
 
-        /// <summary>
-        /// Add living to the aggrolist
-        /// aggroAmount can be negative to lower amount of aggro
-        /// </summary>
         public override void AddToAggroList(GameLiving living, long aggroAmount) { }
 
         public override void RemoveFromAggroList(GameLiving living) { }
 
-        /// <summary>
-        /// Returns the best target to attack
-        /// </summary>
-        /// <returns>the best target</returns>
         protected override GameLiving CalculateNextAttackTarget()
         {
             return null;
         }
 
-        /// <summary>
-        /// Selects and attacks the next target or does nothing
-        /// </summary>
         public override void AttackMostWanted() { }
 
-        /// <summary>
-        /// Owner attacked event
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender"></param>
-        /// <param name="arguments"></param>
         public override void OnOwnerAttacked(AttackData ad) { }
-
-        #endregion
     }
 }
