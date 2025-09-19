@@ -1322,7 +1322,7 @@ namespace DOL.GS.ServerRules
                     return 0;
 
                 if (playerToAward.XPLogState is eXPLogState.Verbose && memberCount > 1)
-                    playerToAward.Out.SendMessage($"Base XP divided among {entityCountTotalDamagePair.Count} members", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerToAward.Out.SendMessage($"Base XP divided among {memberCount} members", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                 ConColor conColorThreshold;
 
@@ -1336,12 +1336,12 @@ namespace DOL.GS.ServerRules
 
                 // If the con color for the highest level player in the group is above the threshold for "challenge code" to be activated.
                 if (conColorForHighestLevelPlayerInGroup >= conColorThreshold)
-                    return killedNpc.ExperienceValue / memberCount;
+                    return (long) Math.Ceiling((double) killedNpc.ExperienceValue / memberCount);
 
                 // If we're checking the highest level player, or if the npc is of the same or higher con level for us.
                 // We shouldn't try to treat the NPC as if it was of a different con color if it's already of that color to us (this could raise or lower the experience).
                 if (highestLevelPlayer == playerToAward || ConLevels.GetConColor(playerToAward.GetConLevel(killedNpc)) <= conColorForHighestLevelPlayerInGroup)
-                    return killedNpc.ExperienceValue / memberCount;
+                    return (long) Math.Ceiling((double) killedNpc.ExperienceValue / memberCount);
 
                 // Find an adequate NPC level so that its con color for the player being handled matches the con color of the highest level player in the group.
                 // If it's below yellow, loop downwards; if it's above yellow, loop upwards; if it's yellow, use our own level.
@@ -1382,7 +1382,7 @@ namespace DOL.GS.ServerRules
                     playerToAward.Out.SendMessage($"Base XP set to match the one of a level {level} NPC", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                 // If level is still 0 here, something might have gone wrong or the player's level is very low.
-                return killedNpc.GetExperienceValueForLevel(level) / memberCount;
+                return (long) Math.Ceiling((double) killedNpc.ExperienceValue / memberCount);
             }
 
             long CalculateXpCap()
