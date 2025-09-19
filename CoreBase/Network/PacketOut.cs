@@ -236,7 +236,6 @@ namespace DOL.Network
 			int bufferSize = Math.Min(maxByteCount, maxByteLen);
 
 			// Stack for small buffers, ArrayPool for large buffers.
-			// Note, this will cut multibyte characters in the middle.
 			if (bufferSize <= 1024)
 			{
 				Span<byte> buffer = stackalloc byte[bufferSize];
