@@ -13,7 +13,11 @@ namespace DOL.Network
     public class BaseServer
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        public static readonly Encoding defaultEncoding = CodePagesEncodingProvider.Instance.GetEncoding(1252);
+
+        public static readonly Encoding DefaultEncoding = CodePagesEncodingProvider.Instance.GetEncoding(1252);
+
+        [ThreadStatic]
+        private static Encoder _encoder;
 
         private const int UDP_RECEIVE_BUFFER_SIZE = 8192;
         private const int UDP_RECEIVE_BUFFER_CHUNK_SIZE = 64; // This should be increased if someday clients send UDP packets larger than this.
@@ -28,6 +32,12 @@ namespace DOL.Network
         protected BaseServer(BaseServerConfig config)
         {
             Configuration = config ?? throw new ArgumentNullException(nameof(config));
+        }
+
+        public static Encoder GetEncoder()
+        {
+            // Returns a thread static `Encoder` that must be reset after use.
+            return _encoder ??= DefaultEncoding.GetEncoder();
         }
 
         public virtual bool Start()

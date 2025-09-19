@@ -21,9 +21,9 @@ namespace DOL
 			for (int i = 0; i < cstyle.Length; i++)
 			{
 				if (cstyle[i] == 0)
-					return BaseServer.defaultEncoding.GetString(cstyle, 0, i);
+					return BaseServer.DefaultEncoding.GetString(cstyle, 0, i);
 			}
-			return BaseServer.defaultEncoding.GetString(cstyle);
+			return BaseServer.DefaultEncoding.GetString(cstyle);
 		}
 
 		/// <summary>

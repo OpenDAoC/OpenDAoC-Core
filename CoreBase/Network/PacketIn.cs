@@ -91,7 +91,7 @@ namespace DOL.Network
 				if (actualLength == -1)
 					actualLength = maxlen;
 
-				return BaseServer.defaultEncoding.GetString(buffer[..actualLength]);
+				return BaseServer.DefaultEncoding.GetString(buffer[..actualLength]);
 			}
 			else
 			{
@@ -105,7 +105,7 @@ namespace DOL.Network
 						actualLength = maxlen;
 
 					Read(buffer, 0, maxlen);
-					return BaseServer.defaultEncoding.GetString(buffer, 0, actualLength);
+					return BaseServer.DefaultEncoding.GetString(buffer, 0, actualLength);
 				}
 				finally
 				{

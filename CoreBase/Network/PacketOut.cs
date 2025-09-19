@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.IO;
+using System.Text;
 
 namespace DOL.Network
 {
@@ -178,7 +179,7 @@ namespace DOL.Network
 				return;
 			}
 
-			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.DefaultEncoding.GetBytes(str);
 			WriteByte((byte) bytes.Length);
 			Write(bytes, 0, bytes.Length);
 		}
@@ -191,7 +192,7 @@ namespace DOL.Network
 				return;
 			}
 
-			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.DefaultEncoding.GetBytes(str);
 			WriteIntLowEndian((uint)bytes.Length + 1);
 			Write(bytes, 0, bytes.Length);
 			WriteByte(0);
@@ -231,15 +232,18 @@ namespace DOL.Network
 			if (string.IsNullOrEmpty(str) || maxByteLen <= 0)
 				return;
 
-			int maxByteCount = BaseServer.defaultEncoding.GetMaxByteCount(str.Length);
+			int maxByteCount = BaseServer.DefaultEncoding.GetMaxByteCount(str.Length);
 			int bufferSize = Math.Min(maxByteCount, maxByteLen);
 
 			// Stack for small buffers, ArrayPool for large buffers.
+			// Note, this will cut multibyte characters in the middle.
 			if (bufferSize <= 1024)
 			{
 				Span<byte> buffer = stackalloc byte[bufferSize];
-				int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, buffer);
-				Write(buffer[..bytesWritten]);
+				Encoder encoder = BaseServer.GetEncoder();
+				encoder.Reset();
+				encoder.Convert(str.AsSpan(), buffer, true, out _, out int bytesUsed, out _);
+				Write(buffer[..bytesUsed]);
 			}
 			else
 			{
@@ -247,8 +251,10 @@ namespace DOL.Network
 
 				try
 				{
-					int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, buffer.AsSpan(0, bufferSize));
-					Write(buffer, 0, bytesWritten);
+					Encoder encoder = BaseServer.GetEncoder();
+					encoder.Reset();
+					encoder.Convert(str.AsSpan(), buffer, true, out _, out int bytesUsed, out _);
+					Write(buffer.AsSpan()[..bytesUsed]);
 				}
 				finally
 				{

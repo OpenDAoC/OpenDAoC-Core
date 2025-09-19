@@ -1,4 +1,3 @@
-using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.discord;
 using DOL.GS.ServerProperties;
