@@ -1382,7 +1382,7 @@ namespace DOL.GS.ServerRules
                     playerToAward.Out.SendMessage($"Base XP set to match the one of a level {level} NPC", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                 // If level is still 0 here, something might have gone wrong or the player's level is very low.
-                return (long) Math.Ceiling((double) killedNpc.ExperienceValue / memberCount);
+                return (long) Math.Ceiling((double) killedNpc.GetExperienceValueForLevel(level) / memberCount);
             }
 
             long CalculateXpCap()
