@@ -8966,7 +8966,12 @@ namespace DOL.GS
         {
             get
             {
-                double result = Strength;
+                // Patch 1.62
+                // Strength (and strength only) debuffs and disease spells should no longer reduce a player's encumbrance below their unbuffed maximum.
+                // Debuffers were using the fact that you could reduce an enemy to 0 movement speed as an effective one minute total snare with no counter,
+                // which was not the intention of strength debuff spells.
+
+                double result = Math.Max(GetModified(eProperty.Strength), GetModifiedBase(eProperty.Strength));
                 RAPropertyEnhancer lifter = GetAbility<AtlasOF_LifterAbility>();
 
                 if (lifter != null)
