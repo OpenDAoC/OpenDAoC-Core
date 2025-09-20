@@ -2396,11 +2396,9 @@ namespace DOL.GS.Spells
 		protected virtual void OnSpellNegated(GameLiving target, SpellNegatedReason reason)
 		{
 			if (reason is SpellNegatedReason.Resisted)
-			{
-				SendSpellResistAnimation(target);
 				SendSpellResistMessages(target);
-			}
 
+			SendSpellResistAnimation(target);
 			SendSpellNegatedNotification(target);
 			StartSpellNegatedInterruptTimer(target);
 			StartSpellNegatedLastAttackTimer(target);
