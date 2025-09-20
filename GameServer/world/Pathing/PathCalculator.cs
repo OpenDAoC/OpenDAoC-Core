@@ -167,14 +167,18 @@ namespace DOL.GS
 
             // Stop right there if the path contains a closed door that we're not allowed to open.
             // Ideally, we should check for an alternative path.
-            foreach (List<GameDoorBase> doorsAroundPathPoint in _doorsOnPath.Values)
+            // This only affects NPCs with a realm set (guards, pets) to prevent XP exploits.
+            if (Owner.Realm is not eRealm.None)
             {
-                foreach (GameDoorBase door in doorsAroundPathPoint)
+                foreach (List<GameDoorBase> doorsAroundPathPoint in _doorsOnPath.Values)
                 {
-                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                    foreach (GameDoorBase door in doorsAroundPathPoint)
                     {
-                        noPathReason = ENoPathReason.ClosedDoor;
-                        return null;
+                        if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                        {
+                            noPathReason = ENoPathReason.ClosedDoor;
+                            return null;
+                        }
                     }
                 }
             }

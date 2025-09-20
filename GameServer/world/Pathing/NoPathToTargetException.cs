@@ -5,6 +5,6 @@ namespace DOL.GS
         NoProblem,
         End,
         NoPath,
-        ClosedDoor,
+        ClosedDoor
     }
 }
