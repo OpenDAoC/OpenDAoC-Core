@@ -1046,7 +1046,12 @@ namespace DOL.GS.ServerRules
             foreach (var pair in playerCountAndDamage)
             {
                 GamePlayer player = pair.Key;
-                AwardPlayerOnNpcKill(player, totalDamage, killedNpc, playerCountAndDamage, groupCountAndDamage, battlegroupCountAndDamage);
+
+                lock (player.AwardLock)
+                {
+                    AwardPlayerOnNpcKill(player, totalDamage, killedNpc, playerCountAndDamage, groupCountAndDamage, battlegroupCountAndDamage);
+                }
+
                 killedNpc.Faction?.OnMemberKilled(player);
             }
 
@@ -1605,7 +1610,14 @@ namespace DOL.GS.ServerRules
 
             // Let `AwardExperience` fetch players that are in a group but didn't attack the target, and decide how things should be shared.
             foreach (var pair in playerCountAndDamage)
-                AwardPlayerOnPlayerKill(pair.Key, killer, totalDamage, killedPlayer, playerCountAndDamage, groupCountAndDamage, out isWorthAnything);
+            {
+                GamePlayer player = pair.Key;
+
+                lock (player.AwardLock)
+                {
+                    AwardPlayerOnPlayerKill(pair.Key, killer, totalDamage, killedPlayer, playerCountAndDamage, groupCountAndDamage, out isWorthAnything);
+                }
+            }
 
             ProcessKilledPlayerStats();
 

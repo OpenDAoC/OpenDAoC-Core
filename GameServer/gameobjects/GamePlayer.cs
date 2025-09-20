@@ -26,6 +26,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
+using DOL.Logging;
 using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS
@@ -35,7 +36,7 @@ namespace DOL.GS
     /// </summary>
     public class GamePlayer : GameLiving, IGameStaticItemOwner, IPooledList<GamePlayer>
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
 
@@ -46,6 +47,7 @@ namespace DOL.GS
         public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
         public double SpecLock { get; set; }
         public long NextWorldUpdate { get; set; }
+        public Lock AwardLock { get; private set; } = new(); // Used by `AbstractServerRules` exclusively.
 
         public ECSGameTimer PredatorTimeoutTimer
         {
