@@ -1,6 +1,7 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using DOL.AI;
+using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
-using System;
 
 namespace DOL.GS
 {
@@ -249,6 +250,8 @@ namespace DOL.GS
 					break;
 					#endregion
 			}
+
+			Brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             return 0;
         }		
 	}
