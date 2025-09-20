@@ -674,8 +674,17 @@ namespace DOL.AI.Brain
 
         protected virtual void BringFriends(GameLiving puller)
         {
-            if (!CanBaf || Body.Faction == null)
+            // BaF only happens once.
+            if (!CanBaf)
                 return;
+
+            // BaF only happens if the NPC has a faction, and if it was attacked (no BAF on body pull).
+            if (Body.Faction == null || Body.attackComponent.AttackerTracker.Count == 0)
+            {
+                _canBaf = false;
+                return;
+            }
+
 
             GamePlayer playerPuller;
 
