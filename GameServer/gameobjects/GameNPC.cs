@@ -2060,41 +2060,20 @@ namespace DOL.GS
 			return true;
 		}
 
-		/// <summary>
-		/// Move an NPC within the same region without removing from world
-		/// </summary>
-		/// <param name="regionID"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="heading"></param>
-		/// <param name="forceMove">Move regardless of combat check</param>
-		/// <returns>true if npc was moved</returns>
 		public virtual bool MoveInRegion(ushort regionID, int x, int y, int z, ushort heading, bool forceMove)
 		{
-			if (m_ObjectState != eObjectState.Active)
+			if (m_ObjectState is not eObjectState.Active || regionID != CurrentRegionID)
 				return false;
 
-			if (regionID != CurrentRegionID)
+			if (!forceMove && InCombat)
 				return false;
 
-			if (forceMove == false)
-			{
-				if (InCombat)
-					return false;
+			Region region = WorldMgr.GetRegion(regionID);
 
-				// Only move pet if it's following the owner.
-				if (Brain is ControlledMobBrain controlledBrain && controlledBrain.WalkState != eWalkState.Follow)
-					return false;
-			}
-
-			Region rgn = WorldMgr.GetRegion(regionID);
-
-			if (rgn == null || rgn.GetZone(x, y) == null)
+			if (region == null || region.GetZone(x, y) == null)
 				return false;
 
 			Notify(GameObjectEvent.MoveTo, this, new MoveToEventArgs(regionID, x, y, z, heading));
-
 			List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
 			m_x = x;
@@ -2109,6 +2088,20 @@ namespace DOL.GS
 			// New position.
 			movementComponent.ForceUpdatePosition();
 			ClientService.CreateObjectForPlayers(this);
+
+			// Handle sub pets.
+			if (ControlledNpcList == null)
+				return true;
+
+			foreach (IControlledBrain controlledBrain in ControlledNpcList)
+			{
+				if (controlledBrain != null && controlledBrain.Body != null)
+				{
+					GameNPC subPet = controlledBrain.Body;
+					subPet.MoveInRegion(CurrentRegionID, m_x, m_y, m_z, Heading, true);
+				}
+			}
+
 			return true;
 		}
 

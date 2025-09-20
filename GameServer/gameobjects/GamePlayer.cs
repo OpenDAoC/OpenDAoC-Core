@@ -8107,16 +8107,7 @@ namespace DOL.GS
                     DismountSteed(true);
             }
 
-            bool movePet = false;
-
-            if (ControlledBrain != null && ControlledBrain.WalkState != eWalkState.Stay)
-            {
-                if (CharacterClass.ID is not ((int) eCharacterClass.Theurgist) and not ((int) eCharacterClass.Animist))
-                    movePet = true;
-            }
-
             CurrentSpeed = 0;
-            Point3D originalPoint = new(X, Y, Z);
             X = x;
             Y = y;
             Z = z;
@@ -8128,46 +8119,33 @@ namespace DOL.GS
             {
                 CurrentRegionID = regionID;
                 Out.SendRegionChanged();
-            }
-            else
-            {
-                Out.SendPlayerJump(false);
-                UpdateEquipmentAppearance();
-
-                if (IsUnderwater)
-                    IsDiving = true;
-
-                if (movePet)
-                {
-                    Point2D point = GetPointFromHeading(Heading, 64);
-                    IControlledBrain npc = ControlledBrain;
-
-                    if (npc != null)
-                    {
-                        GameNPC petBody = npc.Body;
-                        petBody.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort)((Heading + 2048) % 4096), false);
-
-                        if (petBody != null && petBody.ControlledNpcList != null)
-                        {
-                            foreach (IControlledBrain controlledBrain in petBody.ControlledNpcList)
-                            {
-                                if (controlledBrain != null && controlledBrain.Body != null)
-                                {
-                                    GameNPC petBody2 = controlledBrain.Body;
-
-                                    if (petBody2 != null && originalPoint.IsWithinRadius(petBody2, 500))
-                                        petBody2.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort)((Heading + 2048) % 4096), false);
-                                }
-                            }
-                        }
-                    }
-                }
+                return true;
             }
 
+            Out.SendPlayerJump(false);
+            UpdateEquipmentAppearance();
+
+            if (IsUnderwater)
+                IsDiving = true;
+
+            if (ControlledBrain == null)
+                return true;
+
+            Point2D point = GetPointFromHeading(Heading, 64);
+            IControlledBrain petBrain = ControlledBrain;
+
+            if (petBrain == null)
+                return true;
+
+            GameNPC pet = petBrain.Body;
+
+            if (pet.MaxSpeedBase <= 0)
+                return true;
+
+            pet.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort) ((Heading + 2048) % 4096), false);
             return true;
         }
 
-        //Eden - Move to bind, and check if the loc is allowed
         public virtual bool MoveToBind()
         {
             if (!GameServer.ServerRules.IsAllowedToMoveToBind(this))

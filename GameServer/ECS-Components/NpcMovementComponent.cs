@@ -400,9 +400,9 @@ namespace DOL.GS
 
         public void ForceUpdatePosition()
         {
-            _lastPositionUpdateTick = -1;
-            UpdatePosition();
+            _ownerPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
             _positionForClient = _ownerPosition;
+            _lastPositionUpdateTick = GameLoop.GameLoopTime;
         }
 
         protected override void UpdatePosition()
