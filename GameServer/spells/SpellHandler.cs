@@ -329,15 +329,17 @@ namespace DOL.GS.Spells
 
 		public virtual bool CasterIsAttacked(GameLiving attacker)
 		{
-			// [StephenxPimentel] Check if the necro has MoC effect before interrupting.
-			if (Caster is NecromancerPet necroPet && necroPet.Owner is GamePlayer necroOwner)
-			{
-				if (necroOwner.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
-					return false;
-			}
-
 			if (Spell.Uninterruptible)
 				return false;
+
+			NecromancerPet necromancerPet = Caster as NecromancerPet;
+
+			// MoC isn't given to the Necromancer pet.
+			if (necromancerPet != null)
+			{
+				if (necromancerPet.Owner?.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration) == true)
+					return false;
+			}
 
 			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
@@ -345,24 +347,27 @@ namespace DOL.GS.Spells
 				return false;
 
 			// Only interrupt if we're under 50% of the way through the cast.
-			if (IsInCastingPhase && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
-			{
-				if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
-				{
-					casterOwner.LastInterruptMessage = $"Your {Caster.Name} was attacked by {attacker.Name} and their spell was interrupted!";
-					MessageToLiving(casterOwner, casterOwner.LastInterruptMessage, eChatType.CT_SpellResisted);
-				}
-				else if (Caster is GamePlayer playerCaster)
-				{
-					playerCaster.LastInterruptMessage = $"{attacker.GetName(0, true)} attacks you and your spell is interrupted!";
-					MessageToLiving(playerCaster, playerCaster.LastInterruptMessage, eChatType.CT_SpellResisted);
-				}
+			if (!IsInCastingPhase || GameLoop.GameLoopTime >= _castStartTick + _calculatedCastTime * 0.5)
+				return false;
 
-				InterruptCasting(false); // Always interrupt at the moment.
-				return true;
+			if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
+			{
+				casterOwner.LastInterruptMessage = $"Your {Caster.Name} was attacked by {attacker.Name} and their spell was interrupted!";
+				MessageToLiving(casterOwner, casterOwner.LastInterruptMessage, eChatType.CT_SpellResisted);
+			}
+			else if (Caster is GamePlayer playerCaster)
+			{
+				playerCaster.LastInterruptMessage = $"{attacker.GetName(0, true)} attacks you and your spell is interrupted!";
+				MessageToLiving(playerCaster, playerCaster.LastInterruptMessage, eChatType.CT_SpellResisted);
 			}
 
-			return false;
+			InterruptCasting(false);
+
+			// In case the Necromancer pet is in passive mode, check the queue here.
+			if (necromancerPet != null)
+				(necromancerPet.Brain as NecromancerPetBrain).CheckAttackSpellQueue();
+
+			return true;
 		}
 
 		#region begin & end cast check
