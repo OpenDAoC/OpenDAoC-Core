@@ -951,9 +951,10 @@ namespace DOL.GS
                         _effect.TryApplyImmunity();
                         _effect.Owner.effectListComponent.TryEnableBestEffectOfSameType(_effect);
                     }
-                    else
-                        _effect.IsBeingReplaced = false;
                 }
+
+                // This need to always be set to false.
+                _effect.IsBeingReplaced = false;
             }
         }
     }
