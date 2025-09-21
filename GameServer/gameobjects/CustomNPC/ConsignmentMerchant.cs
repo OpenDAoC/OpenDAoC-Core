@@ -178,7 +178,7 @@ namespace DOL.GS
         public virtual bool HasPermissionToMove(GamePlayer player)
         {
             House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
-            return house != null && house.HasOwnerPermissions(player);
+            return house != null && house.CanUseConsignmentMerchant(player, ConsignmentPermissions.AddRemove);
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace DOL.GS
 
             House house = HouseMgr.GetHouse(conMerchant.HouseNumber);
 
-            if (house == null || !house.HasOwnerPermissions(player))
+            if (house == null || !house.CanUseConsignmentMerchant(player, ConsignmentPermissions.AddRemove))
                 return false;
 
             if (player.TempProperties.TryRemoveProperty(ITEM_BEING_ADDED, out object result))
