@@ -75,26 +75,10 @@ namespace DOL.GS.RealmAbilities
 		/// <param name="target"></param>
 		public virtual void SendUpdates(GameLiving target)
 		{
-			GamePlayer player = target as GamePlayer;	// need new prop system to not worry about updates
-			if (player != null)
-			{
-				player.Out.SendCharStatsUpdate();
-				player.Out.SendUpdateWeaponAndArmorStats();
-				player.UpdateEncumbrance();
-				player.UpdatePlayerStatus();
-			}
-
-			if (target.IsAlive)
-			{
-				if (target.Health < target.MaxHealth) target.StartHealthRegeneration();
-				else if (target.Health > target.MaxHealth) target.Health = target.MaxHealth;
-
-				if (target.Mana < target.MaxMana) target.StartPowerRegeneration();
-				else if (target.Mana > target.MaxMana) target.Mana = target.MaxMana;
-
-				if (target.Endurance < target.MaxEndurance) target.StartEnduranceRegeneration();
-				else if (target.Endurance > target.MaxEndurance) target.Endurance = target.MaxEndurance;
-			}
+			// Stagger the update and delegate to the effect list component to avoid redundant packets and solve a case of deadlock.
+			// We're typically holding an ability lock here, and sending a weapon/armor update requires an inventory lock.
+			// But threads holding a lock on inventory seems to be able to request a lock on abilities too (encumbrance update maybe?).
+			target.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.Encumberance | EffectHelper.PlayerUpdate.WeaponArmor | EffectHelper.PlayerUpdate.Stats | EffectHelper.PlayerUpdate.Status);
 		}
 
 		public override void Activate(GameLiving living, bool sendUpdates)
