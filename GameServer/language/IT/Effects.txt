@@ -59,9 +59,9 @@ Effects.BannerOfFreedomEffect.Description:		Riduce tutti i controlli al 6%
 Effects.BannerOfBesiegingEffect.Name:			Banner of Besieging
 Effects.BannerOfBesiegingEffect.Description:	Riduce la velocità di fuoco delle armi d'assedio del 6%
 
-Effects.InterceptEffect.YouAttemtInterceptYBut:	Stai cercando di intercettare un'attacco di {0}, ma devi stare più vicino.
-Effects.InterceptEffect.XAttemtInterceptYouBut:	{0} sta cercando di intercettare un tuo attacco, ma deve stare più vicino.
-Effects.InterceptEffect.YouAttemtInterceptY:	Stai cercando di intercettare un'attacco di {0}.
+Effects.InterceptEffect.YouAttemptInterceptYBut:	Stai cercando di intercettare un'attacco di {0}, ma devi stare più vicino.
+Effects.InterceptEffect.XAttemptInterceptYouBut:	{0} sta cercando di intercettare un tuo attacco, ma deve stare più vicino.
+Effects.InterceptEffect.YouAttemptInterceptY:	Stai cercando di intercettare un'attacco di {0}.
 Effects.InterceptEffect.XAttemptInterceptYou:	{0} sta cercando di intercettare un tuo attacco.
 Effects.InterceptEffect.YouNoAttemptInterceptY:	Non sta cercando più di intercettare un'attacco di {0}
 Effects.InterceptEffect.XNoAttemptInterceptYou:	{0} non sta cercando più di intercettare un tuo attacco.

@@ -73,12 +73,12 @@ namespace DOL.GS
             {
                 if (!Source.IsWithinRadius(Target, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
-                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.InterceptEffect.YouAttemtInterceptYBut", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.InterceptEffect.XAttemtInterceptYouBut", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.InterceptEffect.YouAttemptInterceptYBut", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.InterceptEffect.XAttemptInterceptYouBut", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
                 else
                 {
-                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.InterceptEffect.YouAttemtInterceptY", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.InterceptEffect.YouAttemptInterceptY", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.InterceptEffect.XAttemptInterceptYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
@@ -95,7 +95,7 @@ namespace DOL.GS
             {
                 GamePlayer playerSource = Source as GamePlayer;
                 GamePlayer playerTarget = Target as GamePlayer;
-                playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.InterceptEffect.YouNoAttemtInterceptY", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.InterceptEffect.YouNoAttemptInterceptY", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.InterceptEffect.XNoAttemptInterceptYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 

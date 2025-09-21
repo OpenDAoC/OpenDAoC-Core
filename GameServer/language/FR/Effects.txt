@@ -62,9 +62,9 @@ Effects.BannerOfFreedomEffect.Description:      Reduces all Crowd Controls by 6%
 Effects.BannerOfBesiegingEffect.Name:         Bannière de siège
 Effects.BannerOfBesiegingEffect.Description:   Réduit la vitesse d'attaque des armes de siège de 6%.
 
-Effects.InterceptEffect.YouAttemtInterceptYBut:   Vous essayez maintenant d'intercepter une attaque visant {0}, mais vous devez rester proche.
-Effects.InterceptEffect.XAttemtInterceptYouBut:   {0} essaye maintenant d'intercepter une attaque vous visant, mais vous devez rester proche.
-Effects.InterceptEffect.YouAttemtInterceptY:   Vous essayez maintenant d'intercepter une attaque visant {0}.
+Effects.InterceptEffect.YouAttemptInterceptYBut:   Vous essayez maintenant d'intercepter une attaque visant {0}, mais vous devez rester proche.
+Effects.InterceptEffect.XAttemptInterceptYouBut:   {0} essaye maintenant d'intercepter une attaque vous visant, mais vous devez rester proche.
+Effects.InterceptEffect.YouAttemptInterceptY:   Vous essayez maintenant d'intercepter une attaque visant {0}.
 Effects.InterceptEffect.XAttemptInterceptYou:   {0} essaye maintenant d'intercepter une attaque vous visant.
 Effects.InterceptEffect.YouNoAttemptInterceptY:   Vous n'essayez plus d'intercepter une attaque visant {0}.
 Effects.InterceptEffect.XNoAttemptInterceptYou:   {0} n'essaye plus d'intercepter une attaque vous visant.

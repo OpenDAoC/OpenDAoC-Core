@@ -102,9 +102,9 @@ GameLiving.AttackData.YouBlock:			You block {0}'s attack against {1}!
 ## Intercept
 Effects.InterceptEffect.Name:					Intercept
 Effects.InterceptEffect.InfoEffect:				Ability that if successful will intercept an attack meant for the ability's target. You will take damage in the target's place.
-Effects.InterceptEffect.YouAttemtInterceptYBut:	You are now attempting to intercept an attack for {0}, but you must stand closer.
-Effects.InterceptEffect.XAttemtInterceptYouBut:	{0} is now attempting to intercept an attack for you, but you must stand closer.
-Effects.InterceptEffect.YouAttemtInterceptY:	You are now attempting to intercept an attack for {0}.
+Effects.InterceptEffect.YouAttemptInterceptYBut:	You are now attempting to intercept an attack for {0}, but you must stand closer.
+Effects.InterceptEffect.XAttemptInterceptYouBut:	{0} is now attempting to intercept an attack for you, but you must stand closer.
+Effects.InterceptEffect.YouAttemptInterceptY:	You are now attempting to intercept an attack for {0}.
 Effects.InterceptEffect.XAttemptInterceptYou:	{0} is now attempting to intercept an attack for you.
 Effects.InterceptEffect.YouNoAttemptInterceptY:	You are no longer attempting to intercept an attack for {0}.
 Effects.InterceptEffect.XNoAttemptInterceptYou:	{0} is no longer attempting to intercept an attack for you.

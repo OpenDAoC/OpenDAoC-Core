@@ -56,9 +56,9 @@ Effects.GuardEffect.GuardedByName:		{0} bewacht durch {1}
 Effects.GuardEffect.Name:			Wache
 Effects.GuardEffect.XIsGuardingY:		{0} bewacht {1}
 
-Effects.InterceptEffect.YouAttemtInterceptYBut:	Ihr versucht, einen Angriff auf {0} abzufangen, aber Ihr müsst näher heran.
-Effects.InterceptEffect.XAttemtInterceptYouBut:	{0} versucht nun, einen Angriff auf Euch abzufangen, doch dazu müsst Ihr näher an {0} heran.
-Effects.InterceptEffect.YouAttemtInterceptY:	Ihr versucht, einen Angriff auf {0} abzufangen.
+Effects.InterceptEffect.YouAttemptInterceptYBut:	Ihr versucht, einen Angriff auf {0} abzufangen, aber Ihr müsst näher heran.
+Effects.InterceptEffect.XAttemptInterceptYouBut:	{0} versucht nun, einen Angriff auf Euch abzufangen, doch dazu müsst Ihr näher an {0} heran.
+Effects.InterceptEffect.YouAttemptInterceptY:	Ihr versucht, einen Angriff auf {0} abzufangen.
 Effects.InterceptEffect.XAttemptInterceptYou:	{0} versucht, einen Angriff auf Euch abzufangen.
 Effects.InterceptEffect.YouNoAttemptInterceptY:	Ihr versucht nicht mehr, einen Angriff auf {0} abzufangen.
 Effects.InterceptEffect.XNoAttemptInterceptYou:	{0} versucht nicht mehr, einen Angriff auf Euch abzufangen.
