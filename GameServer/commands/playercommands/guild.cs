@@ -670,6 +670,9 @@ namespace DOL.GS.Commands
 						#region Buybanner
 					case "buybanner":
 						{
+							client.Out.SendMessage("Guild banners are not enabled on this server.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+
 							if (client.Player.Guild.GuildLevel < 7)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.GuildLevelReq"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -723,6 +726,9 @@ namespace DOL.GS.Commands
 						#region Summon
 					case "summon":
 						{
+							client.Out.SendMessage("Guild banners are not enabled on this server.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+
 							if (client.Player.Guild == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
