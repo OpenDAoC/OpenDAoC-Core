@@ -14,7 +14,6 @@ namespace DOL.GS
 
         public const int CONSIGNMENT_SIZE = 100;
         public const int CONSIGNMENT_OFFSET = 1350; // Clients send the same slots as a housing vault.
-        public const string ITEM_BEING_ADDED = "ItemBeingAddedToObject";
         public const string CONSIGNMENT_BUY_ITEM = "ConsignmentBuyItem";
 
         protected Dictionary<string, GamePlayer> _observers = [];
@@ -284,8 +283,6 @@ namespace DOL.GS
 
         public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot)
         {
-            player.TempProperties.SetProperty(ITEM_BEING_ADDED, item); // For objects that support doing something when added (setting a price, for example).
-
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} adding '{item.Name}' to consignment merchant on lot {HouseNumber}.");
 
@@ -320,30 +317,29 @@ namespace DOL.GS
             if (house == null || !house.CanUseConsignmentMerchant(player, ConsignmentPermissions.AddRemove))
                 return false;
 
-            if (player.TempProperties.TryRemoveProperty(ITEM_BEING_ADDED, out object result))
+            eInventorySlot slot = clientSlot + (int) FirstClientSlot;
+
+            if (!GetClientInventory(player).TryGetValue((int) slot, out DbInventoryItem item))
+                return false;
+
+            if (item.IsTradable)
             {
-                if (result is not DbInventoryItem item)
-                    return false;
-
-                if (item.IsTradable)
-                {
-                    item.SellPrice = (int) price;
-                    ChatUtil.SendDebugMessage(player, $"{item.Name} SellPrice={price} OwnerLot={item.OwnerLot} OwnerID={item.OwnerID}");
-                    player.Out.SendMessage("Price set!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-                else
-                {
-                    item.SellPrice = 0;
-                    player.Out.SendCustomDialog("This item is not tradable. You can store it here but cannot sell it.", null);
-                }
-
-                item.OwnerLot = conMerchant.HouseNumber;
-                item.OwnerID = conMerchant.GetOwner(player);
-                GameServer.Database.SaveObject(item);
-
-                if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-                    log.Debug($"CM: {player.Name}:{player.Client.Account.Name} set sell price of '{item.Name}' to {item.SellPrice} for consignment merchant on lot {HouseNumber}.");
+                item.SellPrice = (int) price;
+                ChatUtil.SendDebugMessage(player, $"{item.Name} SellPrice={price} OwnerLot={item.OwnerLot} OwnerID={item.OwnerID}");
+                player.Out.SendMessage("Price set!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
+            else
+            {
+                item.SellPrice = 0;
+                player.Out.SendCustomDialog("This item is not tradable. You can store it here but cannot sell it.", null);
+            }
+
+            item.OwnerLot = conMerchant.HouseNumber;
+            item.OwnerID = conMerchant.GetOwner(player);
+            GameServer.Database.SaveObject(item);
+
+            if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+                log.Debug($"CM: {player.Name}:{player.Client.Account.Name} set sell price of '{item.Name}' to {item.SellPrice} for consignment merchant on lot {HouseNumber}.");
 
             return true;
         }
