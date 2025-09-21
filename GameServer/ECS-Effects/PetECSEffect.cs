@@ -16,7 +16,6 @@ namespace DOL.GS
                 summonedPet.Owner.UpdatePetCount(summonedPet, false);
 
             (SpellHandler as SummonSpellHandler)?.OnPetReleased(); // Should be done before setting health to 0.
-            Owner.effectListComponent.CancelAll();
             Owner.Health = 0; // To send proper remove packet.
             Owner.Delete();
         }
