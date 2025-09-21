@@ -340,16 +340,8 @@ namespace DOL.GS
 
         public void CancelAll()
         {
-            lock (_effectsLock)
-            {
-                foreach (var pair in _effects)
-                {
-                    List<ECSGameEffect> effects = pair.Value;
-
-                    for (int i = effects.Count - 1; i >= 0; i--)
-                        effects[i].Stop();
-                }
-            }
+            foreach (ECSGameEffect effect in GetEffects())
+                effect.Stop();
         }
 
         public void CancelIncompatiblePulseEffects(ISpellHandler spellHandler)
