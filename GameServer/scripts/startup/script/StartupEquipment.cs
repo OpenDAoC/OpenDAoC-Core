@@ -128,8 +128,10 @@ namespace DOL.GS.GameEvents
 					foreach (var item in m_cachedClassEquipment.Where(k => k.Key == 0 || k.Key == (eCharacterClass)ch.Class).SelectMany(kv => kv.Value).OrderBy(it => it.Item_Type))
 					{
 						// create Inventory item and set to owner.
-						DbInventoryItem inventoryItem = GameInventoryItem.Create(item);
+						GameInventoryItem inventoryItem = GameInventoryItem.Create(new DbItemUnique(item));
 						inventoryItem.OwnerID = ch.ObjectId;
+						inventoryItem.Creator = $"{nameof(CreationStartupEquipment)}";
+						inventoryItem.Realm = ch.Realm;
 
 						bool itemChoosen = false;
 		
