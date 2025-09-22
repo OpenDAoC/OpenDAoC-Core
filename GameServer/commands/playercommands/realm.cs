@@ -1,28 +1,8 @@
-﻿/*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
-using DOL.GS.PacketHandler;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using DOL.Language;
 using DOL.GS.Keeps;
 using DOL.GS.ServerRules;
-using System;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -83,37 +63,41 @@ namespace DOL.GS.Commands
 
 			foreach (AbstractGameKeep keep in albKeepList)
 			{
-				if (keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur"))
+				if (keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+				{
 					continue;
+				}
 				
 				if (keep is GameKeep)
-				{
 					albKeeps += KeepStringBuilder(keep);
-				}
-					
 			}
 
 			foreach (AbstractGameKeep keep in midKeepList)
 			{
-				if (keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner"))
-					continue;
-				if (keep is GameKeep)
+				if (keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
 				{
-					midKeeps += KeepStringBuilder(keep);
+					continue;
 				}
-					
+
+				if (keep is GameKeep)
+					midKeeps += KeepStringBuilder(keep);
 			}
 			
 			foreach (AbstractGameKeep keep in hibKeepList)
 			{
-				if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfhota"))
+				if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("lamfhota", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+				{
 					continue;
+				}
 				
 				if (keep is GameKeep)
-				{
 					hibKeeps += KeepStringBuilder(keep);
-				}
-					
 			}
 			
 			// foreach (AbstractGameKeep keep in keepList)
@@ -182,7 +166,5 @@ namespace DOL.GS.Commands
 			buffer += "\n";
 			return buffer;
 		}
-
-
 	}
 }

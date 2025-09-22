@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -548,19 +549,38 @@ namespace DOL.GS.Keeps
 		public virtual int GetKeepCountByRealm(eRealm realm)
 		{
 			int index = 0;
+
 			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
-					if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
-					if (GetBattleground(keep.CurrentRegion.ID) != null) continue;
-					if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfotha") || keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner") || keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur") || keep.Name.ToLower().Contains("portal"))
-						continue; // relic keeps
-					if (keep.Region is (250 or 251 or 252 or 253 or 165)) continue; // battlegrounds
+					if (!m_frontierRegionsList.Contains(keep.Region))
+						continue;
 
-					if ((keep.Realm == realm) && (keep is GameKeep)) 
-						index++;
+					if (GetBattleground(keep.CurrentRegion.ID) != null)
+						continue;
+
+					if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("lamfotha", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+					{
+						continue;
+					}
+
+					// Battlegrounds again?
+					if (keep.Region is 250 or 251 or 252 or 253 or 165)
+						continue;
+
+					if (keep.Realm != realm || keep is not GameKeep)
+						continue;
+
+					index++;
 				}
+
 				return index;
 			}
 		}
