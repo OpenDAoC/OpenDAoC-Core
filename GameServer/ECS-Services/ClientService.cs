@@ -92,19 +92,9 @@ namespace DOL.GS
 
                         CheckInGameActivityTimeout(client);
 
-                        // The client state might have been modified by an inbound packet.
-                        if (client.ClientState is not GameClient.eClientState.Playing || player.ObjectState is not GameObject.eObjectState.Active)
-                            break;
-
                         // The rate at which clients send `UDPInitRequestHandler` may vary depending on their version (1.127 = 65 seconds).
                         if (GameServiceUtils.ShouldTick(client.UdpPingTime + 70000))
                             client.UdpConfirm = false;
-
-                        if (GameServiceUtils.ShouldTick(player.NextWorldUpdate))
-                        {
-                            UpdateWorld(player);
-                            player.NextWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
-                        }
 
                         break;
                     }
@@ -130,8 +120,20 @@ namespace DOL.GS
                     case GameClient.eClientState.Connecting:
                     case GameClient.eClientState.CharScreen:
                     case GameClient.eClientState.WorldEnter:
+                    {
+                        Send(client);
+                        break;
+                    }
                     case GameClient.eClientState.Playing:
                     {
+                        GamePlayer player = client.Player;
+
+                        if (player != null && GameServiceUtils.ShouldTick(player.NextWorldUpdate))
+                        {
+                            UpdateWorld(player);
+                            player.NextWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
+                        }
+
                         Send(client);
                         break;
                     }
