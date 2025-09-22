@@ -349,7 +349,6 @@ namespace DOL.GS
                         return false;
                     }
 
-                    Start(EXPIRES_AFTER);
                     return true;
                 }
             }
@@ -372,7 +371,6 @@ namespace DOL.GS
                         return false;
                     }
 
-                    Start(EXPIRES_AFTER);
                     return true;
                 }
             }
@@ -384,10 +382,7 @@ namespace DOL.GS
                     ValidateCache(player);
 
                     if (previousFirstSlot == previousSecondSlot)
-                    {
-                        Start(EXPIRES_AFTER);
                         return true;
-                    }
 
                     DbInventoryItem existingFirstItem = null;
                     DbInventoryItem existingSecondItem = null;
@@ -455,6 +450,9 @@ namespace DOL.GS
 
             private void ValidateCache(GamePlayer player)
             {
+                // Always refresh or start the timer.
+                Start(EXPIRES_AFTER);
+
                 if (_items != null)
                     return;
 
