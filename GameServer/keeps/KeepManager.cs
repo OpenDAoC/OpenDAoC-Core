@@ -557,7 +557,11 @@ namespace DOL.GS.Keeps
 					if (!m_frontierRegionsList.Contains(keep.Region))
 						continue;
 
-					if (GetBattleground(keep.CurrentRegion.ID) != null)
+					// Redundant battleground check?
+					if (GetBattleground(keep.CurrentRegion.ID) != null || keep.Region is 250 or 251 or 252 or 253 or 165)
+						continue;
+
+					if (keep.Realm != realm || keep is not GameKeep || keep.IsPortalKeep)
 						continue;
 
 					if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
@@ -570,13 +574,6 @@ namespace DOL.GS.Keeps
 					{
 						continue;
 					}
-
-					// Battlegrounds again?
-					if (keep.Region is 250 or 251 or 252 or 253 or 165)
-						continue;
-
-					if (keep.Realm != realm || keep is not GameKeep)
-						continue;
 
 					index++;
 				}

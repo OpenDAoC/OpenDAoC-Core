@@ -63,9 +63,11 @@ namespace DOL.GS.Commands
 
 			foreach (AbstractGameKeep keep in albKeepList)
 			{
+				if (keep.IsPortalKeep)
+					continue;
+
 				if (keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase))
 				{
 					continue;
 				}
@@ -76,9 +78,11 @@ namespace DOL.GS.Commands
 
 			foreach (AbstractGameKeep keep in midKeepList)
 			{
+				if (keep.IsPortalKeep)
+					continue;
+
 				if (keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase))
 				{
 					continue;
 				}
@@ -89,9 +93,11 @@ namespace DOL.GS.Commands
 			
 			foreach (AbstractGameKeep keep in hibKeepList)
 			{
+				if (keep.IsPortalKeep)
+					continue;
+
 				if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("lamfhota", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+					keep.Name.Contains("lamfhota", StringComparison.OrdinalIgnoreCase))
 				{
 					continue;
 				}
