@@ -324,13 +324,21 @@ namespace DOL.AI.Brain
 
             if (living is GamePlayer player)
             {
+                AddPetAndSubPetsToAggroList(player);
+
                 // Add the whole group to the aggro list.
+                // This is done on every attack, but we may consider doing it only once per group, somehow.
                 if (player.Group != null)
                 {
                     foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
                     {
                         if (playerInGroup != living)
-                            AggroList.TryAdd(playerInGroup, new());
+                        {
+                            if (!AggroList.ContainsKey(playerInGroup))
+                                AggroList.TryAdd(playerInGroup, new(0));
+
+                            AddPetAndSubPetsToAggroList(playerInGroup);
+                        }
                     }
                 }
             }
@@ -340,6 +348,26 @@ namespace DOL.AI.Brain
             {
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
                 NextThinkTick = GameLoop.GameLoopTime;
+            }
+
+            void AddPetAndSubPetsToAggroList(GamePlayer player)
+            {
+                GameNPC pet = player.ControlledBrain.Body;
+
+                if (pet == null)
+                    return;
+
+                if (!AggroList.ContainsKey(pet))
+                    AggroList.TryAdd(pet, new(0));
+
+                if (pet.ControlledNpcList == null)
+                    return;
+
+                foreach (GameNPC subpet in pet.ControlledNpcList)
+                {
+                    if (!AggroList.ContainsKey(subpet))
+                        AggroList.TryAdd(subpet, new(0));
+                }
             }
 
             static AggroAmount Add(GameLiving key, long arg)
