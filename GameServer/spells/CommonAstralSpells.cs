@@ -148,7 +148,7 @@ namespace DOL.GS.Spells
             ProcPetBrain petBrain = (ProcPetBrain)m_pet.Brain;
             m_pet.Level = Caster.Level;
             m_pet.Strength = 0;
-            petBrain.AddToAggroList(target, 1);
+            petBrain.AddToAggroList(target);
             petBrain.Think();
         }
 

@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
             base.ApplyEffectOnTarget(target);
 
             m_pet.TempProperties.SetProperty("target", target);
-            (m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
+            (m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target);
             (m_pet.Brain as ProcPetBrain).Think();
 
         }

@@ -41,9 +41,6 @@ namespace DOL.GS.Spells
         {
             base.ApplyEffectOnTarget(target);
 
-            if (target is GameNPC npc && npc.Brain is StandardMobBrain brain)
-                brain.AddToAggroList(Caster, 1);
-
             if (Spell.CastTime > 0)
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }

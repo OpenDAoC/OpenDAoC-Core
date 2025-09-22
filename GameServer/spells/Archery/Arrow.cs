@@ -159,7 +159,7 @@ namespace DOL.GS.Spells
 					{
 						IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
 						if (aggroBrain != null)
-							aggroBrain.AddToAggroList(caster, 1);
+							aggroBrain.AddToAggroList(caster);
 					}
 					return 0;
 				}

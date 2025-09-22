@@ -1,5 +1,3 @@
-using DOL.AI.Brain;
-
 namespace DOL.GS
 {
     public class DiseaseECSGameEffect : ECSGameSpellEffect
@@ -27,12 +25,6 @@ namespace DOL.GS
             // "You are diseased!"
             // "{0} is diseased!"
             OnEffectStartsMsg(true, true, true);
-
-            if (Owner is GameNPC npcOwner)
-            {
-                IOldAggressiveBrain aggroBrain = npcOwner.Brain as IOldAggressiveBrain;
-                aggroBrain?.AddToAggroList(SpellHandler.Caster, 1);
-            }
         }
 
         public override void OnStopEffect()

@@ -83,17 +83,5 @@ namespace DOL.GS.Spells
 			}
 			return base.OnEffectExpires(effect, noMessages);
 		}
-
-		public override void ApplyEffectOnTarget(GameLiving target)
-		{
-			base.ApplyEffectOnTarget(target);
-
-			if (target is GameNPC)
-			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
-			}
-		}
 	}
 }

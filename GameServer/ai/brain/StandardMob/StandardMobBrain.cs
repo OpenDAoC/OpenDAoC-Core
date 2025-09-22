@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
                     SendLosCheckForAggro(player, player);
                 else
                 {
-                    AddToAggroList(player, 1);
+                    AddToAggroList(player);
                     return;
                 }
 
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                AddToAggroList(npc, 1);
+                AddToAggroList(npc);
                 return;
             }
         }
@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
                 brain.AddToAggroList(pair.Key, pair.Value.Base);
         }
 
-        public virtual void AddToAggroList(GameLiving living, long aggroAmount)
+        public virtual void AddToAggroList(GameLiving living, long aggroAmount = 0)
         {
             if (Body.IsConfused || !Body.IsAlive || living == null)
                 return;
@@ -281,7 +281,7 @@ namespace DOL.AI.Brain
             ForceAddToAggroList(living, aggroAmount);
         }
 
-        public void ForceAddToAggroList(GameLiving living, long aggroAmount)
+        public void ForceAddToAggroList(GameLiving living, long aggroAmount = 0)
         {
             if (aggroAmount > 0)
             {
@@ -372,7 +372,9 @@ namespace DOL.AI.Brain
 
             static AggroAmount Add(GameLiving key, long arg)
             {
-                return new(Math.Max(0, arg));
+                // Always add at least 1 if the key is not present to ensure the NPC goes to the puller and not a group member.
+                // It's still technically possible for two group members to pull at the exact same time, but this should be fine.
+                return new(Math.Max(1, arg));
             }
 
             static AggroAmount Update(GameLiving key, AggroAmount oldValue, long arg)
@@ -501,7 +503,7 @@ namespace DOL.AI.Brain
                     GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
                     if (gameObject is GameLiving gameLiving)
-                        AddToAggroList(gameLiving, 1);
+                        AddToAggroList(gameLiving);
                 }
             }
 
@@ -651,7 +653,7 @@ namespace DOL.AI.Brain
             if (!ad.GeneratesAggro || !Body.IsAlive || Body.ObjectState is not GameObject.eObjectState.Active || FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
                 return;
 
-            int damage = Math.Max(1, ad.Damage + ad.CriticalDamage);
+            int damage = Math.Max(0, ad.Damage + ad.CriticalDamage);
             GameLiving attacker = ad.Attacker;
 
             if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is ControlledMobBrain controlledBrain)
@@ -661,18 +663,10 @@ namespace DOL.AI.Brain
                 // A pet generates 100% of the aggro from its damage; the owner receives 30% additional aggro as a tag, without reducing the pet's contribution.
                 int aggroForOwner = (int) (damage * 0.3);
 
-                // We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat mob could attack the owner when their pet engages it.
-                // The owner must also always generate at least 1 aggro.
-                if (aggroForOwner == 0)
-                {
-                    AddToAggroList(controlledBrain.Owner, 1);
-                    AddToAggroList(NpcAttacker, Math.Max(2, damage));
-                }
-                else
-                {
-                    AddToAggroList(controlledBrain.Owner, aggroForOwner);
-                    AddToAggroList(NpcAttacker, damage);
-                }
+                // We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat neutral mob could attack the owner when their pet engages it but misses.
+                AddToAggroList(controlledBrain.Owner, aggroForOwner);
+                AddToAggroList(NpcAttacker, damage == aggroForOwner ? damage + 1 : damage);
+
             }
             else
                 AddToAggroList(attacker, damage);
@@ -756,7 +750,7 @@ namespace DOL.AI.Brain
                 else
                     target = puller;
 
-                brain.AddToAggroList(target, 1);
+                brain.AddToAggroList(target);
             }
 
             static int GetMaxAddsCountFromBaf(GamePlayer puller, out List<GamePlayer> otherTargets, out int attackersCount)

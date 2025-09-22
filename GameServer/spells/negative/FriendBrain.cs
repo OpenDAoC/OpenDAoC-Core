@@ -34,7 +34,7 @@ namespace DOL.AI.Brain
 					if (!GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, player, true))
 						continue;
 
-					AddToAggroList(player, 1);
+					AddToAggroList(player);
 				}
 			}
 		}
@@ -47,7 +47,7 @@ namespace DOL.AI.Brain
 				{
 					if (GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, npc, true))
 					{
-						AddToAggroList(npc, npc.Level<<1);
+						AddToAggroList(npc);
 						return;
 					}
 				}

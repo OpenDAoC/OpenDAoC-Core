@@ -100,7 +100,7 @@ namespace DOL.GS
                 npc.StopAttack();
                 npc.StopCurrentSpellcast();
                 GameLiving target = targetList[Util.Random(targetList.Count - 1)];
-                brain.ForceAddToAggroList(target, 1);
+                brain.ForceAddToAggroList(target);
             }
         }
     }

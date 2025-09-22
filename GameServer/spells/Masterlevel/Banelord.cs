@@ -284,16 +284,7 @@ namespace DOL.GS.Spells
                 if (player.Group != null)
                     player.Group.UpdateMember(player, false, false);
             }
-            else
-            {
-                GameNPC npc = effect.Owner as GameNPC;
-                if (npc != null)
-                {
-                    IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
-                    if (aggroBrain != null)
-                        aggroBrain.AddToAggroList(Caster, 1);
-                }
-            }
+
             return 0;
         }
 

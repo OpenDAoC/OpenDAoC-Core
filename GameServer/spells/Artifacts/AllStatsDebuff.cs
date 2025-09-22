@@ -66,17 +66,5 @@ namespace DOL.GS.Spells.Atlantis
 			}
 			return base.OnEffectExpires(effect, noMessages);
 		}
-
-		public override void ApplyEffectOnTarget(GameLiving target)
-		{
-			base.ApplyEffectOnTarget(target);
-
-			if (target is GameNPC)
-			{
-				var aggroBrain = ((GameNPC)target).Brain as StandardMobBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
-			}
-		}
 	}
 }

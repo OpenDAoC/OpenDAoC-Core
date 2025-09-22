@@ -68,13 +68,6 @@ namespace DOL.GS.spells
 			base.ApplyEffectOnTarget(target);
 
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-
-			if (target is GameNPC)
-			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-			}
 		}
 
 		public override double CalculateSpellResistChance(GameLiving target) => 100 - CalculateToHitChance(target);

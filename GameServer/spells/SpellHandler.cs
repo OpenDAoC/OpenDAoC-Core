@@ -3139,12 +3139,6 @@ namespace DOL.GS.Spells
 			ad.Target.OnAttackedByEnemy(ad);
 			ad.Attacker.DealDamage(ad);
 
-			if (ad.Damage == 0 && ad.Target is GameNPC targetNpc)
-			{
-				if (targetNpc.Brain is IOldAggressiveBrain brain)
-					brain.AddToAggroList(Caster, 1);
-			}
-
 			if (ad.Damage > 0)
 			{
 				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

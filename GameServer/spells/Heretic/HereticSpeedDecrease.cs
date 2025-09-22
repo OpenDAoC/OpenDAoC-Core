@@ -36,13 +36,6 @@ namespace DOL.GS.Spells
 			{
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 			}
-			if(target is GameNPC) 
-			{
-				GameNPC npc = (GameNPC)target;
-				IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-			}
 		}
 
 		protected override int CalculateEffectDuration(GameLiving target)

@@ -151,12 +151,6 @@ namespace DOL.GS.Spells
                 target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
                 Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
             }
-            if(target is GameNPC) 
-            {
-                IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-                if (aggroBrain != null)
-                    aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
-            }
         }
 
         public StarsProc2(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

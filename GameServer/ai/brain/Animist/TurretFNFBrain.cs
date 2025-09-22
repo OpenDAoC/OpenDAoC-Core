@@ -45,7 +45,7 @@ namespace DOL.AI.Brain
                 if (Properties.CHECK_LOS_BEFORE_AGGRO_FNF)
                     SendLosCheckForAggro(player, player);
                 else
-                    AddToAggroList(player, 1);
+                    AddToAggroList(player);
             }
         }
 
@@ -74,7 +74,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                AddToAggroList(npc, 1);
+                AddToAggroList(npc);
             }
         }
 

@@ -87,7 +87,7 @@ namespace DOL.GS.Spells
             //Set pet infos & Brain
             base.ApplyEffectOnTarget(target);
             ProcPetBrain petBrain = (ProcPetBrain) m_pet.Brain;
-            petBrain.AddToAggroList(target, 1);
+            petBrain.AddToAggroList(target);
             petBrain.Think();
         }
 

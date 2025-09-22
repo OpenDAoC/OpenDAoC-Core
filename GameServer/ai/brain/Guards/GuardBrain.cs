@@ -40,7 +40,7 @@ namespace DOL.AI.Brain
 				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
 					continue;
 
-				AddToAggroList(npc, npc.Level << 1);
+				AddToAggroList(npc);
 				// No LoS check, we just attack what's in range
 				return;
 			}

@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                 deamons[i].Level = 36;
                 deamons[i].Flags |= GameNPC.eFlags.FLYING;
                 deamons[i].AddToWorld();
-				(deamons[i].Brain as IOldAggressiveBrain).AddToAggroList(Caster.TargetObject as GameLiving, 1);
+				(deamons[i].Brain as IOldAggressiveBrain).AddToAggroList(Caster.TargetObject as GameLiving);
 				(deamons[i].Brain as ProcPetBrain).Think();
             }			
 		}
