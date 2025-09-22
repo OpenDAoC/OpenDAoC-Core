@@ -199,8 +199,9 @@ namespace DOL.GS.Spells
                         CausesCombat = false
                     };
 
+                    // Reduced aggro generation from heals. Just for balance reasons. May not be live-accurate at all.
                     if (npc.Brain is StandardMobBrain mobBrain)
-                        mobBrain.AddToAggroList(Caster, ad.Damage);
+                        mobBrain.AddToAggroList(Caster, (long) (ad.Damage * 0.75));
 
                     npc.AddXPGainer(Caster, ad.Damage);
                 }
