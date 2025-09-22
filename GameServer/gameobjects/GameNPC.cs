@@ -3121,59 +3121,6 @@ namespace DOL.GS
 
 		public virtual bool CanDropLoot => true;
 
-		/// <summary>
-		/// The enemy is healed, so we add to the xp gainers list
-		/// </summary>
-		/// <param name="enemy"></param>
-		/// <param name="healSource"></param>
-		/// <param name="changeType"></param>
-		/// <param name="healAmount"></param>
-		public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType, int healAmount)
-		{
-			base.EnemyHealed(enemy, healSource, changeType, healAmount);
-
-			if (changeType != eHealthChangeType.Spell)
-				return;
-			if (enemy == healSource)
-				return;
-			if (!IsAlive)
-				return;
-
-			GameLiving healSourceLiving = healSource as GameLiving;
-
-			if (healSourceLiving == null)
-				return;
-
-			Group attackerGroup = healSourceLiving.Group;
-			if (attackerGroup != null)
-			{
-				// collect "helping" group players in range
-				var xpGainers = attackerGroup.GetMembersInTheGroup()
-					.Where(l => this.IsWithinRadius(l, WorldMgr.MAX_EXPFORKILL_DISTANCE) && l.IsAlive && l.ObjectState == eObjectState.Active).ToArray();
-
-				float damageAmount = (float)healAmount / xpGainers.Length;
-
-				foreach (GameLiving living in xpGainers)
-				{
-					// add players in range for exp to exp gainers
-					this.AddXPGainer(living, damageAmount);
-				}
-			}
-			else
-			{
-				this.AddXPGainer(healSourceLiving, healAmount);
-			}
-
-			if (healSource is GamePlayer || (healSource is GameNPC healSourceNpc && (healSourceNpc.Flags & eFlags.PEACE) == 0))
-			{
-				// first check to see if the healer is in our aggrolist so we don't go attacking anyone who heals
-				if (Brain is StandardMobBrain mobBrain && mobBrain.GetBaseAggroAmount(healSourceLiving) > 0)
-					mobBrain.AddToAggroList(healSourceLiving, healAmount);
-			}
-
-			//DealDamage needs to be called after addxpgainer!
-		}
-
 		public override long LastAttackTickPvE
 		{
 			set

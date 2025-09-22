@@ -1933,18 +1933,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Called when an enemy of ours is healed during combat
-		/// </summary>
-		/// <param name="enemy">the enemy</param>
-		/// <param name="healSource">the healer</param>
-		/// <param name="changeType">the healtype</param>
-		/// <param name="healAmount">the healamount</param>
-		public virtual void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType, int healAmount)
-		{
-			Notify(GameLivingEvent.EnemyHealed, this, new EnemyHealedEventArgs(enemy, healSource, changeType, healAmount));
-		}
-
-		/// <summary>
 		/// Called when this living dies
 		/// </summary>
 		public virtual void Die(GameObject killer)

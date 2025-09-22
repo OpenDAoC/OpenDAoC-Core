@@ -91,21 +91,6 @@ namespace DOL.GS.Scripts
                 new TakeDamageEventArgs(source, damageType, damageAmount, criticalAmount));
         }
 
-        /// <summary>
-        /// Take action upon someone healing the enemy.
-        /// </summary>
-        /// <param name="enemy">The living that was healed.</param>
-        /// <param name="healSource">The source of the heal.</param>
-        /// <param name="changeType">The way the living was healed.</param>
-        /// <param name="healAmount">The amount that was healed.</param>
-        public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType,
-            int healAmount)
-        {
-            base.EnemyHealed(enemy, healSource, changeType, healAmount);
-            Brain.Notify(GameLivingEvent.EnemyHealed, this,
-                new EnemyHealedEventArgs(enemy, healSource, changeType, healAmount));
-        }
-
         #region Tether
 
         /// <summary>
