@@ -166,7 +166,7 @@ namespace DOL.GS
                 }
             }
 
-            UpdateMember(living, true, false);
+            UpdateMember(living, true, true);
             UpdateGroupWindow();
             GameEventMgr.Notify(GroupEvent.MemberJoined, this, new MemberJoinedEventArgs(living));
             return true;
@@ -299,8 +299,8 @@ namespace DOL.GS
                 }
             }
 
-            UpdateGroupWindow();
             UpdateGroupIndexes();
+            UpdateGroupWindow();
             GameEventMgr.Notify(GroupEvent.MemberDisbanded, this, new MemberDisbandedEventArgs(living));
             return true;
         }
@@ -343,6 +343,8 @@ namespace DOL.GS
 
         public bool MakeLeader(GameLiving living)
         {
+            GameLiving oldLeader;
+
             lock (_groupMembersLock)
             {
                 if (LivingLeader == living || living == null || living.Group != this)
@@ -350,7 +352,7 @@ namespace DOL.GS
 
                 byte index = living.GroupIndex;
 
-                GameLiving oldLeader = _groupMembers[0];
+                oldLeader = _groupMembers[0];
                 _groupMembers[index] = oldLeader;
                 _groupMembers[0] = living;
                 LivingLeader = living;
@@ -358,6 +360,7 @@ namespace DOL.GS
                 oldLeader.GroupIndex = index;
             }
 
+            UpdateMembers([oldLeader, living], true, true);
             UpdateGroupWindow();
             SendMessageToGroupMembers($"{Leader.Name} is the new group leader.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return true;
@@ -379,6 +382,7 @@ namespace DOL.GS
                 _groupMembers[sourceIndex] = target;
             }
 
+            UpdateMembers([source, target], true, true);
             UpdateGroupWindow();
             SendMessageToGroupMembers($"Switched group member {source.Name} with {target.Name}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return true;
@@ -410,13 +414,21 @@ namespace DOL.GS
 
         public void UpdateMember(GameLiving living, bool updateIcons, bool updateOtherRegions)
         {
-            if (living.Group != this)
-                return;
+            UpdateMembers([living], updateIcons, updateOtherRegions);
+        }
 
-            foreach (GamePlayer player in GetPlayersInTheGroup())
+        public void UpdateMembers(ReadOnlySpan<GameLiving> livings, bool updateIcons, bool updateOtherRegions)
+        {
+            foreach (GameLiving living in livings)
             {
-                if (updateOtherRegions || player.CurrentRegion == living.CurrentRegion)
-                    player.Out.SendGroupMemberUpdate(updateIcons, true, living);
+                if (living.Group != this)
+                    continue;
+
+                foreach (GamePlayer player in GetPlayersInTheGroup())
+                {
+                    if (updateOtherRegions || player.CurrentRegion == living.CurrentRegion)
+                        player.Out.SendGroupMemberUpdate(updateIcons, true, living);
+                }
             }
         }
 
