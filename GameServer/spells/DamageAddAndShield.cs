@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
             // Incomplete implementation. See base method for details.
-            min = 0.85;
+            min = 0.8;
             max = min * (5 / 3.0);
         }
     }
@@ -118,7 +118,7 @@ namespace DOL.GS.Spells
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
             // Incomplete implementation. See base method for details.
-            min = 0.9;
+            min = 0.85;
             max = min * (5 / 3.0);
         }
     }
