@@ -1234,7 +1234,6 @@ namespace DOL.GS
 
 			// skills
 			m_propertyTypes[(int) eProperty.Skill_Two_Handed] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int) eProperty.Skill_Critical_Strike] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_Crushing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_Flexible_Weapon] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_Polearms] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
@@ -1251,7 +1250,6 @@ namespace DOL.GS
 			m_propertyTypes[(int) eProperty.Skill_Large_Weapon] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_Celtic_Spear] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_Scythe] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int) eProperty.Skill_Thrown_Weapons] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_HandToHand] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_FistWraps] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 			m_propertyTypes[(int) eProperty.Skill_MaulerStaff] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
@@ -1259,6 +1257,8 @@ namespace DOL.GS
 			m_propertyTypes[(int) eProperty.Skill_Dual_Wield] = ePropertyType.Skill | ePropertyType.SkillDualWield;
 			m_propertyTypes[(int) eProperty.Skill_Left_Axe] = ePropertyType.Skill | ePropertyType.SkillDualWield;
 			m_propertyTypes[(int) eProperty.Skill_Celtic_Dual] = ePropertyType.Skill | ePropertyType.SkillDualWield;
+
+			m_propertyTypes[(int) eProperty.Skill_Critical_Strike] = ePropertyType.Skill;
 
 			#endregion
 
@@ -1328,20 +1328,25 @@ namespace DOL.GS
 
 			#endregion
 
-			#region Other
+			#region Ranged skills
 
 			m_propertyTypes[(int) eProperty.Skill_Long_bows] = ePropertyType.Skill | ePropertyType.SkillArchery;
 			m_propertyTypes[(int) eProperty.Skill_Composite] = ePropertyType.Skill | ePropertyType.SkillArchery;
 			m_propertyTypes[(int) eProperty.Skill_RecurvedBow] = ePropertyType.Skill | ePropertyType.SkillArchery;
+			m_propertyTypes[(int) eProperty.Skill_Archery] = ePropertyType.Skill | ePropertyType.SkillArchery;
+
+			m_propertyTypes[(int) eProperty.Skill_Cross_Bows] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_Thrown_Weapons] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_ShortBow] = ePropertyType.Skill;
+
+			#endregion
+
+			#region Others
 
 			m_propertyTypes[(int) eProperty.Skill_Parry] = ePropertyType.Skill;
 			m_propertyTypes[(int) eProperty.Skill_Shields] = ePropertyType.Skill;
-
 			m_propertyTypes[(int) eProperty.Skill_Stealth] = ePropertyType.Skill;
-			m_propertyTypes[(int) eProperty.Skill_Cross_Bows] = ePropertyType.Skill;
-			m_propertyTypes[(int) eProperty.Skill_ShortBow] = ePropertyType.Skill;
 			m_propertyTypes[(int) eProperty.Skill_Envenom] = ePropertyType.Skill;
-			m_propertyTypes[(int) eProperty.Skill_Archery] = ePropertyType.Skill | ePropertyType.SkillArchery;
 
 			#endregion
 		}
