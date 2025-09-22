@@ -352,7 +352,7 @@ namespace DOL.AI.Brain
 
             void AddPetAndSubPetsToAggroList(GamePlayer player)
             {
-                GameNPC pet = player.ControlledBrain.Body;
+                GameNPC pet = player.ControlledBrain?.Body;
 
                 if (pet == null)
                     return;
