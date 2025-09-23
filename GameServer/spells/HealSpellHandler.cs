@@ -201,7 +201,7 @@ namespace DOL.GS.Spells
 
                     // Reduced aggro generation from heals. Just for balance reasons. May not be live-accurate at all.
                     if (npc.Brain is StandardMobBrain mobBrain)
-                        mobBrain.AddToAggroList(Caster, (long) (ad.Damage * 0.75));
+                        mobBrain.AddToAggroList(Caster, (long) (ad.Damage * 0.5));
 
                     npc.AddXPGainer(Caster, ad.Damage);
                 }
