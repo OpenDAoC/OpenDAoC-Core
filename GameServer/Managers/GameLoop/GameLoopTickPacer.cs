@@ -120,7 +120,7 @@ namespace DOL.GS
                             highest = overSleptFor;
                     }
 
-                    _busyWaitThreshold = Math.Max(0, (int) highest);
+                    _busyWaitThreshold = (int) Math.Max(0, Math.Ceiling(highest));
                     Thread.Sleep(pauseFor);
                 }
             }
