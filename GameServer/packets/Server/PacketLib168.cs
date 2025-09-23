@@ -1367,7 +1367,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x03);
-				pak.WriteShort(invitingPlayer.ObjectID); //data1
+				pak.WriteShort(invitingPlayer.Client.SessionID); //data1
 				pak.Fill(0x00, 6); //data2&data3
 				pak.WriteByte(0x01);
 				pak.WriteByte(0x00);

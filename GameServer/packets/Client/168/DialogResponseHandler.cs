@@ -10,7 +10,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
             ushort data1 = packet.ReadShort();
-            ushort data2 = packet.ReadShort(); // 0x01 = accept.
+            ushort data2 = packet.ReadShort();
             ushort data3 = packet.ReadShort();
             eDialogCode messageType = (eDialogCode) (byte) packet.ReadByte();
             byte response = (byte) packet.ReadByte();
@@ -23,13 +23,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     if (data2 == 0x01)
                     {
-                        CustomDialogResponse callback;
-
-                        lock (player) // Why?
-                        {
-                            callback = player.CustomDialogCallback;
-                            player.CustomDialogCallback = null;
-                        }
+                        CustomDialogResponse callback = player.CustomDialogCallback;
+                        player.CustomDialogCallback = null;
 
                         if (callback == null)
                             return;
@@ -41,24 +36,18 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
                 case eDialogCode.GuildInvite:
                 {
-                    GamePlayer guildLeader = null;
+                    GameClient guildLeaderClient = ClientService.Instance.GetClientBySessionId(data1);
 
-                    foreach (Region region in WorldMgr.GetAllRegions())
-                    {
-                        guildLeader = WorldMgr.GetObjectByIDFromRegion(region.ID, data1) as GamePlayer;
+                    if (guildLeaderClient == null)
+                        return;
 
-                        if (guildLeader != null)
-                            break;
-                    }
+                    GamePlayer guildLeader = guildLeaderClient.Player;
+
+                    if (guildLeader == null)
+                        return;
 
                     if (response == 0x01)
                     {
-                        if (guildLeader == null)
-                        {
-                            player.Out.SendMessage("You need to be in the same region as the guild leader to accept an invitation.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
                         if (player.Guild != null)
                         {
                             player.Out.SendMessage("You are still in a guild, you'll have to leave it first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
