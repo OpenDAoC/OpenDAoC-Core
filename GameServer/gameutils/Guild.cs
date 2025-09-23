@@ -626,7 +626,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public bool AddPlayer(GamePlayer addPlayer)
 		{
-			return AddPlayer(addPlayer, GetRankByID(9));
+			return AddPlayer(addPlayer, GetRankByID(IsStartingGuild ? 8 : 9));
 		}
 
 		/// <summary>
