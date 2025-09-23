@@ -499,8 +499,13 @@ namespace DOL.GS
                 return;
             }
 
-            TurnTo(FollowTarget);
-            float distanceToTarget = Owner.GetDistanceTo(destination);
+            float distanceToTarget = (_ownerPosition - destination).Length();
+
+            if (distanceToTarget > 25)
+                TurnTo((int) destination.X, (int) destination.Y);
+            else
+                TurnTo(FollowTarget);
+
             int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
 
             if (ticksToArrive <= 0)
