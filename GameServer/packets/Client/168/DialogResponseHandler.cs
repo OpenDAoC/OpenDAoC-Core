@@ -7,6 +7,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DialogResponse, "Response Packet from a Question Dialog", eClientStatus.PlayerInGame)]
     public class DialogResponseHandler : IPacketHandler
     {
+        public const string GUILD_INVITE_KEY = "guild_invite";
+        public const string GROUP_INVITE_KEY = "group_invite";
+
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
             ushort data1 = packet.ReadShort();
@@ -38,7 +41,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     GameClient guildLeaderClient = ClientService.Instance.GetClientBySessionId(data1);
 
-                    if (guildLeaderClient == null)
+                    if (guildLeaderClient == null || guildLeaderClient.ClientState is GameClient.eClientState.CharScreen)
                         return;
 
                     GamePlayer guildLeader = guildLeaderClient.Player;
@@ -46,25 +49,28 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (guildLeader == null)
                         return;
 
-                    if (response == 0x01)
+                    if (!player.TempProperties.TryRemoveProperty(GUILD_INVITE_KEY, out object inviterName) || !guildLeader.Name.Equals(inviterName))
+                        return;
+
+                    if (response != 0x01)
                     {
-                        if (player.Guild != null)
-                        {
-                            player.Out.SendMessage("You are still in a guild, you'll have to leave it first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
-                        if (guildLeader.Guild != null)
-                        {
-                            guildLeader.Guild.AddPlayer(player);
-                            return;
-                        }
-
-                        player.Out.SendMessage("Player doing the invite is not in a guild!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        guildLeader?.Out.SendMessage($"{player.Name} declined your invite.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    guildLeader?.Out.SendMessage(player.Name + " declined your invite.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if (player.Guild != null)
+                    {
+                        player.Out.SendMessage("You are still in a guild, you'll have to leave it first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    if (guildLeader.Guild != null)
+                    {
+                        guildLeader.Guild.AddPlayer(player);
+                        return;
+                    }
+
+                    player.Out.SendMessage("Player doing the invite is not in a guild!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
                 case eDialogCode.GuildLeave:
@@ -103,57 +109,58 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
                 case eDialogCode.GroupInvite:
                 {
-                    if (response == 0x01)
+                    if (response != 0x01)
+                        return;
+
+                    GameClient groupLeaderClient = ClientService.Instance.GetClientBySessionId(data1);
+
+                    if (groupLeaderClient == null || groupLeaderClient.ClientState is GameClient.eClientState.CharScreen)
+                        return;
+
+                    GamePlayer groupLeader = groupLeaderClient.Player;
+
+                    if (groupLeader == null)
+                        return;
+
+                    if (!player.TempProperties.TryRemoveProperty(GROUP_INVITE_KEY, out object inviterName) || !groupLeader.Name.Equals(inviterName))
+                        return;
+
+                    if (player.Group != null)
                     {
-                        GameClient otherClient = ClientService.Instance.GetClientBySessionId(data1);
+                        player.Out.SendMessage("You are still in a group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
 
-                        if (otherClient == null)
+                    if (!GameServer.ServerRules.IsAllowedToGroup(groupLeader, player, false))
+                        return;
+
+                    if (player.InCombatPvE)
+                    {
+                        player.Out.SendMessage("You can't join a group while in combat!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    if (groupLeader.Group != null)
+                    {
+                        if (groupLeader.Group.Leader != groupLeader)
                             return;
 
-                        GamePlayer groupLeader = otherClient.Player;
-
-                        if (groupLeader == null)
-                            return;
-
-                        if (player.Group != null)
+                        if (groupLeader.Group.MemberCount >= ServerProperties.Properties.GROUP_MAX_MEMBER)
                         {
-                            player.Out.SendMessage("You are still in a group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage("The group is full.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
                         }
 
-                        if (!GameServer.ServerRules.IsAllowedToGroup(groupLeader, player, false))
-                        {
-                            return;
-                        }
-
-                        if (player.InCombatPvE)
-                        {
-                            player.Out.SendMessage("You can't join a group while in combat!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
-                        if (groupLeader.Group != null)
-                        {
-                            if (groupLeader.Group.Leader != groupLeader)
-                                return;
-
-                            if (groupLeader.Group.MemberCount >= ServerProperties.Properties.GROUP_MAX_MEMBER)
-                            {
-                                player.Out.SendMessage("The group is full.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                return;
-                            }
-
-                            groupLeader.Group.AddMember(player);
-                            GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
-                            return;
-                        }
-
+                        groupLeader.Group.AddMember(player);
+                        GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
+                    }
+                    else
+                    {
                         Group group = new(groupLeader);
                         GroupMgr.AddGroup(group);
                         group.AddMember(groupLeader);
                         group.AddMember(player);
                         GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
-                        return;
                     }
 
                     return;
