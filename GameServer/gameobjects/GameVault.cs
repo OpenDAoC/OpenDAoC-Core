@@ -290,6 +290,11 @@ namespace DOL.GS
             return _itemCache.MoveItems(player, firstItem, previousFirstSlot, secondItem, previousSecondSlot);
         }
 
+        public virtual void OnItemManipulationError(GamePlayer player)
+        {
+            _itemCache.ForceValidateCache(player);
+        }
+
         public virtual bool SetSellPrice(GamePlayer player, eInventorySlot clientSlot, uint price)
         {
             return true;
@@ -322,7 +327,7 @@ namespace DOL.GS
 
         protected class ItemCache : ECSGameTimerWrapperBase
         {
-            private const int EXPIRES_AFTER = 600000;
+            private const int EXPIRES_AFTER = 30000;
 
             private readonly GameVault _vault;
             private Dictionary<int, DbInventoryItem> _items; // Uses client slots, not DB slots.
@@ -336,7 +341,7 @@ namespace DOL.GS
             {
                 lock (_vault.Lock)
                 {
-                    ValidateCache(player);
+                    ValidateCacheInternal(player);
                     int newSlot = GetClientSlotPosition(item.SlotPosition);
 
                     if (!GameInventoryObjectExtensions.IsHousingInventorySlot((eInventorySlot) newSlot) ||
@@ -357,7 +362,7 @@ namespace DOL.GS
             {
                 lock (_vault.Lock)
                 {
-                    ValidateCache(player);
+                    ValidateCacheInternal(player);
                     previousSlot = GetClientSlotPosition(previousSlot);
 
                     if (!GameInventoryObjectExtensions.IsHousingInventorySlot((eInventorySlot) previousSlot) ||
@@ -379,7 +384,7 @@ namespace DOL.GS
             {
                 lock (_vault.Lock)
                 {
-                    ValidateCache(player);
+                    ValidateCacheInternal(player);
 
                     if (previousFirstSlot == previousSecondSlot)
                         return true;
@@ -420,8 +425,6 @@ namespace DOL.GS
                         _items.Remove(previousSecondSlot);
                         _items[previousFirstSlot] = secondItem;
                     }
-
-                    Start(EXPIRES_AFTER);
                 }
 
                 return true;
@@ -431,10 +434,15 @@ namespace DOL.GS
             {
                 lock (_vault.Lock)
                 {
-                    ValidateCache(player);
+                    ValidateCacheInternal(player);
                 }
 
                 return _items;
+            }
+
+            public void ForceValidateCache(GamePlayer player)
+            {
+                OnTick(this);
             }
 
             protected override int OnTick(ECSGameTimer timer)
@@ -448,7 +456,7 @@ namespace DOL.GS
                 return 0;
             }
 
-            private void ValidateCache(GamePlayer player)
+            private void ValidateCacheInternal(GamePlayer player)
             {
                 // Always refresh or start the timer.
                 Start(EXPIRES_AFTER);

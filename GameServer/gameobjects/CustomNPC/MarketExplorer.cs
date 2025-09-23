@@ -193,6 +193,8 @@ namespace DOL.GS
             return true;
         }
 
+        public virtual void OnItemManipulationError(GamePlayer player) { }
+
         public virtual bool SetSellPrice(GamePlayer player, eInventorySlot clientSlot, uint price)
         {
             return true;

@@ -304,6 +304,8 @@ namespace DOL.GS
             return true;
         }
 
+        public virtual void OnItemManipulationError(GamePlayer player) { }
+
         /// <summary>
         /// What to do after an item is added. For consignment merchants this is called after a price is set.
         /// </summary>
