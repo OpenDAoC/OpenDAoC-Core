@@ -12,6 +12,11 @@ namespace DOL.GS
             _playerOwner = playerOwner;
         }
 
+        protected override GamePlayer GetLosChecker(GameLiving target)
+        {
+            return _playerOwner;
+        }
+
         protected override bool CanCastSpell()
         {
             if (_playerOwner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))

@@ -61,12 +61,22 @@ namespace DOL.GS
                 ServiceObjectStore.Remove(this);
         }
 
-        public virtual bool RequestCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        public bool RequestCastSpell(
+            Spell spell,
+            SpellLine spellLine,
+            ISpellCastingAbilityHandler spellCastingAbilityHandler = null,
+            GameLiving target = null,
+            bool checkLos = true)
         {
-            return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target);
+            return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, checkLos ? GetLosChecker(target) : null);
         }
 
-        protected bool RequestCastSpellInternal(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null, GamePlayer losChecker = null)
+        protected virtual bool RequestCastSpellInternal(
+            Spell spell,
+            SpellLine spellLine,
+            ISpellCastingAbilityHandler spellCastingAbilityHandler,
+            GameLiving target,
+            GamePlayer losChecker)
         {
             if (Owner.IsIncapacitated)
                 Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
@@ -85,6 +95,11 @@ namespace DOL.GS
 
             ServiceObjectStore.Add(this);
             return true;
+        }
+
+        protected virtual GamePlayer GetLosChecker(GameLiving target)
+        {
+            return null;
         }
 
         public void RequestUseAbility(Ability ability)

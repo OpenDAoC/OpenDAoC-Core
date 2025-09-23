@@ -18,28 +18,15 @@ namespace DOL.GS
             _npcOwner = npcOwner;
         }
 
-        public override bool RequestCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        protected override bool RequestCastSpellInternal(
+            Spell spell,
+            SpellLine spellLine,
+            ISpellCastingAbilityHandler spellCastingAbilityHandler,
+            GameLiving target,
+            GamePlayer losChecker)
         {
-            // `spellCastingAbilityHandler` is unused for NPCs.
-
-            if (target == _npcOwner || target == null)
-                return RequestCastSpellInternal(spell, spellLine, null, target);
-
-            GamePlayer losChecker = target as GamePlayer;
-
-            if (losChecker == null && _npcOwner.Brain is IControlledBrain controlledBrain)
-                losChecker = controlledBrain.GetPlayerOwner();
-
-            if (losChecker == null && _npcOwner.Brain is StandardMobBrain brain)
-            {
-                List<GamePlayer> playersInRadius = _npcOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
-
-                if (playersInRadius.Count > 0)
-                    losChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
-            }
-
-            if (losChecker == null)
-                return RequestCastSpellInternal(spell, spellLine, null, target);
+            if (losChecker == null || spell.Range == 0)
+                return base.RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, losChecker);
 
             SpellWaitingForLosCheck spellWaitingForLosCheck = new(spell, spellLine);
 
@@ -53,6 +40,24 @@ namespace DOL.GS
 
             losChecker.Out.SendCheckLos(_npcOwner, target, CastSpellLosCheckReply);
             return true; // Consider the NPC is casting while waiting for the reply to prevent it from moving.
+        }
+
+        protected override GamePlayer GetLosChecker(GameLiving target)
+        {
+            GamePlayer losChecker = target as GamePlayer;
+
+            if (losChecker == null && _npcOwner.Brain is IControlledBrain controlledBrain)
+                losChecker = controlledBrain.GetPlayerOwner();
+
+            if (losChecker == null && _npcOwner.Brain is StandardMobBrain brain)
+            {
+                List<GamePlayer> playersInRadius = _npcOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+
+                if (playersInRadius.Count > 0)
+                    losChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
+            }
+
+            return losChecker;
         }
 
         public override void OnSpellCast(Spell spell)
@@ -103,15 +108,19 @@ namespace DOL.GS
 
                 bool success = response is LosCheckResponse.True;
 
-                foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
+                // Only if this is still the correct target.
+                if (target == _npcOwner.TargetObject)
                 {
-                    Spell spell = spellWaitingForLosCheck.Spell;
-                    SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
+                    foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
+                    {
+                        Spell spell = spellWaitingForLosCheck.Spell;
+                        SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
 
-                    if (success && spellLine != null && spell != null)
-                        RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
-                    else
-                        _npcOwner.OnCastSpellLosCheckFail(target);
+                        if (success && spellLine != null && spell != null)
+                            base.RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
+                        else
+                            _npcOwner.OnCastSpellLosCheckFail(target);
+                    }
                 }
 
                 list.Clear();

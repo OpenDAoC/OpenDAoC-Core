@@ -999,12 +999,14 @@ namespace DOL.GS.Spells
 			{
 				_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
 
-				if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE and not eSpellTarget.PET && m_spell.Range > 0)
+				if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE and not eSpellTarget.PET &&
+					m_spell.Range > 0 &&
+					LosChecker != null)
 				{
 					if (Caster is GameNPC npc)
-						LosChecker?.Out.SendCheckLos(npc, target, CheckNpcLosDuringCastCallback);
+						LosChecker.Out.SendCheckLos(npc, target, CheckNpcLosDuringCastCallback);
 					else if (Caster is GamePlayer player)
-						player.Out.SendCheckLos(player, target, CheckPlayerLosDuringCastCallback);
+						LosChecker.Out.SendCheckLos(player, target, CheckPlayerLosDuringCastCallback);
 				}
 			}
 

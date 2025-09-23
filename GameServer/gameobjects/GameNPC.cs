@@ -3415,28 +3415,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool CastSpell(Spell spell, SpellLine line, bool checkLos)
 		{
-			bool casted;
-
-			// Don't check for LoS if the spell has no range.
-			if (checkLos && spell.Range > 0)
-				casted = CastSpell(spell, line);
-			else
-			{
-				Spell spellToCast;
-
-				if (line.KeyName == GlobalSpellsLines.Mob_Spells)
-				{
-					// NPC spells will get the level equal to their caster
-					spellToCast = (Spell)spell.Clone();
-					spellToCast.Level = Level;
-				}
-				else
-					spellToCast = spell;
-
-				casted = base.CastSpell(spellToCast, line);
-			}
-
-			return casted;
+			return base.CastSpell(spell, line, null, checkLos);
 		}
 
 		public virtual void OnCastSpellLosCheckFail(GameObject target)
