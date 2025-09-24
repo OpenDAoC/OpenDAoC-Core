@@ -108,19 +108,15 @@ namespace DOL.GS
 
                 bool success = response is LosCheckResponse.True;
 
-                // Only if this is still the correct target.
-                if (target == _npcOwner.TargetObject)
+                foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
                 {
-                    foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
-                    {
-                        Spell spell = spellWaitingForLosCheck.Spell;
-                        SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
+                    Spell spell = spellWaitingForLosCheck.Spell;
+                    SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
 
-                        if (success && spellLine != null && spell != null)
-                            base.RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
-                        else
-                            _npcOwner.OnCastSpellLosCheckFail(target);
-                    }
+                    if (success && spellLine != null && spell != null)
+                        base.RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
+                    else
+                        _npcOwner.OnCastSpellLosCheckFail(target);
                 }
 
                 list.Clear();
