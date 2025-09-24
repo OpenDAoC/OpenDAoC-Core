@@ -99,8 +99,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (player.IsUnderwater)
                 player.IsDiving = true;
 
-            player.Client.ClientState = GameClient.eClientState.Playing;
-
             if (updateTempProperties)
             {
                 if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP)
