@@ -213,7 +213,9 @@ namespace DOL.GS
                 case eSpellType.SavageDPSBuff:
                 case eSpellType.SavageEnduranceHeal:
                 case eSpellType.SavageEvadeBuff:
+                case eSpellType.SavageStyleEvadeBuff:
                 case eSpellType.SavageParryBuff:
+                case eSpellType.SavageStyleParryBuff:
                 case eSpellType.SavageSlashResistanceBuff:
                 case eSpellType.SavageThrustResistanceBuff:
                     return eEffect.SavageBuff;

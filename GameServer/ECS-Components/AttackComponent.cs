@@ -1609,7 +1609,7 @@ namespace DOL.GS
             if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Berserk) != null)
                 defenseDisabled = true;
 
-            // We check if interceptor can intercept.
+            // Intercept.
             foreach (InterceptECSGameEffect inter in owner.effectListComponent.GetAbilityEffects(eEffect.Intercept))
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
@@ -1693,6 +1693,16 @@ namespace DOL.GS
 
             if (!defenseDisabled)
             {
+                // Savage style buffs.
+                foreach (ECSGameEffect savageBuff in owner.effectListComponent.GetEffects(eEffect.SavageBuff))
+                {
+                    if (!savageBuff.IsActive)
+                        continue;
+
+                    if (savageBuff.SpellHandler.Spell.SpellType is eSpellType.SavageStyleEvadeBuff or eSpellType.SavageStyleParryBuff)
+                        savageBuff.Stop();
+                }
+
                 if (lastAttackData != null && lastAttackData.AttackResult is not eAttackResult.HitStyle)
                     lastAttackData = null;
 
@@ -1809,10 +1819,11 @@ namespace DOL.GS
              * levels of the players involved into account.
              */
 
-            ECSGameEffect bladeturn = EffectListService.GetEffectOnTarget(owner, eEffect.Bladeturn);
-
-            if (bladeturn != null)
+            foreach (ECSGameEffect bladeturn in owner.effectListComponent.GetEffects(eEffect.Bladeturn))
             {
+                if (!bladeturn.IsActive)
+                    continue;
+
                 bool penetrate = false;
 
                 if (stealthStyle)

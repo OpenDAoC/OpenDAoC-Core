@@ -119,6 +119,15 @@ namespace DOL.GS.Spells
         public SavageParryBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 
+    [SpellHandler(eSpellType.SavageStyleParryBuff)]
+    public class SavageStyleParryBuff : AbstractSavageStatBuff
+    {
+        public override string ShortDescription => $"{TargetPronounCapitalized} chance to parry is increased by {Spell.Value}% for the next attack.";
+        public override eProperty Property1 => eProperty.ParryChance;
+
+        public SavageStyleParryBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+    }
+
     [SpellHandler(eSpellType.SavageEvadeBuff)]
     public class SavageEvadeBuff : AbstractSavageStatBuff
     {
@@ -126,6 +135,15 @@ namespace DOL.GS.Spells
         public override eProperty Property1 => eProperty.EvadeChance;
 
         public SavageEvadeBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+    }
+
+    [SpellHandler(eSpellType.SavageStyleEvadeBuff)]
+    public class SavageStyleEvadeBuff : SavageEvadeBuff
+    {
+        public override string ShortDescription => $"{TargetPronounCapitalized} chance to evade is increased by {Spell.Value}% for the next attack.";
+        public override eProperty Property1 => eProperty.EvadeChance;
+
+        public SavageStyleEvadeBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
 
     [SpellHandler(eSpellType.SavageCombatSpeedBuff)]
