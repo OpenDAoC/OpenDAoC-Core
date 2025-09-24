@@ -83,7 +83,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-						if ((client.Player.BountyPoints -= BPsToAdd) < 0)
+						if (client.Player.BountyPoints - BPsToAdd < 0)
 						{
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.NotEnoughBp"),
                                 eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -123,7 +123,7 @@ namespace DOL.GS.Commands
                         {
                             if (house.CanPayRent(client.Player))
                             {
-                                if ((client.Player.Guild.BountyPoints -= BPsToAdd) < 0)
+                                if (client.Player.Guild.BountyPoints - BPsToAdd < 0)
                                 {
                                     client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.NotEnoughGuildBp"),
                                         eChatType.CT_System, eChatLoc.CL_SystemWindow);
