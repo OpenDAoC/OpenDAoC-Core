@@ -571,13 +571,15 @@ namespace DOL.GS
                     return false;
                 }
 
+                int previousSlot = vaultItem.SlotPosition;
+
                 if (!player.Inventory.AddItemWithoutDbAddition(characterInventorySlot, vaultItem) || !SaveItem(vaultItem))
                 {
                     thisObject.OnSaveError(player, nameof(SwapItemsFromOrToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return false;
                 }
 
-                thisObject.OnMoveItem(player, characterInventoryItem, characterInventoryItemPreviousSlotPosition, vaultItem, vaultItem.SlotPosition);
+                thisObject.OnMoveItem(player, characterInventoryItem, characterInventoryItemPreviousSlotPosition, vaultItem, previousSlot);
                 player.Inventory.OnItemMove(fromItem, toItem, fromClientSlot, toClientSlot);
                 player.Inventory.SaveIntoDatabase(player.InternalID);
                 return true;
