@@ -367,6 +367,9 @@ namespace DOL.AI.Brain
 
                 foreach (IControlledBrain subPetBrain in controlledBrains)
                 {
+                    if (subPetBrain == null)
+                        continue;
+
                     GameNPC subPet = subPetBrain.Body;
 
                     if (subPet == null)
