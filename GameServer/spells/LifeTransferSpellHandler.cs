@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
             int transferHeal;
             double spellValue = m_spell.Value;
 
-            transferHeal = (int)(Caster.MaxHealth / 100 * Math.Abs(spellValue) * 2);
+            transferHeal = (int)(Caster.MaxHealth / 100.0 * Math.Abs(spellValue) * 2);
 
             //Needed to prevent divide by zero error
             if (transferHeal <= 0)
