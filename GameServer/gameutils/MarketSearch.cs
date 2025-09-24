@@ -561,8 +561,11 @@ namespace DOL.GS
 				// ------------------------------------------------------------------------
 				// search criteria
 
-				if (search.name != string.Empty && item.Name.ToLower().Contains(search.name.ToLower()) == false)
-					continue;
+				if (search.name != string.Empty)
+				{
+					if (!item.Name.Contains(search.name, StringComparison.OrdinalIgnoreCase))
+						continue;
+				}
 
 				if (search.levelMin > 1 && item.Level < search.levelMin)
 					continue;
