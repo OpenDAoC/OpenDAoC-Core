@@ -232,7 +232,7 @@ namespace DOL.GS.Commands
                     spell.SpellType != buffType ||
                     spell.IsPulsing ||
                     spell.RecastDelay > 0 ||
-                    (!spell.IsConcentration && spell.Duration <= 300))
+                    (!spell.IsConcentration && spell.Duration <= 300000))
                 {
                     return false;
                 }
