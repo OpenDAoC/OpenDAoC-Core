@@ -13,13 +13,11 @@ namespace DOL.AI.Brain
             {
                 Body.StopCurrentSpellcast();
                 Body.StartAttack(target);
-                return true;
+                return false;
             }
-            else
-            {
-                Body.StopAttack();
-                return base.TrustCast(spell, type, target, checkLos);
-            }
+
+            Body.StopAttack();
+            return base.TrustCast(spell, type, target, checkLos);
         }
     }
 }
