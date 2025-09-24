@@ -24,8 +24,7 @@ namespace DOL.GS
 			Magical = 8,
 			Reptile = 9,
 			Plant = 10,
-			Undead = 11,
-			_Last = 11,
+			Undead = 11
 		}
 
 		/// <summary>
