@@ -2607,7 +2607,7 @@ namespace DOL.GS.Commands
 				dballi.DBguildleader = null;
 				dballi.Motd = string.Empty;
 				alli.DbAlliance = dballi;
-				alli.Guilds.Add(inviter.Guild);
+				alli.AddGuildOnLoad(inviter.Guild);
 				inviter.Guild.alliance = alli;
 				inviter.Guild.AllianceId = inviter.Guild.alliance.DbAlliance.ObjectId;
 				inviter.Guild.SaveIntoDatabase();

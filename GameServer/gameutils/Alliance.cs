@@ -48,6 +48,14 @@ namespace DOL.GS
             }
         }
 
+        public void AddGuildOnLoad(Guild guild)
+        {
+            lock (_lock)
+            {
+                _guilds.Add(guild);
+            }
+        }
+
         public void RemoveGuild(Guild guild)
         {
             lock (_lock)

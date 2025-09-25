@@ -384,7 +384,7 @@ namespace DOL.GS
                         foreach (DbGuild dbGuild in dbAlliance.DBguilds)
                         {
                             Guild guild = GetGuildByName(dbGuild.GuildName);
-                            alliance.Guilds.Add(guild);
+                            alliance.AddGuildOnLoad(guild);
                             guild.alliance = alliance;
                         }
                     }
