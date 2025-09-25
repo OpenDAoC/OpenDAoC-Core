@@ -12,6 +12,7 @@ namespace DOL.GS
 		private static FrozenDictionary<eDamageType, string> _damageTypeToStringMap =
 			new Dictionary<eDamageType, string>()
 			{
+				{ eDamageType.Natural, "essence" },
 				{ eDamageType.Crush, "crush" },
 				{ eDamageType.Slash , "slash" },
 				{ eDamageType.Thrust , "thrust" },
