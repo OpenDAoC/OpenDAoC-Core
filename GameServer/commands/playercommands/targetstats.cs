@@ -220,7 +220,10 @@ namespace DOL.GS.Commands
                 info.Add("+ Miscellaneous:");
                 info.Add($"Level:  {target.Level}");
                 info.Add($"Health:  {target.Health} / {target.MaxHealth}");
-                info.Add($"Power:  {target.Mana} / {target.MaxMana}");
+
+                if (target is GamePlayer)
+                    info.Add($"Power:  {target.Mana} / {target.MaxMana}");
+
                 info.Add($"Movement speed:  {target.movementComponent.CurrentSpeed} / {target.movementComponent.MaxSpeed}");
 
                 if (target is GameNPC npc)
