@@ -2944,7 +2944,7 @@ namespace DOL.GS.Spells
 						if (playerCaster.CharacterClass.ManaStat is not eStat.UNDEFINED)
 							stat = playerCaster.GetModified((eProperty) playerCaster.CharacterClass.ManaStat);
 
-						spec = playerCaster.ItemBonus[SkillBase.SpecToSkill(m_spellLine.Spec)]; // Only item bonus increases damage.
+						spec = playerCaster.GetModifiedFromItems(SkillBase.SpecToSkill(m_spellLine.Spec)); // Only item bonus increases damage.
 						break;
 					}
 				}
