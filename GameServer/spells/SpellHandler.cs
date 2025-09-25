@@ -2904,7 +2904,14 @@ namespace DOL.GS.Spells
 			if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
 			{
 				stat = Caster.GetWeaponSkill(Caster.ActiveWeapon);
-				spec = Caster.ItemBonus[SkillBase.SpecToSkill(m_spellLine.Spec)]; // Only item bonus increases damage.
+				DbInventoryItem weapon = Caster.ActiveWeapon;
+
+				// We can't retrieve the skill from the spell, so we have to use the currently equipped weapon instead.
+				if (weapon != null)
+					spec = Caster.GetModifiedFromItems(SkillBase.SpecToSkill(SkillBase.ObjectTypeToSpec((eObjectType) weapon.Object_Type)));
+				else
+					spec = 0;
+
 				spellDamage = stat * (spellDamage / 124 + 1 / 23) * (1 + spec * 0.004);
 				return Math.Max(0, spellDamage);
 			}
