@@ -128,7 +128,10 @@ namespace DOL.GS
                     {
                         GamePlayer player = client.Player;
 
-                        if (player != null && GameServiceUtils.ShouldTick(player.NextWorldUpdate))
+                        // The client state changes to WorldEnter in `WorldInitRequestHandler`, and to Playing in `GameOpenRequestHandler`
+                        // However, the change to `WorldInitRequestHandler` happens a little too late, and sending object updates during a loading screen can cause the client to crash.
+                        // For this reason, we also check the player's object state.
+                        if (player != null && client.Player.ObjectState is GameObject.eObjectState.Active && GameServiceUtils.ShouldTick(player.NextWorldUpdate))
                         {
                             UpdateWorld(player);
                             player.NextWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
