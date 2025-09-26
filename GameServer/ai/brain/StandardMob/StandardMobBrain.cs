@@ -671,12 +671,9 @@ namespace DOL.AI.Brain
                 damage = controlledBrain.ModifyDamageWithTaunt(damage);
 
                 // A pet generates 100% of the aggro from its damage; the owner receives 30% additional aggro as a tag, without reducing the pet's contribution.
-                int aggroForOwner = (int) (damage * 0.3);
-
-                // We must ensure that the same amount of aggro isn't added for both, otherwise an out-of-combat neutral mob could attack the owner when their pet engages it but misses.
-                AddToAggroList(controlledBrain.Owner, aggroForOwner);
-                AddToAggroList(NpcAttacker, damage == aggroForOwner ? damage + 1 : damage);
-
+                // The pet should be added first to the aggro list in case the attack does no damage (see `AddToAggroList` implementation).
+                AddToAggroList(NpcAttacker, damage);
+                AddToAggroList(controlledBrain.Owner, (int) (damage * 0.3));
             }
             else
                 AddToAggroList(attacker, damage);
