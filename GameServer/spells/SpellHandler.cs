@@ -346,9 +346,12 @@ namespace DOL.GS.Spells
 				|| IsQuickCasting)
 				return false;
 
-			// Only interrupt if we're under 50% of the way through the cast.
-			if (!IsInCastingPhase || GameLoop.GameLoopTime >= _castStartTick + _calculatedCastTime * 0.5)
-				return false;
+			if (CastState is not eCastState.Focusing)
+			{
+				// Only interrupt if we're under 50% of the way through the cast.
+				if (!IsInCastingPhase || GameLoop.GameLoopTime >= _castStartTick + _calculatedCastTime * 0.5)
+					return false;
+			}
 
 			if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 			{
@@ -2566,18 +2569,15 @@ namespace DOL.GS.Spells
 
 		public GamePlayer LosChecker { get; set; }
 
-		/// <summary>
-		/// Is the spell being cast?
-		/// </summary>
-		public bool IsInCastingPhase
-		{
-			get { return CastState == eCastState.Casting; }//return m_castTimer != null && m_castTimer.IsAlive; }
-		}
+        /// <summary>
+        /// Is the spell being cast?
+        /// </summary>
+        public bool IsInCastingPhase => CastState == eCastState.Casting;
 
-		/// <summary>
-		/// Does the spell have a positive effect?
-		/// </summary>
-		public virtual bool HasPositiveEffect
+        /// <summary>
+        /// Does the spell have a positive effect?
+        /// </summary>
+        public virtual bool HasPositiveEffect
 		{
 			get { return m_spell.IsHelpful; }
 		}
