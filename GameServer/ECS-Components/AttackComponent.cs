@@ -943,10 +943,6 @@ namespace DOL.GS
 
                             foreach (GameObject extraTarget in extraTargets)
                             {
-                                // Damage bonus against sitting targets is normally set by `AttackAction`.
-                                if (extraTarget is GamePlayer player && player.IsSitting)
-                                    effectiveness *= 2;
-
                                 weaponAction = new WeaponAction(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null);
                                 weaponAction.Execute();
                             }
@@ -1050,9 +1046,6 @@ namespace DOL.GS
                 SendAttackingCombatMessages(action, ad);
                 return ad;
             }
-
-            if (ad.Target.IsSitting)
-                effectiveness *= 2;
 
             // Apply Mentalist RA5L.
             SelectiveBlindnessEffect SelectiveBlindness = owner.EffectList.GetOfType<SelectiveBlindnessEffect>();
