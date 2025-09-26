@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
             CalculateDamageVariance(null, out double minHealVariance, out double maxHealVariance);
 
             foreach (GameLiving healTarget in targets)
-                healed |= HealTarget(healTarget, minHealVariance + Util.RandomDoubleIncl() * (maxHealVariance - minHealVariance));
+                healed |= HealTarget(healTarget, minHealVariance + Util.RandomDoubleIncl() * (maxHealVariance - minHealVariance), true);
 
             // Group heals seem to use full power even if no heal happens.
             if (!healed && Spell.Target is eSpellTarget.REALM)
@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
             return true;
         }
 
-        public virtual bool HealTarget(GameLiving target, double amount)
+        public virtual bool HealTarget(GameLiving target, double amount, bool affectedByDisease)
         {
             if (target == null || target.ObjectState is not GameObject.eObjectState.Active)
                 return false;
@@ -66,7 +66,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            if (target.IsDiseased)
+            if (affectedByDisease && target.IsDiseased)
             {
                 MessageToCaster("Your target is diseased!", eChatType.CT_SpellResisted);
                 amount *= 0.5;
