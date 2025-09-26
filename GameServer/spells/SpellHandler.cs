@@ -1941,9 +1941,6 @@ namespace DOL.GS.Spells
 		/// <param name="target">The current target object, only used if 'SpellHandler.Target' is null.</param>
 		public virtual bool StartSpell(GameLiving target)
 		{
-			if (Caster.IsMezzed || Caster.IsStunned)
-				return false;
-
 			if (Spell.SpellType is not eSpellType.TurretPBAoE && Spell.IsPBAoE)
 				Target = Caster;
 			else if (Target == null)
