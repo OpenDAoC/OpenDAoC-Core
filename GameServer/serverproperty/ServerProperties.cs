@@ -2085,7 +2085,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Enable logging of all market activity
 		/// </summary>
-		[ServerProperty("housing", "market_enable_log", "Enable debug logging of all market activity", true)]
+		[ServerProperty("housing", "market_enable_log", "Enable debug logging of all market activity", false)]
 		public static bool MARKET_ENABLE_LOG;
 
 		/// <summary>
