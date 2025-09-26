@@ -464,8 +464,10 @@ namespace DOL.GS.PacketHandler
 
 				byte i = 0;
 				var effects = living.effectListComponent.GetEffects();
-				if (living is GamePlayer necro && (eCharacterClass) necro.CharacterClass.ID is eCharacterClass.Necromancer && necro.HasShadeModel)
-					effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetEffects().Where(e => e.TriggersImmunity));
+
+				if (player != null && player.ControlledBrain is NecromancerPet necromancerPet)
+					effects.AddRange(necromancerPet.effectListComponent.GetEffects().Where(e => e.TriggersImmunity));
+
 				foreach (var effect in effects)//.Effects.Values)
 												//foreach (ECSGameEffect effect in effects)
 					if (effect is ECSGameEffect && !effect.IsDisabled)
