@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -74,19 +76,53 @@ namespace DOL.GS
     // A wrapper for a 'LinkedListNode<GameObject>'.
     public class SubZoneObject
     {
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+        private SubZoneTransition _currentSubZoneTransition { get; set; }
+
         public LinkedListNode<GameObject> Node { get; }
         public SubZone CurrentSubZone { get; set; }
-        private int _isChangingSubZone;
-        public bool StartSubZoneChange => Interlocked.Exchange(ref _isChangingSubZone, 1) == 0; // Returns true the first time it's called.
 
         public SubZoneObject(GameObject obj)
         {
             Node = new(obj);
+            _currentSubZoneTransition = new();
         }
 
-        public void ResetSubZoneChange()
+        public bool InitiateSubZoneTransition(Zone destinationZone, SubZone destinationSubZone)
         {
-            _isChangingSubZone = 0;
+            // If there's a pending subzone transition already, update it.
+            if (_currentSubZoneTransition?.ServiceObjectId.IsSet == true)
+            {
+                _currentSubZoneTransition.Init(this, destinationZone, destinationSubZone);
+                return true;
+            }
+
+            // Work around the fact that AddObject is called during server startup, when the game loop thread pool isn't initialized yet.
+            SubZoneTransition subZoneTransition = GameLoop.GameLoopTime == 0 ? new() : PooledObjectFactory.GetForTick<SubZoneTransition>();
+
+            if (!ServiceObjectStore.Add(subZoneTransition.Init(this, destinationZone, destinationSubZone)))
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"SubZoneTransition couldn't be added to ServiceObjectStore. {Node.Value}");
+
+                return false;
+            }
+
+            _currentSubZoneTransition = subZoneTransition;
+            return true;
+        }
+
+        public void OnSubZoneTransition()
+        {
+            // Only meant to be called by the zone service.
+
+            if (_currentSubZoneTransition == null)
+                return;
+
+            _currentSubZoneTransition.ReleasePooledObject();
+            ServiceObjectStore.Remove(_currentSubZoneTransition);
+            _currentSubZoneTransition = null;
         }
 
         public void CheckForRelocation()

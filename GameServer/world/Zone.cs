@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -14,7 +15,8 @@ namespace DOL.GS
     {
         #region Fields and Properties
 
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         private const ushort SUBZONE_NBR_ON_ZONE_SIDE = 16; // MUST BE A POWER OF 2 (current implementation limit is 128 inclusive).
         private const ushort SUBZONE_NBR = SUBZONE_NBR_ON_ZONE_SIDE * SUBZONE_NBR_ON_ZONE_SIDE;
         private const ushort SUBZONE_SIZE = 65536 / SUBZONE_NBR_ON_ZONE_SIDE;
@@ -300,18 +302,15 @@ namespace DOL.GS
             if (subZone == null)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Couldn't find a valid subzone for an object (Object: {gameObject})");
+                    log.Error($"Couldn't find a valid subzone (Object: {gameObject})");
 
                 return false;
             }
 
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
-            if (subZoneObject != null)
-            {
-                if (subZoneObject.CurrentSubZone != subZone && subZoneObject.StartSubZoneChange)
-                    CreateSubZoneRelocation(subZoneObject, this, subZone);
-            }
+            if (subZoneObject != null && subZoneObject.CurrentSubZone != subZone)
+                subZoneObject.InitiateSubZoneTransition(this, subZone);
 
             return true;
         }
@@ -390,17 +389,6 @@ namespace DOL.GS
                     {
                         GameObject gameObject = node.Value;
 
-                        // Inactive or deleted objects can't remove themselves.
-                        if (gameObject.ObjectState is not GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
-                        {
-                            SubZoneObject subZoneObject = gameObject.SubZoneObject;
-
-                            if (subZoneObject.StartSubZoneChange)
-                                CreateSubZoneRelocation(subZoneObject, null, null);
-
-                            continue;
-                        }
-
                         if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius))
                             listToAppendTo.Add(gameObject as T);
                     }
@@ -434,8 +422,8 @@ namespace DOL.GS
             GameObject gameObject = node.Value;
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
-            // Does the current object exists, is active and still in the region where this zone is located?
-            if (gameObject.ObjectState == GameObject.eObjectState.Active && gameObject.CurrentRegion == ZoneRegion)
+            // Does the current object exist, is active and still in the region where this zone is located?
+            if (gameObject.ObjectState is GameObject.eObjectState.Active && gameObject.CurrentRegion == ZoneRegion)
             {
                 // Has the object moved to another zone in the same region, or to another subzone in the same zone?
                 if (newSubZoneIndex == -1)
@@ -463,15 +451,13 @@ namespace DOL.GS
                     }
 
                     SubZone newSubZone = newZone.GetSubZone(newSubZoneIndex);
-
-                    if (subZoneObject.StartSubZoneChange)
-                        CreateSubZoneRelocation(subZoneObject, newZone, newSubZone);
+                    subZoneObject.InitiateSubZoneTransition(newZone, newSubZone);
                 }
-                else if (subZoneObject.StartSubZoneChange)
-                    CreateSubZoneRelocation(subZoneObject, this, _subZones[newSubZoneIndex]);
+                else
+                    subZoneObject.InitiateSubZoneTransition(this, _subZones[newSubZoneIndex]);
             }
-            else if (subZoneObject.StartSubZoneChange)
-                CreateSubZoneRelocation(subZoneObject, null, null);
+            else
+                subZoneObject.InitiateSubZoneTransition(null, null);
 
             void AbortRelocation()
             {
@@ -570,20 +556,6 @@ namespace DOL.GS
             int ydiff = Math.Max(Math.Abs(y - yTop), Math.Abs(y - yBottom));
             long distance = (long) xdiff * xdiff + (long) ydiff * ydiff;
             return distance <= squareRadius;
-        }
-
-        private static void CreateSubZoneRelocation(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
-        {
-            ArgumentNullException.ThrowIfNull(subZoneObject);
-
-            // Work around the fact that AddObject is called during server startup, when the game loop thread pool isn't initialized yet.
-            var subZoneTransition = GameLoop.GameLoopTime == 0 ? new() : PooledObjectFactory.GetForTick<SubZoneTransition>();
-
-            if (!ServiceObjectStore.Add(subZoneTransition.Init(subZoneObject, destinationZone, destinationSubZone)))
-            {
-                if (log.IsErrorEnabled)
-                    log.Error($"SubZoneTransition couldn't be added to ServiceObjectStore. {subZoneObject.Node.Value}");
-            }
         }
 
         #endregion

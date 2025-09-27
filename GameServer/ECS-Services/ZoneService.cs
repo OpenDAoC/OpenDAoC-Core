@@ -104,13 +104,7 @@ namespace DOL.GS
             }
             finally
             {
-                if (subZoneTransition != null)
-                {
-                    subZoneTransition.ReleasePooledObject();
-                    ServiceObjectStore.Remove(subZoneTransition);
-                }
-
-                subZoneObject?.ResetSubZoneChange();
+                subZoneObject?.OnSubZoneTransition();
             }
         }
     }

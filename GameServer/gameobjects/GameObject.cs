@@ -677,6 +677,9 @@ namespace DOL.GS
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendObjectRemove(this);
 
+			if (CurrentZone != null)
+				SubZoneObject?.InitiateSubZoneTransition(null, null);
+
 			CurrentRegion.RemoveObject(this);
 			ClearObjectsInRadiusCache();
 			return true;
