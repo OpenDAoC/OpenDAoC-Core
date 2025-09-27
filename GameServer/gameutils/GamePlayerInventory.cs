@@ -1192,7 +1192,7 @@ namespace DOL.GS
             bool statsUpdated = false;
             bool appearanceUpdated = false;
 
-            lock (InventorySlotLock)
+            lock (Lock)
             {
                 foreach (eInventorySlot updatedSlot in m_changedSlots)
                 {
@@ -1203,7 +1203,7 @@ namespace DOL.GS
                         {
                             if (updatedSlot != visibleSlot)
                                 continue;
-                            
+
                             appearanceUpdated = true;
                             break;
                         }

@@ -1235,21 +1235,15 @@ namespace DOL.GS
 			}
 
 			if (changes <= 0 && m_changedSlots.Count > 0)
-			{
-				lock(m_items) //Inventory must be locked before calling UpdateChangedSlots
-				{
-					UpdateChangedSlots();
-				}
-			}
+				UpdateChangedSlots();
 		}
 
-		public readonly Lock InventorySlotLock = new();
 		/// <summary>
 		/// Updates changed slots, inventory is already locked
 		/// </summary>
 		protected virtual void UpdateChangedSlots()
 		{
-			lock(InventorySlotLock)
+			lock (Lock)
 				m_changedSlots.Clear();
 		}
 
