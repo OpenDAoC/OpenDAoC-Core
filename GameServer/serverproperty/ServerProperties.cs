@@ -1162,12 +1162,6 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Scale pet spell values according to their level?
 		/// </summary>
-		[ServerProperty("npc", "pet_scale_spell_max_level", "Disabled if 0 or less. If greater than 0, this value is the level at which pets cast their spells at 100% effectiveness, so choose spells for pets assuming they're at the level set here. Live is max pet level, 44 or 50 depending on patch.", 44)]
-		public static int PET_SCALE_SPELL_MAX_LEVEL;
-
-		/// <summary>
-		/// Scale pet spell values according to their level?
-		/// </summary>
 		[ServerProperty("npc", "pet_bd_commander_taunt_multiplier", "Percentage of damage that BD commanders get as extra aggro when taunting, e.g. a taunting BD commander gets 150% normal aggro at 50, 200% at 100, 250% at 150 etc. ", 150)]
 		public static int PET_BD_COMMANDER_TAUNT_VALUE;
 
