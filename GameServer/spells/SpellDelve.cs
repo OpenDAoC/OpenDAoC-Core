@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
             foreach (var spec in client.Player.GetSpecList())
             {
                 allStyles ??= new();
-                allStyles.AddRange(spec.PretendStylesForLiving(client.Player, client.Player.MaxLevel));
+                allStyles.AddRange(spec.PretendStylesForLiving(client.Player, GamePlayer.MAX_LEVEL));
             }
 
             if (allStyles == null)

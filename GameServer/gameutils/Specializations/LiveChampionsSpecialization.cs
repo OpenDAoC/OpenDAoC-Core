@@ -81,11 +81,11 @@ namespace DOL.GS
 					
 					foreach (var elem in skills)
 					{
-						elem.Item2.Level = player.MaxLevel;
+						elem.Item2.Level = GamePlayer.MAX_LEVEL;
 						if (!result.ContainsKey((SpellLine)elem.Item2))
 							result.Add((SpellLine)elem.Item2, new List<Skill>());
 						
-						elem.Item1.Level = player.MaxLevel;
+						elem.Item1.Level = GamePlayer.MAX_LEVEL;
 						result[(SpellLine)elem.Item2].Add(elem.Item1);
 					}
 				}
@@ -121,7 +121,7 @@ namespace DOL.GS
 					
 					foreach (var elem in skills)
 					{
-						elem.Item1.Level = player.MaxLevel;
+						elem.Item1.Level = GamePlayer.MAX_LEVEL;
 						result.Add((DOL.GS.Styles.Style)elem.Item1);
 					}
 				}

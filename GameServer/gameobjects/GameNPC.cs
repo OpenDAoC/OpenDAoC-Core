@@ -3302,6 +3302,8 @@ namespace DOL.GS
 
 		public Spell GetScaledSpell(Spell spell)
 		{
+			spell.IsDynamic = true; // We don't know if another NPC will scale it. We have to assume that it will happen.
+
 			if (spell == null || Level < 1)
 				return spell;
 
@@ -3401,7 +3403,6 @@ namespace DOL.GS
 				}
 			}
 
-			spell.IsDynamic = true;
 			return spell;
 		}
 

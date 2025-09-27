@@ -24,7 +24,7 @@ namespace DOL.GS.Spells
 	{
 		private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override string ShortDescription => $"Summon a pet to serve the caster, with a maximum level of {Math.Abs(Spell.Damage)}% of the caster's level (up to {Math.Min((int) (50 * Math.Abs(Spell.Damage) / 100), Spell.Value)}).";
+		public override string ShortDescription => $"Summon a pet to serve the caster, with a maximum level of {Math.Abs(Spell.Damage)}% of the caster's level (up to {Math.Min((int) (GamePlayer.MAX_LEVEL * Math.Abs(Spell.Damage) / 100.0), Spell.Value)}).";
 
 		protected GameSummonedPet m_pet = null;
 

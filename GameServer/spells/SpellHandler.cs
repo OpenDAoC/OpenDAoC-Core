@@ -2300,7 +2300,7 @@ namespace DOL.GS.Spells
 				else
 					spellLevel = Spell.Level;
 
-				spellLevel = Math.Min(playerCaster.MaxLevel, spellLevel + playerCaster.GetModified(eProperty.SpellLevel));
+				spellLevel = Math.Min(GamePlayer.MAX_LEVEL, spellLevel + playerCaster.GetModified(eProperty.SpellLevel));
 			}
 
 			/*

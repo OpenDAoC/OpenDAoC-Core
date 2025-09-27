@@ -4306,23 +4306,15 @@ namespace DOL.GS
 
         #region Level/Experience
 
-        /// <summary>
-        /// What is the maximum level a player can achieve?
-        /// To alter this in a custom GamePlayer class you must override this method and
-        /// provide your own XPForLevel array with MaxLevel + 1 entries
-        /// </summary>
-        public virtual byte MaxLevel
-        {
-            get { return 50; }
-        }
+        public const byte MAX_LEVEL = 50;
 
         /// <summary>
         /// How much experience is needed for a given level?
         /// </summary>
         public virtual long GetExperienceNeededForLevel(int level)
         {
-            if (level > MaxLevel)
-                return GetExperienceAmountForLevel(MaxLevel);
+            if (level > MAX_LEVEL)
+                return GetExperienceAmountForLevel(MAX_LEVEL);
 
             if (level <= 0)
                 return GetExperienceAmountForLevel(0);
@@ -4461,7 +4453,7 @@ namespace DOL.GS
                 if (Experience < ExperienceForCurrentLevel)
                     return 0;
                 //No progess after maximum level
-                if (Level > MaxLevel)
+                if (Level > MAX_LEVEL)
                     return 0;
                 return (ushort)(1000 * (Experience - ExperienceForCurrentLevel) / (ExperienceForNextLevel - ExperienceForCurrentLevel));
             }
@@ -4496,12 +4488,12 @@ namespace DOL.GS
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.TalkToTrainer"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     }
                 }
-                else if (Level >= 40 && Level < MaxLevel && !IsLevelSecondStage && Experience >= ExperienceForCurrentLevelSecondStage)
+                else if (Level >= 40 && Level < MAX_LEVEL && !IsLevelSecondStage && Experience >= ExperienceForCurrentLevelSecondStage)
                 {
                     OnLevelSecondStage();
                     Notify(GamePlayerEvent.LevelSecondStage, this);
                 }
-                else if (Level < MaxLevel && Experience >= ExperienceForNextLevel)
+                else if (Level < MAX_LEVEL && Experience >= ExperienceForNextLevel)
                 {
                     Level++;
                 }
@@ -4619,12 +4611,12 @@ namespace DOL.GS
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.TalkToTrainer"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     }
                 }
-                else if (Level >= 40 && Level < MaxLevel && !IsLevelSecondStage && Experience >= ExperienceForCurrentLevelSecondStage)
+                else if (Level >= 40 && Level < MAX_LEVEL && !IsLevelSecondStage && Experience >= ExperienceForCurrentLevelSecondStage)
                 {
                     OnLevelSecondStage();
                     Notify(GamePlayerEvent.LevelSecondStage, this);
                 }
-                else if (Level < MaxLevel && Experience >= ExperienceForNextLevel)
+                else if (Level < MAX_LEVEL && Experience >= ExperienceForNextLevel)
                 {
                     Level++;
                 }
@@ -4843,7 +4835,7 @@ namespace DOL.GS
 
             }
 
-            if (Level == MaxLevel)
+            if (Level == MAX_LEVEL)
             {
                 if (GameServer.ServerRules.CanGenerateNews(this))
                 {
@@ -6121,11 +6113,11 @@ namespace DOL.GS
                 int xpLossPercent;
                 if (Level < 40)
                 {
-                    xpLossPercent = MaxLevel - Level;
+                    xpLossPercent = MAX_LEVEL - Level;
                 }
                 else
                 {
-                    xpLossPercent = MaxLevel - 40;
+                    xpLossPercent = MAX_LEVEL - 40;
                 }
 
                 if (killingBlowByEnemyRealm || InCombatPvP || killer?.Realm == Realm)
@@ -6992,7 +6984,7 @@ namespace DOL.GS
                                 {
                                     if (potionEffectLine != null)
                                     {
-                                        int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
+                                        int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MAX_LEVEL, useItem.Level);
 
                                         if (requiredLevel <= Level)
                                         {
@@ -7259,7 +7251,7 @@ namespace DOL.GS
         /// <param name="type">1 == use1, 2 == use2</param>
         protected virtual void UseItemCharge(DbInventoryItem useItem, int type)
         {
-            int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
+            int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MAX_LEVEL, useItem.Level);
 
             if (requiredLevel > Level)
             {
@@ -7400,7 +7392,7 @@ namespace DOL.GS
 
                 if (spell != null)
                 {
-                    int requiredLevel = item.Template.LevelRequirement > 0 ? item.Template.LevelRequirement : Math.Min(MaxLevel, item.Level);
+                    int requiredLevel = item.Template.LevelRequirement > 0 ? item.Template.LevelRequirement : Math.Min(MAX_LEVEL, item.Level);
 
                     if (requiredLevel > Level)
                     {
@@ -10117,7 +10109,7 @@ namespace DOL.GS
                 if (i > 5) allpoints += CharacterClass.SpecPointsMultiplier * i / 10; //normal levels
                 if (i > 40) allpoints += CharacterClass.SpecPointsMultiplier * (i - 1) / 20; //half levels
             }
-            if (IsLevelSecondStage && Level != MaxLevel)
+            if (IsLevelSecondStage && Level != MAX_LEVEL)
                 allpoints += CharacterClass.SpecPointsMultiplier * Level / 20; // add current half level
 
             // calc spec points player have (autotrain is not anymore processed here - 1.87 livelike)
