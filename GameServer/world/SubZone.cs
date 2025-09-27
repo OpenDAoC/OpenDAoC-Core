@@ -86,13 +86,12 @@ namespace DOL.GS
         public SubZoneObject(GameObject obj)
         {
             Node = new(obj);
-            _currentSubZoneTransition = new();
         }
 
         public bool InitiateSubZoneTransition(Zone destinationZone, SubZone destinationSubZone)
         {
             // If there's a pending subzone transition already, update it.
-            if (_currentSubZoneTransition?.ServiceObjectId.IsSet == true)
+            if (_currentSubZoneTransition != null)
             {
                 _currentSubZoneTransition.Init(this, destinationZone, destinationSubZone);
                 return true;
@@ -120,8 +119,8 @@ namespace DOL.GS
             if (_currentSubZoneTransition == null)
                 return;
 
-            _currentSubZoneTransition.ReleasePooledObject();
             ServiceObjectStore.Remove(_currentSubZoneTransition);
+            _currentSubZoneTransition.ReleasePooledObject();
             _currentSubZoneTransition = null;
         }
 

@@ -115,7 +115,7 @@ namespace DOL.GS
         public SubZoneObject SubZoneObject { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; set; } =  new(ServiceObjectType.SubZoneTransition);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.SubZoneTransition);
 
         public SubZoneTransition() { }
 
