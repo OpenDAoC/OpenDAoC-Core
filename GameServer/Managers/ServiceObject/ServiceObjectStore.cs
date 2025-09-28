@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -10,20 +11,21 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static Dictionary<ServiceObjectType, IServiceObjectArray> _serviceObjectArrays = new()
-        {
-            { ServiceObjectType.Client, new ServiceObjectArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
-            { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
-            { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
-            { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
-            { ServiceObjectType.Effect, new ServiceObjectArray<ECSGameEffect>(10000) },
-            { ServiceObjectType.EffectListComponent, new ServiceObjectArray<EffectListComponent>(1250) },
-            { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
-            { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },
-            { ServiceObjectType.SubZoneObject, new ServiceObjectArray<SubZoneObject>(ServerProperties.Properties.MAX_ENTITIES) },
-            { ServiceObjectType.LivingBeingKilled, new ServiceObjectArray<LivingBeingKilled>(200) },
-            { ServiceObjectType.Timer, new ServiceObjectArray<ECSGameTimer>(500) }
-        };
+        private static FrozenDictionary<ServiceObjectType, IServiceObjectArray> _serviceObjectArrays =
+            new Dictionary<ServiceObjectType, IServiceObjectArray>()
+            {
+                { ServiceObjectType.Client, new ServiceObjectArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
+                { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
+                { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
+                { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
+                { ServiceObjectType.Effect, new ServiceObjectArray<ECSGameEffect>(10000) },
+                { ServiceObjectType.EffectListComponent, new ServiceObjectArray<EffectListComponent>(1250) },
+                { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
+                { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },
+                { ServiceObjectType.SubZoneObject, new ServiceObjectArray<SubZoneObject>(ServerProperties.Properties.MAX_ENTITIES) },
+                { ServiceObjectType.LivingBeingKilled, new ServiceObjectArray<LivingBeingKilled>(200) },
+                { ServiceObjectType.Timer, new ServiceObjectArray<ECSGameTimer>(500) }
+            }.ToFrozenDictionary();
 
         public static bool Add<T>(T serviceObject) where T : class, IServiceObject
         {
