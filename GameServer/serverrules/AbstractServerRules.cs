@@ -1596,6 +1596,9 @@ namespace DOL.GS.ServerRules
             if (Properties.ENABLE_WARMAPMGR && killer is GamePlayer && killer.CurrentRegion.ID == 163)
                 WarMapMgr.AddFight((byte) killer.CurrentZone.ID, killer.X, killer.Y, (byte) killer.Realm, (byte) killedPlayer.Realm);
 
+            killedPlayer.Statistics.AddToDeaths();
+            killedPlayer.LastDeathRealmPoints = 0; // Reset first in case this is a PvE death for example.
+
             ProcessXpGainers(killedPlayer,
                 out double totalDamage,
                 out Dictionary<GamePlayer, EntityCountTotalDamagePair> playerCountAndDamage,
@@ -1619,7 +1622,10 @@ namespace DOL.GS.ServerRules
                 }
             }
 
-            ProcessKilledPlayerStats();
+            killedPlayer.DeathsPvP++;
+
+            if (isWorthAnything)
+                killedPlayer.LastDeathRealmPoints = killedPlayer.RealmPointsValue;
 
             static void ProcessXpGainers(GamePlayer killedPlayer,
                 out double totalDamage,
@@ -1685,13 +1691,6 @@ namespace DOL.GS.ServerRules
                     }
                 }
             }
-
-            void ProcessKilledPlayerStats()
-            {
-                killedPlayer.LastDeathRealmPoints = isWorthAnything ? killedPlayer.RealmPointsValue : 0;
-                killedPlayer.DeathsPvP++;
-                killedPlayer.Statistics.AddToDeaths();
-            }
         }
 
         private static void AwardPlayerOnPlayerKill(GamePlayer playerToAward,
@@ -1704,7 +1703,6 @@ namespace DOL.GS.ServerRules
         {
             // Modify rewards (base XP, RP, BP) based on damage percent inflicted by the battlegroup, group, or player.
             EntityCountTotalDamagePair entityCountTotalDamagePair;
-            BattleGroup battlegroup = playerToAward.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
             if (playerToAward.Group != null)
                 groupCountAndDamage.TryGetValue(playerToAward.Group, out entityCountTotalDamagePair);
