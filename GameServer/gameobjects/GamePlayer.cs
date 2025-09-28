@@ -1346,7 +1346,7 @@ namespace DOL.GS
         /// <summary>
         /// tick when player is died
         /// </summary>
-        protected long m_deathTick;
+        public long DeathTick { get; private set; }
 
         /// <summary>
         /// choosed the player to release as soon as possible?
@@ -1452,7 +1452,7 @@ namespace DOL.GS
                 }
 
                 m_releaseType = releaseCommand;
-                long diff = m_deathTick - GameLoop.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
+                long diff = DeathTick - GameLoop.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
 
                 if (diff >= 1000)
                 {
@@ -1762,7 +1762,7 @@ namespace DOL.GS
         {
             if (IsAlive)
                 return 0;
-            long diffToRelease = GameLoop.GameLoopTime - m_deathTick;
+            long diffToRelease = GameLoop.GameLoopTime - DeathTick;
             if (m_automaticRelease && diffToRelease > RELEASE_MINIMUM_WAIT * 1000)
             {
                 Release(m_releaseType, true);
@@ -6091,7 +6091,7 @@ namespace DOL.GS
 
                 m_automaticRelease = m_releaseType == eReleaseType.Duel;
                 m_releasePhase = 0;
-                m_deathTick = GameLoop.GameLoopTime; // we use realtime, because timer window is realtime
+                DeathTick = GameLoop.GameLoopTime; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
                 m_releaseTimer = new ECSGameTimer(this);
