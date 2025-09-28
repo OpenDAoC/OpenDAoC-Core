@@ -50,20 +50,17 @@ namespace DOL.GS
                 if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref Instance.EntityCount);
 
-                LinkedListNode<GameObject> node = subZoneObject.Node;
                 SubZone currentSubZone = subZoneObject.CurrentSubZone;
-                Zone currentZone = currentSubZone?.ParentZone;
                 SubZone destinationSubZone = subZoneObject.DestinationSubZone;
+
+                // No-op if we're not changing subzone.
+                if (currentSubZone == destinationSubZone)
+                    return;
+
+                LinkedListNode<GameObject> node = subZoneObject.Node;
+                Zone currentZone = currentSubZone?.ParentZone;
                 Zone destinationZone = subZoneObject.DestinationZone;
                 bool changingZone = currentZone != destinationZone;
-
-                if (currentSubZone == destinationSubZone)
-                {
-                    if (log.IsWarnEnabled)
-                        log.Warn($"Cancelled a subzone change because both subzones are the same ({nameof(currentZone)}: {currentZone?.ID}) ({nameof(destinationZone)}: {destinationZone?.ID}) (Object: {node.Value})");
-
-                    return;
-                }
 
                 eGameObjectType objectType = node.Value.GameObjectType;
 

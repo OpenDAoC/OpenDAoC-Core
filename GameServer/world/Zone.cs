@@ -307,11 +307,7 @@ namespace DOL.GS
                 return false;
             }
 
-            SubZoneObject subZoneObject = gameObject.SubZoneObject;
-
-            if (subZoneObject != null && subZoneObject.CurrentSubZone != subZone)
-                subZoneObject.InitiateSubZoneTransition(this, subZone);
-
+            gameObject.SubZoneObject?.InitiateSubZoneTransition(this, subZone);
             return true;
         }
 
