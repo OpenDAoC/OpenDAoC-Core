@@ -20,7 +20,7 @@ namespace DOL.GS
             { ServiceObjectType.EffectListComponent, new ServiceObjectArray<EffectListComponent>(1250) },
             { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
             { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },
-            { ServiceObjectType.SubZoneTransition, new ServiceObjectArray<SubZoneTransition>(ServerProperties.Properties.MAX_ENTITIES) },
+            { ServiceObjectType.SubZoneObject, new ServiceObjectArray<SubZoneObject>(ServerProperties.Properties.MAX_ENTITIES) },
             { ServiceObjectType.LivingBeingKilled, new ServiceObjectArray<LivingBeingKilled>(200) },
             { ServiceObjectType.Timer, new ServiceObjectArray<ECSGameTimer>(500) }
         };

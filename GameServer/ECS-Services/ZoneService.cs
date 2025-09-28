@@ -11,7 +11,7 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private List<SubZoneTransition> _list;
+        private List<SubZoneObject> _list;
 
         public static ZoneService Instance { get; }
 
@@ -27,7 +27,7 @@ namespace DOL.GS
 
             try
             {
-                _list = ServiceObjectStore.UpdateAndGetAll<SubZoneTransition>(ServiceObjectType.SubZoneTransition, out lastValidIndex);
+                _list = ServiceObjectStore.UpdateAndGetAll<SubZoneObject>(ServiceObjectType.SubZoneObject, out lastValidIndex);
             }
             catch (Exception e)
             {
@@ -43,21 +43,18 @@ namespace DOL.GS
                 Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
         }
 
-        private static void TickInternal(SubZoneTransition subZoneTransition)
+        private static void TickInternal(SubZoneObject subZoneObject)
         {
-            SubZoneObject subZoneObject = null;
-
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref Instance.EntityCount);
 
-                subZoneObject = subZoneTransition.SubZoneObject;
                 LinkedListNode<GameObject> node = subZoneObject.Node;
                 SubZone currentSubZone = subZoneObject.CurrentSubZone;
                 Zone currentZone = currentSubZone?.ParentZone;
-                SubZone destinationSubZone = subZoneTransition.DestinationSubZone;
-                Zone destinationZone = subZoneTransition.DestinationZone;
+                SubZone destinationSubZone = subZoneObject.DestinationSubZone;
+                Zone destinationZone = subZoneObject.DestinationZone;
                 bool changingZone = currentZone != destinationZone;
 
                 if (currentSubZone == destinationSubZone)
@@ -100,34 +97,12 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, subZoneTransition, subZoneTransition.SubZoneObject?.Node?.Value);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, subZoneObject, subZoneObject.Node?.Value);
             }
             finally
             {
                 subZoneObject?.OnSubZoneTransition();
             }
         }
-    }
-
-    // Temporary objects to be added to `ServiceObjectStore` and consumed by `ZoneService`, representing an object to be moved from one 'SubZone' to another.
-    public class SubZoneTransition : IServiceObject, IPooledObject<SubZoneTransition>
-    {
-        public SubZoneObject SubZoneObject { get; private set; }
-        public Zone DestinationZone { get; private set; }
-        public SubZone DestinationSubZone { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.SubZoneTransition);
-
-        public SubZoneTransition() { }
-
-        public SubZoneTransition Init(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
-        {
-            SubZoneObject = subZoneObject;
-            DestinationZone = destinationZone;
-            DestinationSubZone = destinationSubZone;
-            return this;
-        }
-
-        // IPooledObject<T> implementation.
-        public long IssuedTimestamp { get; set; }
     }
 }

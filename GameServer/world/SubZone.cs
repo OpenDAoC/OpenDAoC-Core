@@ -44,7 +44,7 @@ namespace DOL.GS
 
             _objects[(int) node.Value.GameObjectType].Remove(node, OnRemoveObject);
 
-            void OnRemoveObject(LinkedListNode<GameObject> node)
+            static void OnRemoveObject(LinkedListNode<GameObject> node)
             {
                 node.Value.SubZoneObject.CurrentSubZone = null;
             }
@@ -73,55 +73,84 @@ namespace DOL.GS
         public WriteLockedLinkedList<GameObject> this[eGameObjectType objectType] => _objects[(int) objectType];
     }
 
-    // A wrapper for a 'LinkedListNode<GameObject>'.
-    public class SubZoneObject
+    // This class serves two purposes:
+    // * Wraps a `LinkedListNode<GameObject>`, representing a game object in a `SubZone`.
+    // * Serves as an object to be added to `ServiceObjectStore` and consumed by `ZoneService`, to move the game object from one `SubZone` to another.
+    public class SubZoneObject : IServiceObject
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private SubZoneTransition _currentSubZoneTransition { get; set; }
+        private bool _isInitiatingTransition; // Guard. Only true for the duration of the `InitiateSubZoneTransition` method execution.
+        private bool _isTransitionQueued;     // Persistent state flag indicating that the object will be processed by `ZoneService`.
 
         public LinkedListNode<GameObject> Node { get; }
         public SubZone CurrentSubZone { get; set; }
+        public Zone DestinationZone { get; private set; }
+        public SubZone DestinationSubZone { get; private set; }
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.SubZoneObject);
 
         public SubZoneObject(GameObject obj)
         {
             Node = new(obj);
         }
 
-        public bool InitiateSubZoneTransition(Zone destinationZone, SubZone destinationSubZone)
+        public void InitiateSubZoneTransition(Zone destinationZone, SubZone destinationSubZone)
         {
-            // If there's a pending subzone transition already, update it.
-            if (_currentSubZoneTransition != null)
+            // Disallow concurrent calls.
+            if (Interlocked.CompareExchange(ref _isInitiatingTransition, true, false) != false)
             {
-                _currentSubZoneTransition.Init(this, destinationZone, destinationSubZone);
-                return true;
+                if (log.IsWarnEnabled)
+                    log.Warn($"Concurrent call to {nameof(InitiateSubZoneTransition)} detected for {Node.Value}.");
+
+                return;
             }
 
-            // Work around the fact that AddObject is called during server startup, when the game loop thread pool isn't initialized yet.
-            SubZoneTransition subZoneTransition = GameLoop.GameLoopTime == 0 ? new() : PooledObjectFactory.GetForTick<SubZoneTransition>();
-
-            if (!ServiceObjectStore.Add(subZoneTransition.Init(this, destinationZone, destinationSubZone)))
+            try
             {
-                if (log.IsErrorEnabled)
-                    log.Error($"SubZoneTransition couldn't be added to ServiceObjectStore. {Node.Value}");
+                DestinationZone = destinationZone;
+                DestinationSubZone = destinationSubZone;
 
-                return false;
+                // Early out if there's already a pending transition.
+                if (_isTransitionQueued)
+                    return;
+
+                if (!ServiceObjectStore.Add(this))
+                {
+                    // If adding failed, we must revert the state to be non-pending.
+                    if (log.IsErrorEnabled)
+                        log.Error($"SubZone transition for {Node.Value} couldn't be added to {nameof(ServiceObjectStore)}.");
+
+                    DestinationZone = null;
+                    DestinationSubZone = null;
+                    return;
+                }
+
+                _isTransitionQueued = true;
             }
-
-            _currentSubZoneTransition = subZoneTransition;
-            return true;
+            finally
+            {
+                Interlocked.Exchange(ref _isInitiatingTransition, false);
+            }
         }
 
         public void OnSubZoneTransition()
         {
             // Only meant to be called by the zone service.
 
-            if (_currentSubZoneTransition == null)
+            if (!_isTransitionQueued)
                 return;
 
-            ServiceObjectStore.Remove(_currentSubZoneTransition);
-            _currentSubZoneTransition.ReleasePooledObject();
-            _currentSubZoneTransition = null;
+            if (!ServiceObjectStore.Remove(this))
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"SubZone transition for {Node.Value} couldn't be removed from {nameof(ServiceObjectStore)}.");
+
+                return;
+            }
+
+            _isTransitionQueued = false;
+            DestinationZone = null;
+            DestinationSubZone = null;
         }
 
         public void CheckForRelocation()

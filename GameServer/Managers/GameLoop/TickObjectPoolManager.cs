@@ -12,8 +12,7 @@ namespace DOL.GS
             {
                 { typeof(GSPacketIn), PooledObjectKey.InPacket },
                 { typeof(GSTCPPacketOut), PooledObjectKey.TcpOutPacket },
-                { typeof(GSUDPPacketOut), PooledObjectKey.UdpOutPacket },
-                { typeof(SubZoneTransition), PooledObjectKey.SubZoneTransition }
+                { typeof(GSUDPPacketOut), PooledObjectKey.UdpOutPacket }
             }.ToFrozenDictionary();
 
         private FrozenDictionary<PooledObjectKey, TickPoolBase> _pools =
@@ -21,8 +20,7 @@ namespace DOL.GS
             {
                 { PooledObjectKey.InPacket, new TickObjectPool<GSPacketIn>() },
                 { PooledObjectKey.TcpOutPacket, new TickObjectPool<GSTCPPacketOut>() },
-                { PooledObjectKey.UdpOutPacket, new TickObjectPool<GSUDPPacketOut>() },
-                { PooledObjectKey.SubZoneTransition, new TickObjectPool<SubZoneTransition>() }
+                { PooledObjectKey.UdpOutPacket, new TickObjectPool<GSUDPPacketOut>() }
             }.ToFrozenDictionary();
 
         public T GetForTick<T>() where T : IPooledObject<T>, new()

@@ -10,7 +10,7 @@
         EffectListComponent,
         MovementComponent,
         CraftComponent,
-        SubZoneTransition,
+        SubZoneObject,
         LivingBeingKilled,
         Timer
     }
