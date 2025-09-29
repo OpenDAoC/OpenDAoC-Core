@@ -11,7 +11,7 @@ namespace DOL.GS
             // Tick here if the effect hasn't ticked yet.
             // This allows two poisons to do damage when being applied during the same server tick.
             // Otherwise, only one will call `OnEffectPulse`.
-            if (SpellHandler is not DoTSpellHandler dotHandler || !dotHandler.FirstTick)
+            if (SpellHandler is not DoTSpellHandler dotHandler || !dotHandler.IsFirstTick(Owner))
                 return;
 
             OnEffectPulse();

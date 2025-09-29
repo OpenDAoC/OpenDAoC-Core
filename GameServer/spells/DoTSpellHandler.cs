@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -10,9 +11,11 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageOverTime)]
     public class DoTSpellHandler : SpellHandler
     {
+        private const int UNITIALIZED_CRIT_PERCENT = -1;
+
+        private Dictionary<GameLiving, double> _criticalDamagePercentByTarget = new();
+
         public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds for {Spell.Duration / 1000.0} seconds.";
-        public int CriticalDamage { get; protected set; }
-        public bool FirstTick { get; private set; } = true;
 
         public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
@@ -84,8 +87,8 @@ namespace DOL.GS.Spells
             else
                 MessageToCaster(string.Format(LanguageMgr.GetTranslation(player.Client, "DoTSpellHandler.SendDamageMessages.YourHitsFor", Spell.Name, ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_Spell);
 
-            if (CriticalDamage > 0)
-                MessageToCaster($"You critically hit for an additional {CriticalDamage} damage! ({m_caster.DebuffCriticalChance}%)", eChatType.CT_Spell);
+            if (ad.CriticalDamage > 0)
+                MessageToCaster($"You critically hit for an additional {ad.CriticalDamage} damage! ({m_caster.DebuffCriticalChance}%)", eChatType.CT_Spell);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -133,26 +136,50 @@ namespace DOL.GS.Spells
             return 0;
         }
 
+        public override List<GameLiving> SelectTargets(GameObject castTarget)
+        {
+            // Intercept the target list for critical damage percent calculation, which will be reused on each tick.
+            List<GameLiving> _targets = base.SelectTargets(castTarget);
+            _criticalDamagePercentByTarget = new();
+
+            foreach (GameLiving target in _targets)
+                _criticalDamagePercentByTarget[target] = UNITIALIZED_CRIT_PERCENT;
+
+            return _targets;
+        }
+
         public override void OnDirectEffect(GameLiving target)
         {
             if (target == null || !target.IsAlive || target.ObjectState is not eObjectState.Active)
                 return;
 
             AttackData ad = CalculateDamageToTarget(target);
-            ad.CriticalDamage = CalculateCriticalDamage(ad);
-            ad.CausesCombat = FirstTick;
+
+            if (!_criticalDamagePercentByTarget.TryGetValue(target, out double criticalDamagePercent))
+                return; // Shouldn't happen.
+
+            if (criticalDamagePercent == UNITIALIZED_CRIT_PERCENT)
+            {
+                // First tick.
+                criticalDamagePercent = CalculateCriticalDamagePercent(ad);
+                _criticalDamagePercentByTarget[target] = criticalDamagePercent;
+                ad.CausesCombat = true;
+            }
+            else
+                ad.CausesCombat = false;
+
+            ad.CriticalDamage = (int) (ad.Damage * criticalDamagePercent);
             SendDamageMessages(ad);
             DamageTarget(ad, false);
-
-            if (FirstTick)
-                FirstTick = false;
         }
 
-        private int CalculateCriticalDamage(AttackData ad)
+        public bool IsFirstTick(GameLiving target)
         {
-            if (CriticalDamage > 0 || !FirstTick)
-                return CriticalDamage;
+            return _criticalDamagePercentByTarget.TryGetValue(target, out double criticalDamagePercent) && criticalDamagePercent == UNITIALIZED_CRIT_PERCENT;
+        }
 
+        private double CalculateCriticalDamagePercent(AttackData ad)
+        {
             ad.CriticalChance = Math.Min(50, Caster.DebuffCriticalChance);
 
             if (ad.CriticalChance <= 0)
@@ -165,9 +192,9 @@ namespace DOL.GS.Spells
 
             // Crit damage for DoTs is up to 100% against players too.
             if (ad.CriticalChance > randNum && ad.Damage > 0)
-                CriticalDamage = Util.Random(ad.Damage / 10, ad.Damage);
+                return 0.1 + Util.RandomDoubleIncl() * 0.9;
 
-            return CriticalDamage;
+            return 0;
         }
 
         protected override double CalculateBuffDebuffEffectiveness()
