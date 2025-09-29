@@ -11997,11 +11997,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (!TargetInView)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.CantSeeTarget"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                return;
-            }
+            // The attack command did not require the target to be in view in 1.65. This was apparently changed in 1.70z.
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.KillTarget", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.Attack(TargetObject);
