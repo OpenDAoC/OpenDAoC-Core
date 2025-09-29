@@ -150,7 +150,7 @@ namespace DOL.GS.Spells
 
             int effectiveAmount = target.ChangeHealth(Caster, eHealthChangeType.Spell, (int) amount);
 
-            if (effectiveAmount == 0)
+            if (effectiveAmount <= 0)
             {
                 if (Spell.Pulse == 0)
                 {
