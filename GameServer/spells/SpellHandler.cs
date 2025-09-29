@@ -2162,9 +2162,8 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.Spell.EffectGroup;
-			if (compare.Spell.SpellType != Spell.SpellType)
-				return false;
-			return true;
+
+			return Spell.SpellType == compare.Spell.SpellType;
 		}
 
 		/// <summary>

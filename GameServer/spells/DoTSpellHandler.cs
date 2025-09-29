@@ -39,7 +39,18 @@ namespace DOL.GS.Spells
 
         public override bool HasConflictingEffectWith(ISpellHandler compare)
         {
-            return Spell.SpellType == compare.Spell.SpellType && Spell.DamageType == compare.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellLine.IsBaseLine;
+            if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
+                return Spell.EffectGroup == compare.Spell.EffectGroup;
+
+            if (Spell.SpellType != compare.Spell.SpellType)
+                return false;
+
+            // For Cabalist, Bonedancer and Mentalist, we know that one baseline and one specline DoT can coexist.
+            // However, this doesn't apply to Shaman's DoTs before 1.90. Meaning a simple check on the spell line is not enough.
+            // Checking the frequency instead preserves the ability for those classes to have one baseline and one specline DoT coexist, excepted Shaman.
+            // Other rules are unknown: Poison vs spell DoTs vs procs vs other specializations lines...
+            // Damage type appears to be irrelevant and simply a guess based on the fact that some weapon procs should stack with poisons.
+            return Spell.Frequency == compare.Spell.Frequency;
         }
 
         public override AttackData CalculateDamageToTarget(GameLiving target)
