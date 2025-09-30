@@ -58,32 +58,9 @@ namespace DOL.GS
         public ref Vector3 DestinationForClient => ref _destinationForClient;
         public ref Vector3 PositionForClient => ref _positionForClientTick == GameLoop.GameLoopTime ? ref _positionForClient : ref _ownerPosition;
 
-        public int X
-        {
-            get
-            {
-                UpdatePosition();
-                return (int) Math.Round(_ownerPosition.X);
-            }
-        }
-
-        public int Y
-        {
-            get
-            {
-                UpdatePosition();
-                return (int) Math.Round(_ownerPosition.Y);
-            }
-        }
-
-        public int Z
-        {
-            get
-            {
-                UpdatePosition();
-                return (int) Math.Round(_ownerPosition.Z);
-            }
-        }
+        public int X => (int) Math.Round(_ownerPosition.X);
+        public int Y => (int) Math.Round(_ownerPosition.Y);
+        public int Z => (int) Math.Round(_ownerPosition.Z);
 
         public NpcMovementComponent(GameNPC owner) : base(owner)
         {
@@ -400,6 +377,7 @@ namespace DOL.GS
 
         public void ForceUpdatePosition()
         {
+            // Must be called every time the NPC is teleported or moved by other means than this component.
             _ownerPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
             _positionForClient = _ownerPosition;
             _lastPositionUpdateTick = GameLoop.GameLoopTime;

@@ -485,7 +485,9 @@ namespace DOL.GS.Keeps
         public override void LoadFromDatabase(DataObject mobobject)
 		{
 			base.LoadFromDatabase(mobobject);
-			foreach (AbstractArea area in this.CurrentAreas)
+			movementComponent.ForceUpdatePosition(); // Ensures `CurrentAreas` returns something.
+
+			foreach (AbstractArea area in CurrentAreas)
 			{
 				if (area is KeepArea)
 				{

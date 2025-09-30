@@ -90,6 +90,8 @@ namespace DOL.GS.GameEvents
                     TranslationId = translationId
                 };
 
+                guard.movementComponent.ForceUpdatePosition(); // Ensures `CurrentAreas` returns something.
+
                 foreach (IArea area in guard.CurrentAreas)
                 {
                     if (area is not KeepArea keepArea)

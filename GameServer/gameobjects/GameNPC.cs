@@ -1954,6 +1954,8 @@ namespace DOL.GS
 		/// <returns>true if the npc has been successfully added</returns>
 		public override bool AddToWorld()
 		{
+			movementComponent.ForceUpdatePosition();
+
 			if (!base.AddToWorld())
 				return false;
 
@@ -2018,7 +2020,6 @@ namespace DOL.GS
 			if (IsStealthed)
 				WasStealthed = true;
 
-			movementComponent.ForceUpdatePosition(); // Ensure a correct initial state. Movement component can't do it itself.
 			ClientService.CreateObjectForPlayers(this);
 			return true;
 		}
