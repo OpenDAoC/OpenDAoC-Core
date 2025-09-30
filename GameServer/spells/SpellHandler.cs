@@ -2904,7 +2904,10 @@ namespace DOL.GS.Spells
 
 				// We can't retrieve the skill from the spell, so we have to use the currently equipped weapon instead.
 				if (weapon != null)
-					spec = Caster.GetModifiedFromItems(SkillBase.SpecToSkill(SkillBase.ObjectTypeToSpec((eObjectType) weapon.Object_Type)));
+				{
+					string specName = SkillBase.ObjectTypeToSpec((eObjectType) weapon.Object_Type);
+					spec = specName == null ? 0 : Caster.GetModifiedFromItems(SkillBase.SpecToSkill(specName));
+				}
 				else
 					spec = 0;
 
