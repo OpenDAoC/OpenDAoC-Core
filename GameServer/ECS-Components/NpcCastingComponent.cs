@@ -25,7 +25,7 @@ namespace DOL.GS
             GameLiving target,
             GamePlayer losChecker)
         {
-            if (losChecker == null || spell.Range == 0)
+            if (spell.Range == 0 || losChecker == null || target == null)
                 return base.RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, losChecker);
 
             SpellWaitingForLosCheck spellWaitingForLosCheck = new(spell, spellLine);
