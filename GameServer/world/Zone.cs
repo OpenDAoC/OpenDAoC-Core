@@ -17,7 +17,7 @@ namespace DOL.GS
 
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const ushort SUBZONE_NBR_ON_ZONE_SIDE = 16; // MUST BE A POWER OF 2 (current implementation limit is 128 inclusive).
+        private const ushort SUBZONE_NBR_ON_ZONE_SIDE = 32; // MUST BE A POWER OF 2 (current implementation limit is 128 inclusive).
         private const ushort SUBZONE_NBR = SUBZONE_NBR_ON_ZONE_SIDE * SUBZONE_NBR_ON_ZONE_SIDE;
         private const ushort SUBZONE_SIZE = 65536 / SUBZONE_NBR_ON_ZONE_SIDE;
         private static readonly ushort SUBZONE_SHIFT = (ushort)Math.Round(Math.Log(SUBZONE_SIZE) / Math.Log(2)); // To get log in base 2.
@@ -385,7 +385,7 @@ namespace DOL.GS
                     {
                         GameObject gameObject = node.Value;
 
-                        if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius))
+                        if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject, sqRadius))
                             listToAppendTo.Add(gameObject as T);
                     }
                 }
@@ -476,22 +476,22 @@ namespace DOL.GS
 
         #endregion
 
-        public static bool IsWithinSquaredRadius(int x1, int y1, int z1, int x2, int y2, int z2, uint sqDistance)
+        private static bool IsWithinSquaredRadius(int x, int y, int z, GameObject gameObject, uint sqDistance)
         {
-            int xDiff = x1 - x2;
-            long dist = (long) xDiff * xDiff;
+            long xDiff = x - gameObject.X;
+            long dist = xDiff * xDiff;
 
             if (dist > sqDistance)
                 return false;
 
-            int yDiff = y1 - y2;
-            dist += (long) yDiff * yDiff;
+            long yDiff = y - gameObject.Y;
+            dist += yDiff * yDiff;
 
             if (dist > sqDistance)
                 return false;
 
-            int zDiff = z1 - z2;
-            dist += (long) zDiff * zDiff;
+            long zDiff = z - gameObject.Z;
+            dist += zDiff * zDiff;
 
             return dist <= sqDistance;
         }
