@@ -9,7 +9,7 @@ namespace DOL.GS
         /// The name of the owner
         /// </summary>
         public override string OwnerName => $"Pulse: {SpellHandler.Spell.Name}";
-        public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = [];
+        public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = []; // May contain effects that were replaced but still marked as active.
 
         public ECSPulseEffect(in ECSGameEffectInitParams initParams, int pulseFreq)
             : base (initParams)

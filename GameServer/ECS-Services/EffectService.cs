@@ -168,24 +168,21 @@ namespace DOL.GS
                             (spellHandler as SpellHandler).SendCastAnimation();
                     }
 
-                    List<GameLiving> livings = null;
-
                     foreach (var pair in pulseEffect.ChildEffects)
                     {
                         ECSGameSpellEffect childEffect = pair.Value;
 
                         if (GameServiceUtils.ShouldTick(childEffect.ExpireTick))
                         {
-                            livings ??= GameLoop.GetListForTick<GameLiving>();
-                            livings.Add(pair.Key);
-                            childEffect.Stop();
-                        }
-                    }
+                            // Don't stop effects that were replaced.
+                            // `ChildEffects` isn't updated when this happens and still keeps a reference.
+                            // Primarily affects speed songs.
+                            if (childEffect.IsBeingReplaced)
+                                continue;
 
-                    if (livings != null)
-                    {
-                        foreach (GameLiving living in livings)
-                            pulseEffect.ChildEffects.Remove(living);
+                            childEffect.Stop();
+                            pulseEffect.ChildEffects.Remove(pair.Key);
+                        }
                     }
                 }
             }

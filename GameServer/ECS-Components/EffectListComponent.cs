@@ -562,6 +562,7 @@ namespace DOL.GS
                                 else
                                 {
                                     ServiceObjectStore.Remove(existingEffect);
+                                    existingEffect.IsBeingReplaced = true; // Will be checked by the parent pulse effect so that it doesn't call `Stop` on it.
                                     ServiceObjectStore.Add(effect);
                                     effect.PreviousPosition = GetEffects().IndexOf(existingEffect);
                                     existingEffects[i] = effect;
