@@ -378,17 +378,20 @@ namespace DOL.GS
 				m_tradeAccept = false;
 				m_partnerWindow.m_tradeAccept = false;
 
-				if (m_changesCount > 0) return;
+				if (m_changesCount > 0)
+					return;
+
 				if (m_changesCount < 0)
 				{
 					m_changesCount = 0;
+
 					if (log.IsErrorEnabled)
 						log.Error("Changes count is less than 0, forgot to add m_changesCount++?\n\n" + Environment.StackTrace);
 				}
-
-				m_owner.Out.SendTradeWindow();
-				m_partnerWindow.Owner.Out.SendTradeWindow();
 			}
+
+			m_owner.Out.SendTradeWindow();
+			m_partnerWindow.Owner.Out.SendTradeWindow();
 		}
 
 		#endregion	
