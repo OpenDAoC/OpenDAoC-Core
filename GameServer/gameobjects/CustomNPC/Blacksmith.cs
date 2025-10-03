@@ -216,40 +216,29 @@ public class Blacksmith : GameNPC
 
     private void AskRepairAll(GamePlayer player)
     {
-        long TotalCost = 0;
-        foreach (var inventoryItem in player.Inventory.AllItems)
+        bool foundItemToRepair = false;
+        long cost = 0;
+
+        foreach (DbInventoryItem inventoryItem in player.Inventory.AllItems)
         {
-            if (!CanBeRepaired(inventoryItem)) continue;
-            TotalCost += CalculateCost(inventoryItem);
+            if (!CanBeRepaired(inventoryItem))
+                continue;
+
+            foundItemToRepair = true;
+            cost += inventoryItem.RepairCost;
         }
 
-        if (TotalCost >= 0)
-            player.Client.Out.SendCustomDialog(
-                $"It will cost {Money.GetString(TotalCost)} to repair everything. Do you accept?", RepairAll);
+        cost = (long) (cost * (1 + REPAIR_ALL_TAX));
+
+        if (foundItemToRepair)
+            player.Client.Out.SendCustomDialog($"It will cost {Money.GetString(cost)} to repair everything. Do you accept?", RepairAll);
         else
-            SayTo(player, eChatLoc.CL_PopupWindow,
-                "All items are fully repaired already.");
+            SayTo(player, eChatLoc.CL_PopupWindow, "All items are fully repaired already.");
     }
 
-    private bool CanBeRepaired(DbInventoryItem item)
+    private static bool CanBeRepaired(DbInventoryItem item)
     {
-        if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
-                         || item.OwnerID == null) return false;
-        if (item.Condition == item.MaxCondition) return false;
-        if (item.RepairCost == 0) return false; // skipping items with no template price - hopefully we'll get tickets and we'll adjust the prices
-
-        return true;
-    }
-
-    private long CalculateCost(DbInventoryItem item)
-    {
-        long NeededMoney = 0;
-        NeededMoney = ((item.Template.MaxCondition - item.Condition) * item.Template.Price) /
-                      item.Template.MaxCondition;
-
-        var tax = NeededMoney * REPAIR_ALL_TAX;
-
-        return NeededMoney + (long) tax;
+        return item != null && item.Condition < item.MaxCondition && item.Durability > 0;
     }
 
     private void RepairAll(GamePlayer player, byte response)
@@ -264,11 +253,16 @@ public class Blacksmith : GameNPC
         }
 
         long cost = 0;
-        foreach (var inventoryItem in player.Inventory.AllItems)
+
+        foreach (DbInventoryItem inventoryItem in player.Inventory.AllItems)
         {
-            if (!CanBeRepaired(inventoryItem)) continue;
-            cost += CalculateCost(inventoryItem);
+            if (!CanBeRepaired(inventoryItem))
+                continue;
+
+            cost += inventoryItem.RepairCost;
         }
+
+        cost = (long) (cost * (1 + REPAIR_ALL_TAX));
 
         if (!player.RemoveMoney(cost))
         {
@@ -277,7 +271,6 @@ public class Blacksmith : GameNPC
                     "GameNPC.Blacksmith.NotEnoughMoney", Money.GetString(cost), "everything"));
             return;
         }
-
 
         InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, cost);
 
