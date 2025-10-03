@@ -204,23 +204,8 @@ public class Blacksmith : GameNPC
         ChatUtil.SendSystemMessage(player, "GameNPC.Blacksmith.YouPay", GetName(0, false),
             Money.GetString(item.RepairCost));
 
-        // Items with IsNotLosingDur are not....losing DUR.
-        if (ToRecoverCond + 1 >= item.Durability)
-        {
-            item.Condition = item.Condition + item.Durability;
-            item.Durability = 0;
-            // Message: {0} says, "Uhh, {1} is rather old. I won't be able to repair it again, so be careful!"
-            ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ObjectRatherOld", GetName(0, true),
-                item.GetName(0, false));
-        }
-        else
-        {
-            item.Condition = item.MaxCondition;
-            if (!item.IsNotLosingDur) item.Durability -= ToRecoverCond + 1;
-        }
+        Repair(item, player);
 
-
-        player.Out.SendInventoryItemsUpdate(new[] {item});
         // Message: {0} says, "There, {1} is ready for combat."
         ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ItsDone", GetName(0, true), item.GetName(0, false));
     }
@@ -238,7 +223,7 @@ public class Blacksmith : GameNPC
             TotalCost += CalculateCost(inventoryItem);
         }
 
-        if (TotalCost > 0)
+        if (TotalCost >= 0)
             player.Client.Out.SendCustomDialog(
                 $"It will cost {Money.GetString(TotalCost)} to repair everything. Do you accept?", RepairAll);
         else
@@ -299,12 +284,8 @@ public class Blacksmith : GameNPC
         ChatUtil.SendSystemMessage(player, "GameNPC.Blacksmith.YouPay", GetName(0, false),
             Money.GetString(cost));
 
-
-        foreach (var inventoryItem in player.Inventory.AllItems)
-        {
+        foreach (DbInventoryItem inventoryItem in player.Inventory.AllItems)
             Repair(inventoryItem, player);
-            player.Out.SendInventoryItemsUpdate(new[] {inventoryItem});
-        }
 
         SayTo(player, eChatLoc.CL_PopupWindow,
             LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -313,22 +294,12 @@ public class Blacksmith : GameNPC
 
     private void Repair(DbInventoryItem item, GamePlayer player)
     {
-        var ToRecoverCond = item.MaxCondition - item.Condition;
+        GS.Repair.ModifyConditionAndDurability(item);
 
-        // Items with IsNotLosingDur are not....losing DUR.
-        if (ToRecoverCond + 1 >= item.Durability)
-        {
-            item.Condition = +item.Durability;
-            item.Durability = 0;
-            // Message: {0} says, "Uhh, {1} is rather old. I won't be able to repair it again, so be careful!"
-            ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ObjectRatherOld", GetName(0, true),
-                item.GetName(0, false));
-        }
-        else
-        {
-            item.Condition = item.MaxCondition;
-            if (!item.IsNotLosingDur) item.Durability -= ToRecoverCond + 1;
-        }
+        if (item.Durability <= 0)
+            ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ObjectRatherOld", GetName(0, true), item.GetName(0, false));
+
+        player.Out.SendInventoryItemsUpdate([item]);
     }
 
     #endregion

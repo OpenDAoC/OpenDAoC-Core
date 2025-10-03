@@ -87,18 +87,7 @@ namespace DOL.GS
 
 			if (Util.Chance(CalculateSuccessChances(player, item)))
 			{
-				int toRecoverCond = (int)((item.MaxCondition - item.Condition) * 0.01 / item.MaxCondition) + 1;
-				if (toRecoverCond >= item.Durability)
-				{
-					item.Condition += (int)(item.Durability * item.MaxCondition / 0.01);
-					item.Durability = 0;
-				}
-				else
-				{
-					item.Condition = item.MaxCondition;
-					item.Durability -= toRecoverCond;
-				}
-
+				ModifyConditionAndDurability(item);
 				player.Out.SendInventorySlotsUpdate([(eInventorySlot) item.SlotPosition]);
 
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired1", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -193,6 +182,15 @@ namespace DOL.GS
 				chancePercent = 0;
 
 			return chancePercent;
+		}
+
+		public static void ModifyConditionAndDurability(DbInventoryItem item)
+		{
+			int repairAmount = Math.Min(item.MaxCondition - item.Condition, item.Durability);
+			item.Condition += repairAmount;
+
+			if (!item.IsNotLosingDur)
+				item.Durability -= repairAmount;
 		}
 
 		#endregion
