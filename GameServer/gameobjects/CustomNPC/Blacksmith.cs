@@ -205,9 +205,6 @@ public class Blacksmith : GameNPC
             Money.GetString(item.RepairCost));
 
         Repair(item, player);
-
-        // Message: {0} says, "There, {1} is ready for combat."
-        ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ItsDone", GetName(0, true), item.GetName(0, false));
     }
 
     #endregion Repair Responses
@@ -279,18 +276,17 @@ public class Blacksmith : GameNPC
 
         foreach (DbInventoryItem inventoryItem in player.Inventory.AllItems)
             Repair(inventoryItem, player);
-
-        SayTo(player, eChatLoc.CL_PopupWindow,
-            LanguageMgr.GetTranslation(player.Client.Account.Language,
-                "Scripts.Recharger.RechargerDialogResponse.FullyCharged"));
     }
 
     private void Repair(DbInventoryItem item, GamePlayer player)
     {
-        GS.Repair.ModifyConditionAndDurability(item);
+        if (!GS.Repair.ModifyConditionAndDurability(item))
+            return;
 
         if (item.Durability <= 0)
             ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ObjectRatherOld", GetName(0, true), item.GetName(0, false));
+        else
+            ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.ItsDone", GetName(0, true), item.GetName(0, false));
 
         player.Out.SendInventoryItemsUpdate([item]);
     }

@@ -87,16 +87,17 @@ namespace DOL.GS
 
 			if (Util.Chance(CalculateSuccessChances(player, item)))
 			{
-				ModifyConditionAndDurability(item);
-				player.Out.SendInventorySlotsUpdate([(eInventorySlot) item.SlotPosition]);
-
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired1", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				if (tradePartner != null) tradePartner.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired2", player.Name, item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if (ModifyConditionAndDurability(item))
+				{
+					player.Out.SendInventorySlotsUpdate([(eInventorySlot) item.SlotPosition]);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired1", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					tradePartner?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired2", player.Name, item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
 			}
 			else
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FailImprove1", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				if (tradePartner != null) tradePartner.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FailImprove2", player.Name, item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				tradePartner?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FailImprove2", player.Name, item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 
 			return 0;
@@ -184,13 +185,15 @@ namespace DOL.GS
 			return chancePercent;
 		}
 
-		public static void ModifyConditionAndDurability(DbInventoryItem item)
+		public static bool ModifyConditionAndDurability(DbInventoryItem item)
 		{
 			int repairAmount = Math.Min(item.MaxCondition - item.Condition, item.Durability);
 			item.Condition += repairAmount;
 
 			if (!item.IsNotLosingDur)
 				item.Durability -= repairAmount;
+
+			return repairAmount > 0;
 		}
 
 		#endregion
