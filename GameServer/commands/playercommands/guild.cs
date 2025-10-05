@@ -1562,8 +1562,7 @@ namespace DOL.GS.Commands
 											if (ply.Client.IsPlaying && !ply.IsAnonymous)
 											{
 												ind++;
-												string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
-												string mesg = ind + ") " + ply.Name + " <guild=" + guild.Name + "> the Level " + ply.Level + " " + ply.CharacterClass.Name + " in " + zoneName;
+												string mesg = $"{ind}) {ply.Name} <{guild.Name}> the Level {ply.Level} {ply.CharacterClass.Name} in {ply.CurrentZone?.Description ?? "(null)"}";
 												client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 											}
 										}
