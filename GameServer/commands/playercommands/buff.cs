@@ -311,11 +311,10 @@ namespace DOL.GS.Commands
             if (buffCommandSpell == null)
                 return;
 
-            foreach ((Spell, SpellLine) buff in buffCommandSpell.BuffsToCast)
+            foreach ((Spell spell, SpellLine spellLine) in buffCommandSpell.BuffsToCast)
             {
-                Spell clonedSpell = buff.Item1.Clone() as Spell;
-                clonedSpell.CastTime = 0;
-                Caster.CastSpell(clonedSpell, buff.Item2);
+                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(target, spell, spellLine);
+                spellHandler?.StartSpell(target);
             }
         }
     }
