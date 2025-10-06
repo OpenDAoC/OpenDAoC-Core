@@ -173,47 +173,19 @@ namespace DOL.GS
 
         public void OnSpellHandlerCleanUp(Spell currentSpell)
         {
-            if (Owner is GamePlayer)
-            {
-                if (currentSpell.CastTime > 0)
-                {
-                    if (QueuedSpellHandler != null)
-                    {
-                        SpellHandler = QueuedSpellHandler;
-                        QueuedSpellHandler = null;
-                    }
-                    else
-                        SpellHandler = null;
-                }
-            }
-            else if (Owner is NecromancerPet necroPet)
-            {
-                if (necroPet.Brain is NecromancerPetBrain necroBrain)
-                {
-                    if (currentSpell.CastTime > 0)
-                    {
-                        necroBrain.CheckAttackSpellQueue();
+            if (currentSpell.CastTime <= 0)
+                return;
 
-                        if (QueuedSpellHandler != null)
-                        {
-                            SpellHandler = QueuedSpellHandler;
-                            QueuedSpellHandler = null;
-                        }
-                        else
-                            SpellHandler = null;
-                    }
-                }
+            if (Owner is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroBrain)
+                necroBrain.CheckAttackSpellQueue();
+
+            if (QueuedSpellHandler != null)
+            {
+                SpellHandler = QueuedSpellHandler;
+                QueuedSpellHandler = null;
             }
             else
-            {
-                if (QueuedSpellHandler != null)
-                {
-                    SpellHandler = QueuedSpellHandler;
-                    QueuedSpellHandler = null;
-                }
-                else
-                    SpellHandler = null;
-            }
+                SpellHandler = null;
         }
 
         protected virtual bool CanCastSpell()
