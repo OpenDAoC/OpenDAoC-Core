@@ -38,7 +38,7 @@ namespace DOL.GS
 
             _running = true;
 
-            if (DYNAMIC_BUSY_WAIT_THRESHOLD)
+            if (DYNAMIC_BUSY_WAIT_THRESHOLD && Environment.ProcessorCount > 1)
             {
                 _busyWaitThresholdThread = new(new ThreadStart(UpdateBusyWaitThreshold))
                 {
