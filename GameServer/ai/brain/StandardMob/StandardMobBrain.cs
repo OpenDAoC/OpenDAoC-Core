@@ -488,7 +488,7 @@ namespace DOL.AI.Brain
 
             if (CheckSpells(eCheckSpellType.Offensive))
                 Body.StopAttack();
-            else
+            else if (!Body.IsCasting)
                 Body.StartAttack(newTarget);
         }
 
