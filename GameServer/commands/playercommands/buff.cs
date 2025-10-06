@@ -313,8 +313,11 @@ namespace DOL.GS.Commands
 
             foreach ((Spell spell, SpellLine spellLine) in buffCommandSpell.BuffsToCast)
             {
-                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(target, spell, spellLine);
-                spellHandler?.StartSpell(target);
+                Spell clonedSpell = spell.Clone() as Spell;
+                clonedSpell.CastTime = 0;
+                SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(Caster, clonedSpell, spellLine) as SpellHandler;
+                spellHandler.Target = target;
+                spellHandler.Tick();
             }
         }
     }
