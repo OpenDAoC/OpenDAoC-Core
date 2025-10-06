@@ -73,15 +73,13 @@ namespace DOL.GS
 
             if (sleepFor >= busyWaitThreshold)
                 Thread.Sleep(sleepFor - busyWaitThreshold);
-            else
-                Thread.Yield();
 
             if (_tickDuration > _stopwatch.Elapsed.TotalMilliseconds)
             {
-                SpinWait spinWait = new();
-
+                // Any small number will do here. Technically, this could be 0.
+                // If the game loop appears to overshoot the tick duration for no reason, this can be reduced even further.
                 while (_tickDuration > _stopwatch.Elapsed.TotalMilliseconds)
-                    spinWait.SpinOnce(-1);
+                    Thread.SpinWait(10);
             }
 
             double elapsedTime = _stopwatch.Elapsed.TotalMilliseconds;
