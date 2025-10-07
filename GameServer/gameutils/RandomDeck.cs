@@ -1,148 +1,155 @@
 using System;
-using System.Collections.Generic;
+using System.Buffers;
 using System.Threading;
 
 namespace DOL.GS.Utils
 {
     public class RandomDeck
     {
-        private const int DECKS_COUNT = 1;             // The final deck is a concatenation of 1 or more decks.
-        private const int CARDS_PER_DECK_COUNT = 100;  // Also represents the highest value + 1.
-        private const int NUM_BUCKETS = 10;            // Amount of bucket in a deck. Affects performance a lot, and should not be too high. Used for the anti-cluster mechanism.
-        private const double AGGRESSIVENESS = 0.05;    // Higher aggressiveness forces cards to be more separated by value. Used for the anti-cluster mechanism.
+        private const int NUM_BUCKETS = 10; // Amount of bucket in a deck. Affects performance a lot, and should not be too high.
+        private const int NUM_STRATA = 10;  // Must evenly divide CARD_RANGE.
+        private const int CARD_MIN = 0;
+        private const int CARD_MAX = 99;
+        private const int CARD_RANGE = CARD_MAX - CARD_MIN + 1;
+        private const int STRATUM_SIZE = CARD_RANGE / NUM_STRATA;
 
-        private int[] _cards = new int[DECKS_COUNT * CARDS_PER_DECK_COUNT];
-        private int _index = DECKS_COUNT * CARDS_PER_DECK_COUNT;
-        private List<int>[] _buckets = new List<int>[NUM_BUCKETS];
-        private long[] _bucketSums = new long[NUM_BUCKETS];
-        private double[] _bucketWeights = new double[NUM_BUCKETS];
+        private readonly int[] _cards = new int[CARD_RANGE];
+        private int _index = CARD_RANGE;    // Forces initialization on first draw.
         private readonly Lock _cardsLock = new();
 
         public RandomDeck()
         {
-            for (int i = 0; i < NUM_BUCKETS; i++)
-                _buckets[i] = new();
-
-            InitializeDeck();
+            // Pre-initialize the deck with all possible cards.
+            for (int i = CARD_MIN; i < CARD_MAX + 1; i++)
+                _cards[i] = i;
         }
 
-        public int GetInt()
-        {
-            return Pop();
-        }
-
-        public double GetPseudoDouble()
-        {
-            // Just use a simple random for the fractional digits.
-            return (Pop() + Util.RandomDouble()) / 100.0;
-        }
-
-        private void InitializeDeck()
+        public int Draw()
         {
             lock (_cardsLock)
             {
-                // Start with a fresh pool of all possible cards.
-                for (int i = 0; i < DECKS_COUNT; i++)
-                {
-                    for (int j = 0; j < CARDS_PER_DECK_COUNT; j++)
-                        _cards[i + j] = j;
-                }
-
-                // Shuffle the cards. This is critical to allow 0 to be placed in the same bucket as 1 for example.
-                for (int i = _cards.Length - 1; i > 0; i--)
-                {
-                    int j = Util.Random(i);
-                    (_cards[j], _cards[i]) = (_cards[i], _cards[j]);
-                }
-
-                // Clear bucket states for reuse.
-                for (int i = 0; i < _buckets.Length; i++)
-                {
-                    _buckets[i].Clear();
-                    _bucketSums[i] = 0;
-                }
-
-                // Value-aware distribution.
-                foreach (int card in _cards)
-                {
-                    double totalWeight = 0;
-
-                    // Calculate the "attraction score" and weight for each bucket.
-                    for (int i = 0; i < NUM_BUCKETS; i++)
-                    {
-                        // Use a neutral midpoint for empty buckets.
-                        double average = _buckets[i].Count == 0 ? (CARDS_PER_DECK_COUNT - 1) / 2.0 : (double) _bucketSums[i] / _buckets[i].Count;
-                        double attractionScore = Math.Abs(average - card);
-                        _bucketWeights[i] = Math.Exp(attractionScore * AGGRESSIVENESS);
-                        totalWeight += _bucketWeights[i];
-                    }
-
-                    // Perform a weighted random choice to select a bucket.
-                    int chosenIndex = 0;
-
-                    if (totalWeight > 0)
-                    {
-                        double roll = Util.RandomDouble() * totalWeight;
-                        double cumulativeWeight = 0;
-
-                        for (int i = 0; i < NUM_BUCKETS; i++)
-                        {
-                            cumulativeWeight += _bucketWeights[i];
-
-                            // Found our bucket.
-                            if (roll <= cumulativeWeight)
-                            {
-                                chosenIndex = i;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                        chosenIndex = Util.Random(NUM_BUCKETS - 1); // Fallback to random choice if all weights are zero.
-
-                    // Add the card to the chosen bucket and update its sum.
-                    _buckets[chosenIndex].Add(card);
-                    _bucketSums[chosenIndex] += card;
-                }
-
-                // Repopulate the deck.
-                int index = 0;
-
-                foreach (var bucket in _buckets)
-                {
-                    // Post-bucket shuffling to reduce bias inside each bucket.
-                    // This may reintroduce some clusters, but it makes the series inside each bucket a lot more natural.
-                    // I don't fully understand the mechanism at play here, but without this last shuffle, odd patterns are obvious on a scatter plot.
-                    for (int i = bucket.Count - 1; i > 0; i--)
-                    {
-                        int j = Util.Random(i);
-                        (bucket[j], bucket[i]) = (bucket[i], bucket[j]);
-                    }
-
-                    foreach (int card in bucket)
-                        _cards[index++] = card;
-                }
-            }
-        }
-
-        private int Pop()
-        {
-            int result;
-
-            lock (_cardsLock)
-            {
-                // If we've exhausted the deck, re-initialize and reset index.
                 if (_index >= _cards.Length)
                 {
                     InitializeDeck();
                     _index = 0;
                 }
 
-                result = _cards[_index];
-                _index++;
+                return _cards[_index++];
             }
-
-            return result;
         }
+
+        private void InitializeDeck()
+        {
+            CardAssignment[] cardAssignments = ArrayPool<CardAssignment>.Shared.Rent(_cards.Length);
+            double[] bucketWeights = ArrayPool<double>.Shared.Rent(NUM_BUCKETS);
+            int[] bucketCounts = ArrayPool<int>.Shared.Rent(NUM_BUCKETS);
+            int[] bucketNextWriteIndices = ArrayPool<int>.Shared.Rent(NUM_BUCKETS);
+            int[] bucketStratumCounts = ArrayPool<int>.Shared.Rent(NUM_BUCKETS * NUM_STRATA);
+
+            try
+            {
+                // Clear arrays that require it.
+                Array.Clear(bucketCounts, 0, NUM_BUCKETS);
+                Array.Clear(bucketStratumCounts, 0, NUM_BUCKETS * NUM_STRATA);
+
+                // Shuffle the cards. This ensures the order of processing cards is random.
+                for (int i = _cards.Length - 1; i > 0; i--)
+                {
+                    int j = Util.Random(i);
+                    (_cards[j], _cards[i]) = (_cards[i], _cards[j]);
+                }
+
+                // Distribute cards into buckets using weighted distribution, preferring buckets with averages further away from the card value.
+                for (int i = 0; i < _cards.Length; i++)
+                {
+                    int card = _cards[i];
+                    int stratumIndex = (card - CARD_MIN) / STRATUM_SIZE;
+                    double totalWeight = 0;
+
+                    // Calculate weight for each bucket.
+                    for (int j = 0; j < NUM_BUCKETS; j++)
+                    {
+                        int countInBucket = bucketStratumCounts[j * NUM_STRATA + stratumIndex];
+                        double baseWeight = 1.0 / (countInBucket + 1.0);
+                        double weight = baseWeight * baseWeight * baseWeight;
+                        bucketWeights[j] = weight;
+                        totalWeight += weight;
+                    }
+
+                    // Perform weighted random choice.
+                    double cumulativeWeight = 0;
+                    double randValue = Util.RandomDouble() * totalWeight;
+
+                    for (int j = 0; j < NUM_BUCKETS; j++)
+                    {
+                        cumulativeWeight += bucketWeights[j];
+
+                        if (randValue > cumulativeWeight)
+                            continue;
+
+                        // Record the assignment and update counts for the next card.
+                        cardAssignments[i] = new CardAssignment(card, j);
+                        bucketCounts[j]++;
+                        bucketStratumCounts[j * NUM_STRATA + stratumIndex]++;
+                        break;
+                    }
+                }
+
+                bucketNextWriteIndices[0] = 0;
+
+                // Calculate the starting write indices for each bucket
+                int currentWriteIndex = 0;
+
+                for (int i = 0; i < NUM_BUCKETS; i++)
+                {
+                    bucketNextWriteIndices[i] = currentWriteIndex;
+                    currentWriteIndex += bucketCounts[i];
+                }
+
+                // Place cards into their final positions.
+                for (int i = 0; i < _cards.Length; i++)
+                {
+                    ref readonly CardAssignment assignment = ref cardAssignments[i];
+                    int bucketIndex = assignment.BucketIndex;
+                    int writeIndex = bucketNextWriteIndices[bucketIndex];
+                    _cards[writeIndex] = assignment.Card;
+                    bucketNextWriteIndices[bucketIndex]++;
+                }
+            }
+            finally
+            {
+                ArrayPool<CardAssignment>.Shared.Return(cardAssignments);
+                ArrayPool<double>.Shared.Return(bucketWeights);
+                ArrayPool<int>.Shared.Return(bucketCounts);
+                ArrayPool<int>.Shared.Return(bucketNextWriteIndices);
+            }
+        }
+
+        private readonly struct CardAssignment
+        {
+            public readonly int Card;
+            public readonly int BucketIndex;
+
+            public CardAssignment(int card, int bucketIndex)
+            {
+                Card = card;
+                BucketIndex = bucketIndex;
+            }
+        }
+    }
+
+    public enum RandomDeckEvent
+    {
+        Intercept,              // Primarily used by Spiritmaster pets.
+        Evade,
+        Parry,
+        Block,                  // Includes guard.
+        Miss,                   // Physical and magical attacks (resists).
+        DualWield,              // Off-hand attacks for CD/DW/H2H.
+        OffensiveProcChance,    // Weapon and spell based offensive procs.
+        DefensiveProcChance,    // Armor and spell based defensive procs.
+        DamageVariance,         // Physical and magical attacks, heals.
+        CriticalChance,         // Physical and magical attacks, heals, DoTs, debuffs.
+        CriticalVariance        // Physical and magical attacks, heals, DoTs, debuffs.
     }
 }
