@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using DOL.Database;
-using Newtonsoft.Json;
 
 namespace DOL.GS.Utils
 {
@@ -14,7 +11,6 @@ namespace DOL.GS.Utils
         private const int NUM_BUCKETS = 10;            // Amount of bucket in a deck. Affects performance a lot, and should not be too high. Used for the anti-cluster mechanism.
         private const double AGGRESSIVENESS = 0.05;    // Higher aggressiveness forces cards to be more separated by value. Used for the anti-cluster mechanism.
 
-        private GamePlayer _player;
         private int[] _cards = new int[DECKS_COUNT * CARDS_PER_DECK_COUNT];
         private int _index = DECKS_COUNT * CARDS_PER_DECK_COUNT;
         private List<int>[] _buckets = new List<int>[NUM_BUCKETS];
@@ -22,61 +18,12 @@ namespace DOL.GS.Utils
         private double[] _bucketWeights = new double[NUM_BUCKETS];
         private readonly Lock _cardsLock = new();
 
-        public RandomDeck(GamePlayer player)
+        public RandomDeck()
         {
             for (int i = 0; i < NUM_BUCKETS; i++)
                 _buckets[i] = new();
 
-            _player = player;
-
-            if (TryUsePreLoadedDeck())
-                return;
-
-            if (TryLoadExistingDeck())
-                return;
-
             InitializeDeck();
-
-            bool TryUsePreLoadedDeck()
-            {
-                // We only want one deck, even if for some reason multiple rows are returned or were loaded.
-                DbCoreCharacterXDeck dbDeck = _player.DBCharacter.RandomNumberDeck?.FirstOrDefault();
-                return DeserializeCards(dbDeck);
-            }
-
-            bool TryLoadExistingDeck()
-            {
-                IList<DbCoreCharacterXDeck> dbCoreCharacterXDecks = DOLDB<DbCoreCharacterXDeck>.SelectObjects(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId));
-
-                if (dbCoreCharacterXDecks == null || dbCoreCharacterXDecks.Count == 0)
-                    return false;
-
-                // We only want one deck, even if for some reason multiple rows are returned or were loaded.
-                _player.DBCharacter.RandomNumberDeck = dbCoreCharacterXDecks.ToArray();
-                return DeserializeCards(dbCoreCharacterXDecks[0]);
-            }
-
-            bool DeserializeCards(DbCoreCharacterXDeck dbDeck)
-            {
-                if (dbDeck == null)
-                    return false;
-
-                string serializedDeck = dbDeck.Deck;
-
-                if (string.IsNullOrEmpty(serializedDeck))
-                    return false;
-
-                int[] deserialized = JsonConvert.DeserializeObject<int[]>(serializedDeck);
-
-                if (deserialized == null || deserialized.Length == 0)
-                    return false;
-
-                // Place the deserialized array at the end of the deck.
-                int startIndex = _cards.Length - Math.Min(deserialized.Length, _cards.Length);
-                Array.Copy(deserialized, 0, _cards, startIndex, Math.Min(deserialized.Length, _cards.Length));
-                _index = startIndex;
-                return true;
-            }
         }
 
         public int GetInt()
@@ -88,43 +35,6 @@ namespace DOL.GS.Utils
         {
             // Just use a simple random for the fractional digits.
             return (Pop() + Util.RandomDouble()) / 100.0;
-        }
-
-        public void SaveDeck()
-        {
-            if (_player == null)
-                return;
-
-            DbCoreCharacterXDeck dbCoreCharacterXDeck = _player.DBCharacter.RandomNumberDeck?.FirstOrDefault();
-
-            if (dbCoreCharacterXDeck == null)
-            {
-                dbCoreCharacterXDeck = new()
-                {
-                    DOLCharactersObjectId = _player.ObjectId,
-                    Deck = SerializeCards()
-                };
-                _player.DBCharacter.RandomNumberDeck = [dbCoreCharacterXDeck];
-            }
-            else
-                dbCoreCharacterXDeck.Deck = SerializeCards();
-
-            if (dbCoreCharacterXDeck?.IsPersisted == true)
-                GameServer.Database.SaveObject(dbCoreCharacterXDeck);
-            else
-                GameServer.Database.AddObject(dbCoreCharacterXDeck);
-
-            string SerializeCards()
-            {
-                lock (_cardsLock)
-                {
-                    // Only serialize the remaining cards from _index to the end.
-                    int remaining = _cards.Length - _index;
-                    int[] cardsToSave = new int[remaining];
-                    Array.Copy(_cards, _index, cardsToSave, 0, remaining);
-                    return JsonConvert.SerializeObject(cardsToSave);
-                }
-            }
         }
 
         private void InitializeDeck()

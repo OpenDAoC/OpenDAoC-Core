@@ -10150,7 +10150,7 @@ namespace DOL.GS
             m_previousLoginDate = DBCharacter.LastPlayed;
             DBCharacter.LastPlayed = DateTime.Now; // Has to be updated on load to ensure time offline isn't added to character /played.
             IsMuted = Client.Account.IsMuted; // Account mutes are persistent.
-            RandomDeck = new RandomDeck(this); // Not async yet, needs to be updated.
+            RandomDeck = new RandomDeck();
 
             // Prepare the tasks.
             var moneyForRealmTask = DOLDB<DbAccountXMoney>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(Realm)));
@@ -10677,8 +10677,6 @@ namespace DOL.GS
         {
             try
             {
-                RandomDeck.SaveDeck();
-
                 DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (MoneyForRealm == null)
