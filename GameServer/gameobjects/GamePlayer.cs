@@ -2504,6 +2504,9 @@ namespace DOL.GS
              * Extra points added through ITEMS, however, does increase the size of your power pool.
              */
 
+            // Since 1.62, Augmented Acuity is supposed to increase Nightshade's power pool, but without increasing their actual stat.
+            // This isn't implemented currently.
+
             if (CharacterClass.ManaStat is not eStat.UNDEFINED || (eCharacterClass) CharacterClass.ID is eCharacterClass.Vampiir)
                 maxPower = Math.Max(5, level * 5 + (manaStat - 50));
             else if (Champion && ChampionLevel > 0)

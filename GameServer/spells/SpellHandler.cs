@@ -2933,9 +2933,11 @@ namespace DOL.GS.Spells
 					case eCharacterClass.Nightshade:
 					{
 						// Special rule for Nightshade.
-						// Spell damage seems to be based on strength around 1.65, but the mana stat is dexterity.
-						// 1.62 made them benefit from Augmented Acuity, but the calculator isn't adding it to prevent melee damage from increasing too, so we have to do it here.
-						stat = playerCaster.GetModified((eProperty) playerCaster.Strength) + playerCaster.AbilityBonus[eProperty.Acuity];
+						// Spell damage seems to be based on strength around 1.65 (but the mana stat is dexterity).
+						// 1.62 made them benefit from Augmented Acuity, but `StatCalculator` doesn't add it to strength to prevent melee damage from increasing too.
+						// So we have to do it here.
+						// It's also unclear if both Augmented Strength and Augmented Acuity should contribute, but this is currently the case.
+						stat = playerCaster.GetModified(eProperty.Strength) + playerCaster.AbilityBonus[eProperty.Acuity];
 						break;
 					}
 					default:
