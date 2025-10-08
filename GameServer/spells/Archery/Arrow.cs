@@ -122,7 +122,7 @@ namespace DOL.GS.Spells
 
 			protected override int OnTick(ECSGameTimer timer)
 			{
-				// A lot of things here seem to be outdated and need to be cleaned up.
+				// A lot of things here is outdated and need to be rewritten.
 
 				GameLiving target = m_arrowTarget;
 				GameLiving caster = (GameLiving) timer.Owner;
@@ -148,7 +148,7 @@ namespace DOL.GS.Spells
 					return 0;
 				}
 
-				if (Util.ChanceDouble(missrate))
+				if (Util.Chance(missrate))
 				{
 					ad.AttackResult = eAttackResult.Missed;
 					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);

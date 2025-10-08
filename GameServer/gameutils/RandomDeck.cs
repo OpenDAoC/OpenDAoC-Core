@@ -2,7 +2,7 @@ using System;
 using System.Buffers;
 using System.Threading;
 
-namespace DOL.GS.Utils
+namespace DOL.GS
 {
     public class RandomDeck
     {

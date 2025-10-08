@@ -2901,17 +2901,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Calculates how many times left hand swings
-		/// </summary>
-		/// <returns></returns>
-		public int CalculateLeftHandSwingCount()
-		{
-			if (Util.Chance(m_leftHandSwingChance))
-				return 1;
-			return 0;
-		}
-
-		/// <summary>
 		/// Checks whether Living has ability to use lefthanded weapons
 		/// </summary>
 		public bool CanUseLefthandedWeapon

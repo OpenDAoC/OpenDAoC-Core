@@ -182,19 +182,11 @@ namespace DOL.GS.Spells
         {
             ad.CriticalChance = Math.Min(50, Caster.DebuffCriticalChance);
 
-            if (ad.CriticalChance <= 0)
+            if (!Caster.Chance(RandomDeckEvent.CriticalChance, ad.CriticalChance))
                 return 0;
 
-            double randNum = Util.RandomDouble() * 100;
-
-            if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
-                playerCaster.Out.SendMessage($"dot crit chance: {ad.CriticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
             // Crit damage for DoTs is up to 100% against players too.
-            if (ad.CriticalChance > randNum && ad.Damage > 0)
-                return 0.1 + Util.RandomDoubleIncl() * 0.9;
-
-            return 0;
+            return 0.1 + Caster.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * 0.9;
         }
 
         protected override double CalculateBuffDebuffEffectiveness()

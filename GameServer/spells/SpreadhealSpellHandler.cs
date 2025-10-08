@@ -37,12 +37,10 @@ namespace DOL.GS.Spells
                 GameLiving mostInjuredLiving = null;
                 double mostInjuredPercent = 1.0;
 
-                CalculateDamageVariance(null, out double minHealVariance, out double maxHealVariance);
+                CalculateDamageVariance(null, out double min, out double max);
 
-                int targetHealCap = (minHealVariance >= maxHealVariance) ?
-                    (int) maxHealVariance :
-                    (int) (minHealVariance + Util.RandomDoubleIncl() * (maxHealVariance - minHealVariance));
-
+                double variance = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * (max - min);
+                int targetHealCap = (int) (m_spell.Value * variance);
                 int groupHealCap = targetHealCap;
                 Group group = target.Group;
 

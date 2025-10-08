@@ -207,25 +207,25 @@ namespace DOL.GS.Spells
 
             int baseChance = Spell.Frequency / 100;
 
-            if (Util.Chance(baseChance))
-            {
-                ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Attacker, _procSpell, _procSpellLine);
+            if (!Caster.Chance(RandomDeckEvent.OffensiveProcChance, baseChance))
+                return;
 
-                if (handler != null)
+            ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Attacker, _procSpell, _procSpellLine);
+
+            if (handler == null)
+                return;
+
+            switch (_procSpell.Target)
+            {
+                case eSpellTarget.ENEMY:
                 {
-                    switch (_procSpell.Target)
-                    {
-                        case eSpellTarget.ENEMY:
-                        {
-                            handler.StartSpell(ad.Target);
-                            break;
-                        }
-                        default:
-                        {
-                            handler.StartSpell(ad.Attacker);
-                            break;
-                        }
-                    }
+                    handler.StartSpell(ad.Target);
+                    break;
+                }
+                default:
+                {
+                    handler.StartSpell(ad.Attacker);
+                    break;
                 }
             }
         }
@@ -257,25 +257,25 @@ namespace DOL.GS.Spells
 
             int baseChance = Spell.Frequency / 100;
 
-            if (Util.Chance(baseChance))
-            {
-                ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Target, _procSpell, _procSpellLine);
+            if (!Caster.Chance(RandomDeckEvent.DefensiveProcChance, baseChance))
+                return;
 
-                if (handler != null)
+            ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Target, _procSpell, _procSpellLine);
+
+            if (handler == null)
+                return;
+
+            switch (_procSpell.Target)
+            {
+                case eSpellTarget.ENEMY:
                 {
-                    switch (_procSpell.Target)
-                    {
-                        case eSpellTarget.ENEMY:
-                        {
-                            handler.StartSpell(ad.Attacker);
-                            break;
-                        }
-                        default:
-                        {
-                            handler.StartSpell(ad.Target);
-                            break;
-                        }
-                    }
+                    handler.StartSpell(ad.Attacker);
+                    break;
+                }
+                default:
+                {
+                    handler.StartSpell(ad.Target);
+                    break;
                 }
             }
         }

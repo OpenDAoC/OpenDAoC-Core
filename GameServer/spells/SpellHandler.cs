@@ -2066,13 +2066,13 @@ namespace DOL.GS.Spells
 
 		protected virtual double GetDebuffEffectivenessCriticalModifier()
 		{
-			if (Util.Chance(Caster.DebuffCriticalChance))
+			if (Caster.Chance(RandomDeckEvent.CriticalChance, Caster.DebuffCriticalChance))
 			{
 				double min = 0.1;
 				double max = 1.0;
-				double criticalModifier = min + Util.RandomDoubleIncl() * (max - min);
-				(Caster as GamePlayer)?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {criticalModifier * 100:0}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				return 1.0 + criticalModifier;
+				double criticalMod = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+				(Caster as GamePlayer)?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {criticalMod * 100:0}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return 1.0 + criticalMod;
 			}
 			else
 				return 1.0;
@@ -2369,13 +2369,7 @@ namespace DOL.GS.Spells
 
 			if (spellResistChance > 0)
 			{
-				double spellResistRoll;
-
-				if (!Properties.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
-					spellResistRoll = player.RandomDeck.GetPseudoDouble();
-				else
-					spellResistRoll = Util.RandomDouble();
-
+				double spellResistRoll = Caster.GetPseudoDouble(RandomDeckEvent.Miss);
 				spellResistRoll *= 100;
 
 				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
@@ -2980,8 +2974,6 @@ namespace DOL.GS.Spells
 				AttackResult = eAttackResult.HitUnstyled
 			};
 
-			GamePlayer playerCaster = Caster as GamePlayer;
-
 			CalculateDamageVariance(target, out double minVariance, out double maxVariance);
 			double baseDamage = CalculateDamageBase(target);
 			double spellDamage = baseDamage;
@@ -2995,13 +2987,15 @@ namespace DOL.GS.Spells
 			if (DistanceFallOff > 0)
 				spellDamage *= 1 - DistanceFallOff;
 
-			double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
+			double variance = minVariance + Caster.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * (maxVariance - minVariance);
 			double finalDamage = spellDamage * variance;
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
 			// Damage reduced by chance < 55, no extra damage increase noted with hitchance > 100.
 			double hitChance = CalculateToHitChance(ad.Target);
 			finalDamage = AdjustDamageForHitChance(finalDamage, hitChance);
+
+			GamePlayer playerCaster = Caster as GamePlayer;
 
 			if (playerCaster != null || (Caster is GameNPC casterNpc && casterNpc.Brain is IControlledBrain && Caster.Realm != 0))
 			{
@@ -3034,20 +3028,16 @@ namespace DOL.GS.Spells
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
 			int criticalDamage = 0;
 			int criticalChance = this is not DoTSpellHandler ? Math.Min(50, m_caster.SpellCriticalChance) : 0;
-			double randNum = Util.RandomDouble() * 100;
 
 			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
-			{
-				if (criticalChance > 0)
-					playerCaster.Out.SendMessage($"Spell crit chance: {criticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
 				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | SpecMod: {variance:0.##} ({minVariance:0.00}~{maxVariance:0.00})", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-			}
 
-			if (criticalChance > randNum && finalDamage > 0)
+			if (Caster.Chance(RandomDeckEvent.CriticalChance, criticalChance))
 			{
-				int criticalMax = ad.Target is GamePlayer ? (int) finalDamage / 2 : (int) finalDamage;
-				criticalDamage = Util.Random((int) finalDamage / 10, criticalMax);
+				double min = 0.1;
+				double max = ad.Target is GamePlayer ? 0.5 : 1.0;
+				double criticalMod = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+				criticalDamage = (int) (finalDamage * criticalMod);
 			}
 
 			ad.Damage = (int) finalDamage;

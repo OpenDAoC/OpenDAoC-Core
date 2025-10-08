@@ -1223,5 +1223,25 @@ namespace DOL.GS
 		}
 
 		public virtual void OnUpdateOrCreateForPlayer() { }
+
+		public virtual bool Chance(RandomDeckEvent deckEvent, int chancePercent)
+		{
+			return Util.Chance(chancePercent);
+		}
+
+		public virtual bool Chance(RandomDeckEvent deckEvent, double chancePercent)
+		{
+			return Util.Chance(chancePercent);
+		}
+
+		public virtual double GetPseudoDouble(RandomDeckEvent deckEvent)
+		{
+			return Util.RandomDouble();
+		}
+
+		public virtual double GetPseudoDoubleIncl(RandomDeckEvent deckEvent)
+		{
+			return Util.RandomDoubleIncl();
+		}
 	}
 }

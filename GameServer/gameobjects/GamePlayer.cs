@@ -152,7 +152,39 @@ namespace DOL.GS
 
         public override int TargetInViewAlwaysTrueMinRange => (TargetObject is GamePlayer targetPlayer && targetPlayer.IsMoving) ? 100 : 64;
 
-        public RandomDeck RandomDeck { get; set; }
+        private Dictionary<RandomDeckEvent, RandomDeck> _randomDecks = new();
+
+        public override bool Chance(RandomDeckEvent deckEvent, int chancePercent)
+        {
+            return !Properties.OVERRIDE_DECK_RNG && _randomDecks.TryGetValue(deckEvent, out RandomDeck deck) ?
+                deck.Draw() < chancePercent :
+                base.Chance(deckEvent, chancePercent);
+        }
+
+        public override bool Chance(RandomDeckEvent deckEvent, double chancePercent)
+        {
+            return GetPseudoDouble(deckEvent) < chancePercent;
+        }
+
+        public override double GetPseudoDouble(RandomDeckEvent deckEvent)
+        {
+            return !Properties.OVERRIDE_DECK_RNG && _randomDecks.TryGetValue(deckEvent, out RandomDeck deck) ?
+                (deck.Draw() + Util.RandomDouble()) / 100.0 :
+                base.GetPseudoDouble(deckEvent);
+        }
+
+        public override double GetPseudoDoubleIncl(RandomDeckEvent deckEvent)
+        {
+            return !Properties.OVERRIDE_DECK_RNG && _randomDecks.TryGetValue(deckEvent, out RandomDeck deck) ?
+                (deck.Draw() + Util.RandomDoubleIncl()) / 100.0 :
+                base.GetPseudoDoubleIncl(deckEvent);
+        }
+
+        public void InitializeRandomDecks()
+        {
+            foreach (RandomDeckEvent deckEvent in Enum.GetValues<RandomDeckEvent>())
+                _randomDecks[deckEvent] = new();
+        }
 
         /// <summary>
         /// Holds the ground target visibility flag
@@ -10150,7 +10182,6 @@ namespace DOL.GS
             m_previousLoginDate = DBCharacter.LastPlayed;
             DBCharacter.LastPlayed = DateTime.Now; // Has to be updated on load to ensure time offline isn't added to character /played.
             IsMuted = Client.Account.IsMuted; // Account mutes are persistent.
-            RandomDeck = new RandomDeck();
 
             // Prepare the tasks.
             var moneyForRealmTask = DOLDB<DbAccountXMoney>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(Realm)));
@@ -11103,7 +11134,7 @@ namespace DOL.GS
 
                     double chanceToUncover = 0.1 + (npc.Level - stealthLevel) * 0.01 * chanceMod;
 
-                    if (Util.ChanceDouble(chanceToUncover))
+                    if (Util.Chance(chanceToUncover))
                     {
                         if (canSeePlayer)
                             player.Out.SendCheckLos(player, npc, new CheckLosResponse(player.UncoverLosHandler));
@@ -13560,6 +13591,7 @@ namespace DOL.GS
             }));
 
             m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
+            InitializeRandomDecks();
         }
 
         /// <summary>

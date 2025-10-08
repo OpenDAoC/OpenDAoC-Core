@@ -1378,7 +1378,7 @@ namespace DOL.GS
         {
             varianceRange = CalculateVarianceRange(target, spec);
             double difference = varianceRange.upperLimit - varianceRange.lowerLimit;
-            return varianceRange.lowerLimit + Util.RandomDoubleIncl() * difference;
+            return varianceRange.lowerLimit + owner.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * difference;
         }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
@@ -1437,15 +1437,10 @@ namespace DOL.GS
         {
             double blockChance = owner.TryBlock(ad, out int shieldSize);
             ad.BlockChance = blockChance * 100;
-            double blockRoll;
 
             if (blockChance > 0)
             {
-                if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                    blockRoll = player.RandomDeck.GetPseudoDouble();
-                else
-                    blockRoll = Util.RandomDouble();
-
+                double blockRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
                 bool blockSucceeded = blockChance > blockRoll;
                 string message = $"block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}";
 
@@ -1539,12 +1534,7 @@ namespace DOL.GS
 
                 if (guardChance > 0)
                 {
-                    double guardRoll;
-
-                    if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                        guardRoll = player.RandomDeck.GetPseudoDouble();
-                    else
-                        guardRoll = Util.RandomDouble();
+                    double guardRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
 
                     if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -1607,13 +1597,7 @@ namespace DOL.GS
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
-                    double interceptRoll;
-
-                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                        interceptRoll = playerOwner.RandomDeck.GetPseudoDouble();
-                    else
-                        interceptRoll = Util.RandomDouble();
-
+                    double interceptRoll = owner.GetPseudoDouble(RandomDeckEvent.Intercept);
                     interceptRoll *= 100;
 
                     if (inter.InterceptChance > interceptRoll)
@@ -1701,12 +1685,7 @@ namespace DOL.GS
 
                 double evadeChance = owner.TryEvade(ad, lastAttackData);
                 ad.EvadeChance = evadeChance * 100;
-                double evadeRoll;
-
-                if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                    evadeRoll = playerOwner.RandomDeck.GetPseudoDouble();
-                else
-                    evadeRoll = Util.RandomDouble();
+                double evadeRoll = owner.GetPseudoDouble(RandomDeckEvent.Evade);
 
                 if (evadeChance > 0)
                 {
@@ -1724,12 +1703,7 @@ namespace DOL.GS
                 {
                     double parryChance = owner.TryParry(ad, lastAttackData, AttackerTracker.MeleeCount);
                     ad.ParryChance = parryChance * 100;
-                    double parryRoll;
-
-                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                        parryRoll = playerOwner.RandomDeck.GetPseudoDouble();
-                    else
-                        parryRoll = Util.RandomDouble();
+                    double parryRoll = owner.GetPseudoDouble(RandomDeckEvent.Parry);
 
                     if (parryChance > 0)
                     {
@@ -1777,12 +1751,7 @@ namespace DOL.GS
 
             if (missChance > 0)
             {
-                double missRoll;
-
-                if (!Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
-                    missRoll = playerAttacker.RandomDeck.GetPseudoDouble();
-                else
-                    missRoll = Util.RandomDouble();
+                double missRoll = playerAttacker.GetPseudoDouble(RandomDeckEvent.Miss);
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {
@@ -1822,7 +1791,7 @@ namespace DOL.GS
                 if (stealthStyle)
                     return eAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
-                if (ad.Attacker.Level > bladeturn.SpellHandler.Caster.Level && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
+                if (ad.Attacker.Level > bladeturn.SpellHandler.Caster.Level && !Util.Chance(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
                     penetrate = true;
                 else if (ad.AttackType is AttackData.eAttackType.Ranged)
                 {
@@ -2144,8 +2113,11 @@ namespace DOL.GS
 
         public int CalculateCriticalDamage(AttackData ad)
         {
-            if (!Util.Chance(ad.CriticalChance))
+            if (!owner.Chance(RandomDeckEvent.CriticalChance, ad.CriticalChance))
                 return 0;
+
+            double min = 0.1;
+            double max;
 
             if (owner is GamePlayer)
             {
@@ -2153,8 +2125,6 @@ namespace DOL.GS
                 if (EffectListService.GetAbilityEffectOnTarget(ad.Target, eEffect.TripleWield) != null)
                     return 0;
 
-                int critMin;
-                int critMax;
                 ECSGameEffect berserk = EffectListService.GetEffectOnTarget(owner, eEffect.Berserk);
 
                 if (berserk != null)
@@ -2167,35 +2137,16 @@ namespace DOL.GS
                     // Berserk 2 = 10-50%
                     // Berserk 3 = 10-75%
                     // Berserk 4 = 10-100%
-                    critMin = (int) (ad.Damage * 0.1);
-                    critMax = (int) (Math.Min(1, level * 0.25) * ad.Damage);
+                    max = Math.Min(1.0, level * 0.25);
                 }
                 else
-                {
-                    // Min crit damage is 10%.
-                    critMin = (int) (ad.Damage * 0.1);
-
-                    // Max crit damage to players is 50%.
-                    if (ad.Target is GamePlayer)
-                        critMax = ad.Damage / 2;
-                    else
-                        critMax = ad.Damage;
-                }
-
-                critMin = Math.Max(critMin, 0);
-                critMax = Math.Max(critMin, critMax);
-                return Util.Random(critMin, critMax);
+                    max = ad.Target is GamePlayer ? 0.5 : 1.0;
             }
             else
-            {
-                int maxCriticalDamage = ad.Target is GamePlayer ? ad.Damage / 2 : ad.Damage;
-                int minCriticalDamage = (int) (ad.Damage * MinMeleeCriticalDamage);
+                max = ad.Target is GamePlayer ? 0.5 : 1.0;
 
-                if (minCriticalDamage > maxCriticalDamage)
-                    minCriticalDamage = maxCriticalDamage;
-
-                return Util.Random(minCriticalDamage, maxCriticalDamage);
-            }
+            double criticalMod = min + owner.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+            return (int) (ad.Damage * criticalMod);
         }
 
         public double GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, DbInventoryItem weapon)
@@ -2299,12 +2250,6 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Minimum melee critical damage as a percentage of the
-        /// raw damage.
-        /// </summary>
-        protected float MinMeleeCriticalDamage => 0.1f;
-
         public static double CalculateSlowWeaponDamageModifier(DbInventoryItem weapon)
         {
             // Slow weapon bonus as found here: https://www2.uthgard.net/tracker/issue/2753/@/Bow_damage_variance_issue_(taking_item_/_spec_???)
@@ -2379,7 +2324,7 @@ namespace DOL.GS
                 if (mainWeapon == null || mainWeapon.SlotPosition is not Slot.RIGHTHAND)
                     return 0;
 
-                double random = Util.RandomDouble() * 100;
+                double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
 
@@ -2402,7 +2347,7 @@ namespace DOL.GS
 
             if (leftHandSwingChance > 0)
             {
-                double random = Util.RandomDouble() * 100;
+                double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
                     playerOwner.Out.SendMessage($"OH swing%: {leftHandSwingChance:0.##}\n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2414,7 +2359,7 @@ namespace DOL.GS
 
             if (doubleSwingChance > 0)
             {
-                double random = Util.RandomDouble() * 100;
+                double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
                     playerOwner.Out.SendMessage( $"Chance for 2 swings: {doubleSwingChance:0.##}% | 3 swings: {tripleSwingChance:0.##}% | 4 swings: {quadSwingChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);

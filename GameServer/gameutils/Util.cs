@@ -50,7 +50,7 @@ namespace DOL.GS
             return chancePercent > _random.Next(100);
         }
 
-        public static bool ChanceDouble(double chancePercent)
+        public static bool Chance(double chancePercent)
         {
             return chancePercent > _random.NextDouble();
         }

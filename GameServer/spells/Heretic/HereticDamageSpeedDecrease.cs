@@ -113,7 +113,7 @@ namespace DOL.GS.Spells
 				double powerPerTarget = (double)(effect.Spell.PulsePower / m_focusTargets.Count);
 
 				int powerUsed = (int)powerPerTarget;
-				if (Util.ChanceDouble(((double)powerPerTarget - (double)powerUsed)))
+				if (Util.Chance(((double)powerPerTarget - (double)powerUsed)))
 					powerUsed += 1;
 
 				if (powerUsed > 0)
@@ -143,7 +143,7 @@ namespace DOL.GS.Spells
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
-            if (Util.ChanceDouble(CalculateSpellResistChance(target)))
+            if (Util.Chance(CalculateSpellResistChance(target)))
             {
                 OnSpellResist(target);
                 return;

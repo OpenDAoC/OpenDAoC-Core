@@ -80,7 +80,7 @@ namespace DOL.GS.Spells
 
             target ??= Target;
 
-            if (Util.ChanceDouble(CalculateSpellResistChance(target)))
+            if (Caster.Chance(RandomDeckEvent.Miss, CalculateSpellResistChance(target)))
                 OnSpellNegated(target, SpellNegatedReason.Resisted);
             else
                 ApplyEffectOnTarget(target);
@@ -407,7 +407,7 @@ namespace DOL.GS.Spells
                     resistChance = 100 - CalculateToHitChance(target);
 
                 double spellResistChance = resistChance;
-                double resistResult = Util.RandomDouble() * 100;
+                double resistResult = Caster.GetPseudoDouble(RandomDeckEvent.Miss) * 100;
                 string resistString = string.Format("{0:0.##}", spellResistChance);
                 string rollString = string.Format("{0:0.##}", resistResult);
 
