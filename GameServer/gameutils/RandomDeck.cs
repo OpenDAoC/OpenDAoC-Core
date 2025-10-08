@@ -88,7 +88,7 @@ namespace DOL.GS
                             continue;
 
                         // Record the assignment and update counts for the next card.
-                        cardAssignments[i] = new CardAssignment(card, j);
+                        cardAssignments[i] = new(card, j);
                         bucketCounts[j]++;
                         bucketStratumCounts[j * NUM_STRATA + stratumIndex]++;
                         break;
@@ -122,6 +122,7 @@ namespace DOL.GS
                 ArrayPool<double>.Shared.Return(bucketWeights);
                 ArrayPool<int>.Shared.Return(bucketCounts);
                 ArrayPool<int>.Shared.Return(bucketNextWriteIndices);
+                ArrayPool<int>.Shared.Return(bucketStratumCounts);
             }
         }
 
