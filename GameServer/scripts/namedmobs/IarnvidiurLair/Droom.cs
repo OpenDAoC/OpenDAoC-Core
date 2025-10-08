@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11805;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
 					spell.Type = eSpellType.DamageOverTime.ToString();
@@ -221,7 +221,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11806;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1801;
 					spell.EffectGroup = 1501;
 					spell.Type = eSpellType.DamageOverTime.ToString();
@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
 					spell.Value = 80;
 					spell.Radius = 450;
 					spell.SpellID = 11807;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -283,7 +283,7 @@ namespace DOL.AI.Brain
 					spell.Value = 38;
 					spell.Radius = 450;
 					spell.SpellID = 11808;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.CombatSpeedDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -315,7 +315,7 @@ namespace DOL.AI.Brain
 					spell.Range = 350;
 					spell.Duration = 120;
 					spell.SpellID = 11809;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

@@ -854,7 +854,7 @@ namespace DOL.AI.Brain
 					spell.Range = 5000;//very long range cause dragon is flying and got big aggro
 					spell.Radius = 1000;
 					spell.SpellID = 11955;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
@@ -883,7 +883,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 1000;
 					spell.SpellID = 11956;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
@@ -912,7 +912,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 2000;
 					spell.SpellID = 11957;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
@@ -941,7 +941,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 2000;
 					spell.SpellID = 11958;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
@@ -972,7 +972,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 2000;
 					spell.SpellID = 11965;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.HeatResistDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;

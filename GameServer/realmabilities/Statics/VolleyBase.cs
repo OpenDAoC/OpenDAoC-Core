@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.ClientEffect = GetStaticEffect();
 			dbs.Damage = damage;
 			dbs.DamageType = (int)dmgType;
-			dbs.Target = "Enemy";
+			dbs.Target = eSpellTarget.ENEMY.ToString();
 			dbs.Radius = 0;
 			dbs.Type = eSpellType.Archery.ToString();
 			dbs.Value = 0;

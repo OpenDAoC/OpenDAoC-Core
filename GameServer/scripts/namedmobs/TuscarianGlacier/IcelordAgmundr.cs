@@ -220,7 +220,7 @@ namespace DOL.AI.Brain
                 spell.Range = 1500;
                 spell.Radius = 500;
                 spell.SpellID = 11744;
-                spell.Target = "Enemy";
+                spell.Target = eSpellTarget.ENEMY.ToString();
                 spell.Type = "DirectDamageNoVariance";
                 spell.Uninterruptible = true;
                 spell.MoveCast = true;

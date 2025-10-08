@@ -52,7 +52,7 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var dbSpell = new DbSpell();
             dbSpell.Value = value;
-            dbSpell.Target = "Realm";
+            dbSpell.Target = eSpellTarget.REALM.ToString();
             dbSpell.Duration = 10;
             var spell = new Spell(dbSpell, 0);
             return spell;

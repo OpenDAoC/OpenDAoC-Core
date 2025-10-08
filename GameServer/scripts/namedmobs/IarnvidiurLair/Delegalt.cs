@@ -97,7 +97,7 @@ namespace DOL.GS
 					spell.Range = 350;
 					spell.Duration = 650;
 					spell.SpellID = 11803;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

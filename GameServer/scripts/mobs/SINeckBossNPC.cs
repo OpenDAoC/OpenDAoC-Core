@@ -65,7 +65,7 @@ namespace DOL.GS {
 					spell.Range = 450;
 					spell.Radius = 350;
 					spell.SpellID = 12000;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_SINeckBossDD = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SINeckBossDD);

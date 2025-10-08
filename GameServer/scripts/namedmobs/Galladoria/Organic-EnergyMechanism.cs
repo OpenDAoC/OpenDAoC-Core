@@ -288,7 +288,7 @@ namespace DOL.AI.Brain
                     spell.Duration = 50;
                     spell.Frequency = 50; //dot tick every 5s
                     spell.SpellID = 11700;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
@@ -319,7 +319,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1800;
                     spell.Duration = 35;
                     spell.SpellID = 11701;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
@@ -347,7 +347,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Machanism Effect";
                     spell.TooltipId = 5126;
                     spell.SpellID = 11864;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = eSpellType.PowerRegenBuff.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -512,7 +512,7 @@ namespace DOL.AI.Brain
                     spell.Value = 85;
                     spell.Duration = 60;
                     spell.SpellID = 11713;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "StrengthConstitutionDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -543,7 +543,7 @@ namespace DOL.AI.Brain
                     spell.Value = 24;
                     spell.Duration = 60;
                     spell.SpellID = 11715;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "CombatSpeedDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -574,7 +574,7 @@ namespace DOL.AI.Brain
                     spell.Value = 60;
                     spell.Duration = 60;
                     spell.SpellID = 11865;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.SpeedDecrease.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

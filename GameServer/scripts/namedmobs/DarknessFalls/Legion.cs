@@ -704,7 +704,7 @@ namespace DOL.AI.Brain
                     spell.Range = 0;
                     spell.Radius = 1000;
                     spell.SpellID = 12013;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     m_LegionLifetapAoe = new Spell(spell, 60);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LegionLifetapAoe);

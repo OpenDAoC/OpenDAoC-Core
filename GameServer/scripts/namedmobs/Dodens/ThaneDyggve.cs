@@ -182,7 +182,7 @@ namespace DOL.GS.Scripts
 						spell.Damage = 500;
 						spell.DamageType = 12;
 						spell.SpellID = 3541;
-						spell.Target = "Enemy";
+						spell.Target = eSpellTarget.ENEMY.ToString();
 						spell.MoveCast = false;
 						spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 						m_Mjollnir = new Spell(spell, 50);

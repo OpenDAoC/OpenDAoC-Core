@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Chief Tarek's Heal";
 					spell.Range = 1500;
 					spell.SpellID = 11889;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = eSpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					m_ChiefTarekHeal = new Spell(spell, 60);

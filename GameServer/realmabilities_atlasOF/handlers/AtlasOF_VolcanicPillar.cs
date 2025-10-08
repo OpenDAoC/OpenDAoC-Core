@@ -31,7 +31,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.ClientEffect = 7025;
             m_dbspell.Damage = m_dmgValue;
             m_dbspell.DamageType = 13; // heat
-            m_dbspell.Target = "Enemy";
+            m_dbspell.Target = eSpellTarget.ENEMY.ToString();
             m_dbspell.Radius = m_radius;
             m_dbspell.Type = eSpellType.DirectDamage.ToString();
             m_dbspell.Value = 0;

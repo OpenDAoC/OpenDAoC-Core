@@ -126,7 +126,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Weno'iak Lighs";
 					spell.Range = 1500;
 					spell.SpellID = 11797;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
@@ -156,7 +156,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 500;
 					spell.SpellID = 11798;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;

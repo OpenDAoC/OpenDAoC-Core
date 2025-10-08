@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Icon = 0;
             m_dbspell.ClientEffect = 7019;
             m_dbspell.Damage = 0;
-            m_dbspell.Target = "corpse"; // Rez spells are of that type so that they only work on dead realm members.
+            m_dbspell.Target = eSpellTarget.CORPSE.ToString(); // Rez spells are of that type so that they only work on dead realm members.
             m_dbspell.Radius = 0;
             m_dbspell.Type = eSpellType.Resurrect.ToString();
             m_dbspell.Value = 0;

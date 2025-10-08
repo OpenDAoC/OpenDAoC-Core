@@ -124,7 +124,7 @@ namespace DOL.GS
 					spell.Name = "Energy Shock";
 					spell.Range = 500;
 					spell.SpellID = 11904;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_CronwortDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CronwortDD);

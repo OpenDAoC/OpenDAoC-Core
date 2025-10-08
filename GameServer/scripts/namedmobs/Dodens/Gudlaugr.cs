@@ -178,7 +178,7 @@ namespace DOL.GS.Scripts
 						spell.Duration = 25;
 						spell.DamageType = 10;
 						spell.SpellID = 20300;
-						spell.Target = "Enemy";
+						spell.Target = eSpellTarget.ENEMY.ToString();
 						spell.MoveCast = true;
 						spell.Type = eSpellType.StyleSpeedDecrease.ToString();
 						spell.Message1 = "You begin to move more slowly!";
@@ -219,7 +219,7 @@ namespace DOL.GS.Scripts
 						spell.Damage = 100;
 						spell.DamageType = 10;
 						spell.SpellID = 20209;
-						spell.Target = "Enemy";
+						spell.Target = eSpellTarget.ENEMY.ToString();
 						spell.MoveCast = true;
 						spell.Type = eSpellType.StyleBleeding.ToString();
 						spell.Message1 = "You are bleeding! ";

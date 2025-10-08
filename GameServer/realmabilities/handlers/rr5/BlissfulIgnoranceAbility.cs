@@ -71,7 +71,7 @@ namespace DOL.GS.RealmAbilities
 	                    db.Message3 = string.Empty;
 	                    db.Message4 = string.Empty;
                         db.Type = (spell.SpellType).ToString();
-                        db.Target = "Self";
+                        db.Target = eSpellTarget.SELF.ToString();
                         db.MoveCast = true;
                         db.Uninterruptible = true;
 						

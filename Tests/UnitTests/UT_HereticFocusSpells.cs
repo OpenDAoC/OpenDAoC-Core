@@ -104,7 +104,7 @@ namespace DOL.Tests.Unit.Gameserver
             var dbspell = new DbSpell();
             dbspell.LifeDrainReturn = growthPercent;
             dbspell.AmnesiaChance = growthCapPercent;
-            dbspell.Target = "Enemy";
+            dbspell.Target = eSpellTarget.ENEMY.ToString();
             var spell = new Spell(dbspell, 1);
             spell.Damage = initialDamage;
             spell.Level = 50;

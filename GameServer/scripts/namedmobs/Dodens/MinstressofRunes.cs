@@ -220,7 +220,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 0;
 					spell.DamageType = (int)eDamageType.Cold;
 					spell.SpellID = 18920;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Nearsight.ToString();
 					spell.Message1 = "You are blinded!";
 					spell.Message2 = "{0} is blinded!";
@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 450;
 					spell.SpellID = 18921;
 					spell.RecastDelay = 0;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.MoveCast = false;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type

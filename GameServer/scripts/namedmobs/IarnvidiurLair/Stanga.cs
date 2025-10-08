@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Duration = 186;
 					spell.SpellID = 11819;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -192,7 +192,7 @@ namespace DOL.AI.Brain
 					spell.Value = 80;
 					spell.Radius = 400;
 					spell.SpellID = 11818;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

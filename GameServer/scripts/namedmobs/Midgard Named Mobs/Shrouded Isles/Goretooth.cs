@@ -130,7 +130,7 @@ namespace DOL.GS
 					spell.Name = "Stun";
 					spell.Range = 400;
 					spell.SpellID = 11880;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					m_Goretooth_stun = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Goretooth_stun);

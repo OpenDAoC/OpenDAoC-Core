@@ -222,7 +222,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 450;
 					spell.Range = 1500;
 					spell.SpellID = 18914;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Mesmerize";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

@@ -450,7 +450,7 @@ namespace DOL.AI.Brain
                     spell.Range = 3000;
                     spell.Radius = 450;
                     spell.SpellID = 11707;
-                    spell.Target = "Area";
+                    spell.Target = eSpellTarget.AREA.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -652,7 +652,7 @@ namespace DOL.AI.Brain
                     spell.Range = 3000;
                     spell.Radius = 450;
                     spell.SpellID = 11708;
-                    spell.Target = "Area";
+                    spell.Target = eSpellTarget.AREA.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

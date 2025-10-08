@@ -389,7 +389,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 300;
                     spell.SpellID = 11716;
                     spell.Duration = 60;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

@@ -309,7 +309,7 @@ namespace DOL.GS.SpamMob
                     "Damage Over Time";
                 spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                 spell.SpellID = 88001;
-                spell.Target = "Self";
+                spell.Target = eSpellTarget.SELF.ToString();
                 spell.Message1 = "Damage Over TIme";
                 spell.Type = eSpellType.DamageOverTime.ToString();
                 spell.EffectGroup = 1070;
@@ -332,7 +332,7 @@ namespace DOL.GS.SpamMob
                     "Adds to the recipient's Armor Factor (AF) resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
                 spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                 spell.SpellID = 88001;
-                spell.Target = "Self";
+                spell.Target = eSpellTarget.SELF.ToString();
                 spell.Message1 = "Increases target's Base Armor Factor by 20.";
                 spell.Type = eSpellType.BaseArmorFactorBuff.ToString();
                 spell.EffectGroup = 1;
@@ -354,7 +354,7 @@ namespace DOL.GS.SpamMob
                 spell.Description = "Increases target's Strength.";
                 spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                 spell.SpellID = 88002;
-                spell.Target = "Self";
+                spell.Target = eSpellTarget.SELF.ToString();
                 spell.Message1 = "Increases target's Strength by 20.";
                 spell.Type = eSpellType.StrengthBuff.ToString();
                 spell.EffectGroup = 4;
@@ -376,7 +376,7 @@ namespace DOL.GS.SpamMob
                 spell.Description = "Increases target's Constitution.";
                 spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                 spell.SpellID = 88003;
-                spell.Target = "Self";
+                spell.Target = eSpellTarget.SELF.ToString();
                 spell.Message1 = "Increases target's Constitution by 20.";
                 spell.Type = eSpellType.ConstitutionBuff.ToString();
                 spell.EffectGroup = 201;
@@ -398,7 +398,7 @@ namespace DOL.GS.SpamMob
                 spell.Description = "Increases Dexterity for a character.";
                 spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                 spell.SpellID = 88004;
-                spell.Target = "Self";
+                spell.Target = eSpellTarget.SELF.ToString();
                 spell.Message1 = "Increases target's Dexterity by 20.";
                 spell.Type = eSpellType.DexterityBuff.ToString();
                 spell.EffectGroup = 202;

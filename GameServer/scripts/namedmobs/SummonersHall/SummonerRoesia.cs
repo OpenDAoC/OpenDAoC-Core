@@ -290,7 +290,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1800;
 					spell.Radius = 1000;
 					spell.SpellID = 11756;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					m_RoesiaDot = new Spell(spell, 50);
@@ -322,7 +322,7 @@ namespace DOL.AI.Brain
 					spell.Message2 = "{0} starts healing faster.";
 					spell.Range = 1800;
 					spell.SpellID = 11757;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.HealOverTime.ToString();
 					m_RoesiaHOT = new Spell(spell, 50);
@@ -349,7 +349,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Roesia Damage Shield";
 					spell.TooltipId = 57;
 					spell.SpellID = 11758;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = "DamageShield";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

@@ -112,7 +112,7 @@ namespace DOL.GS
                     spell.Range = 400;
                     spell.Duration = 60;
                     spell.SpellID = 11928;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Disease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -617,7 +617,7 @@ namespace DOL.GS
                     spell.Name = "Morkimma's Heal";
                     spell.Range = 1500;
                     spell.SpellID = 11930;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = eSpellType.Heal.ToString();
                     spell.Uninterruptible = true;
                     m_MorkimmaHeal = new Spell(spell, 50);

@@ -143,7 +143,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Glacier Healing";
 					spell.Range = 1500;
 					spell.SpellID = 11966;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 					spell.Message4 = "{0} recovers from the mesmerize.";
 					spell.Range = 1500;
 					spell.SpellID = 11967;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Mesmerize";
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;
@@ -209,7 +209,7 @@ namespace DOL.AI.Brain
 					spell.Message2 = "{0}'s feet are frozen to the ground!";
 					spell.Range = 1500;
 					spell.SpellID = 11968;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "SpeedDecrease";
 					spell.DamageType = (int)eDamageType.Cold;
 					spell.Uninterruptible = true;

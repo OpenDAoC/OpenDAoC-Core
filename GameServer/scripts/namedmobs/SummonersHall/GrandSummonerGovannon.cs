@@ -374,7 +374,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 300;
 					spell.SpellID = 11763;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					m_GovannonDot = new Spell(spell, 70);
@@ -638,7 +638,7 @@ namespace DOL.GS
 					spell.Range = 350;
 					spell.Radius = 500;
 					spell.SpellID = 11764;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.Stun.ToString();
 					m_AelfgarStun = new Spell(spell, 70);

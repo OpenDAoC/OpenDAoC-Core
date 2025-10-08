@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
 					spell.Message4 = "The destructive energy around {0} fades.";
 					spell.Range = 1500;
 					spell.SpellID = 12006;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -194,7 +194,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Duration = 120;
 					spell.SpellID = 12008;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -226,7 +226,7 @@ namespace DOL.AI.Brain
 					spell.Message2 = "{0}'s feet are frozen to the ground!";
 					spell.Range = 1500;
 					spell.SpellID = 12009;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					spell.Uninterruptible = true;
 					m_KelicRoot = new Spell(spell, 60);

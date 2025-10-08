@@ -170,7 +170,7 @@ namespace DOL.AI.Brain
                     spell.Duration = 0;
                     spell.Value = 250;
                     spell.SpellGroup = 130;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

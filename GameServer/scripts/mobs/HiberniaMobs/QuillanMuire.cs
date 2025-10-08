@@ -265,7 +265,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Heal";
 					spell.Range = 1500;
 					spell.SpellID = 11949;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					m_MuireHerbalistHeal = new Spell(spell, 15);
@@ -293,7 +293,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Herbalist Strength";
 					spell.Range = 1500;
 					spell.SpellID = 11950;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.StrengthBuff.ToString();
 					spell.Uninterruptible = true;
 					m_MuireHerbalist_Buff_STR = new Spell(spell, 15);

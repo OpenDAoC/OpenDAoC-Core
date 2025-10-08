@@ -146,7 +146,7 @@ namespace DOL.AI.Brain
 					spell.Range = 350;
 					spell.Duration = 120;
 					spell.SpellID = 11854;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type

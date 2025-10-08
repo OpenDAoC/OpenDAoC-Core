@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.ClientEffect = 4246;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 0;
-            m_dbspell.Target = "Pet";
+            m_dbspell.Target = eSpellTarget.PET.ToString();
             m_dbspell.Radius = 0;
             m_dbspell.Type = eSpellType.CombatSpeedBuff.ToString();
             m_dbspell.Value = 50;

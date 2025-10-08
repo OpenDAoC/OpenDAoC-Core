@@ -284,7 +284,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Kvasir's Root";
                     spell.TooltipId = 277;
                     spell.SpellID = 11741;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

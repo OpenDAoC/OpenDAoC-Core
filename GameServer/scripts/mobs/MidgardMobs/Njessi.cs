@@ -62,7 +62,7 @@ namespace DOL.GS
                     spell.Range = 500;
                     spell.Radius = 300;
                     spell.SpellID = 11933;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     m_NjessiDD = new Spell(spell, 20);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_NjessiDD);

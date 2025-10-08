@@ -407,7 +407,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Aidon's Damage Shield";
                     spell.TooltipId = 57;
                     spell.SpellID = 11770;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

@@ -66,7 +66,7 @@ namespace DOL.GS.Spells
 			dbs.ClientEffect = 7312;
 			dbs.Damage = spell.Damage;
 			dbs.DamageType = (int)spell.DamageType;
-			dbs.Target = "Enemy";
+			dbs.Target = eSpellTarget.ENEMY.ToString();
 			dbs.Radius = 0;
 			dbs.Type = eSpellType.Prescience.ToString();
 			dbs.Value = spell.Value;
@@ -139,7 +139,7 @@ namespace DOL.GS.Spells
 			dbs.ClientEffect = 7313;
 			dbs.Damage = spell.Damage;
 			dbs.DamageType = (int)spell.DamageType;
-			dbs.Target = "Enemy";
+			dbs.Target = eSpellTarget.ENEMY.ToString();
 			dbs.Radius = 0;
 			dbs.Type = eSpellType.PowerRend.ToString();
 			dbs.Value = spell.Value;
@@ -190,7 +190,7 @@ namespace DOL.GS.Spells
 			dbs.ClientEffect = 7237;
 			dbs.Damage = spell.Damage;
 			dbs.DamageType = (int)spell.DamageType;
-			dbs.Target = "Enemy";
+			dbs.Target = eSpellTarget.ENEMY.ToString();
 			dbs.Radius = 0;
 			dbs.Type = eSpellType.SpeedWrap.ToString();
 			dbs.Value = spell.Value;
@@ -420,7 +420,7 @@ namespace DOL.GS.Spells
 			dbs.ClientEffect = 7255;
 			dbs.Damage = spell.Damage;
 			dbs.DamageType = (int)spell.DamageType;
-			dbs.Target = "Enemy";
+			dbs.Target = eSpellTarget.ENEMY.ToString();
 			dbs.Radius = 0;
 			dbs.Type = eSpellType.DirectDamage.ToString();
 			dbs.Value = spell.Value;

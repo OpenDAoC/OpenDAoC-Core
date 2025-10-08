@@ -228,7 +228,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Voices of Pain";
 					spell.Range = 1500;
 					spell.SpellID = 11874;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

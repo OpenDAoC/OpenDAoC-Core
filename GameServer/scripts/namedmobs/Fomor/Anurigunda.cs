@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 350;
 					spell.SpellID = 11839;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

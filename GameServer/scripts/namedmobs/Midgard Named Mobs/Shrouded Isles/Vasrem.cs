@@ -152,7 +152,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Drain Life Essence";
 					spell.Range = 1800;
 					spell.SpellID = 11886;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.MoveCast = true;
 					spell.Uninterruptible = true;
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
 					spell.Value = 65;
 					spell.Duration = 60;
 					spell.SpellID = 11887;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "StrengthConstitutionDebuff";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

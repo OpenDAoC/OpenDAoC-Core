@@ -112,7 +112,7 @@ namespace DOL.GS
                     spell.Range = 500;
                     spell.Radius = 400;
                     spell.SpellID = 11743;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DirectDamageNoVariance";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -387,7 +387,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Torst Root";
                     spell.TooltipId = 277;
                     spell.SpellID = 11742;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -849,7 +849,7 @@ namespace DOL.AI.Brain
                     spell.Range = 200;
                     spell.Radius = 300;
                     spell.SpellID = 11926;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

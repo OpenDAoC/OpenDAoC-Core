@@ -160,7 +160,7 @@ namespace DOL.GS
                     spell.Range = 500;
                     spell.Damage = 350;
                     spell.SpellID = 11860;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -377,7 +377,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Geomancer Damage Shield";
                     spell.TooltipId = 57;
                     spell.SpellID = 11717;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -406,7 +406,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Geomancer Root";
                     spell.TooltipId = 5089;
                     spell.SpellID = 11718;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -437,7 +437,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Olcasar Snare";
                     spell.TooltipId = 77;
                     spell.SpellID = 11862;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.SpeedDecrease.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -465,7 +465,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Olcasar Tear";
                     spell.TooltipId = 5126;
                     spell.SpellID = 11861;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -632,7 +632,7 @@ namespace DOL.AI.Brain
                     spell.Message4 = "{0} recovers from the stun.";
                     spell.TooltipId = 2132;
                     spell.SpellID = 11864;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "StyleStun";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

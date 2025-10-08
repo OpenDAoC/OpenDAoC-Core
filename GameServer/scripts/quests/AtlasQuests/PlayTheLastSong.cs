@@ -511,7 +511,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3618;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "HealthRegenBuff";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -567,7 +567,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3612;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "SpeedEnhancement";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -623,7 +623,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3607;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "DamageAdd";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -676,7 +676,7 @@ namespace DOL.GS.Quests.Midgard
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 3656;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "EnergyResistBuff";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.ClientEffect = 7130;
             m_dbspell.Damage = 0;
             m_dbspell.DamageType = 0;
-            m_dbspell.Target = "Self";
+            m_dbspell.Target = eSpellTarget.SELF.ToString();
             m_dbspell.Radius = 0;
             m_dbspell.Type = eSpellType.CombatSpeedBuff.ToString();
             m_dbspell.Value = m_hasteValue;

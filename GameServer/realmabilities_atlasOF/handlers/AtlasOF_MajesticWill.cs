@@ -33,7 +33,7 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.ClientEffect = 7065;
             tmpSpell.Damage = 0;
             tmpSpell.DamageType = 0;
-            tmpSpell.Target = "Self";
+            tmpSpell.Target = eSpellTarget.SELF.ToString();
             tmpSpell.Radius = 0;
             tmpSpell.Type = eSpellType.OffensiveProc.ToString();
             tmpSpell.Value = 0;

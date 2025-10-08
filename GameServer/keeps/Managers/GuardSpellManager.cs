@@ -184,7 +184,7 @@ namespace DOL.GS.Keeps
 					spell.Name = "Guard Heal";
                     spell.Range = 2000;
 					spell.SpellID = 90001;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					spell.Uninterruptible = true;
 					m_albLordHealSpell = new Spell(spell, 50);
@@ -210,7 +210,7 @@ namespace DOL.GS.Keeps
 					spell.Name = "Guard Heal";
                     spell.Range = 2000;
 					spell.SpellID = 90002;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					spell.Uninterruptible = true;
 					m_midLordHealSpell = new Spell(spell, 50);
@@ -236,7 +236,7 @@ namespace DOL.GS.Keeps
 					spell.Name = "Guard Heal";
                     spell.Range = 2000;
 					spell.SpellID = 90003;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					spell.Uninterruptible = true;
 					m_hibLordHealSpell = new Spell(spell, 50);
@@ -266,7 +266,7 @@ namespace DOL.GS.Keeps
 					spell.Name = "Guard Heal";
 					spell.Range = 2000;
 					spell.SpellID = 90004;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					m_albGuardHealSmallSpell = new Spell(spell, 50);
 				}
@@ -291,7 +291,7 @@ namespace DOL.GS.Keeps
 					spell.Name = "Guard Heal";
                     spell.Range = 2000;
 					spell.SpellID = 90005;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					m_midGuardHealSmallSpell = new Spell(spell, 50);
 				}
@@ -316,7 +316,7 @@ namespace DOL.GS.Keeps
 					spell.Name = "Guard Heal";
                     spell.Range = 2000;
 					spell.SpellID = 90006;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					m_hibGuardHealSmallSpell = new Spell(spell, 50);
 				}
@@ -347,7 +347,7 @@ namespace DOL.GS.Keeps
                     spell.Name = "Bolt";
                     spell.Range = 2000;
                     spell.SpellID = 90017;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Bolt";
                     spell.AllowBolt = true;
                     m_albGuardBoltSpellPortalKeep = new Spell(spell, 50);
@@ -375,7 +375,7 @@ namespace DOL.GS.Keeps
                     spell.Name = "Bolt";
                     spell.Range = 2000;
                     spell.SpellID = 90018;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Bolt";
                     spell.AllowBolt = true;
                     m_midGuardBoltSpellPortalKeep = new Spell(spell, 50);
@@ -403,7 +403,7 @@ namespace DOL.GS.Keeps
                     spell.Name = "Bolt";
                     spell.Range = 2000;
                     spell.SpellID = 90019;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Bolt";
                     spell.AllowBolt = true;
                     m_hibGuardBoltSpellPortalKeep = new Spell(spell, 50);
@@ -435,7 +435,7 @@ namespace DOL.GS.Keeps
                     spell.Name = "Nuke";
                     spell.Range = 1500;
                     spell.SpellID = 90014;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DirectDamage";
                     m_albGuardNukeSpell = new Spell(spell, 50);
                 }
@@ -462,7 +462,7 @@ namespace DOL.GS.Keeps
                     spell.Name = "Nuke";
                     spell.Range = 1500;
                     spell.SpellID = 90015;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DirectDamage";
                     m_midGuardNukeSpell = new Spell(spell, 50);
                 }
@@ -489,7 +489,7 @@ namespace DOL.GS.Keeps
                     spell.Name = "Nuke";
                     spell.Range = 1500;
                     spell.SpellID = 90016;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DirectDamage";
                     m_hibGuardNukeSpell = new Spell(spell, 50);
                 }

@@ -146,7 +146,7 @@ namespace DOL.AI.Brain
                     spell.Duration = 45;
                     spell.Frequency = 40; //dot tick every 4s
                     spell.SpellID = 11783;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

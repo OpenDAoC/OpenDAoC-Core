@@ -75,7 +75,7 @@ namespace DOL.GS.RealmAbilities
             dbspell.ClientEffect = 7122;
             dbspell.Damage = 0;
             dbspell.DamageType = 0;
-            dbspell.Target = "Self";
+            dbspell.Target = eSpellTarget.SELF.ToString();
             dbspell.Radius = 0;
             dbspell.Type = eSpellType.AllSecondaryMagicResistsBuff.ToString();
             dbspell.Value = GetEffectiveness();

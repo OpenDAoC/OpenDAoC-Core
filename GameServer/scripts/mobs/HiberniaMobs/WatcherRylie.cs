@@ -101,7 +101,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Energy Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11949;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_RylieDD = new Spell(spell, 15);
@@ -129,7 +129,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Stun";
 					spell.Range = 1500;
 					spell.SpellID = 11950;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;

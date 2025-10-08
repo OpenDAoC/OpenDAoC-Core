@@ -173,7 +173,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Dark Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11892;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Stun";
 					spell.Range = 1500;
 					spell.SpellID = 11893;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;

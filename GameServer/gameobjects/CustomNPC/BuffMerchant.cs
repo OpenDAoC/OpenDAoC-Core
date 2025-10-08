@@ -166,7 +166,7 @@ namespace DOL.GS
 					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88001;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.BaseArmorFactorBuff.ToString();
 					spell.EffectGroup = 1;
 
@@ -196,7 +196,7 @@ namespace DOL.GS
 					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89001;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.BaseArmorFactorBuff.ToString();
 					spell.EffectGroup = 1;
 
@@ -226,7 +226,7 @@ namespace DOL.GS
 					spell.Description = "Increases target's Strength.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88002;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.StrengthBuff.ToString();
 					spell.EffectGroup = 4;
 
@@ -256,7 +256,7 @@ namespace DOL.GS
 					spell.Description = "Increases target's Strength.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89002;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.StrengthBuff.ToString();
 					spell.EffectGroup = 4;
 
@@ -286,7 +286,7 @@ namespace DOL.GS
 					spell.Description = "Increases target's Constitution.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88003;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.ConstitutionBuff.ToString();
 					spell.EffectGroup = 201;
 
@@ -316,7 +316,7 @@ namespace DOL.GS
 					spell.Description = "Increases target's Constitution.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89003;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.ConstitutionBuff.ToString();
 					spell.EffectGroup = 201;
 
@@ -346,7 +346,7 @@ namespace DOL.GS
 					spell.Description = "Increases Dexterity for a character.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88004;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.DexterityBuff.ToString();
 					spell.EffectGroup = 202;
 
@@ -376,7 +376,7 @@ namespace DOL.GS
 					spell.Description = "Increases Dexterity for a character.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89004;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.DexterityBuff.ToString();
 					spell.EffectGroup = 202;
 
@@ -406,7 +406,7 @@ namespace DOL.GS
 					spell.Description = "Increases Str/Con for a character";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88005;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.StrengthConstitutionBuff.ToString();
 					spell.EffectGroup = 204;
 
@@ -436,7 +436,7 @@ namespace DOL.GS
 					spell.Description = "Increases Str/Con for a character";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89005;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.StrengthConstitutionBuff.ToString();
 					spell.EffectGroup = 204;
 
@@ -466,7 +466,7 @@ namespace DOL.GS
 					spell.Description = "Increases Dexterity and Quickness for a character.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88006;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.DexterityQuicknessBuff.ToString();
 					spell.EffectGroup = 203;
 
@@ -496,7 +496,7 @@ namespace DOL.GS
 					spell.Description = "Increases Dexterity and Quickness for a character.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89006;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.DexterityQuicknessBuff.ToString();
 					spell.EffectGroup = 203;
 
@@ -526,7 +526,7 @@ namespace DOL.GS
 					spell.Description = "Increases Acuity (casting attribute) for a character.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88007;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.AcuityBuff.ToString();
 					spell.EffectGroup = 200;
 
@@ -556,7 +556,7 @@ namespace DOL.GS
 					spell.Description = "Increases Acuity (casting attribute) for a character.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89007;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.AcuityBuff.ToString();
 					spell.EffectGroup = 200;
 
@@ -586,7 +586,7 @@ namespace DOL.GS
 					spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88014;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.SpecArmorFactorBuff.ToString();
 					spell.EffectGroup = 2;
 
@@ -616,7 +616,7 @@ namespace DOL.GS
 					spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89014;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.SpecArmorFactorBuff.ToString();
 					spell.EffectGroup = 2;
 
@@ -646,7 +646,7 @@ namespace DOL.GS
 					spell.Description = "Increases the target's combat speed.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88010;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = eSpellType.CombatSpeedBuff.ToString();
 					spell.EffectGroup = 100;
 					
@@ -678,7 +678,7 @@ namespace DOL.GS
 					spell.Description = "Target regenerates power regeneration during the duration of the spell";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88008;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "PowerRegenBuff";
 					m_powereg = new Spell(spell, 50);
 				}
@@ -708,7 +708,7 @@ namespace DOL.GS
 					spell.Description = "Target's melee attacks do additional damage.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88009;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "DamageAdd";
 					m_dmgadd = new Spell(spell, 50);
 				}
@@ -737,7 +737,7 @@ namespace DOL.GS
 					spell.Description = "Target regenerates the given amount of health every tick";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88011;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "HealthRegenBuff";
 					m_hpRegen = new Spell(spell, 50);
 				}
@@ -764,7 +764,7 @@ namespace DOL.GS
 					spell.Description = "Heals the target.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88013;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					m_heal = new Spell(spell, 50);
 				}

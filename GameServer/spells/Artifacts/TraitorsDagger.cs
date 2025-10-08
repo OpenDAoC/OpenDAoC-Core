@@ -119,7 +119,7 @@ namespace DOL.GS.Spells
             dbs.Icon = 11020;
             dbs.ClientEffect = 11020;
             dbs.DamageType = 10;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.PetLifedrain.ToString();
             dbs.Damage = 70;

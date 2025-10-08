@@ -1790,7 +1790,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Duration = 120;
                     spell.SpellID = 11737;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Disease";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int)eDamageType.Body; //Energy DMG Type
@@ -2434,7 +2434,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 800;
                     spell.Range = 2800;
                     spell.SpellID = 11740;
-                    spell.Target = "Area";
+                    spell.Target = eSpellTarget.AREA.ToString();
                     spell.Type = "DirectDamageNoVariance";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2721,7 +2721,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 600;
                     spell.Range = 2800;
                     spell.SpellID = 11738;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

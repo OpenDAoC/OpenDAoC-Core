@@ -133,7 +133,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Dra'argus Shield";
 					spell.TooltipId = 57;
 					spell.SpellID = 11800;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = "DamageShield";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -295,7 +295,7 @@ namespace DOL.AI.Brain
 					spell.Range = 500;
 					spell.Radius = 500;
 					spell.SpellID = 11799;
-					spell.Target = "Area";
+					spell.Target = eSpellTarget.AREA.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;

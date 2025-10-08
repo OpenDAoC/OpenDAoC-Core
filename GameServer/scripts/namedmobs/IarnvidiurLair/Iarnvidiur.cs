@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 700;
 					spell.SpellID = 11828;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					m_Iarnvidiur_Dot = new Spell(spell, 70);
@@ -336,7 +336,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Duration = 600;
 					spell.SpellID = 11829;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -396,7 +396,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 400;
 					spell.Range = 1500;
 					spell.SpellID = 11831;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

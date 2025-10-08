@@ -236,7 +236,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 40;
 					spell.Frequency = 40;
 					spell.SpellID = 11908;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
 					spell.Type = eSpellType.DamageOverTime.ToString();
@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Duration = 120;
 					spell.SpellID = 11907;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -299,7 +299,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Shield of Feathers";
 					spell.Range = 0;
 					spell.SpellID = 11909;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = eSpellType.Bladeturn.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

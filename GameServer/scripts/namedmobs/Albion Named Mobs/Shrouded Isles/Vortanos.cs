@@ -108,7 +108,7 @@ namespace DOL.GS
 					spell.Value = 65;
 					spell.Duration = 60;
 					spell.SpellID = 11917;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "StrengthConstitutionDebuff";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -378,7 +378,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 12;
 					spell.Frequency = 20;
 					spell.SpellID = 11916;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
 					spell.Type = eSpellType.DamageOverTime.ToString();

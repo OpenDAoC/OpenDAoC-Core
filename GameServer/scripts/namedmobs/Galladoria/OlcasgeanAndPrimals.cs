@@ -514,7 +514,7 @@ namespace DOL.GS
                     spell.Damage = 450;
                     spell.Range = 1800;
                     spell.SpellID = 11901;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD = new Spell(spell, 70);
@@ -824,7 +824,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 1800;
                     spell.SpellID = 11717;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD = new Spell(spell, 70);
@@ -1022,7 +1022,7 @@ namespace DOL.GS
                     spell.Damage = 450;
                     spell.Range = 1800;
                     spell.SpellID = 12011;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD2 = new Spell(spell, 70);
@@ -1459,7 +1459,7 @@ namespace DOL.AI.Brain
                     spell.Damage = 600;
                     spell.Range = 1200;
                     spell.SpellID = 11718;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -1489,7 +1489,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.SpellID = 11719;
                     spell.Duration = 60;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -1800,7 +1800,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Machanism Effect";
                     spell.TooltipId = 4323;
                     spell.SpellID = 11865;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = eSpellType.PowerRegenBuff.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2025,7 +2025,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Fire Primal Damage Shield";
                     spell.TooltipId = 57;
                     spell.SpellID = 11721;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2160,7 +2160,7 @@ namespace DOL.GS
                     spell.Range = 1200;
                     spell.Radius = 450;
                     spell.SpellID = 11866;
-                    spell.Target = "Area";
+                    spell.Target = eSpellTarget.AREA.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2369,7 +2369,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1200;
                     spell.Range = 1500;
                     spell.SpellID = 11726;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2579,7 +2579,7 @@ namespace DOL.AI.Brain
                     spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11722;
-                    spell.Target = "Realm";
+                    spell.Target = eSpellTarget.REALM.ToString();
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2789,7 +2789,7 @@ namespace DOL.AI.Brain
                     spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11723;
-                    spell.Target = "Realm";
+                    spell.Target = eSpellTarget.REALM.ToString();
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -2996,7 +2996,7 @@ namespace DOL.AI.Brain
                     spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11724;
-                    spell.Target = "Realm";
+                    spell.Target = eSpellTarget.REALM.ToString();
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -3203,7 +3203,7 @@ namespace DOL.AI.Brain
                     spell.Value = 2000;
                     spell.Range = 1500;
                     spell.SpellID = 11725;
-                    spell.Target = "Realm";
+                    spell.Target = eSpellTarget.REALM.ToString();
                     spell.Type = "Heal";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -3326,7 +3326,7 @@ namespace DOL.AI.Brain
                     spell.Duration = 36;
                     spell.Range = 500;
                     spell.SpellID = 11727;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DamageSpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

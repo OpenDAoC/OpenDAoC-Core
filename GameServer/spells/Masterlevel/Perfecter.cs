@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7245;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Realm";
+            dbs.Target = eSpellTarget.REALM.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.HealOverTime.ToString();
             dbs.Value = spell.Value;
@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7212;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Realm";
+            dbs.Target = eSpellTarget.REALM.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.PowerOverTime.ToString();
             dbs.Value = spell.Value;
@@ -154,7 +154,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7214;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Realm";
+            dbs.Target = eSpellTarget.REALM.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.MesmerizeDurationBuff.ToString();
             dbs.Value = spell.Value;
@@ -223,7 +223,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7310;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.PowerRend.ToString();
             dbs.Value = spell.Value;

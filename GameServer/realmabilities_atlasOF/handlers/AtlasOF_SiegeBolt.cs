@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.ClientEffect = 2100;
             m_dbspell.Damage = m_dmgValue;
             m_dbspell.DamageType = (int)eDamageType.Natural;
-            m_dbspell.Target = "Enemy";
+            m_dbspell.Target = eSpellTarget.ENEMY.ToString();
             m_dbspell.Radius = m_radius;
             m_dbspell.Type = eSpellType.SiegeDirectDamage.ToString();
             m_dbspell.Value = 0;

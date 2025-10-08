@@ -171,7 +171,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11933;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1802;
 					spell.EffectGroup = 1502;
 					spell.Type = eSpellType.DamageOverTime.ToString();
@@ -208,7 +208,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11934;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1803;
 					spell.EffectGroup = 1503;
 					spell.Type = eSpellType.DamageOverTime.ToString();
@@ -379,7 +379,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11936;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1802;
 					spell.EffectGroup = 1502;
 					spell.Type = eSpellType.DamageOverTime.ToString();
@@ -416,7 +416,7 @@ namespace DOL.AI.Brain
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11935;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1803;
 					spell.EffectGroup = 1503;
 					spell.Type = eSpellType.DamageOverTime.ToString();

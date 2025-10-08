@@ -282,7 +282,7 @@ namespace DOL.AI.Brain
                     spell.Duration = 40;
                     spell.Frequency = 10; 
                     spell.SpellID = 11703;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -311,7 +311,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1800;
                     spell.Radius = 1200;
                     spell.SpellID = 11704;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
                     spell.Uninterruptible = true;

@@ -66,7 +66,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         m_dbspell.ClientEffect = 7009;
         m_dbspell.Damage = 0;
         m_dbspell.DamageType = 0;
-        m_dbspell.Target = "Realm";
+        m_dbspell.Target = eSpellTarget.REALM.ToString();
         m_dbspell.Radius = 0;
         m_dbspell.Type = eSpellType.AllSecondaryMagicResistsBuff.ToString();
         m_dbspell.Value = 36;

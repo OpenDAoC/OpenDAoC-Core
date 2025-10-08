@@ -166,7 +166,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7220;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.SpeedDecrease.ToString();
             dbs.Value = spell.Value;
@@ -216,7 +216,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7281;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 350;
             dbs.Type = eSpellType.PoisonspikeDot.ToString();
             dbs.Value = spell.Value;
@@ -352,7 +352,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7301;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.DirectDamage.ToString();
             dbs.Value = spell.Value;

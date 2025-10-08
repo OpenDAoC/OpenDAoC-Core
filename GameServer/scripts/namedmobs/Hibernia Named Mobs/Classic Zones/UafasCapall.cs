@@ -101,7 +101,7 @@ namespace DOL.GS
 					spell.Name = "Moon Strike";
 					spell.Range = 500;
 					spell.SpellID = 11898;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_UafasCapallDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_UafasCapallDD);

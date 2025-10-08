@@ -195,7 +195,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Shield of Pain";
 					spell.Range = 0;
 					spell.SpellID = 11792;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = eSpellType.Bladeturn.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

@@ -215,7 +215,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Searing Blast";
 					spell.Range = 1500;
 					spell.SpellID = 12001;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
 					m_LokenDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD);
@@ -245,7 +245,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Searing Blast";
 					spell.Range = 1500;
 					spell.SpellID = 12002;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Flame Spear";
 					spell.Range = 1800;
 					spell.SpellID = 12003;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Bolt.ToString();
 					m_LokenBolt = new Spell(spell, 60);
 					spell.Uninterruptible = true;

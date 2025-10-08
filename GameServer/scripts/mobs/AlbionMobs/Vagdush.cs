@@ -131,7 +131,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Duration = 60;
 					spell.SpellID = 11986;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.DamageType = (int)eDamageType.Body; //Energy DMG Type
 					m_VagdushDisease = new Spell(spell, 10);
@@ -157,7 +157,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 50;
 					spell.Range = 1500;
 					spell.SpellID = 11987;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Matter;
 					m_VagdushDD = new Spell(spell, 10);

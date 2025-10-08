@@ -412,7 +412,7 @@ namespace DOL.AI.Brain
                     spell.Frequency = 30;
                     spell.Range = 400;
                     spell.SpellID = 11746;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DamageOverTime.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

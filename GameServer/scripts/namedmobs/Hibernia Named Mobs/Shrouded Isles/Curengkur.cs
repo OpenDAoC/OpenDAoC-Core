@@ -152,7 +152,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Curengkur's Strike";
 					spell.Range = 1500;
 					spell.SpellID = 11903;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -279,7 +279,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 800;
 					spell.SpellID = 11903;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

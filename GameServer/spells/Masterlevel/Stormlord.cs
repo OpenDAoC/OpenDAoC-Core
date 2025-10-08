@@ -35,7 +35,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7210;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Realm";
+            dbs.Target = eSpellTarget.REALM.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.StormMissHit.ToString();
             dbs.Value = spell.Value;
@@ -169,7 +169,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7273;
             dbs.Damage = Math.Abs(spell.Damage);
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.StormEnduDrain.ToString();
             dbs.Value = spell.Value;
@@ -251,7 +251,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7258;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.Damage;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.StormDexQuickDebuff.ToString();
             dbs.Value = spell.Value;
@@ -334,7 +334,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7303;
             dbs.Damage = Math.Abs(spell.Damage);
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.PowerDrainStorm.ToString();
             dbs.Value = spell.Value;
@@ -488,7 +488,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7223;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.StormStrConstDebuff.ToString();
             dbs.Value = spell.Value;
@@ -571,7 +571,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7305;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.StormAcuityDebuff.ToString();
             dbs.Value = spell.Value;
@@ -665,7 +665,7 @@ namespace DOL.GS.Spells
             dbs.ClientEffect = 7216;
             dbs.Damage = spell.Damage;
             dbs.DamageType = (int)spell.DamageType;
-            dbs.Target = "Enemy";
+            dbs.Target = eSpellTarget.ENEMY.ToString();
             dbs.Radius = 0;
             dbs.Type = eSpellType.StormEnergyTempest.ToString();
             dbs.Value = spell.Value;

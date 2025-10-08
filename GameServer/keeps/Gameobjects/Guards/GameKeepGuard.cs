@@ -914,7 +914,7 @@ namespace DOL.GS.Keeps
 			{
 				DbSpell spell = BaseHealSpell;
 				spell.CastTime = 2;
-				spell.Target = "Self";
+				spell.Target = eSpellTarget.SELF.ToString();
 				spell.Value = 225;
 				if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
 					spell.Uninterruptible = true;
@@ -929,7 +929,7 @@ namespace DOL.GS.Keeps
 				DbSpell spell = BaseHealSpell;
 				spell.CastTime = 2;
 				spell.Value = 200;
-				spell.Target = "Realm";
+				spell.Target = eSpellTarget.REALM.ToString();
 				return spell;
 			}
 		}

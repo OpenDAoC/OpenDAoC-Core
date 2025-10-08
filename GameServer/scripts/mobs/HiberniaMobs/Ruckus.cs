@@ -91,7 +91,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Earthen Fury";
 					spell.Range = 1000;
 					spell.SpellID = 11942;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = eSpellType.DamageAdd.ToString();
 					spell.Uninterruptible = true;
 					m_RuckusDA = new Spell(spell, 20);
@@ -119,7 +119,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Stun";
 					spell.Range = 400;
 					spell.SpellID = 11943;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					m_Ruckus_stun = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ruckus_stun);

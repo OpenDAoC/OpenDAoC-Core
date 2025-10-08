@@ -64,7 +64,7 @@ namespace DOL.GS.Commands
 			dbSpell.Description = "Target has been shapechanged.";
 			dbSpell.ClientEffect = 8000;
 			dbSpell.Icon = 805;
-			dbSpell.Target = "Realm";
+			dbSpell.Target = eSpellTarget.REALM.ToString();
 			dbSpell.Range = 4000;
 			dbSpell.Power = 0;
 			dbSpell.CastTime = 0;

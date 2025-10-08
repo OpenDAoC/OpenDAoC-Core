@@ -616,7 +616,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Duration = 60;
                     spell.SpellID = 11731;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "Disease";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Energy; //Energy DMG Type
@@ -648,7 +648,7 @@ namespace DOL.AI.Brain
                     spell.Damage = 20;
                     spell.Duration = 20;
                     spell.SpellID = 11732;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "DamageAdd";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Energy; //Energy DMG Type
@@ -680,7 +680,7 @@ namespace DOL.AI.Brain
                     spell.Damage = 120;
                     spell.Duration = 20;
                     spell.SpellID = 11733;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Heat; //heat DMG Type

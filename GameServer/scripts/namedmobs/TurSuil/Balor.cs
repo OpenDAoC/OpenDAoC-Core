@@ -268,7 +268,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Balor's Eye Light";
 					spell.Range = 1800;
 					spell.SpellID = 11791;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();

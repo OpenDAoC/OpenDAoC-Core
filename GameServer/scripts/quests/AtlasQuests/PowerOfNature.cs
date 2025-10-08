@@ -583,7 +583,7 @@ namespace DOL.GS.Quests.Hibernia
                     spell.Range = 0;
                     spell.Radius = 0;
                     spell.SpellID = 5005;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = "StrengthBuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

@@ -97,7 +97,7 @@ namespace DOL.GS
 					spell.Range = 450;
 					spell.Duration = 3000;//50min
 					spell.SpellID = 11820;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 					spell.Value = -30;
 					spell.LifeDrainReturn = 30;
 					spell.SpellID = 11819;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Lifedrain.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;

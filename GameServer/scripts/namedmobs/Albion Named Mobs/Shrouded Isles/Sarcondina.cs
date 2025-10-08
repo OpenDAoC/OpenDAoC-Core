@@ -123,7 +123,7 @@ namespace DOL.GS
 					spell.Duration = 20;
 					spell.Frequency = 40;
 					spell.SpellID = 11805;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
 					spell.Type = eSpellType.DamageOverTime.ToString();

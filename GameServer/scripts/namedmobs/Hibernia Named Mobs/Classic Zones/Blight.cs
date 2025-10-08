@@ -172,7 +172,7 @@ namespace DOL.GS
 					spell.Name = "Fire Strike";
 					spell.Range = 500;
 					spell.SpellID = 11899;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_BlightDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BlightDD);

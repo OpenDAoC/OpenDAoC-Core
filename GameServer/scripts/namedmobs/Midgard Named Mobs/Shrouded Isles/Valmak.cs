@@ -90,7 +90,7 @@ namespace DOL.GS
 					spell.Radius = 450;
 					spell.Range = 450;
 					spell.SpellID = 11883;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Mesmerize";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

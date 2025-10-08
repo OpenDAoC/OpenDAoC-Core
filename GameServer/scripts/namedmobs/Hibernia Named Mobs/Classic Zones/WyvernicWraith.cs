@@ -89,7 +89,7 @@ namespace DOL.GS
 					spell.Name = "Elements Strike";
 					spell.Range = 500;
 					spell.SpellID = 11897;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_WyvernicWraithDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WyvernicWraithDD);

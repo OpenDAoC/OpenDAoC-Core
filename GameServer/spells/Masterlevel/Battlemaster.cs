@@ -293,7 +293,7 @@ namespace DOL.GS.Spells
                     spell.Value = 0;
                     spell.Duration = 10;
                     spell.SpellID = 900100;
-                    spell.Target = "Self";
+                    spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = eSpellType.Disarm.ToString();
                     Disarm_Weapon = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Combat_Styles_Effect, Disarm_Weapon);

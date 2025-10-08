@@ -57,7 +57,7 @@ namespace DOL.GS.RealmAbilities
 			m_dbspell.ClientEffect = 4242;
 			m_dbspell.Damage = 0;
 			m_dbspell.DamageType = 0;
-			m_dbspell.Target = "Group";
+			m_dbspell.Target = eSpellTarget.GROUP.ToString();
 			m_dbspell.Radius = 0;
 			m_dbspell.Type = eSpellType.ArmorAbsorptionBuff.ToString();
 			m_dbspell.Value = 50;

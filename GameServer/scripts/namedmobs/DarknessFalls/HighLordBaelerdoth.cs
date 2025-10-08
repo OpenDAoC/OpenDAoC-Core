@@ -111,7 +111,7 @@ namespace DOL.GS
                     spell.Range = 1500;
                     spell.Radius = 350;
                     spell.SpellID = 99998;
-                    spell.Target = "Enemy";
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = "ArmorAbsorptionDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

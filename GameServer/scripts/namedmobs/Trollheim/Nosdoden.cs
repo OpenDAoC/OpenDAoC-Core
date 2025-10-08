@@ -1805,7 +1805,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Toothgnasher's Ram";
 					spell.Range = 1500;
 					spell.SpellID = 11869;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_InstantThaneDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantThaneDD);
@@ -1832,7 +1832,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Radius = 350;
 					spell.SpellID = 11870;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_InstantThaneDD_pbaoe = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantThaneDD_pbaoe);
@@ -1858,7 +1858,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Thor's Full Lightning";
 					spell.Range = 1500;
 					spell.SpellID = 11871;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_InstantThaneDD_casting = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantThaneDD_casting);
@@ -1886,7 +1886,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Battle Roar";
 					spell.Range = 700;
 					spell.SpellID = 11872;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_InstantSkaldDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantSkaldDD);
@@ -1912,7 +1912,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Battle Roar";
 					spell.Range = 700;
 					spell.SpellID = 11873;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_InstantSkaldDD2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantSkaldDD2);
@@ -1941,7 +1941,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Chant of Blood";
 					spell.Range = 700;
 					spell.SpellID = 11875;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = eSpellType.DamageAdd.ToString();
 					m_Skald_DA = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Skald_DA);
@@ -1971,7 +1971,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.Value = 25;
 					spell.SpellID = 11874;
-					spell.Target = "Self";
+					spell.Target = eSpellTarget.SELF.ToString();
 					spell.Type = eSpellType.SavageDPSBuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -2040,7 +2040,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Greater Rune of Shadow";
 					spell.Range = 1500;
 					spell.SpellID = 11877;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Rune_DD = new Spell(spell, 70);
@@ -2068,7 +2068,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Sigil of Undoing";
 					spell.Range = 1800;
 					spell.SpellID = 11878;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Rune_Bolt = new Spell(spell, 70);
@@ -2098,7 +2098,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Extinguish Lifeforce";
 					spell.Range = 1500;
 					spell.SpellID = 11879;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Spirit_DD = new Spell(spell, 70);
@@ -2128,7 +2128,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 450;
 					spell.SpellID = 11880;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Mesmerize";
 					spell.Uninterruptible = true;
 					m_Spirit_Mezz = new Spell(spell, 70);
@@ -2188,7 +2188,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Crystallize Skeleton";
 					spell.Range = 1500;
 					spell.SpellID = 11882;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
 					m_Bone_DD2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bone_DD2);
@@ -2217,7 +2217,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Pulverize Skeleton";
 					spell.Range = 1500;
 					spell.SpellID = 11881;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Lifedrain.ToString();
 					m_Bone_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bone_DD);
@@ -2271,7 +2271,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Heal";
 					spell.Range = 2500;
 					spell.SpellID = 11885;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					m_Healer_Heal = new Spell(spell, 70);
 					spell.Uninterruptible = true;
@@ -2300,7 +2300,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 400;
 					spell.SpellID = 11886;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Mesmerize";
 					spell.DamageType = (int)eDamageType.Body;
 					m_Healer_Mezz = new Spell(spell, 70);
@@ -2330,7 +2330,7 @@ namespace DOL.AI.Brain
 					spell.Range = 2300;
 					spell.Radius = 350;
 					spell.SpellID = 11887;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = "Amnesia";
 					m_Healer_Amnesia = new Spell(spell, 44);
 					spell.Uninterruptible = true;
@@ -2360,7 +2360,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Fungal Spine";
 					spell.Range = 1800;
 					spell.SpellID = 11888;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_Bolt = new Spell(spell, 70);
@@ -2388,7 +2388,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Fungal Mucus";
 					spell.Range = 1500;
 					spell.SpellID = 11890;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_DD = new Spell(spell, 70);
@@ -2422,7 +2422,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 400;
 					spell.SpellID = 11891;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Disease.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_InstaAoeDisease = new Spell(spell, 70);
@@ -2458,7 +2458,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11889;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_AoeDot = new Spell(spell, 70);
@@ -2660,7 +2660,7 @@ namespace DOL.GS
 					spell.Name = "Lifebane";
 					spell.Range = 350;
 					spell.SpellID = 11876;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					m_SB_Lifebane = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SB_Lifebane);
@@ -2770,7 +2770,7 @@ namespace DOL.GS
 					spell.Name = "Stun";
 					spell.Range = 400;
 					spell.SpellID = 11884;
-					spell.Target = "Enemy";
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					m_SpiritChampion_stun = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpiritChampion_stun);
@@ -3109,7 +3109,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Heal";
 					spell.Range = 1500;
 					spell.SpellID = 11883;
-					spell.Target = "Realm";
+					spell.Target = eSpellTarget.REALM.ToString();
 					spell.Type = "Heal";
 					m_Pet_Heal = new Spell(spell, 70);
 					spell.Uninterruptible = true;
