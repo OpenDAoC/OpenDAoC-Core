@@ -1790,11 +1790,9 @@ namespace DOL.GS
 				foreach (ECSGameSpellEffect effect in effects)
 				{
 					// Ignore Whip of Encouragement; Tracker, Chaser, Pursuer Enhancement.
+					// Relying on the `Spell.Target` property to identify these.
 					if (effect.SpellHandler.Spell.Target is eSpellTarget.PET)
-					{
-						if (effect.SpellHandler.Spell.ID is 305 or (>= 895 and <= 897))
-							continue;
-					}
+						continue;
 
 					if (ShouldBeCancelled(attackData, effect))
 						effect.Stop();
