@@ -582,7 +582,7 @@ namespace DOL.GS
 
             if (distanceSquared > maxFollowDistanceSquared)
             {
-                ReturnToSpawnPoint();
+                StopFollowing();
                 return 0;
             }
 
