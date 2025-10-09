@@ -1327,20 +1327,33 @@ namespace DOL.GS.Housing
 			// get the vault permissions for the given vault
 			VaultPermissions activeVaultPermissions = VaultPermissions.None;
 
+			// Vault permissions are shared between pairs of vaults.
 			switch (vault.Index)
 			{
 				case 0:
+				case 4:
+				{
 					activeVaultPermissions = (VaultPermissions) housePermissions.Vault1;
 					break;
+				}
 				case 1:
+				case 5:
+				{
 					activeVaultPermissions = (VaultPermissions) housePermissions.Vault2;
 					break;
+				}
 				case 2:
+				case 6:
+				{
 					activeVaultPermissions = (VaultPermissions) housePermissions.Vault3;
 					break;
+				}
 				case 3:
+				case 7:
+				{
 					activeVaultPermissions = (VaultPermissions) housePermissions.Vault4;
 					break;
+				}
 			}
 
 			ChatUtil.SendDebugMessage(player, string.Format("Vault permissions = {0} for vault index {1}", (activeVaultPermissions & vaultPerms), vault.Index));
