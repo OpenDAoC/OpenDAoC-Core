@@ -59,7 +59,8 @@ namespace DOL.GS
                     (_cards[j], _cards[i]) = (_cards[i], _cards[j]);
                 }
 
-                // Distribute cards into buckets using weighted distribution, preferring buckets with averages further away from the card value.
+                // Distribute cards into buckets using weighted distribution,
+                // preferring buckets with fewer cards from the same stratum.
                 for (int i = 0; i < _cards.Length; i++)
                 {
                     int card = _cards[i];
