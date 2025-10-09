@@ -1751,7 +1751,7 @@ namespace DOL.GS
 
             if (missChance > 0)
             {
-                double missRoll = owner.GetPseudoDouble(RandomDeckEvent.Miss);
+                double missRoll = ad.Attacker.GetPseudoDouble(RandomDeckEvent.Miss);
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {
