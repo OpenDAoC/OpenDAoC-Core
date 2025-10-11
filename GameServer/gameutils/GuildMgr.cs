@@ -31,14 +31,16 @@ namespace DOL.GS
                 if (!_guildMemberViews.TryGetValue(player.Guild, out Dictionary<string, GuildMemberView> value))
                     return;
 
-                GuildMemberView member = new(player.InternalID,
+                GuildMemberView member = new(
+                    player.InternalID,
                     player.Name,
                     player.Level.ToString(),
                     player.CharacterClass.ID.ToString(),
                     player.GuildRank.RankLevel.ToString(),
                     player.Group != null ? player.Group.MemberCount.ToString() : "1",
                     player.CurrentZone.Description,
-                    player.GuildNote);
+                    player.GuildNote,
+                    player.GuildName);
                 value[player.InternalID] = member;
             }
         }
@@ -64,7 +66,7 @@ namespace DOL.GS
 
             lock (_lock)
             {
-                return !_guildMemberViews.TryGetValue(guild, out Dictionary<string, GuildMemberView> value) ?  null :  new(value);
+                return !_guildMemberViews.TryGetValue(guild, out Dictionary<string, GuildMemberView> value) ?  null : new(value);
             }
         }
 
@@ -432,14 +434,16 @@ namespace DOL.GS
 
             foreach (DbCoreCharacter character in characters)
             {
-                GuildMemberView member = new(character.ObjectId,
+                GuildMemberView member = new(
+                    character.ObjectId,
                     character.Name,
                     character.Level.ToString(),
                     character.Class.ToString(),
                     character.GuildRank.ToString(),
                     "0",
                     character.LastPlayed.ToShortDateString(),
-                    character.GuildNote);
+                    character.GuildNote,
+                    null);
 
                 guildMemberViews.Add(character.ObjectId, member);
             }
@@ -528,23 +532,34 @@ namespace DOL.GS
             public string Level { get; set; }
             public string ClassID { get; set; }
             public string Rank { get; set; }
-            public string GroupSize { get; set; } = "0";
+            public string GroupSize { get; set; }
             public string ZoneOrOnline { get; set; }
-            public string Note { get; set; } = string.Empty;
+            public string Note { get; set; }
+            public string Guild { get; }
 
             public string this[eSocialWindowSortColumn i] => i switch
             {
                 eSocialWindowSortColumn.NAME => Name,
-                eSocialWindowSortColumn.CLASS_ID => ClassID,
-                eSocialWindowSortColumn.GROUP => GroupSize,
                 eSocialWindowSortColumn.LEVEL => Level,
-                eSocialWindowSortColumn.NOTE => Note,
+                eSocialWindowSortColumn.CLASS_ID => ClassID,
                 eSocialWindowSortColumn.RANK => Rank,
+                eSocialWindowSortColumn.GROUP => GroupSize,
                 eSocialWindowSortColumn.ZONE_OR_ONLINE => ZoneOrOnline,
-                _ => string.Empty,
+                eSocialWindowSortColumn.NOTE => Note,
+                eSocialWindowSortColumn.GUILD => Guild,
+                _ => string.Empty
             };
 
-            public GuildMemberView(string internalID, string name, string level, string classID, string rank, string group, string zoneOrOnline, string note)
+            public GuildMemberView(
+                string internalID,
+                string name,
+                string level,
+                string classID,
+                string rank,
+                string group,
+                string zoneOrOnline,
+                string note,
+                string guild)
             {
                 InternalID = internalID;
                 Name = name;
@@ -554,23 +569,14 @@ namespace DOL.GS
                 GroupSize = group;
                 ZoneOrOnline = zoneOrOnline;
                 Note = note;
+                Guild = string.IsNullOrEmpty(guild) ? "(Unknown)" : guild;
             }
 
-            public GuildMemberView(GamePlayer player)
+            public string ToString(int position, int guildPop, eSocialWindowTab tab)
             {
-                InternalID = player.InternalID;
-                Name = player.Name;
-                Level = player.Level.ToString();
-                ClassID = player.CharacterClass.ID.ToString();
-                Rank = player.GuildRank.RankLevel.ToString();
-                GroupSize = player.Group == null ? "1" : "2";
-                ZoneOrOnline = player.CurrentZone.ToString();
-                Note = player.GuildNote;
-            }
+                if (tab is eSocialWindowTab.ALLIANCE)
+                    return $"A,{position},{guildPop},{Name},{Level},{ClassID},{Rank},{GroupSize},\"{ZoneOrOnline}\",\"{Guild}\"";
 
-            public string ToString(int position, int guildPop)
-            {
-                // This is used to send the correct information to the client social window.
                 return $"E,{position},{guildPop},{Name},{Level},{ClassID},{Rank},{GroupSize},\"{ZoneOrOnline}\",\"{Note}\"";
             }
 
@@ -580,8 +586,8 @@ namespace DOL.GS
                 ClassID = player.CharacterClass.ID.ToString();
                 Rank = player.GuildRank.RankLevel.ToString();
                 GroupSize = player.Group == null ? "1" : "2";
-                Note = player.GuildNote;
                 ZoneOrOnline = player.CurrentZone.Description;
+                Note = player.GuildNote;
             }
 
             public enum eSocialWindowSort : int
@@ -599,7 +605,9 @@ namespace DOL.GS
                 ZONE_OR_ONLINE_DESC = 6,
                 ZONE_OR_ONLINE_ASC = -6,
                 NOTE_DESC = 7,
-                NOTE_ASC = -7
+                NOTE_ASC = -7,
+                GUILD_DESC = 8,
+                GUILD_ASC = -8
             }
 
             public enum eSocialWindowSortColumn : int
@@ -610,7 +618,14 @@ namespace DOL.GS
                 RANK = 3,
                 GROUP = 4,
                 ZONE_OR_ONLINE = 5,
-                NOTE = 6
+                NOTE = 6,
+                GUILD = 7
+            }
+
+            public enum eSocialWindowTab
+            {
+                GUILD,
+                ALLIANCE
             }
         }
     }

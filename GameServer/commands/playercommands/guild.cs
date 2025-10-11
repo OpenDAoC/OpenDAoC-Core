@@ -7,6 +7,7 @@ using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
+using static DOL.GS.GuildMgr.GuildMemberView;
 
 namespace DOL.GS.Commands
 {
@@ -663,7 +664,6 @@ namespace DOL.GS.Commands
 								}
 							}
 
-							SendSocialWindowData(client, 1, 1, 2);
 							break;
 						}
 						#endregion
@@ -1522,90 +1522,84 @@ namespace DOL.GS.Commands
 						// WHO
 						// --------------------------------------------------------------------------------
 					case "who":
+					{
+						if (client.Player.Guild == null)
 						{
-							if (client.Player.Guild == null)
-							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								return;
-							}
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
 
-							int ind = 0;
-							int startInd = 0;
+						int ind = 0;
+						int startInd = 0;
 
-							#region Social Window
-							if (args.Length >= 6 && args[2] == "window")
-							{
-								int sortTemp;
-								byte showTemp;
-								int page;
+						#region Social Window
+						if (args.Length >= 6 && args[2] == "window")
+						{
+							if (int.TryParse(args[3], out int sortTemp) && int.TryParse(args[4], out int page) && byte.TryParse(args[5], out byte showTemp) && sortTemp >= -8 && sortTemp <= 8)
+								SendSocialWindowData(client, sortTemp, page, showTemp, args.Length >= 7 && args[6] == "1" ? eSocialWindowTab.ALLIANCE : eSocialWindowTab.GUILD);
 
-								//Lets get the variables that were sent over
-								if (Int32.TryParse(args[3], out sortTemp) && Int32.TryParse(args[4], out page) && Byte.TryParse(args[5], out showTemp) && sortTemp >= -7 && sortTemp <= 7)
-								{
-									SendSocialWindowData(client, sortTemp, page, showTemp);
-								}
-								return;
-							}
-							#endregion
-
-							#region Alliance Who
-							else if (args.Length == 3)
-							{
-								var alliance = client.Player.Guild.alliance;
-
-								if (args[2] == "alliance" || args[2] == "a")
-								{
-									foreach (Guild guild in client.Player.Guild.alliance.Guilds)
-									{
-										foreach (GamePlayer ply in guild.GetListOfOnlineMembers())
-										{
-											if (ply.Client.IsPlaying && !ply.IsAnonymous)
-											{
-												ind++;
-												string mesg = $"{ind}) {ply.Name} <{guild.Name}> the Level {ply.Level} {ply.CharacterClass.Name} in {ply.CurrentZone?.Description ?? "(null)"}";
-												client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-											}
-										}
-									}
-									return;
-								}
-								else
-								{
-									int.TryParse(args[2], out startInd);
-								}
-							}
-							#endregion
-
-							#region Who
-							IList<GamePlayer> onlineGuildMembers = client.Player.Guild.GetListOfOnlineMembers();
-
-							foreach (GamePlayer ply in onlineGuildMembers)
-							{
-								if (ply.Client.IsPlaying && !ply.IsAnonymous)
-								{
-									if (startInd + ind > startInd + WhoCommandHandler.MAX_LIST_SIZE)
-										break;
-									ind++;
-									string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
-									string mesg;
-									if (ply.GuildRank.Title != null)
-										mesg = ind.ToString() + ") " + ply.Name + " <" + ply.GuildRank.Title + "> the Level " + ply.Level.ToString() + " " + ply.CharacterClass.Name + " in " + zoneName;
-									else
-										mesg = ind.ToString() + ") " + ply.Name + " <" + ply.GuildRank.RankLevel.ToString() + "> the Level " + ply.Level.ToString() + " " + ply.CharacterClass.Name + " in " + zoneName;
-									if (ServerProperties.Properties.ALLOW_CHANGE_LANGUAGE)
-										mesg += " <" + ply.Client.Account.Language + ">";
-									if (ind >= startInd)
-										client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-								}
-							}
-							if (ind > WhoCommandHandler.MAX_LIST_SIZE && ind < onlineGuildMembers.Count)
-								client.Out.SendMessage(string.Format(WhoCommandHandler.MESSAGE_LIST_TRUNCATED, onlineGuildMembers.Count), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-							else client.Out.SendMessage("total member online:        " + ind.ToString(), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-
-							break;
-							#endregion
+							return;
 						}
 						#endregion
+
+						#region Alliance Who
+						else if (args.Length == 3)
+						{
+							var alliance = client.Player.Guild.alliance;
+
+							if (args[2] == "alliance" || args[2] == "a")
+							{
+								foreach (Guild guild in client.Player.Guild.alliance.Guilds)
+								{
+									foreach (GamePlayer ply in guild.GetListOfOnlineMembers())
+									{
+										if (ply.Client.IsPlaying && !ply.IsAnonymous)
+										{
+											ind++;
+											string mesg = $"{ind}) {ply.Name} <{guild.Name}> the Level {ply.Level} {ply.CharacterClass.Name} in {ply.CurrentZone?.Description ?? "(null)"}";
+											client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+										}
+									}
+								}
+								return;
+							}
+							else
+							{
+								int.TryParse(args[2], out startInd);
+							}
+						}
+						#endregion
+
+						#region Who
+						IList<GamePlayer> onlineGuildMembers = client.Player.Guild.GetListOfOnlineMembers();
+
+						foreach (GamePlayer ply in onlineGuildMembers)
+						{
+							if (ply.Client.IsPlaying && !ply.IsAnonymous)
+							{
+								if (startInd + ind > startInd + WhoCommandHandler.MAX_LIST_SIZE)
+									break;
+								ind++;
+								string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
+								string mesg;
+								if (ply.GuildRank.Title != null)
+									mesg = ind.ToString() + ") " + ply.Name + " <" + ply.GuildRank.Title + "> the Level " + ply.Level.ToString() + " " + ply.CharacterClass.Name + " in " + zoneName;
+								else
+									mesg = ind.ToString() + ") " + ply.Name + " <" + ply.GuildRank.RankLevel.ToString() + "> the Level " + ply.Level.ToString() + " " + ply.CharacterClass.Name + " in " + zoneName;
+								if (ServerProperties.Properties.ALLOW_CHANGE_LANGUAGE)
+									mesg += " <" + ply.Client.Account.Language + ">";
+								if (ind >= startInd)
+									client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+							}
+						}
+						if (ind > WhoCommandHandler.MAX_LIST_SIZE && ind < onlineGuildMembers.Count)
+							client.Out.SendMessage(string.Format(WhoCommandHandler.MESSAGE_LIST_TRUNCATED, onlineGuildMembers.Count), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+						else client.Out.SendMessage("total member online:        " + ind.ToString(), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+
+						break;
+						#endregion
+					}
+					#endregion
 						#region Leader
 						// --------------------------------------------------------------------------------
 						// LEADER
@@ -1845,44 +1839,53 @@ namespace DOL.GS.Commands
 						}
 						break;
 						#endregion
-						#region Alliance
-						// --------------------------------------------------------------------------------
-						// ALLIANCE
-						// --------------------------------------------------------------------------------
+					#region Alliance
+					// --------------------------------------------------------------------------------
+					// ALLIANCE
+					// --------------------------------------------------------------------------------
 					case "alliance":
+					{
+
+
+						if (client.Player.Guild == null)
 						{
-							if (client.Player.Guild == null)
-							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								return;
-							}
-
-							Alliance alliance = null;
-							if (client.Player.Guild.AllianceId != null && client.Player.Guild.AllianceId != string.Empty)
-							{
-								alliance = client.Player.Guild.alliance;
-							}
-							else
-							{
-								DisplayMessage(client, "Your guild is not a member of an alliance!");
-								return;
-							}
-
-							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceInfo", alliance.DbAlliance.AllianceName));
-							DbGuild leader = alliance.DbAlliance.DBguildleader;
-							if (leader != null)
-								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceLeader", leader.GuildName));
-							else
-								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceNoLeader"));
-
-							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMembers"));
-							int i = 0;
-							foreach (DbGuild guild in alliance.DbAlliance.DBguilds)
-								if (guild != null)
-									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMember", i++, guild.GuildName));
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						#endregion
+
+						Alliance alliance = null;
+
+						if (client.Player.Guild.AllianceId != null && client.Player.Guild.AllianceId != string.Empty)
+							alliance = client.Player.Guild.alliance;
+						else
+						{
+							DisplayMessage(client, "Your guild is not a member of an alliance!");
+							return;
+						}
+
+						// This is a click on social window's alliance tab.
+						if (args.Length > 2 && args[2] == "1")
+						{
+							string mes = $"IA,{alliance.DbAlliance.AllianceName},{alliance.DbAlliance.Motd},";
+							client.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+							return;
+						}
+
+						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceInfo", alliance.DbAlliance.AllianceName));
+						DbGuild leader = alliance.DbAlliance.DBguildleader;
+						if (leader != null)
+							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceLeader", leader.GuildName));
+						else
+							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceNoLeader"));
+
+						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMembers"));
+						int i = 0;
+						foreach (DbGuild guild in alliance.DbAlliance.DBguilds)
+							if (guild != null)
+								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMember", i++, guild.GuildName));
+						return;
+					}
+					#endregion
 						#region Alliance Invite
 						// --------------------------------------------------------------------------------
 						// AINVITE
@@ -2503,12 +2506,8 @@ namespace DOL.GS.Commands
 			}
 			catch (Exception e)
 			{
-				if (ServerProperties.Properties.ENABLE_DEBUG)
-				{
-					log.Debug("Error in /gc script, " + args[1] + " command: " + e.ToString());
-				}
-
-				DisplayHelp(client);
+				if (log.IsErrorEnabled)
+					log.Error(e);
 			}
 		}
 
@@ -2977,77 +2976,157 @@ namespace DOL.GS.Commands
 		/// <summary>
 		/// Send social window data to the client
 		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="sort"></param>
-		/// <param name="page"></param>
-		/// <param name="offline">0 = false, 1 = true, 2 to try and recall last setting used by player</param>
-		private void SendSocialWindowData(GameClient client, int sort, int page, byte offline)
+		private static void SendSocialWindowData(GameClient client, int sort, int page, byte offline, eSocialWindowTab tab)
 		{
-			Dictionary<string, GuildMgr.GuildMemberView> allGuildMembers = GuildMgr.GetGuildMemberViews(client.Player.Guild);
-
-			if (allGuildMembers == null || allGuildMembers.Count == 0)
-			{
+			// A player must be in a guild to view the guild or alliance windows.
+			if (client.Player.Guild == null)
 				return;
-			}
 
-			bool showOffline = false;
+			List<Guild> guildsToProcess = new();
 
-			if (offline < 2)
+			// For the Alliance tab, collect all guilds in the alliance.
+			// For the Guild tab (or as a fallback), use only the player's guild.
+			if (tab is eSocialWindowTab.ALLIANCE)
 			{
-				showOffline = (offline == 0 ? false : true);
+				if (client.Player.Guild.alliance == null)
+					return;
+
+				guildsToProcess.AddRange(client.Player.Guild.alliance.Guilds);
 			}
 			else
+				guildsToProcess.Add(client.Player.Guild);
+
+			Dictionary<string, GuildMgr.GuildMemberView> allGuildMembers = new();
+
+			foreach (Guild guild in guildsToProcess)
 			{
-				// try to recall last setting
-				showOffline = client.Player.TempProperties.GetProperty<bool>("SOCIALSHOWOFFLINE");
+				Dictionary<string, GuildMgr.GuildMemberView> members = GuildMgr.GetGuildMemberViews(guild);
+
+				if (members != null)
+				{
+					foreach (var pair in members)
+						allGuildMembers.TryAdd(pair.Key, pair.Value);
+				}
 			}
+
+			if (allGuildMembers.Count == 0)
+				return;
+
+			bool showOffline;
+
+			// 2 = Use the last setting used by the player.
+			if (offline < 2)
+				showOffline = offline != 0;
+			else
+				showOffline = client.Player.TempProperties.GetProperty<bool>("SOCIALSHOWOFFLINE");
 
 			client.Player.TempProperties.SetProperty("SOCIALSHOWOFFLINE", showOffline);
 
-			//The type of sorting we will be sending
-			GuildMgr.GuildMemberView.eSocialWindowSort sortOrder = (GuildMgr.GuildMemberView.eSocialWindowSort)sort;
+			eSocialWindowSort sortOrder = (eSocialWindowSort) sort;
+			eSocialWindowSortColumn sortColumn = eSocialWindowSortColumn.NAME;
 
-			//Let's sort the sorted list - we don't need to sort if sort = name
-			SortedList<string, GuildMgr.GuildMemberView> sortedWindowList = null;
-
-			GuildMgr.GuildMemberView.eSocialWindowSortColumn sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.NAME;
-
-			#region Determine Sort
-			switch (sortOrder)
+			if (tab is eSocialWindowTab.ALLIANCE)
 			{
-				case GuildMgr.GuildMemberView.eSocialWindowSort.CLASS_ASC:
-				case GuildMgr.GuildMemberView.eSocialWindowSort.CLASS_DESC:
-					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.CLASS_ID;
-					break;
-				case GuildMgr.GuildMemberView.eSocialWindowSort.GROUP_ASC:
-				case GuildMgr.GuildMemberView.eSocialWindowSort.GROUP_DESC:
-					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.GROUP;
-					break;
-				case GuildMgr.GuildMemberView.eSocialWindowSort.LEVEL_ASC:
-				case GuildMgr.GuildMemberView.eSocialWindowSort.LEVEL_DESC:
-					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.LEVEL;
-					break;
-				case GuildMgr.GuildMemberView.eSocialWindowSort.NOTE_ASC:
-				case GuildMgr.GuildMemberView.eSocialWindowSort.NOTE_DESC:
-					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.NOTE;
-					break;
-				case GuildMgr.GuildMemberView.eSocialWindowSort.RANK_ASC:
-				case GuildMgr.GuildMemberView.eSocialWindowSort.RANK_DESC:
-					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.RANK;
-					break;
-				case GuildMgr.GuildMemberView.eSocialWindowSort.ZONE_OR_ONLINE_ASC:
-				case GuildMgr.GuildMemberView.eSocialWindowSort.ZONE_OR_ONLINE_DESC:
-					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.ZONE_OR_ONLINE;
-					break;
+				switch (sortOrder)
+				{
+					case eSocialWindowSort.LEVEL_ASC:
+					case eSocialWindowSort.LEVEL_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.LEVEL;
+						break;
+					}
+					case eSocialWindowSort.CLASS_ASC:
+					case eSocialWindowSort.CLASS_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.CLASS_ID;
+						break;
+					}
+					case eSocialWindowSort.RANK_ASC:
+					case eSocialWindowSort.RANK_DESC:
+					{
+						// Offset because the alliance tab doesn't have a rank column.
+						sortColumn = eSocialWindowSortColumn.GROUP;
+						break;
+					}
+					case eSocialWindowSort.GROUP_ASC:
+					case eSocialWindowSort.GROUP_DESC:
+					{
+						// Offset because of the previous case.
+						sortColumn = eSocialWindowSortColumn.ZONE_OR_ONLINE;
+						break;
+					}
+					case eSocialWindowSort.ZONE_OR_ONLINE_ASC:
+					case eSocialWindowSort.GUILD_DESC:
+					{
+						// Offset because of the previous case.
+						// The client sends inconsistent IDs for this column.
+						sortColumn = eSocialWindowSortColumn.GUILD;
+						break;
+					}
+				}
 			}
-			#endregion
-
-			if (showOffline == false) // show only a sorted list of online players
+			else
 			{
-				IList<GamePlayer> onlineGuildPlayers = client.Player.Guild.GetListOfOnlineMembers();
-				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberView>(onlineGuildPlayers.Count);
+				switch (sortOrder)
+				{
+					case eSocialWindowSort.LEVEL_ASC:
+					case eSocialWindowSort.LEVEL_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.LEVEL;
+						break;
+					}
+					case eSocialWindowSort.CLASS_ASC:
+					case eSocialWindowSort.CLASS_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.CLASS_ID;
+						break;
+					}
+					case eSocialWindowSort.RANK_ASC:
+					case eSocialWindowSort.RANK_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.RANK;
+						break;
+					}
+					case eSocialWindowSort.GROUP_ASC:
+					case eSocialWindowSort.GROUP_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.GROUP;
+						break;
+					}
+					case eSocialWindowSort.ZONE_OR_ONLINE_ASC:
+					case eSocialWindowSort.ZONE_OR_ONLINE_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.ZONE_OR_ONLINE;
+						break;
+					}
+					case eSocialWindowSort.NOTE_ASC:
+					case eSocialWindowSort.NOTE_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.NOTE;
+						break;
+					}
+					case eSocialWindowSort.GUILD_ASC:
+					case eSocialWindowSort.GUILD_DESC:
+					{
+						sortColumn = eSocialWindowSortColumn.GUILD;
+						break;
+					}
+				}
+			}
 
-				foreach (GamePlayer player in onlineGuildPlayers)
+			SortedList<string, GuildMgr.GuildMemberView> sortedWindowList;
+
+			if (!showOffline)
+			{
+				// Get all online players from the processed guilds.
+				List<GamePlayer> onlinePlayers = GameLoop.GetListForTick<GamePlayer>();
+
+				foreach (Guild guild in guildsToProcess)
+					onlinePlayers.AddRange(guild.GetListOfOnlineMembers());
+
+				sortedWindowList = new(onlinePlayers.Count);
+
+				foreach (GamePlayer player in onlinePlayers)
 				{
 					if (allGuildMembers.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView memberDisplay))
 					{
@@ -3061,30 +3140,31 @@ namespace DOL.GS.Commands
 						catch
 						{
 							if (log.IsErrorEnabled)
-								log.Error(string.Format("Sorted List duplicate entry - Key: {0} Member: {1}. Replacing - Member: {2}.  Sorted count: {3}.  Guild ID: {4}", key, memberDisplay.Name, sortedWindowList[key].Name, sortedWindowList.Count, client.Player.GuildID));
+								log.Error($"Sorted List duplicate entry - Key: {key} Member: {memberDisplay.Name}. Replacing - Member: {sortedWindowList[key].Name}. Sorted count: {sortedWindowList.Count}.  Guild ID: {client.Player.GuildID}");
 						}
 					}
 				}
 			}
-			else // sort and display entire list
+			else
 			{
-				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberView>();
+				Dictionary<string, GamePlayer> onlinePlayersMap = new();
+
+				foreach (Guild guild in guildsToProcess)
+				{
+					foreach (GamePlayer onlineMember in guild.GetListOfOnlineMembers())
+						onlinePlayersMap.TryAdd(onlineMember.InternalID, onlineMember);
+				}
+
+				sortedWindowList = new();
 
 				foreach (GuildMgr.GuildMemberView memberDisplay in allGuildMembers.Values)
 				{
-					GamePlayer p = client.Player.Guild.GetOnlineMemberByID(memberDisplay.InternalID);
-					if (p != null)
-					{
-						//Update to make sure we have the most up to date info
-						memberDisplay.UpdateMember(p);
-					}
+					// Update member view if the player is found in the online map.
+					if (onlinePlayersMap.TryGetValue(memberDisplay.InternalID, out GamePlayer member))
+						memberDisplay.UpdateMember(member);
 					else
-					{
-						//Make sure that since they are offline they get the offline flag!
 						memberDisplay.GroupSize = "0";
-					}
 
-					//Add based on the new index
 					string key = $"{memberDisplay[sortColumn]}_{memberDisplay.InternalID}";
 
 					try
@@ -3094,43 +3174,41 @@ namespace DOL.GS.Commands
 					catch
 					{
 						if (log.IsErrorEnabled)
-							log.Error(string.Format("Sorted List duplicate entry - Key: {0} Member: {1}. Replacing - Member: {2}.  Sorted count: {3}.  Guild ID: {4}", key, memberDisplay.Name, sortedWindowList[key].Name, sortedWindowList.Count, client.Player.GuildID));
+							log.Error($"Sorted List duplicate entry - Key: {key} Member: {memberDisplay.Name}. Replacing - Member: {sortedWindowList[key].Name}. Sorted count: {sortedWindowList.Count}.  Guild ID: {client.Player.GuildID}");
 					}
 				}
 			}
 
-			//Finally lets send the list we made
-
 			IList<GuildMgr.GuildMemberView> finalList = sortedWindowList.Values;
-
-			int i = 0;
 			string[] buffer = new string[10];
+			int i;
+
 			for (i = 0; i < 10 && finalList.Count > i + (page - 1) * 10; i++)
 			{
 				GuildMgr.GuildMemberView memberDisplay;
 
-				if ((int)sortOrder > 0)
-				{
-					//They want it normal
+				if ((int) sortOrder > 0)
 					memberDisplay = finalList[i + (page - 1) * 10];
-				}
 				else
-				{
-					//They want it in reverse
-					memberDisplay = finalList[(finalList.Count - 1) - (i + (page - 1) * 10)];
-				}
+					memberDisplay = finalList[finalList.Count - 1 - (i + (page - 1) * 10)];
 
-				buffer[i] = memberDisplay.ToString((i + 1) + (page - 1) * 10, finalList.Count);
+				buffer[i] = memberDisplay.ToString(i + 1 + (page - 1) * 10, finalList.Count, tab);
 			}
 
-			client.Out.SendMessage("TE," + page.ToString() + "," + finalList.Count + "," + i.ToString(), eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+			string destination;
+
+			if (tab is eSocialWindowTab.ALLIANCE)
+				destination = "A";
+			else
+				destination = "E";
+
+			client.Out.SendMessage($"T{destination},{page},{finalList.Count},{i}", eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
 
 			foreach (string member in buffer)
 				client.Player.Out.SendMessage(member, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
-
 		}
 
-		public void DisplayEditHelp(GameClient client)
+		public static void DisplayEditHelp(GameClient client)
 		{
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.Help.GuildUsage"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.Help.GuildEditTitle"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
