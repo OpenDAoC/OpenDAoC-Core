@@ -915,7 +915,7 @@ namespace DOL.GS
                     _effect.OnStartEffect();
 
                     // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
-                    if (_effect is ECSGameSpellEffect spellEffect)
+                    if (_effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
                     {
                         ISpellHandler spellHandler = spellEffect.SpellHandler;
                         Spell spell = spellHandler?.Spell;
@@ -934,7 +934,7 @@ namespace DOL.GS
                             else if (spell.IsHarmful)
                                 EffectHelper.SendSpellAnimation(spellEffect);
                         }
-                        else if (spellEffect is not ECSImmunityEffect)
+                        else
                             EffectHelper.SendSpellAnimation(spellEffect);
                     }
                 }
