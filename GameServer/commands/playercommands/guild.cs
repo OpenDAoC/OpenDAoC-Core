@@ -655,7 +655,7 @@ namespace DOL.GS.Commands
 									case "2": //enable/disable social windows
 										{
 											// "P,ShowGuildWindow,ShowAllianceWindow,?,ShowLFGuildWindow(only with guild),0,0" // news and friend windows always showed
-											client.Out.SendMessage($"P,{(client.Player.Guild == null ? "0" : "1")},{(client.Player.Guild.AllianceId != string.Empty ? "0" : "1")},0,0,0,0", eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+											client.Out.SendMessage($"P,{(client.Player.Guild == null ? "0" : "1")},{(string.IsNullOrEmpty(client.Player.Guild.AllianceId) ? "0" : "1")},0,0,0,0", eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
 											break;
 										}
 									default:
