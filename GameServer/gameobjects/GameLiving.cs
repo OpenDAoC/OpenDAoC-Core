@@ -221,7 +221,7 @@ namespace DOL.GS
 
 		public virtual bool InCombatPvE => LastCombatTickPvE > 0 && LastCombatTickPvE + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
 		public virtual bool InCombatPvP => LastCombatTickPvP > 0 && LastCombatTickPvP + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
-		public virtual bool InCombat => InCombatInLast(IN_COMBAT_DURATION);
+		public virtual bool InCombat => InCombatInLast(IN_COMBAT_DURATION) || IsCrowdControlled;
 
 		public virtual bool InCombatInLast(int milliseconds)
 		{
