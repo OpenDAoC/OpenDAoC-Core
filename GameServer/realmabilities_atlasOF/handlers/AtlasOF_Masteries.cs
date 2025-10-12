@@ -128,6 +128,11 @@ namespace DOL.GS.RealmAbilities
         protected override string ValueUnit { get { return "%"; } }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
+
+        // Ugly but necessary fix.
+        // This prevents the client (1.127) from applying Mastery of Water itself with very weird values,
+        // and allows us to handle it properly via `WaterSpeedCalculator`.
+        public override eSkillPage SkillType => eSkillPage.Abilities;
     }
 
     /// <summary>
