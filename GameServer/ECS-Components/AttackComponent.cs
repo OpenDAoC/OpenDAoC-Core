@@ -1098,7 +1098,9 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    double damage = AttackDamage(weapon, action, out double baseDamageCap);
+                    // Relic bonus is applied to damage only and does not increase cap.
+                    double relicBonus = 1.0 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
+                    double damage = AttackDamage(weapon, action, out double baseDamageCap) * relicBonus;
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -1106,7 +1108,7 @@ namespace DOL.GS
 
                     double weaponSkill = CalculateWeaponSkill(weapon, ad.Target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
-                    double damageMod = weaponSkill / armorMod;
+                    double damageMod = weaponSkill / armorMod * relicBonus;
 
                     // Badge Of Valor Calculation 1+ absorb or 1- absorb
                     // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
@@ -1306,12 +1308,7 @@ namespace DOL.GS
         public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
             baseWeaponSkill = owner.GetWeaponSkill(weapon) + INHERENT_WEAPON_SKILL;
-            double relicBonus = 1.0;
-
-            if (owner is GamePlayer)
-                relicBonus += RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
-
-            return baseWeaponSkill * relicBonus * specModifier;
+            return baseWeaponSkill * specModifier;
         }
 
         public double CalculateDefensePenetration(DbInventoryItem weapon, int targetLevel)
