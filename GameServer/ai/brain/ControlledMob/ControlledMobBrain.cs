@@ -679,6 +679,10 @@ namespace DOL.AI.Brain
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
                 {
+                    // Special case for underhill ally. It cannot heal itself.
+                    // Consider implementing a brain for it.
+                    bool underhillAllyHeal = spell.ID == 60015;
+
                     int bodyPercent = Body.HealthPercent;
                     int healThreshold = Properties.PET_HEAL_THRESHOLD;
 
@@ -702,7 +706,7 @@ namespace DOL.AI.Brain
                     }
 
                     // Heal self.
-                    if (bodyPercent < emergencyThreshold && !LivingHasEffect(Body, spell))
+                    if (bodyPercent < emergencyThreshold && !underhillAllyHeal && !LivingHasEffect(Body, spell))
                     {
                         target = Body;
                         break;
@@ -745,7 +749,7 @@ namespace DOL.AI.Brain
                     }
 
                     // Heal self.
-                    if (bodyPercent < healThreshold && !LivingHasEffect(Body, spell))
+                    if (bodyPercent < healThreshold && !underhillAllyHeal && !LivingHasEffect(Body, spell))
                     {
                         target = Body;
                         break;
