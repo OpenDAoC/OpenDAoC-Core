@@ -1601,6 +1601,12 @@ namespace DOL.GS.ServerProperties
 		public static bool PVP_UNCLAIMED_KEEPS_ENEMY;
 
 		/// <summary>
+		/// Grace period in minutes to allow relog near enemy structure after link death
+		/// </summary>
+		[ServerProperty("keeps", "NearKeepRelogGracePeriod", "The grace period in minutes, to allow to relog near an enemy structure.", 3)]
+		public static int NEAR_KEEP_RELOG_GRACE_PERIOD;
+
+		/// <summary>
 		/// Should players that exceed BG level cap be moved out of BG when logging in?
 		/// </summary>
 		[ServerProperty("keeps", "teleport_login_bg_level_exceeded", "Should players that exceed BG level cap be moved out of BG when logging in?", true)]

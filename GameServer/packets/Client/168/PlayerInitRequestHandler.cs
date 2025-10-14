@@ -81,6 +81,9 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (ServerProperties.Properties.ENABLE_DEBUG)
                 player.Out.SendMessage("Server is running in DEBUG mode!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
+            if (player.PreviousLoginDate.AddMinutes(ServerProperties.Properties.NEAR_KEEP_RELOG_GRACE_PERIOD) < DateTime.Now)
+                CheckNearbyKeepAndMoveIfUnsafe(player);
+
             if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
                 CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
 
@@ -134,6 +137,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 player.Out.SendCustomTextWindow($"Server News {DateTime.Today:d}", GameServer.Instance.PatchNotes);
                 player.Client.HasSeenPatchNotes = true;
+            }
+
+            static void CheckNearbyKeepAndMoveIfUnsafe(GamePlayer player)
+            {
+                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
+
+                if (keep != null && GameServer.KeepManager.IsEnemy(keep, player))
+                {
+                    player.Out.SendMessage("This area isn't currently secure and you are being transported to a safer location.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.MoveToBind();
+                }
             }
 
             static void CheckBGLevelCapForPlayerAndMoveIfNecessary(GamePlayer player)
