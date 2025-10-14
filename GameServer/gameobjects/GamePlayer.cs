@@ -2366,7 +2366,7 @@ namespace DOL.GS
 
         public override void StartPowerRegeneration()
         {
-            if (!IsAlive || ObjectState is not eObjectState.Active)
+            if (m_health == 0 || ObjectState is not eObjectState.Active)
                 return;
 
             if (m_powerRegenerationTimer == null)
@@ -2379,7 +2379,7 @@ namespace DOL.GS
 
         public override void StartEnduranceRegeneration()
         {
-            if (!IsAlive || ObjectState is not eObjectState.Active)
+            if (m_health == 0 || ObjectState is not eObjectState.Active)
                 return;
 
             if (m_enduRegenerationTimer == null)

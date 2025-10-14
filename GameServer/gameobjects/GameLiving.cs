@@ -2484,7 +2484,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartHealthRegeneration()
 		{
-			if (!IsAlive || ObjectState is not eObjectState.Active)
+			if (m_health == 0 || ObjectState is not eObjectState.Active)
 				return;
 
 			if (m_healthRegenerationTimer == null)
@@ -2655,7 +2655,7 @@ namespace DOL.GS
 				else
 					m_health = Math.Max(0, value);
 
-				if (IsAlive && m_health < maxHealth)
+				if (m_health < maxHealth)
 					StartHealthRegeneration();
 			}
 		}
@@ -2670,7 +2670,7 @@ namespace DOL.GS
 				int maxMana = MaxMana;
 				m_mana = Math.Clamp(value, 0, maxMana);
 
-				if (IsAlive && (m_mana < maxMana || IsSpecialClass(this as GamePlayer)))
+				if (m_mana < maxMana || IsSpecialClass(this as GamePlayer))
 					StartPowerRegeneration();
 
 				static bool IsSpecialClass(GamePlayer player)
@@ -2695,7 +2695,7 @@ namespace DOL.GS
 				int maxEndurance = MaxEndurance;
 				m_endurance = Math.Clamp(value, 0, maxEndurance);
 
-				if (IsAlive && m_endurance < maxEndurance)
+				if (m_endurance < maxEndurance)
 					StartEnduranceRegeneration();
 			}
 		}
