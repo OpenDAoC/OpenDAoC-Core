@@ -16,13 +16,24 @@ namespace DOL.GS.Spells
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
+            return IsValidSummonLocation() && base.CheckBeginCast(selectedTarget);
+        }
+
+        public override bool CheckEndCast(GameLiving target)
+        {
+            return IsValidSummonLocation() && base.CheckEndCast(target);
+        }
+
+        private bool IsValidSummonLocation()
+        {
             int count = 0;
             Region region = WorldMgr.GetRegion(Caster.CurrentRegion.ID);
+            GamePlayer playerCaster = Caster as GamePlayer;
 
             if (region == null || region.GetZone(Caster.GroundTarget.X, Caster.GroundTarget.Y) == null)
             {
-                if (Caster is GamePlayer)
-                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
+                if (playerCaster != null)
+                    MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
 
                 return false;
             }
@@ -34,7 +45,7 @@ namespace DOL.GS.Spells
                 {
                     if (Caster.GroundTarget.Z - Caster.Z > 200)
                     {
-                        if (Caster is GamePlayer)
+                        if (playerCaster != null)
                             MessageToCaster("Cannot summon a turret this high near a keep!", eChatType.CT_SpellResisted);
 
                         return false;
@@ -48,8 +59,8 @@ namespace DOL.GS.Spells
                 {
                     if (npc.Brain is TurretFNFBrain && ++count >= Properties.TURRET_AREA_CAP_COUNT)
                     {
-                        if (Caster is GamePlayer)
-                            MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretAreaCap"), eChatType.CT_SpellResisted);
+                        if (playerCaster != null)
+                            MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SummonAnimistFnF.CheckBeginCast.TurretAreaCap"), eChatType.CT_SpellResisted);
 
                         return false;
                     }
@@ -58,13 +69,13 @@ namespace DOL.GS.Spells
 
             if (Properties.TURRET_PLAYER_CAP_COUNT > 0 & Caster.PetCount >= Properties.TURRET_PLAYER_CAP_COUNT)
             {
-                if (Caster is GamePlayer)
-                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretPlayerCap"), eChatType.CT_SpellResisted);
+                if (playerCaster != null)
+                    MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SummonAnimistFnF.CheckBeginCast.TurretPlayerCap"), eChatType.CT_SpellResisted);
 
                 return false;
             }
 
-            return base.CheckBeginCast(selectedTarget);
+            return true;
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)
