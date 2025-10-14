@@ -497,7 +497,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte)house.Model);
-				pak.WriteByte(0x00);
+				pak.WriteByte((byte)house.DoorMaterial);
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte)house.Rug1Color);
