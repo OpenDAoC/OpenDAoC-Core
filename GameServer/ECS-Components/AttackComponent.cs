@@ -826,7 +826,7 @@ namespace DOL.GS
                     playerOwner.Out.SendCloseTimerWindow();
                 }
 
-                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness * playerOwner.Effectiveness, interval, dualWield);
+                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness, interval, dualWield);
 
                 switch (ad.AttackResult)
                 {

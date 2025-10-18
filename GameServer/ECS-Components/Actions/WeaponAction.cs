@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
@@ -436,11 +435,11 @@ namespace DOL.GS
                 case eAttackResult.Parried:
                 {
                     int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
-                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, target.Effectiveness, attackSpeed, null);
+                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null);
                     // Don't call `WeaponAction.Execute` here.
                     // It applies damage adds and shields, but Reflex Attack shouldn't trigger them.
                     // It would also cause a stack overflow if the target has Reflex Attack too.
-                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(weaponAction, attacker, target.ActiveWeapon, null, target.Effectiveness, attackSpeed, false, true);
+                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(weaponAction, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, false, true);
                     target.DealDamage(ReflexAttackAD);
 
                     // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually

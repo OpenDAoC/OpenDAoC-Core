@@ -67,7 +67,7 @@ namespace DOL.GS
 
             _weapon = _owner.ActiveWeapon;
             _leftWeapon = _owner.ActiveLeftWeapon;
-            _effectiveness = _owner.Effectiveness;
+            _effectiveness = 1.0; // Don't use `_owner.Effectiveness` here, it's already applied on weaponskill.
 
             if (_owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
                 TickMeleeAttack();
