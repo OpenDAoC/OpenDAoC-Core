@@ -21,7 +21,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Shadowblade, "Shadowblade", "MidgardRogue")]
+	[CharacterClass((int)eCharacterClass.Shadowblade, "Shadowblade", "Rogue")]
 	public class ClassShadowblade : ClassMidgardRogue
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Stealth };
