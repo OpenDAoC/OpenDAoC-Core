@@ -9,508 +9,530 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-	public class NecromancerPet : GameSummonedPet
-	{
-		public override GameObject TargetObject
-		{
-			get => base.TargetObject;
-			set
-			{
-				if (TargetObject == value)
-					return;
-
-				bool newTarget = value != null;
-				base.TargetObject = value;
-
-				if (newTarget)
-				{
-					// 1.60:
-					// - A Necromancer's target window will now update to reflect a target his pet has acquired, if he does not already have a target.
-					if (newTarget && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
-						playerOwner.Client.Out.SendChangeTarget(value);
-
-					if (newTarget && EffectList.GetOfType<TauntEffect>() != null)
-						Taunt();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Proc IDs for various pet weapons.
-		/// </summary>
-		private enum Procs
-		{
-			Cold = 32050,
-			Disease = 32014,
-			Heat = 32053,
-			Poison = 32013,
-			Stun = 2165
-		}
-
-		/// <summary>
-		/// Create necromancer pet from template. Con and hit bonuses from
-		/// items the caster was wearing when the summon started, will be
-		/// transferred to the pet.
-		/// </summary>
-		public NecromancerPet(INpcTemplate npcTemplate) : base(npcTemplate)
-		{
-			// Update max health on summon.
-			GetModified(eProperty.MaxHealth);
-			// Set immunities/load equipment/etc.
-			switch (Name.ToLower())
-			{
-				case "lesser zombie servant":
-				case "zombie servant":
-					EffectList.Add(new MezzRootImmunityEffect());
-					LoadEquipmentTemplate("barehand_weapon");
-					DbInventoryItem item;
-					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
-						item.ProcSpellID = (int)Procs.Stun;
-					break;
-				case "reanimated servant" :
-					LoadEquipmentTemplate("reanimated_servant");
-					break;
-				case "necroservant":
-					LoadEquipmentTemplate("necroservant");
-					break;
-				case "greater necroservant":
-					LoadEquipmentTemplate("barehand_weapon");
-					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
-						item.ProcSpellID = (int)Procs.Poison;
-					break;
-				case "abomination":
-					LoadEquipmentTemplate("abomination_fiery_sword");
-					break;
-				default:
-					LoadEquipmentTemplate("barehand_weapon");
-					break;
-			}
-		}
-
-		#region Stats
-
-		public override int Health
-		{
-			get => base.Health;
-			set
-			{
-				int oldPercent = HealthPercent;
-				base.Health = value;
-
-				if (oldPercent != HealthPercent)
-				{
-					// Update pet health in group window.
-					GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
-					owner.Group?.UpdateMember(owner, false, false);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Set stats according to necro pet server properties.
-		/// </summary>
-		public override void SetStats(DbMob dbMob = null)
-		{
-			// Summoned pets use their template differently from standard NPCs.
-			// Stats are always automatically set based on the server properties and their level, then scaled using their template.
-
-			int levelMinusOne = Level - 1;
-
-			if (Name.Equals("GREATER NECROSERVANT", StringComparison.OrdinalIgnoreCase))
-			{
-				Strength = Properties.NECRO_GREATER_PET_STR_BASE;
-				Constitution = Properties.NECRO_GREATER_PET_CON_BASE;
-				Dexterity = Properties.NECRO_GREATER_PET_DEX_BASE;
-				Quickness = Properties.NECRO_GREATER_PET_QUI_BASE;
-				Intelligence = Properties.NECRO_GREATER_PET_INT_BASE;
-
-				if (Level > 1)
-				{
-					Strength += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_STR_MULTIPLIER);
-					Constitution += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_CON_MULTIPLIER);
-					Dexterity += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_DEX_MULTIPLIER);
-					Quickness += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_QUI_MULTIPLIER);
-					Intelligence += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_INT_MULTIPLIER);
-				}
-			}
-			else
-			{
-				Strength = Properties.NECRO_PET_STR_BASE;
-				Constitution = Properties.NECRO_PET_CON_BASE;
-				Dexterity = Properties.NECRO_PET_DEX_BASE;
-				Quickness = Properties.NECRO_PET_QUI_BASE;
-				Intelligence = Properties.NECRO_PET_INT_BASE;
-
-				if (Level > 1)
-				{
-					Strength += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_STR_MULTIPLIER);
-					Constitution += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_CON_MULTIPLIER);
-					Dexterity += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_DEX_MULTIPLIER);
-					Quickness += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_QUI_MULTIPLIER);
-					Intelligence += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_INT_MULTIPLIER);
-				}
-			}
-
-			Empathy = 30;
-			Piety = 30;
-			Charisma = 30;
-
-			if (NPCTemplate != null)
-			{
-				if (NPCTemplate.Strength > 0)
-					Strength = (short) Math.Max(1, Strength * (NPCTemplate.Strength / 100.0));
-
-				if (NPCTemplate.Constitution > 0)
-					Constitution = (short) Math.Max(1, Constitution * (NPCTemplate.Constitution / 100.0));
-
-				if (NPCTemplate.Dexterity > 0)
-					Dexterity = (short) Math.Max(1, Dexterity * (NPCTemplate.Dexterity / 100.0));
-
-				if (NPCTemplate.Quickness > 0)
-					Quickness = (short) Math.Max(1, Quickness * (NPCTemplate.Quickness / 100.0));
-
-				if (NPCTemplate.Intelligence > 0)
-					Intelligence = (short) Math.Max(1, Intelligence * (NPCTemplate.Intelligence / 100.0));
-
-				if (NPCTemplate.Empathy > 0)
-					Empathy = NPCTemplate.Empathy;
-
-				if (NPCTemplate.Piety > 0)
-					Piety = NPCTemplate.Piety;
-
-				if (NPCTemplate.Charisma > 0)
-					Charisma = NPCTemplate.Charisma;
-			}
-		}
-
-		#endregion
-
-		#region Melee
-
-		// Necromancer pets queue spells and cast them when their current action ends instead of using the self-interrupt logic.
-		public override int SelfInterruptDurationOnMeleeAttack => 0;
-
-		private void ToggleTauntMode()
-		{
-			TauntEffect tauntEffect = EffectList.GetOfType<TauntEffect>();
-			GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
-
-			if (tauntEffect != null)
-			{
-				tauntEffect.Stop();
-				owner.Out.SendMessage(string.Format("{0} seems to be less aggressive than before.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
-			else
-			{
-				owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				new TauntEffect().Start(this);
-			}
-		}
-
-		#endregion
-
-		#region Spells
-
-		/// <summary>
-		/// Pet-only insta spells.
-		/// </summary>
-		public static string PetInstaSpellLine => "Necro Pet Insta Spells";
-
-		private void Empower()
-		{
-			if (attackComponent.AttackState)
-				return;
-
-			SpellLine buffLine = SkillBase.GetSpellLine(PetInstaSpellLine);
-
-			if (buffLine == null)
-				return;
-
-			List<Spell> buffList = SkillBase.GetSpellList(PetInstaSpellLine);
-
-			if (buffList.Count == 0)
-				return;
-
-			int maxLevel = Level;
-			Spell strBuff = null;
-			Spell dexBuff = null;
-
-			// Find the best baseline buffs for this level.
-			foreach (Spell spell in buffList)
-			{
-				if (spell.Level <= maxLevel)
-				{
-					switch (spell.SpellType)
-					{
-						case eSpellType.StrengthBuff:
-						{
-							strBuff = strBuff == null ? spell : (strBuff.Level < spell.Level) ? spell : strBuff;
-							break;
-						}
-						case eSpellType.DexterityBuff:
-						{
-							dexBuff = dexBuff == null ? spell : (dexBuff.Level < spell.Level) ? spell : dexBuff;
-							break;
-						}
-					}
-				}
-			}
-
-			if (strBuff != null)
-				CastSpell(strBuff, buffLine);
-
-			if (dexBuff != null)
-				CastSpell(dexBuff, buffLine);
-		}
-
-		/// <summary>
-		/// Taunt the current target.
-		/// </summary>
-		public void Taunt()
-		{
-			if (IsIncapacitated)
-				return;
-
-			SpellLine chantsLine = SkillBase.GetSpellLine("Chants");
-
-			if (chantsLine == null)
-				return;
-
-			List<Spell> chantsList = SkillBase.GetSpellList("Chants");
-
-			if (chantsList.Count == 0)
-				return;
-
-			Spell tauntSpell = null;
-
-			// Find the best paladin taunt for this level.
-			foreach (Spell spell in chantsList)
-			{
-				if (spell.SpellType == eSpellType.Taunt && spell.Level <= Level)
-					tauntSpell = spell;
-			}
-
-			if (tauntSpell != null && GetSkillDisabledDuration(tauntSpell) == 0)
-				CastSpell(tauntSpell, chantsLine);
-		}
-
-		public override void OnCastSpellLosCheckFail(GameObject target)
-		{
-			base.OnCastSpellLosCheckFail(target);
-			Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
-		}
-
-		// Necromancer pets shouldn't delay their instant spells.
-		public override bool IsInstantHarmfulSpellCastingLocked => false;
-
-		public override void ApplyInstantHarmfulSpellDelay()
-		{
-			return;
-		}
-
-		#endregion
-
-		public override bool SayReceive(GameLiving source, string str)
-		{
-			return WhisperReceive(source, str);
-		}
-
-		public override bool Interact(GamePlayer player)
-		{
-			return WhisperReceive(player, "arawn");
-		}
-
-		public override bool WhisperReceive(GameLiving source, string text)
-		{
-			// Everything below this comment should not exist in a strict 1.65 level. Feel free to add it back in if desired.
-			return false;
-			GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
-
-			if (source == null || source != owner)
-				return false;
-
-			switch (text.ToLower())
-			{
-				case "arawn":
-				{
-					string taunt = "As one of the many cadaverous servants of Arawn, I am able to [taunt] your enemies so that they will focus on me instead of you.";
-					string empower = "You may also [empower] me with just a word.";
-
-					switch (Name.ToLower())
-					{
-						case "minor zombie servant":
-						case "lesser zombie servant":
-						case "zombie servant":
-						case "reanimated servant":
-						case "necroservant":
-						{
-							SayTo(owner, taunt);
-							return true;
-						}
-						case "greater necroservant":
-						{
-							SayTo(owner, $"{taunt} I can also inflict [poison] or [disease] on your enemies. {empower}");
-							return true;
-						}
-						case "abomination":
-						{
-							SayTo(owner, $"As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. {empower}");
-							return true;
-						}
-						default:
-							return false;
-					}
-				}
-				case "disease":
-				{
-					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
-
-					if (item != null)
-					{
-						item.ProcSpellID = (int)Procs.Disease;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-					}
-
-					return true;
-				}
-				case "empower":
-				{
-					SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-					Empower();
-					return true;
-				}
-				case "poison":
-				{
-					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
-
-					if (item != null)
-					{
-						item.ProcSpellID = (int)Procs.Poison;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-					}
-
-					return true;
-				}
-				case "taunt":
-				{
-					ToggleTauntMode();
-					return true;
-				}
-				case "weapons":
-				{
-					if (Name != "abomination")
-						return false;
-
-					SayTo(owner, "What weapon do you command me to wield? A [fiery sword], [icy sword], [poisonous sword] or a [flaming mace], [frozen mace], [venomous mace]?");
-					return true;
-				}
-				case "fiery sword":
-				case "icy sword":
-				case "poisonous sword":
-				case "flaming mace":
-				case "frozen mace":
-				case "venomous mace":
-				{
-					if (Name != "abomination")
-						return false;
-
-					string templateID = string.Format("{0}_{1}", Name, text.Replace(" ", "_"));
-
-					if (LoadEquipmentTemplate(templateID))
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
-
-					return true;
-				}
-				default:
-					return false;
-			}
-		}
-
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-		{
-			criticalAmount /= 2;
-			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-		}
-
-		/// <summary>
-		/// Load equipment for the pet.
-		/// </summary>
-		/// <param name="templateID">Equipment Template ID.</param>
-		/// <returns>True on success, else false.</returns>
-		private bool LoadEquipmentTemplate(string templateID)
-		{
-			if (templateID.Length <= 0)
-				return false;
-
-			GameNpcInventoryTemplate inventoryTemplate = new();
-
-			if (inventoryTemplate.LoadFromDatabase(templateID))
-			{
-				Inventory = new GameNPCInventory(inventoryTemplate);
-				DbInventoryItem item;
-
-				if ((item = Inventory.GetItem(eInventorySlot.TwoHandWeapon)) != null)
-				{
-					item.DPS_AF = (int)(Level * 3.3);
-					item.SPD_ABS = 50;
-
-					switch (templateID)
-					{
-						case "abomination_fiery_sword":
-						case "abomination_flaming_mace":
-							item.ProcSpellID = (int)Procs.Heat;
-							break;
-						case "abomination_icy_sword":
-						case "abomination_frozen_mace":
-							item.ProcSpellID = (int)Procs.Cold;
-							break;
-						case "abomination_poisonous_sword":
-						case "abomination_venomous_mace":
-							item.ProcSpellID = (int)Procs.Poison;
-							break;
-					}
-
-					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-				}
-				else
-				{
-					if (ActiveWeapon != null)
-					{
-						ActiveWeapon.DPS_AF = (int)(Level * 3.3);
-						ActiveWeapon.SPD_ABS = 37;
-					}
-
-					if (ActiveLeftWeapon != null)
-					{
-						ActiveLeftWeapon.DPS_AF = (int)(Level * 3.3);
-						ActiveLeftWeapon.SPD_ABS = 37;
-					}
-
-					SwitchWeapon(eActiveWeaponSlot.Standard);
-				}
-			}
-
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				if (player == null)
-					continue;
-
-				player.Out.SendLivingEquipmentUpdate(this);
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// Pet stayed out of range for too long, despawn it.
-		/// </summary>
-		public void CutTether()
-		{
-			if ((Brain as IControlledBrain).Owner is not GamePlayer)
-				return;
-
-			Brain.Stop();
-			Die(null);
-		}
-	}
+    public class NecromancerPet : GameSummonedPet
+    {
+        public override GameObject TargetObject
+        {
+            get => base.TargetObject;
+            set
+            {
+                if (TargetObject == value)
+                    return;
+
+                bool newTarget = value != null;
+                base.TargetObject = value;
+
+                if (newTarget)
+                {
+                    // 1.60:
+                    // - A Necromancer's target window will now update to reflect a target his pet has acquired, if he does not already have a target.
+                    if (newTarget && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
+                        playerOwner.Client.Out.SendChangeTarget(value);
+
+                    if (newTarget && EffectList.GetOfType<TauntEffect>() != null)
+                        Taunt();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Proc IDs for various pet weapons.
+        /// </summary>
+        private enum Procs
+        {
+            Cold = 32050,
+            Disease = 32014,
+            Heat = 32053,
+            Poison = 32013,
+            Stun = 2165
+        }
+
+        /// <summary>
+        /// Create necromancer pet from template. Con and hit bonuses from
+        /// items the caster was wearing when the summon started, will be
+        /// transferred to the pet.
+        /// </summary>
+        public NecromancerPet(INpcTemplate npcTemplate) : base(npcTemplate)
+        {
+            // Update max health on summon.
+            GetModified(eProperty.MaxHealth);
+            // Set immunities/load equipment/etc.
+            switch (Name.ToLower())
+            {
+                case "lesser zombie servant":
+                case "zombie servant":
+                    EffectList.Add(new MezzRootImmunityEffect());
+                    LoadEquipmentTemplate("barehand_weapon");
+                    DbInventoryItem item;
+                    if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+                        item.ProcSpellID = (int)Procs.Stun;
+                    break;
+                case "reanimated servant" :
+                    LoadEquipmentTemplate("reanimated_servant");
+                    break;
+                case "necroservant":
+                    LoadEquipmentTemplate("necroservant");
+                    break;
+                case "greater necroservant":
+                    LoadEquipmentTemplate("barehand_weapon");
+                    if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+                        item.ProcSpellID = (int)Procs.Poison;
+                    break;
+                case "abomination":
+                    LoadEquipmentTemplate("abomination_fiery_sword");
+                    break;
+                default:
+                    LoadEquipmentTemplate("barehand_weapon");
+                    break;
+            }
+        }
+
+        #region Stats
+
+        public override int Health
+        {
+            get => base.Health;
+            set
+            {
+                int oldPercent = HealthPercent;
+                base.Health = value;
+
+                if (oldPercent != HealthPercent)
+                {
+                    // Update pet health in group window.
+                    GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
+                    owner.Group?.UpdateMember(owner, false, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set stats according to necro pet server properties.
+        /// </summary>
+        public override void SetStats(DbMob dbMob = null)
+        {
+            // Summoned pets use their template differently from standard NPCs.
+            // Stats are always automatically set based on the server properties and their level, then scaled using their template.
+
+            int levelMinusOne = Level - 1;
+
+            if (Name.Equals("GREATER NECROSERVANT", StringComparison.OrdinalIgnoreCase))
+            {
+                Strength = Properties.NECRO_GREATER_PET_STR_BASE;
+                Constitution = Properties.NECRO_GREATER_PET_CON_BASE;
+                Dexterity = Properties.NECRO_GREATER_PET_DEX_BASE;
+                Quickness = Properties.NECRO_GREATER_PET_QUI_BASE;
+                Intelligence = Properties.NECRO_GREATER_PET_INT_BASE;
+
+                if (Level > 1)
+                {
+                    Strength += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_STR_MULTIPLIER);
+                    Constitution += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_CON_MULTIPLIER);
+                    Dexterity += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_DEX_MULTIPLIER);
+                    Quickness += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_QUI_MULTIPLIER);
+                    Intelligence += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_INT_MULTIPLIER);
+                }
+            }
+            else
+            {
+                Strength = Properties.NECRO_PET_STR_BASE;
+                Constitution = Properties.NECRO_PET_CON_BASE;
+                Dexterity = Properties.NECRO_PET_DEX_BASE;
+                Quickness = Properties.NECRO_PET_QUI_BASE;
+                Intelligence = Properties.NECRO_PET_INT_BASE;
+
+                if (Level > 1)
+                {
+                    Strength += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_STR_MULTIPLIER);
+                    Constitution += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_CON_MULTIPLIER);
+                    Dexterity += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_DEX_MULTIPLIER);
+                    Quickness += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_QUI_MULTIPLIER);
+                    Intelligence += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_INT_MULTIPLIER);
+                }
+            }
+
+            Empathy = 30;
+            Piety = 30;
+            Charisma = 30;
+
+            if (NPCTemplate != null)
+            {
+                if (NPCTemplate.Strength > 0)
+                    Strength = (short) Math.Max(1, Strength * (NPCTemplate.Strength / 100.0));
+
+                if (NPCTemplate.Constitution > 0)
+                    Constitution = (short) Math.Max(1, Constitution * (NPCTemplate.Constitution / 100.0));
+
+                if (NPCTemplate.Dexterity > 0)
+                    Dexterity = (short) Math.Max(1, Dexterity * (NPCTemplate.Dexterity / 100.0));
+
+                if (NPCTemplate.Quickness > 0)
+                    Quickness = (short) Math.Max(1, Quickness * (NPCTemplate.Quickness / 100.0));
+
+                if (NPCTemplate.Intelligence > 0)
+                    Intelligence = (short) Math.Max(1, Intelligence * (NPCTemplate.Intelligence / 100.0));
+
+                if (NPCTemplate.Empathy > 0)
+                    Empathy = NPCTemplate.Empathy;
+
+                if (NPCTemplate.Piety > 0)
+                    Piety = NPCTemplate.Piety;
+
+                if (NPCTemplate.Charisma > 0)
+                    Charisma = NPCTemplate.Charisma;
+            }
+        }
+
+        #endregion
+
+        #region Melee
+
+        // Necromancer pets queue spells and cast them when their current action ends instead of using the self-interrupt logic.
+        public override int SelfInterruptDurationOnMeleeAttack => 0;
+
+        private void ToggleTauntMode()
+        {
+            TauntEffect tauntEffect = EffectList.GetOfType<TauntEffect>();
+            GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
+
+            if (tauntEffect != null)
+            {
+                tauntEffect.Stop();
+                owner.Out.SendMessage(string.Format("{0} seems to be less aggressive than before.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
+            else
+            {
+                owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                new TauntEffect().Start(this);
+            }
+        }
+
+        #endregion
+
+        #region Spells
+
+        /// <summary>
+        /// Pet-only insta spells.
+        /// </summary>
+        public static string PetInstaSpellLine => "Necro Pet Insta Spells";
+
+        private void Empower()
+        {
+            if (attackComponent.AttackState)
+                return;
+
+            SpellLine buffLine = SkillBase.GetSpellLine(PetInstaSpellLine);
+
+            if (buffLine == null)
+                return;
+
+            List<Spell> buffList = SkillBase.GetSpellList(PetInstaSpellLine);
+
+            if (buffList.Count == 0)
+                return;
+
+            int maxLevel = Level;
+            Spell strBuff = null;
+            Spell dexBuff = null;
+
+            // Find the best baseline buffs for this level.
+            foreach (Spell spell in buffList)
+            {
+                if (spell.Level <= maxLevel)
+                {
+                    switch (spell.SpellType)
+                    {
+                        case eSpellType.StrengthBuff:
+                        {
+                            strBuff = strBuff == null ? spell : (strBuff.Level < spell.Level) ? spell : strBuff;
+                            break;
+                        }
+                        case eSpellType.DexterityBuff:
+                        {
+                            dexBuff = dexBuff == null ? spell : (dexBuff.Level < spell.Level) ? spell : dexBuff;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (strBuff != null)
+                CastSpell(strBuff, buffLine);
+
+            if (dexBuff != null)
+                CastSpell(dexBuff, buffLine);
+        }
+
+        /// <summary>
+        /// Taunt the current target.
+        /// </summary>
+        public void Taunt()
+        {
+            if (IsIncapacitated)
+                return;
+
+            SpellLine chantsLine = SkillBase.GetSpellLine("Chants");
+
+            if (chantsLine == null)
+                return;
+
+            List<Spell> chantsList = SkillBase.GetSpellList("Chants");
+
+            if (chantsList.Count == 0)
+                return;
+
+            Spell tauntSpell = null;
+
+            // Find the best paladin taunt for this level.
+            foreach (Spell spell in chantsList)
+            {
+                if (spell.SpellType == eSpellType.Taunt && spell.Level <= Level)
+                    tauntSpell = spell;
+            }
+
+            if (tauntSpell != null && GetSkillDisabledDuration(tauntSpell) == 0)
+                CastSpell(tauntSpell, chantsLine);
+        }
+
+        public override void OnCastSpellLosCheckFail(GameObject target)
+        {
+            base.OnCastSpellLosCheckFail(target);
+            Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
+        }
+
+        // Necromancer pets shouldn't delay their instant spells.
+        public override bool IsInstantHarmfulSpellCastingLocked => false;
+
+        public override void ApplyInstantHarmfulSpellDelay()
+        {
+            return;
+        }
+
+        #endregion
+
+        public override bool SayReceive(GameLiving source, string str)
+        {
+            return WhisperReceive(source, str);
+        }
+
+        public override bool Interact(GamePlayer player)
+        {
+            return WhisperReceive(player, "arawn");
+        }
+
+        public override bool WhisperReceive(GameLiving source, string text)
+        {
+            // Everything below this comment should not exist in a strict 1.65 level. Feel free to add it back in if desired.
+            return false;
+            GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
+
+            if (source == null || source != owner)
+                return false;
+
+            switch (text.ToLower())
+            {
+                case "arawn":
+                {
+                    string taunt = "As one of the many cadaverous servants of Arawn, I am able to [taunt] your enemies so that they will focus on me instead of you.";
+                    string empower = "You may also [empower] me with just a word.";
+
+                    switch (Name.ToLower())
+                    {
+                        case "minor zombie servant":
+                        case "lesser zombie servant":
+                        case "zombie servant":
+                        case "reanimated servant":
+                        case "necroservant":
+                        {
+                            SayTo(owner, taunt);
+                            return true;
+                        }
+                        case "greater necroservant":
+                        {
+                            SayTo(owner, $"{taunt} I can also inflict [poison] or [disease] on your enemies. {empower}");
+                            return true;
+                        }
+                        case "abomination":
+                        {
+                            SayTo(owner, $"As one of the chosen warriors of Arawn, I have a mighty arsenal of weapons at your disposal. If you wish it, I am able to [taunt] your enemies so that they will focus on me instead of you. {empower}");
+                            return true;
+                        }
+                        default:
+                            return false;
+                    }
+                }
+                case "disease":
+                {
+                    DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+
+                    if (item != null)
+                    {
+                        item.ProcSpellID = (int)Procs.Disease;
+                        SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+                    }
+
+                    return true;
+                }
+                case "empower":
+                {
+                    SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+                    Empower();
+                    return true;
+                }
+                case "poison":
+                {
+                    DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+
+                    if (item != null)
+                    {
+                        item.ProcSpellID = (int)Procs.Poison;
+                        SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+                    }
+
+                    return true;
+                }
+                case "taunt":
+                {
+                    ToggleTauntMode();
+                    return true;
+                }
+                case "weapons":
+                {
+                    if (Name != "abomination")
+                        return false;
+
+                    SayTo(owner, "What weapon do you command me to wield? A [fiery sword], [icy sword], [poisonous sword] or a [flaming mace], [frozen mace], [venomous mace]?");
+                    return true;
+                }
+                case "fiery sword":
+                case "icy sword":
+                case "poisonous sword":
+                case "flaming mace":
+                case "frozen mace":
+                case "venomous mace":
+                {
+                    if (Name != "abomination")
+                        return false;
+
+                    string templateID = string.Format("{0}_{1}", Name, text.Replace(" ", "_"));
+
+                    if (LoadEquipmentTemplate(templateID))
+                        SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+
+                    return true;
+                }
+                default:
+                    return false;
+            }
+        }
+
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            criticalAmount /= 2;
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
+
+        /// <summary>
+        /// Load equipment for the pet.
+        /// </summary>
+        /// <param name="templateID">Equipment Template ID.</param>
+        /// <returns>True on success, else false.</returns>
+        private bool LoadEquipmentTemplate(string templateID)
+        {
+            if (templateID.Length <= 0)
+                return false;
+
+            GameNpcInventoryTemplate inventoryTemplate = new();
+
+            if (inventoryTemplate.LoadFromDatabase(templateID))
+            {
+                Inventory = new GameNPCInventory(inventoryTemplate);
+                DbInventoryItem item;
+
+                if ((item = Inventory.GetItem(eInventorySlot.TwoHandWeapon)) != null)
+                {
+                    item.DPS_AF = (int)(Level * 3.3);
+                    item.SPD_ABS = 50;
+
+                    switch (templateID)
+                    {
+                        case "abomination_fiery_sword":
+                        case "abomination_flaming_mace":
+                            item.ProcSpellID = (int)Procs.Heat;
+                            break;
+                        case "abomination_icy_sword":
+                        case "abomination_frozen_mace":
+                            item.ProcSpellID = (int)Procs.Cold;
+                            break;
+                        case "abomination_poisonous_sword":
+                        case "abomination_venomous_mace":
+                            item.ProcSpellID = (int)Procs.Poison;
+                            break;
+                    }
+
+                    SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                }
+                else
+                {
+                    if (ActiveWeapon != null)
+                    {
+                        ActiveWeapon.DPS_AF = (int)(Level * 3.3);
+                        ActiveWeapon.SPD_ABS = 37;
+                    }
+
+                    if (ActiveLeftWeapon != null)
+                    {
+                        ActiveLeftWeapon.DPS_AF = (int)(Level * 3.3);
+                        ActiveLeftWeapon.SPD_ABS = 37;
+                    }
+
+                    SwitchWeapon(eActiveWeaponSlot.Standard);
+                }
+            }
+
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                if (player == null)
+                    continue;
+
+                player.Out.SendLivingEquipmentUpdate(this);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Pet stayed out of range for too long, despawn it.
+        /// </summary>
+        public void CutTether()
+        {
+            if ((Brain as IControlledBrain).Owner is not GamePlayer)
+                return;
+
+            Brain.Stop();
+            Die(null);
+        }
+
+        // Delegate RNG methods to owner.
+
+        public override bool Chance(RandomDeckEvent deckEvent, int chancePercent)
+        {
+            return Owner != null ? Owner.Chance(deckEvent, chancePercent) : base.Chance(deckEvent, chancePercent);
+        }
+
+        public override bool Chance(RandomDeckEvent deckEvent, double chancePercent)
+        {
+            return Owner != null ? Owner.Chance(deckEvent, chancePercent) : base.Chance(deckEvent, chancePercent);
+        }
+
+        public override double GetPseudoDouble(RandomDeckEvent deckEvent)
+        {
+            return Owner != null ? Owner.GetPseudoDouble(deckEvent) : base.GetPseudoDouble(deckEvent);
+        }
+
+        public override double GetPseudoDoubleIncl(RandomDeckEvent deckEvent)
+        {
+            return Owner != null ? Owner.GetPseudoDoubleIncl(deckEvent) : base.GetPseudoDoubleIncl(deckEvent);
+        }
+    }
 }
