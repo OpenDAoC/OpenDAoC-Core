@@ -9716,22 +9716,23 @@ namespace DOL.GS
         /// <returns>the GameInventoryItem on the ground</returns>
         public virtual WorldInventoryItem CreateItemOnTheGround(DbInventoryItem item)
         {
-            WorldInventoryItem gameItem = null;
+            WorldInventoryItem gameItem;
 
             if (item is IGameInventoryItem)
-            {
                 gameItem = (item as IGameInventoryItem).Drop(this);
-            }
             else
             {
                 gameItem = new PlayerDiscardedWorldInventoryItem(item);
-
-                Point2D itemloc = this.GetPointFromHeading(this.Heading, 30);
-                gameItem.X = itemloc.X;
-                gameItem.Y = itemloc.Y;
+                Point2D loc = GetPointFromHeading(Heading, 30);
+                gameItem.X = loc.X;
+                gameItem.Y = loc.Y;
                 gameItem.Z = Z;
                 gameItem.Heading = Heading;
                 gameItem.CurrentRegionID = CurrentRegionID;
+                gameItem.CurrentHouse = CurrentHouse;
+
+                if (gameItem.CurrentHouse != null)
+                    gameItem.InHouse = true;
 
                 gameItem.AddOwner(this);
                 gameItem.AddToWorld();

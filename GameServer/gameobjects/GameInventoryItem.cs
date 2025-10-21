@@ -203,17 +203,19 @@ namespace DOL.GS
         public virtual WorldInventoryItem Drop(GamePlayer player)
         {
             PlayerDiscardedWorldInventoryItem worldItem = new(this);
-
-            Point2D itemloc = player.GetPointFromHeading(player.Heading, 30);
-            worldItem.X = itemloc.X;
-            worldItem.Y = itemloc.Y;
+            Point2D loc = player.GetPointFromHeading(player.Heading, 30);
+            worldItem.X = loc.X;
+            worldItem.Y = loc.Y;
             worldItem.Z = player.Z;
             worldItem.Heading = player.Heading;
             worldItem.CurrentRegionID = player.CurrentRegionID;
+            worldItem.CurrentHouse = player.CurrentHouse;
+
+            if (worldItem.CurrentHouse != null)
+                worldItem.InHouse = true;
 
             worldItem.AddOwner(player);
             worldItem.AddToWorld();
-
             return worldItem;
         }
 

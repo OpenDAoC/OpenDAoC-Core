@@ -2374,12 +2374,12 @@ namespace DOL.GS
 
         public double CalculateLeftAxeModifier()
         {
-            int LeftAxeSpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+            int leftAxeSpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
 
-            if (LeftAxeSpec == 0)
+            if (leftAxeSpec == 0)
                 return 1.0;
 
-            double modifier = 0.625 + 0.0034 * LeftAxeSpec;
+            double modifier = 0.625 + 0.0034 * leftAxeSpec;
 
             if (owner.GetModified(eProperty.OffhandDamageAndChance) > 0)
                 return modifier + owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
