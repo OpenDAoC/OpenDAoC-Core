@@ -249,15 +249,6 @@ namespace DOL.AI.Brain
 				AggressionState = eAggressionState.Defensive;
 		}
 
-		public virtual void Disengage()
-		{
-			m_orderAttackTarget = null;
-			ClearAggroList();
-			Body.StopAttack();
-			Body.StopCurrentSpellcast();
-			Body.TargetObject = null;
-		}
-
 		/// <summary>
 		/// Follow the target on command
 		/// </summary>
@@ -805,17 +796,18 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected virtual GameLiving CheckAttackOrderTarget()
 		{
-			if (AggressionState != eAggressionState.Passive && m_orderAttackTarget != null)
-			{
-				if (m_orderAttackTarget.IsAlive &&
-					m_orderAttackTarget.ObjectState == GameObject.eObjectState.Active &&
-					GameServer.ServerRules.IsAllowedToAttack(Body, m_orderAttackTarget, true))
-					return m_orderAttackTarget;
+			if (m_orderAttackTarget == null)
+				return null;
 
+			if (!m_orderAttackTarget.IsAlive ||
+				m_orderAttackTarget.ObjectState is not GameObject.eObjectState.Active ||
+				!GameServer.ServerRules.IsAllowedToAttack(Body, m_orderAttackTarget, true))
+			{
 				m_orderAttackTarget = null;
+				return null;
 			}
 
-			return null;
+			return m_orderAttackTarget;
 		}
 
 		protected override GameLiving CalculateNextAttackTarget()
@@ -828,7 +820,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void AttackMostWanted()
 		{
-			if (!IsActive || m_aggressionState == eAggressionState.Passive)
+			if (!IsActive)
 				return;
 
 			GameNPC owner_npc = GetNPCOwner();
@@ -897,6 +889,12 @@ namespace DOL.AI.Brain
 					Body.WalkTo(new Point3D(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
 				}
 			}
+		}
+
+		public override void Disengage()
+		{
+			m_orderAttackTarget = null;
+			base.Disengage();
 		}
 
 		public virtual void OnOwnerAttacked(AttackData ad)

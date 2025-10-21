@@ -12014,14 +12014,9 @@ namespace DOL.GS
         public virtual void CommandNpcAttack()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null || !GameServer.ServerRules.IsAllowedToAttack(this, TargetObject as GameLiving, false))
                 return;
-
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
 
             if (!IsWithinRadius(TargetObject, 2000))
             {
@@ -12041,14 +12036,9 @@ namespace DOL.GS
         public virtual void CommandNpcFollow()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
-
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.FollowYou", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.CheckAggressionStateOnPlayerOrder();
@@ -12062,14 +12052,9 @@ namespace DOL.GS
         public virtual void CommandNpcStay()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
-
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Stay", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.CheckAggressionStateOnPlayerOrder();
@@ -12083,14 +12068,9 @@ namespace DOL.GS
         public virtual void CommandNpcComeHere()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
-
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.ComeHere", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.CheckAggressionStateOnPlayerOrder();
@@ -12104,16 +12084,12 @@ namespace DOL.GS
         public virtual void CommandNpcGoTarget()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
 
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
             GameObject target = TargetObject;
+
             if (target == null)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcGoTarget.MustSelectDestination"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -12138,14 +12114,9 @@ namespace DOL.GS
         public virtual void CommandNpcPassive()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
-
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Passive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.SetAggressionState(eAggressionState.Passive);
@@ -12157,14 +12128,9 @@ namespace DOL.GS
         public virtual void CommandNpcAgressive()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
-
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Aggressive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.SetAggressionState(eAggressionState.Aggressive);
@@ -12176,16 +12142,11 @@ namespace DOL.GS
         public virtual void CommandNpcDefensive()
         {
             IControlledBrain npc = ControlledBrain;
+
             if (npc == null)
                 return;
 
-            if (npc.Body.IsConfused)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.IsConfused", npc.Body.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Denfensive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Defensive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             npc.SetAggressionState(eAggressionState.Defensive);
         }
         #endregion

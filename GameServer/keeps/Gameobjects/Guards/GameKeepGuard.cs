@@ -505,8 +505,12 @@ namespace DOL.GS.Keeps
 					break;
 				}
 			}
-			RefreshTemplate();			
-		}		
+
+			RefreshTemplate();
+
+			// Guards are immune to confusion effects.
+			AddAbility(SkillBase.GetAbility(GS.Abilities.ConfusionImmunity));
+		}
 
 		public void DeleteObject()
 		{

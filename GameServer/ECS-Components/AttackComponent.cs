@@ -713,12 +713,6 @@ namespace DOL.GS
             GameNPC npc = owner as GameNPC;
             npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _startAttackTarget);
 
-            if (npc.Brain is IControlledBrain brain)
-            {
-                if (brain.AggressionState is eAggressionState.Passive)
-                    return;
-            }
-
             // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
             // If we have a running `AttackAction`, let it decide what to do. Not every NPC should start following their target and this allows us to react faster.
             if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)

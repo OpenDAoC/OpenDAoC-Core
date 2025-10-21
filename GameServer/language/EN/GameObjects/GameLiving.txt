@@ -59,7 +59,7 @@ GamePlayer.CommandNpcAttack.ComeHere:			You command {0} to come to you.
 GamePlayer.CommandNpcAttack.GoToTarget:			You command {0} to go to your target.
 GamePlayer.CommandNpcAttack.Passive:			You command {0} to disengage from combat!
 GamePlayer.CommandNpcAttack.Aggressive:			You command {0} to attack all enemies!
-GamePlayer.CommandNpcAttack.Denfensive:			You command {0} to defend you!
+GamePlayer.CommandNpcAttack.Defensive:			You command {0} to defend you!
 
 ## Pet Control
 GamePlayer.SetControlledNpc.ReleaseTarget:		You release control of your controlled target.

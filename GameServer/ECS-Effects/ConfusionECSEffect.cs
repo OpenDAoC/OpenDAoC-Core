@@ -27,7 +27,7 @@ namespace DOL.GS
             {
                 /*
                  * Q: What does the confusion spell do against players?
-                 * A: According to the magic man, “Confusion against a player interrupts their current action, whether it's a bow shot or spellcast.
+                 * A: According to the magic man, Confusion against a player interrupts their current action, whether it's a bow shot or spellcast.
                  */
                 // "You can't focus your knight viking badger helmet... meow!"
                 // "{0} is confused!"
@@ -39,18 +39,14 @@ namespace DOL.GS
                 // "{0} is confused!"
                 OnEffectStartsMsg(false, false, true);
 
-                if (npc is GameSummonedPet)
+                // Theurgist pets die when confused.
+                // This isn't strictly accurate to 1.65 gameplay, where they don't die if there is only one pet and its target is the one casting the spell.
+                // But live gameplay is an inconsistent mess in this regard, so this is a reasonable simplification.
+                if (npc.Brain is TheurgistPetBrain)
                 {
-                    GamePlayer playerowner = (brain as IControlledBrain).GetPlayerOwner();
-
-                    if (playerowner != null &&
-                        ((eCharacterClass) playerowner.CharacterClass.ID is eCharacterClass.Theurgist ||
-                        ((eCharacterClass) playerowner.CharacterClass.ID is eCharacterClass.Animist && npc.Brain is TurretFNFBrain)))
-                    {
-                        npc.Die(SpellHandler.Caster);
-                        Stop();
-                        return;
-                    }
+                    npc.Die(SpellHandler.Caster);
+                    Stop();
+                    return;
                 }
 
                 npc.IsConfused = true;
@@ -94,14 +90,12 @@ namespace DOL.GS
                     targetList.Add(target);
             }
 
-            if (targetList.Count > 0)
-            {
-                brain.ClearAggroList();
-                npc.StopAttack();
-                npc.StopCurrentSpellcast();
-                GameLiving target = targetList[Util.Random(targetList.Count - 1)];
-                brain.ForceAddToAggroList(target);
-            }
+            if (targetList.Count <= 0)
+                return;
+
+            brain.Disengage();
+            GameLiving randomTarget = targetList[Util.Random(targetList.Count - 1)];
+            brain.ForceAddToAggroList(randomTarget);
         }
     }
 }

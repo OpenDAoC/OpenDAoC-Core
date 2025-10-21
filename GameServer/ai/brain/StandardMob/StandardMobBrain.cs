@@ -492,6 +492,14 @@ namespace DOL.AI.Brain
                 Body.StartAttack(newTarget);
         }
 
+        public virtual void Disengage()
+        {
+            ClearAggroList();
+            Body.StopAttack();
+            Body.StopCurrentSpellcast();
+            Body.TargetObject = null;
+        }
+
         private int _pendingLosCheckCount;
         public int PendingLosCheckCount => _pendingLosCheckCount;
         public bool IsWaitingForLosCheck => Interlocked.CompareExchange(ref _pendingLosCheckCount, 0, 0) > 0;
