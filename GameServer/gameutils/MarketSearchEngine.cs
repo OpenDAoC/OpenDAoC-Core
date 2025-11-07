@@ -7,12 +7,14 @@ namespace DOL.GS
 {
     public readonly struct ItemQuery
     {
+        public readonly eRealm? Realm { get; init; }
         public readonly int? Slot { get; init; }
         public readonly bool? IsCrafted { get; init; }
         public readonly bool? HasVisual { get; init; }
         public readonly string Owner { get; init; }
 
         public bool HasAny =>
+            Realm.HasValue ||
             Slot.HasValue ||
             IsCrafted.HasValue ||
             HasVisual.HasValue ||
@@ -24,6 +26,7 @@ namespace DOL.GS
         private readonly ReaderWriterLockSlim _lock = new();
 
         private readonly HashSet<DbInventoryItem> _allItems = new();
+        private readonly Dictionary<eRealm, HashSet<DbInventoryItem>> _byRealm = new();
         private readonly Dictionary<int, HashSet<DbInventoryItem>> _bySlot = new();
         private readonly Dictionary<bool, HashSet<DbInventoryItem>> _byCrafted = new();
         private readonly Dictionary<bool, HashSet<DbInventoryItem>> _byVisual = new();
@@ -55,6 +58,7 @@ namespace DOL.GS
                 if (!_allItems.Add(item))
                     return false;
 
+                AddToIndex(_byRealm, GetRealmOfLot(item.OwnerLot), item);
                 AddToIndex(_bySlot, GetClientSlot(item), item);
                 AddToIndex(_byCrafted, item.IsCrafted, item);
                 AddToIndex(_byVisual, item.Effect > 0, item);
@@ -76,6 +80,7 @@ namespace DOL.GS
                 if (!_allItems.Remove(item))
                     return false;
 
+                RemoveFromIndex(_byRealm, GetRealmOfLot(item.OwnerLot), item);
                 RemoveFromIndex(_bySlot, GetClientSlot(item), item);
                 RemoveFromIndex(_byCrafted, item.IsCrafted, item);
                 RemoveFromIndex(_byVisual, item.Effect > 0, item);
@@ -134,6 +139,21 @@ namespace DOL.GS
             {
                 _lock.ExitReadLock();
             }
+        }
+
+        public static eRealm GetRealmOfLot(ushort lot)
+        {
+            if (lot > 0)
+            {
+                if (lot <= 1382)
+                    return eRealm.Albion;
+                else if (lot <= 2573)
+                    return eRealm.Midgard;
+                else if (lot <= 4398)
+                    return eRealm.Hibernia;
+            }
+
+            return eRealm.None;
         }
 
         private static int GetClientSlot(DbInventoryItem item)
@@ -205,6 +225,14 @@ namespace DOL.GS
         private List<HashSet<DbInventoryItem>> GetMatchingSets(in ItemQuery query)
         {
             List<HashSet<DbInventoryItem>> sets = new(); // Consider pooling this.
+
+            if (query.Realm.HasValue)
+            {
+                if (_byRealm.TryGetValue(query.Realm.Value, out var realmSet))
+                    sets.Add(realmSet);
+                else
+                    return null;
+            }
 
             if (query.Slot.HasValue)
             {

@@ -14,6 +14,7 @@ namespace DOL.GS
         public struct SearchData
         {
             public string name;
+            public eRealm realm;
             public int slot;
 
             public int bonus1;
@@ -478,15 +479,9 @@ namespace DOL.GS
             */
             #endregion
 
-
-            public override string ToString()
+            public override readonly string ToString()
             {
-                //return string.Format("name:'{0}', slot:{1,2}, bonus1:{2,2}, bonus1value:{3,2}, bonus2:{4,2}, bonus2value:{5,2}, bonus3:{6,2}, bonus3value: {7,2} proc:{8}, armorType:{9,2}, damageType:{10}, levelMin:{11,2}, levelMax:{12,2}, qtyMin:{13,3}, priceMin:{14,2}, priceMax:{15,2}, playerCrafted:{16}, visual:{17}, clientVersion:{18}",
-                //	name, slot, bonus1, bonus1Value, bonus2, bonus2Value, bonus3, bonus3Value, proc, armorType, damageType, levelMin, levelMax, qtyMin, priceMin, priceMax, playerCrafted, visual, clientVersion);
-                //return string.Format("name:'{0}', slot:{1,2}, skill:{2,2}, resist:{3,2}, bonus:{4,2}, hp:{5,2}, power:{6,2}, proc:{7}, qtyMin:{8,3}, qtyMax:{9,3}, levelMin:{10,2}, levelMax:{11,2}, priceMin:{12,2}, priceMax:{13,2}, visual:{14}, armorType:{15:2}, damageType:{16}, playerCrafted:{17}, clientVersion:{18}",
-                //	name, slot, skill, resist, bonus, hp, power, proc, qtyMin, qtyMax, levelMin, levelMax, priceMin, priceMax, visual, armorType, damageType, playerCrafted, clientVersion);
-                return string.Format("name:'{0}' | slot:{1,2} | bonus1:{2,2} | bonus1value:{3,2} | bonus2:{4,2} | bonus2value:{5,2} | bonus3:{6,2} | bonus3value: {7,2} | proc:{8} | armorType:{9,2} | damageType:{10} | levelMin:{11,2} | levelMax:{12,2} | minQual:{13,3} | priceMin:{14,2} | priceMax:{15,2} | playerCrafted:{16} | visual:{17} | clientVersion:{18}",
-                    name, slot, bonus1, bonus1Value, bonus2, bonus2Value, bonus3, bonus3Value, proc, armorType, damageType, levelMin, levelMax, minQual, priceMin, priceMax, playerCrafted, visual, clientVersion);
+                return $"name:'{name}' | realm:{realm} | slot:{slot,2} | bonus1:{bonus1,2} | bonus1value:{bonus1Value,2} | bonus2:{bonus2,2} | bonus2value:{bonus2Value,2} | bonus3:{bonus3,2} | bonus3value:{bonus3Value,2} | proc:{proc} | armorType:{armorType,2} | damageType:{damageType} | levelMin:{levelMin,2} | levelMax:{levelMax,2} | minQual:{minQual,3} | priceMin:{priceMin,2} | priceMax:{priceMax,2} | playerCrafted:{playerCrafted} | visual:{visual} | clientVersion:{clientVersion}";
             }
         }
 
@@ -526,6 +521,7 @@ namespace DOL.GS
         {
             ItemQuery query = new()
             {
+                Realm = search.realm is >= eRealm._FirstPlayerRealm and <= eRealm._LastPlayerRealm ? search.realm : null,
                 Slot = search.slot > 0 ? search.slot : null,
                 IsCrafted = search.playerCrafted > 0 ? true : null,
                 HasVisual = search.visual > 0 ? true : null,

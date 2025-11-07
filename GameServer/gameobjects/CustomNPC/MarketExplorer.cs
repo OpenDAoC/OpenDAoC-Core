@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.Housing;
@@ -77,18 +76,6 @@ namespace DOL.GS
         /// </summary>
         public virtual int LastDbSlot => (int) eInventorySlot.Consignment_Last;
 
-        public static eRealm GetRealmOfLot(ushort houseNumber)
-        {
-            if (houseNumber <= 1382)
-                return eRealm.Albion;
-            else if (houseNumber <= 2573)
-                return eRealm.Midgard;
-            else if (houseNumber <= 4398)
-                return eRealm.Hibernia;
-
-            return eRealm.None;
-        }
-
         /// <summary>
         /// Search the MarketCache.
         /// </summary>
@@ -108,25 +95,8 @@ namespace DOL.GS
             int maxPerPage = 20;
             byte maxPages = (byte) (Math.Ceiling((double) items.Count / maxPerPage) - 1);
             int first = searchData.page * maxPerPage;
-            int last = first + maxPerPage;
-            List<DbInventoryItem> list = [];
-            int index = 0;
-
-            foreach (DbInventoryItem item in items)
-            {
-                if (index >= first && index <= last)
-                {
-                    if (GetRealmOfLot(item.OwnerLot) != player.Realm)
-                    {
-                        if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-                            log.Debug($"Not adding item '{item.Name}' to the return search since its from different realm.");
-                    }
-                    else
-                        list.Add(item);
-                }
-
-                index++;
-            }
+            int count = Math.Min(maxPerPage, items.Count - first);
+            List<DbInventoryItem> list = items.GetRange(first, Math.Max(0, count));
 
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"Current list find size is '{list.Count}'.");
