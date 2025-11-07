@@ -1808,6 +1808,7 @@ namespace DOL.GS
                             playerOwner.Stealth(false);
                         }
 
+                        ad.MissChance = 100;
                         return eAttackResult.Missed;
                     }
                 }
