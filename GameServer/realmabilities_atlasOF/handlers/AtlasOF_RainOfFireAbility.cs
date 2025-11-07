@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
         public override void Execute(GameLiving living)
         {
-            Execute("Rain Of Fire", 7125, 7125, (int) eDamageType.Fire, living);
+            Execute("Rain Of Fire", 7125, 7125, (int) eDamageType.Heat, living);
         }
     }
 }
