@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
         public override void Execute(GameLiving living)
         {
-            Execute("Rain Of Ice", 7126, 7126, 13, living);
+            Execute("Rain Of Ice", 7126, 7126, (int) eDamageType.Ice, living);
         }
     }
 }

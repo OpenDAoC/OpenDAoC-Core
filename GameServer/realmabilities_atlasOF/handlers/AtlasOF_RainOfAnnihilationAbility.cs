@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
         public override void Execute(GameLiving living)
         {
-            Execute("Rain Of Annihilation", 7127, 7127, 15, living);
+            Execute("Rain Of Annihilation", 7127, 7127, (int) eDamageType.Spirit, living);
         }
     }
 }
