@@ -88,28 +88,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 			search.levelMin = (byte)packet.ReadByte();
 			search.levelMax = (byte)packet.ReadByte();
 			search.minQual = (byte)packet.ReadByte();
-
-			var priceMin1 = packet.ReadByte();
-			var priceMin1b = packet.ReadByte();
-			priceMin1b = priceMin1b != 0 ? priceMin1b : 1;
-			var priceMin1c = packet.ReadByte();
-			priceMin1c = priceMin1c != 0 ? priceMin1c : 1;
-			var priceMin1d = packet.ReadByte();
-			priceMin1d = priceMin1d != 0 ? priceMin1d : 1;
-			priceMin1d = priceMin1b == 1 && priceMin1c == 1 && priceMin1d == 1 ? 0 : priceMin1d;
-			search.priceMin = (uint)(priceMin1b * priceMin1c * priceMin1d * 256 + priceMin1);
-
-			var priceMax1 = packet.ReadByte();
-			var priceMax1b = packet.ReadByte();
-			priceMax1b = priceMax1b != 0 ? priceMax1b : 1;
-			var priceMax1c = packet.ReadByte();
-			priceMax1c = priceMax1c != 0 ? priceMax1c : 1;
-			var priceMax1d = packet.ReadByte();
-			priceMax1d = priceMax1d != 0 ? priceMax1d : 1;
-			priceMax1d = priceMax1b == 1 && priceMax1c == 1 && priceMax1d == 1 ? 0 : priceMax1d;
-			search.priceMax = (uint)(priceMax1b * priceMax1c * priceMax1d * 256 + priceMax1);
-
-
+			search.priceMin = packet.ReadIntLowEndian();
+			search.priceMax = packet.ReadIntLowEndian();
 			search.playerCrafted = (byte)packet.ReadByte(); // 1 = show only Player crafted, 0 = all
 			search.visual = (int)packet.ReadByte();
 			search.page = (byte)packet.ReadByte();
