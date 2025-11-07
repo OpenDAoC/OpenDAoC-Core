@@ -19,7 +19,7 @@ namespace DOL.GS
         int LastDbSlot { get; }
         Lock Lock { get; }
         string GetOwner(GamePlayer player);
-        IList<DbInventoryItem> GetDbItems(GamePlayer player);
+        IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player);
         Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player);
         bool CanHandleMove(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot);
         bool MoveItem(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort itemCount);

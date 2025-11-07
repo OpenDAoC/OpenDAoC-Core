@@ -149,7 +149,7 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the vault.
         /// </summary>
-        public override IList<DbInventoryItem> GetDbItems(GamePlayer player)
+        public override IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot))));
         }

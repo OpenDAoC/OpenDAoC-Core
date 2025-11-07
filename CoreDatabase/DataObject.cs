@@ -7,12 +7,14 @@ using DOL.Database.UniqueID;
 
 namespace DOL.Database
 {
-    public abstract class DataObject : ICloneable
+    public abstract class DataObject : ICloneable, IEquatable<DataObject>
     {
         private DataObject _snapshot;
         private bool _allowAdd = true;
         private bool _allowDelete = true;
         private DateTime _lastTimeRowUpdated;
+        private string _objectId;
+        private int? _cachedHash;
 
         public virtual bool UsesPreCaching => AttributeUtil.GetPreCachedFlag(GetType());
 
@@ -37,7 +39,15 @@ namespace DOL.Database
         }
 
         [Browsable(false)]
-        public string ObjectId { get; set; }
+        public string ObjectId
+        {
+            get => _objectId;
+            set
+            {
+                _objectId = value;
+                _cachedHash = null; // Just in case. ObjectId should never be changed after creation.
+            }
+        }
 
         [Browsable(false)]
         public virtual bool Dirty { get; set; }
@@ -110,6 +120,28 @@ namespace DOL.Database
         public override string ToString()
         {
             return $"DataObject: {TableName}, ObjectId{{{ObjectId}}}";
+        }
+
+        public override int GetHashCode()
+        {
+            if (_cachedHash.HasValue)
+                return _cachedHash.Value;
+
+            _cachedHash = ObjectId.GetHashCode();
+            return _cachedHash.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as DataObject);
+        }
+
+        public bool Equals(DataObject other)
+        {
+            if (other is null)
+                return false;
+
+            return ReferenceEquals(this, other) || ObjectId == other.ObjectId;
         }
     }
 }

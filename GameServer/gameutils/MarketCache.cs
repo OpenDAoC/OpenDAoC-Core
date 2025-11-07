@@ -1,97 +1,77 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 using DOL.Database;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-	public class MarketCache
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    public static class MarketCache
+    {
+        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static MarketSearchEngine _searchEngine = new();
 
-		private static Dictionary<string, DbInventoryItem> m_itemCache = null;
+        public static int ItemCount => _searchEngine.ItemCount;
 
-		private static readonly Lock _cacheLock = new();
+        public static bool Initialize()
+        {
+            if (log.IsInfoEnabled)
+                log.Info("Building Market Cache...");
 
-		/// <summary>
-		/// Return a List of all items in the cache
-		/// </summary>
-		public static List<DbInventoryItem> Items
-		{
-			get { return new List<DbInventoryItem>(m_itemCache.Values); }
-		}
+            if (_searchEngine != null)
+            {
+                _searchEngine.Dispose();
+                _searchEngine = new();
+            }
 
+            try
+            {
+                WhereClause filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.Consignment_First).And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.Consignment_Last));
+                IList<DbInventoryItem> list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreaterThan(0)));
 
-		/// <summary>
-		/// Load or reload all items into the market cache
-		/// </summary>
-		public static bool Initialize()
-		{
-			log.Info("Building Market Cache ....");
-			try
-			{
-				m_itemCache = new Dictionary<string, DbInventoryItem>();
+                foreach (DbInventoryItem item in list)
+                    _searchEngine.AddItem(GameInventoryItem.Create(item));
 
-				var filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.Consignment_First).And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.Consignment_Last));
-				var list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreaterThan(0)));
+                if (log.IsInfoEnabled)
+                    log.Info($"Market Cache initialized with {_searchEngine.ItemCount} items.");
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Failed to initialize Market Cache.", ex);
 
-				foreach (DbInventoryItem item in list)
-				{
-					GameInventoryItem playerItem = GameInventoryItem.Create(item);
-					m_itemCache.Add(item.ObjectId, playerItem);
-				}
+                return false;
+            }
 
-				log.Info("Market Cache initialized with " + m_itemCache.Count + " items.");
-			}
-			catch
-			{
-				return false;
-			}
+            return true;
+        }
 
-			return true;
-		}
+        public static bool AddItem(DbInventoryItem item)
+        {
+            if (item == null)
+                return false;
 
-		/// <summary>
-		/// Add an item to the market cache
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public static bool AddItem(DbInventoryItem item)
-		{
-			bool added = false;
+            if (!_searchEngine.AddItem(item))
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Attempted to add duplicate item to Market Cache {item.ObjectId}");
 
-			if (item != null && item.OwnerID != null)
-			{
-				lock (_cacheLock)
-				{
-					if (m_itemCache.ContainsKey(item.ObjectId) == false)
-					{
-						m_itemCache.Add(item.ObjectId, item);
-						added = true;
-					}
-					else
-					{
-						log.Error("Attempted to add duplicate item to Market Cache " + item.ObjectId);
-					}
-				}
-			}
+                return false;
+            }
 
-			return added;
-		}
+            return true;
+        }
 
-		/// <summary>
-		/// Remove an item from the market cache
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public static bool RemoveItem(DbInventoryItem item)
-		{
-			if (item == null)
-				return false;
+        public static bool RemoveItem(DbInventoryItem item)
+        {
+            if (item == null)
+                return false;
 
-			lock (_cacheLock)
-			{
-				return m_itemCache.Remove(item.ObjectId);
-			}
-		}
-	}
+            return _searchEngine.RemoveItem(item);
+        }
+
+        public static IEnumerable<DbInventoryItem> SearchItems(in ItemQuery query)
+        {
+            return _searchEngine.Search(query);
+        }
+    }
 }

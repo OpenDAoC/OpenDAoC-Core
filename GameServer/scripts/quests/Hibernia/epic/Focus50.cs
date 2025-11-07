@@ -324,7 +324,7 @@ namespace DOL.GS.Quests.Hibernia
 				RangerEpicGloves.Durability = 50000;
 
 				RangerEpicGloves.Bonus1 = 3;
-				RangerEpicGloves.Bonus1Type = (int) eProperty.Skill_RecurvedBow;
+				RangerEpicGloves.Bonus1Type = (int) eProperty.Skill_RecurveBow;
 
 				RangerEpicGloves.Bonus2 = 15;
 				RangerEpicGloves.Bonus2Type = (int) eStat.DEX;

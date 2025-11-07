@@ -1592,7 +1592,7 @@ namespace DOL.GS
                         return true;
                     return false;
                 case eCharacterClass.Ranger:
-                    if (property == eProperty.Skill_RecurvedBow ||
+                    if (property == eProperty.Skill_RecurveBow ||
                         property == eProperty.Skill_Blades ||
                         property == eProperty.Skill_Piercing ||
                         property == eProperty.Skill_Celtic_Dual ||
@@ -2133,7 +2133,7 @@ namespace DOL.GS
                         return true;
                     }
                 case eProperty.Skill_Composite:
-                case eProperty.Skill_RecurvedBow:
+                case eProperty.Skill_RecurveBow:
                 case eProperty.Skill_Long_bows:
                 case eProperty.Skill_Archery:
                     {
@@ -2842,7 +2842,7 @@ namespace DOL.GS
                         return false;
                     }
                 case eProperty.Skill_Composite:
-                case eProperty.Skill_RecurvedBow:
+                case eProperty.Skill_RecurveBow:
                 case eProperty.Skill_Long_bows:
                 case eProperty.Skill_Archery:
                     {
@@ -3766,7 +3766,7 @@ namespace DOL.GS
                             return true;
                         break;
                     }
-                case eProperty.Skill_RecurvedBow:
+                case eProperty.Skill_RecurveBow:
                     {
                         if (type == eObjectType.RecurvedBow)
                             return true;
@@ -11195,7 +11195,7 @@ namespace DOL.GS
             eProperty.Skill_Music,
             eProperty.Skill_Celtic_Dual,
             eProperty.Skill_Celtic_Spear,
-            eProperty.Skill_RecurvedBow,
+            eProperty.Skill_RecurveBow,
             eProperty.Skill_Valor,
             eProperty.Skill_Verdant,
             eProperty.Skill_Creeping,
@@ -11478,7 +11478,7 @@ namespace DOL.GS
             hPropertyToMagicPrefix.Add(eProperty.Skill_Music, "Resonant");
             hPropertyToMagicPrefix.Add(eProperty.Skill_Celtic_Dual, "Whirling");
             hPropertyToMagicPrefix.Add(eProperty.Skill_Celtic_Spear, "Impaling");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_RecurvedBow, "Hawk");
+            hPropertyToMagicPrefix.Add(eProperty.Skill_RecurveBow, "Hawk");
             hPropertyToMagicPrefix.Add(eProperty.Skill_Valor, "Courageous");
             hPropertyToMagicPrefix.Add(eProperty.Skill_Subterranean, "Ancestral");
             hPropertyToMagicPrefix.Add(eProperty.Skill_BoneArmy, "Blighted");

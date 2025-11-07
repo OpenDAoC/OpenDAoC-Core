@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.Housing;
@@ -51,9 +52,9 @@ namespace DOL.GS
         /// <summary>
         /// List of items in this objects inventory
         /// </summary>
-        public virtual IList<DbInventoryItem> GetDbItems(GamePlayer player)
+        public virtual IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
         {
-            return MarketCache.Items;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -94,52 +95,55 @@ namespace DOL.GS
         public virtual bool SearchInventory(GamePlayer player, MarketSearch.SearchData searchData)
         {
             MarketSearch marketSearch = new(player);
+            List<DbInventoryItem> items = marketSearch.FindItems(searchData);
 
-            if (marketSearch.FindItemsInList(GetDbItems(player), searchData) is List<DbInventoryItem> items)
+            if (items.Count == 0)
             {
-                int maxPerPage = 20;
-                byte maxPages = (byte) (Math.Ceiling((double) items.Count / maxPerPage) - 1);
-                int first = searchData.page * maxPerPage;
-                int last = first + maxPerPage;
-                List<DbInventoryItem> list = [];
-                int index = 0;
-
-                foreach (DbInventoryItem item in items)
-                {
-                    if (index >= first && index <= last)
-                    {
-                        if (GetRealmOfLot(item.OwnerLot) != player.Realm)
-                        {
-                            if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-                                log.Debug($"Not adding item '{item.Name}' to the return search since its from different realm.");
-                        }
-                        else
-                            list.Add(item);
-                    }
-
-                    index++;
-                }
-
                 if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-                    log.Debug($"Current list find size is '{list.Count}'.");
+                    log.Debug("There is something wrong with the returned search...");
 
-                if (searchData.page == 0)
-                    player.Out.SendMessage($"Items returned: {items.Count}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                return false;
+            }
 
-                if (items.Count == 0)
-                    player.Out.SendMarketExplorerWindow(list, 0, 0);
-                else if (searchData.page <= maxPages)
+            int maxPerPage = 20;
+            byte maxPages = (byte) (Math.Ceiling((double) items.Count / maxPerPage) - 1);
+            int first = searchData.page * maxPerPage;
+            int last = first + maxPerPage;
+            List<DbInventoryItem> list = [];
+            int index = 0;
+
+            foreach (DbInventoryItem item in items)
+            {
+                if (index >= first && index <= last)
                 {
-                    player.Out.SendMessage($"Moving to page {searchData.page + 1}.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player.Out.SendMarketExplorerWindow(list, searchData.page, maxPages);
+                    if (GetRealmOfLot(item.OwnerLot) != player.Realm)
+                    {
+                        if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+                            log.Debug($"Not adding item '{item.Name}' to the return search since its from different realm.");
+                    }
+                    else
+                        list.Add(item);
                 }
 
-                // Save the last search list in case we buy an item from it.
-                player.TempProperties.SetProperty(EXPLORER_ITEM_LIST, list);
+                index++;
             }
-            else if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-                log.Debug("There is something wrong with the returned search...");
 
+            if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+                log.Debug($"Current list find size is '{list.Count}'.");
+
+            if (searchData.page == 0)
+                player.Out.SendMessage($"Items returned: {items.Count}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+            if (items.Count == 0)
+                player.Out.SendMarketExplorerWindow(list, 0, 0);
+            else if (searchData.page <= maxPages)
+            {
+                player.Out.SendMessage($"Moving to page {searchData.page + 1}.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMarketExplorerWindow(list, searchData.page, maxPages);
+            }
+
+            // Save the last search list in case we buy an item from it.
+            player.TempProperties.SetProperty(EXPLORER_ITEM_LIST, list);
             return true;
         }
 

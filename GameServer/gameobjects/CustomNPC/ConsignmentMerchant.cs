@@ -141,10 +141,15 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the consignment merchants Inventory.
         /// </summary>
-        public virtual IList<DbInventoryItem> GetDbItems(GamePlayer player)
+        public virtual IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
-            return house == null ? null : MarketCache.Items.Where(item => item?.OwnerID == house?.OwnerID).ToList();
+
+            if (house == null)
+                return null;
+
+            ItemQuery query = new() { Owner = house.OwnerID };
+            return MarketCache.SearchItems(query);
         }
 
         /// <summary>
