@@ -1030,7 +1030,7 @@ namespace DOL.GS
 			m_specToSkill.Add(Specs.Large_Weapons, eProperty.Skill_Large_Weapon);
 			m_specToSkill.Add(Specs.Celtic_Dual, eProperty.Skill_Celtic_Dual);
 			m_specToSkill.Add(Specs.Celtic_Spear, eProperty.Skill_Celtic_Spear);
-			m_specToSkill.Add(Specs.RecurveBow, eProperty.Skill_RecurvedBow);
+			m_specToSkill.Add(Specs.RecurveBow, eProperty.Skill_RecurveBow);
 			m_specToSkill.Add(Specs.Scythe, eProperty.Skill_Scythe);
 
 			#endregion
@@ -1332,7 +1332,7 @@ namespace DOL.GS
 
 			m_propertyTypes[(int) eProperty.Skill_Long_bows] = ePropertyType.Skill | ePropertyType.SkillArchery;
 			m_propertyTypes[(int) eProperty.Skill_Composite] = ePropertyType.Skill | ePropertyType.SkillArchery;
-			m_propertyTypes[(int) eProperty.Skill_RecurvedBow] = ePropertyType.Skill | ePropertyType.SkillArchery;
+			m_propertyTypes[(int) eProperty.Skill_RecurveBow] = ePropertyType.Skill | ePropertyType.SkillArchery;
 			m_propertyTypes[(int) eProperty.Skill_Archery] = ePropertyType.Skill | ePropertyType.SkillArchery;
 
 			m_propertyTypes[(int) eProperty.Skill_Cross_Bows] = ePropertyType.Skill;
@@ -1593,7 +1593,7 @@ namespace DOL.GS
 			                                                                            "SkillBase.RegisterPropertyNames.CelticDual"));
 			m_propertyNames.Add(eProperty.Skill_Celtic_Spear, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                             "SkillBase.RegisterPropertyNames.CelticSpear"));
-			m_propertyNames.Add(eProperty.Skill_RecurvedBow, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
+			m_propertyNames.Add(eProperty.Skill_RecurveBow, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                            "SkillBase.RegisterPropertyNames.RecurvedBow"));
 			m_propertyNames.Add(eProperty.Skill_Valor, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                      "SkillBase.RegisterPropertyNames.Valor"));

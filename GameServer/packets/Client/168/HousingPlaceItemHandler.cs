@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Housing;
@@ -951,7 +952,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			// Again, note that sometimes checks are done here, sometimes in housemgr. In this case, at least, 
 			// player will get remove item back if they answer no! - tolakram
 			var consignmentMerchant = house.ConsignmentMerchant;
-			if (consignmentMerchant != null && (consignmentMerchant.GetDbItems(player).Count > 0 || consignmentMerchant.TotalMoney > 0))
+			if (consignmentMerchant != null && (consignmentMerchant.GetDbItems(player).Any() || consignmentMerchant.TotalMoney > 0))
 			{
 				ChatUtil.SendSystemMessage(player, "All items and money must be removed from your consignment merchant in order to remove this house!");
 				return;

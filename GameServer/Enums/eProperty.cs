@@ -106,7 +106,7 @@
         Skill_Music = 80,
         Skill_Celtic_Dual = 81,
         Skill_Celtic_Spear = 82,
-        Skill_RecurvedBow = 83,
+        Skill_RecurveBow = 83,
         Skill_Valor = 84,
         Skill_Subterranean = 85,
         Skill_BoneArmy = 86,

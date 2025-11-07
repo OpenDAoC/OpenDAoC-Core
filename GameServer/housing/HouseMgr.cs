@@ -655,7 +655,7 @@ namespace DOL.GS.Housing
 
 			// Demand any consignment merchant inventory is removed before allowing a transfer
 			var consignmentMerchant = house.ConsignmentMerchant;
-			if (consignmentMerchant != null && (consignmentMerchant.GetDbItems(player).Count > 0 || consignmentMerchant.TotalMoney > 0))
+			if (consignmentMerchant != null && (consignmentMerchant.GetDbItems(player).Any() || consignmentMerchant.TotalMoney > 0))
 			{
 				ChatUtil.SendSystemMessage(player, "All items and money must be removed from your consignment merchant in order to transfer this house!");
 				return false;

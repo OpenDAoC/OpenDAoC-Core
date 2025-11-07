@@ -146,7 +146,7 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the vault.
         /// </summary>
-        public virtual IList<DbInventoryItem> GetDbItems(GamePlayer player)
+        public virtual IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             WhereClause filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot));
             return DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(filterBySlot));
