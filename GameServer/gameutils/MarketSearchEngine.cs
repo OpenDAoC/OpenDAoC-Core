@@ -55,6 +55,9 @@ namespace DOL.GS
 
             try
             {
+                if (!item.IsTradable || item.SellPrice <= 0)
+                    return false;
+
                 if (!_allItems.Add(item))
                     return false;
 
