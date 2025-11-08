@@ -3139,11 +3139,9 @@ namespace DOL.GS.Spells
 			ad.Target.OnAttackedByEnemy(ad);
 			ad.Attacker.DealDamage(ad);
 
-			if (ad.Damage > 0)
-			{
-				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, (byte) attackResult, ad.Target.HealthPercent);
-			}
+
+			foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				player.Out.SendCombatAnimation(ad.Attacker, ad.Target, 0, 0, 0, 0, (byte) attackResult, ad.Target.HealthPercent);
 
 			m_lastAttackData = ad;
 		}

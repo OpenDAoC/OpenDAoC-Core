@@ -47,7 +47,8 @@ namespace DOL.GS.Spells
             MessageToLiving(target, Spell.Message1, eChatType.CT_Spell); // "A bolt of runic energy hits you!"
             Message.SystemToArea(target, Util.MakeSentence(Spell.Message2, target.GetName(0, true)), eChatType.CT_System, target, Caster); // "{0} is hit by a bolt of runic energy!"
 
-            DamageTarget(ad, false, ad.AttackResult == eAttackResult.Blocked ? 0x02 : 0x14);
+            // Don't send a blocking animation even if the spell gets blocked. Otherwise it will also play a punching animation on the caster.
+            DamageTarget(ad, false, 0x14);
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
         }
 
