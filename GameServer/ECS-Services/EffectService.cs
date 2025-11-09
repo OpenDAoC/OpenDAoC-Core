@@ -96,11 +96,13 @@ namespace DOL.GS
                 return;
             }
 
-            if (GameServiceUtils.ShouldTick(spellEffect.ExpireTick))
+            if (spellEffect is not ECSPulseEffect && GameServiceUtils.ShouldTick(spellEffect.ExpireTick))
             {
-                // A pulse effect cancels its own child effects to prevent them from being cancelled and immediately reapplied.
-                // So only cancel them if their source is no longer active.
-                if (spellHandler.PulseEffect?.IsActive != true)
+                // We let pulse effects cancel their own child effects to prevent them from being cancelled and reapplied during the same server tick.
+                // So only cancel them if their source is no longer active, or isn't about to tick.
+                ECSPulseEffect pulseEffect = spellHandler.PulseEffect;
+
+                if (pulseEffect == null || !pulseEffect.IsActive || !GameServiceUtils.ShouldTick(pulseEffect.NextTick))
                 {
                     spellEffect.Stop();
                     return;
