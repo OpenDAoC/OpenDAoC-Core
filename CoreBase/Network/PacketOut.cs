@@ -168,71 +168,83 @@ namespace DOL.Network
 		}
 
 		/// <summary>
-		/// Writes a pascal style string to the stream
+		/// Writes a Pascal-style string to the stream
 		/// </summary>
-		/// <param name="str">String to write</param>
-		public void WritePascalString(string str)
+		public void WritePascalString(ReadOnlySpan<char> chars)
 		{
-			if (str == null || str.Length <= 0)
+			if (chars.IsEmpty)
 			{
 				WriteByte(0);
 				return;
 			}
 
-			byte[] bytes = BaseServer.DefaultEncoding.GetBytes(str);
-			WriteByte((byte) bytes.Length);
-			Write(bytes, 0, bytes.Length);
+			int byteCount = BaseServer.DefaultEncoding.GetByteCount(chars);
+
+			if (byteCount > byte.MaxValue)
+				throw new ArgumentException($"Pascal string exceeds maximum length of 255 bytes. Actual length: {byteCount} bytes", nameof(chars));
+
+			WriteByte((byte) byteCount);
+
+			// Stack for small buffers, ArrayPool for large buffers.
+			if (byteCount <= 1024)
+			{
+				Span<byte> buffer = stackalloc byte[byteCount];
+				BaseServer.DefaultEncoding.GetBytes(chars, buffer);
+				Write(buffer);
+			}
+			else
+			{
+				byte[] buffer = ArrayPool<byte>.Shared.Rent(byteCount);
+
+				try
+				{
+					int written = BaseServer.DefaultEncoding.GetBytes(chars, buffer);
+					Write(new ReadOnlySpan<byte>(buffer, 0, written));
+				}
+				finally
+				{
+					ArrayPool<byte>.Shared.Return(buffer);
+				}
+			}
 		}
 
-		public void WritePascalStringIntLE(string str)
+		public void WritePascalStringIntLE(ReadOnlySpan<char> chars)
 		{
-			if (str == null || str.Length <= 0)
+			if (chars.IsEmpty)
 			{
 				WriteIntLowEndian(0);
 				return;
 			}
 
-			byte[] bytes = BaseServer.DefaultEncoding.GetBytes(str);
-			WriteIntLowEndian((uint)bytes.Length + 1);
-			Write(bytes, 0, bytes.Length);
+			int byteCount = BaseServer.DefaultEncoding.GetByteCount(chars);
+			WriteIntLowEndian((uint) byteCount + 1);
+			WriteNonNullTerminatedString(chars);
 			WriteByte(0);
 		}
 
 		/// <summary>
-		/// Writes a C-style string to the stream
+		/// Writes a C-style string to the stream.
 		/// </summary>
-		/// <param name="str">String to write</param>
-		public void WriteString(string str)
+		public void WriteString(ReadOnlySpan<char> chars)
 		{
-			WriteStringBytes(str);
+			WriteNonNullTerminatedString(chars);
 			WriteByte(0x0);
 		}
 
-		public void WriteNonNullTerminatedString(string str)
+		public void WriteNonNullTerminatedString(ReadOnlySpan<char> chars)
 		{
-			WriteStringBytes(str);
+			WriteString(chars, int.MaxValue);
 		}
 
 		/// <summary>
-		/// Writes exactly the bytes from the string without any trailing 0
+		/// Writes up to maxByteLen bytes to the stream from the supplied character span.
 		/// </summary>
-		/// <param name="str">the string to write</param>
-		public void WriteStringBytes(string str)
+		public void WriteString(ReadOnlySpan<char> chars, int maxByteLen)
 		{
-			WriteString(str, int.MaxValue);
-		}
-
-		/// <summary>
-		/// Writes up to maxlen bytes to the stream from the supplied string
-		/// </summary>
-		/// <param name="str">String to write</param>
-		/// <param name="maxByteLen">Maximum number of bytes to be written</param>
-		public void WriteString(string str, int maxByteLen)
-		{
-			if (string.IsNullOrEmpty(str) || maxByteLen <= 0)
+			if (chars.IsEmpty || maxByteLen <= 0)
 				return;
 
-			int maxByteCount = BaseServer.DefaultEncoding.GetMaxByteCount(str.Length);
+			int maxByteCount = BaseServer.DefaultEncoding.GetMaxByteCount(chars.Length);
 			int bufferSize = Math.Min(maxByteCount, maxByteLen);
 
 			// Stack for small buffers, ArrayPool for large buffers.
@@ -241,7 +253,7 @@ namespace DOL.Network
 				Span<byte> buffer = stackalloc byte[bufferSize];
 				Encoder encoder = BaseServer.GetEncoder();
 				encoder.Reset();
-				encoder.Convert(str.AsSpan(), buffer, true, out _, out int bytesUsed, out _);
+				encoder.Convert(chars, buffer, true, out _, out int bytesUsed, out _);
 				Write(buffer[..bytesUsed]);
 			}
 			else
@@ -252,8 +264,8 @@ namespace DOL.Network
 				{
 					Encoder encoder = BaseServer.GetEncoder();
 					encoder.Reset();
-					encoder.Convert(str.AsSpan(), buffer, true, out _, out int bytesUsed, out _);
-					Write(buffer.AsSpan()[..bytesUsed]);
+					encoder.Convert(chars, buffer, true, out _, out int bytesUsed, out _);
+					Write(new ReadOnlySpan<byte>(buffer, 0, bytesUsed));
 				}
 				finally
 				{
@@ -263,10 +275,9 @@ namespace DOL.Network
 		}
 
 		/// <summary>
-		/// Writes len number of bytes from str to the stream
+		/// Writes a fixed-length, null-padded string to the stream.
+		/// The string is truncated if its byte representation exceeds the specified length.
 		/// </summary>
-		/// <param name="str">String to write</param>
-		/// <param name="len">Number of bytes to write</param>
 		public void FillString(string str, int len)
 		{
 			long pos = Position;

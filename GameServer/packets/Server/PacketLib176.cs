@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
@@ -131,7 +132,13 @@ namespace DOL.GS.PacketHandler
 						}
 					}
 				}
-				pak.WritePascalString(name.Length > 48 ? name.Substring(0, 48) : name);
+
+				ReadOnlySpan<char> nameSpan = name == null ? [] : name;
+
+				if (nameSpan.Length > 48)
+					nameSpan = nameSpan[..48];
+
+				pak.WritePascalString(nameSpan);
 
 				if (obj is GameDoorBase door)
 				{

@@ -102,21 +102,31 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(effect.Concentration);
 					pak.WriteShort(effect.Icon);
-
-					if (effect.Name.Length > 14)
-						pak.WritePascalString(string.Concat(effect.Name.AsSpan(0, 12), ".."));
-					else
-						pak.WritePascalString(effect.Name);
-					if (effect.OwnerName.Length > 14)
-						pak.WritePascalString(string.Concat(effect.OwnerName.AsSpan(0, 12), ".."));
-					else
-						pak.WritePascalString(effect.OwnerName);
+					WriteTruncatedName(pak, effect.Name);
+					WriteTruncatedName(pak, effect.OwnerName);
 				}
 
 				SendTCP(pak);
 			}
 
 			SendStatusUpdate();
+
+			static void WriteTruncatedName(GSTCPPacketOut pak, ReadOnlySpan<char> text)
+			{
+				const int MAX_LENGTH = 14;
+				const int TRUNCATE_LENGTH = 12;
+
+				if (text.Length > MAX_LENGTH)
+				{
+					Span<char> buffer = stackalloc char[MAX_LENGTH];
+					text[..TRUNCATE_LENGTH].CopyTo(buffer);
+					buffer[12] = '.';
+					buffer[13] = '.';
+					pak.WritePascalString(buffer);
+				}
+				else
+					pak.WritePascalString(text);
+			}
 		}
 
 		/// <summary>

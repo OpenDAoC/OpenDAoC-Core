@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using DOL.GS.Quests;
 
@@ -34,24 +35,21 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					string name = string.Format("{0} (Level {1})", quest.Name, quest.Level);
-					string desc = string.Format("[Step #{0}]: {1}", quest.Step,	quest.Description);
-					if (name.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": name is too long for 1.68+ clients (" + name.Length + ") '" + name + "'");
-						name = name.Substring(0, byte.MaxValue);
-					}
-					if (desc.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
-						desc = desc.Substring(0, byte.MaxValue);
-					}
-					pak.WriteByte((byte)name.Length);
-					pak.WriteShortLowEndian((ushort)desc.Length);
+					ReadOnlySpan<char> nameSpan = $"{quest.Name} (Level {quest.Level})";
+					ReadOnlySpan<char> descSpan = $"[Step #{quest.Step}]: {quest.Description}";
+
+					if (nameSpan.Length > byte.MaxValue)
+						nameSpan = nameSpan[..byte.MaxValue];
+
+					if (descSpan.Length > byte.MaxValue)
+						descSpan = descSpan[..byte.MaxValue];
+					
+					pak.WriteByte((byte) nameSpan.Length);
+					pak.WriteShortLowEndian((ushort) descSpan.Length);
 					pak.WriteByte(0); // Quest Zone ID ?
 					pak.WriteByte(0);
-					pak.WriteStringBytes(name); //Write Quest Name without trailing 0
-					pak.WriteStringBytes(desc); //Write Quest Description without trailing 0
+					pak.WriteNonNullTerminatedString(nameSpan); //Write Quest Name without trailing 0
+					pak.WriteNonNullTerminatedString(descSpan); //Write Quest Description without trailing 0
 				}
 
 				SendTCP(pak);
@@ -69,8 +67,8 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)0);
 				pak.WriteByte((byte)0);
 				pak.WriteByte((byte)0);
-				pak.WriteStringBytes(name); //Write Quest Name without trailing 0
-				pak.WriteStringBytes(""); //Write Quest Description without trailing 0
+				pak.WriteNonNullTerminatedString(name); //Write Quest Name without trailing 0
+				pak.WriteNonNullTerminatedString(""); //Write Quest Description without trailing 0
 				SendTCP(pak);
 			}
 		}

@@ -83,11 +83,6 @@ namespace DOL.GS
         private const char PRIMARY_CSV_SEPARATOR = ';';
         private const char SECONDARY_CSV_SEPARATOR = '-';
 
-        public static string TruncateString(string value, int maxLength)
-        {
-            return string.IsNullOrEmpty(value) ? value : value.Length <= maxLength ? value : value.Substring(0, maxLength);
-        }
-
         public static List<string> SplitCSV(string str, bool rangeCheck = false)
         {
             if (str == null)

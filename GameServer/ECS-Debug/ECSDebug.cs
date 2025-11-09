@@ -241,7 +241,7 @@ namespace ECS.Debug
             if (!_gameEventMgrNotifyProfilingEnabled || GameLoop.GetRealTime() - _gameEventMgrNotifyTimerStartTick <= _gameEventMgrNotifyTimerInterval)
                 return;
 
-            string actualInterval = Util.TruncateString((GameLoop.GetRealTime() - _gameEventMgrNotifyTimerStartTick).ToString(), 5);
+            ReadOnlySpan<char> actualInterval = TruncateString((GameLoop.GetRealTime() - _gameEventMgrNotifyTimerStartTick).ToString(), 5);
             log.Debug($"==== GameEventMgr Notify() Costs (Requested Interval: {_gameEventMgrNotifyTimerInterval}ms | Actual Interval: {actualInterval}ms) ====");
 
             lock (_gameEventMgrNotifyLock)
@@ -268,10 +268,10 @@ namespace ECS.Debug
                     int NumValues = EventTimeValues.Count;
                     double AvgCost = TotalCost / NumValues;
                     string NumValuesString = NumValues.ToString().PadRight(4);
-                    string TotalCostString = Util.TruncateString(TotalCost.ToString(), 5);
-                    string MinCostString = Util.TruncateString(MinCost.ToString(), 5);
-                    string MaxCostString = Util.TruncateString(MaxCost.ToString(), 5);
-                    string AvgCostString = Util.TruncateString(AvgCost.ToString(), 5);
+                    ReadOnlySpan<char> TotalCostString = TruncateString(TotalCost.ToString(), 5);
+                    ReadOnlySpan<char> MinCostString = TruncateString(MinCost.ToString(), 5);
+                    ReadOnlySpan<char> MaxCostString = TruncateString(MaxCost.ToString(), 5);
+                    ReadOnlySpan<char> AvgCostString = TruncateString(AvgCost.ToString(), 5);
                     log.Debug($"{EventNameString} - # Calls: {NumValuesString} | Total: {TotalCostString}ms | Avg: {AvgCostString}ms | Min: {MinCostString}ms | Max: {MaxCostString}ms");
                 }
 
@@ -286,6 +286,16 @@ namespace ECS.Debug
             None,
             Start,
             Stop
+        }
+
+        private static ReadOnlySpan<char> TruncateString(string str, int maxLength)
+        {
+            ReadOnlySpan<char> span = str;
+
+            if (span.Length > maxLength)
+                span = span[..maxLength];
+
+            return span;
         }
     }
 }

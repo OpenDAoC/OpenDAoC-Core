@@ -525,10 +525,13 @@ namespace DOL.GS.PacketHandler
 				else
 					name += "[" + Money.GetString(item.SellPrice) + "]";
 			}
-			if (name == null) name = string.Empty;
-			if (name.Length > 55)
-				name = name.Substring(0, 55);
-			pak.WritePascalString(name);
+
+			ReadOnlySpan<char> nameSpan = name == null ? [] : name;
+
+			if (nameSpan.Length > MAX_NAME_LENGTH)
+				nameSpan = nameSpan[..MAX_NAME_LENGTH];
+
+			pak.WritePascalString(nameSpan);
 		}
 	}
 }

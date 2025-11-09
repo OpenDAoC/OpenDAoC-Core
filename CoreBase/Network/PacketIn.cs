@@ -85,7 +85,7 @@ namespace DOL.Network
 			if (maxlen <= 1024)
 			{
 				Span<byte> buffer = stackalloc byte[maxlen];
-				Read(buffer);
+				_ = Read(buffer);
 				int actualLength = buffer.IndexOf((byte) 0);
 
 				if (actualLength == -1)

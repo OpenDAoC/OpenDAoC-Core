@@ -198,7 +198,6 @@ namespace DOL.GS.Commands
                 parries[0] = target.GetModified(eProperty.ParryChance) * 0.001;
                 blocks[0] = target.GetModified(eProperty.BlockChance) * 0.001;
 
-
                 for (int i = 1; i < spanLength; i++)
                 {
                     dummyAttackData.AttackType = attackTypes[i - 1];

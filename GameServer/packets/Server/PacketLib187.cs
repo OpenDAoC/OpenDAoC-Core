@@ -50,7 +50,7 @@ namespace DOL.GS.PacketHandler
 
 				if (quest.Summary.Length > 255)
 				{
-					pak.WritePascalString(quest.Summary.Substring(0, 255));
+					pak.WritePascalString(quest.Summary.AsSpan(0, 255));
 				}
 				else
 				{
@@ -62,12 +62,12 @@ namespace DOL.GS.PacketHandler
 					if (quest.Story.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 					{
 						pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-						pak.WriteStringBytes(quest.Story.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
+						pak.WriteNonNullTerminatedString(quest.Story.AsSpan(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 					}
 					else
 					{
 						pak.WriteShort((ushort)quest.Story.Length);
-						pak.WriteStringBytes(quest.Story);
+						pak.WriteNonNullTerminatedString(quest.Story);
 					}
 				}
 				else
@@ -75,12 +75,12 @@ namespace DOL.GS.PacketHandler
 					if (quest.Conclusion.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 					{
 						pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-						pak.WriteStringBytes(quest.Conclusion.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
+						pak.WriteNonNullTerminatedString(quest.Conclusion.AsSpan(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 					}
 					else
 					{
 						pak.WriteShort((ushort)quest.Conclusion.Length);
-						pak.WriteStringBytes(quest.Conclusion);
+						pak.WriteNonNullTerminatedString(quest.Conclusion);
 					}
 				}
 
@@ -207,7 +207,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(0x00); // unknown
 				pak.WriteByte((byte)rewardQuest.Goals.Count);
 				pak.WriteByte((byte)rewardQuest.Level);
-				pak.WriteStringBytes(rewardQuest.Name);
+				pak.WriteNonNullTerminatedString(rewardQuest.Name);
 				pak.WritePascalString(rewardQuest.Description);
 				int goalindex = 0;
 				foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
@@ -215,7 +215,7 @@ namespace DOL.GS.PacketHandler
 					goalindex++;
 					String goalDesc = String.Format("{0}\r", goal.Description);
 					pak.WriteShortLowEndian((ushort)goalDesc.Length);
-					pak.WriteStringBytes(goalDesc);
+					pak.WriteNonNullTerminatedString(goalDesc);
 					pak.WriteShortLowEndian((ushort)goal.ZoneID2);
 					pak.WriteShortLowEndian((ushort)goal.XOffset2);
 					pak.WriteShortLowEndian((ushort)goal.YOffset2);

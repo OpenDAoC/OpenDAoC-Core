@@ -187,7 +187,7 @@ namespace DOL.GS.PacketHandler
 							}
 							if (locationDescription.Length > 23) // location name over 23 chars has to be truncated eg. "The Great Pyramid of Stygia"
 							{
-								locationDescription = (locationDescription.Substring(0, 20)) + "...";
+								locationDescription = string.Concat(locationDescription.AsSpan(0, 20), "...");
 							}
 							pak.WritePascalStringIntLE(locationDescription);
 

@@ -476,7 +476,7 @@ namespace DOL.GS
             string result = string.Empty;
             if (text == null || text.Length <= 0) return result;
             result = text[0].ToString().ToUpper();
-            if (text.Length > 1) result += text.Substring(1, text.Length - 1);
+            if (text.Length > 1) result += text.Substring(1);
             return result;
         }
 

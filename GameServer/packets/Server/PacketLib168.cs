@@ -1061,30 +1061,46 @@ namespace DOL.GS.PacketHandler
 						add += "-NON"; // indicates NON flag for GMs
 				}
 
-                string name = npc.Name;
-                string guildName = npc.GuildName;
+				string name = npc.Name;
+				string guildName = npc.GuildName;
 
-                LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
-                if (translation != null)
-                {
-                    if(!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
-                        name = ((DbLanguageGameNpc)translation).Name;
+				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
+				if (translation != null)
+				{
+					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+						name = ((DbLanguageGameNpc)translation).Name;
 
-                    if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
-                        guildName = ((DbLanguageGameNpc)translation).GuildName;
-                }
+					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
+						guildName = ((DbLanguageGameNpc)translation).GuildName;
+				}
 
-                if (name.Length + add.Length + 2 > 47) // clients crash with too long names
-                    name = name.Substring(0, 47 - add.Length - 2);
-                if (add.Length > 0)
-                    name = string.Format("[{0}]{1}", name, add);
+				ReadOnlySpan<char> nameSpan = name;
+				int maxNameLength = 47 - add.Length - 2;
 
-                pak.WritePascalString(name);
+				if (nameSpan.Length > maxNameLength)
+					nameSpan = nameSpan[..maxNameLength];
 
-                if (guildName.Length > 47)
-                    guildName = guildName.Substring(0, 47);
+				if (add.Length > 0)
+				{
+					Span<char> buffer = stackalloc char[1 + nameSpan.Length + 1 + add.Length];
+					int pos = 0;
+					buffer[pos++] = '[';
+					nameSpan.CopyTo(buffer[pos..]);
+					pos += nameSpan.Length;
+					buffer[pos++] = ']';
+					add.AsSpan().CopyTo(buffer[pos..]);
+					pos += add.Length;
+					pak.WritePascalString(buffer[..pos]);
+				}
+				else
+					pak.WritePascalString(nameSpan);
 
-                pak.WritePascalString(guildName);
+				ReadOnlySpan<char> guildSpan = guildName;
+
+				if (guildSpan.Length > 47)
+					guildSpan = guildSpan[..47];
+
+				pak.WritePascalString(guildSpan);
 
 				pak.WriteByte(0x00);
 				SendTCP(pak);
@@ -2375,13 +2391,12 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DetailWindow)))
 			{
-				if (caption == null)
-					caption = string.Empty;
+				ReadOnlySpan<char> captionSpan = caption == null ? [] : caption;
 
-				if (caption.Length > byte.MaxValue)
-					caption = caption.Substring(0, byte.MaxValue);
+				if (captionSpan.Length > byte.MaxValue)
+					captionSpan = captionSpan[..byte.MaxValue];
 
-				pak.WritePascalString(caption); //window caption
+				pak.WritePascalString(captionSpan);
 
 				WriteCustomTextWindowData(pak, text);
 
@@ -2437,7 +2452,14 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort) seconds);
 				pak.WriteByte((byte) title.Length);
 				pak.WriteByte(1);
-				pak.WriteString((title.Length > byte.MaxValue ? title.Substring(0, byte.MaxValue) : title));
+
+				ReadOnlySpan<char> titleSpan = title == null ? [] : title;
+
+				if (titleSpan.Length > byte.MaxValue)
+					titleSpan = titleSpan[..byte.MaxValue];
+
+				pak.WriteString(titleSpan);
+
 				SendTCP(pak);
 			}
 		}
@@ -2905,21 +2927,31 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(0); // unknown
 					pak.WriteByte(effect.Concentration);
 					pak.WriteShort(effect.Icon);
-
-					if (effect.Name.Length > 14)
-						pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
-					else
-						pak.WritePascalString(effect.Name);
-					if (effect.OwnerName.Length > 14)
-						pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
-					else
-						pak.WritePascalString(effect.OwnerName);
+					WriteTruncatedName(pak, effect.Name);
+					WriteTruncatedName(pak, effect.OwnerName);
 				}
 
 				SendTCP(pak);
 			}
 
 			SendStatusUpdate();
+
+			static void WriteTruncatedName(GSTCPPacketOut pak, ReadOnlySpan<char> text)
+			{
+				const int MAX_LENGTH = 14;
+				const int TRUNCATE_LENGTH = 12;
+
+				if (text.Length > MAX_LENGTH)
+				{
+					Span<char> buffer = stackalloc char[MAX_LENGTH];
+					text[..TRUNCATE_LENGTH].CopyTo(buffer);
+					buffer[12] = '.';
+					buffer[13] = '.';
+					pak.WritePascalString(buffer);
+				}
+				else
+					pak.WritePascalString(text);
+			}
 		}
 
 		public void SendChangeTarget(GameObject newTarget)
@@ -3804,25 +3836,20 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					string name = quest.Name;
-					string desc = quest.Description;
-					if (name.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled)
-							log.Warn(quest.GetType() + ": name is too long for 1.68+ clients (" + name.Length + ") '" + name + "'");
-						name = name.Substring(0, byte.MaxValue);
-					}
-					if (desc.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled)
-							log.Warn(quest.GetType() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
-						desc = desc.Substring(0, byte.MaxValue);
-					}
-					pak.WriteByte((byte) name.Length);
-					pak.WriteByte((byte) desc.Length);
+					ReadOnlySpan<char> nameSpan = quest.Name;
+					ReadOnlySpan<char> descSpan = quest.Description;
+
+					if (nameSpan.Length > byte.MaxValue)
+						nameSpan = nameSpan[..byte.MaxValue];
+
+					if (descSpan.Length > byte.MaxValue)
+						descSpan = descSpan[..byte.MaxValue];
+
+					pak.WriteByte((byte) nameSpan.Length);
+					pak.WriteByte((byte) descSpan.Length);
 					pak.WriteByte(0);
-					pak.WriteStringBytes(name); //Write Quest Name without trailing 0
-					pak.WriteStringBytes(desc); //Write Quest Description without trailing 0
+					pak.WriteNonNullTerminatedString(nameSpan); //Write Quest Name without trailing 0
+					pak.WriteNonNullTerminatedString(descSpan); //Write Quest Description without trailing 0
 				}
 
 				SendTCP(pak);
@@ -4053,18 +4080,17 @@ namespace DOL.GS.PacketHandler
 
 			foreach (var listStr in text)
 			{
-				string str = listStr;
-
-				if (str != null)
+				if (listStr != null)
 				{
 					if (pak.Position + 4 > MAX_PACKET_LENGTH) // line + pascalstringline(1) + trailingZero
 						return;
 
 					pak.WriteByte(++line);
+					ReadOnlySpan<char> str = listStr.AsSpan();
 
 					while (str.Length > byte.MaxValue)
 					{
-						string s = str.Substring(0, byte.MaxValue);
+						ReadOnlySpan<char> s = str[..byte.MaxValue];
 
 						if (pak.Position + s.Length + 2 > MAX_PACKET_LENGTH)
 						{
@@ -4073,7 +4099,8 @@ namespace DOL.GS.PacketHandler
 						}
 
 						pak.WritePascalString(s);
-						str = str.Substring(byte.MaxValue, str.Length - byte.MaxValue);
+						str = str[byte.MaxValue..];
+
 						if (line >= 200 || pak.Position + Math.Min(byte.MaxValue, str.Length) + 2 >= MAX_PACKET_LENGTH)
 							// line + pascalstringline(1) + trailingZero
 							return;
@@ -4083,7 +4110,7 @@ namespace DOL.GS.PacketHandler
 
 					if (pak.Position + str.Length + 2 > MAX_PACKET_LENGTH) // str.Length + trailing zero
 					{
-						str = str.Substring(0, (int)Math.Max(Math.Min(1, str.Length), MAX_PACKET_LENGTH - pak.Position - 2));
+						str = str[..(int) Math.Max(Math.Min(1, str.Length), MAX_PACKET_LENGTH - pak.Position - 2)];
 						needBreak = true;
 					}
 

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -66,7 +47,7 @@ namespace DOL.GS.PacketHandler
 				string personalizedSummary = BehaviourUtils.GetPersonalizedMessage(quest.Description, player);
 				if (personalizedSummary.Length > 255)
 				{
-					pak.WritePascalString(personalizedSummary.Substring(0, 255)); // Summary is max 255 bytes or client will crash !
+					pak.WritePascalString(personalizedSummary.AsSpan(0, 255)); // Summary is max 255 bytes or client will crash !
 				}
 				else
 				{
@@ -80,12 +61,12 @@ namespace DOL.GS.PacketHandler
 					if (personalizedStory.Length > MAX_STORY_LENGTH)
 					{
 						pak.WriteShort(MAX_STORY_LENGTH);
-						pak.WriteStringBytes(personalizedStory.Substring(0, MAX_STORY_LENGTH));
+						pak.WriteNonNullTerminatedString(personalizedStory.AsSpan(0, MAX_STORY_LENGTH));
 					}
 					else
 					{
 						pak.WriteShort((ushort)personalizedStory.Length);
-						pak.WriteStringBytes(personalizedStory);
+						pak.WriteNonNullTerminatedString(personalizedStory);
 					}
 				}
 				else
@@ -93,29 +74,31 @@ namespace DOL.GS.PacketHandler
 					if (quest.FinishText.Length > MAX_STORY_LENGTH)
 					{
 						pak.WriteShort(MAX_STORY_LENGTH);
-						pak.WriteStringBytes(quest.FinishText.Substring(0, MAX_STORY_LENGTH));
+						pak.WriteNonNullTerminatedString(quest.FinishText.AsSpan(0, MAX_STORY_LENGTH));
 					}
 					else
 					{
 						pak.WriteShort((ushort)quest.FinishText.Length);
-						pak.WriteStringBytes(quest.FinishText);
+						pak.WriteNonNullTerminatedString(quest.FinishText);
 					}
 				}
 
 				pak.WriteShort(QuestID);
 				pak.WriteByte((byte)quest.StepTexts.Count); // #goals count
+				Span<char> buffer = stackalloc char[254]; // 253 + 1 for '\r'
+
 				foreach (string text in quest.StepTexts)
 				{
-					string t = text;
+					ReadOnlySpan<char> textSpan = text == null ? [] : text;
 
-					// Need to protect for any text length > 255.  It does not crash client but corrupts RewardQuest display -Tolakram
-					if (text.Length > 253)
-					{
-						t = text.Substring(0, 253);
-					}
+					if (textSpan.Length > 253)
+						textSpan = textSpan[..253];
 
-					pak.WritePascalString(string.Format("{0}\r", t));
+					textSpan.CopyTo(buffer);
+					buffer[textSpan.Length] = '\r';
+					pak.WritePascalString(buffer[..(textSpan.Length + 1)]);
 				}
+
 				pak.WriteInt((uint)quest.MoneyReward());
 				pak.WriteByte((byte)quest.ExperiencePercent(player));
 				pak.WriteByte((byte)quest.FinalRewards.Count);
@@ -151,7 +134,7 @@ namespace DOL.GS.PacketHandler
 
 				string personalizedSummary = BehaviourUtils.GetPersonalizedMessage(quest.Summary, player);
 				if (personalizedSummary.Length > 255)
-					pak.WritePascalString(personalizedSummary.Substring(0, 255)); // Summary is max 255 bytes !
+					pak.WritePascalString(personalizedSummary.AsSpan(0, 255)); // Summary is max 255 bytes !
 				else
 					pak.WritePascalString(personalizedSummary);
 
@@ -162,12 +145,12 @@ namespace DOL.GS.PacketHandler
 					if (personalizedStory.Length > ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 					{
 						pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-						pak.WriteStringBytes(personalizedStory.Substring(0, ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
+						pak.WriteNonNullTerminatedString(personalizedStory.AsSpan(0, ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 					}
 					else
 					{
 						pak.WriteShort((ushort)personalizedStory.Length);
-						pak.WriteStringBytes(personalizedStory);
+						pak.WriteNonNullTerminatedString(personalizedStory);
 					}
 				}
 				else
@@ -175,12 +158,12 @@ namespace DOL.GS.PacketHandler
 					if (quest.Conclusion.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 					{
 						pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-						pak.WriteStringBytes(quest.Conclusion.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
+						pak.WriteNonNullTerminatedString(quest.Conclusion.AsSpan(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 					}
 					else
 					{
 						pak.WriteShort((ushort)quest.Conclusion.Length);
-						pak.WriteStringBytes(quest.Conclusion);
+						pak.WriteNonNullTerminatedString(quest.Conclusion);
 					}
 				}
 

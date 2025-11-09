@@ -122,7 +122,6 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendNPCCreate(GameNPC npc)
 		{
-
 			if (m_gameClient.Player == null || npc.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
@@ -208,7 +207,6 @@ namespace DOL.GS.PacketHandler
 				//flags2 |= 0x40;//hex 64 - unknown
 				//flags2 |= 0x80;//hex 128 - has owner
 
-
 				pak.WriteByte(flags2); // flags 2
 
 				byte flags3 = 0x00;
@@ -223,6 +221,7 @@ namespace DOL.GS.PacketHandler
 				string guildName = npc.GuildName;
 
 				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
+
 				if (translation != null)
 				{
 					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
@@ -232,16 +231,33 @@ namespace DOL.GS.PacketHandler
 						guildName = ((DbLanguageGameNpc)translation).GuildName;
 				}
 
-				if (name.Length + add.Length + 2 > 47) // clients crash with too long names
-					name = name.Substring(0, 47 - add.Length - 2);
+				ReadOnlySpan<char> nameSpan = name;
+				int maxNameLength = 47 - add.Length - 2;
+
+				if (nameSpan.Length > maxNameLength)
+					nameSpan = nameSpan[..maxNameLength];
+
 				if (add.Length > 0)
-					name = string.Format("[{0}]{1}", name, add);
+				{
+					Span<char> buffer = stackalloc char[1 + nameSpan.Length + 1 + add.Length];
+					int pos = 0;
+					buffer[pos++] = '[';
+					nameSpan.CopyTo(buffer[pos..]);
+					pos += nameSpan.Length;
+					buffer[pos++] = ']';
+					add.AsSpan().CopyTo(buffer[pos..]);
+					pos += add.Length;
+					pak.WritePascalString(buffer[..pos]);
+				}
+				else
+					pak.WritePascalString(nameSpan);
 
-				pak.WritePascalString(name);
+				ReadOnlySpan<char> guildSpan = guildName;
 
-				if (guildName.Length > 47)
-					pak.WritePascalString(guildName.Substring(0, 47));
-				else pak.WritePascalString(guildName);
+				if (guildSpan.Length > 47)
+					guildSpan = guildSpan[..47];
+
+				pak.WritePascalString(guildSpan);
 
 				pak.WriteByte(0x00);
 				SendTCP(pak);
@@ -306,28 +322,19 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					string name = quest.Name;
-					string desc = quest.Description;
-					if (name.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": name is too long for 1.71 clients (" + name.Length + ") '" + name + "'");
-						name = name.Substring(0, byte.MaxValue);
-					}
-					if (desc.Length > ushort.MaxValue)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": description is too long for 1.71 clients (" + desc.Length + ") '" + desc + "'");
-						desc = desc.Substring(0, ushort.MaxValue);
-					}
-					if (name.Length + desc.Length > 2048 - 10)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": name + description length is too long and would have crashed the client.\nName (" + name.Length + "): '" + name + "'\nDesc (" + desc.Length + "): '" + desc + "'");
-						name = name.Substring(0, 32);
-						desc = desc.Substring(0, 2048 - 10 - name.Length); // all that's left
-					}
-					pak.WriteByte((byte)name.Length);
-					pak.WriteShort((ushort)desc.Length);
-					pak.WriteStringBytes(name); //Write Quest Name without trailing 0
-					pak.WriteStringBytes(desc); //Write Quest Description without trailing 0
+					ReadOnlySpan<char> nameSpan = quest.Name;
+					ReadOnlySpan<char> descSpan = quest.Description;
+
+					if (nameSpan.Length > byte.MaxValue)
+						nameSpan = nameSpan[..byte.MaxValue];
+
+					if (descSpan.Length > byte.MaxValue)
+						descSpan = descSpan[..byte.MaxValue];
+
+					pak.WriteByte((byte) nameSpan.Length);
+					pak.WriteShort((ushort) descSpan.Length);
+					pak.WriteNonNullTerminatedString(nameSpan); //Write Quest Name without trailing 0
+					pak.WriteNonNullTerminatedString(descSpan); //Write Quest Description without trailing 0
 				}
 				SendTCP(pak);
 			}

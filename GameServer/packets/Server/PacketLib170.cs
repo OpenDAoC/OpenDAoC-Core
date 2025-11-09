@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -281,23 +282,19 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					string name = quest.Name;
-					string desc = quest.Description;
-					if (name.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": name is too long for 1.68+ clients (" + name.Length + ") '" + name + "'");
-						name = name.Substring(0, byte.MaxValue);
-					}
-					if (desc.Length > ushort.MaxValue)
-					{
-						if (log.IsWarnEnabled) log.Warn(quest.GetType().ToString() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
-						desc = desc.Substring(0, ushort.MaxValue);
-					}
+					ReadOnlySpan<char> nameSpan = quest.Name;
+					ReadOnlySpan<char> descSpan = quest.Description;
 
-					pak.WriteByte((byte)name.Length);
-					pak.WriteShort((ushort)desc.Length);
-					pak.WriteStringBytes(name); //Write Quest Name without trailing 0
-					pak.WriteStringBytes(desc); //Write Quest Description without trailing 0
+					if (nameSpan.Length > byte.MaxValue)
+						nameSpan = nameSpan[..byte.MaxValue];
+
+					if (descSpan.Length > byte.MaxValue)
+						descSpan = descSpan[..byte.MaxValue];
+
+					pak.WriteByte((byte) nameSpan.Length);
+					pak.WriteShort((ushort) descSpan.Length);
+					pak.WriteNonNullTerminatedString(nameSpan); //Write Quest Name without trailing 0
+					pak.WriteNonNullTerminatedString(descSpan); //Write Quest Description without trailing 0
 				}
 				SendTCP(pak);
 			}

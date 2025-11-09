@@ -236,27 +236,44 @@ namespace DOL.GS.PacketHandler
 					string name = npc.Name;
 					string guildName = npc.GuildName;
 
-					if (LanguageMgr.GetTranslation(m_gameClient, npc) is DbLanguageGameNpc translation)
-					{
-						if (!string.IsNullOrEmpty(translation.Name))
-							name = translation.Name;
+					LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
 
-						if (!string.IsNullOrEmpty(translation.GuildName))
-							guildName = translation.GuildName;
+					if (translation != null)
+					{
+						if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+							name = ((DbLanguageGameNpc)translation).Name;
+
+						if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
+							guildName = ((DbLanguageGameNpc)translation).GuildName;
 					}
 
-					if (name.Length + add.Length + 2 > 47) // Clients crash with too long names.
-						name = name[..(47 - add.Length - 2)];
+					ReadOnlySpan<char> nameSpan = name;
+					int maxNameLength = 47 - add.Length - 2;
+
+					if (nameSpan.Length > maxNameLength)
+						nameSpan = nameSpan[..maxNameLength];
 
 					if (add.Length > 0)
-						name = string.Format("[{0}]{1}", name, add);
-
-					pak.WritePascalString(name);
-
-					if (guildName.Length > 47)
-						pak.WritePascalString(guildName.Substring(0, 47));
+					{
+						Span<char> buffer = stackalloc char[1 + nameSpan.Length + 1 + add.Length];
+						int pos = 0;
+						buffer[pos++] = '[';
+						nameSpan.CopyTo(buffer[pos..]);
+						pos += nameSpan.Length;
+						buffer[pos++] = ']';
+						add.AsSpan().CopyTo(buffer[pos..]);
+						pos += add.Length;
+						pak.WritePascalString(buffer[..pos]);
+					}
 					else
-						pak.WritePascalString(guildName);
+						pak.WritePascalString(nameSpan);
+
+					ReadOnlySpan<char> guildSpan = guildName;
+
+					if (guildSpan.Length > 47)
+						guildSpan = guildSpan[..47];
+
+					pak.WritePascalString(guildSpan);
 
 					pak.WriteByte(0x00);
 					SendTCP(pak);
@@ -505,7 +522,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShort(0x00); // unknown
 					pak.WriteByte((byte)rewardQuest.Goals.Count);
 					pak.WriteByte((byte)rewardQuest.Level);
-					pak.WriteStringBytes(rewardQuest.Name);
+					pak.WriteNonNullTerminatedString(rewardQuest.Name);
 					pak.WritePascalString(rewardQuest.Description);
 					int goalindex = 0;
 					foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
@@ -513,7 +530,7 @@ namespace DOL.GS.PacketHandler
 						goalindex++;
 						String goalDesc = String.Format("{0}\r", goal.Description);
 						pak.WriteShortLowEndian((ushort)goalDesc.Length);
-						pak.WriteStringBytes(goalDesc);
+						pak.WriteNonNullTerminatedString(goalDesc);
 						pak.WriteShortLowEndian((ushort)goal.ZoneID2);
 						pak.WriteShortLowEndian((ushort)goal.XOffset2);
 						pak.WriteShortLowEndian((ushort)goal.YOffset2);
@@ -542,32 +559,23 @@ namespace DOL.GS.PacketHandler
 			{
 				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.QuestEntry)))
 				{
-					pak.WriteByte((byte)index);
+					pak.WriteByte(index);
 
-					string name = string.Format("{0} (Level {1})", quest.Name, quest.Level);
-					string desc = string.Format("[Step #{0}]: {1}", quest.Step, quest.Description);
-					if (name.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled)
-						{
-							log.Warn(quest.GetType().ToString() + ": name is too long for 1.68+ clients (" + name.Length + ") '" + name + "'");
-						}
-						name = name.Substring(0, byte.MaxValue);
-					}
-					if (desc.Length > byte.MaxValue)
-					{
-						if (log.IsWarnEnabled)
-						{
-							log.Warn(quest.GetType().ToString() + ": description is too long for 1.68+ clients (" + desc.Length + ") '" + desc + "'");
-						}
-						desc = desc.Substring(0, byte.MaxValue);
-					}
-					pak.WriteByte((byte)name.Length);
-					pak.WriteShortLowEndian((ushort)desc.Length);
+					ReadOnlySpan<char> nameSpan = $"{quest.Name} (Level {quest.Level})";
+					ReadOnlySpan<char> descSpan = $"[Step #{quest.Step}]: {quest.Description}";
+
+					if (nameSpan.Length > byte.MaxValue)
+						nameSpan = nameSpan[..byte.MaxValue];
+
+					if (descSpan.Length > byte.MaxValue)
+						descSpan = descSpan[..byte.MaxValue];
+
+					pak.WriteByte((byte) nameSpan.Length);
+					pak.WriteShortLowEndian((ushort) descSpan.Length);
 					pak.WriteByte(0); // Quest Zone ID ?
 					pak.WriteByte(0);
-					pak.WriteStringBytes(name); //Write Quest Name without trailing 0
-					pak.WriteStringBytes(desc); //Write Quest Description without trailing 0
+					pak.WriteNonNullTerminatedString(nameSpan); //Write Quest Name without trailing 0
+					pak.WriteNonNullTerminatedString(descSpan); //Write Quest Description without trailing 0
 
 					SendTCP(pak);
 				}
@@ -1010,10 +1018,13 @@ namespace DOL.GS.PacketHandler
 				else
 					name += "[" + Money.GetString(item.SellPrice) + "]";
 			}
-			if (name == null) name = string.Empty;
-			if (name.Length > 55)
-				name = name.Substring(0, 55);
-			pak.WritePascalString(name);
+
+			ReadOnlySpan<char> nameSpan = name == null ? [] : name;
+
+			if (nameSpan.Length > MAX_NAME_LENGTH)
+				nameSpan = nameSpan[..MAX_NAME_LENGTH];
+
+			pak.WritePascalString(nameSpan);
 		}
 
 		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)

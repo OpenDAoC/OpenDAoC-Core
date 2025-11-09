@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -388,10 +389,12 @@ namespace DOL.GS.PacketHandler
                     name += "[" + Money.GetShortString(item.SellPrice) + "]";
             }
 
-			if (name.Length > MAX_NAME_LENGTH)
-				name = name.Substring(0, MAX_NAME_LENGTH);
+			ReadOnlySpan<char> nameSpan = name == null ? [] : name;
 
-			pak.WritePascalString(name);
+			if (nameSpan.Length > MAX_NAME_LENGTH)
+				nameSpan = nameSpan[..MAX_NAME_LENGTH];
+
+			pak.WritePascalString(nameSpan);
 		}
 
 

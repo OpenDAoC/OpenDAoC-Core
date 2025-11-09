@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -45,12 +46,13 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0); // new in 1.75
 				pak.WriteByte(0); // new in 1.81
-				if (caption == null)
-					caption = string.Empty;
-				if (caption.Length > byte.MaxValue)
-					caption = caption.Substring(0, byte.MaxValue);
-				pak.WritePascalString(caption); //window caption
 
+				ReadOnlySpan<char> captionSpan = caption == null ? [] : caption;
+
+				if (captionSpan.Length > byte.MaxValue)
+					captionSpan = captionSpan[..byte.MaxValue];
+
+				pak.WritePascalString(captionSpan);
 				WriteCustomTextWindowData(pak, text);
 
 				//Trailing Zero!
