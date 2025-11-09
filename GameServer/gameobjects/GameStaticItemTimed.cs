@@ -33,7 +33,7 @@ namespace DOL.GS
                 if (value > 0)
                     _removeDelay = value;
 
-                if (_removeItemAction.IsAlive)
+                if (_removeItemAction?.IsAlive == true)
                     _removeItemAction.Start((int) _removeDelay);
             }
         }
