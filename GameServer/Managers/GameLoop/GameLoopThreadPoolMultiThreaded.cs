@@ -178,11 +178,6 @@ namespace DOL.GS
             _workerCycle[Id] = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
             base.InitWorker(obj);
             _workerStartLatch.Signal();
-
-            // If this is a restart, we need to free the caller thread.
-            if (Restart)
-                Interlocked.Increment(ref _workState.CompletedWorkerCount);
-
             RunWorkerLoop(Id, _shutdownToken.Token);
         }
 
@@ -217,9 +212,7 @@ namespace DOL.GS
                 {
                     workReady.Wait(cancellationToken);
                     workerCycle = ++cycle;
-                    workReady.Reset();
                     ExecutionContext.Run(_workContext, static state => ((GameLoopThreadPoolMultiThreaded) state).ProcessWorkActions(), this);
-                    Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
                 }
                 catch (OperationCanceledException)
                 {
@@ -242,7 +235,9 @@ namespace DOL.GS
                 }
                 finally
                 {
+                    workReady.Reset();
                     workerCycle = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
+                    Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
                 }
             }
 
