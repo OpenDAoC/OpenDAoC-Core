@@ -1175,7 +1175,7 @@ namespace DOL.AI.Brain
 					var effects = Body.effectListComponent.GetPulseEffects();
 
 					for (int i = 0; i < effects.Count; i++)
-						effects[i].Stop();//cancel here all pulse effect
+						effects[i].End();//cancel here all pulse effect
 				}
 				if (HasAggro)
 				{

@@ -210,7 +210,7 @@ namespace DOL.GS.Effects
 				if (Duration == 0)
 					return 0;
 
-				if (m_timer == null || m_timer.IsStopped)
+				if (m_timer == null || m_timer.IsEnded)
 					return 0;
 				
 				return (int) (Duration - m_timer.ExpireTick);
@@ -616,7 +616,7 @@ namespace DOL.GS.Effects
 		{
 			if (m_timer != null)
 			{
-				m_timer.Stop();
+				m_timer.End();
 				m_timer = null;
 			}
 		}

@@ -79,7 +79,7 @@ namespace DOL.GS
                 playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.ProtectEffect.XNoProtectYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            PairedEffect?.Stop();
+            PairedEffect?.End();
             base.OnStopEffect();
         }
     }

@@ -20,7 +20,7 @@ namespace DOL.GS.SkillHandler
 
             if (camouflage != null)
             {
-                camouflage.Stop();
+                camouflage.End();
                 return;
             }
 

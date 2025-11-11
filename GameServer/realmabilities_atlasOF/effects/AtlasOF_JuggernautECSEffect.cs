@@ -34,7 +34,7 @@ namespace DOL.GS.Effects
 
         public void Cancel(bool playerCancel)
         {
-            Stop(playerCancel);
+            End(playerCancel);
             OnStopEffect();
         }
     }

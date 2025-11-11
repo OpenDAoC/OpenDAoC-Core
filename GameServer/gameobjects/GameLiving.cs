@@ -1510,7 +1510,7 @@ namespace DOL.GS
 							playerAttacker.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
 						if (ablativeHp <= 0)
-							effect.Stop();
+							effect.End();
 						else
 							effect.RemainingValue = ablativeHp;
 					}
@@ -1749,28 +1749,28 @@ namespace DOL.GS
 					case eEffect.Mez:
 					{
 						if (removeMez)
-							effect.Stop();
+							effect.End();
 
 						break;
 					}
 					case eEffect.Snare:
 					{
 						if (removeSnare)
-							effect.Stop();
+							effect.End();
 
 						break;
 					}
 					case eEffect.MovementSpeedDebuff:
 					{
 						if (removeMovementSpeedDebuff && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType is not eSpellType.UnbreakableSpeedDecrease)
-							effect.Stop();
+							effect.End();
 
 						break;
 					}
 					case eEffect.Ichor:
 					{
 						if (removeMovementSpeedDebuff)
-							effect.Stop();
+							effect.End();
 
 						break;
 					}
@@ -1795,7 +1795,7 @@ namespace DOL.GS
 						continue;
 
 					if (ShouldBeCancelled(attackData, effect))
-						effect.Stop();
+						effect.End();
 				}
 			}
 
@@ -1807,7 +1807,7 @@ namespace DOL.GS
 				foreach (ECSGameSpellEffect effect in ownerEffects)
 				{
 					if (ShouldBeCancelled(attackData, effect))
-						effect.Stop();
+						effect.End();
 				}
 			}
 
@@ -2714,7 +2714,7 @@ namespace DOL.GS
 
 			// Cancel all active conc spell effects from other casters.
 			foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects().Where(e => e.IsConcentrationEffect()))
-				effect.Stop(false);
+				effect.End(false);
 		}
 
 		#endregion

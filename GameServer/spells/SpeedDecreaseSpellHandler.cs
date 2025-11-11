@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
 			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
 			ECSGameEffect mezz = EffectListService.GetEffectOnTarget(effect.Owner, eEffect.Mez);
 			if (mezz != null)
-				mezz.Stop();
+				mezz.End();
 				//mezz.Cancel(false);
 		}
 
@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 					//GameSpellEffect effect = FindEffectOnTarget(living, this);
 					ECSGameEffect effect = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 					if (effect != null)
-						effect.Stop();
+						effect.End();
 						//effect.Cancel(false);
 					break;
 			}

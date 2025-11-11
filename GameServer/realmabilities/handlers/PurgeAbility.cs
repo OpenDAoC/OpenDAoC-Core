@@ -107,7 +107,7 @@ namespace DOL.GS.RealmAbilities
             // Cancel effects
             foreach (ECSGameEffect effect in effectsToRemove)
             {
-                effect.Stop();
+                effect.End();
                 removed = true;
             }
 

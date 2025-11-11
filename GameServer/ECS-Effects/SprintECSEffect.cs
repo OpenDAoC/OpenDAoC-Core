@@ -50,7 +50,7 @@ namespace DOL.GS
                 _idleTicks++;
 
             if (Owner.Endurance - 5 <= 0 || _idleTicks >= 30)
-                Stop();
+                End();
         }
     }
 }

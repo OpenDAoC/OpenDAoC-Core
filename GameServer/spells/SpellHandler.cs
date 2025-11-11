@@ -264,7 +264,7 @@ namespace DOL.GS.Spells
 			{
 				if (effect.SpellHandler.Spell.SpellType == spellType)
 				{
-					effect.Stop();
+					effect.End();
 					return true;
 				}
 			}
@@ -458,7 +458,7 @@ namespace DOL.GS.Spells
 			{
 				ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(m_caster, m_spell);
 
-				if (effect != null && effect.Stop())
+				if (effect != null && effect.End())
 				{
 					if (m_spell.InstrumentRequirement == 0)
 						MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
@@ -2516,7 +2516,7 @@ namespace DOL.GS.Spells
 				if (!pulseSpell.SpellHandler.Spell.IsFocus)
 					continue;
 
-				pulseSpell.Stop();
+				pulseSpell.End();
 			}
 		}
 

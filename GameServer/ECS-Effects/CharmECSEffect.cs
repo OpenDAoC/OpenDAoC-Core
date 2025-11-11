@@ -45,7 +45,7 @@ namespace DOL.GS
                 return;
 
             foreach (ECSGameSpellEffect immunityEffect in charmNpc.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity && e is ECSImmunityEffect))
-                immunityEffect.Stop();
+                immunityEffect.End();
 
             ControlledMobBrain oldBrain = SpellHandler.Caster.ControlledBrain as ControlledMobBrain;
             SpellHandler.Caster.RemoveControlledBrain(oldBrain);
@@ -109,7 +109,7 @@ namespace DOL.GS
             if (!keepSongAlive)
             {
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(SpellHandler.Caster, SpellHandler.Spell);
-                song?.Stop();
+                song?.End();
             }
         }
     }

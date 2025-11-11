@@ -27,7 +27,7 @@ namespace DOL.GS.SkillHandler
                 foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects(eEffect.Intercept))
                 {
                     if (intercept.Source == player)
-                        intercept.Stop();
+                        intercept.End();
                 }
 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -75,7 +75,7 @@ namespace DOL.GS.SkillHandler
                     foundOurEffect = true;
 
                     if (cancelOurs)
-                        intercept.Stop();
+                        intercept.End();
                 }
 
                 if (intercept.Target == target)
@@ -88,7 +88,7 @@ namespace DOL.GS.SkillHandler
             foreach (InterceptECSGameEffect intercept in source.effectListComponent.GetAbilityEffects(eEffect.Intercept))
             {
                 if (intercept.Source == source)
-                    intercept.Stop();
+                    intercept.End();
             }
 
             ECSGameEffectFactory.Create(new(source, 0, 1), source, target, static (in ECSGameEffectInitParams i, GameLiving source, GameLiving target) => new InterceptECSGameEffect(i, source, target));

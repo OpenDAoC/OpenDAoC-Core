@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
 				BeginChanges();
 				foreach (IConcentrationEffect fx in concEffect.Where(eff => !leaveself || leaveself && eff.OwnerName != m_owner.Name))
 				{
-					(fx as ECSGameSpellEffect)?.Stop(false);
+					(fx as ECSGameSpellEffect)?.End(false);
 				}
 				if(updatePlayer)
 					CommitChanges();

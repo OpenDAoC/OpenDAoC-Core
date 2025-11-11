@@ -245,7 +245,7 @@ namespace DOL.GS.RealmAbilities
 				return;
 
 			ECSGameEffect mez = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
-			mez?.Stop();
+			mez?.End();
 
 			// Falloff damage
 			int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, target);

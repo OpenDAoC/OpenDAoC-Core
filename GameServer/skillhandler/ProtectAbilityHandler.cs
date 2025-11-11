@@ -26,7 +26,7 @@ namespace DOL.GS.SkillHandler
                 foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects(eEffect.Protect))
                 {
                     if (protect.Source == player)
-                        protect.Stop();
+                        protect.End();
                 }
 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -73,7 +73,7 @@ namespace DOL.GS.SkillHandler
                     foundOurEffect = true;
 
                     if (cancelOurs)
-                        protect.Stop();
+                        protect.End();
                 }
 
                 if (protect.Target == target)
@@ -86,7 +86,7 @@ namespace DOL.GS.SkillHandler
             foreach (ProtectECSGameEffect protect in source.effectListComponent.GetAbilityEffects(eEffect.Protect))
             {
                 if (protect.Source == source)
-                    protect.Stop();
+                    protect.End();
             }
 
             ECSGameEffectFactory.Create(new(source, 0, 1), source, target, static (in ECSGameEffectInitParams i, GameLiving source, GameLiving target) => new ProtectECSGameEffect(i, source, target));

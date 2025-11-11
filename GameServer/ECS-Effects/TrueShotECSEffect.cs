@@ -27,7 +27,7 @@ namespace DOL.GS
             if (disableAbility)
                 _ability?.DisableSkill(Owner);
 
-            Stop();
+            End();
         }
     }
 }

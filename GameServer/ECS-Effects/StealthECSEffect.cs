@@ -29,7 +29,7 @@ namespace DOL.GS
 
             // Cancel pulse effects.
             foreach (ECSPulseEffect pulseEffect in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Pulse))
-                pulseEffect.Stop();
+                pulseEffect.End();
 
             OwnerPlayer.Sprint(false);
 
@@ -68,8 +68,8 @@ namespace DOL.GS
                     speedBuff.Enable();
             }
 
-            EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Vanish)?.Stop();
-            EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Camouflage)?.Stop();
+            EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Vanish)?.End();
+            EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Camouflage)?.End();
             StealthStateChanged();
         }
 

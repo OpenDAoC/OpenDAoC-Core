@@ -368,7 +368,7 @@ namespace DOL.GS.Spells
             if (target.CurrentRegion != Caster.CurrentRegion || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active)
             {
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster, Spell);
-                song?.Stop();
+                song?.End();
                 return;
             }
 

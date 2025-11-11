@@ -61,7 +61,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(player, eEffect.Berserk);
-			berserk?.Stop();
+			berserk?.End();
 			player.DisableSkill(ab, REUSE_TIMER);
 			ECSGameEffectFactory.Create(new(player, DURATION, 1, null), static (in ECSGameEffectInitParams i) => new BerserkECSGameEffect(i));
         }

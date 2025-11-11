@@ -561,7 +561,7 @@ namespace DOL.AI.Brain
 
                         if (effect != null)
                         {
-                            effect.Stop();//remove bladeturn effect here
+                            effect.End();//remove bladeturn effect here
                             bladeturnConsumed++;
 
                             if (target is GamePlayer player)

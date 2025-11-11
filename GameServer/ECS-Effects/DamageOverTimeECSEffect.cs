@@ -28,7 +28,7 @@ namespace DOL.GS
         public override void OnEffectPulse()
         {
             if (!Owner.IsAlive)
-                Stop();
+                End();
 
             if (SpellHandler is not DoTSpellHandler dotHandler)
                 return;

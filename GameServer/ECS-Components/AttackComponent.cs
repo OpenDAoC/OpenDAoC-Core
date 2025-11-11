@@ -769,7 +769,7 @@ namespace DOL.GS
                 }
 
                 if (owner.effectListComponent.ContainsEffectForEffectType(eEffect.TrueShot))
-                    EffectListService.GetEffectOnTarget(owner, eEffect.TrueShot).Stop();
+                    EffectListService.GetEffectOnTarget(owner, eEffect.TrueShot).End();
             }
 
             attackAction.OnStopAttack();
@@ -1649,7 +1649,7 @@ namespace DOL.GS
 
             if (intercept != null && !stealthStyle)
             {
-                if (intercept.Source is not GamePlayer || intercept.Stop())
+                if (intercept.Source is not GamePlayer || intercept.End())
                 {
                     ad.OriginalTarget = ad.Target;
                     ad.Target = intercept.Source;
@@ -1668,7 +1668,7 @@ namespace DOL.GS
                         continue;
 
                     if (savageBuff.SpellHandler.Spell.SpellType is eSpellType.SavageStyleEvadeBuff or eSpellType.SavageStyleParryBuff)
-                        savageBuff.Stop();
+                        savageBuff.End();
                 }
 
                 if (lastAttackData != null && lastAttackData.AttackResult is not eAttackResult.HitStyle)
@@ -1794,7 +1794,7 @@ namespace DOL.GS
                     effectiveness *= effectivenessAgainstBladeturn;
                 }
 
-                if (bladeturn.Stop())
+                if (bladeturn.End())
                 {
                     if (penetrate)
                         playerOwner?.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);

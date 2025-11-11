@@ -19,7 +19,7 @@ namespace DOL.GS
             // Spell value below 0 means it's 100% chance to confuse.
             if (SpellHandler.Spell.Value >= 0 && !Util.Chance(Convert.ToInt32(SpellHandler.Spell.Value)))
             {
-                Stop();
+                End();
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace DOL.GS
                 // "You can't focus your knight viking badger helmet... meow!"
                 // "{0} is confused!"
                 OnEffectStartsMsg(true, false, true);
-                Stop();
+                End();
             }
             else if (Owner is GameNPC npc && npc.Brain is StandardMobBrain brain)
             {
@@ -45,7 +45,7 @@ namespace DOL.GS
                 if (npc.Brain is TheurgistPetBrain)
                 {
                     npc.Die(SpellHandler.Caster);
-                    Stop();
+                    End();
                     return;
                 }
 

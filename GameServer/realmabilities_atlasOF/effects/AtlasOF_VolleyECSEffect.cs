@@ -357,7 +357,7 @@ namespace DOL.GS.Effects
             if (_remainingShots < MAX_SHOTS)
                 OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
 
-            Stop();
+            End();
 
             foreach (GamePlayer playerInRadius in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 playerInRadius.Out.SendInterruptAnimation(OwnerPlayer);

@@ -382,7 +382,7 @@ namespace DOL.GS
 		public virtual bool CancelShadeEffect(out ECSGameAbilityEffect effect)
 		{
 			effect = EffectListService.GetAbilityEffectOnTarget(Player, eEffect.Shade);
-			return effect != null && effect.Stop();
+			return effect != null && effect.End();
 		}
 
 		public virtual bool Shade(bool makeShade, out ECSGameAbilityEffect effect)

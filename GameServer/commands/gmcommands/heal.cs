@@ -24,7 +24,7 @@ namespace DOL.GS.Commands
                 foreach (ECSGameEffect effect in target.effectListComponent.GetEffects())
                 {
                     if (effect.EffectType is eEffect.ResurrectionIllness or eEffect.RvrResurrectionIllness)
-                        effect.Stop();
+                        effect.End();
                 }
             }
             catch (Exception)

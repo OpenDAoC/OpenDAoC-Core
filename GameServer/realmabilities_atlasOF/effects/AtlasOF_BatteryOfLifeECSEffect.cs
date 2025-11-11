@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
         public override void OnEffectPulse()
         {
             if (_healthPool <= 0)
-                Stop();
+                End();
 
             if (OwnerPlayer.Group != null)
             {
@@ -65,7 +65,7 @@ namespace DOL.GS.Effects
 
                         if (_healthPool <= 0)
                         {
-                            Stop();
+                            End();
                             break;
                         }
                     }

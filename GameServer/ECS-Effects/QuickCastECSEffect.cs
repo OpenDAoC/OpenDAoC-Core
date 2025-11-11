@@ -39,7 +39,7 @@ namespace DOL.GS
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            Stop(playerCancel);
+            End(playerCancel);
         }
     }
 }

@@ -5244,7 +5244,7 @@ namespace DOL.GS
                     if (effect != null)
                     {
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                        effect.Stop();
+                        effect.End();
                     }
                 }
             }
@@ -6862,7 +6862,7 @@ namespace DOL.GS
                             ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
 
                             effects?.Cancel(false);
-                            effect?.Stop();
+                            effect?.End();
 
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
                             m_whistleMountTimer = new(this, new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback), 5000);
@@ -8778,7 +8778,7 @@ namespace DOL.GS
             else
             {
                 ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.Sprint);
-                effect?.Stop();
+                effect?.End();
                 return false;
             }
         }
@@ -9443,7 +9443,7 @@ namespace DOL.GS
 
         private void CancelChargeBuff(int spellID)
         {
-            effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == spellID)?.Stop();
+            effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == spellID)?.End();
         }
 
         public virtual void RefreshItemBonuses()
@@ -11017,7 +11017,7 @@ namespace DOL.GS
             }
 
             ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.Stealth);
-            effect?.Stop();
+            effect?.End();
         }
 
         public override void OnMaxSpeedChange()

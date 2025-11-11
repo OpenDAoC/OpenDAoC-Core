@@ -110,7 +110,7 @@ namespace DOL.GS
             if (effectToCancel == null)
                 return false;
 
-            return effectToCancel.Stop();
+            return effectToCancel.End();
         }
     }
 }

@@ -20,10 +20,10 @@ namespace DOL.GS.RealmAbilities
 			if (player != null)
 			{
 				SureShotECSGameEffect sureShot = EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot) as SureShotECSGameEffect;
-				sureShot?.Stop();
+				sureShot?.End();
 
 				RapidFireECSGameEffect rapidFire = EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) as RapidFireECSGameEffect;
-				rapidFire?.Stop(false);
+				rapidFire?.End(false);
 
 				ECSGameEffectFactory.Create(new(player, 0, 1), this, static (in ECSGameEffectInitParams i, TrueshotAbility trueshot) => new TrueShotECSGameEffect(trueshot, i));
 			}

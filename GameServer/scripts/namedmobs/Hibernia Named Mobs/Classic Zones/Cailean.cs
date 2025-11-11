@@ -546,7 +546,7 @@ namespace DOL.AI.Brain
                     {
 						var effect = EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity);
 						if(effect != null)
-							effect.Stop();//remove snare immunity here
+							effect.End();//remove snare immunity here
 					}
 					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff) && target != null && target.IsAlive)
 						Body.CastSpell(TreeRoot2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);

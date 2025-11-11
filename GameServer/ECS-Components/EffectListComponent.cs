@@ -123,7 +123,7 @@ namespace DOL.GS
                 if (index < 0 || index >= _concentrationEffects.Count)
                     return;
 
-                _concentrationEffects[index].Stop(playerCancelled);
+                _concentrationEffects[index].End(playerCancelled);
             }
         }
 
@@ -132,7 +132,7 @@ namespace DOL.GS
             lock (_concentrationEffectsLock)
             {
                 for (int i = _concentrationEffects.Count - 1; i >= 0; i--)
-                    _concentrationEffects[i].Stop(playerCancelled);
+                    _concentrationEffects[i].End(playerCancelled);
             }
         }
 
@@ -341,7 +341,7 @@ namespace DOL.GS
         public void CancelAll()
         {
             foreach (ECSGameEffect effect in GetEffects())
-                effect.Stop();
+                effect.End();
         }
 
         public void CancelIncompatiblePulseEffects(ISpellHandler spellHandler)
@@ -351,7 +351,7 @@ namespace DOL.GS
                 IEnumerable<ECSPulseEffect> otherPulseEffects = GetPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
                 foreach (ECSPulseEffect otherPulseEffect in otherPulseEffects)
-                    otherPulseEffect.Stop();
+                    otherPulseEffect.End();
             }
         }
 
@@ -441,7 +441,7 @@ namespace DOL.GS
 
             if (effect.IsStarting || effect.IsEnabling)
                 AddOrEnableEffect(effect);
-            else if (effect.IsStopping || effect.IsDisabling)
+            else if (effect.IsEnding || effect.IsDisabling)
                 RemoveOrDisableEffect(effect);
             else if (log.IsErrorEnabled)
                 log.Error($"Effect was added to the queue but is neither starting nor stopping: {effect.Name} ({effect.EffectType}) on {Owner}");
@@ -549,7 +549,7 @@ namespace DOL.GS
                                     existingEffect.IsBeingReplaced = true;
 
                                     // Abort the process if anything doesn't work as expected. This should be logged.
-                                    if (!existingEffect.Stop(false))
+                                    if (!existingEffect.End(false))
                                     {
                                         existingEffect.IsBeingReplaced = false;
                                         return AddEffectResult.Failed;
@@ -593,7 +593,7 @@ namespace DOL.GS
                                 if (newSpell.IsPulsing || existingSpell.Target is eSpellTarget.SELF)
                                     continue;
 
-                                existingEffect.Stop();
+                                existingEffect.End();
                                 result = AddEffectResult.Added;
                             }
                         }
@@ -613,7 +613,7 @@ namespace DOL.GS
                                 if (newSpell.Value * AblativeArmorSpellHandler.ValidateSpellDamage((int) newSpell.Damage) <= existingEffect.RemainingValue * AblativeArmorSpellHandler.ValidateSpellDamage((int) existingSpell.Damage))
                                     continue;
 
-                                existingEffect.Stop();
+                                existingEffect.End();
                                 result = AddEffectResult.Added;
                             }
                         }
@@ -672,7 +672,7 @@ namespace DOL.GS
                             if (effectsToStop != null)
                             {
                                 foreach (ECSGameEffect effectToStop in effectsToStop)
-                                    effectToStop.Stop();
+                                    effectToStop.End();
                             }
 
                             result = addNewEffectAsDisabled ? AddEffectResult.Disabled : AddEffectResult.Added;
@@ -804,7 +804,7 @@ namespace DOL.GS
                     if (effect.IsDisabling)
                         return RemoveEffectResult.Disabled;
 
-                    if (effect.IsStopping)
+                    if (effect.IsEnding)
                     {
                         existingEffects.Remove(effect);
                         RemoveEffectIdToEffect(effect);

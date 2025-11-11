@@ -38,7 +38,7 @@ namespace DOL.GS
                 ECSGameSpellEffect effect = pair.Value;
 
                 if (effect.EffectType is eEffect.FocusShield)
-                    effect.Stop();
+                    effect.End();
             }
         }
     }

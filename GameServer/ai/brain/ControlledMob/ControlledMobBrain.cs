@@ -390,7 +390,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								existingEffectFromAnotherSource.Stop();
+								existingEffectFromAnotherSource.End();
 
 							ECSGameEffectFactory.Create(new(Body, 0, 1, null), Body, playerOwner, static (in ECSGameEffectInitParams i, GameNPC body, GamePlayer owner) => new InterceptECSGameEffect(i, body, owner));
 						}
@@ -409,7 +409,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								existingEffectFromAnotherSource.Stop();
+								existingEffectFromAnotherSource.End();
 
 							ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in ECSGameEffectInitParams i, GameNPC body, GamePlayer owner) => new GuardECSGameEffect(i, body, owner));
 						}
@@ -428,7 +428,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								existingEffectFromAnotherSource.Stop();
+								existingEffectFromAnotherSource.End();
 
 							ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in ECSGameEffectInitParams i, GameNPC body, GamePlayer owner) => new ProtectECSGameEffect(i, body, owner));
 						}
@@ -930,7 +930,7 @@ namespace DOL.AI.Brain
 			foreach (ECSGameSpellEffect effect in Body.effectListComponent.GetSpellEffects())
 			{
 				if (effect.EffectType is eEffect.Pet or eEffect.Charm)
-					effect.Stop();
+					effect.End();
 			}
 		}
 
@@ -952,7 +952,7 @@ namespace DOL.AI.Brain
 				foreach (GameLiving living in _buffedTargets)
 				{
 					foreach (ECSGameEffect effect in living.effectListComponent.GetEffects().Where(x => x.SpellHandler != null && x.SpellHandler.Caster == Body))
-						effect.Stop();
+						effect.End();
 				}
 
 				_buffedTargets.Clear();

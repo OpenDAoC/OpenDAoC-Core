@@ -206,7 +206,7 @@ namespace DOL.GS
                             if (abilityEffect is GuardECSGameEffect guard)
                             {
                                 if (guard.Source is GamePlayer && guard.Target is GamePlayer)
-                                    _ = guard.Stop();
+                                    _ = guard.End();
                             }
 
                             continue;
@@ -216,7 +216,7 @@ namespace DOL.GS
                             if (abilityEffect is ProtectECSGameEffect protect)
                             {
                                 if (protect.Source is GamePlayer && protect.Target is GamePlayer)
-                                    _ = protect.Stop();
+                                    _ = protect.End();
                             }
 
                             continue;
@@ -226,7 +226,7 @@ namespace DOL.GS
                             if (abilityEffect is InterceptECSGameEffect intercept)
                             {
                                 if (intercept.Source is GamePlayer && intercept.Target is GamePlayer)
-                                    _ = intercept.Stop();
+                                    _ = intercept.End();
                             }
 
                             continue;

@@ -38,20 +38,20 @@ namespace DOL.GS
         // State properties.
         public bool IsActive => _state is State.Active;
         public bool IsDisabled => _state is State.Disabled;
-        public bool IsStopped => _state is State.Stopped;
+        public bool IsEnded => _state is State.Ended;
 
         // Transitional state properties.
         public bool CanChangeState => _transitionalState is TransitionalState.None;
         public bool IsStarting => _transitionalState is TransitionalState.Starting;
         public bool IsEnabling => _transitionalState is TransitionalState.Enabling;
         public bool IsDisabling => _transitionalState is TransitionalState.Disabling;
-        public bool IsStopping => _transitionalState is TransitionalState.Stopping;
+        public bool IsEnding => _transitionalState is TransitionalState.Ending;
 
         // Actionability properties.
         public bool CanStart => _state is State.None && CanChangeState;
         public bool CanBeDisabled => IsActive && CanChangeState;
         public bool CanBeEnabled => IsDisabled && CanChangeState;
-        public bool CanBeStopped => (IsActive || IsDisabled) && CanChangeState;
+        public bool CanBeEnded => (IsActive || IsDisabled) && CanChangeState;
 
         public ECSGameEffect(in ECSGameEffectInitParams initParams)
         {
@@ -113,14 +113,14 @@ namespace DOL.GS
             }
         }
 
-        public bool Stop(bool playerCanceled = false)
+        public bool End(bool playerCanceled = false)
         {
-            if (!CanBeStopped)
+            if (!CanBeEnded)
                 return false;
 
             lock (_stateLock)
             {
-                if (!CanBeStopped)
+                if (!CanBeEnded)
                     return false;
 
                 // Player can't remove negative or immunity effects.
@@ -132,7 +132,7 @@ namespace DOL.GS
                     return false;
                 }
 
-                _transitionalState = TransitionalState.Stopping;
+                _transitionalState = TransitionalState.Ending;
                 Owner.effectListComponent.ProcessEffect(this);
                 return true;
             }
@@ -238,7 +238,7 @@ namespace DOL.GS
                     case EffectListComponent.RemoveEffectResult.Removed:
                     {
                         bool shouldBeStopped = IsActive;
-                        _state = State.Stopped;
+                        _state = State.Ended;
                         return shouldBeStopped;
                     }
                     case EffectListComponent.RemoveEffectResult.Disabled:
@@ -299,7 +299,7 @@ namespace DOL.GS
             None,
             Active,     // Effect is active and applying its benefits/penalties.
             Disabled,   // Effect is temporarily disabled, not applying its benefits/penalties.
-            Stopped     // Effect has ended and is to be removed.
+            Ended       // Effect has ended and is to be removed.
         }
 
         private enum TransitionalState
@@ -308,7 +308,7 @@ namespace DOL.GS
             Starting,   // Effect is being started.
             Enabling,   // Effect is being enabled, resuming its benefits/penalties and transitioning from disabled to active.
             Disabling,  // Effect is being disabled, pausing its benefits/penalties.
-            Stopping    // Effect is being ended.
+            Ending      // Effect is being ended.
         }
     }
 }

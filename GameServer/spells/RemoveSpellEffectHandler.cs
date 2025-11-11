@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
 				if (toRemove == "Mesmerize")
 					effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
 				if (effect != null)
-					effect.Stop();
+					effect.End();
 					//effect.Cancel(false);
 			}
 			SendEffectAnimation(target, 0, false, 1);

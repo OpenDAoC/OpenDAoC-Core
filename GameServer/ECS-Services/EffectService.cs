@@ -80,7 +80,7 @@ namespace DOL.GS
             }
 
             if (abilityEffect.Duration > 0 && GameServiceUtils.ShouldTick(abilityEffect.ExpireTick))
-                abilityEffect.Stop();
+                abilityEffect.End();
         }
 
         static void TickSpellEffect(ECSGameSpellEffect spellEffect)
@@ -102,7 +102,7 @@ namespace DOL.GS
                 // So only cancel them if their source is no longer active.
                 if (spellHandler.PulseEffect?.IsActive != true)
                 {
-                    spellEffect.Stop();
+                    spellEffect.End();
                     return;
                 }
             }
@@ -125,7 +125,7 @@ namespace DOL.GS
             // Checking `IsVisibleToPlayers` should be enough for this purpose.
             if (caster is GameNPC npcCaster && !npcCaster.IsVisibleToPlayers)
             {
-                spellEffect.Stop();
+                spellEffect.End();
                 return;
             }
 
@@ -142,7 +142,7 @@ namespace DOL.GS
             if (spellEffect is ECSPulseEffect pulseEffect)
             {
                 if (!caster.ActivePulseSpells.ContainsKey(spell.SpellType))
-                    pulseEffect.Stop();
+                    pulseEffect.End();
                 else
                 {
                     if (spell.PulsePower > 0)
@@ -155,7 +155,7 @@ namespace DOL.GS
                         else
                         {
                             (spellHandler as SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
-                            pulseEffect.Stop();
+                            pulseEffect.End();
                             return;
                         }
                     }
@@ -180,7 +180,7 @@ namespace DOL.GS
                             if (childEffect.IsBeingReplaced)
                                 continue;
 
-                            childEffect.Stop();
+                            childEffect.End();
                             pulseEffect.ChildEffects.Remove(pair.Key);
                         }
                     }
@@ -201,7 +201,7 @@ namespace DOL.GS
 
                 if (factor <= 0)
                 {
-                    spellEffect.Stop();
+                    spellEffect.End();
                     return;
                 }
             }

@@ -13,7 +13,7 @@ namespace DOL.GS.SkillHandler
         {
             if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot) is SureShotECSGameEffect sureShot)
             {
-                sureShot.Stop();
+                sureShot.End();
                 return;
             }
 
@@ -24,10 +24,10 @@ namespace DOL.GS.SkillHandler
             }
 
             RapidFireECSGameEffect rapidFire = EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) as RapidFireECSGameEffect;
-            rapidFire?.Stop(false);
+            rapidFire?.End(false);
 
             TrueShotECSGameEffect trueShot = EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot) as TrueShotECSGameEffect;
-            trueShot?.Stop(false);
+            trueShot?.End(false);
 
             ECSGameEffectFactory.Create(new(player, 0, 1), static (in ECSGameEffectInitParams i) => new SureShotECSGameEffect(i));
         }

@@ -67,7 +67,7 @@ namespace DOL.GS
         public void Cancel(bool manualCancel, bool startAttackAfterCancel)
         {
             _manualCancel = manualCancel;
-            Stop(manualCancel);
+            End(manualCancel);
         }
     }
 }
