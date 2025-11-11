@@ -237,7 +237,7 @@ namespace DOL.GS
                 {
                     workReady.Reset();
                     workerCycle = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
-                    Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
+                    Interlocked.Increment(ref _workState.CompletedWorkerCount);
                 }
             }
 
