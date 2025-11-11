@@ -27,7 +27,7 @@ using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
 using DOL.Logging;
-using JNogueira.Discord.Webhook.Client;
+using JNogueira.Discord.WebhookClient;
 
 namespace DOL.GS
 {
@@ -5923,31 +5923,31 @@ namespace DOL.GS
             else
                 playerName = name;
 
-            var DiscordObituaryHook = Properties.DISCORD_WEBHOOK_ID; // Make it a property later
-            var client = new DiscordWebhookClient(DiscordObituaryHook);
+            if (DiscordClientManager.TryGetClient(WebhookType.Default, out var discordClient))
+            {
+                var discordMessage = new DiscordMessage(
+                    "",
+                    username: "Obituary",
+                    avatarUrl: "",
+                    tts: false,
+                    embeds: new[]
+                    {
+                        new DiscordMessageEmbed(
+                            author: new DiscordMessageEmbedAuthor(playerName),
+                            color: color,
+                            description: message,
+                            fields: new[]
+                            {
+                                new DiscordMessageEmbedField("Level", level.ToString()),
+                                new DiscordMessageEmbedField("Class", playerClass),
+                                new DiscordMessageEmbedField("Time alive", timeLivedString)
+                            }
+                        )
+                    }
+                );
 
-            // Create your DiscordMessage with all parameters of your message.
-            var discordMessage = new DiscordMessage(
-                "",
-                username: "Obituary",
-                avatarUrl: "",
-                tts: false,
-                embeds: new[]
-                {
-                    new DiscordMessageEmbed(
-                        author: new DiscordMessageEmbedAuthor(playerName),
-                        color: color,
-                        description: message,
-                        fields: new[]
-                        {
-                            new DiscordMessageEmbedField("Level", level.ToString()),
-                            new DiscordMessageEmbedField("Class", playerClass),
-                            new DiscordMessageEmbedField("Time alive", timeLivedString)
-                        }
-                    )
-                }
-            );
-            client.SendToDiscord(discordMessage);
+                discordClient.SendToDiscordAsync(discordMessage);
+            }
         }
 
         public override void AddXPGainer(GameLiving xpGainer, double damageAmount)

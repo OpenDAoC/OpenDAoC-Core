@@ -6,7 +6,7 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using DOL.Logging;
-using JNogueira.Discord.Webhook.Client;
+using JNogueira.Discord.WebhookClient;
 
 namespace DOL.GS
 {
@@ -99,24 +99,25 @@ namespace DOL.GS
                 }
             }
 
-            DiscordWebhookClient client = new(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
+            if (DiscordClientManager.TryGetClient(WebhookType.RvR, out var client))
+            {
+                DiscordMessage discordMessage = new(
+                    "",
+                    username: "RvR",
+                    avatarUrl: avatarUrl,
+                    tts: false,
+                    embeds:
+                    [
+                        new(
+                            author: new(keepName),
+                            color: color,
+                            description: message
+                        )
+                    ]
+                );
 
-            DiscordMessage discordMessage = new(
-                "",
-                username: "RvR",
-                avatarUrl: avatarUrl,
-                tts: false,
-                embeds:
-                [
-                    new(
-                        author: new(keepName),
-                        color: color,
-                        description: message
-                    )
-                ]
-            );
-
-            client.SendToDiscord(discordMessage);
+                client.SendToDiscordAsync(discordMessage);
+            }
         }
 
         public bool MountRelic(GameRelic relic, bool returning)

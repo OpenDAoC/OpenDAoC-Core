@@ -1,6 +1,6 @@
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using JNogueira.Discord.Webhook.Client;
+using JNogueira.Discord.WebhookClient;
 
 namespace DOL.GS.Keeps
 {
@@ -185,25 +185,26 @@ namespace DOL.GS.Keeps
 					avatarUrl = string.Empty;
 					break;
 			}
-			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
 
-			// Create your DiscordMessage with all parameters of your message.
-			var discordMessage = new DiscordMessage(
-				"",
-				username: "RvR",
-				avatarUrl: avatarUrl,
-				tts: false,
-				embeds: new[]
-				{
-					new DiscordMessageEmbed(
-						author: new DiscordMessageEmbedAuthor(keepName),
-						color: color,
-						description: message
-					)
-				}
-			);
-			
-			client.SendToDiscord(discordMessage);
+			if (DiscordClientManager.TryGetClient(WebhookType.RvR, out var client))
+			{
+				var discordMessage = new DiscordMessage(
+					"",
+					username: "RvR",
+					avatarUrl: avatarUrl,
+					tts: false,
+					embeds: new[]
+					{
+						new DiscordMessageEmbed(
+							author: new DiscordMessageEmbedAuthor(keepName),
+							color: color,
+							description: message
+						)
+					}
+				);
+
+				client.SendToDiscordAsync(discordMessage);
+			}
 		}
 
 		/// <summary>

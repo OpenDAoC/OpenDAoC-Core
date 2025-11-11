@@ -2,7 +2,7 @@ using System;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using JNogueira.Discord.Webhook.Client;
+using JNogueira.Discord.WebhookClient;
 
 namespace DOL.GS.ServerRules
 {
@@ -126,11 +126,9 @@ namespace DOL.GS.ServerRules
 		{
 			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRealm(realm))
 				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			
-			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
-			{
-				var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
 
+			if (DiscordClientManager.TryGetClient(WebhookType.RvR, out var discordClient))
+			{
 				// Create your DiscordMessage with all parameters of your message.
 				var discordMessage = new DiscordMessage(
 					"",
@@ -147,7 +145,7 @@ namespace DOL.GS.ServerRules
 					}
 				);
 
-				client.SendToDiscord(discordMessage);
+				discordClient.SendToDiscordAsync(discordMessage);
 			}
 		}
 
