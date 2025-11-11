@@ -564,7 +564,6 @@ namespace DOL.GS
                                     ServiceObjectStore.Remove(existingEffect);
                                     existingEffect.IsBeingReplaced = true; // Will be checked by the parent pulse effect so that it doesn't call `Stop` on it.
                                     ServiceObjectStore.Add(effect);
-                                    effect.PreviousPosition = GetEffects().IndexOf(existingEffect);
                                     existingEffects[i] = effect;
                                     result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
                                 }
@@ -742,12 +741,14 @@ namespace DOL.GS
             {
                 try
                 {
-                    RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
+                    _effectsToStartOrStop.Enqueue(new(effect, (e, start) =>
+                    {
+                        if (start)
+                            PendingEffect.StartEffect(e);
 
-                    if (!effect.FinalizeState(result))
-                        return;
-
-                    _effectsToStartOrStop.Enqueue(new(effect, true));
+                        ServiceObjectStore.Add(e);
+                        e.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(e.EffectType));
+                    }, effect.FinalizeState(result)));
                 }
                 catch (Exception e)
                 {
@@ -844,10 +845,17 @@ namespace DOL.GS
             {
                 try
                 {
-                    RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
+                    _effectsToStartOrStop.Enqueue(new(effect, (e, stop) =>
+                    {
+                        if (stop)
+                            PendingEffect.StopEffect(e);
 
-                    if (effect.FinalizeState(result))
-                        _effectsToStartOrStop.Enqueue(new(effect, false));
+                        // Keep disabled effects in the store.
+                        if (!e.IsDisabled)
+                            ServiceObjectStore.Remove(e);
+
+                        e.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(e.EffectType));
+                    }, effect.FinalizeState(result)));
                 }
                 catch (Exception e)
                 {
@@ -900,57 +908,60 @@ namespace DOL.GS
         private readonly struct PendingEffect
         {
             private readonly ECSGameEffect _effect;
-            private readonly bool _start;
+            private readonly Action<ECSGameEffect, bool> _onProcess;
+            private readonly bool _state;
 
-            public PendingEffect(ECSGameEffect effect, bool start)
+            public PendingEffect(ECSGameEffect effect, Action<ECSGameEffect, bool> onProcess, bool state)
             {
                 _effect = effect;
-                _start = start;
+                _onProcess = onProcess;
+                _state = state;
             }
 
             public void Process()
             {
-                if (_start)
+                _onProcess(_effect, _state);
+                _effect.IsBeingReplaced = false; // This need to always be set to false.
+            }
+
+            public static void StartEffect(ECSGameEffect effect)
+            {
+                effect.OnStartEffect();
+
+                // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
+                if (effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
                 {
-                    _effect.OnStartEffect();
+                    ISpellHandler spellHandler = spellEffect.SpellHandler;
+                    Spell spell = spellHandler?.Spell;
 
-                    // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
-                    if (_effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
+                    if (spell.IsPulsing)
                     {
-                        ISpellHandler spellHandler = spellEffect.SpellHandler;
-                        Spell spell = spellHandler?.Spell;
-
-                        if (spell.IsPulsing)
+                        // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
+                        // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
+                        // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
+                        // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
+                        if (spellEffect is ECSPulseEffect)
                         {
-                            // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
-                            // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
-                            // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
-                            // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
-                            if (spellEffect is ECSPulseEffect)
-                            {
-                                if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
-                                    EffectHelper.SendSpellAnimation(spellEffect);
-                            }
-                            else if (spell.IsHarmful)
+                            if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
                                 EffectHelper.SendSpellAnimation(spellEffect);
                         }
-                        else
+                        else if (spell.IsHarmful)
                             EffectHelper.SendSpellAnimation(spellEffect);
                     }
+                    else
+                        EffectHelper.SendSpellAnimation(spellEffect);
                 }
-                else
+            }
+
+            public static void StopEffect(ECSGameEffect effect)
+            {
+                effect.OnStopEffect();
+
+                if (!effect.IsBeingReplaced)
                 {
-                    _effect.OnStopEffect();
-
-                    if (!_effect.IsBeingReplaced)
-                    {
-                        _effect.TryApplyImmunity();
-                        _effect.Owner.effectListComponent.TryEnableBestEffectOfSameType(_effect);
-                    }
+                    effect.TryApplyImmunity();
+                    effect.Owner.effectListComponent.TryEnableBestEffectOfSameType(effect);
                 }
-
-                // This need to always be set to false.
-                _effect.IsBeingReplaced = false;
             }
         }
     }

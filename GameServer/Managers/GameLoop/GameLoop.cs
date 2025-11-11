@@ -155,8 +155,8 @@ namespace DOL.GS
             AddStep(NpcService.Instance, NpcService.Instance.Tick);
             AddStep(AttackService.Instance, AttackService.Instance.Tick);
             AddStep(CastingService.Instance, CastingService.Instance.Tick);
-            AddStep(EffectListService.Instance, EffectListService.Instance.Tick);
             AddStep(EffectService.Instance, EffectService.Instance.Tick);
+            AddStep(EffectListService.Instance, EffectListService.Instance.Tick);
             AddStep(MovementService.Instance, MovementService.Instance.Tick);
             AddStep(CraftingService.Instance, CraftingService.Instance.Tick);
             AddStep(ReaperService.Instance, ReaperService.Instance.Tick);

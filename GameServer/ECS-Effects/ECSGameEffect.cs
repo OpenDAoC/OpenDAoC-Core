@@ -23,7 +23,6 @@ namespace DOL.GS
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
         public long NextTick;
-        public int PreviousPosition = -1;
         public Lock StartStopLock { get; } = new();
         public ISpellHandler SpellHandler { get; protected set; }
         public virtual ushort Icon => 0;
@@ -191,26 +190,21 @@ namespace DOL.GS
                 {
                     case EffectListComponent.AddEffectResult.Added:
                     {
-                        ServiceObjectStore.Add(this);
                         _state = State.Active;
                         return true;
                     }
                     case EffectListComponent.AddEffectResult.RenewedActive:
                     {
-                        ServiceObjectStore.Add(this);
                         _state = State.Active;
                         return false;
                     }
                     case EffectListComponent.AddEffectResult.Disabled:
                     {
-                        ServiceObjectStore.Add(this);
                         _state = State.Disabled;
                         return false;
                     }
                     case EffectListComponent.AddEffectResult.RenewedDisabled:
                     {
-                        ServiceObjectStore.Add(this);
-
                         if (IsDisabled)
                         {
                             _state = State.Active;
@@ -242,14 +236,12 @@ namespace DOL.GS
                 {
                     case EffectListComponent.RemoveEffectResult.Removed:
                     {
-                        ServiceObjectStore.Remove(this);
                         bool shouldBeStopped = IsActive;
                         _state = State.Stopped;
                         return shouldBeStopped;
                     }
                     case EffectListComponent.RemoveEffectResult.Disabled:
                     {
-                        ServiceObjectStore.Add(this);
                         bool shouldBeStopped = IsActive;
                         _state = State.Disabled;
                         return shouldBeStopped;
