@@ -22,7 +22,7 @@ namespace DOL.GS
         protected readonly Lock _effectsLock = new();                                // Lock for synchronizing access to the effect list.
 
         // Pending effects.
-        private readonly Queue<PendingEffect> _effectsToStartOrStop = new();         // Queue for effects to start or stop after their state has been finalized.
+        private readonly Queue<PendingEffect> _pendingEffects = new();                // Queue for effects to start or stop after their state has been finalized.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -49,15 +49,15 @@ namespace DOL.GS
         public virtual void Tick()
         {
             // Only process up to `Count` in case `Process` adds to `_effectsToStartOrStop`
-            int count = _effectsToStartOrStop.Count;
+            int count = _pendingEffects.Count;
 
             for (int i = 0; i < count; i++)
             {
-                if (_effectsToStartOrStop.TryDequeue(out PendingEffect pendingEffect))
+                if (_pendingEffects.TryDequeue(out PendingEffect pendingEffect))
                     pendingEffect.Process();
             }
 
-            if (_effects.Count == 0 && _effectsToStartOrStop.Count == 0)
+            if (_effects.Count == 0 && _pendingEffects.Count == 0)
             {
                 ServiceObjectStore.Remove(this);
                 return;
@@ -741,7 +741,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    _effectsToStartOrStop.Enqueue(new(effect, (e, start) =>
+                    _pendingEffects.Enqueue(new(effect, (e, start) =>
                     {
                         if (start)
                             PendingEffect.StartEffect(e);
@@ -845,7 +845,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    _effectsToStartOrStop.Enqueue(new(effect, (e, stop) =>
+                    _pendingEffects.Enqueue(new(effect, (e, stop) =>
                     {
                         if (stop)
                             PendingEffect.StopEffect(e);
