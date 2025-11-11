@@ -12,6 +12,7 @@ namespace DOL.GS
     {
         private State _state;
         private TransitionalState _transitionalState;
+        private Lock _stateLock = new();
 
         public long ExpireTick;
         public long StartTick;
@@ -23,7 +24,7 @@ namespace DOL.GS
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
         public long NextTick;
-        public Lock StartStopLock { get; } = new();
+
         public ISpellHandler SpellHandler { get; protected set; }
         public virtual ushort Icon => 0;
         public virtual string Name => "Default Effect Name";
@@ -69,7 +70,7 @@ namespace DOL.GS
             if (!CanStart)
                 return false;
 
-            lock (StartStopLock)
+            lock (_stateLock)
             {
                 if (!CanStart)
                     return false;
@@ -85,7 +86,7 @@ namespace DOL.GS
             if (!CanBeEnabled)
                 return false;
 
-            lock (StartStopLock)
+            lock (_stateLock)
             {
                 if (!CanBeEnabled)
                     return false;
@@ -101,7 +102,7 @@ namespace DOL.GS
             if (!CanBeDisabled)
                 return false;
 
-            lock (StartStopLock)
+            lock (_stateLock)
             {
                 if (!CanBeDisabled)
                     return false;
@@ -117,7 +118,7 @@ namespace DOL.GS
             if (!CanBeStopped)
                 return false;
 
-            lock (StartStopLock)
+            lock (_stateLock)
             {
                 if (!CanBeStopped)
                     return false;
@@ -296,18 +297,18 @@ namespace DOL.GS
         private enum State
         {
             None,
-            Active,
-            Disabled,
-            Stopped
+            Active,     // Effect is active and applying its benefits/penalties.
+            Disabled,   // Effect is temporarily disabled, not applying its benefits/penalties.
+            Stopped     // Effect has ended and is to be removed.
         }
 
         private enum TransitionalState
         {
             None,
-            Starting,
-            Enabling,
-            Disabling,
-            Stopping
+            Starting,   // Effect is being started.
+            Enabling,   // Effect is being enabled, resuming its benefits/penalties and transitioning from disabled to active.
+            Disabling,  // Effect is being disabled, pausing its benefits/penalties.
+            Stopping    // Effect is being ended.
         }
     }
 }
