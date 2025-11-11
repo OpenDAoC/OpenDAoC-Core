@@ -287,7 +287,7 @@ namespace DOL.GS.Spells
             {
                 MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-                base.OnSpellNegated(target, SpellNegatedReason.Immune);
+                OnSpellNegated(target, SpellNegatedReason.Immune);
                 return true;
             }
 
