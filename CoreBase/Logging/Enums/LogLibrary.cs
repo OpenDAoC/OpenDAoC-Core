@@ -4,7 +4,6 @@
     {
         None,
         Console,
-        NLog,
-        Log4net
+        NLog
     }
 }

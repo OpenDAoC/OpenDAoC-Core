@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Xml;
 
@@ -30,9 +29,6 @@ namespace DOL.Logging
                     {
                         if (reader.Name.Equals("nlog", StringComparison.OrdinalIgnoreCase))
                             return LogLibrary.NLog;
-
-                        if (reader.Name.Equals("log4net", StringComparison.OrdinalIgnoreCase))
-                            return LogLibrary.Log4net;
                     }
                 }
 
@@ -58,7 +54,6 @@ namespace DOL.Logging
                         LogLibrary.None => new NullLoggerFactory(),
                         LogLibrary.Console => new ConsoleLoggerFactory(),
                         LogLibrary.NLog => new NLogLoggerFactory(configurationFilePath),
-                        LogLibrary.Log4net => new Log4netLoggerFactory(configurationFilePath),
                         _ => throw new NotImplementedException($"{_loggingLibrary}")
                     };
                 }
@@ -140,24 +135,6 @@ namespace DOL.Logging
             public void Shutdown()
             {
                 NLog.LogManager.Shutdown();
-            }
-        }
-
-        private class Log4netLoggerFactory : ILoggerFactory
-        {
-            public Log4netLoggerFactory(string configurationFilePath)
-            {
-                log4net.Config.XmlConfigurator.Configure(new FileInfo(configurationFilePath));
-            }
-
-            public Logger Create(string name)
-            {
-                return new Log4netLogger(name, _queueProcessor);
-            }
-
-            public void Shutdown()
-            {
-                log4net.LogManager.Shutdown();
             }
         }
     }
