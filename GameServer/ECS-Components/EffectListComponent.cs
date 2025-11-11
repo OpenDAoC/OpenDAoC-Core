@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,10 +20,10 @@ namespace DOL.GS
 
         // Active effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
-        protected readonly Lock _effectsLock = new();                                // Lock for synchronizing access to the effect list.
+        protected readonly Lock _effectsLock = new();
 
         // Pending effects.
-        private readonly Queue<PendingEffect> _pendingEffects = new();                // Queue for effects to start or stop after their state has been finalized.
+        private readonly ConcurrentQueue<PendingEffect> _pendingEffects = new();     // Queue for effects to be added, started, removed, stopped.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -48,14 +49,10 @@ namespace DOL.GS
 
         public virtual void Tick()
         {
-            // Only process up to `Count` in case `Process` adds to `_effectsToStartOrStop`
-            int count = _pendingEffects.Count;
-
-            for (int i = 0; i < count; i++)
-            {
-                if (_pendingEffects.TryDequeue(out PendingEffect pendingEffect))
-                    pendingEffect.Process();
-            }
+            // This can cause an infinite loop if an effect keeps adding new effects during processing.
+            // It's however important for immunity effects to be started immediately and not leave a gap.
+            while (_pendingEffects.TryDequeue(out PendingEffect pendingEffect))
+                pendingEffect.Process();
 
             if (_effects.Count == 0 && _pendingEffects.Count == 0)
             {
@@ -364,10 +361,14 @@ namespace DOL.GS
 
         public void ProcessEffect(ECSGameEffect effect)
         {
-            lock (_effectsLock)
-            {
-                ProcessEffectInternal(effect);
-            }
+            ServiceObjectStore.Add(this);
+
+            if (effect.IsStarting || effect.IsEnabling)
+                _pendingEffects.Enqueue(new(effect, true));
+            else if (effect.IsEnding || effect.IsDisabling)
+                _pendingEffects.Enqueue(new(effect, false));
+            else if (log.IsErrorEnabled)
+                log.Error($"Effect was added to the queue but is neither starting nor stopping: {effect.Name} ({effect.EffectType}) on {Owner}");
         }
 
         public void HandleConcentrationEffectRangeCheck(ECSGameSpellEffect spellEffect)
@@ -433,77 +434,6 @@ namespace DOL.GS
         protected virtual void RemoveEffectIdToEffect(ECSGameEffect effect)
         {
             // Only used by players.
-        }
-
-        private void ProcessEffectInternal(ECSGameEffect effect)
-        {
-            ServiceObjectStore.Add(this);
-
-            if (effect.IsStarting || effect.IsEnabling)
-                AddOrEnableEffect(effect);
-            else if (effect.IsEnding || effect.IsDisabling)
-                RemoveOrDisableEffect(effect);
-            else if (log.IsErrorEnabled)
-                log.Error($"Effect was added to the queue but is neither starting nor stopping: {effect.Name} ({effect.EffectType}) on {Owner}");
-        }
-
-        private void AddOrEnableEffect(ECSGameEffect effect)
-        {
-            AddEffectResult result = AddOrEnableEffectInternal(effect);
-
-            if (result is not AddEffectResult.Failed)
-                OnEffectAddedOrEnabled(this, result, effect);
-            else
-                OnEffectNotAdded(effect);
-
-            static void OnEffectAddedOrEnabled(EffectListComponent component, AddEffectResult result, ECSGameEffect effect)
-            {
-                try
-                {
-                    component._pendingEffects.Enqueue(new(effect, (e, start) =>
-                    {
-                        if (start)
-                            PendingEffect.StartEffect(e);
-
-                        ServiceObjectStore.Add(e);
-                        e.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(e.EffectType));
-                    }, effect.FinalizeState(result)));
-                }
-                catch (Exception e)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Failed processing an effect added to {effect.Owner}'s effect list", e);
-                }
-            }
-
-            static void OnEffectNotAdded(ECSGameEffect effect)
-            {
-                try
-                {
-                    if (effect is not ECSGameSpellEffect spellEffect)
-                        return;
-
-                    // Temporarily include `BleedECSEffect` since they're set as pulsing spells in the DB, even though they should work like DoTs instead.
-                    if (spellEffect.SpellHandler.Spell.IsPulsing && spellEffect is not BleedECSEffect)
-                        return;
-
-                    EffectHelper.SendSpellResistAnimation(spellEffect);
-                    GamePlayer playerToNotify = null;
-
-                    if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
-                        playerToNotify = playerCaster;
-                    else if (spellEffect.SpellHandler.Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain brain && brain.Owner is GamePlayer casterOwner)
-                        playerToNotify = casterOwner;
-
-                    if (playerToNotify != null)
-                        ChatUtil.SendResistMessage(playerToNotify, "GamePlayer.Caster.Buff.EffectAlreadyActive", spellEffect.Owner.GetName(0, true));
-                }
-                catch (Exception e)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Failed processing an effect not added to {effect.Owner}'s effect list", e);
-                }
-            }
         }
 
         private AddEffectResult AddOrEnableEffectInternal(ECSGameEffect effect)
@@ -787,37 +717,6 @@ namespace DOL.GS
             }
         }
 
-        private void RemoveOrDisableEffect(ECSGameEffect effect)
-        {
-            RemoveEffectResult result = RemoveOrDisableEffectInternal(effect);
-
-            if (result is not RemoveEffectResult.Failed)
-                OnEffectRemovedOrDisabled(this, result, effect);
-
-            static void OnEffectRemovedOrDisabled(EffectListComponent component, RemoveEffectResult result, ECSGameEffect effect)
-            {
-                try
-                {
-                    component._pendingEffects.Enqueue(new(effect, (e, stop) =>
-                    {
-                        if (stop)
-                            PendingEffect.StopEffect(e);
-
-                        // Keep disabled effects in the store.
-                        if (!e.IsDisabled)
-                            ServiceObjectStore.Remove(e);
-
-                        e.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(e.EffectType));
-                    }, effect.FinalizeState(result)));
-                }
-                catch (Exception e)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Failed processing an effect removed from {effect.Owner}'s effect list", e);
-                }
-            }
-        }
-
         private RemoveEffectResult RemoveOrDisableEffectInternal(ECSGameEffect effect)
         {
             try
@@ -908,59 +807,139 @@ namespace DOL.GS
         private readonly struct PendingEffect
         {
             private readonly ECSGameEffect _effect;
-            private readonly Action<ECSGameEffect, bool> _onProcess;
-            private readonly bool _state;
+            private readonly bool _start;
 
-            public PendingEffect(ECSGameEffect effect, Action<ECSGameEffect, bool> onProcess, bool state)
+            public PendingEffect(ECSGameEffect effect, bool start)
             {
                 _effect = effect;
-                _onProcess = onProcess;
-                _state = state;
+                _start = start;
             }
 
             public void Process()
             {
-                _onProcess(_effect, _state);
+                if (_start)
+                    TryStartEffect();
+                else
+                    TryStopEffect();
+
                 _effect.IsBeingReplaced = false; // This need to always be set to false.
             }
 
-            public static void StartEffect(ECSGameEffect effect)
+            public void TryStartEffect()
             {
-                effect.OnStartEffect();
+                EffectListComponent component = _effect.Owner.effectListComponent;
+                AddEffectResult result = component.AddOrEnableEffectInternal(_effect);
 
-                // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
-                if (effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
+                if (result is not AddEffectResult.Failed)
+                    OnEffectAddedOrEnabled(component, result, _effect);
+                else
+                    OnEffectNotAdded(_effect);
+
+                static void OnEffectAddedOrEnabled(EffectListComponent component, AddEffectResult result, ECSGameEffect effect)
                 {
-                    ISpellHandler spellHandler = spellEffect.SpellHandler;
-                    Spell spell = spellHandler?.Spell;
-
-                    if (spell.IsPulsing)
+                    try
                     {
-                        // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
-                        // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
-                        // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
-                        // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
-                        if (spellEffect is ECSPulseEffect)
+                        if (effect.FinalizeState(result))
+                            effect.OnStartEffect();
+
+                        component.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
+                        ServiceObjectStore.Add(effect);
+
+                        // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
+                        if (effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
                         {
-                            if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
+                            ISpellHandler spellHandler = spellEffect.SpellHandler;
+                            Spell spell = spellHandler?.Spell;
+
+                            if (spell.IsPulsing)
+                            {
+                                // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
+                                // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
+                                // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
+                                // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
+                                if (spellEffect is ECSPulseEffect)
+                                {
+                                    if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
+                                        EffectHelper.SendSpellAnimation(spellEffect);
+                                }
+                                else if (spell.IsHarmful)
+                                    EffectHelper.SendSpellAnimation(spellEffect);
+                            }
+                            else
                                 EffectHelper.SendSpellAnimation(spellEffect);
                         }
-                        else if (spell.IsHarmful)
-                            EffectHelper.SendSpellAnimation(spellEffect);
                     }
-                    else
-                        EffectHelper.SendSpellAnimation(spellEffect);
+                    catch (Exception e)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Failed processing an effect added to {effect.Owner}'s effect list", e);
+                    }
+                }
+
+                static void OnEffectNotAdded(ECSGameEffect effect)
+                {
+                    try
+                    {
+                        if (effect is not ECSGameSpellEffect spellEffect)
+                            return;
+
+                        // Temporarily include `BleedECSEffect` since they're set as pulsing spells in the DB, even though they should work like DoTs instead.
+                        if (spellEffect.SpellHandler.Spell.IsPulsing && spellEffect is not BleedECSEffect)
+                            return;
+
+                        EffectHelper.SendSpellResistAnimation(spellEffect);
+                        GamePlayer playerToNotify = null;
+
+                        if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
+                            playerToNotify = playerCaster;
+                        else if (spellEffect.SpellHandler.Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain brain && brain.Owner is GamePlayer casterOwner)
+                            playerToNotify = casterOwner;
+
+                        if (playerToNotify != null)
+                            ChatUtil.SendResistMessage(playerToNotify, "GamePlayer.Caster.Buff.EffectAlreadyActive", spellEffect.Owner.GetName(0, true));
+                    }
+                    catch (Exception e)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Failed processing an effect not added to {effect.Owner}'s effect list", e);
+                    }
                 }
             }
 
-            public static void StopEffect(ECSGameEffect effect)
+            public void TryStopEffect()
             {
-                effect.OnStopEffect();
+                EffectListComponent component = _effect.Owner.effectListComponent;
+                RemoveEffectResult result = component.RemoveOrDisableEffectInternal(_effect);
 
-                if (!effect.IsBeingReplaced)
+                if (result is not RemoveEffectResult.Failed)
+                    OnEffectRemovedOrDisabled(component, result, _effect);
+
+                static void OnEffectRemovedOrDisabled(EffectListComponent component, RemoveEffectResult result, ECSGameEffect effect)
                 {
-                    effect.TryApplyImmunity();
-                    effect.Owner.effectListComponent.TryEnableBestEffectOfSameType(effect);
+                    try
+                    {
+                        if (effect.FinalizeState(result))
+                        {
+                            effect.OnStopEffect();
+
+                            if (!effect.IsBeingReplaced)
+                            {
+                                effect.TryApplyImmunity();
+                                component.TryEnableBestEffectOfSameType(effect);
+                            }
+                        }
+
+                        component.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
+
+                        // Keep disabled effects in the store.
+                        if (!effect.IsDisabled)
+                            ServiceObjectStore.Remove(effect);
+                    }
+                    catch (Exception e)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Failed processing an effect removed from {effect.Owner}'s effect list", e);
+                    }
                 }
             }
         }
