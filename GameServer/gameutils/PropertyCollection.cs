@@ -1,7 +1,7 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace DOL.GS
 {
@@ -9,7 +9,8 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly ConcurrentDictionary<string, object> _properties = new();
+        private readonly Dictionary<string, object> _properties = new();
+        private readonly Lock _lock = new();
 
         public T GetProperty<T>(string key)
         {
@@ -23,7 +24,13 @@ namespace DOL.GS
 
         public T GetProperty<T>(string key, T @default, bool logged)
         {
-            bool exists = _properties.TryGetValue(key, out object value);
+            bool exists;
+            object value;
+
+            lock (_lock)
+            {
+                exists = _properties.TryGetValue(key, out value);
+            }
 
             if (!exists)
             {
@@ -46,41 +53,59 @@ namespace DOL.GS
 
         public void SetProperty(string key, object value)
         {
-            if (value == null)
-                _properties.TryRemove(key, out _);
-            else
-                _properties[key] = value;
+            lock (_lock)
+            {
+                if (value == null)
+                    _properties.Remove(key, out _);
+                else
+                    _properties[key] = value;
+            }
         }
 
         public bool TrySetProperty(string key, object value)
         {
-            if (value == null)
+            lock (_lock)
             {
-                _properties.TryRemove(key, out _);
-                return true;
-            }
+                if (value == null)
+                {
+                    _properties.Remove(key, out _);
+                    return true;
+                }
 
-            return _properties.TryAdd(key, value);
+                return _properties.TryAdd(key, value);
+            }
         }
 
         public void RemoveProperty(string key)
         {
-            _properties.TryRemove(key, out _);
+            lock (_lock)
+            {
+                _properties.Remove(key, out _);
+            }
         }
 
         public bool TryRemoveProperty(string key, out object value)
         {
-            return _properties.TryRemove(key, out value);
+            lock (_lock)
+            {
+                return _properties.Remove(key, out value);
+            }
         }
 
         public List<string> GetAllProperties()
         {
-            return _properties.Keys.ToList();
+            lock (_lock)
+            {
+                return _properties.Keys.ToList();
+            }
         }
 
         public void RemoveAllProperties()
         {
-            _properties.Clear();
+            lock (_lock)
+            {
+                _properties.Clear();
+            }
         }
     }
 }
