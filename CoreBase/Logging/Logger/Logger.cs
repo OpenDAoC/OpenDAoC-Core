@@ -24,7 +24,7 @@ namespace DOL.Logging
 
         public virtual void Log(ELogLevel level, string message) { }
         public virtual void Log(ELogLevel level, string message, Exception exception) { }
-        public virtual void Log(ELogLevel level, string message, params object[] args) { }
+        public virtual void Log(ELogLevel level, string message, params ReadOnlySpan<object> args) { }
 
         public void Trace(string message)
         {
@@ -41,7 +41,7 @@ namespace DOL.Logging
             TryEnqueueMessage(ELogLevel.Trace, message, exception);
         }
 
-        public void TraceFormat(string message, params object[] args)
+        public void TraceFormat(string message, params ReadOnlySpan<object> args)
         {
             TryEnqueueMessage(ELogLevel.Trace, message, args);
         }
@@ -61,7 +61,7 @@ namespace DOL.Logging
             TryEnqueueMessage(ELogLevel.Info, message, exception);
         }
 
-        public void InfoFormat(string message, params object[] args)
+        public void InfoFormat(string message, params ReadOnlySpan<object> args)
         {
             TryEnqueueMessage(ELogLevel.Info, message, args);
         }
@@ -81,7 +81,7 @@ namespace DOL.Logging
             TryEnqueueMessage(ELogLevel.Debug, message, exception);
         }
 
-        public void DebugFormat(string message, params object[] args)
+        public void DebugFormat(string message, params ReadOnlySpan<object> args)
         {
             TryEnqueueMessage(ELogLevel.Debug, message, args);
         }
@@ -101,7 +101,7 @@ namespace DOL.Logging
             TryEnqueueMessage(ELogLevel.Warning, message, exception);
         }
 
-        public void WarnFormat(string message, params object[] args)
+        public void WarnFormat(string message, params ReadOnlySpan<object> args)
         {
             TryEnqueueMessage(ELogLevel.Warning, message, args);
         }
@@ -121,7 +121,7 @@ namespace DOL.Logging
             EnqueueMessage(ELogLevel.Error, message, exception);
         }
 
-        public void ErrorFormat(string message, params object[] args)
+        public void ErrorFormat(string message, params ReadOnlySpan<object> args)
         {
             EnqueueMessage(ELogLevel.Error, message, args);
         }
@@ -141,7 +141,7 @@ namespace DOL.Logging
             EnqueueMessage(ELogLevel.Fatal, message, exception);
         }
 
-        public void FatalFormat(string message, params object[] args)
+        public void FatalFormat(string message, params ReadOnlySpan<object> args)
         {
             EnqueueMessage(ELogLevel.Fatal, message, args);
         }
@@ -161,7 +161,7 @@ namespace DOL.Logging
             _queueProcessor.EnqueueMessage(LogEntryFactory.Create(this, level, message, exception));
         }
 
-        private void EnqueueMessage(ELogLevel level, string message, params object[] args)
+        private void EnqueueMessage(ELogLevel level, string message, params ReadOnlySpan<object> args)
         {
             _queueProcessor.EnqueueMessage(LogEntryFactory.Create(this, level, message, args));
         }
@@ -181,7 +181,7 @@ namespace DOL.Logging
             _queueProcessor.TryEnqueueMessage(LogEntryFactory.Create(this, level, message, exception));
         }
 
-        private void TryEnqueueMessage(ELogLevel level, string message, params object[] args)
+        private void TryEnqueueMessage(ELogLevel level, string message, params ReadOnlySpan<object> args)
         {
             _queueProcessor.TryEnqueueMessage(LogEntryFactory.Create(this, level, message, args));
         }
@@ -200,7 +200,7 @@ namespace DOL.Logging
 
         public override void Log(ELogLevel level, string message) { }
         public override void Log(ELogLevel level, string message, Exception exception) { }
-        public override void Log(ELogLevel level, string message, params object[] args) { }
+        public override void Log(ELogLevel level, string message, params ReadOnlySpan<object> args) { }
     }
 
     public class ConsoleLogger : Logger
@@ -229,7 +229,7 @@ namespace DOL.Logging
             Log(level, $"{message}{Environment.NewLine}{exception}");
         }
 
-        public override void Log(ELogLevel level, string message, params object[] args)
+        public override void Log(ELogLevel level, string message, params ReadOnlySpan<object> args)
         {
             Log(level, string.Format(message, args));
         }
@@ -325,7 +325,7 @@ namespace DOL.Logging
             }
         }
 
-        public override void Log(ELogLevel level, string message, params object[] args)
+        public override void Log(ELogLevel level, string message, params ReadOnlySpan<object> args)
         {
             switch (level)
             {

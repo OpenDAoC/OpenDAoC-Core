@@ -18,7 +18,7 @@ namespace DOL.Logging
             return logEntry;
         }
 
-        public static LogEntry Create(Logger logger, ELogLevel level, string message, params object[] args)
+        public static LogEntry Create(Logger logger, ELogLevel level, string message, params ReadOnlySpan<object> args)
         {
             LogEntry logEntry = new();
             logEntry.Initialize(logger, level, message, args);

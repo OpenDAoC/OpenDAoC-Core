@@ -57,11 +57,16 @@ namespace DOL.Logging
 
         public void TryEnqueueMessage(LogEntry logEntry)
         {
+            bool added = false;
+
             try
             {
-                _loggingQueue.TryAdd(logEntry);
+                added = _loggingQueue.TryAdd(logEntry);
             }
             catch (ObjectDisposedException) { }
+
+            if (!added)
+                logEntry.ReturnRentedArgs();
         }
 
         private void Run()
