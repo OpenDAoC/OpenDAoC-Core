@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,12 +17,10 @@ namespace DOL.GS
         // Used to allow players to have more than one pulse spell refreshing itself automatically.
         private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = [];
 
-        // Active effects.
+        // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
+        private readonly Queue<PendingEffect> _pendingEffects = new();               // Queue for effects to be started, stopped.
         protected readonly Lock _effectsLock = new();
-
-        // Pending effects.
-        private readonly ConcurrentQueue<PendingEffect> _pendingEffects = new();     // Queue for effects to be started, stopped.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -49,10 +46,19 @@ namespace DOL.GS
 
         public virtual void Tick()
         {
-            // This can cause an infinite loop if an effect keeps adding new effects during processing.
-            // It's however important for immunity effects to be started immediately and not leave a gap.
-            while (_pendingEffects.TryDequeue(out PendingEffect pendingEffect))
-                pendingEffect.Process();
+            if (_pendingEffects.Count > 0)
+            {
+                // Ideally, effects shouldn't be allowed to modify other components than their own during their processing.
+                // Guard, Intercept, and Protect are examples of effects that may cause issues here.
+                // Without correct effect state synchronization, this may lead to deadlocks.
+                lock (_effectsLock)
+                {
+                    // This can cause an infinite loop if an effect keeps adding new effects during processing.
+                    // It's however important for immunity effects to be started immediately and not leave a gap.
+                    while (_pendingEffects.TryDequeue(out PendingEffect pendingEffect))
+                        pendingEffect.Process();
+                }
+            }
 
             if (_effects.Count == 0 && _pendingEffects.Count == 0)
             {
