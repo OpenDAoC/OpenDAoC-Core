@@ -1,19 +1,47 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
 {
     public class AttackerTracker
     {
-        private GameLiving _owner;
-        private AttackerCheckTimer _attackerCheckTimer;
-        private ConcurrentDictionary<GameLiving, AttackerInfo> _attackers = new();
+        private readonly GameLiving _owner;
+        private readonly AttackerCheckTimer _attackerCheckTimer;
         private int _meleeCount = 0;
 
-        public int Count => _attackers.Count;
+        private readonly Dictionary<GameLiving, AttackerInfo> _attackers = new();
+        private readonly Lock _lock = new();
+
+        public int Count
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _attackers.Count;
+                }
+            }
+        }
+
         public int MeleeCount => Volatile.Read(ref _meleeCount);
-        public ICollection<GameLiving> Attackers => _attackers.Keys;
+
+        public ICollection<GameLiving> Attackers
+        {
+            get
+            {
+                List<GameLiving> result = GameLoop.GetListForTick<GameLiving>();
+
+                lock (_lock)
+                {
+                    result.EnsureCapacity(_attackers.Count);
+
+                    foreach (GameLiving key in _attackers.Keys)
+                        result.Add(key);
+                }
+
+                return result;
+            }
+        }
 
         public AttackerTracker(GameLiving owner)
         {
@@ -28,44 +56,47 @@ namespace DOL.GS
 
             AttackerInfo attackerInfo = new(isMelee, expireTime);
 
-            while (true)
+            lock (_lock)
             {
                 if (_attackers.TryGetValue(attacker, out AttackerInfo existing))
                 {
-                    if (_attackers.TryUpdate(attacker, attackerInfo, existing))
-                    {
-                        if (existing.IsMelee != isMelee)
-                        {
-                            if (isMelee)
-                                Interlocked.Increment(ref _meleeCount);
-                            else
-                                Interlocked.Decrement(ref _meleeCount);
-                        }
+                    _attackers[attacker] = attackerInfo;
 
-                        return;
+                    if (existing.IsMelee != isMelee)
+                    {
+                        if (isMelee)
+                            _meleeCount++;
+                        else
+                            _meleeCount--;
                     }
                 }
-                else if (_attackers.TryAdd(attacker, attackerInfo))
+                else
                 {
+                    _attackers.Add(attacker, attackerInfo);
                     _attackerCheckTimer.WakeUp();
 
                     if (isMelee)
-                        Interlocked.Increment(ref _meleeCount);
-
-                    return;
+                        _meleeCount++;
                 }
             }
         }
 
         public bool ContainsAttacker(GameLiving attacker)
         {
-            return _attackers.ContainsKey(attacker);
+            lock (_lock)
+            {
+                return _attackers.ContainsKey(attacker);
+            }
         }
 
         public void Clear()
         {
-            _attackers.Clear();
-            Interlocked.Exchange(ref _meleeCount, 0);
+            lock (_lock)
+            {
+                _attackers.Clear();
+                _meleeCount = 0;
+            }
+
             _attackerCheckTimer.Stop();
         }
 
@@ -87,10 +118,13 @@ namespace DOL.GS
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                foreach (var pair in _attackerTracker._attackers)
-                    TryRemoveAttacker(pair);
+                lock (_attackerTracker._lock)
+                {
+                    foreach (var pair in _attackerTracker._attackers)
+                        TryRemoveAttacker(pair);
 
-                return base.OnTick(timer);
+                    return base.OnTick(timer);
+                }
             }
         }
 
@@ -109,28 +143,31 @@ namespace DOL.GS
                 double armorFactorScalingFactor = _epicNpc.DefaultArmorFactorScalingFactor;
                 int petCount = 0;
 
-                foreach (var pair in _attackerTracker._attackers)
+                lock (_attackerTracker._lock)
                 {
-                    if (TryRemoveAttacker(pair))
-                        continue;
-
-                    if (pair.Key is GamePlayer)
-                        armorFactorScalingFactor -= 0.04;
-                    else if (pair.Key is GameSummonedPet && petCount <= _epicNpc.ArmorFactorScalingFactorPetCap)
+                    foreach (var pair in _attackerTracker._attackers)
                     {
-                        armorFactorScalingFactor -= 0.01;
-                        petCount++;
+                        if (TryRemoveAttacker(pair))
+                            continue;
+
+                        if (pair.Key is GamePlayer)
+                            armorFactorScalingFactor -= 0.04;
+                        else if (pair.Key is GameSummonedPet && petCount <= _epicNpc.ArmorFactorScalingFactorPetCap)
+                        {
+                            armorFactorScalingFactor -= 0.01;
+                            petCount++;
+                        }
+
+                        if (armorFactorScalingFactor < 0.4)
+                        {
+                            armorFactorScalingFactor = 0.4;
+                            break;
+                        }
                     }
 
-                    if (armorFactorScalingFactor < 0.4)
-                    {
-                        armorFactorScalingFactor = 0.4;
-                        break;
-                    }
+                    _epicNpc.ArmorFactorScalingFactor = armorFactorScalingFactor;
+                    return base.OnTick(timer);
                 }
-
-                _epicNpc.ArmorFactorScalingFactor = armorFactorScalingFactor;
-                return base.OnTick(timer);
             }
         }
 
@@ -140,7 +177,6 @@ namespace DOL.GS
 
             protected readonly GameLiving _owner;
             protected readonly AttackerTracker _attackerTracker;
-            private readonly Lock _lock = new();
 
             public AttackerCheckTimer(AttackerTracker attackerTracker) : base(attackerTracker._owner)
             {
@@ -161,14 +197,8 @@ namespace DOL.GS
                 if (IsAlive)
                     return;
 
-                lock (_lock)
-                {
-                    if (IsAlive)
-                        return;
-
-                    Interval = CHECK_ATTACKERS_INTERVAL;
-                    Start();
-                }
+                Interval = CHECK_ATTACKERS_INTERVAL;
+                Start();
             }
 
             protected override int OnTick(ECSGameTimer timer)
@@ -178,10 +208,10 @@ namespace DOL.GS
 
             protected bool TryRemoveAttacker(in KeyValuePair<GameLiving, AttackerInfo> pair)
             {
-                if (pair.Value.ExpireTime < GameLoop.GameLoopTime && _attackerTracker._attackers.TryRemove(pair))
+                if (pair.Value.ExpireTime < GameLoop.GameLoopTime && _attackerTracker._attackers.Remove(pair.Key))
                 {
                     if (pair.Value.IsMelee)
-                        Interlocked.Decrement(ref _attackerTracker._meleeCount);
+                        _attackerTracker._meleeCount--;
 
                     return true;
                 }
