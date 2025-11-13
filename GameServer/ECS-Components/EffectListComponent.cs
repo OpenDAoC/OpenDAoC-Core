@@ -660,6 +660,8 @@ namespace DOL.GS
                 else
                 {
                     AddEffectResult result = AddEffectResult.None;
+                    List<ECSGameEffect> effectsToDisable = null;
+                    List<ECSGameEffect> effectsToStop = null;
 
                     if (effect.EffectType is eEffect.Bladeturn)
                     {
@@ -701,8 +703,6 @@ namespace DOL.GS
                     else
                     {
                         bool addNewEffectAsDisabled = false;
-                        List<ECSGameEffect> effectsToDisable = null;
-                        List<ECSGameEffect> effectsToStop = null;
 
                         for (int i = 0; i < existingEffects.Count; i++)
                         {
@@ -742,20 +742,6 @@ namespace DOL.GS
                             }
                         }
 
-                        // We know for sure the effect will be added. We can now disable and stop weaker effects.
-
-                        if (effectsToDisable != null)
-                        {
-                            foreach (ECSGameEffect effectToDisable in effectsToDisable)
-                                effectToDisable.Disable();
-                        }
-
-                        if (effectsToStop != null)
-                        {
-                            foreach (ECSGameEffect effectToStop in effectsToStop)
-                                effectToStop.End();
-                        }
-
                         result = addNewEffectAsDisabled ? AddEffectResult.Disabled : AddEffectResult.Added;
                     }
 
@@ -767,6 +753,20 @@ namespace DOL.GS
 
                     if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
                         SetEffectIdToEffect(effect);
+
+                    // Disabling and stopping weaker effects must be done after the current effect has been added to the list.
+
+                    if (effectsToDisable != null)
+                    {
+                        foreach (ECSGameEffect effectToDisable in effectsToDisable)
+                            effectToDisable.Disable();
+                    }
+
+                    if (effectsToStop != null)
+                    {
+                        foreach (ECSGameEffect effectToStop in effectsToStop)
+                            effectToStop.End();
+                    }
 
                     return result;
                 }
