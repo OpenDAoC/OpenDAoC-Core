@@ -1,6 +1,4 @@
-﻿using DOL.GS.Spells;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
     public class ECSImmunityEffect : ECSGameSpellEffect
     {
