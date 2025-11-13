@@ -3019,7 +3019,7 @@ namespace DOL.GS.Commands
 				foreach (ECSGameEffect effect in allEffects)
 				{
 					long remaining = effect.IsConcentrationEffect() ? -1 : effect.GetRemainingTimeForClient();
-					text.Add($"{effect.Name} (type: {effect.GetType()}) (remaining: {remaining}) (source: {(effect.SpellHandler == null ? targetMob.Name : effect.SpellHandler.Caster.Name)})");
+					text.Add($"{effect.Name} (type: {effect.EffectType}) (remaining: {remaining}) (source: {(effect.SpellHandler == null ? targetMob.Name : effect.SpellHandler.Caster.Name)}) (disabled: {effect.IsDisabled})");
 				}
 			}
 
