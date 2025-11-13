@@ -833,7 +833,7 @@ namespace DOL.AI.Brain
                     attackersCount = 1;
 
                 int percentBAF = Properties.BAF_INITIAL_CHANCE + (attackersCount - 1) * Properties.BAF_ADDITIONAL_CHANCE;
-                int maxAdds = 10;
+                int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs.
 
                 // Calculate chance of an addition add based on the remainder.
                 if (Util.Chance(percentBAF % 100))
