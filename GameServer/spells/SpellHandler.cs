@@ -1002,9 +1002,9 @@ namespace DOL.GS.Spells
 			{
 				_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
 
-				if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE and not eSpellTarget.PET &&
-					m_spell.Range > 0 &&
-					LosChecker != null)
+				// Target check may appear redundant since CastingComponent is supposed to set LosChecker to null when no LoS check is required.
+				// But for player casted spells, the target is determined by SpellHandler.
+				if (LosChecker != null && target != Caster)
 				{
 					if (Caster is GameNPC npc)
 						LosChecker.Out.SendCheckLos(npc, target, CheckNpcLosDuringCastCallback);

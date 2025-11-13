@@ -65,10 +65,11 @@ namespace DOL.GS
             Spell spell,
             SpellLine spellLine,
             ISpellCastingAbilityHandler spellCastingAbilityHandler = null,
-            GameLiving target = null,
+            GameLiving target = null, // Always null for players.
             bool checkLos = true)
         {
-            return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, checkLos ? GetLosChecker(target) : null);
+            GamePlayer losChecker = checkLos && spell.RequiresLosCheck() && target != Owner ? GetLosChecker(target) : null;
+            return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, losChecker);
         }
 
         protected virtual bool RequestCastSpellInternal(
@@ -301,7 +302,6 @@ namespace DOL.GS
                 SpellHandler CreateSpellHandler()
                 {
                     SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(CastingComponent.Owner, Spell, SpellLine) as SpellHandler;
-
                     spellHandler.Target = Target;
                     spellHandler.LosChecker = LosChecker;
                     spellHandler.Ability = SpellCastingAbilityHandler;

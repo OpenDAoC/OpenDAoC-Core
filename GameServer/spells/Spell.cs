@@ -720,6 +720,11 @@ namespace DOL.GS
 			return caster.castingComponent.CalculateSpellRange(this);
 		}
 
+		public bool RequiresLosCheck()
+		{
+			return Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE and not eSpellTarget.PET && Range > 0;
+		}
+
 		public string DamageTypeToString()
 		{
 			return _damageTypeToStringMap.TryGetValue(DamageType, out string result) ? result : $"<{DamageType}>";

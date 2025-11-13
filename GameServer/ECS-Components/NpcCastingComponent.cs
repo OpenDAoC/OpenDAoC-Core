@@ -25,8 +25,8 @@ namespace DOL.GS
             GameLiving target,
             GamePlayer losChecker)
         {
-            if (spell.Range == 0 || losChecker == null || target == null || target == Owner)
-                return base.RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, losChecker);
+            if (losChecker == null)
+                return base.RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, null);
 
             SpellWaitingForLosCheck spellWaitingForLosCheck = new(spell, spellLine);
 
@@ -49,7 +49,7 @@ namespace DOL.GS
             if (losChecker == null && _npcOwner.Brain is IControlledBrain controlledBrain)
                 losChecker = controlledBrain.GetPlayerOwner();
 
-            if (losChecker == null && _npcOwner.Brain is StandardMobBrain brain)
+            if (losChecker == null && _npcOwner.Brain is StandardMobBrain)
             {
                 List<GamePlayer> playersInRadius = _npcOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
