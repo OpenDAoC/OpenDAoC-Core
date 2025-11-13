@@ -91,7 +91,7 @@ namespace DOL.AI.Brain
 
             void LookForFriends()
             {
-                _friend = _brain.GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(FRIENDLY_TO_LOOK_FOR_RADIUS, 1).FirstOrDefault();
+                _friend = _brain.GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(FRIENDLY_TO_LOOK_FOR_RADIUS, 1).FirstOrDefault()?.Brain as StandardMobBrain;
 
                 if (_friend == null)
                 {
@@ -114,8 +114,13 @@ namespace DOL.AI.Brain
                 _brain.AddAggroListTo(_friend);
 
                 // This includes us.
-                foreach (StandardMobBrain otherFriendlyBrain in _friend.GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(ADDS_RADIUS, MAX_ADDS))
-                    _brain.AddAggroListTo(otherFriendlyBrain);
+                foreach (GameNPC otherFriend in _friend.GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(ADDS_RADIUS, MAX_ADDS))
+                {
+                    StandardMobBrain brain = otherFriend.Brain as StandardMobBrain;
+
+                    if (brain != null)
+                        _brain.AddAggroListTo(brain);
+                }
 
                 _state = ScoutMobState.FIGHTING;
             }

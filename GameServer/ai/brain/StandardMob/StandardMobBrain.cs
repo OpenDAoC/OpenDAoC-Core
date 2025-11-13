@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -722,7 +723,6 @@ namespace DOL.AI.Brain
                 return;
             }
 
-
             GamePlayer playerPuller;
 
             // Only BAF on players and pets of players
@@ -750,12 +750,13 @@ namespace DOL.AI.Brain
             if (Body.CurrentZone.IsDungeon)
                 bafRadius = (int) (bafRadius * BAF_RADIUS_DUNGEON_MODIFIER);
 
-            IEnumerable<StandardMobBrain> brainsInRadius = GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(bafRadius, maxAdds);
-            int addCount = brainsInRadius.Count();
+            List<GameNPC> brainsInRadius = GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(bafRadius, maxAdds);
+            int addCount = brainsInRadius.Count;
             BafAddCount = addCount;
 
-            foreach (StandardMobBrain brain in brainsInRadius)
+            foreach (GameNPC npc in brainsInRadius)
             {
+                StandardMobBrain brain = npc.Brain as StandardMobBrain; // Guaranteed by GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance.
                 brain.CanBaf = false;
                 brain.BafAddCount = addCount;
                 GameLiving target;
@@ -832,7 +833,7 @@ namespace DOL.AI.Brain
                     attackersCount = 1;
 
                 int percentBAF = Properties.BAF_INITIAL_CHANCE + (attackersCount - 1) * Properties.BAF_ADDITIONAL_CHANCE;
-                int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs.
+                int maxAdds = 10;
 
                 // Calculate chance of an addition add based on the remainder.
                 if (Util.Chance(percentBAF % 100))
@@ -842,26 +843,105 @@ namespace DOL.AI.Brain
             }
         }
 
-        public IEnumerable<StandardMobBrain> GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(int radius, int count)
+        public List<GameNPC> GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(int radius, int count)
         {
-            return Body.GetNPCsInRadius((ushort) radius).Where(WherePredicate).OrderBy(OrderByPredicate).Take(count).Select(SelectPredicate);
+            List<GameNPC> finalNpcs = GameLoop.GetListForTick<GameNPC>();
 
-            bool WherePredicate(GameNPC npc)
+            if (count <= 0)
+                return finalNpcs;
+
+            NpcWithDistance[] candidates = ArrayPool<NpcWithDistance>.Shared.Rent(count);
+
+            try
             {
-                return npc != Body && npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailableToJoinFight;
+                int candidateCount = 0;
+
+                foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) radius))
+                {
+                    if (npc == Body || !npc.IsFriend(Body) || !npc.IsAggressive || !npc.IsAvailableToJoinFight || npc.Brain is not StandardMobBrain)
+                        continue;
+
+                    long xDiff = Body.X - npc.X;
+                    long yDiff = Body.Y - npc.Y;
+                    long zDiff = Body.Z - npc.Z;
+                    long distSq = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff;
+
+                    if (candidateCount < count)
+                    {
+                        candidates[candidateCount++] = new(npc, distSq);
+
+                        // Build the heap when we have enough candidates.
+                        if (candidateCount == count)
+                        {
+                            for (int i = count / 2 - 1; i >= 0; i--)
+                                HeapifyDown(candidates, i, count);
+                        }
+                    }
+                    else if (distSq < candidates[0].DistanceSq)
+                    {
+                        candidates[0] = new(npc, distSq);
+                        HeapifyDown(candidates, 0, count);
+                    }
+                }
+
+                if (candidateCount > 0)
+                {
+                    Array.Sort(candidates, 0, candidateCount, NpcDistanceComparer.Instance);
+
+                    for (int i = 0; i < candidateCount; i++)
+                        finalNpcs.Add(candidates[i].Npc);
+                }
+
+                return finalNpcs;
+            }
+            finally
+            {
+                ArrayPool<NpcWithDistance>.Shared.Return(candidates);
             }
 
-            long OrderByPredicate(GameNPC npc)
+            static void HeapifyDown(NpcWithDistance[] heap, int index, int heapSize)
             {
-                int xDiff = Body.X - npc.X;
-                int yDiff = Body.Y - npc.Y;
-                int zDiff = Body.Z - npc.Z;
-                return xDiff * xDiff + yDiff * yDiff + zDiff * zDiff;
-            }
+                int largest = index;
 
-            static StandardMobBrain SelectPredicate(GameNPC npc)
+                while (true)
+                {
+                    int currentIndex = largest;
+                    int left = 2 * currentIndex + 1;
+                    int right = 2 * currentIndex + 2;
+
+                    if (left < heapSize && heap[left].DistanceSq > heap[largest].DistanceSq)
+                        largest = left;
+
+                    if (right < heapSize && heap[right].DistanceSq > heap[largest].DistanceSq)
+                        largest = right;
+
+                    if (largest == currentIndex)
+                        break;
+
+                    (heap[currentIndex], heap[largest]) = (heap[largest], heap[currentIndex]);
+                }
+            }
+        }
+
+        private readonly struct NpcWithDistance
+        {
+            public readonly GameNPC Npc;
+            public readonly long DistanceSq;
+
+            public NpcWithDistance(GameNPC npc, long distanceSq)
             {
-                return npc.Brain as StandardMobBrain;
+                Npc = npc;
+                DistanceSq = distanceSq;
+            }
+        }
+
+        private class NpcDistanceComparer : IComparer<NpcWithDistance>
+        {
+            public static readonly NpcDistanceComparer Instance = new();
+
+            public int Compare(NpcWithDistance a, NpcWithDistance b)
+            {
+                return a.DistanceSq.CompareTo(b.DistanceSq);
             }
         }
 
