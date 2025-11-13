@@ -350,36 +350,6 @@ namespace DOL.AI.Brain
                 NextThinkTick = GameLoop.GameLoopTime;
             }
 
-            void AddPetAndSubPetsToAggroList(GamePlayer player)
-            {
-                GameNPC pet = player.ControlledBrain?.Body;
-
-                if (pet == null)
-                    return;
-
-                if (!AggroList.ContainsKey(pet))
-                    AggroList.TryAdd(pet, new(0));
-
-                IControlledBrain[] controlledBrains = pet.ControlledNpcList;
-
-                if (controlledBrains == null)
-                    return;
-
-                foreach (IControlledBrain subPetBrain in controlledBrains)
-                {
-                    if (subPetBrain == null)
-                        continue;
-
-                    GameNPC subPet = subPetBrain.Body;
-
-                    if (subPet == null)
-                        continue;
-
-                    if (!AggroList.ContainsKey(subPet))
-                        AggroList.TryAdd(subPet, new(0));
-                }
-            }
-
             static AggroAmount Add(GameLiving key, long arg)
             {
                 // Always add at least 1 if the key is not present to ensure the NPC goes to the puller and not a group member.
@@ -391,6 +361,36 @@ namespace DOL.AI.Brain
             {
                 oldValue.Base = Math.Max(0, oldValue.Base + arg);
                 return oldValue;
+            }
+        }
+
+        private void AddPetAndSubPetsToAggroList(GamePlayer player)
+        {
+            GameNPC pet = player.ControlledBrain?.Body;
+
+            if (pet == null)
+                return;
+
+            if (!AggroList.ContainsKey(pet))
+                AggroList.TryAdd(pet, new(0));
+
+            IControlledBrain[] controlledBrains = pet.ControlledNpcList;
+
+            if (controlledBrains == null)
+                return;
+
+            foreach (IControlledBrain subPetBrain in controlledBrains)
+            {
+                if (subPetBrain == null)
+                    continue;
+
+                GameNPC subPet = subPetBrain.Body;
+
+                if (subPet == null)
+                    continue;
+
+                if (!AggroList.ContainsKey(subPet))
+                    AggroList.TryAdd(subPet, new(0));
             }
         }
 
