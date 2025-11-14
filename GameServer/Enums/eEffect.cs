@@ -69,7 +69,6 @@ namespace DOL.GS
         StunImmunity,
         Mez,
         MezImmunity,
-        MeleeSnare,
         Snare,
         SnareImmunity,
         Nearsight,

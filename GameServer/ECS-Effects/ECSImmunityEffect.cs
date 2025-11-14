@@ -1,12 +1,23 @@
-﻿namespace DOL.GS
+﻿using System.Reflection;
+using DOL.Logging;
+
+namespace DOL.GS
 {
     public class ECSImmunityEffect : ECSGameSpellEffect
     {
-        public ECSImmunityEffect(in ECSGameEffectInitParams initParams, int pulseFreq)
-            : base(initParams)
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+        public ECSImmunityEffect(in ECSGameEffectInitParams initParams, int pulseFreq) : base(initParams)
         {
             PulseFreq = pulseFreq;
             EffectType = EffectHelper.GetImmunityEffectFromSpell(SpellHandler.Spell);
+
+            if (EffectType is eEffect.Unknown)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Tried to create an immunity effect for spell '{SpellHandler.Spell.Name}' ({SpellHandler.Spell.SpellType}), but no corresponding immunity effect was found.");
+            }
+
             StartTick = GameLoop.GameLoopTime;
             TriggersImmunity = false;
         }

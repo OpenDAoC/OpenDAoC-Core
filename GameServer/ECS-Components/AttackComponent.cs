@@ -11,7 +11,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using static DOL.GS.GameObject;
@@ -1227,38 +1226,6 @@ namespace DOL.GS
             SendAttackingCombatMessages(action, ad);
             SendDefendingCombatMessages(ad);
             BroadcastObserverMessage(ad);
-
-            #region Prevent Flight
-
-            if (ad.Attacker is GamePlayer)
-            {
-                GamePlayer attacker = ad.Attacker as GamePlayer;
-                if (attacker.HasAbilityType(typeof(AtlasOF_PreventFlight)) && Util.Chance(35))
-                {
-                    if (owner.IsObjectInFront(ad.Target, 120) && ad.Target.IsMoving)
-                    {
-                        bool preCheck = false;
-                        float angle = ad.Target.GetAngle(ad.Attacker);
-                        if (angle >= 150 && angle < 210) preCheck = true;
-
-                        if (preCheck)
-                        {
-                            Spell spell = SkillBase.GetSpellByID(7083);
-                            if (spell != null)
-                            {
-                                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(owner, spell,
-                                    SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-                                if (spellHandler != null)
-                                {
-                                    spellHandler.StartSpell(ad.Target);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            #endregion
 
             // Interrupt the target of the attack.
             ad.Target.StartInterruptTimer(interval, ad.AttackType, ad.Attacker);

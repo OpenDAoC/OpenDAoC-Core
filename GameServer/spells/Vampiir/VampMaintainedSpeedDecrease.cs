@@ -73,11 +73,5 @@ namespace DOL.GS.Spells
 
 			base.OnSpellPulse(effect);
 		}
-
-
-        protected override void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
-        {
-            // Spell can be used in combat, do nothing
-        }
     }
 }

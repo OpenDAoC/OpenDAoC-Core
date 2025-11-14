@@ -31,7 +31,9 @@ namespace DOL.GS
             {
                 PulseFreq = 250;
                 NextTick = 1 + Duration / 2 + StartTick + PulseFreq;
-                TriggersImmunity = spell.IsTriggeringImmunitySnare;
+
+                // Special case for focus snares (BD) since they share the same spell type as normal snares.
+                TriggersImmunity = EffectHelper.GetImmunityEffectFromSpell(spell) is not eEffect.Unknown && !spell.IsFocus;
             }
             else if (spell.IsConcentration)
             {

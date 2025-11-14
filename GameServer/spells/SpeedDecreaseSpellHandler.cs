@@ -1,135 +1,82 @@
 using System;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Spell handler for speed decreasing spells
-	/// </summary>
-	[SpellHandler(eSpellType.SpeedDecrease)]
-	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
-	{
-		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
-		{
-			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StatDebuffECSEffect(i));
-		}
+    [SpellHandler(eSpellType.SpeedDecrease)]
+    public class SpeedDecreaseSpellHandler : ImmunityEffectSpellHandler
+    {
+        public override string ShortDescription =>
+            Spell.Value >= 99 ?
+            "The target is rooted in place." :
+            $"The target is slowed by {Spell.Value}%.";
 
-		protected override double GetDebuffEffectivenessCriticalModifier()
-		{
-			// Roots are not allowed to crit, since the lack of walking animation is very confusing.
-			if (Spell.Value == 99)
-				return 1.0;
+        public SpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-			int criticalChance = Caster.DebuffCriticalChance;
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
+        {
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StatDebuffECSEffect(i));
+        }
 
-			if (criticalChance <= 0)
-				return 1.0;
+        public override void ApplyEffectOnTarget(GameLiving target)
+        {
+            // Check for immunities.
+            if (target.HasAbility(Abilities.CCImmunity) ||
+                target.HasAbility(Abilities.RootImmunity) || // Also affects snares?
+                target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) ||
+                target.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
+            {
+                MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
+                OnSpellNegated(target, SpellNegatedReason.Immune);
+                return;
+            }
 
-			if (!Caster.Chance(RandomDeckEvent.CriticalChance, Math.Min(50, criticalChance)))
-				return 1.0;
+            if (target.EffectList.GetOfType<ChargeEffect>() != null)
+            {
+                MessageToCaster($"{target.Name} is moving to fast for this spell to have any effect!", eChatType.CT_SpellResisted);
+                return;
+            }
 
-			(Caster as GamePlayer)?.Out.SendMessage($"Your snare is doubly effective!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-			return 2.0;
-		}
+            base.ApplyEffectOnTarget(target);
+        }
 
-		public override void ApplyEffectOnTarget(GameLiving target)
-		{
-			// Check for root immunity.
-			if (Spell.Value == 99 && (target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) || target.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound)))
-				//FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
-			{
-				MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
-				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-				OnSpellNegated(target, SpellNegatedReason.Immune);
-				return;
-			}
+        public override bool HasConflictingEffectWith(ISpellHandler compare)
+        {
+            // Snares and roots always conflict with each other.
+            // Ideally this should be implemented using effect groups, but the database isn't consistent.
+            return true;
+        }
 
-			//check for existing effect
-			// var debuffs = target.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff);
+        protected override int CalculateEffectDuration(GameLiving target)
+        {
+            double duration = base.CalculateEffectDuration(target);
+            duration *= target.GetModified(eProperty.SpeedDecreaseDurationReduction) * 0.01;
 
-			// foreach (var debuff in debuffs)
-			// {
-			// 	if (debuff.SpellHandler.Spell.Value >= Spell.Value)
-			// 	{
-			// 		// Old Spell is Better than new one
-			// 		SendSpellResistAnimation(target);
-			// 		this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
-			// 		MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
-			// 		// Prevent Adding.
-			// 		return;
-			// 	}
-			// }
+            if (duration < 1)
+                duration = 1;
+            else if (duration > Spell.Duration * 4)
+                duration = Spell.Duration * 4;
 
-			base.ApplyEffectOnTarget(target);
-		}
+            return (int) duration;
+        }
 
-		/// <summary>
-		/// When an applied effect starts
-		/// duration spells only
-		/// </summary>
-		/// <param name="effect"></param>
-		public override void OnEffectStart(GameSpellEffect effect)
-		{
-			// Cannot apply if the effect owner has a charging effect
-			if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound) || effect.Owner.TempProperties.GetProperty<bool>("Charging"))
-			{
-				MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
-				return;
-			}
-			base.OnEffectStart(effect);
-			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-			// Cancels mezz on the effect owner, if applied
-			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
-			ECSGameEffect mezz = EffectListService.GetEffectOnTarget(effect.Owner, eEffect.Mez);
-			if (mezz != null)
-				mezz.End();
-				//mezz.Cancel(false);
-		}
+        protected override double GetDebuffEffectivenessCriticalModifier()
+        {
+            // Roots are not allowed to crit, since the lack of walking animation is very confusing.
+            if (Spell.Value == 99)
+                return 1.0;
 
-		/// <summary>
-		/// When an applied effect expires.
-		/// Duration spells only.
-		/// </summary>
-		/// <param name="effect">The expired effect</param>
-		/// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
-		/// <returns>immunity duration in milliseconds</returns>
-		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-		{
-			GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-			return base.OnEffectExpires(effect, noMessages);
-		}
+            int criticalChance = Caster.DebuffCriticalChance;
 
-		/// <summary>
-		/// Handles attack on buff owner
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		protected virtual void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
-		{
-			AttackedByEnemyEventArgs attackArgs = arguments as AttackedByEnemyEventArgs;
-			GameLiving living = sender as GameLiving;
-			if (attackArgs == null) return;
-			if (living == null) return;
+            if (criticalChance <= 0)
+                return 1.0;
 
-			switch (attackArgs.AttackData.AttackResult)
-			{
-				case eAttackResult.HitStyle:
-				case eAttackResult.HitUnstyled:
-					//GameSpellEffect effect = FindEffectOnTarget(living, this);
-					ECSGameEffect effect = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
-					if (effect != null)
-						effect.End();
-						//effect.Cancel(false);
-					break;
-			}
-		}
+            if (!Caster.Chance(RandomDeckEvent.CriticalChance, Math.Min(50, criticalChance)))
+                return 1.0;
 
-		// constructor
-		public SpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
-		{
-		}
-	}
+            (Caster as GamePlayer)?.Out.SendMessage($"Your snare is doubly effective!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            return 2.0;
+        }
+    }
 }

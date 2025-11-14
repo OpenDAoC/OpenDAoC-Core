@@ -484,22 +484,13 @@ namespace DOL.GS
 			eSpellType.SpeedDecrease or
 			eSpellType.StyleSpeedDecrease or
 			eSpellType.UnbreakableSpeedDecrease or
+			eSpellType.PreventFlight or
 			eSpellType.DamageSpeedDecrease or
 			eSpellType.HereticSpeedDecrease or
 			eSpellType.DamageSpeedDecreaseNoVariance or
 			eSpellType.HereticDamageSpeedDecrease or
 			eSpellType.VampSpeedDecrease or
 			eSpellType.WarlockSpeedDecrease;
-
-		// Probably inaccurate.
-		// `IsFocus` includes Bonedancer focus snare.
-		// `IsPoison` should already be handled by `eSpellType.UnbreakableSpeedDecrease`, but just in case.
-		// DD + Snare and style snares have a different `SpellType` and don't trigger an immunity.
-		public bool IsTriggeringImmunitySnare =>
-			(SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease) &&
-			!IsFocus &&
-			!IsPoisonEffect &&
-			!Name.Equals("Prevent Flight", StringComparison.OrdinalIgnoreCase);
 
 		public bool IsPoisonEffect
 		{

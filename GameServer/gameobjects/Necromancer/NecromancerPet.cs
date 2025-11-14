@@ -61,7 +61,6 @@ namespace DOL.GS
             {
                 case "lesser zombie servant":
                 case "zombie servant":
-                    EffectList.Add(new MezzRootImmunityEffect());
                     LoadEquipmentTemplate("barehand_weapon");
                     DbInventoryItem item;
                     if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)

@@ -38,6 +38,7 @@ namespace DOL.GS
         Bladeturn,
         DirectDamage,
         SpeedDecrease,
+        PreventFlight,
         SummonAnimistPet,
         Bomber,
         SummonAnimistFnFCustom,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 
@@ -109,6 +110,22 @@ namespace DOL.GS
                 ShowAttackAnimation(leftHandAttackData, _leftWeapon);
             else
                 ShowAttackAnimation(mainHandAttackData, _attackWeapon);
+
+            if (_owner.HasAbilityType(typeof(AtlasOF_PreventFlight)) &&
+                Util.Chance(35) &&
+                _target is GameLiving livingTarget &&
+                _owner.IsObjectInFront(livingTarget, 120) &&
+                livingTarget.IsMoving &&
+                livingTarget.GetAngle(_owner) is >= 150 and < 210)
+            {
+                Spell spell = SkillBase.GetSpellByID(7083);
+
+                if (spell != null)
+                {
+                    ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(_owner, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
+                    spellHandler?.StartSpell(livingTarget);
+                }
+            }
 
             // Mobs' heading isn't updated after they start attacking, so we update it after they swing.
             if (_owner is GameNPC npcOwner)

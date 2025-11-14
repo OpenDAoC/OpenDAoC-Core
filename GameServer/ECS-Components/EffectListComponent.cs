@@ -714,6 +714,9 @@ namespace DOL.GS
                             if (!existingSpellHandler.HasConflictingEffectWith(effect.SpellHandler))
                                 continue;
 
+                            // Compare the two effects to see which one is better.
+                            // We either disable or stop the existing effects, or prevent the new effect from being added.
+                            // Note that `CanCoexist` can only return true for buffs, thus only buffs can be disabled.
                             if (effect.IsBetterThan(existingEffect))
                             {
                                 if (CanCoexist(effect, existingEffect))
@@ -724,11 +727,15 @@ namespace DOL.GS
                                         effectsToDisable.Add(existingEffect);
                                     }
                                 }
-                                else
+                                else if (!existingEffect.TriggersImmunity)
                                 {
+                                    // This is relevant for most debuffs, but also for snare effects (hard CCs are pre-filtered in their spell handlers),
+                                    // allowing them to replace weaker ones as long as they don't trigger immunity.
                                     effectsToStop ??= GameLoop.GetListForTick<ECSGameEffect>();
                                     effectsToStop.Add(existingEffect);
                                 }
+                                else
+                                    return AddEffectResult.Failed;
                             }
                             else
                             {

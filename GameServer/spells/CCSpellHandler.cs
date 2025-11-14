@@ -166,11 +166,6 @@ namespace DOL.GS.Spells
 
             if (isImmune)
                 message = "Your target is immune to this effect!";
-            else if (FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
-            {
-                message = "Your target is immune to this effect!";
-                isImmune = true;
-            }
             else if (target is GameNPC && target.HealthPercent < 75)
             {
                 message = "Your target is enraged and resists the spell!";

@@ -24,9 +24,6 @@ namespace DOL.GS.Effects
                     speedBuff.Disable();
             }
 
-            foreach (ECSGameSpellEffect snare in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Snare))
-                snare.Disable();
-
             foreach (ECSGameSpellEffect root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
                 root.Disable();
 
@@ -46,9 +43,6 @@ namespace DOL.GS.Effects
 
             foreach (ECSGameSpellEffect speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
                 speedBuff.Enable();
-
-            foreach (ECSGameSpellEffect snare in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Snare))
-                snare.Enable();
 
             foreach (ECSGameSpellEffect root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
                 root.Enable();

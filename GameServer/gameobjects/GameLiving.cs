@@ -1692,28 +1692,30 @@ namespace DOL.GS
 				return false;
 
 			bool removeMez = false;
-			bool removeSnare = false; // Immunity-triggering snare/root spells
-			bool removeMovementSpeedDebuff = false; // Non-immunity snares like focus snare, melee snares, DD+Snare spells, etc.
+			bool removeMovementSpeedDebuff = false;
 
 			// Attack was Melee
-			if (ad.AttackType != AttackData.eAttackType.Spell)
+			if (ad.AttackType is not eAttackType.Spell)
 			{
 				switch (ad.AttackResult)
 				{
 					case eAttackResult.HitStyle:
 					case eAttackResult.HitUnstyled:
-						removeSnare = true;
+					{
 						removeMez = true;
 						removeMovementSpeedDebuff = true;
 						break;
+					}
 					case eAttackResult.Blocked:
 					case eAttackResult.Evaded:
 					case eAttackResult.Fumbled:
 					case eAttackResult.Missed:
 					case eAttackResult.Parried:
+					{
 						// Missed melee swings still break mez.
 						removeMez = true;
 						break;
+					}
 				}
 			}
 			// Attack was a Spell. Note that a spell being resisted does not mean it does not break mez.
@@ -1723,7 +1725,6 @@ namespace DOL.GS
 				{
 					// Any damage breaks mez and snare/root.
 					removeMez = true;
-					removeSnare = true;
 					removeMovementSpeedDebuff = true;
 				}
 				else if (ad.SpellHandler is
@@ -1753,17 +1754,14 @@ namespace DOL.GS
 
 						break;
 					}
-					case eEffect.Snare:
-					{
-						if (removeSnare)
-							effect.End();
-
-						break;
-					}
 					case eEffect.MovementSpeedDebuff:
 					{
-						if (removeMovementSpeedDebuff && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType is not eSpellType.UnbreakableSpeedDecrease)
+						if (removeMovementSpeedDebuff &&
+							effect is ECSGameSpellEffect spellEffect &&
+							spellEffect.SpellHandler.Spell.SpellType is not eSpellType.UnbreakableSpeedDecrease and not eSpellType.PreventFlight)
+						{
 							effect.End();
+						}
 
 						break;
 					}
@@ -1777,7 +1775,7 @@ namespace DOL.GS
 				}
 			}
 
-			return removeMez || removeSnare || removeMovementSpeedDebuff;
+			return removeMez || removeMovementSpeedDebuff;
 		}
 
 		public virtual void TryCancelMovementSpeedBuffs(AttackData attackData, bool isAttacker)

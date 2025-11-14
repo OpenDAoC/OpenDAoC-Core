@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Spells;
+using DOL.Logging;
 
 namespace DOL.GS
 {
     public static class EffectHelper
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static int GetConcentrationEffectActivationRange(eSpellType spellType)
         {
@@ -138,6 +139,7 @@ namespace DOL.GS
                 case eSpellType.StyleSpeedDecrease:
                 case eSpellType.SpeedDecrease:
                 case eSpellType.UnbreakableSpeedDecrease:
+                case eSpellType.PreventFlight:
                     return eEffect.MovementSpeedDebuff;
                 case eSpellType.MeleeDamageDebuff:
                     return eEffect.MeleeDamageDebuff;
@@ -161,10 +163,6 @@ namespace DOL.GS
                     return eEffect.MesmerizeDurationBuff;
                 //case eSpellType.MezImmunity:
                 //    return eEffect.MezImmunity;
-                //case eSpellType.StyleSpeedDecrease:
-                //    return eEffect.MeleeSnare;
-                //case eSpellType.Snare: // May work off of SpeedDecrease.
-                //    return eEffect.Snare;
                 //case eSpellType.SnareImmunity: // Not implemented.
                 //    return eEffect.SnareImmunity;
                 case eSpellType.Nearsight:
@@ -276,8 +274,7 @@ namespace DOL.GS
                 case eSpellType.Stun:
                     return eEffect.StunImmunity;
                 case eSpellType.SpeedDecrease:
-                case eSpellType.DamageSpeedDecreaseNoVariance:
-                case eSpellType.DamageSpeedDecrease:
+                case eSpellType.UnbreakableSpeedDecrease:
                     return eEffect.SnareImmunity;
                 case eSpellType.Nearsight:
                     return eEffect.NearsightImmunity;
