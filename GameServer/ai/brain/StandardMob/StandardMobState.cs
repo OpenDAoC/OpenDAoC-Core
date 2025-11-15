@@ -149,6 +149,12 @@ namespace DOL.AI.Brain
             StateType = eFSMStateType.ROAMING;
         }
 
+        public override void Enter()
+        {
+            // Ensure NPCs don't start roaming immediately.
+            _nextRoamingTickSet = false;
+        }
+
         public override void Think()
         {
             if (_brain.CheckProximityAggro())
