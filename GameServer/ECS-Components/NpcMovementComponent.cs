@@ -276,8 +276,11 @@ namespace DOL.GS
 
         public void Roam(short speed)
         {
-            // Note that `CanRoam` returns false if `RoamingRange` is <= 0.
-            int maxRoamingRadius = Owner.RoamingRange > 0 ? Owner.RoamingRange : Owner.CurrentRegion.IsDungeon ? 5 : 500;
+            // `CanRoam` returns false if `RoamingRange` is <= 0.
+            if (!CanRoam)
+                return;
+
+            int maxRoamingRadius = Owner.RoamingRange;
 
             if (Owner.CurrentZone.IsPathingEnabled)
             {
