@@ -30,7 +30,8 @@ namespace DOL.GS
         public virtual string Name => "Default Effect Name";
         public virtual string OwnerName => Owner != null ? Owner.Name : string.Empty;
         public virtual bool HasPositiveEffect => false;
-        public bool TriggersImmunity { get; set; } = false;
+        public ImmunityType AppliedImmunityType => !TriggersImmunity ? ImmunityType.None : (Owner is GamePlayer ? ImmunityType.Player : ImmunityType.Npc);
+        public bool TriggersImmunity { get; set; }
         public int ImmunityDuration { get; protected set; } = 60000;
         public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Effect);
@@ -292,6 +293,13 @@ namespace DOL.GS
                 // "{0} looks more agile!"
                 Message.SystemToArea(Owner, Util.MakeSentence(thirdPersonMessage, Owner.GetName(0, thirdPersonMessage.StartsWith("{0}"))), eChatType.CT_Spell, Owner, toExclude);
             }
+        }
+
+        public enum ImmunityType
+        {
+            None,
+            Player,     // Player-style immunity. Effects triggering this immunity should not be allowed to be refreshed.
+            Npc         // NPC-style immunity, on which diminishing returns may apply.
         }
 
         private enum State

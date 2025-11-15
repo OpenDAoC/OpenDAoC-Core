@@ -601,8 +601,17 @@ namespace DOL.GS
                 // Second block handles effects with a different spell ID.
                 if (existingEffects.Any(e => e.SpellHandler.Spell.ID == newSpell.ID))
                 {
-                    if (effect.IsConcentrationEffect() && !effect.IsEnabling)
-                        return AddEffectResult.Failed;
+                    // Prevent refreshing certain effects.
+                    if (!effect.IsEnabling)
+                    {
+                        // Concentration effects cannot be refreshed.
+                        if (effect.IsConcentrationEffect())
+                            return AddEffectResult.Failed;
+
+                        // Immunity triggering effects cannot be refreshed on players.
+                        if (effect.AppliedImmunityType is ECSGameEffect.ImmunityType.Player)
+                            return AddEffectResult.Failed;
+                    }
 
                     for (int i = 0; i < existingEffects.Count; i++)
                     {
@@ -727,10 +736,10 @@ namespace DOL.GS
                                         effectsToDisable.Add(existingEffect);
                                     }
                                 }
-                                else if (!existingEffect.TriggersImmunity)
+                                else if (effect.AppliedImmunityType is not ECSGameEffect.ImmunityType.Player)
                                 {
                                     // This is relevant for most debuffs, but also for snare effects (hard CCs are pre-filtered in their spell handlers),
-                                    // allowing them to replace weaker ones as long as they don't trigger immunity.
+                                    // allowing them to replace weaker ones as long as they don't trigger immunity or the target isn't a player.
                                     effectsToStop ??= GameLoop.GetListForTick<ECSGameEffect>();
                                     effectsToStop.Add(existingEffect);
                                 }

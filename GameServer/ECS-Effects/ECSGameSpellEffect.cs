@@ -62,7 +62,7 @@ namespace DOL.GS
         public override void TryApplyImmunity()
         {
             // Only handle players. NPCs have their own immunity logic.
-            if (!TriggersImmunity || OwnerPlayer == null)
+            if (AppliedImmunityType is not ImmunityType.Player)
                 return;
 
             // Summoned pets don't give stun immunities (maybe tweak their spells instead?)
