@@ -257,18 +257,14 @@ namespace DOL.GS.Spells
 
 					if (caster.ActiveWeapon != null)
 					{
-						// Quality
-						ad.Damage -= (int)(ad.Damage * (100 - caster.ActiveWeapon.Quality) * .01);
+						ad.Damage = (int) (ad.Damage * caster.ActiveWeapon.Quality * 0.01 * caster.ActiveWeapon.ConditionPercent * 0.01);
 
-						// Condition
-						ad.Damage = (int)((double)ad.Damage * Math.Min(1.0, (double)caster.ActiveWeapon.Condition / (double)caster.ActiveWeapon.MaxCondition));
+                        // Patch Note:  http://support.darkageofcamelot.com/kb/article.php?id=931
+                        // - The Damage Per Second (DPS) of your bow will have an effect on your damage for archery shots. If the effective DPS
+                        //   of your equipped bow is less than that of your max DPS for the level of archery shot you are using, the damage of your
+                        //   shot will be reduced. Max DPS for a particular level can be found by using this equation: (.3 * level) + 1.2
 
-						// Patch Note:  http://support.darkageofcamelot.com/kb/article.php?id=931
-						// - The Damage Per Second (DPS) of your bow will have an effect on your damage for archery shots. If the effective DPS
-						//   of your equipped bow is less than that of your max DPS for the level of archery shot you are using, the damage of your
-						//   shot will be reduced. Max DPS for a particular level can be found by using this equation: (.3 * level) + 1.2
-
-						int spellRequiredDPS = 12 + 3 * m_handler.Spell.Level;
+                        int spellRequiredDPS = 12 + 3 * m_handler.Spell.Level;
 
 						if (caster.ActiveWeapon.DPS_AF < spellRequiredDPS)
 						{

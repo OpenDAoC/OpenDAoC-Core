@@ -1476,7 +1476,7 @@ namespace DOL.GS
                 if (source is GameNPC)
                     guardChance = source.GetModified(eProperty.BlockChance);
                 else
-                    guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
+                    guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.ConditionPercent * 0.01);
 
                 guardChance *= 0.001;
                 guardChance += source.GetAbilityLevel(Abilities.Guard) * 0.05; // 5% additional chance to guard with each Guard level.

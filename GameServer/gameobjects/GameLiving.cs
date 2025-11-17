@@ -1248,7 +1248,7 @@ namespace DOL.GS
 					return 0;
 
 				baseBlockChance = GetModified(eProperty.BlockChance);
-				baseBlockChance *= shield.Quality * 0.01 * (shield.Condition / (double) shield.MaxCondition);
+				baseBlockChance *= shield.Quality * 0.01 * shield.ConditionPercent * 0.01;
 			}
 			else
 				baseBlockChance = GetModified(eProperty.BlockChance);

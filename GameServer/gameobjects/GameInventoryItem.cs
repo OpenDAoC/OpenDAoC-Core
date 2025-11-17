@@ -1581,7 +1581,7 @@ namespace DOL.GS
             if (player.RealmLevel > 39)
                 clampedDPS += 0.3;
             double itemSPD = SPD_ABS / 10.0;
-            double effectiveDPS = clampedDPS * Quality / 100.0 * Condition / MaxCondition;
+            double effectiveDPS = clampedDPS * Quality * 0.01 * ConditionPercent * 0.01;
 
             delve.Add(" ");
             delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.DamageMod"));
@@ -1663,7 +1663,7 @@ namespace DOL.GS
 
             if (DPS_AF != 0)
             {
-                effectiveAF = af * Quality / 100.0 * Condition / MaxCondition * (1 + SPD_ABS / 100.0);
+                effectiveAF = af * Quality * 0.01 * ConditionPercent * 0.01 * (1 + SPD_ABS * 0.01);
                 delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Factor", (int)effectiveAF));
             }
         }

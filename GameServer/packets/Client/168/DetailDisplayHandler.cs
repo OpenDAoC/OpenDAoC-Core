@@ -141,7 +141,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
-							WriteClassicWeaponInfos(objectInfo, invItem, client);
+                        WriteClassicWeaponInfos(objectInfo, invItem, client);
 						}
 
 						if (invItem.Object_Type >= (int)eObjectType.Cloth && invItem.Object_Type <= (int)eObjectType.Scale)
@@ -432,7 +432,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							WriteUsableClasses(objectInfo, item, client);
 							WriteMagicalBonuses(objectInfo, item, client, false);
-							WriteClassicWeaponInfos(objectInfo, GameInventoryItem.Create(item), client);
+                        WriteClassicWeaponInfos(objectInfo, GameInventoryItem.Create(item), client);
 						}
 
 						if (item.Object_Type >= (int)eObjectType.Cloth && item.Object_Type <= (int)eObjectType.Scale)
@@ -618,7 +618,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
-							WriteClassicWeaponInfos(objectInfo, invItem, client);
+                        WriteClassicWeaponInfos(objectInfo, invItem, client);
 						}
 
 						if (invItem.Object_Type >= (int)eObjectType.Cloth && invItem.Object_Type <= (int)eObjectType.Scale)
@@ -1144,7 +1144,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if ((item.Object_Type >= (int)eObjectType.GenericWeapon) && (item.Object_Type <= (int)eObjectType.MaulerStaff))
 			{
 				WriteMagicalBonuses(objectInfo, item, client, true);
-				WriteClassicWeaponInfos(objectInfo, item, client);
+                WriteClassicWeaponInfos(objectInfo, item, client);
 			}
 			if (item.Object_Type >= (int)eObjectType.Cloth && item.Object_Type <= (int)eObjectType.Scale)
 			{
@@ -1199,12 +1199,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// Effective Damage:
 		/// - X.X DPS
 		/// </summary>
-		public void WriteClassicWeaponInfos(IList<string> output, DbInventoryItem item, GameClient client)
+		public static void WriteClassicWeaponInfos(IList<string> output, DbInventoryItem item, GameClient client)
 		{
 			double itemDPS = item.DPS_AF / 10.0;
 			double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * client.Player.Level);
 			double itemSPD = item.SPD_ABS / 10.0;
-			double effectiveDPS = clampedDPS * item.Quality / 100.0 * item.Condition / item.Template.MaxCondition;
+			double effectiveDPS = clampedDPS * item.Quality * 0.01 * item.ConditionPercent * 0.01;
 
 			output.Add(" ");
 			output.Add(" ");
@@ -1348,13 +1348,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			output.Add(" ");
 
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.EffArmor"));
-			double EAF = 0;
+
 			if (item.DPS_AF != 0)
 			{
-				EAF = AF * item.Quality / 100.0 * item.Condition / item.MaxCondition * (1 + item.SPD_ABS / 100.0);
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Factor", (int)EAF));
+				double EAF = AF * item.Quality * 0.01 * item.ConditionPercent * 0.01 * (1 + item.SPD_ABS * 0.01);
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Factor", (int) EAF));
 			}
-
 		}
 
 		public void WriteMagicalBonuses(List<string> output, DbItemTemplate item, GameClient client, bool shortInfo)

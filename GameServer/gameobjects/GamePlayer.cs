@@ -5796,7 +5796,7 @@ namespace DOL.GS
             int armorFactorCap = characterLevel * 2;
             double armorFactor = Math.Min(item.DPS_AF, (eObjectType) item.Object_Type is eObjectType.Cloth ? characterLevel : armorFactorCap);
             armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
-            armorFactor *= item.Quality * 0.01 * item.Condition / item.MaxCondition; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
+            armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
             armorFactor += GetModified(eProperty.ArmorFactor) / 6.0; // Don't call base here.
 
@@ -5875,7 +5875,7 @@ namespace DOL.GS
 
         public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
         {
-            return damage * weapon.Quality * 0.01 * weapon.Condition / weapon.MaxCondition;
+            return damage * weapon.Quality * 0.01 * weapon.ConditionPercent * 0.01;
         }
 
         public override bool CanCastWhileAttacking()

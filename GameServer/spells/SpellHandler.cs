@@ -2101,7 +2101,7 @@ namespace DOL.GS.Spells
 				if (instrument != null)
 				{
 					duration *= 1.0 + Math.Min(1.0, instrument.Level / (double) Caster.Level); // Up to 200% duration for songs.
-					duration *= instrument.Condition / (double) instrument.MaxCondition * instrument.Quality / 100;
+					duration *= instrument.Quality * 0.01 * instrument.ConditionPercent * 0.01;
 				}
 			}
 
