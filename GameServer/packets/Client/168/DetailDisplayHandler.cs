@@ -1316,43 +1316,37 @@ namespace DOL.GS.PacketHandler.Client.v168
 			output.Add(" ");
 			output.Add(" ");
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.ArmorMod"));
+
 			if (item.DPS_AF != 0)
 			{
 				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.BaseFactor", item.DPS_AF));
 			}
-			double AF = 0;
+
+			double armorFactor = 0;
+
 			if (item.DPS_AF != 0)
 			{
-				int afCap = client.Player.Level;
-				if (item.Object_Type != (int)eObjectType.Cloth)
-				{
-					afCap *= 2;
-				}
-
-				AF = Math.Min(afCap, item.DPS_AF);
-
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.ClampFact", (int)AF));
+				int armorFactorCap = client.Player.GetArmorFactorCap((eObjectType) item.Object_Type);
+				armorFactor = Math.Min(armorFactorCap, item.DPS_AF);
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.ClampFact", (int) armorFactor));
 			}
+
 			if (item.SPD_ABS >= 0)
-			{
 				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Absorption", item.SPD_ABS));
-			}
-			if (item.Quality != 0)
-			{
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Quality", item.Quality));
-			}
-			if (item.Condition != 0)
-			{
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Condition", 100 /*item.ConditionPercent*/));
-			}
-			output.Add(" ");
 
+			if (item.Quality != 0)
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Quality", item.Quality));
+
+			if (item.Condition != 0)
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Condition", 100 /*item.ConditionPercent*/));
+
+			output.Add(" ");
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.EffArmor"));
 
 			if (item.DPS_AF != 0)
 			{
-				double EAF = AF * item.Quality * 0.01 * item.ConditionPercent * 0.01 * (1 + item.SPD_ABS * 0.01);
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Factor", (int) EAF));
+				int effectiveArmorFactor = (int) (armorFactor * item.Quality * 0.01 * item.ConditionPercent * 0.01 * (1 + item.SPD_ABS * 0.01));
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.Factor", effectiveArmorFactor));
 			}
 		}
 

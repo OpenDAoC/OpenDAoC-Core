@@ -5775,6 +5775,19 @@ namespace DOL.GS
             return GetModified(eProperty.Strength);
         }
 
+        public int GetArmorFactorCap(eObjectType type)
+        {
+            if (!GlobalConstants.IsArmor((int) type))
+                throw new ArgumentException($"{nameof(type)} must be an armor type");
+
+            int characterLevel = Level;
+
+            if (RealmLevel > 39)
+                characterLevel++;
+
+            return type is eObjectType.Cloth ? characterLevel : characterLevel * 2;
+        }
+
         /// <summary>
         /// calculate item armor factor influenced by quality, con and duration
         /// </summary>
@@ -5788,13 +5801,8 @@ namespace DOL.GS
             if (item == null)
                 return 0;
 
-            int characterLevel = Level;
-
-            if (RealmLevel > 39)
-                characterLevel++;
-
-            int armorFactorCap = characterLevel * 2;
-            double armorFactor = Math.Min(item.DPS_AF, (eObjectType) item.Object_Type is eObjectType.Cloth ? characterLevel : armorFactorCap);
+            int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type);
+            double armorFactor = Math.Min(item.DPS_AF, armorFactorCap);
             armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
