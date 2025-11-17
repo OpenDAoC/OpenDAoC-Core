@@ -5860,25 +5860,27 @@ namespace DOL.GS
             return ApplyWeaponQualityAndConditionToDamage(weapon, WeaponDamageWithoutQualityAndCondition(weapon));
         }
 
+        public double GetWeaponDpsCap()
+        {
+            double dpsCap = 1.2 + 0.3 * Level;
+
+            if (RealmLevel > 39)
+                dpsCap += 0.3;
+
+            return dpsCap;
+        }
+
         public double WeaponDamageWithoutQualityAndCondition(DbInventoryItem weapon)
         {
             if (weapon == null)
                 return 0;
 
-            double Dps = weapon.DPS_AF;
-
             // Apply dps cap before quality and condition.
             // http://www.classesofcamelot.com/faq.asp?mode=view&cat=10
-            int dpsCap = 12 + 3 * Level;
-
-            if (RealmLevel > 39)
-                dpsCap += 3;
-
-            if (Dps > dpsCap)
-                Dps = dpsCap;
-
-            Dps *= 1 + GetModified(eProperty.DPS) * 0.01;
-            return Dps * 0.1;
+            double weaponDps = weapon.DPS_AF * 0.1;
+            double dps = Math.Min(weaponDps, GetWeaponDpsCap());
+            weaponDps *= 1 + GetModified(eProperty.DPS) * 0.01;
+            return weaponDps;
         }
 
         public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)

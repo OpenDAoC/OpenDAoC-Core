@@ -1201,43 +1201,37 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		public static void WriteClassicWeaponInfos(IList<string> output, DbInventoryItem item, GameClient client)
 		{
-			double itemDPS = item.DPS_AF / 10.0;
-			double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * client.Player.Level);
-			double itemSPD = item.SPD_ABS / 10.0;
-			double effectiveDPS = clampedDPS * item.Quality * 0.01 * item.ConditionPercent * 0.01;
+			double itemDps = item.DPS_AF * 0.1;
+			double clampedDps = Math.Min(itemDps, client.Player.GetWeaponDpsCap());
+			double itemSpd = item.SPD_ABS * 0.1;
+			double effectiveDps = clampedDps * item.Quality * 0.01 * item.ConditionPercent * 0.01;
+			string damageType = item.Type_Damage == 0 ? "None" : GlobalConstants.WeaponDamageTypeToName(item.Type_Damage);
 
 			output.Add(" ");
 			output.Add(" ");
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.DamageMod"));
-			if (itemDPS != 0)
+
+			if (itemDps != 0)
 			{
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.BaseDPS", itemDPS.ToString("0.0")));
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.ClampDPS", clampedDPS.ToString("0.0")));
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.BaseDPS", itemDps.ToString("0.0")));
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.ClampDPS", clampedDps.ToString("0.0")));
 			}
 
 			if (item.SPD_ABS >= 0)
-			{
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.SPD", itemSPD.ToString("0.0")));
-			}
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.SPD", itemSpd.ToString("0.0")));
 
 			if (item.Quality != 0)
-			{
 				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.Quality", item.Quality));
-			}
+
 			if (item.Condition != 0)
-			{
 				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.Condition", item.ConditionPercent));
-			}
 
-			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.DamageType",
-			                                      (item.Type_Damage == 0 ? "None" : GlobalConstants.WeaponDamageTypeToName(item.Type_Damage))));
+			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.DamageType", damageType));
 			output.Add(" ");
-
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.EffDamage"));
-			if (itemDPS != 0)
-			{
-				output.Add("- " + effectiveDPS.ToString("0.0") + " DPS");
-			}
+
+			if (itemDps != 0)
+				output.Add($"- {effectiveDps:0.0} DPS");
 		}
 
 		public void WriteUsableClasses(IList<string> output, DbInventoryItem item, GameClient client)
