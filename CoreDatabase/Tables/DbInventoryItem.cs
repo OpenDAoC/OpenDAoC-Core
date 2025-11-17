@@ -762,32 +762,26 @@ namespace DOL.Database
 			set { Template.SalvageYieldID = value; }
 		}
 
-		
-		#endregion
-		
-		// Wrapped methods/accessors from ItemTemplate
-		public virtual byte DurabilityPercent
-		{
-			get
-			{
-				return (byte)((Template.MaxDurability > 0) ?Durability * 100 / Template.MaxDurability : 0);
-			}
-		}
 
-		public virtual byte ConditionPercent
-		{
-			get	{
-				return (byte)Math.Round((Template.MaxCondition > 0) ? (double)Condition / Template.MaxCondition * 100 : 0);
-			}
-		}
+        #endregion
+
+		// We're rounding up so that an item with >0 left still shows as 1%, and to ensure 100% doesn't drop to 99% faster than intended.
+		// Prefer using this method over calculating it yourself. This way the displayed value will match game behavior.
+		public virtual byte DurabilityPercent => (byte) (Template.MaxDurability <= 0 ? 0 : Math.Clamp(Math.Ceiling((double) Durability / Template.MaxDurability * 100), 0, 100));
+		public virtual byte ConditionPercent => (byte) (Template.MaxCondition <= 0 ? 0 : Math.Clamp(Math.Ceiling((double) Condition / Template.MaxCondition * 100), 0, 100));
+
+		// Wrapped methods/accessors from ItemTemplate
+
 		public virtual bool IsMagical
 		{
 			get{ return Template.IsMagical;}
 		}
+
 		public virtual bool IsStackable
 		{
 			get{ return Template.IsStackable;}
 		}
+
 		public virtual string GetName(int article, bool firstLetterUppercase)
 		{
 			return Template.GetName(article,firstLetterUppercase);
