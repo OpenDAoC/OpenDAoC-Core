@@ -65,7 +65,8 @@ namespace DOL.GS.Scripts
 		}
 		public override void OnAttackEnemy(AttackData ad)
 		{
-			GudlaugrBrain brain = new GudlaugrBrain();
+			GudlaugrBrain brain = Brain as GudlaugrBrain;
+
 			if (TargetObject != null)
 			{
 				if (ad.Target.IsWithinRadius(this, attackComponent.AttackRange))
