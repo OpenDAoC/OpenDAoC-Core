@@ -51,7 +51,10 @@ namespace DOL.GS
 
             SpellHandler?.Tick();
 
-            while (_startSkillRequests.TryDequeue(out StartSkillRequest startSkillRequest))
+            // Only process up to count per tick to avoid infinite loops caused by some scripted NPCs able to call CastSpell recursively.
+            int count = _startSkillRequests.Count;
+
+            while (count-- > 0 && _startSkillRequests.TryDequeue(out StartSkillRequest startSkillRequest))
             {
                 startSkillRequest.StartSkill();
                 startSkillRequest.ResetAndReturn();
