@@ -261,9 +261,9 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShortLowEndian((ushort) (distanceWeapon != null ? distanceWeapon.Model : 0));
 
 					pak.WriteByte((byte) character.Strength);
-					pak.WriteByte((byte) character.Quickness);
-					pak.WriteByte((byte) character.Constitution);
 					pak.WriteByte((byte) character.Dexterity);
+					pak.WriteByte((byte) character.Constitution);
+					pak.WriteByte((byte) character.Quickness);
 					pak.WriteByte((byte) character.Intelligence);
 					pak.WriteByte((byte) character.Piety);
 					pak.WriteByte((byte) character.Empathy);
