@@ -4,12 +4,13 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 
 namespace DOL.GS
 {
     public class Recipe
     {
-        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public readonly Lock Lock = new();
 
@@ -107,7 +108,7 @@ namespace DOL.GS
 
     public class RecipeDB
     {
-        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private static Dictionary<ushort, Recipe> recipeCache = new Dictionary<ushort, Recipe>();
 
         public static Recipe FindBy(ushort recipeDatabaseID)
@@ -199,7 +200,17 @@ namespace DOL.GS
                 //throw new ArgumentException(errorText);
             }
 
-            var recipe = new Recipe(product, ingredients, (eCraftingSkill)dbRecipe.CraftingSkillType, dbRecipe.CraftingLevel, dbRecipe.MakeTemplated);
+            bool makeTemplated = dbRecipe.MakeTemplated;
+
+            if (!makeTemplated && product.IsStackable)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Recipe '{dbRecipe.Id_nb}' produces stackable product '{product.Name}' but MakeTemplated is false. Forcing to true to prevent inventory issues.");
+
+                makeTemplated = true;
+            }
+
+            var recipe = new Recipe(product, ingredients, (eCraftingSkill)dbRecipe.CraftingSkillType, dbRecipe.CraftingLevel, makeTemplated);
             return recipe;
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using DOL.Database.Attributes;
 
 namespace DOL.Database
@@ -16,6 +17,11 @@ namespace DOL.Database
 
 		public DbItemUnique(DbItemTemplate template) : base()
 		{
+			ArgumentNullException.ThrowIfNull(template);
+
+			if (template.IsStackable)
+				throw new ArgumentException($"Cannot create unique template from '{template.Id_nb}' (MaxCount: {template.MaxCount}). Stackable items should never have unique templates.");
+
 			m_allowUpdate = true;
 
 			if (template is DbItemUnique)
