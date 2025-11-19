@@ -2715,6 +2715,12 @@ namespace DOL.GS
 				effect.End(false);
 		}
 
+		public override void Delete()
+		{
+			effectListComponent.CancelAll();
+			base.Delete();
+		}
+
 		#endregion
 		#region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
 

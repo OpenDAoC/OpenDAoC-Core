@@ -17,9 +17,9 @@ namespace DOL.GS
             _owner = owner;
         }
 
-        public override void Tick()
+        public override void BeginTick()
         {
-            base.Tick();
+            base.BeginTick();
             SendPlayerUpdates();
         }
 

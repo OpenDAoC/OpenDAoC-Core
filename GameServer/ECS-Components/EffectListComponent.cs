@@ -19,7 +19,8 @@ namespace DOL.GS
 
         // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
-        private readonly Queue<PendingEffect> _pendingEffects = new();               // Queue for effects to be started, stopped.
+        private Queue<PendingEffect> _pendingEffects = new();                        // Queue for effects to be started, stopped.
+        private Queue<PendingEffect> _effectsToProcess = new();                      // Temporary queue for processing pending effects.
         protected readonly Lock _effectsLock = new();
 
         // Concentration.
@@ -44,32 +45,36 @@ namespace DOL.GS
                 return new EffectListComponent(living);
         }
 
-        public virtual void Tick()
+        public virtual void BeginTick()
         {
+            // This can become an infinite loop if effects add pending effects recursively during processing.
+            // It's however important for immunity effects to be started immediately and not leave a gap.
             if (_pendingEffects.Count > 0)
             {
-                // Ideally, effects shouldn't be allowed to modify other components than their own during their processing.
-                // Guard, Intercept, and Protect are examples of effects that may cause issues here.
-                // Without correct effect state synchronization, this may lead to deadlocks.
-                lock (_effectsLock)
+                do
                 {
-                    // This can cause an infinite loop if an effect keeps adding new effects during processing.
-                    // It's however important for immunity effects to be started immediately and not leave a gap.
-                    while (_pendingEffects.TryDequeue(out PendingEffect pendingEffect))
+                    lock (_effectsLock)
+                    {
+                        if (_pendingEffects.Count == 0)
+                            break;
+
+                        (_pendingEffects, _effectsToProcess) = (_effectsToProcess, _pendingEffects);
+                    }
+
+                    // Process effects outside of the lock for safety. Some effects may try to acquire locks on other components.
+                    // Currently the case for Guard, Intercept, and Protect.
+                    while (_effectsToProcess.TryDequeue(out PendingEffect pendingEffect))
                         pendingEffect.Process();
-                }
+                } while (true);
             }
 
-            if (_effects.Count == 0 && _pendingEffects.Count == 0)
-            {
+            // At this point, new effects can still be enqueued by other components, but they'll be processed on the next tick.
+        }
+
+        public void EndTick()
+        {
+            if (_pendingEffects.Count == 0)
                 ServiceObjectStore.Remove(this);
-                return;
-            }
-
-            // Don't check `IsAlive`, since it returns false during region change.
-            // Keep ticking even if `ObjectState == Inactive` (region change).
-            if (Owner.Health <= 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
-                CancelAll();
         }
 
         public void TryEnableBestEffectOfSameType(ECSGameEffect effect)
