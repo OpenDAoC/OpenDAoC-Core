@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -442,7 +443,7 @@ namespace DOL.Database
                                         tableHandler.TableName);
 
             var primary = columns.FirstOrDefault(col => col.PrimaryKey != null);
-            var dataObjects = new List<IList<DataObject>>();
+            var dataObjects = new List<List<DataObject>>();
             ExecuteSelectImpl(command, parameters, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects));
 
             return dataObjects.ToArray();
@@ -457,42 +458,49 @@ namespace DOL.Database
                                         tableHandler.TableName);
 
             var primary = columns.FirstOrDefault(col => col.PrimaryKey != null);
-            var dataObjects = new List<IList<DataObject>>();
+            var dataObjects = new List<List<DataObject>>();
 
             ExecuteSelectImpl(selectFromExpression, whereClauseBatch, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects));
 
             return dataObjects.ToArray();
         }
 
-        private void FillQueryResultList(IDataReader reader, DataTableHandler tableHandler, ElementBinding[] columns, ElementBinding primary, List<IList<DataObject>> resultList)
+        private void FillQueryResultList(IDataReader reader, DataTableHandler tableHandler, ElementBinding[] columns, ElementBinding primary, List<List<DataObject>> resultList)
         {
-            var list = new List<DataObject>();
-            var data = new object[reader.FieldCount];
+            List<DataObject> list = new();
+            object[] buffer = ArrayPool<object>.Shared.Rent(columns.Length);
 
-            while (reader.Read())
+            try
             {
-                reader.GetValues(data);
-                DataObject obj = _dataObjectConstructorCache.GetOrAdd(tableHandler.ObjectType, (key) => CompiledConstructorFactory.CompileConstructor(key, []) as Func<DataObject>)();
-
-                // Fill Object
-                var current = 0;
-                foreach (var column in columns)
+                while (reader.Read())
                 {
-                    DatabaseSetValue(obj, column, data[current]);
-                    current++;
+                    reader.GetValues(buffer);
+                    DataObject obj = _dataObjectConstructorCache.GetOrAdd(tableHandler.ObjectType, (key) => CompiledConstructorFactory.CompileConstructor(key, []) as Func<DataObject>)();
+
+                    // Fill Object
+                    var current = 0;
+                    foreach (var column in columns)
+                    {
+                        DatabaseSetValue(obj, column, buffer[current]);
+                        current++;
+                    }
+
+                    // Set Primary Key
+                    if (primary != null)
+                        obj.ObjectId = primary.GetValue(obj).ToString();
+
+                    list.Add(obj);
+                    obj.Dirty = false;
+                    obj.IsPersisted = true;
+                    // Don't call `TakeSnapshot` here, `FillObjectRelations` must be called first.
                 }
 
-                // Set Primary Key
-                if (primary != null)
-                    obj.ObjectId = primary.GetValue(obj).ToString();
-
-                list.Add(obj);
-                obj.Dirty = false;
-                obj.IsPersisted = true;
-                // Don't call `TakeSnapshot` here, `FillObjectRelations` must be called first.
+                resultList.Add(list);
             }
-
-            resultList.Add(list.ToArray());
+            finally
+            {
+                ArrayPool<object>.Shared.Return(buffer);
+            }
         }
 
         /// <summary>
