@@ -5879,8 +5879,8 @@ namespace DOL.GS
             // http://www.classesofcamelot.com/faq.asp?mode=view&cat=10
             double weaponDps = weapon.DPS_AF * 0.1;
             double dps = Math.Min(weaponDps, GetWeaponDpsCap());
-            weaponDps *= 1 + GetModified(eProperty.DPS) * 0.01;
-            return weaponDps;
+            dps *= 1 + GetModified(eProperty.DPS) * 0.01;
+            return dps;
         }
 
         public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
