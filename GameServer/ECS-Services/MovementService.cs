@@ -55,7 +55,7 @@ namespace DOL.GS
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for: {movementComponent.Owner.Name}({movementComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {movementComponent.Owner.Name}({movementComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {

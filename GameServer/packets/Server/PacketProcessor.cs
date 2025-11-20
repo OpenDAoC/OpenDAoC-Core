@@ -197,7 +197,7 @@ namespace DOL.GS.PacketHandler
                 if (log.IsWarnEnabled)
                 {
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                        log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} ({(eClientPackets) packet.Code}) for {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
+                        log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} ({(eClientPackets) packet.Code}) for: {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
                 }
             }
             catch (Exception e)

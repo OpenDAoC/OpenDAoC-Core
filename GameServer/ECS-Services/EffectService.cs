@@ -56,6 +56,9 @@ namespace DOL.GS
                 long startTick = GameLoop.GetRealTime();
                 TickEffect(effect);
                 long stopTick = GameLoop.GetRealTime();
+
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(TickInternal)} for {effect.Owner.Name}({effect.Owner.ObjectID}) Effect: {effect.EffectType} Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {

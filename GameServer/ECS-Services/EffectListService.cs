@@ -57,7 +57,7 @@ namespace DOL.GS
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(BeginTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(BeginTickInternal)} for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
@@ -79,7 +79,7 @@ namespace DOL.GS
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(EndTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(EndTickInternal)} for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
