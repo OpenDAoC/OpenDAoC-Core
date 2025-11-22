@@ -5113,7 +5113,7 @@ namespace DOL.GS
             double multiplier = property switch
             {
                 (>= eProperty.Stat_First and <= eProperty.Stat_Last) or eProperty.Acuity => 2 / 3.0,
-                eProperty.MaxMana => 1.0,
+                eProperty.MaxMana => 2.0,
                 eProperty.MaxHealth => 0.25,
                 >= eProperty.Resist_First and <= eProperty.Resist_Last => 2.0,
                 >= eProperty.Skill_First and <= eProperty.Skill_Last => 5.0,
