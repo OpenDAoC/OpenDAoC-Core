@@ -300,9 +300,9 @@ namespace DOL.GS
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} removing '{item.Name}' from consignment merchant on lot {HouseNumber}.");
 
+            MarketCache.RemoveItem(item); // Remove before changing OwnerLot.
             item.OwnerLot = 0;
             item.SellPrice = 0;
-            MarketCache.RemoveItem(item);
             return true;
         }
 
