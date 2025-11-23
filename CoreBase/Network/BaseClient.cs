@@ -159,7 +159,6 @@ namespace DOL.Network
         public void Disconnect()
         {
             _receiveArgs.Dispose();
-            SessionId.Dispose();
 
             try
             {

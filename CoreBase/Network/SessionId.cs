@@ -27,6 +27,7 @@ namespace DOL.Network
                 return;
 
             _sessionIdAllocator.Free(_value);
+            _value = 0;
             _isDisposed = true;
         }
     }
