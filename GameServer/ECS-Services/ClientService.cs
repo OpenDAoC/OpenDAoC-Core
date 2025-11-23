@@ -554,7 +554,7 @@ namespace DOL.GS
 
             static bool Predicate(GameClient client, string accountName)
             {
-                return client.Account != null && client.Account.Name.Equals(accountName);
+                return client.Account != null && client.Account.Name.Equals(accountName, StringComparison.OrdinalIgnoreCase);
             }
         }
 
