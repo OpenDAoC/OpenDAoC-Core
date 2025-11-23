@@ -263,7 +263,7 @@ namespace DOL.GS
                 ClientState = eClientState.Disconnected;
                 PacketProcessor?.Dispose();
                 ClientService.Instance.OnClientDisconnect(this);
-                SessionId.Dispose();
+                base.OnDisconnect(); // Frees session ID. Must be done after calling `ClientService.OnClientDisconnect`.
                 GameEventMgr.Notify(GameClientEvent.Disconnected, this);
 
                 if (Account != null)
