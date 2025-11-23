@@ -1330,7 +1330,7 @@ namespace DOL.GS
 					{
 						foreach (GameLiving living in attackerPlayer.Group.GetMembersInTheGroup())
 						{
-							if (IsWithinRadius(living, WorldMgr.MAX_EXPFORKILL_DISTANCE) && living.IsAlive && living.ObjectState is eObjectState.Active)
+							if (IsWithinRadius(living, WorldMgr.MAX_EXPFORKILL_DISTANCE) && living.ObjectState is eObjectState.Active)
 							{
 								if (living == attackerPlayer)
 									AddXPGainer(living, damageDealt);
