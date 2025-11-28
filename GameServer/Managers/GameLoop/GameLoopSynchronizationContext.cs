@@ -15,7 +15,8 @@ namespace DOL.GS
         {
             IGameService targetService = GameServiceContext.Current.Value;
 
-            // Typically, a continuation from a Task on which ConfigureAwait(false) was called.
+            // If no service is associated with the current async flow, execute directly.
+            // Typically, a continuation from a Task on which ConfigureAwait(false) wasn't called.
             if (targetService == null)
             {
                 d(state);
@@ -27,7 +28,7 @@ namespace DOL.GS
 
         public override void Send(SendOrPostCallback d, object state)
         {
-            // Calling Send from a GameLoop thread would cause a deadlock without this check.
+            // Calling Send from a game loop thread would cause a deadlock without this check.
             if (Current == this)
             {
                 d(state);
