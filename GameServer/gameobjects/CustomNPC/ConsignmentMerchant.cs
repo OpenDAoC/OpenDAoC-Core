@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -291,7 +290,10 @@ namespace DOL.GS
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} adding '{item.Name}' to consignment merchant on lot {HouseNumber}.");
 
-            // The item is added to the market cache when its price is set.
+            // Update owner lot and ID before adding to the cache, so that the item can be retrieved when its price will be set (from another packet).
+            item.OwnerLot = HouseNumber;
+            item.OwnerID = GetOwner(player);
+            MarketCache.AddItem(item);
             return true;
         }
 
@@ -300,7 +302,8 @@ namespace DOL.GS
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} removing '{item.Name}' from consignment merchant on lot {HouseNumber}.");
 
-            MarketCache.RemoveItem(item); // Remove before changing OwnerLot.
+            // Remove from the cache before changing item data.
+            MarketCache.RemoveItem(item);
             item.OwnerLot = 0;
             item.SellPrice = 0;
             return true;
@@ -331,30 +334,20 @@ namespace DOL.GS
             if (!GetClientInventory(player).TryGetValue((int) slot, out DbInventoryItem item))
                 return false;
 
+            MarketCache.UpdateItem(item, static (item, price) => item.SellPrice = item.IsTradable ? (int) price : 0, price);
+
             if (item.IsTradable)
             {
-                int previousSellPrice = item.SellPrice;
-                item.SellPrice = (int) price;
-
-                if (previousSellPrice <= 0)
-                    MarketCache.AddItem(item);
-
                 ChatUtil.SendDebugMessage(player, $"{item.Name} SellPrice={price} OwnerLot={item.OwnerLot} OwnerID={item.OwnerID}");
                 player.Out.SendMessage("Price set!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             else
-            {
-                item.SellPrice = 0;
                 player.Out.SendCustomDialog("This item is not tradable. You can store it here but cannot sell it.", null);
-            }
-
-            item.OwnerLot = conMerchant.HouseNumber;
-            item.OwnerID = conMerchant.GetOwner(player);
-            GameServer.Database.SaveObject(item);
 
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} set sell price of '{item.Name}' to {item.SellPrice} for consignment merchant on lot {HouseNumber}.");
 
+            GameServer.Database.SaveObject(item);
             return true;
         }
 
@@ -550,6 +543,8 @@ namespace DOL.GS
         {
             if (!base.Interact(player))
                 return false;
+
+            CheckInventory();
 
             if (player.ActiveInventoryObject != null)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using DOL.Database;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -23,8 +24,9 @@ namespace DOL.GS
 
     public class MarketSearchEngine : IDisposable
     {
-        private readonly ReaderWriterLockSlim _lock = new();
+        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        private readonly ReaderWriterLockSlim _lock = new();
         private readonly HashSet<DbInventoryItem> _allItems = new();
         private readonly Dictionary<eRealm, HashSet<DbInventoryItem>> _byRealm = new();
         private readonly Dictionary<int, HashSet<DbInventoryItem>> _bySlot = new();
@@ -55,9 +57,6 @@ namespace DOL.GS
 
             try
             {
-                if (!item.IsTradable || item.SellPrice <= 0)
-                    return false;
-
                 if (!_allItems.Add(item))
                     return false;
 
@@ -83,11 +82,11 @@ namespace DOL.GS
                 if (!_allItems.Remove(item))
                     return false;
 
-                RemoveFromIndex(_byRealm, GetRealmOfLot(item.OwnerLot), item);
-                RemoveFromIndex(_bySlot, GetClientSlot(item), item);
-                RemoveFromIndex(_byCrafted, item.IsCrafted, item);
-                RemoveFromIndex(_byVisual, item.Effect > 0, item);
-                RemoveFromIndex(_byOwner, item.OwnerID, item);
+                RemoveFromIndex(_byRealm, GetRealmOfLot(item.OwnerLot), item, nameof(_byRealm));
+                RemoveFromIndex(_bySlot, GetClientSlot(item), item, nameof(_bySlot));
+                RemoveFromIndex(_byCrafted, item.IsCrafted, item, nameof(_byCrafted));
+                RemoveFromIndex(_byVisual, item.Effect > 0, item, nameof(_byVisual));
+                RemoveFromIndex(_byOwner, item.OwnerID, item, nameof(_byOwner));
                 return true;
             }
             finally
@@ -283,12 +282,36 @@ namespace DOL.GS
             set.Add(item);
         }
 
-        private static void RemoveFromIndex<TKey>(Dictionary<TKey, HashSet<DbInventoryItem>> index, TKey key, DbInventoryItem item)
+        private static void RemoveFromIndex<TKey>(Dictionary<TKey, HashSet<DbInventoryItem>> index, TKey key, DbInventoryItem item, string indexName)
         {
             if (!index.TryGetValue(key, out var set))
                 return;
 
-            set.Remove(item);
+            if (!set.Remove(item))
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Item not found in expected set during removal; searching all sets. (key: {key}) (index {indexName}) (Item: {item})");
+
+                bool found = false;
+
+                // Item was not found in the expected set, search all sets for it.
+                // This probably indicates that the item was modified in a way that changed its index key.
+                // To avoid this, items should be removed before modification and re-added after.
+                foreach (var pair in index)
+                {
+                    if (pair.Value.Remove(item))
+                    {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Item found and removed from set. (Key: {pair.Key}) (Index: {indexName})");
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found && log.IsErrorEnabled)
+                    log.Error($"Item not found in any set of index. (Index: {indexName}) (Item: {item})");
+            }
 
             if (set.Count == 0)
                 index.Remove(key);

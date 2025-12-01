@@ -535,6 +535,13 @@ namespace DOL.GS
         /// </summary>
         private IEnumerable<DbInventoryItem> ApplyFilters(IEnumerable<DbInventoryItem> candidates, SearchData search)
         {
+            // Basic filters.
+            candidates = candidates.Where(item =>
+                item != null &&
+                item.IsTradable &&
+                item.SellPrice > 0
+            );
+
             // Name filter.
             if (!string.IsNullOrEmpty(search.name))
                 candidates = candidates.Where(item => item.Name.Contains(search.name, StringComparison.OrdinalIgnoreCase));

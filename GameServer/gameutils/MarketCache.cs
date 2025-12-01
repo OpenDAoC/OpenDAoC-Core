@@ -69,6 +69,20 @@ namespace DOL.GS
             return _searchEngine.RemoveItem(item);
         }
 
+        public static bool UpdateItem<TState>(DbInventoryItem item, Action<DbInventoryItem, TState> updateAction, TState state)
+        {
+            if (item == null)
+                return false;
+
+            // There is no elegant way to update an item in the search engine, so we remove and re-add it.
+
+            if (!RemoveItem(item))
+                return false;
+
+            updateAction(item, state);
+            return AddItem(item);
+        }
+
         public static IEnumerable<DbInventoryItem> SearchItems(in ItemQuery query)
         {
             return _searchEngine.Search(query);
