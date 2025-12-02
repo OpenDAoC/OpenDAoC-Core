@@ -174,18 +174,18 @@ namespace DOL.GS
             }
 
             return true;
+        }
 
-            bool IsTickDue()
-            {
-                return _owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance ? GameServiceUtils.ShouldTick(_nextMeleeTick) : GameServiceUtils.ShouldTick(_nextRangedTick);
-            }
+        private bool IsTickDue()
+        {
+            return _owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance ? GameServiceUtils.ShouldTick(_nextMeleeTick) : GameServiceUtils.ShouldTick(_nextRangedTick);
+        }
 
-            bool IsAllowedToTick()
-            {
-                // 1.82 changed the reactionary window to a fixed 3 seconds. This made placing reactionary styles easier against fast attacks,
-                // but it's also suspected that this is when it became impossible to spam them when the target is stunned.
-                return !_owner.IsCrowdControlled && !_owner.IsEngaging && (_owner.CurrentSpellHandler?.Spell.Uninterruptible) != false;
-            }
+        private bool IsAllowedToTick()
+        {
+            // 1.82 changed the reactionary window to a fixed 3 seconds. This made placing reactionary styles easier against fast attacks,
+            // but it's also suspected that this is when it became impossible to spam them when the target is stunned.
+            return !_owner.IsCrowdControlled && !_owner.IsEngaging && (_owner.CurrentSpellHandler?.Spell.Uninterruptible) != false;
         }
 
         protected virtual bool PrepareMeleeAttack()
