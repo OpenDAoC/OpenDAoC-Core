@@ -127,8 +127,11 @@ namespace DOL.GS
                 // Copy the smallest set, then intersect with the others.
                 HashSet<DbInventoryItem> finalResult = [.. smallestSet]; // Consider pooling this, better if the caller provides the collection.
 
-                for (int i = 1; i < resultSets.Count; i++)
+                for (int i = 0; i < resultSets.Count; i++)
                 {
+                    if (resultSets[i] == smallestSet)
+                        continue;
+
                     finalResult.IntersectWith(resultSets[i]);
 
                     if (finalResult.Count == 0)
