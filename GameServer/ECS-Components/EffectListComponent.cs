@@ -21,12 +21,15 @@ namespace DOL.GS
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
         private Queue<PendingEffect> _pendingEffects = new();                        // Queue for effects to be started, stopped.
         private Queue<PendingEffect> _effectsToProcess = new();                      // Temporary queue for processing pending effects.
-        protected readonly Lock _effectsLock = new();
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
         private int _usedConcentration;                                              // Amount of concentration used by the player.
-        private readonly Lock _concentrationEffectsLock = new();                     // Lock for synchronizing access to the concentration effect list.
+
+        // Locks.
+        // Order of locks to acquire must respect the following order to prevent deadlocks.
+        protected readonly Lock _effectsLock = new();
+        private readonly Lock _concentrationEffectsLock = new();
 
         public GameLiving Owner { get; }
         public int UsedConcentration => Volatile.Read(ref _usedConcentration);
@@ -126,22 +129,26 @@ namespace DOL.GS
 
         public void StopConcentrationEffect(int index, bool playerCancelled)
         {
+            if (index < 0)
+                return;
+
+            ECSGameSpellEffect concentrationEffect;
+
             lock (_concentrationEffectsLock)
             {
-                if (index < 0 || index >= _concentrationEffects.Count)
+                if (index >= _concentrationEffects.Count)
                     return;
 
-                _concentrationEffects[index].End(playerCancelled);
+                concentrationEffect = _concentrationEffects[index];
             }
+
+            concentrationEffect.End(playerCancelled);
         }
 
         public void StopConcentrationEffects(bool playerCancelled)
         {
-            lock (_concentrationEffectsLock)
-            {
-                for (int i = _concentrationEffects.Count - 1; i >= 0; i--)
-                    _concentrationEffects[i].End(playerCancelled);
-            }
+            foreach (ECSGameSpellEffect concentrationEffect in GetConcentrationEffects())
+                concentrationEffect.End(playerCancelled);
         }
 
         public List<ECSGameSpellEffect> GetConcentrationEffects()
