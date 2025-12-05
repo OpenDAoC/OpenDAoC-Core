@@ -735,7 +735,7 @@ namespace DOL.GS
                                     effectsToDisable.Add(existingEffect);
                                 }
                             }
-                            else if (effect.AppliedImmunityType is not ECSGameEffect.ImmunityType.Player)
+                            else if (existingEffect.AppliedImmunityType is not ECSGameEffect.ImmunityType.Player)
                             {
                                 // This is relevant for most debuffs, but also for snare effects (hard CCs are pre-filtered in their spell handlers),
                                 // allowing them to replace weaker ones as long as they don't trigger immunity or the target isn't a player.
