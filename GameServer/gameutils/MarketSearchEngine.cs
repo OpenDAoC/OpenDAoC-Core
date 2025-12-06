@@ -287,37 +287,41 @@ namespace DOL.GS
 
         private static void RemoveFromIndex<TKey>(Dictionary<TKey, HashSet<DbInventoryItem>> index, TKey key, DbInventoryItem item, string indexName)
         {
-            if (!index.TryGetValue(key, out var set))
-                return;
-
-            if (!set.Remove(item))
+            if (index.TryGetValue(key, out var set))
             {
-                if (log.IsWarnEnabled)
-                    log.Warn($"Item not found in expected set during removal; searching all sets. (key: {key}) (index {indexName}) (Item: {item})");
-
-                bool found = false;
-
-                // Item was not found in the expected set, search all sets for it.
-                // This probably indicates that the item was modified in a way that changed its index key.
-                // To avoid this, items should be removed before modification and re-added after.
-                foreach (var pair in index)
+                if (set.Remove(item))
                 {
-                    if (pair.Value.Remove(item))
-                    {
-                        if (log.IsWarnEnabled)
-                            log.Warn($"Item found and removed from set. (Key: {pair.Key}) (Index: {indexName})");
+                    if (set.Count == 0)
+                        index.Remove(key);
 
-                        found = true;
-                        break;
-                    }
+                    return;
                 }
-
-                if (!found && log.IsErrorEnabled)
-                    log.Error($"Item not found in any set of index. (Index: {indexName}) (Item: {item})");
             }
 
-            if (set.Count == 0)
-                index.Remove(key);
+            if (log.IsWarnEnabled)
+                log.Warn($"Item not found via key lookup; traversing index. (Expected key: {key}) (Index: {indexName}) (Item: {item})");
+
+            // Item was not found in the expected set, search all sets for it.
+            // To avoid this, items shouldn't be modified while still cached.
+            foreach (var pair in index)
+            {
+                if (EqualityComparer<TKey>.Default.Equals(pair.Key, key))
+                    continue;
+
+                if (pair.Value.Remove(item))
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Item found and removed from unexpected bucket. (Found in Key: {pair.Key}) (Index: {indexName})");
+
+                    if (pair.Value.Count == 0)
+                        index.Remove(pair.Key);
+
+                    return;
+                }
+            }
+
+            if (log.IsErrorEnabled)
+                log.Error($"Item not found in any set of index. (Index: {indexName}) (Item: {item})");
         }
 
         public void Dispose()
