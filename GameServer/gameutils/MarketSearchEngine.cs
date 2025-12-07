@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using DOL.Database;
-using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -24,10 +23,8 @@ namespace DOL.GS
 
     public class MarketSearchEngine : IDisposable
     {
-        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private readonly ReaderWriterLockSlim _lock = new();
-        private readonly HashSet<DbInventoryItem> _allItems = new();
+        private readonly Dictionary<DbInventoryItem, IndexKeys> _itemKeyCache = new();
         private readonly Dictionary<eRealm, HashSet<DbInventoryItem>> _byRealm = new();
         private readonly Dictionary<int, HashSet<DbInventoryItem>> _bySlot = new();
         private readonly Dictionary<bool, HashSet<DbInventoryItem>> _byCrafted = new();
@@ -42,7 +39,7 @@ namespace DOL.GS
 
                 try
                 {
-                    return _allItems.Count;
+                    return _itemKeyCache.Count;
                 }
                 finally
                 {
@@ -57,14 +54,16 @@ namespace DOL.GS
 
             try
             {
-                if (!_allItems.Add(item))
+                IndexKeys keys = GetIndexKeys(item);
+
+                if (!_itemKeyCache.TryAdd(item, keys))
                     return false;
 
-                AddToIndex(_byRealm, GetRealmOfLot(item.OwnerLot), item);
-                AddToIndex(_bySlot, GetClientSlot(item), item);
-                AddToIndex(_byCrafted, item.IsCrafted, item);
-                AddToIndex(_byVisual, item.Effect > 0, item);
-                AddToIndex(_byOwner, item.OwnerID, item);
+                AddToIndex(_byRealm, keys.Realm, item);
+                AddToIndex(_bySlot, keys.Slot, item);
+                AddToIndex(_byCrafted, keys.IsCrafted, item);
+                AddToIndex(_byVisual, keys.HasVisual, item);
+                AddToIndex(_byOwner, keys.Owner, item);
                 return true;
             }
             finally
@@ -79,14 +78,14 @@ namespace DOL.GS
 
             try
             {
-                if (!_allItems.Remove(item))
+                if (!_itemKeyCache.Remove(item, out IndexKeys keys))
                     return false;
 
-                RemoveFromIndex(_byRealm, GetRealmOfLot(item.OwnerLot), item, nameof(_byRealm));
-                RemoveFromIndex(_bySlot, GetClientSlot(item), item, nameof(_bySlot));
-                RemoveFromIndex(_byCrafted, item.IsCrafted, item, nameof(_byCrafted));
-                RemoveFromIndex(_byVisual, item.Effect > 0, item, nameof(_byVisual));
-                RemoveFromIndex(_byOwner, item.OwnerID, item, nameof(_byOwner));
+                RemoveFromIndex(_byRealm, keys.Realm, item);
+                RemoveFromIndex(_bySlot, keys.Slot, item);
+                RemoveFromIndex(_byCrafted, keys.IsCrafted, item);
+                RemoveFromIndex(_byVisual, keys.HasVisual, item);
+                RemoveFromIndex(_byOwner, keys.Owner, item);
                 return true;
             }
             finally
@@ -104,9 +103,9 @@ namespace DOL.GS
                 List<HashSet<DbInventoryItem>> resultSets = GetMatchingSets(query);
 
                 if (resultSets == null || resultSets.Count == 0)
-                    return query.HasAny ? [] : [.. _allItems];  // Consider pooling this, better if the caller provides the collection.
+                    return query.HasAny ? [] : [.. _itemKeyCache.Keys];
 
-                // Start with a copy of the smallest set for efficiency.
+                // Find the smallest set to start with.
                 HashSet<DbInventoryItem> smallestSet = resultSets[0];
                 int minCount = smallestSet.Count;
 
@@ -124,8 +123,8 @@ namespace DOL.GS
                 if (smallestSet.Count == 0)
                     return [];
 
-                // Copy the smallest set, then intersect with the others.
-                HashSet<DbInventoryItem> finalResult = [.. smallestSet]; // Consider pooling this, better if the caller provides the collection.
+                // Intersect all other sets with the smallest set.
+                HashSet<DbInventoryItem> finalResult = [.. smallestSet];
 
                 for (int i = 0; i < resultSets.Count; i++)
                 {
@@ -159,6 +158,17 @@ namespace DOL.GS
             }
 
             return eRealm.None;
+        }
+
+        private static IndexKeys GetIndexKeys(DbInventoryItem item)
+        {
+            return new(
+                GetRealmOfLot(item.OwnerLot),
+                GetClientSlot(item),
+                item.IsCrafted,
+                item.Effect > 0,
+                item.OwnerID
+            );
         }
 
         private static int GetClientSlot(DbInventoryItem item)
@@ -229,7 +239,7 @@ namespace DOL.GS
 
         private List<HashSet<DbInventoryItem>> GetMatchingSets(in ItemQuery query)
         {
-            List<HashSet<DbInventoryItem>> sets = new(); // Consider pooling this.
+            List<HashSet<DbInventoryItem>> sets = new();
 
             if (query.Realm.HasValue)
             {
@@ -285,49 +295,39 @@ namespace DOL.GS
             set.Add(item);
         }
 
-        private static void RemoveFromIndex<TKey>(Dictionary<TKey, HashSet<DbInventoryItem>> index, TKey key, DbInventoryItem item, string indexName)
+        private static void RemoveFromIndex<TKey>(Dictionary<TKey, HashSet<DbInventoryItem>> index, TKey key, DbInventoryItem item)
         {
             if (index.TryGetValue(key, out var set))
             {
-                if (set.Remove(item))
-                {
-                    if (set.Count == 0)
-                        index.Remove(key);
+                set.Remove(item);
 
-                    return;
-                }
+                if (set.Count == 0)
+                    index.Remove(key);
             }
-
-            if (log.IsWarnEnabled)
-                log.Warn($"Item not found via key lookup; traversing index. (Expected key: {key}) (Index: {indexName}) (Item: {item})");
-
-            // Item was not found in the expected set, search all sets for it.
-            // To avoid this, items shouldn't be modified while still cached.
-            foreach (var pair in index)
-            {
-                if (EqualityComparer<TKey>.Default.Equals(pair.Key, key))
-                    continue;
-
-                if (pair.Value.Remove(item))
-                {
-                    if (log.IsWarnEnabled)
-                        log.Warn($"Item found and removed from unexpected bucket. (Found in Key: {pair.Key}) (Index: {indexName})");
-
-                    if (pair.Value.Count == 0)
-                        index.Remove(pair.Key);
-
-                    return;
-                }
-            }
-
-            if (log.IsErrorEnabled)
-                log.Error($"Item not found in any set of index. (Index: {indexName}) (Item: {item})");
         }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
             _lock.Dispose();
+        }
+
+        private readonly struct IndexKeys
+        {
+            public readonly eRealm Realm;
+            public readonly int Slot;
+            public readonly bool IsCrafted;
+            public readonly bool HasVisual;
+            public readonly string Owner;
+
+            public IndexKeys(eRealm realm, int slot, bool isCrafted, bool hasVisual, string owner)
+            {
+                Realm = realm;
+                Slot = slot;
+                IsCrafted = isCrafted;
+                HasVisual = hasVisual;
+                Owner = owner;
+            }
         }
     }
 }
