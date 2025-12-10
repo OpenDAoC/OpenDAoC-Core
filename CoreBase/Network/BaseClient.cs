@@ -23,9 +23,9 @@ namespace DOL.Network
         private long _isReceivingAsyncCompleted; // Use `ReceivingAsyncCompleted` instead.
 
         public Socket Socket { get; }
-        public byte[] ReceiveBuffer { get; }
-        public int ReceiveBufferOffset { get; set; }
         public SessionId SessionId { get; private set; }
+        protected byte[] ReceiveBuffer { get; }
+        protected int ReceiveBufferOffset { get; set; }
 
         private bool ReceivingAsyncCompleted
         {

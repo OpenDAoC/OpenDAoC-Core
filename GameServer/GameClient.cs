@@ -11,28 +11,23 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 using DOL.Network;
 
 namespace DOL.GS
 {
     public class GameClient : BaseClient, ICustomParamsValuable, IServiceObject, IPooledList<GameClient>
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private DbAccount _account;
-        private eClientState _clientState = eClientState.NotConnected;
-        private GamePlayer _player;
-        private IPEndPoint _udpEndpoint;
-        private Dictionary<string, List<string>> _customParams = [];
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> _tooltipRequestTimes = new();
         private readonly Lock _disconnectLock = new();
 
         public DbAccount Account
         {
-            get => _account;
+            get;
             set
             {
-                _account = value;
+                field = value;
                 this.InitFromCollection(value.CustomParams, param => param.KeyName, param => param.Value);
                 GameEventMgr.Notify(GameClientEvent.AccountLoaded, this);
             }
@@ -40,60 +35,48 @@ namespace DOL.GS
 
         public eClientState ClientState
         {
-            get => _clientState;
+            get;
             set
             {
-                eClientState oldState = _clientState;
+                eClientState oldState = field;
 
                 // Refresh ping timeouts immediately when we change into playing state or char screen.
-                if ((oldState != eClientState.Playing && value == eClientState.Playing) ||
-                    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
+                if ((oldState != eClientState.Playing && value is eClientState.Playing) ||
+                    (oldState != eClientState.CharScreen && value is eClientState.CharScreen))
                 {
                     PingTime = GameLoop.GameLoopTime;
-
-                    if (_player != null)
-                        _player.LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
+                    Player?.LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
                 }
 
-                _clientState = value;
+                field = value;
                 GameEventMgr.Notify(GameClientEvent.StateChanged, this);
             }
-        }
+        } = eClientState.NotConnected;
 
         public GamePlayer Player
         {
-            get => _player;
+            get;
             set
             {
-                if (_player != null && _player.ObjectState is not GameObject.eObjectState.Deleted)
+                if (field != null && field.ObjectState is not GameObject.eObjectState.Deleted)
                 {
                     if (log.IsErrorEnabled)
                     {
-                        string message = $"GameClient.Player is being replaced but hasn't been deleted yet (current: {_player}) (new: {_player}){Environment.NewLine}{Environment.StackTrace}";
+                        string message = $"GameClient.Player is being replaced but hasn't been deleted yet (current: {field}) (new: {field}){Environment.NewLine}{Environment.StackTrace}";
                         log.Error(message);
                     }
 
-                    _player.Delete();
+                    field.Delete();
                 }
 
-                _player = value;
+                field = value;
                 GameEventMgr.Notify(GameClientEvent.PlayerLoaded, this); // Seems not right.
             }
         }
 
-        public IPEndPoint UdpEndPoint
-        {
-            get => _udpEndpoint;
-            set => _udpEndpoint = value;
-        }
-
-        public Dictionary<string, List<string>> CustomParamsDictionary
-        {
-            get => _customParams;
-            set => _customParams = value;
-        }
-
-        public bool IsPlaying => _clientState is eClientState.Playing or eClientState.Linkdead;
+        public IPEndPoint UdpEndPoint { get; set; }
+        public Dictionary<string, List<string>> CustomParamsDictionary { get; set; } = [];
+        public bool IsPlaying => ClientState is eClientState.Playing or eClientState.Linkdead;
         public ushort SessionID => SessionId.Value;
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Client);
         public bool HasSeenPatchNotes { get; set; }
@@ -128,7 +111,7 @@ namespace DOL.GS
 
         public async Task LoadPlayer(int accountIndex)
         {
-            DbCoreCharacter dolChar = _account.Characters[accountIndex];
+            DbCoreCharacter dolChar = Account.Characters[accountIndex];
             ActiveCharIndex = 0;
 
             foreach (var ch in Account.Characters)
@@ -189,8 +172,8 @@ namespace DOL.GS
         {
             try
             {
-                if (_player?.ObjectState is GameObject.eObjectState.Active)
-                    _player.SaveIntoDatabase();
+                if (Player?.ObjectState is GameObject.eObjectState.Active)
+                    Player.SaveIntoDatabase();
             }
             catch (Exception e)
             {
@@ -270,8 +253,8 @@ namespace DOL.GS
                 {
                     if (log.IsInfoEnabled)
                     {
-                        if (_udpEndpoint != null)
-                            log.Info($"({_udpEndpoint.Address}) {Account.Name} just disconnected.");
+                        if (UdpEndPoint != null)
+                            log.Info($"({UdpEndPoint.Address}) {Account.Name} just disconnected.");
                         else
                             log.Info($"({TcpEndpointAddress}) {Account.Name} just disconnected.");
                     }
@@ -290,141 +273,141 @@ namespace DOL.GS
 
         protected override void OnReceive(int size)
         {
-            if (Version is eClientVersion.VersionNotChecked && !CheckVersion())
+            if (Version is eClientVersion.VersionNotChecked && !CheckVersion(size))
                 return;
 
             if (Version is not eClientVersion.VersionUnknown)
-                ProcessInboundTcpBytes();
+                ProcessInboundTcpBytes(size);
+        }
 
-            bool CheckVersion()
+        private bool CheckVersion(int size)
+        {
+            // This currently assumes the first packet is received in full, which may not be the case.
+            // This should eventually be fixed since the connection may fail because of that.
+
+            if (size < 17) // 17 is correct bytes count for 0xF4 packet.
             {
-                // This currently assumes the first packet is received in full, which may not be the case.
-                // This should eventually be fixed since the connection may fail because of that.
-
-                if (size < 17) // 17 is correct bytes count for 0xF4 packet.
+                if (log.IsWarnEnabled)
                 {
-                    if (log.IsWarnEnabled)
-                    {
-                        log.Warn($"Disconnected {TcpEndpointAddress} in login phase because wrong packet size {size}");
-                        log.Warn(Marshal.ToHexDump("packet buffer:", ReceiveBuffer, 0, size));
-                    }
-
-                    Disconnect();
-                    return false;
+                    log.Warn($"Disconnected {TcpEndpointAddress} in login phase because wrong packet size {size}");
+                    log.Warn(Marshal.ToHexDump("packet buffer:", ReceiveBuffer, 0, size));
                 }
 
-                int version;
-
-                // The first packet format changes after 1.115c. If bytes count is below 19, we have a pre-1.115c packet.
-                if (size < 19)
-                {
-                    // Currently, the version is sent with the first packet, no matter what packet code it is.
-                    version = ReceiveBuffer[12] * 100 + ReceiveBuffer[13] * 10 + ReceiveBuffer[14];
-
-                    // We force the versioning: 200 corresponds to 1.100.
-                    // Thus we could handle logically packets with version number based on the client version.
-                    if (version >= 200)
-                        version += 900;
-                }
-                else
-                {
-                    // Post 1.115c.
-                    // First byte is major (1), second byte is minor (1), third byte is version (15).
-                    // Revision (c) is also coded in ASCII after that, then a build number appears using two bytes (0x$$$$).
-                    version = ReceiveBuffer[11] * 1000 + ReceiveBuffer[12] * 100 + ReceiveBuffer[13];
-                }
-
-                IPacketLib packetLib = AbstractPacketLib.CreatePacketLibForVersion(version, this, out eClientVersion ver);
-
-                if (packetLib == null)
-                {
-                    Version = eClientVersion.VersionUnknown;
-
-                    if (log.IsWarnEnabled)
-                        log.Warn($"{TcpEndpointAddress} client Version {version} not handled on this server.");
-
-                    Disconnect();
-                }
-                else
-                {
-                    if (log.IsInfoEnabled)
-                        log.Info($"Incoming connection from {TcpEndpointAddress} using client version {version}");
-
-                    Version = ver;
-                    Out = packetLib;
-                    PacketProcessor = new PacketProcessor(this);
-                }
-
-                return true;
+                Disconnect();
+                return false;
             }
 
-            void ProcessInboundTcpBytes()
-            {
-                byte[] buffer = ReceiveBuffer;
-                int endPosition = ReceiveBufferOffset + size;
+            int version;
 
-                if (endPosition < GSPacketIn.HDR_SIZE)
+            // The first packet format changes after 1.115c. If bytes count is below 19, we have a pre-1.115c packet.
+            if (size < 19)
+            {
+                // Currently, the version is sent with the first packet, no matter what packet code it is.
+                version = ReceiveBuffer[12] * 100 + ReceiveBuffer[13] * 10 + ReceiveBuffer[14];
+
+                // We force the versioning: 200 corresponds to 1.100.
+                // Thus we could handle logically packets with version number based on the client version.
+                if (version >= 200)
+                    version += 900;
+            }
+            else
+            {
+                // Post 1.115c.
+                // First byte is major (1), second byte is minor (1), third byte is version (15).
+                // Revision (c) is also coded in ASCII after that, then a build number appears using two bytes (0x$$$$).
+                version = ReceiveBuffer[11] * 1000 + ReceiveBuffer[12] * 100 + ReceiveBuffer[13];
+            }
+
+            IPacketLib packetLib = AbstractPacketLib.CreatePacketLibForVersion(version, this, out eClientVersion ver);
+
+            if (packetLib == null)
+            {
+                Version = eClientVersion.VersionUnknown;
+
+                if (log.IsWarnEnabled)
+                    log.Warn($"{TcpEndpointAddress} client Version {version} not handled on this server.");
+
+                Disconnect();
+            }
+            else
+            {
+                if (log.IsInfoEnabled)
+                    log.Info($"Incoming connection from {TcpEndpointAddress} using client version {version}");
+
+                Version = ver;
+                Out = packetLib;
+                PacketProcessor = new PacketProcessor(this);
+            }
+
+            return true;
+        }
+
+        private void ProcessInboundTcpBytes(int size)
+        {
+            byte[] buffer = ReceiveBuffer;
+            int endPosition = ReceiveBufferOffset + size;
+
+            if (endPosition < GSPacketIn.HDR_SIZE)
+            {
+                ReceiveBufferOffset = endPosition;
+                return;
+            }
+
+            ReceiveBufferOffset = 0;
+            int currentOffset = 0;
+
+            do
+            {
+                int packetLength = (buffer[currentOffset] << 8) + buffer[currentOffset + 1] + GSPacketIn.HDR_SIZE;
+                int dataLeft = endPosition - currentOffset;
+
+                if (dataLeft < packetLength)
                 {
-                    ReceiveBufferOffset = endPosition;
+                    Buffer.BlockCopy(buffer, currentOffset, buffer, 0, dataLeft);
+                    ReceiveBufferOffset = dataLeft;
+                    break;
+                }
+
+                int packetEnd = currentOffset + packetLength;
+                int calcCheck = PacketProcessor.CalculateChecksum(buffer, currentOffset, packetLength - 2);
+                int pakCheck = (buffer[packetEnd - 2] << 8) | (buffer[packetEnd - 1]);
+
+                if (pakCheck != calcCheck)
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Bad TCP packet checksum (packet:0x{pakCheck:X4} calculated:0x{calcCheck:X4}) -> disconnecting\nclient: {this}\ncurOffset={currentOffset}; packetLength={packetLength}");
+
+                    if (log.IsDebugEnabled)
+                        log.Debug(Marshal.ToHexDump("Last received bytes: ", buffer));
+
+                    Disconnect();
                     return;
                 }
 
-                ReceiveBufferOffset = 0;
-                int currentOffset = 0;
+                var packet = PooledObjectFactory.GetForTick<GSPacketIn>().Init();
+                packet.Load(buffer, currentOffset, packetLength);
 
-                do
+                try
                 {
-                    int packetLength = (buffer[currentOffset] << 8) + buffer[currentOffset + 1] + GSPacketIn.HDR_SIZE;
-                    int dataLeft = endPosition - currentOffset;
-
-                    if (dataLeft < packetLength)
-                    {
-                        Buffer.BlockCopy(buffer, currentOffset, buffer, 0, dataLeft);
-                        ReceiveBufferOffset = dataLeft;
-                        break;
-                    }
-
-                    int packetEnd = currentOffset + packetLength;
-                    int calcCheck = PacketProcessor.CalculateChecksum(buffer, currentOffset, packetLength - 2);
-                    int pakCheck = (buffer[packetEnd - 2] << 8) | (buffer[packetEnd - 1]);
-
-                    if (pakCheck != calcCheck)
-                    {
-                        if (log.IsWarnEnabled)
-                            log.Warn($"Bad TCP packet checksum (packet:0x{pakCheck:X4} calculated:0x{calcCheck:X4}) -> disconnecting\nclient: {this}\ncurOffset={currentOffset}; packetLength={packetLength}");
-
-                        if (log.IsDebugEnabled)
-                            log.Debug(Marshal.ToHexDump("Last received bytes: ", buffer));
-
-                        Disconnect();
-                        return;
-                    }
-
-                    var packet = PooledObjectFactory.GetForTick<GSPacketIn>().Init();
-                    packet.Load(buffer, currentOffset, packetLength);
-
-                    try
-                    {
-                        PacketProcessor.ProcessInboundPacket(packet);
-                    }
-                    catch (Exception e)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error(e);
-                    }
-                    finally
-                    {
-                        packet.ReleasePooledObject();
-                    }
-
-                    currentOffset += packetLength;
-                } while (endPosition - 1 > currentOffset);
-
-                if (endPosition - 1 == currentOffset)
-                {
-                    buffer[0] = buffer[currentOffset];
-                    ReceiveBufferOffset = 1;
+                    PacketProcessor.ProcessInboundPacket(packet);
                 }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error(e);
+                }
+                finally
+                {
+                    packet.ReleasePooledObject();
+                }
+
+                currentOffset += packetLength;
+            } while (endPosition - 1 > currentOffset);
+
+            if (endPosition - 1 == currentOffset)
+            {
+                buffer[0] = buffer[currentOffset];
+                ReceiveBufferOffset = 1;
             }
         }
 
