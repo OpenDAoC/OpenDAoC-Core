@@ -958,22 +958,15 @@ namespace DOL.GS.PacketHandler.Client.v168
                     int above = stats[stat] - raceAmount - classAmount;
 
                     // Miss Some points...
-                    if (above < 0 && character.Level == 1)
-                    {
+                    if (above < 0)
                         return false;
-                    }
 
                     points += above;
                     points += Math.Max(0, above - 10); // two points used
                     points += Math.Max(0, above - 15); // three points used
                 }
 
-                var validPoints = points == MaxStartingBonusPoints;
-
-                if (character.Level > 1)
-                    return true;
-
-                return validPoints;
+                return points == MaxStartingBonusPoints;
             }
 
             points = -1;
