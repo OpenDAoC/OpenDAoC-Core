@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 			: base(caster, spell, line)
 		{
 			//Construct a new mine.
-			mine = new GameMine();
+			mine = new(new BlankBrain());
 			mine.Model = 2590;
 			mine.Name = spell.Name;
 			mine.Realm = caster.Realm;
@@ -130,7 +130,7 @@ namespace DOL.GS.Spells
 			mine.Z = caster.Z;
 			mine.CurrentRegionID = caster.CurrentRegionID;
 			mine.Heading = caster.Heading;
-			mine.Owner = (GamePlayer)caster;
+			mine.Owner = caster;
 
 			// Construct the mine spell
 			dbs = new DbSpell();
@@ -402,7 +402,7 @@ namespace DOL.GS.Spells
 			: base(caster, spell, line)
 		{
 			//Construct a new mine.
-			mine = new GameMine();
+			mine = new(new BlankBrain());
 			mine.Model = 2588;
 			mine.Name = spell.Name;
 			mine.Realm = caster.Realm;
@@ -411,7 +411,7 @@ namespace DOL.GS.Spells
 			mine.Z = caster.Z;
 			mine.CurrentRegionID = caster.CurrentRegionID;
 			mine.Heading = caster.Heading;
-			mine.Owner = (GamePlayer)caster;
+			mine.Owner = caster;
 
 			// Construct the mine spell
 			dbs = new DbSpell();

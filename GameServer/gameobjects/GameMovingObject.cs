@@ -1,3 +1,5 @@
+using DOL.AI;
+
 namespace DOL.GS
 {
 	/// <summary>
@@ -5,7 +7,7 @@ namespace DOL.GS
 	/// </summary>		
 	public abstract class GameMovingObject : GameNPC
 	{
-		public GameMovingObject() : base()
+		public GameMovingObject(ABrain defaultBrain) : base(defaultBrain)
 		{
 		}
 

@@ -1,3 +1,4 @@
+using DOL.AI.Brain;
 using DOL.Database;
 
 namespace DOL.GS
@@ -13,15 +14,14 @@ namespace DOL.GS
         private short m_boatMaxSpeedBase;
         private ECSGameTimer m_removeTimer = null;
 
-        public GameBoat(byte type) : base()
+        public GameBoat() : base(new BlankBrain())
         {
-            m_boatType = type;
             base.OwnerID = BoatOwner;
         }
 
-        public GameBoat() : base()
+        public GameBoat(byte type) : this()
         {
-            base.OwnerID = BoatOwner;
+            m_boatType = type;
         }
 
         public override bool AddToWorld()

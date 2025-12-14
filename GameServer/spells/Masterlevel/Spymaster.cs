@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -148,7 +149,7 @@ namespace DOL.GS.Spells
             Unstealth = false;
 
             //Construct a new mine.
-            mine = new GameMine();
+            mine = new(new BlankBrain());
             mine.Model = 2592;
             mine.Name = spell.Name;
             mine.Realm = caster.Realm;
@@ -157,7 +158,7 @@ namespace DOL.GS.Spells
             mine.Z = caster.Z;
             mine.CurrentRegionID = caster.CurrentRegionID;
             mine.Heading = caster.Heading;
-            mine.Owner = (GamePlayer)caster;
+            mine.Owner = caster;
 
             // Construct the mine spell
             dbs = new DbSpell();
@@ -198,7 +199,7 @@ namespace DOL.GS.Spells
             Unstealth = false;
 
             //Construct a new font.
-            mine = new GameMine();
+            mine = new(new BlankBrain());
             mine.Model = 2589;
             mine.Name = spell.Name;
             mine.Realm = caster.Realm;
@@ -207,7 +208,7 @@ namespace DOL.GS.Spells
             mine.Z = caster.Z;
             mine.CurrentRegionID = caster.CurrentRegionID;
             mine.Heading = caster.Heading;
-            mine.Owner = (GamePlayer)caster;
+            mine.Owner = caster;
 
             // Construct the mine spell
             dbs = new DbSpell();
@@ -333,7 +334,7 @@ namespace DOL.GS.Spells
             Unstealth = false;
 
             //Construct a new mine.
-            mine = new GameMine();
+            mine = new(new BlankBrain());
             mine.Model = 2591;
             mine.Name = spell.Name;
             mine.Realm = caster.Realm;
@@ -343,7 +344,7 @@ namespace DOL.GS.Spells
             mine.MaxSpeedBase = 0;
             mine.CurrentRegionID = caster.CurrentRegionID;
             mine.Heading = caster.Heading;
-            mine.Owner = (GamePlayer)caster;
+            mine.Owner = caster;
 
             // Construct the mine spell
             dbs = new DbSpell();

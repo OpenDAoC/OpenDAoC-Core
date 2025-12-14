@@ -16,9 +16,8 @@ namespace DOL.GS
 	/// </summary>
 	public class GameSiegeWeapon : GameMovingObject
 	{
-		public GameSiegeWeapon()
+		public GameSiegeWeapon() : base(new BlankBrain())
 		{
-			SetOwnBrain(new BlankBrain());
 			this.Realm = 0;
 			Level = 1;
 			CurrentState = eState.Inactive;
