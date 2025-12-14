@@ -89,7 +89,7 @@ namespace DOL.GS.SkillHandler
                     guard.End();
             }
 
-            ECSGameEffectFactory.Create(new(source, 0, 1), source, target, static (in ECSGameEffectInitParams i, GameLiving source, GameLiving target) => new GuardECSGameEffect(i, source, target));
+            ECSGameEffectFactory.Create(new(source, 0, 1), source, target, static (in i, source, target) => new GuardECSGameEffect(i, source, target));
         }
     }
 }

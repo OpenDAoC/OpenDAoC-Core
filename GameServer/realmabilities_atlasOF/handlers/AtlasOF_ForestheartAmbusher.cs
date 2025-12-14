@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
 
         protected virtual void CreateSpell()
         {
-            ECSGameEffectFactory.Create(new(_caster, duration, Level), static (in ECSGameEffectInitParams i) => new AtlasOF_ForestheartAmbusherECSEffect(i));
+            ECSGameEffectFactory.Create(new(_caster, duration, Level), static (in i) => new AtlasOF_ForestheartAmbusherECSEffect(i));
         }
 
         public override void Execute(GameLiving living)

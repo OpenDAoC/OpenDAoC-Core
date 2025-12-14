@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StunECSGameEffect(i));
+			return ECSGameEffectFactory.Create(initParams, static (in i) => new StunECSGameEffect(i));
 		}
 		
 		public override double CalculateSpellResistChance(GameLiving target)

@@ -72,7 +72,7 @@ namespace DOL.GS
             if (SpellHandler is UnresistableStunSpellHandler)
                 return;
 
-            ECSGameEffectFactory.Create(new(Owner, ImmunityDuration, Effectiveness, SpellHandler), (int) PulseFreq, static (in ECSGameEffectInitParams i, int pulseFreq) => new ECSImmunityEffect(i, pulseFreq));
+            ECSGameEffectFactory.Create(new(Owner, ImmunityDuration, Effectiveness, SpellHandler), (int) PulseFreq, static (in i, pulseFreq) => new ECSImmunityEffect(i, pulseFreq));
         }
 
         public override DbPlayerXEffect GetSavedEffect()

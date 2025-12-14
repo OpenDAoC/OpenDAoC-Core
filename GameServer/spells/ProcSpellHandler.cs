@@ -37,7 +37,7 @@ namespace DOL.GS.Spells
             // If they're different, we can't really use the buff spell line, so we use the item effects spell line as a way to reduce variance.
             // Ideally, proc spells should use the buff spell line and the caster's specialization, stats, RAs, etc. But this isn't currently supported.
             _procSpellLine = initParams.Target == Caster ? _buffSpellLine : SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new ProcECSGameEffect(i));
+            return ECSGameEffectFactory.Create(initParams, static (in i) => new ProcECSGameEffect(i));
         }
 
         protected abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);

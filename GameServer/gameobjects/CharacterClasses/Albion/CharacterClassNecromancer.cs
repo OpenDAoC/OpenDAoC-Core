@@ -65,7 +65,7 @@ namespace DOL.GS
             if (effect != null)
                 return false;
 
-            effect = ECSGameEffectFactory.Create(new(Player, 0, 1), static (in ECSGameEffectInitParams i) => new NecromancerShadeECSGameEffect(i));
+            effect = ECSGameEffectFactory.Create(new(Player, 0, 1), static (in i) => new NecromancerShadeECSGameEffect(i));
             return effect.IsActive;
         }
 

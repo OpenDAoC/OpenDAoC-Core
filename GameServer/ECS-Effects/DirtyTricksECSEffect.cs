@@ -48,7 +48,7 @@ namespace DOL.GS
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(target, eEffect.DirtyTricksDetrimental);
 			if (dt == null)
 			{
-                ECSGameEffectFactory.Create(new(target, 10000, 1), static (in ECSGameEffectInitParams i) => new DirtyTricksDetrimentalECSGameEffect(i));
+                ECSGameEffectFactory.Create(new(target, 10000, 1), static (in i) => new DirtyTricksDetrimentalECSGameEffect(i));
 			}
 		}
 	}

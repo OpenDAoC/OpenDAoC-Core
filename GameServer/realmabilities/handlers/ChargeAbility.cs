@@ -64,7 +64,7 @@ namespace DOL.GS.RealmAbilities
 			//if (living is GamePlayer)
 			//	((GamePlayer)living).Out.SendUpdateMaxSpeed();
 
-			ECSGameEffectFactory.Create(new(living, DURATION, 1, null), static (in ECSGameEffectInitParams i) => new ChargeECSGameEffect(i));
+			ECSGameEffectFactory.Create(new(living, DURATION, 1, null), static (in i) => new ChargeECSGameEffect(i));
 			DisableSkill(living);
 		}
 

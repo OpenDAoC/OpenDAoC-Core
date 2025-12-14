@@ -24,7 +24,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            ECSGameEffectFactory.Create(new(player, 0, 1), static (in ECSGameEffectInitParams i) => new CamouflageECSGameEffect(i));
+            ECSGameEffectFactory.Create(new(player, 0, 1), static (in i) => new CamouflageECSGameEffect(i));
             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Camouflage.UseCamo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
     }

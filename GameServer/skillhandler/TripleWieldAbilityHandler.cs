@@ -65,7 +65,7 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 
-			ECSGameEffectFactory.Create(new(player, DURATION * 1000, 1), static (in ECSGameEffectInitParams i) => new TripleWieldECSGameEffect(i));
+			ECSGameEffectFactory.Create(new(player, DURATION * 1000, 1), static (in i) => new TripleWieldECSGameEffect(i));
 			player.DisableSkill(ab, REUSE_TIMER * 1000);
 		}
 	}

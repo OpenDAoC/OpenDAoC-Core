@@ -57,7 +57,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            ECSGameEffectFactory.Create(new(player, 0, 1), this, static (in ECSGameEffectInitParams i, AtlasOF_Longshot longshot) => new AtlasOF_LongshotECSEffect(longshot, i));
+            ECSGameEffectFactory.Create(new(player, 0, 1), this, static (in i, longshot) => new AtlasOF_LongshotECSEffect(longshot, i));
         }
     }
 }

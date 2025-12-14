@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new CharmECSGameEffect(i));
+            return ECSGameEffectFactory.Create(initParams, static (in i) => new CharmECSGameEffect(i));
         }
 
         /// <summary>

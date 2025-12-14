@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
 
             DisableSkill(living);
 
-            ECSGameEffectFactory.Create(new(player, m_duration, 1, CreateSpell(living)), static (in ECSGameEffectInitParams i) => new AtlasOF_TrueSightECSEffect(i));
+            ECSGameEffectFactory.Create(new(player, m_duration, 1, CreateSpell(living)), static (in i) => new AtlasOF_TrueSightECSEffect(i));
         }
         
         private SpellHandler CreateSpell(GameLiving owner)

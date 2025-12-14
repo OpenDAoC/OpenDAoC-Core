@@ -19,7 +19,7 @@ namespace DOL.GS.Spells
             m_startReuseTimer = true;
 
             foreach (GameLiving member in GetGroupAndPets(Spell))
-                ECSGameEffectFactory.Create(new(member, Spell.Frequency, Caster.Effectiveness, this), static (in ECSGameEffectInitParams i) => new CombatHealECSEffect(i));
+                ECSGameEffectFactory.Create(new(member, Spell.Frequency, Caster.Effectiveness, this), static (in i) => new CombatHealECSEffect(i));
 
             GamePlayer player = Caster as GamePlayer;
 

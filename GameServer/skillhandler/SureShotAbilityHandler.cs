@@ -29,7 +29,7 @@ namespace DOL.GS.SkillHandler
             TrueShotECSGameEffect trueShot = EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot) as TrueShotECSGameEffect;
             trueShot?.End(false);
 
-            ECSGameEffectFactory.Create(new(player, 0, 1), static (in ECSGameEffectInitParams i) => new SureShotECSGameEffect(i));
+            ECSGameEffectFactory.Create(new(player, 0, 1), static (in i) => new SureShotECSGameEffect(i));
         }
     }
 }

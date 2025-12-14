@@ -276,13 +276,13 @@ namespace DOL.GS.Spells
 
 		public virtual ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new ECSGameSpellEffect(i));
+			return ECSGameEffectFactory.Create(initParams, static (in i) => new ECSGameSpellEffect(i));
 		}
 
 		public virtual ECSPulseEffect CreateECSPulseEffect(GameLiving target, double effectiveness)
 		{
 			int frequency = Spell != null ? Spell.Frequency : 0;
-			return ECSGameEffectFactory.Create(new(target, CalculateEffectDuration(target), effectiveness, this), frequency, static (in ECSGameEffectInitParams i, int pulseFreq) => new ECSPulseEffect(i, pulseFreq));
+			return ECSGameEffectFactory.Create(new(target, CalculateEffectDuration(target), effectiveness, this), frequency, static (in i, pulseFreq) => new ECSPulseEffect(i, pulseFreq));
 		}
 
 		/// <summary>

@@ -62,7 +62,7 @@ namespace DOL.GS
                     playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
-                PairedEffect = ECSGameEffectFactory.Create(new(Target, 0, 1), Source, Target, static (in ECSGameEffectInitParams i, GameLiving source, GameLiving target) => new GuardECSGameEffect(i, source, target));
+                PairedEffect = ECSGameEffectFactory.Create(new(Target, 0, 1), Source, Target, static (in i, source, target) => new GuardECSGameEffect(i, source, target));
                 PairedEffect.PairedEffect = this;
             }
 

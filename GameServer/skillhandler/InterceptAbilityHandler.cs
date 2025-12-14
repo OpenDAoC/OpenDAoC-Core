@@ -91,7 +91,7 @@ namespace DOL.GS.SkillHandler
                     intercept.End();
             }
 
-            ECSGameEffectFactory.Create(new(source, 0, 1), source, target, static (in ECSGameEffectInitParams i, GameLiving source, GameLiving target) => new InterceptECSGameEffect(i, source, target));
+            ECSGameEffectFactory.Create(new(source, 0, 1), source, target, static (in i, source, target) => new InterceptECSGameEffect(i, source, target));
         }
     }
 }

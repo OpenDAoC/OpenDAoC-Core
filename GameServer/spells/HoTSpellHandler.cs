@@ -15,7 +15,7 @@ namespace DOL.GS.Spells
 
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new HealOverTimeECSGameEffect(i));
+			return ECSGameEffectFactory.Create(initParams, static (in i) => new HealOverTimeECSGameEffect(i));
 		}
 
 		/// <summary>

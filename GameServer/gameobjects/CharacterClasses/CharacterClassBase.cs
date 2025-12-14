@@ -375,7 +375,7 @@ namespace DOL.GS
 			if (effect != null)
 				return false;
 
-			effect = ECSGameEffectFactory.Create(new(Player, 0, 1), static (in ECSGameEffectInitParams i) => new ShadeECSGameEffect(i));
+			effect = ECSGameEffectFactory.Create(new(Player, 0, 1), static (in i) => new ShadeECSGameEffect(i));
 			return effect.IsActive;
 		}
 

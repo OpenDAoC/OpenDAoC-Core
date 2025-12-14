@@ -53,7 +53,7 @@ namespace DOL.GS.RealmAbilities
 				if (success)
 					if (target != null)
 					{
-						ECSGameEffectFactory.Create(new(target, m_duration, m_value), static (in ECSGameEffectInitParams i) => new SoldiersBarricadeECSEffect(i));
+						ECSGameEffectFactory.Create(new(target, m_duration, m_value), static (in i) => new SoldiersBarricadeECSEffect(i));
 					}
 			}
 

@@ -222,7 +222,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            ECSGameEffectFactory.Create(new(_player, 0, 1), static (in ECSGameEffectInitParams i) => new AtlasOF_VolleyECSEffect(i));
+            ECSGameEffectFactory.Create(new(_player, 0, 1), static (in i) => new AtlasOF_VolleyECSEffect(i));
         }
 
         public override void AddEffectsInfo(IList<string> list)
