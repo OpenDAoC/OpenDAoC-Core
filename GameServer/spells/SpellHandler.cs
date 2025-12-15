@@ -1955,14 +1955,14 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			IList<GameLiving> targets;
-			if (Spell.Target == eSpellTarget.REALM
-				&& (Target == Caster || Caster is NecromancerPet nPet && Target == nPet.Owner)
+			List<GameLiving> targets;
+			if (Spell.Target is eSpellTarget.REALM
+				&& (Target == Caster || (Caster is NecromancerPet nPet && Target == nPet.Owner))
 				&& !Spell.IsConcentration
 				&& !Spell.IsHealing
 				&& Spell.IsBuff
-				&& Spell.SpellType != eSpellType.Bladeturn
-				&& Spell.SpellType != eSpellType.Bomber)
+				&& Spell.SpellType is not eSpellType.Bladeturn
+				&& Spell.SpellType is not eSpellType.Bomber)
 				targets = GetGroupAndPets(Spell);
 			else
 				targets = SelectTargets(Target);
@@ -2591,63 +2591,76 @@ namespace DOL.GS.Spells
 			set { m_delveInfoDepth = value; }
 		}
 
+		public static IList<string> GetDelveInfo(SpellHandler spellHandler, Spell spell, GameLiving caster)
+		{
+			List<string> list = new(32);
+			GamePlayer player = null;
+
+			if (caster is GamePlayer)
+				player = caster as GamePlayer;
+			else if (caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain npcCasterBrain)
+				player = npcCasterBrain.GetPlayerOwner();
+
+			if (spellHandler != null)
+			{
+				list.Add(spellHandler.ShortDescription);
+				list.Add(" ");
+			}
+
+			if (spell.InstrumentRequirement != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(spell.InstrumentRequirement)) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(spell.InstrumentRequirement)));
+			if (spell.Damage != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Damage", spell.Damage.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Damage", spell.Damage.ToString("0.###;0.###'%'")));
+			if (spell.LifeDrainReturn != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.HealthReturned", spell.LifeDrainReturn) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.HealthReturned", spell.LifeDrainReturn));
+			else if (spell.Value != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Value", spell.Value.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Value", spell.Value.ToString("0.###;0.###'%'")));
+
+			list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Target", spell.Target) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Target", spell.Target));
+
+			if (spell.Range != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Range", spell.Range) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Range", spell.Range));
+
+			if (spell.Duration >= ushort.MaxValue * 1000)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Duration") + " Permanent." : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " Permanent.");
+			else if (spell.Duration > 60000)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Duration") + " " + spell.Duration / 60000 + ":" + (spell.Duration % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " " + spell.Duration / 60000 + ":" + (spell.Duration % 60000 / 1000).ToString("00") + " min");
+			else if (spell.Duration != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Duration") + " " + (spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'") : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " " + (spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'"));
+
+			if (spell.Frequency != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Frequency", (spell.Frequency * 0.001).ToString("0.0")) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Frequency", (spell.Frequency * 0.001).ToString("0.0")));
+
+			if (spell.Power != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.PowerCost", spell.Power.ToString("0;0'%'")) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.PowerCost", spell.Power.ToString("0;0'%'")));
+
+			list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.CastingTime", (spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
+
+			if (spell.RecastDelay > 60000)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.RecastTime") + " " + (spell.RecastDelay / 60000).ToString() + ":" + (spell.RecastDelay % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (spell.RecastDelay / 60000).ToString() + ":" + (spell.RecastDelay % 60000 / 1000).ToString("00") + " min");
+			else if (spell.RecastDelay > 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.RecastTime") + " " + (spell.RecastDelay / 1000).ToString() + " sec" : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (spell.RecastDelay / 1000).ToString() + " sec");
+
+			if (spell.Concentration != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.ConcentrationCost", spell.Concentration) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.ConcentrationCost", spell.Concentration));
+
+			if (spell.Radius != 0)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Radius", spell.Radius) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Radius", spell.Radius));
+
+			if (spell.DamageType != eDamageType.Natural)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(spell.DamageType)) : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(spell.DamageType)));
+
+			if (spell.IsFocus)
+				list.Add(player != null ? LanguageMgr.GetTranslation(player.Client, "DelveInfo.Focus") : LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "DelveInfo.Focus"));
+
+			return list;
+		}
+
 		/// <summary>
 		/// Delve Info
 		/// </summary>
-		public virtual IList<string> DelveInfo
-		{
-			get
-			{
-				var list = new List<string>(32);
-				//list.Add("Function: " + (Spell.SpellType == string.Empty ? "(not implemented)" : Spell.SpellType));
-				//list.Add(" "); //empty line
-				GamePlayer p = null;
+		public virtual IList<string> DelveInfo => GetDelveInfo(this, m_spell, m_caster);
 
-				if (Caster is GamePlayer || Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain &&
-				((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null)
-				{
-					p = Caster is GamePlayer ? (Caster as GamePlayer) : ((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-				}
-				list.Add(ShortDescription);
-				list.Add(" "); //empty line
-				if (Spell.InstrumentRequirement != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)));
-				if (Spell.Damage != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")));
-				if (Spell.LifeDrainReturn != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.HealthReturned", Spell.LifeDrainReturn) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.HealthReturned", Spell.LifeDrainReturn));
-				else if (Spell.Value != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Value", Spell.Value.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Value", Spell.Value.ToString("0.###;0.###'%'")));
-				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Target", Spell.Target) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Target", Spell.Target));
-				if (Spell.Range != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Range", Spell.Range) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Range", Spell.Range));
-				if (Spell.Duration >= ushort.MaxValue * 1000)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " Permanent." : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " Permanent.");
-				else if (Spell.Duration > 60000)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " " + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " " + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min");
-				else if (Spell.Duration != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " " + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'") : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " " + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'"));
-				if (Spell.Frequency != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Frequency", (Spell.Frequency * 0.001).ToString("0.0")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Frequency", (Spell.Frequency * 0.001).ToString("0.0")));
-				if (Spell.Power != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")));
-				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
-				if (Spell.RecastDelay > 60000)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 60000).ToString() + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 60000).ToString() + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min");
-				else if (Spell.RecastDelay > 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 1000).ToString() + " sec" : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 1000).ToString() + " sec");
-				if (Spell.Concentration != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.ConcentrationCost", Spell.Concentration) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.ConcentrationCost", Spell.Concentration));
-				if (Spell.Radius != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Radius", Spell.Radius) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Radius", Spell.Radius));
-				if (Spell.DamageType != eDamageType.Natural)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
-				if (Spell.IsFocus)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Focus") : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Focus"));
-
-				return list;
-			}
-		}
 		// warlock add
 		public static GameSpellEffect FindEffectOnTarget(GameLiving target, string spellType, string spellName)
 		{
