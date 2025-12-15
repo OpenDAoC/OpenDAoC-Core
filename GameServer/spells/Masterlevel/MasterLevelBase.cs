@@ -812,19 +812,6 @@ namespace DOL.GS
             MaxSpeedBase = 0;
         }
 
-        public virtual int CalculateToHitChance(GameLiving target)
-        {
-            int spellLevel = Owner.Level;
-            int spellbonus = Owner.GetModified(eProperty.SpellLevel);
-            spellLevel += spellbonus;
-
-            if (spellLevel > 50)
-                spellLevel = 50;
-
-            int hitchance = 85 + ((spellLevel - target.Level) / 2);
-            return hitchance;
-        }
-
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
