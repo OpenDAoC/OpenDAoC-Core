@@ -56,12 +56,24 @@ namespace DOL.GS.PacketHandler
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CombatAnimation)))
 			{
 				if (attacker != null)
-					pak.WriteShort((ushort)attacker.ObjectID);
+				{
+					ushort attackerObjectId;
+
+					// Fixes issues with spell effects from out of range or invisible players.
+					if (!defender.IsWithinRadius(attacker, WorldMgr.VISIBILITY_DISTANCE))
+						attackerObjectId = 0;
+					else if (defender is not GamePlayer playerTarget || !playerTarget.CanDetect(attacker))
+						attackerObjectId = 0;
+					else
+						attackerObjectId = attacker.ObjectID;
+
+					pak.WriteShort(attackerObjectId);
+				}
 				else
 					pak.WriteShort(0x00);
 
 				if (defender != null)
-					pak.WriteShort((ushort)defender.ObjectID);
+					pak.WriteShort(defender.ObjectID);
 				else
 					pak.WriteShort(0x00);
 
