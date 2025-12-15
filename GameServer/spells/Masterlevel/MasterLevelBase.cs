@@ -812,19 +812,7 @@ namespace DOL.GS
             MaxSpeedBase = 0;
         }
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (source is GamePlayer)
-            {
-                damageAmount = 0;
-                criticalAmount = 0;
-            }
-
-            if (Health - damageAmount - criticalAmount <= 0)
-                Delete();
-            else
-                Health = Health - damageAmount - criticalAmount;
-        }
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount) { }
     }
     #endregion
 
