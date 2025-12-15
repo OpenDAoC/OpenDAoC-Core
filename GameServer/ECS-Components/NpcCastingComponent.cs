@@ -44,6 +44,9 @@ namespace DOL.GS
 
         protected override GamePlayer GetLosChecker(GameLiving target)
         {
+            if (target == Owner || target == null)
+                return null;
+
             GamePlayer losChecker = target as GamePlayer;
 
             if (losChecker == null && _npcOwner.Brain is IControlledBrain controlledBrain)

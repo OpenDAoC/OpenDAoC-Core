@@ -71,7 +71,7 @@ namespace DOL.GS
             GameLiving target = null, // Always null for players.
             bool checkLos = true)
         {
-            GamePlayer losChecker = checkLos && spell.RequiresLosCheck() && target != Owner ? GetLosChecker(target) : null;
+            GamePlayer losChecker = checkLos && spell.RequiresLosCheck() ? GetLosChecker(target) : null;
             return RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target, losChecker);
         }
 
