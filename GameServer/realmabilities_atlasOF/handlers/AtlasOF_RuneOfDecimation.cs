@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using DOL.AI;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
@@ -8,47 +8,20 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_RuneOfDecimation : TimedRealmAbility
     {
-        public AtlasOF_RuneOfDecimation(DbAbility dba, int level) : base(dba, level) { }
+        public const int DURATION = 480000; // 8 minutes.
 
-        public const int m_duration = 480000; // 8 minutes
-        public override int MaxLevel { get { return 1; } }
-        public override int GetReUseDelay(int level) { return 900; } // 15 mins
+        private static Spell _spell = null;
+
+        public override int MaxLevel => 1;
+        public override int GetReUseDelay(int level) { return 900; } // 15 minutes.
         public override int CostForUpgrade(int level) { return 14; }
 
-        private DbSpell m_dbspell;
-        private Spell m_spell = null;
-        private SpellLine m_spellline;
-        private GamePlayer m_player;
+        public AtlasOF_RuneOfDecimation(DbAbility dba, int level) : base(dba, level) { }
 
         public override void AddEffectsInfo(IList<string> list)
         {
-            list.Add("Target: Ground");
-            list.Add("Duration: 8 minutes");
-            list.Add("Range: 1500 units");
-            list.Add("Casting time: instant");
-        }
-
-        public virtual void CreateSpell()
-        {
-            m_dbspell = new();
-            m_dbspell.Name = "Rune Of Decimation";
-            m_dbspell.Icon = 4254;
-            m_dbspell.ClientEffect = 7153;
-            m_dbspell.Damage = 650;
-            m_dbspell.DamageType = (int)eDamageType.Energy;
-            m_dbspell.Target = eSpellTarget.ENEMY.ToString();
-            m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.DirectDamage.ToString();
-            m_dbspell.Value = 0;
-            m_dbspell.Duration = m_duration;
-            m_dbspell.Pulse = 0;
-            m_dbspell.PulsePower = 0;
-            m_dbspell.Power = 0;
-            m_dbspell.CastTime = 0;
-            m_dbspell.EffectGroup = 0;
-            m_dbspell.Range = 350;
-            m_spell = new Spell(m_dbspell, 0); // Make spell level 0 so it bypasses the spec level adjustment code.
-            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
+            EnsureSpellInitialized();
+            SpellHandler.GetDelveInfo(null, _spell, null);
         }
 
         public override void Execute(GameLiving living)
@@ -56,63 +29,139 @@ namespace DOL.GS.RealmAbilities
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
                 return;
 
-            if (living is GamePlayer p)
-                m_player = p;
-
-            CreateSpell();
-
-            if (m_spell == null)
-                return;
-
-            GamePlayer caster = living as GamePlayer;
-
-            // OF trap drops at caster's feet, not at GT.
-            /*if ( caster.GroundTarget == null || !caster.IsWithinRadius( caster.GroundTarget, 1500 ) )
+            if (living.IsCasting)
             {
-                caster.Out.SendMessage("You groundtarget is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                (living as GamePlayer)?.Out.SendMessage("You are already casting an ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            if (!caster.GroundTargetInView)
+            EnsureSpellInitialized();
+
+            RuneOfDecimation rune = new(_spell)
             {
-                caster.Out.SendMessage("Your groundtarget is not in view!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Name = "Rune of Decimation",
+                GuildName = living.Name,
+                Realm = living.Realm,
+                Size = 50,
+                Level = living.Level,
+                CurrentRegion = living.CurrentRegion,
+                X = living.X,
+                Y = living.Y,
+                Z = living.Z,
+                Owner = living
+            };
+
+            if (!rune.AddToWorld())
                 return;
-            }*/
 
-            if (caster.IsCasting)
+            foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {
-                caster.Out.SendMessage("You are already casting an ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            GameNPC trap = new();
-            trap.Model = 488;
-            trap.Name = "nothing";
-            trap.GuildName = m_player.Name + "";
-            trap.Realm = m_player.Realm;
-            trap.Size = 1;
-            trap.Level = m_player.Level;
-            trap.CurrentRegion = m_player.CurrentRegion;
-            trap.X = m_player.X;
-            trap.Y = m_player.Y;
-            trap.Z = m_player.Z;
-            trap.ObjectState = GameObject.eObjectState.Active;
-            trap.AddToWorld();
-
-            SpellHandler tmpHandler = new(m_player, new Spell(m_spell, eSpellType.DirectDamage), m_spellline);
-
-            foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-            {
-                if (player == caster)
-                    player.MessageToSelf("You cast " + Name + "!", eChatType.CT_Spell);
+                if (player == living)
+                    player.MessageToSelf($"You cast {Name}!", eChatType.CT_Spell);
                 else
-                    player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-                ClientService.CreateObjectForPlayer(player, trap);
+                    player.MessageFromArea(living, $"{living.Name} casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
             }
 
-            ECSGameEffectFactory.Create(new(trap, m_duration, 1, tmpHandler), static (in i) => new AtlasOF_RuneOfDecimationECSEffect(i));
             DisableSkill(living);
+        }
+
+        private static void EnsureSpellInitialized()
+        {
+            if (_spell != null)
+                return;
+
+            // Behaves like an AoE, not a PBAoE.
+            // Damage is centered on the first enemy that enters the rune's radius.
+            DbSpell _dbspell = new()
+            {
+                Name = "Rune Of Decimation",
+                Icon = 4254,
+                ClientEffect = 7153,
+                Damage = 650,
+                DamageType = (int) eDamageType.Energy,
+                Target = eSpellTarget.ENEMY.ToString(),
+                Range = 350, // Unknown.
+                Radius = 350,
+                Type = eSpellType.DirectDamage.ToString(),
+                Value = 0,
+                Duration = 0,
+                Pulse = 0,
+                PulsePower = 0,
+                Power = 0,
+                CastTime = 0,
+                EffectGroup = 0
+            };
+
+            _spell = new(_dbspell, 0);
+        }
+
+        private class RuneOfDecimation : GameMine
+        {
+            public override bool IsVisibleToPlayers => true;
+            public Spell Spell { get; init;}
+
+            public RuneOfDecimation(Spell spell) : base(new RuneOfDecimationBrain(GameLoop.GameLoopTime + DURATION))
+            {
+                Spell = spell;
+            }
+        }
+
+        private class RuneOfDecimationBrain : ABrain
+        {
+            private long _expireTime;
+            public override int ThinkInterval => 500;
+
+            public RuneOfDecimationBrain(long expireTime)
+            {
+                _expireTime = expireTime;
+            }
+
+            public override void Think()
+            {
+                if (GameServiceUtils.ShouldTick(_expireTime) ||
+                    Body is not RuneOfDecimation rune ||
+                    rune.Owner.ObjectState is GameObject.eObjectState.Deleted)
+                {
+                    Body.Die(Body);
+                    return;
+                }
+
+                GameLiving triggeringLiving = null;
+                Spell spell = rune.Spell;
+                ushort spellRadius = (ushort) spell.Radius;
+                GameLiving caster = rune.Owner;
+
+                foreach (GamePlayer player in rune.GetPlayersInRadius(spellRadius))
+                {
+                    if (GameServer.ServerRules.IsAllowedToAttack(caster, player, true))
+                    {
+                        triggeringLiving ??= player;
+                        break;
+                    }
+                }
+
+                if (triggeringLiving == null)
+                {
+                    foreach (GameNPC living in rune.GetNPCsInRadius(spellRadius))
+                    {
+                        if (GameServer.ServerRules.IsAllowedToAttack(caster, living, true))
+                        {
+                            triggeringLiving ??= living;
+                            break;
+                        }
+                    }
+                }
+
+                if (triggeringLiving == null)
+                    return;
+
+                // Bypass the casting component since there isn't an easy way to make the player cast an AoE or PBAoE spell from far away.
+                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(caster, _spell, GlobalSpellsLines.RealmSpellsSpellLine);
+                spellHandler.StartSpell(triggeringLiving);
+                rune.Die(rune);
+            }
+
+            public override void KillFSM() { }
         }
     }
 }
