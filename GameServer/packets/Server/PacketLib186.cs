@@ -57,12 +57,13 @@ namespace DOL.GS.PacketHandler
 			{
 				if (attacker != null)
 				{
+
 					ushort attackerObjectId;
 
-					// Fixes issues with spell effects from out of range or invisible players.
+					// Fixes issues with combat animations caused by out of range or invisible attackers.
 					if (!defender.IsWithinRadius(attacker, WorldMgr.VISIBILITY_DISTANCE))
 						attackerObjectId = 0;
-					else if (defender is not GamePlayer playerTarget || !playerTarget.CanDetect(attacker))
+					else if (defender is GamePlayer playerTarget && !playerTarget.CanDetect(attacker))
 						attackerObjectId = 0;
 					else
 						attackerObjectId = attacker.ObjectID;
