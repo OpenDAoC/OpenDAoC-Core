@@ -26,7 +26,7 @@ namespace DOL.GS
         private long _cachedMaxSpeedTick;
 
         public static int ViolationThreshold { get; set; } = 6;             // Number of consecutive speed hack detections before action is taken.
-        public static int ViolationValidityDuration { get; set; } = 1000;   // Duration in milliseconds for which speed hack violations are considered valid.
+        public static int ViolationValidityDuration { get; set; } = 1500;   // Duration in milliseconds for which violations are considered valid (must be at least ViolationThreshold * ~210).
         public static int TeleportThreshold { get; set; } = 5;              // Number of consecutive teleports before kicking.
         public static double MaxSpeedToleranceFactor { get; set; } = 1.15;  // Factor to allow for some tolerance in speed checks (measurement errors, lag, etc.).
         public static int LatencyBuffer { get; set; } = 750;                // Buffer time to account for latency when checking speed changes.
