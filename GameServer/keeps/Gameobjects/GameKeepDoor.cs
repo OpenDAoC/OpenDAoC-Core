@@ -396,40 +396,10 @@ namespace DOL.GS.Keeps
 
         public override void StartHealthRegeneration()
         {
-            if (!IsAttackableDoor)
+            if (!IsAttackableDoor || m_healthRegenerationTimer.IsAlive || Health >= MaxHealth)
                 return;
 
-            if ((m_repairTimer != null && m_repairTimer.IsAlive) || Health >= MaxHealth)
-                return;
-
-            m_repairTimer = new ECSGameTimer(this);
-            m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
-            m_repairTimer.Start(REPAIR_INTERVAL);
-        }
-
-        public void DeleteObject()
-        {
-            RemoveTimers();
-
-            if (Component != null)
-            {
-                Component.Keep?.Doors.Remove(ObjectID.ToString());
-                Component.Delete();
-            }
-
-            Component = null;
-            Position = null;
-            base.Delete();
-            CurrentRegion = null;
-        }
-
-        public virtual void RemoveTimers()
-        {
-            if (m_repairTimer != null)
-            {
-                m_repairTimer.Stop();
-                m_repairTimer = null;
-            }
+            m_healthRegenerationTimer.Start(REPAIR_INTERVAL);
         }
 
         #endregion
@@ -594,17 +564,14 @@ namespace DOL.GS.Keeps
             }
         }
 
-        protected ECSGameTimer m_repairTimer;
         protected const int REPAIR_INTERVAL = 30 * 60 * 1000;
 
-        public int RepairTimerCallback(ECSGameTimer timer)
+        protected override int HealthRegenerationTimerCallback(ECSGameTimer timer)
         {
-            if (Component == null || Component.Keep == null)
+            if (Component?.Keep == null || HealthPercent >= 100)
                 return 0;
 
-            if (HealthPercent >= 100)
-                return 0;
-            else if (!Component.Keep.InCombat)
+            if (!Component.Keep.InCombat)
                 Repair(MaxHealth / 100 * 5);
 
             return REPAIR_INTERVAL;

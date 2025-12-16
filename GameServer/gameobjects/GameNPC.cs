@@ -3022,16 +3022,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartRespawn()
 		{
-			if (IsAlive)
-				return;
-
-			if (m_healthRegenerationTimer != null)
-			{
-				m_healthRegenerationTimer.Stop();
-				m_healthRegenerationTimer = null;
-			}
-
-			if (RespawnInterval <= 0)
+			if (IsAlive || RespawnInterval <= 0)
 				return;
 
 			lock (_respawnTimerLock)

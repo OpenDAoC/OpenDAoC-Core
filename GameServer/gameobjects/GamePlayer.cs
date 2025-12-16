@@ -2366,12 +2366,7 @@ namespace DOL.GS
 
         public override void StartPowerRegeneration()
         {
-            if (m_health == 0 || ObjectState is not eObjectState.Active)
-                return;
-
-            if (m_powerRegenerationTimer == null)
-                m_powerRegenerationTimer = new(this, new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback));
-            else if (m_powerRegenerationTimer.IsAlive)
+            if (m_health == 0 || ObjectState is not eObjectState.Active || m_powerRegenerationTimer.IsAlive)
                 return;
 
             m_powerRegenerationTimer.Start(GetPowerRegenerationInterval());
@@ -2379,12 +2374,7 @@ namespace DOL.GS
 
         public override void StartEnduranceRegeneration()
         {
-            if (m_health == 0 || ObjectState is not eObjectState.Active)
-                return;
-
-            if (m_enduRegenerationTimer == null)
-                m_enduRegenerationTimer = new(this, new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback));
-            else if (m_enduRegenerationTimer.IsAlive)
+            if (m_health == 0 || ObjectState is not eObjectState.Active || m_enduRegenerationTimer.IsAlive)
                 return;
 
             m_enduRegenerationTimer.Start(GetEnduranceRegenerationInterval());
@@ -6126,12 +6116,6 @@ namespace DOL.GS
                 {
                     _quitTimer.Stop();
                     _quitTimer = null;
-                }
-
-                if (m_healthRegenerationTimer != null)
-                {
-                    m_healthRegenerationTimer.Stop();
-                    m_healthRegenerationTimer = null;
                 }
 
                 m_automaticRelease = m_releaseType == eReleaseType.Duel;

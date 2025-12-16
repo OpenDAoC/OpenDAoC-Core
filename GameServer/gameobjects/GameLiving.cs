@@ -2482,12 +2482,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartHealthRegeneration()
 		{
-			if (m_health == 0 || ObjectState is not eObjectState.Active)
-				return;
-
-			if (m_healthRegenerationTimer == null)
-				m_healthRegenerationTimer = new(this, new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback));
-			else if (m_healthRegenerationTimer.IsAlive)
+			if (m_health == 0 || ObjectState is not eObjectState.Active || m_healthRegenerationTimer.IsAlive)
 				return;
 
 			m_healthRegenerationTimer.Start(GetHealthRegenerationInterval());
@@ -2508,7 +2503,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopHealthRegeneration()
 		{
-			m_healthRegenerationTimer?.Stop();
+			m_healthRegenerationTimer.Stop();
 		}
 
 		/// <summary>
@@ -2516,7 +2511,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopPowerRegeneration()
 		{
-			m_powerRegenerationTimer?.Stop();
+			m_powerRegenerationTimer.Stop();
 		}
 
 		/// <summary>
@@ -2524,7 +2519,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopEnduranceRegeneration()
 		{
-			m_enduRegenerationTimer?.Stop();
+			m_enduRegenerationTimer.Stop();
 		}
 
 		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
@@ -3537,12 +3532,6 @@ namespace DOL.GS
 			StopHealthRegeneration();
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();
-			m_healthRegenerationTimer?.Stop();
-			m_powerRegenerationTimer?.Stop();
-			m_enduRegenerationTimer?.Stop();
-			m_healthRegenerationTimer = null;
-			m_powerRegenerationTimer = null;
-			m_enduRegenerationTimer = null;
 			TargetObject = null;
 			return true;
 		}
@@ -3819,6 +3808,10 @@ namespace DOL.GS
 			m_health = 1;
 			m_mana = 1;
 			m_endurance = 1;
+
+			m_healthRegenerationTimer = new(this, HealthRegenerationTimerCallback);
+			m_powerRegenerationTimer = new(this, PowerRegenerationTimerCallback);
+			m_enduRegenerationTimer = new(this, EnduranceRegenerationTimerCallback);
 		}
 	}
 }

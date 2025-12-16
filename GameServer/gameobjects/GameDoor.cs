@@ -16,7 +16,6 @@ namespace DOL.GS
 
         private bool _openDead = false;
         private ECSGameTimer _closeDoorAction;
-        private ECSGameTimer _repairTimer;
 
         public GameDoor() : base()
         {
@@ -81,17 +80,18 @@ namespace DOL.GS
 
         public override void StartHealthRegeneration()
         {
-            if ((_repairTimer != null && _repairTimer.IsAlive) || Health >= MaxHealth)
+            if (m_healthRegenerationTimer.IsAlive || Health >= MaxHealth)
                 return;
 
-            _repairTimer = new ECSGameTimer(this);
-            _repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
-            _repairTimer.Start(REPAIR_INTERVAL);
+            m_healthRegenerationTimer.Start(REPAIR_INTERVAL);
         }
 
-        private int RepairTimerCallback(ECSGameTimer timer)
+        protected override int HealthRegenerationTimerCallback(ECSGameTimer timer)
         {
-            if (HealthPercent != 100 && !InCombat)
+            if (HealthPercent >= 100)
+                return 0;
+
+            if (!InCombat)
             {
                 Health += MaxHealth / 100 * 5;
 
@@ -104,9 +104,6 @@ namespace DOL.GS
                 // This should normally be done by 'DoorMgr'.
                 // But for now it's here because basic doors aren't attackable anyway.
                 SaveIntoDatabase();
-
-                if (HealthPercent >= 100)
-                    return 0;
             }
 
             return REPAIR_INTERVAL;

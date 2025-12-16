@@ -143,19 +143,10 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void StartHealthRegeneration()
 		{
-			m_repairTimer = new ECSGameTimer(this);
-			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
-			m_repairTimer.Interval = repairInterval;
-			m_repairTimer.Start(1);
-		}
+			if (m_healthRegenerationTimer.IsAlive || Health >= MaxHealth)
+				return;
 
-		public virtual void RemoveTimers()
-		{
-			if (m_repairTimer != null)
-			{
-				m_repairTimer.Stop();
-				m_repairTimer = null;
-			}
+			m_healthRegenerationTimer.Start(REPAIR_INTERVAL);
 		}
 
 		public GameKeepComponent()
@@ -202,7 +193,6 @@ namespace DOL.GS.Keeps
 			LoadPositions();
 			AddToWorld();
 			FillPositions();
-			RepairedHealth = MaxHealth;
 			m_CreateInfo = component.CreateInfo;
 			StartHealthRegeneration();
 		}
@@ -536,7 +526,6 @@ namespace DOL.GS.Keeps
 		public override void Delete()
 		{
 			StopHealthRegeneration();
-			RemoveTimers();
 			HookPoints.Clear();
 			Positions.Clear();
 			Keep = null;
@@ -616,7 +605,6 @@ namespace DOL.GS.Keeps
 			get { return m_isRaized; }
 			set
 			{
-				RepairedHealth = 0;
 				m_isRaized = value;
 				if (value == true)
 				{
@@ -630,18 +618,17 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public int RepairedHealth = 0;
+		protected const int REPAIR_INTERVAL = 30 * 60 * 1000;
 
-		protected ECSGameTimer m_repairTimer;
-		protected static int repairInterval = 30 * 60 * 1000;
-
-		public virtual int RepairTimerCallback(ECSGameTimer timer)
+		protected override int HealthRegenerationTimerCallback(ECSGameTimer timer)
 		{
-			if (HealthPercent == 100 || Keep.InCombat)
-				return repairInterval;
+			if (Keep == null || HealthPercent >= 100)
+				return 0;
 
-			Repair((MaxHealth / 100) * 5);
-			return repairInterval;
+			if (!Keep.InCombat)
+				Repair(MaxHealth / 100 * 5);
+
+			return REPAIR_INTERVAL;
 		}
 
 		public virtual void Repair(int amount)
@@ -649,8 +636,9 @@ namespace DOL.GS.Keeps
 			if (amount > 0)
 			{
 				byte oldStatus = Status;
-				Health += amount;
+				Health = Math.Min(Health + amount, MaxHealth);
 				m_oldHealthPercent = HealthPercent;
+
 				if (oldStatus != Status)
 				{
 					foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
@@ -663,8 +651,6 @@ namespace DOL.GS.Keeps
 					foreach (GameKeepComponent component in Keep.KeepComponents)
 						component.FillPositions();
 				}
-
-				RepairedHealth = Health;
 			}
 		}
 
