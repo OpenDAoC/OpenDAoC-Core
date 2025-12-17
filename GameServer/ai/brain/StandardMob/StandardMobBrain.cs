@@ -533,16 +533,15 @@ namespace DOL.AI.Brain
         {
             // Keep Necromancer shades so that we can attack them if their pets die.
             return !living.IsAlive ||
-                   living.ObjectState != GameObject.eObjectState.Active ||
                    living.CurrentRegion != Body.CurrentRegion ||
-                   !Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE) ||
                    (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade));
         }
 
         protected virtual bool ShouldBeIgnoredFromAggroList(GameLiving living)
         {
             // We're keeping shades in the aggro list so that mobs attack them after their pet dies, so they need to be filtered out here.
-            return living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade);
+            // We also keep entities outside MAX_AGGRO_LIST_DISTANCE in case they come back.
+            return living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade) || !Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE);
         }
 
         protected virtual GameLiving CleanUpAggroListAndGetHighestModifiedThreat()

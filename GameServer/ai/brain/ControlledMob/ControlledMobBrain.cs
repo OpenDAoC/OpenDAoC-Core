@@ -777,15 +777,12 @@ namespace DOL.AI.Brain
 
 		protected override bool ShouldBeRemovedFromAggroList(GameLiving living)
 		{
-			if (living.IsMezzed ||
-				!living.IsAlive ||
-				living.ObjectState is not GameObject.eObjectState.Active ||
-				living.CurrentRegion != Body.CurrentRegion ||
-				!Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE) ||
-				!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-			{
+			if (base.ShouldBeRemovedFromAggroList(living))
 				return true;
-			}
+
+			// Pets forget about mezzed and rooted players.
+			if (living.IsMezzed)
+				return true;
 
 			ECSGameEffect root = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 			return root != null && root.SpellHandler.Spell.Value == 99;

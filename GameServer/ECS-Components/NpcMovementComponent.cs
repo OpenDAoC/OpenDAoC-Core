@@ -38,8 +38,8 @@ namespace DOL.GS
         public ref Vector3 Velocity => ref _velocity;
         public ref Vector3 Destination => ref _destination;
         public GameLiving FollowTarget { get; private set; }
-        public int MinFollowDistance { get; private set; } = 100;
-        public int MaxFollowDistance { get; private set; } = 3000;
+        public int MinFollowDistance { get; private set; }
+        public int MaxFollowDistance { get; private set; }
         public string PathID { get; set; }
         public PathPoint CurrentWaypoint { get; set; }
         public bool IsReturningToSpawnPoint { get; private set; }

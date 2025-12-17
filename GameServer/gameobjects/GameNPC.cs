@@ -2725,7 +2725,6 @@ namespace DOL.GS
 		}
 
 		private double damageFactor = 1;
-		private int orbsReward = 0;
 
 		public override double GetWeaponSkill(DbInventoryItem weapon)
 		{
