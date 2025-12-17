@@ -57,14 +57,18 @@ namespace DOL.GS.PacketHandler
 			{
 				if (attacker != null)
 				{
-
 					ushort attackerObjectId;
 
 					// Fixes issues with combat animations caused by out of range or invisible attackers.
-					if (!defender.IsWithinRadius(attacker, WorldMgr.VISIBILITY_DISTANCE))
-						attackerObjectId = 0;
-					else if (defender is GamePlayer playerTarget && !playerTarget.CanDetect(attacker))
-						attackerObjectId = 0;
+					if (defender != null)
+					{
+						if (!defender.IsWithinRadius(attacker, WorldMgr.VISIBILITY_DISTANCE))
+							attackerObjectId = 0;
+						else if (defender is GamePlayer playerTarget && !playerTarget.CanDetect(attacker))
+							attackerObjectId = 0;
+						else
+							attackerObjectId = attacker.ObjectID;
+					}
 					else
 						attackerObjectId = attacker.ObjectID;
 

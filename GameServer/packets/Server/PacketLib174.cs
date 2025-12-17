@@ -388,10 +388,15 @@ namespace DOL.GS.PacketHandler
 				ushort casterObjectId;
 
 				// Fixes issues with spell effects caused by out of range or invisible attackers.
-				if (!spellTarget.IsWithinRadius(spellCaster, WorldMgr.VISIBILITY_DISTANCE))
-					casterObjectId = 0;
-				else if (spellTarget is GamePlayer playerTarget && !playerTarget.CanDetect(spellCaster))
-					casterObjectId = 0;
+				if (spellTarget != null)
+				{
+					if (!spellTarget.IsWithinRadius(spellCaster, WorldMgr.VISIBILITY_DISTANCE))
+						casterObjectId = 0;
+					else if (spellTarget is GamePlayer playerTarget && !playerTarget.CanDetect(spellCaster))
+						casterObjectId = 0;
+					else
+						casterObjectId = spellCaster.ObjectID;
+				}
 				else
 					casterObjectId = spellCaster.ObjectID;
 
