@@ -5765,14 +5765,22 @@ namespace DOL.GS
             return GetModified(eProperty.Strength);
         }
 
-        public int GetArmorFactorCap()
+        public int GetArmorFactorCap(eObjectType type, out int itemArmorFactorCap)
         {
-            int characterLevel = Level;
+            if (!GlobalConstants.IsArmor((int) type))
+                throw new ArgumentException($"{nameof(type)} must be an armor type");
+
+            int modifiedCharacterLevel = Level;
 
             if (RealmLevel > 39)
-                characterLevel++;
+                modifiedCharacterLevel++;
 
-            return characterLevel * 2;
+            // Returns two caps:
+            // * One for player AF, which is twice the modified character level and is meant to be applied after base AF buffs.
+            // * One for the item AF, which depends on the armor type and is meant to be applied first.
+            int playerArmorFactorCap = modifiedCharacterLevel * 2;
+            itemArmorFactorCap = type is eObjectType.Cloth ? modifiedCharacterLevel : playerArmorFactorCap;
+            return playerArmorFactorCap;
         }
 
         /// <summary>
@@ -5788,8 +5796,8 @@ namespace DOL.GS
             if (item == null)
                 return 0;
 
-            int armorFactorCap = GetArmorFactorCap();
-            double armorFactor = Math.Min(item.DPS_AF, armorFactorCap);
+            int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
+            double armorFactor = Math.Min(item.DPS_AF, itemArmorFactorCap); // Cap item AF first.
             armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);

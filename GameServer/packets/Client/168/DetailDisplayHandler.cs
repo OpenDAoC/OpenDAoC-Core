@@ -1320,8 +1320,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if (item.DPS_AF != 0)
 			{
-				int armorFactorCap = client.Player.GetArmorFactorCap();
-				armorFactor = Math.Min(armorFactorCap, item.DPS_AF);
+				_ = client.Player.GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
+				armorFactor = Math.Min(itemArmorFactorCap, item.DPS_AF);
 				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.ClampFact", (int) armorFactor));
 			}
 
