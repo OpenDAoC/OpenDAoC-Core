@@ -1550,6 +1550,36 @@ namespace DOL.GS.Commands
 
 						break;
 					}
+					case "emblem":
+					{
+						if (client.Player.Guild == null)
+						{
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+						if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader))
+						{
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivileges"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+						if (client.Player.Guild.Emblem != 0)
+						{
+							if (client.Player.TargetObject is not EmblemNPC)
+							{
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemAlready"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+							client.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemRedo"), new CustomDialogResponse(EmblemChange));
+							return;
+						}
+						if (client.Player.TargetObject is not EmblemNPC)
+						{
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemNPCNotSelected"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+						client.Out.SendEmblemDialogue();
+						break;
+					}
 					case "autoremove":
 					{
 						if (client.Player.Guild == null)
