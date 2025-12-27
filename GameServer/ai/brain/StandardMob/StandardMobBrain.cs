@@ -88,17 +88,6 @@ namespace DOL.AI.Brain
             return HasAggro;
         }
 
-        public virtual bool HasPatrolPath()
-        {
-            return Body.MaxSpeedBase > 0 &&
-                Body.CurrentSpellHandler == null &&
-                !Body.IsMoving &&
-                !Body.attackComponent.AttackState &&
-                !Body.InCombat &&
-                !Body.IsMovingOnPath &&
-                !string.IsNullOrEmpty(Body.PathID);
-        }
-
         /// <summary>
         /// Check for aggro against players
         /// </summary>

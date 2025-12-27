@@ -670,22 +670,14 @@ namespace DOL.GS
 			}
 		}
 
-
-		public override bool IsUnderwater
-		{
-			get { return (m_flags & eFlags.SWIMMING) == eFlags.SWIMMING || base.IsUnderwater; }
-		}
-
+		public override bool IsUnderwater => (m_flags & eFlags.SWIMMING) is eFlags.SWIMMING || base.IsUnderwater;
 
 		/// <summary>
 		/// Shows wether any player sees that mob
 		/// we dont need to calculate things like AI if mob is in no way
 		/// visible to at least one player
 		/// </summary>
-		public virtual bool IsVisibleToPlayers
-		{
-			get { return GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
-		}
+		public virtual bool IsVisibleToPlayers => GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN;
 
 		/// <summary>
 		/// Gets or sets the spawnposition of this npc
@@ -823,6 +815,7 @@ namespace DOL.GS
 		public bool IsDestinationValid => movementComponent.IsDestinationValid;
 		public bool IsAtDestination => movementComponent.IsAtDestination;
 		public bool CanRoam => movementComponent.CanRoam;
+		public bool CanMoveOnPath => movementComponent.CanMoveOnPath;
 
 		public void WalkTo(Point3D target, short speed)
 		{
@@ -2788,6 +2781,7 @@ namespace DOL.GS
 					ControlledNPC_Release();
 
 				StopMoving();
+				CurrentWaypoint = null;
 
 				if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
 					killer = petBrain.GetPlayerOwner();
