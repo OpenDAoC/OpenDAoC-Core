@@ -2011,15 +2011,8 @@ namespace DOL.GS
         /// </summary>
         public override string GuildName
         {
-            get
-            {
-                if (m_guild == null)
-                    return string.Empty;
-
-                return m_guild.Name;
-            }
-            set
-            { }
+            get => m_guild == null ? string.Empty : m_guild.Name;
+            set { }
         }
 
         /// <summary>

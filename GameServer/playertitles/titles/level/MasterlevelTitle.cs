@@ -91,8 +91,8 @@ namespace DOL.GS.PlayerTitles
 				int mlline = GetPlayerMLLine(player);
 				return LanguageMgr.TryTranslateOrDefault(source, string.Format("!ML Title {0}!", mlline), string.Format("Titles.ML.Line{0}", mlline));
 			}
-			
-			return LanguageMgr.TryTranslateOrDefault(source, "!None!", "DetailDisplayHandler.HandlePacket.None");
+
+			return string.Empty;
 		}
 		
 		/// <summary>
