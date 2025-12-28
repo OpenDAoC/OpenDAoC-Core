@@ -32,9 +32,8 @@ namespace DOL.GS.Commands
 		/// <returns></returns>
 		public static bool IsValidGuildName(string guildName)
 		{
-			return Regex.IsMatch(guildName, @"^[a-zA-Z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+$") &&
-				guildName.Length >= 0 &&
-				!guildName.Equals("None", StringComparison.OrdinalIgnoreCase);
+			// "None" is a client reserved name.
+			return Regex.IsMatch(guildName, @"^[a-zA-Z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+$") && !guildName.Equals("None", StringComparison.OrdinalIgnoreCase);
 		}
 		private static bool IsNearRegistrar(GamePlayer player)
 		{
