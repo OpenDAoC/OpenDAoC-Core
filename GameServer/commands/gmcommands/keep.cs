@@ -2451,6 +2451,7 @@ namespace DOL.GS.Commands
 							banner.Y = client.Player.Y;
 							banner.Z = client.Player.Z;
 							banner.Heading = client.Player.Heading;
+							banner.LoadedFromScript = false;
 							banner.SaveIntoDatabase();
 
 							foreach (AbstractArea area in banner.CurrentAreas)
