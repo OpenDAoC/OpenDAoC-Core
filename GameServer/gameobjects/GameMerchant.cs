@@ -470,6 +470,11 @@ namespace DOL.GS
 				} // foreach
 		}
 
+		public override void SendMerchantWindow(GamePlayer player)
+		{
+			player.Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Bp);
+		}
+
 		/// <summary>
 		/// Exchange special currency for BPs
 		/// </summary>
