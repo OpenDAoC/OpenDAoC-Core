@@ -452,7 +452,7 @@ namespace DOL.GS
                 damageCap = damage * 3;
 
                 if (owner is GameEpicBoss)
-                    damage *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                    damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
             }
 
             // Relic bonus is applied to damage only and does not increase cap.
