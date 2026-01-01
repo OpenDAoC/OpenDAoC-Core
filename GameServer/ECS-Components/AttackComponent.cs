@@ -393,6 +393,7 @@ namespace DOL.GS
 
         public double AttackDamage(DbInventoryItem weapon, WeaponAction action, out double damageCap)
         {
+            double damage;
             damageCap = 0;
 
             if (owner is GamePlayer player)
@@ -433,13 +434,12 @@ namespace DOL.GS
                 else if (weapon.Item_Type is Slot.TWOHAND)
                     damageCap *= CalculateTwoHandedDamageModifier(weapon);
 
-                double damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
+                damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
                 damageCap *= 3;
-                return damage;
             }
             else
             {
-                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
+                damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
 
                 if (owner is GameNPC npc)
                     damage *= npc.DamageFactor;
@@ -451,9 +451,11 @@ namespace DOL.GS
 
                 if (owner is GameEpicBoss)
                     damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
-
-                return damage;
             }
+
+            // Relic bonus is applied to damage only and does not increase cap.
+            double relicBonus = 1.0 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
+            return damage * relicBonus;
         }
 
         public void RequestStartAttack(GameObject attackTarget = null)
@@ -1091,9 +1093,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    // Relic bonus is applied to damage only and does not increase cap.
-                    double relicBonus = 1.0 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
-                    double damage = AttackDamage(weapon, action, out double baseDamageCap) * relicBonus;
+                    double damage = AttackDamage(weapon, action, out double baseDamageCap);
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -1101,7 +1101,7 @@ namespace DOL.GS
 
                     double weaponSkill = CalculateWeaponSkill(weapon, ad.Target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
-                    double damageMod = weaponSkill / armorMod * relicBonus;
+                    double damageMod = weaponSkill / armorMod;
 
                     // Badge Of Valor Calculation 1+ absorb or 1- absorb
                     // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
