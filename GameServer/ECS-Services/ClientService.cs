@@ -242,7 +242,7 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i < _lastValidIndex; i++)
+                for (int i = 0; i <= _lastValidIndex; i++)
                 {
                     GameClient client = _clients[i];
 
@@ -285,7 +285,7 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i < _lastValidIndex; i++)
+                for (int i = 0; i <= _lastValidIndex; i++)
                 {
                     GameClient client = _clients[i];
 
@@ -321,7 +321,7 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i < _lastValidIndex; i++)
+                for (int i = 0; i <= _lastValidIndex; i++)
                 {
                     GameClient client = _clients[i];
 
@@ -355,7 +355,7 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i < _lastValidIndex; i++)
+                for (int i = 0; i <= _lastValidIndex; i++)
                 {
                     GameClient client = _clients[i];
 

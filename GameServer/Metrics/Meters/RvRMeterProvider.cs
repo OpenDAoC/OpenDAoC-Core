@@ -56,7 +56,7 @@ public class RvRMeterProvider : IMeterProvider
                 [new("realm", "Midgard")]
             );
 
-            return 
+            return
             [
                 albionRvRPlayers,
                 hiberniaRvRPlayers,
