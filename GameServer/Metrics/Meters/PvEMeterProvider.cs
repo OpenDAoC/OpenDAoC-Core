@@ -25,43 +25,39 @@ public class PvEMeterProvider : IMeterProvider
         );
     }
 
-    /// <summary>
-    /// Online Players in PvE Zones
-    /// </summary>
-    /// <returns></returns>
     private static List<Measurement<int>> OnlinePlayerInPvEZones()
     {
         try
         {
-            List<GameClient> activePlayers = ClientService.Instance.GetClients().Where(IsPlayerInPvEZone).ToList();
+            List<GamePlayer> activePlayers = ClientService.Instance.GetPlayers<object>(IsPlayerInPvEZone);
 
-            static bool IsPlayerInPvEZone(GameClient client)
+            static bool IsPlayerInPvEZone(GamePlayer player, object unused)
             {
-                return client.ClientState is GameClient.eClientState.Playing &&
-                    (ePrivLevel) client.Account.PrivLevel is ePrivLevel.Player &&
-                    !client.Player.CurrentRegion.IsRvR &&
-                    !client.Player.CurrentZone.IsRvR;
+                return player.Client.ClientState is GameClient.eClientState.Playing &&
+                    (ePrivLevel) player.Client.Account.PrivLevel is ePrivLevel.Player &&
+                    !player.CurrentRegion.IsRvR &&
+                    !player.CurrentZone.IsRvR;
             }
 
             // Albion players in PvE
             Measurement<int> albionPvEPlayers = new(
-                activePlayers.Count(c => c.Player.Realm == eRealm.Albion),
+                activePlayers.Count(p => p.Realm is eRealm.Albion),
                 [new("realm", "Albion")]
             );
 
             // Hibernia players in PvE
             Measurement<int> hiberniaPvEPlayers = new(
-                activePlayers.Count(c => c.Player.Realm == eRealm.Hibernia),
+                activePlayers.Count(p => p.Realm is eRealm.Hibernia),
                 [new("realm", "Hibernia")]
             );
 
             // Midgard players in PvE
             Measurement<int> midgardPvEPlayers = new(
-                activePlayers.Count(c => c.Player.Realm == eRealm.Midgard),
+                activePlayers.Count(p => p.Realm is eRealm.Midgard),
                 [new("realm", "Midgard")]
             );
 
-            return 
+            return
             [
                 albionPvEPlayers,
                 hiberniaPvEPlayers,
@@ -72,7 +68,7 @@ public class PvEMeterProvider : IMeterProvider
         {
             log.Error("MetricsCollector.CollectMetrics threw an exception", e);
         }
-        
+
         return [];
     }
 }

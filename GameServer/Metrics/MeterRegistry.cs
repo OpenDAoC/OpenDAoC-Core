@@ -14,9 +14,6 @@ public static class MeterRegistry
 {
     private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-    /// <summary>
-    /// Get all collectors and register them
-    /// </summary>
     public static void RegisterMeterProviders()
     {
         if (log.IsInfoEnabled)
@@ -31,13 +28,12 @@ public static class MeterRegistry
                 readerOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = GameServer.Instance.Configuration.MetricsExportInterval;
             });
 
-        // Get all meters
         if (log.IsInfoEnabled)
             log.Info("Get all meters implementing IMeterProvider");
 
-        List<IMeterProvider> meters = 
-        [..
-                Assembly.GetExecutingAssembly().GetTypes()
+        List<IMeterProvider> meters =
+        [
+            ..Assembly.GetExecutingAssembly().GetTypes()
             .Where(t => t.GetInterfaces().Contains(typeof(IMeterProvider)))
             .Select(t => (IMeterProvider)Activator.CreateInstance(t))
         ];
