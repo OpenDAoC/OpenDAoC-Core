@@ -19,7 +19,7 @@ namespace DOL.GS
 
         private List<GameClient> _clients = new();
         private SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
-        private int _lastValidIndex;
+        private int _lastValidIndex = -1;
         private int _clientCount;
         private GameClient[] _clientsBySessionId = new GameClient[ushort.MaxValue];
         private Trie<GamePlayer> _playerNameTrie = new();
