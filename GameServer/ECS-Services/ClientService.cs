@@ -242,12 +242,22 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                foreach (GameClient client in _clients)
+                for (int i = 0; i < _lastValidIndex; i++)
                 {
+                    GameClient client = _clients[i];
+
                     if (client == null || !client.IsPlaying)
                         continue;
 
                     GamePlayer player = client.Player;
+
+                    if (player == null)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Client is playing but has no player. (Client: {client})");
+
+                        continue;
+                    }
 
                     if (action?.Invoke(player, actionArgument) != false)
                         return player;
@@ -275,12 +285,22 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                foreach (GameClient client in _clients)
+                for (int i = 0; i < _lastValidIndex; i++)
                 {
-                    if (client == null || !client.IsPlaying)
+                    GameClient client = _clients[i];
+
+                    if (!client.IsPlaying)
                         continue;
 
                     GamePlayer player = client.Player;
+
+                    if (player == null)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Client is playing but has no player. (Client: {client})");
+
+                        continue;
+                    }
 
                     if (action?.Invoke(player, actionArgument) != false)
                         players.Add(player);
@@ -301,9 +321,12 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                foreach (GameClient client in _clients)
+                for (int i = 0; i < _lastValidIndex; i++)
                 {
-                    if (client?.Account == null)
+                    GameClient client = _clients[i];
+
+                    // Most code assumes clients have an account for privilege checks.
+                    if (client.Account == null)
                         continue;
 
                     if (action?.Invoke(client, actionArgument) != false)
@@ -332,9 +355,12 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                foreach (GameClient client in _clients)
+                for (int i = 0; i < _lastValidIndex; i++)
                 {
-                    if (client?.Account == null)
+                    GameClient client = _clients[i];
+
+                    // Most code assumes clients have an account for privilege checks.
+                    if (client.Account == null)
                         continue;
 
                     if (action?.Invoke(client, actionArgument) != false)
@@ -544,7 +570,7 @@ namespace DOL.GS
 
             static bool Predicate(GameClient client, DbAccount account)
             {
-                return client.Account != null && client.Account == account;
+                return client.Account == account;
             }
         }
 
@@ -554,7 +580,7 @@ namespace DOL.GS
 
             static bool Predicate(GameClient client, string accountName)
             {
-                return client.Account != null && client.Account.Name.Equals(accountName, StringComparison.OrdinalIgnoreCase);
+                return client.Account.Name.Equals(accountName, StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -564,7 +590,7 @@ namespace DOL.GS
 
             static bool Predicate(GameClient client, GameClient otherClient)
             {
-                return client.Account != null && (ePrivLevel) client.Account.PrivLevel <= ePrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
+                return (ePrivLevel) client.Account.PrivLevel <= ePrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
             }
         }
 
