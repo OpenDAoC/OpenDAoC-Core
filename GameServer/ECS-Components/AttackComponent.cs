@@ -394,12 +394,14 @@ namespace DOL.GS
         public double AttackDamage(DbInventoryItem weapon, WeaponAction action, out double damageCap)
         {
             double damage;
-            damageCap = 0;
 
             if (owner is GamePlayer player)
             {
                 if (weapon == null)
+                {
+                    damageCap = 0;
                     return 0;
+                }
 
                 damage = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
 
