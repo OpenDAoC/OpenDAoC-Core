@@ -401,16 +401,16 @@ namespace DOL.GS
                 if (weapon == null)
                     return 0;
 
-                damageCap = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
+                damage = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
 
                 if (player.ActiveLeftWeapon != null)
                 {
                     if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
-                        damageCap *= CalculateLeftAxeModifier();
+                        damage *= CalculateLeftAxeModifier();
                 }
                 else if (weapon.Item_Type is Slot.RANGED)
                 {
-                    damageCap *= CalculateTwoHandedDamageModifier(weapon);
+                    damage *= CalculateTwoHandedDamageModifier(weapon);
                     DbInventoryItem ammo = GetAttackAmmo(action);
 
                     if (ammo != null)
@@ -418,24 +418,24 @@ namespace DOL.GS
                         switch ((ammo.SPD_ABS) & 0x3)
                         {
                             case 0:
-                                damageCap *= 0.85;
+                                damage *= 0.85;
                                 break; // Blunt (light) -15%.
                             case 1:
                                 break; // Bodkin (medium) 0%.
                             case 2:
-                                damageCap *= 1.15;
+                                damage *= 1.15;
                                 break; // Doesn't exist on live.
                             case 3:
-                                damageCap *= 1.25;
+                                damage *= 1.25;
                                 break; // Broadhead (X-heavy) +25%.
                         }
                     }
                 }
                 else if (weapon.Item_Type is Slot.TWOHAND)
-                    damageCap *= CalculateTwoHandedDamageModifier(weapon);
+                    damage *= CalculateTwoHandedDamageModifier(weapon);
 
-                damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
-                damageCap *= 3;
+                damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damage);
+                damageCap = damage * 3;
             }
             else
             {
@@ -450,7 +450,7 @@ namespace DOL.GS
                 damageCap = damage * 3;
 
                 if (owner is GameEpicBoss)
-                    damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                    damage *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
             }
 
             // Relic bonus is applied to damage only and does not increase cap.
