@@ -1370,21 +1370,7 @@ namespace DOL.GS
 			if (IsAlive)
 				return;
 
-			if (_dieLock.TryEnter())
-			{
-				try
-				{
-					if (!IsBeingHandledByReaperService)
-					{
-						IsBeingHandledByReaperService = true;
-						Die(source);
-					}
-				}
-				finally
-				{
-					_dieLock.Exit();
-				}
-			}
+			Die(source);
 		}
 
 		private readonly Lock _dieLock = new();
@@ -1924,8 +1910,21 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void Die(GameObject killer)
 		{
-			IsBeingHandledByReaperService = true;
-			ReaperService.KillLiving(this, killer);
+			if (!_dieLock.TryEnter())
+				return;
+
+			try
+			{
+				if (!IsBeingHandledByReaperService)
+				{
+					IsBeingHandledByReaperService = true;
+					ReaperService.KillLiving(this, killer);
+				}
+			}
+			finally
+			{
+				_dieLock.Exit();
+			}
 		}
 
 		public virtual void ProcessDeath(GameObject killer)
