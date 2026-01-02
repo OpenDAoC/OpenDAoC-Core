@@ -1117,7 +1117,6 @@ namespace DOL.GS.Keeps
 				KeepBonusMgr.UpdateCounts();
 
 			SaveIntoDatabase();
-			RelicGateMgr.CheckKeeps();
 			GameEventMgr.Notify(KeepEvent.KeepTaken, new KeepEventArgs(this));
 
 		}

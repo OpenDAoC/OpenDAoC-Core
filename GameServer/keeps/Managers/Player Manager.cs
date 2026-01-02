@@ -308,5 +308,17 @@ namespace DOL.GS.Keeps
 				}
 			}
 		}
+
+		/// <summary>
+        /// Sends a prominent message to the center of the screen for all players.
+        /// </summary>
+        /// <param name="message">The message text.</param>
+        public static void BroadcastCenteredSystemMessage(string message)
+        {
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers())
+            {
+                player.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            }
+        }
 	}
 }
