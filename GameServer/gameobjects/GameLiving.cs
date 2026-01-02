@@ -34,7 +34,9 @@ namespace DOL.GS
 
 		#region Combat
 
-		public bool IsBeingHandledByReaperService { get; set; }
+		// Only meant to be modified by Die() and ProcessDeath().
+		private bool _isBeingHandledByReaperService;
+		public ref bool IsBeingHandledByReaperService => ref _isBeingHandledByReaperService;
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -1367,10 +1369,19 @@ namespace DOL.GS
 
 			Health -= damageAmount + criticalAmount;
 
-			if (IsAlive)
-				return;
-
-			Die(source);
+			// Protect calls to Die, since most overrides aren't thread safe.
+			if (!IsAlive && _dieLock.TryEnter())
+			{
+				try
+				{
+					if (!IsBeingHandledByReaperService)
+						Die(source);
+				}
+				finally
+				{
+					_dieLock.Exit();
+				}
+			}
 		}
 
 		private readonly Lock _dieLock = new();
@@ -1910,21 +1921,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void Die(GameObject killer)
 		{
-			if (!_dieLock.TryEnter())
-				return;
-
-			try
-			{
-				if (!IsBeingHandledByReaperService)
-				{
-					IsBeingHandledByReaperService = true;
-					ReaperService.KillLiving(this, killer);
-				}
-			}
-			finally
-			{
-				_dieLock.Exit();
-			}
+			if (Interlocked.Exchange(ref _isBeingHandledByReaperService, true) == false)
+				ReaperService.KillLiving(this, killer);
 		}
 
 		public virtual void ProcessDeath(GameObject killer)
