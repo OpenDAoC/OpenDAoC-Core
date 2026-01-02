@@ -567,17 +567,22 @@ namespace DOL.GS
 			if (SiegeWeaponTimer.IsAlive)
 			{
 				SiegeWeaponTimer.Stop();
-				if (Owner != null)
-					Owner.Out.SendSiegeWeaponCloseInterface();
+				Owner?.Out.SendSiegeWeaponCloseInterface();
 			}
+
 			SiegeWeaponTimer.Start(GetActionDelay(SiegeWeaponTimer.CurrentAction));
+
 			if (Owner != null)
 			{
-				if(this is GameSiegeRam) //Ram Siege Interface is 2 seconds fast for some reason. adding 2 seconds to the action delay for rams
-					Owner.Out.SendSiegeWeaponInterface(this, (GetActionDelay(SiegeWeaponTimer.CurrentAction) + 2000) / 100);
-				else
-				Owner.Out.SendSiegeWeaponInterface(this, GetActionDelay(SiegeWeaponTimer.CurrentAction) / 100);
+				int actionDelay = GetActionDelay(SiegeWeaponTimer.CurrentAction) / 100;
+
+				// Ram siege interface is 2 seconds faster for some reason. Adding 2 seconds to the action delay.
+				if (this is GameSiegeRam)
+					actionDelay += 20;
+
+				Owner.Out.SendSiegeWeaponInterface(this, actionDelay);
 			}
+
 			BroadcastAnimation();
 		}
 
