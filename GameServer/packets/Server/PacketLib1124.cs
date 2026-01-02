@@ -692,7 +692,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(flag); //byte Ammo,  byte SiegeMoving(1/0)
 				pak.WriteByte(0);
 				pak.WriteByte(0); // Close interface(1/0)
-				pak.WriteByte((byte)(time));//time x 100 eg 50 = 5000ms
+				pak.WriteByte((byte)Math.Clamp(time, 0, 255));//time x 100 eg 50 = 5000ms
 				pak.WriteByte((byte)siegeWeapon.Ammo.Count); // external ammo count
 				pak.WriteByte((byte)siegeWeapon.SiegeWeaponTimer.CurrentAction);
 				pak.WriteByte((byte)siegeWeapon.AmmoSlot);
