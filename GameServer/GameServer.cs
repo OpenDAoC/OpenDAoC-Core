@@ -496,10 +496,7 @@ namespace DOL.GS
 				else if (log.IsInfoEnabled)
 					log.InfoFormat("Not Loading Quest Manager : Obeying Server Property <load_quests> - {0}", Properties.LOAD_QUESTS);
 
-				
 				RelicGateMgr.OnServerStart();
-
-
 				//---------------------------------------------------------------
 				//Notify our scripts that everything went fine!
 				GameEventMgr.Notify(ScriptEvent.Loaded);

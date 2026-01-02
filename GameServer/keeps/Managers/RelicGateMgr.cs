@@ -107,11 +107,29 @@ namespace DOL.GS.Keeps
         // 5. PRÜFUNG UND INITIALISIERUNG
         // ====================================================================
         
+        /// <summary>
+        /// Registriert alle notwendigen Event-Handler. Diese Methode muss beim
+        /// Serverstart aufgerufen werden (z.B. in GameServer.cs).
+        /// </summary>
         public static void OnServerStart()
         {
+            // 1. KeepTaken Event, das während des Betriebs feuert.
             GameEventMgr.AddHandler(KeepEvent.KeepTaken, new DOLEventHandler(OnKeepChange));
             
-            log.Info("RelicGateMgr: Starting initial keep check...");
+            // 2. Initialisierungs-Event: Führt CheckKeeps() erst aus, 
+            // wenn ALLE Datenbankobjekte geladen wurden, um die NullReferenceException zu vermeiden.
+            GameEventMgr.AddHandler(ScriptEvent.Loaded, new DOLEventHandler(OnLoaded)); 
+            
+            log.Info("RelicGateMgr: Initialization events registered.");
+        }
+
+        /// <summary>
+        /// Wird nur einmal beim Serverstart aufgerufen, NACHDEM alle kritischen
+        /// Daten geladen wurden (vom ScriptEvent.Loaded).
+        /// </summary>
+        public static void OnLoaded(DOLEvent e, object sender, EventArgs args)
+        {
+            log.Info("RelicGateMgr: Starting initial keep check (via ScriptEvent.Loaded)...");
             CheckKeeps();
         }
         
