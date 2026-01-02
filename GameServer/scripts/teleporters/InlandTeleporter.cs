@@ -111,12 +111,21 @@ namespace DOL.GS.Scripts
 
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                              "[Castle Sauvage] in Camelot Hills or \n[Snowdonia Fortress] in Black Mtns. North,\n" +
-                              "[Avalon Marsh] wharf,\n" +
-                              "[Gothwaite Harbor] in the [Shrouded Isles],\n" +
+                              "[Castle Sauvage] in Camelot Hills,\n" +
+                              "[Snowdonia Fortress] in Black Mtns. North,\n" +
+                              "[Catterick Hamlet] in New Frontiers,\n" +
                               "[Camelot] our glorious capital,\n" +
-                              "[Entrance] to the areas of [Housing]\n\n" +
-                              "or one of the many [towns] throughout Albion.";
+                              "[Cotswold] in Camelot Hills,\n" +
+                              "[Caer Ulfwyc] in Campacorentin Forest,\n" +
+                              "[Yarley's Farm] in Cornwall,\n" +
+                              "[Gothwaite Harbor] in the SI, Isle of Glass,\n" +
+                              "[Wearyall Village] in the SI, Avalon Isle,\n" +
+                              "[Caer Diogel] in the SI, Aldland,\n" +
+                              "[Fort Gwyntel] in the SI, Dales of Devwy,\n" +
+                              "[Holtham] Tutorial Zone,\n\n" +
+                              
+                              
+                              "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
                               //"For this event duration, I can send you to [Darkness Falls]";
                     break;
 
@@ -124,24 +133,44 @@ namespace DOL.GS.Scripts
                     
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                              "[Svasud Faste] in Mularn or \n[Vindsaul Faste] in West Svealand,\n" +
-                              "Beaches of [Gotar] near Nailiten,\n" +
-                              "[Aegirhamn] in the [Shrouded Isles],\n" +
-                              "Our glorious city of [Jordheim],\n" +
-                              "[Entrance] to the areas of [Housing]\n\n" +
-                              "or one of the many [towns] throughout Midgard.";
+                              "[Svasud Faste] in Vale of Mularn,\n" +
+                              "[Vindsaul Faste] in West Svealand,\n" +
+                              "[Godrborg] in New Frontiers,\n" +
+                              "[Jordheim] our glorious capital,\n" +
+                              "[Mularn] in Vale of Mularn,\n" +
+                              "[Galplen] in Myrkwood Forest,\n" +
+                              "[West Skona] in Skona Ravine,\n" +
+                              "[Aegirhamn] in the SI, Aegir's Landing,\n" +
+                              "[Bjarken] in the SI, Gripklosa Mountains,\n" +
+                              "[Knarr] in the SI, Munin Sound,\n" +
+                              "[Hagall] in the SI, Faraheim,\n" +
+                              "[Hafheim] Tutorial Zone,\n\n" +
+                              
+                              
+                              "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
+                              //"For this event duration, I can send you to [Darkness Falls]";
                     break;
 
                 case eRealm.Hibernia:
                     
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                              "[Druim Ligen] in Connacht or \n[Druim Cain] in Bri Leith,\n" +
-                              "[Shannon Estuary] watchtower,\n" +
-                              "[Domnann] Grove in the [Shrouded Isles],\n" +
-                              "[Tir na Nog] our glorious capital,\n" +
-                              "[Entrance] to the areas of [Housing]\n\n" +
-                              "or one of the many [towns] throughout Hibernia.";
+                              "[Druim Ligen] in Connacht,\n" +
+                              "[Druim Cain] in Valley of Bri Leith,\n" +
+                              "[Crair Treflan] in New Frontiers,\n" +
+                              "[Tir Na Nog] our glorious capital,\n" +
+                              "[Mag Mell] in Lough Derg,\n" +
+                              "[Connla] in Shannon Estuary,\n" +
+                              "[Innis Carthaig] in Lough Gur,\n" +
+                              "[Grove of Domnan] in the SI, Domnann,\n" +
+                              "[Droighaid] in the SI, Caillte Garran,\n" +
+                              "[Grove of Ailid Feie] in the SI, Vale of Balor,\n" +
+                              "[Necht] in the SI, Vigilant Rock,\n" +
+                              "[Fintain] Tutorial Zone,\n\n" +
+                              
+                              
+                              "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
+                              //"For this event duration, I can send you to [Darkness Falls]";
                     break;
 
                 default:

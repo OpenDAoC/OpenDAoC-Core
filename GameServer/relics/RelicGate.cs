@@ -1,32 +1,175 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
-using System.Collections.Generic;
-using System.Text;
+// In /home/opendaoc/OpenDAoC-Core/GameServer/relics/RelicGate.cs
 
-namespace DOL.GS.Relics
+using System.Collections;
+using System;
+using DOL.GS; 
+using DOL.Database;
+using DOL.GS.PacketHandler;
+using DOL.GS.Keeps; 
+
+
+namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Class representing a relic gate.
-	/// </summary>
-	/// <author>Aredhel</author>
-	public class RelicGate
-	{
-	}
+    /// <summary>
+    /// relic keep door in world
+    /// </summary>
+    public class RelicGate : GameDoorBase 
+    {
+        #region properties
+
+        public override string Name
+        {
+            get
+            {
+                return "Relic Gate";
+            }
+        }
+
+        public override uint Flag
+        {
+            get
+            {
+                return 4; // Relic Gate Flag
+            }
+        }
+
+        #endregion
+
+        #region function override
+        
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            return;
+        }
+
+        public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
+        {
+            return 0;
+        }
+
+        public override bool Interact(GamePlayer player)
+        {
+            if (!base.Interact(player))
+                return false;
+
+            if (player.IsMezzed || player.IsStunned)
+            {
+                player.Out.SendMessage("You are mesmerized or stunned!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+
+            if (GameServer.ServerRules.IsSameRealm(player, this, true) || player.Client.Account.PrivLevel != 1)
+            {
+                Point2D point; 
+                
+                //calculate x y
+                if ( IsObjectInFront( player, 180) ) 
+                    point = this.GetPointFromHeading(this.Heading, -500);
+                else 
+                    point = this.GetPointFromHeading(this.Heading, 500);
+
+                //move player
+                player.MoveTo(CurrentRegionID, point.X, point.Y, player.Z, player.Heading);
+            }
+            return base.Interact(player);
+        }
+
+
+        public override IList GetExamineMessages(GamePlayer player)
+        {
+            IList list = base.GetExamineMessages(player);
+            string text = "You select the " + Name + ".";
+            if (this.Realm == player.Realm)
+                text = text + " It belongs to your realm.";
+            else
+            {
+                text = text + " It belongs to an enemy realm!";
+            }
+            list.Add(text);
+            return list;
+        }
+
+        public override string GetName(int article, bool firstLetterUppercase)
+        {
+            return "the " + base.GetName(article, firstLetterUppercase);
+        }
+
+        #endregion
+
+        #region Save/load DB
+
+		public override void LoadFromDatabase(DataObject obj)
+		{
+			base.LoadFromDatabase(obj);
+			
+			// Da wir wissen, dass der DoorMgr uns das DbDoor-Objekt übergibt, 
+			// casten wir es, um auf die interne ID (vom Typ int) zuzugreifen.
+			DbDoor dbDoor = obj as DbDoor;
+			if (dbDoor != null)
+			{
+				// InternalID ist vom Typ INT, und das passt nun zur Methode in RelicGateMgr
+				RelicGateMgr.AssignRelicDoor(this, dbDoor.InternalID); 
+			}
+			// Wenn dbDoor == null, war das Objekt kein DbDoor (sehr ungewöhnlich),
+			// daher wird in diesem Fall die Zuweisung übersprungen.
+		}
+
+        #endregion
+        
+        public override void Open(GameLiving opener = null)
+        {
+            // Vom Manager gesteuert, nicht von Spielern
+        }
+        
+        public override void Close(GameLiving closer = null)
+        {
+            // Vom Manager gesteuert, nicht von Spielern
+        }
+
+        // Diese Methoden implementieren die eigentliche Statusänderung (vom RelicGateMgr aufgerufen)
+        public virtual void OpenDoor()
+        {
+            State = eDoorState.Open;
+        }
+
+        public virtual void CloseDoor()
+        {
+            State = eDoorState.Closed;
+        }
+
+        // Whisper/Say-Logik beibehalten
+        public override bool WhisperReceive(GameLiving source, string str)
+        {
+            if (!base.WhisperReceive(source, str))
+                return false;
+
+            if (source is GamePlayer == false)
+                return false;
+
+            str = str.ToLower();
+
+            if (str.Contains("enter") || str.Contains("exit"))
+                Interact(source as GamePlayer);
+            return true;
+        }
+
+        public override bool SayReceive(GameLiving source, string str)
+        {
+            if (!base.SayReceive(source, str))
+                return false;
+
+            if (source is GamePlayer == false)
+                return false;
+
+            str = str.ToLower();
+
+            if (str.Contains("enter") || str.Contains("exit"))
+                Interact(source as GamePlayer);
+            return true;
+        }
+
+        public void NPCManipulateDoorRequest(GameNPC npc, bool open)
+        { }
+    }
 }

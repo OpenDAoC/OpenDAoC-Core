@@ -7,129 +7,160 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// DoorMgr is manager of all door regular door and keep door
-	/// </summary>
-	public sealed class DoorMgr
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+    /// <summary>
+    /// DoorMgr is manager of all door regular door and keep door
+    /// </summary>
+    public sealed class DoorMgr
+    {
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static readonly Lock Lock = new();
+        private static readonly Lock Lock = new();
 
-		private static Dictionary<int, List<GameDoorBase>> m_doors = new Dictionary<int, List<GameDoorBase>>();
+        private static Dictionary<int, List<GameDoorBase>> m_doors = new Dictionary<int, List<GameDoorBase>>();
 
-		public const string WANT_TO_ADD_DOORS = "WantToAddDoors";
+        public const string WANT_TO_ADD_DOORS = "WantToAddDoors";
 
-		/// <summary>
-		/// this function load all door from DB
-		/// </summary>
-		public static bool Init()
-		{
-			var dbdoors = GameServer.Database.SelectAllObjects<DbDoor>();
-			foreach (DbDoor door in dbdoors)
-			{
-				if (!LoadDoor(door))
-				{
-					log.Error("Unable to load door id " + door.ObjectId + ", correct your database");
-					// continue loading, no need to stop server for one bad door!
-				}
-			}
-			return true;
-		}
+        /// <summary>
+        /// this function load all door from DB
+        /// </summary>
+        public static bool Init()
+        {
+            var dbdoors = GameServer.Database.SelectAllObjects<DbDoor>();
+            foreach (DbDoor door in dbdoors)
+            {
+                if (!LoadDoor(door))
+                {
+                    log.Error("Unable to load door id " + door.ObjectId + ", correct your database");
+                    // continue loading, no need to stop server for one bad door!
+                }
+            }
+            // HINWEIS: Hier sollte später der Aufruf RelicGateMgr.OnServerStart() erfolgen,
+            // falls dies nicht bereits in einer anderen Serverstart-Methode geschieht.
 
-		public static int SaveKeepDoors()
-		{
-			int count = 0;
+            return true;
+        }
 
-			try
-			{
-				lock (Lock)
-				{
-					foreach (List<GameDoorBase> doorList in m_doors.Values)
-					{
-						foreach (GameDoorBase door in doorList)
-						{
-							if (door.DbDoor != null &&
-								door is GameKeepDoor keepDoor &&
-								keepDoor.IsAttackableDoor)
-							{
-								keepDoor.SaveIntoDatabase();
-								count++;
-							}
-						}
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("Error saving keep doors.", e);
-			}
+        public static int SaveKeepDoors()
+        {
+            int count = 0;
 
-			return count;
-		}
+            try
+            {
+                lock (Lock)
+                {
+                    foreach (List<GameDoorBase> doorList in m_doors.Values)
+                    {
+                        foreach (GameDoorBase door in doorList)
+                        {
+                            if (door.DbDoor != null &&
+                                door is GameKeepDoor keepDoor &&
+                                keepDoor.IsAttackableDoor)
+                            {
+                                keepDoor.SaveIntoDatabase();
+                                count++;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Error saving keep doors.", e);
+            }
 
-		public static bool LoadDoor(DbDoor door)
-		{
-			GameDoorBase mydoor = null;
-			ushort zone = (ushort)(door.InternalID / 1000000);
+            return count;
+        }
 
-			Zone currentZone = WorldMgr.GetZone(zone);
-			if (currentZone == null) return false;
-			
-			//check if the door is a keep door
-			foreach (AbstractArea area in currentZone.GetAreasOfSpot(door.X, door.Y, door.Z))
-			{
-				if (area is KeepArea)
-				{
-					mydoor = new GameKeepDoor();
-					mydoor.LoadFromDatabase(door);
-					break;
-				}
-			}
+        /// <summary>
+        /// This function loads a door from the database, checking for Relic, Keep, or Standard type.
+        /// </summary>
+        public static bool LoadDoor(DbDoor door)
+        {
+            GameDoorBase mydoor = null;
+            
+            // Die Zone wird immer noch anhand der InternalID berechnet (geht nur mit INT/LONG)
+            ushort zone = (ushort)(door.InternalID / 1000000); 
 
-			//if the door is not a keep door, create a standard door
-			if (mydoor == null)
-			{
-				mydoor = new GameDoor();
-				mydoor.LoadFromDatabase(door);
-			}
+            Zone currentZone = WorldMgr.GetZone(zone);
+            if (currentZone == null) return false;
+            
+            // RelicGate Typ-Erkennung und Instanziierung
+            Type requiredType = RelicGateMgr.GetRelicGateType(door.InternalID); 
 
-			//add to the list of doors
-			if (mydoor != null)
-			{
-				RegisterDoor(mydoor);
-			}
+            if (requiredType != null)
+            {
+                // Instanziierung des Typs RelicGate
+                mydoor = (GameDoorBase)Activator.CreateInstance(requiredType);
+                
+                // *******************************************************************
+                // FIX: ZUWEISUNG DES ERSTELLTEN RELICGATE OBJEKTS AN DEN MANAGER
+                // Dadurch wird RelicGateMgr.Door_Alb_Power (etc.) auf die Instanz gesetzt.
+                // *******************************************************************
+                if (mydoor is RelicGate relicGate)
+                {
+                    RelicGateMgr.AssignRelicDoor(relicGate, door.InternalID);
+                }
+            }
+            // ENDE NEUER TEIL
 
-			return true;
-		}
+            // check if the door is a keep door (Nur, wenn mydoor noch nicht instanziiert wurde)
+            if (mydoor == null)
+            {
+                foreach (AbstractArea area in currentZone.GetAreasOfSpot(door.X, door.Y, door.Z))
+                {
+                    if (area is KeepArea)
+                    {
+                        mydoor = new GameKeepDoor();
+                        break;
+                    }
+                }
+            }
 
-		public static void RegisterDoor(GameDoorBase door)
-		{
-			lock (Lock)
-			{
-				if (!m_doors.TryGetValue(door.DoorId, out List<GameDoorBase> doorsOfId))
-				{
-					doorsOfId = [];
-					m_doors.Add(door.DoorId, doorsOfId);
-				}
+            // if the door is not a keep door, create a standard door
+            if (mydoor == null)
+            {
+                mydoor = new GameDoor();
+            }
+            
+            // Jetzt wird LoadFromDatabase NUR einmal aufgerufen
+            mydoor.LoadFromDatabase(door);
 
-				doorsOfId.Add(door);
-			}
-		}
+            // add to the list of doors
+            if (mydoor != null)
+            {
+                RegisterDoor(mydoor);
+            }
 
-		public static void UnRegisterDoor(int doorID)
-		{
-			m_doors.Remove(doorID);
-		}
+            return true;
+        }
 
-		/// <summary>
-		/// This function get the door object by door index
-		/// </summary>
-		/// <returns>return the door with the index</returns>
-		public static List<GameDoorBase> GetDoorByID(int id)
-		{
-			return m_doors.TryGetValue(id, out List<GameDoorBase> value) ? value : [];
-		}
-	}
+        public static void RegisterDoor(GameDoorBase door)
+        {
+            lock (Lock)
+            {
+                if (!m_doors.TryGetValue(door.DoorId, out List<GameDoorBase> doorsOfId))
+                {
+                    doorsOfId = [];
+                    m_doors.Add(door.DoorId, doorsOfId);
+                }
+
+                doorsOfId.Add(door);
+            }
+        }
+
+        public static void UnRegisterDoor(int doorID)
+        {
+            m_doors.Remove(doorID);
+        }
+
+        /// <summary>
+        /// This function get the door object by door index
+        /// </summary>
+        /// <returns>return the door with the index</returns>
+        public static List<GameDoorBase> GetDoorByID(int id)
+        {
+            return m_doors.TryGetValue(id, out List<GameDoorBase> value) ? value : [];
+        }
+    }
 }

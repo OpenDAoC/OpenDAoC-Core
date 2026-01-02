@@ -141,7 +141,14 @@ namespace DOL.GS.PacketHandler
 					else
 						TowerCount++;
 				}
-				pak.WriteShort(0x0F00);
+				// Flame on relic temples. Intermediate bits unknown / uncesessary.
+				// Castle Excalibur  = 1 << 1
+				// Castle Myrddin    = 1 << 3
+				// Mjollner Faste    = 1 << 5
+				// Grallarhorn Faste = 1 << 7
+				// Dun Lamfhota      = 1 << 9
+				// Dun Dagda         = 1 << 11
+				pak.WriteShort(RelicGateMgr.GetRelicTempleWarmapFlags());
 				pak.WriteByte((byte)KeepCount);
 				pak.WriteByte((byte)TowerCount);
 				byte albStr = 0;

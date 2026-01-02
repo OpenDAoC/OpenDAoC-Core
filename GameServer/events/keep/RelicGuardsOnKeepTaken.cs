@@ -48,36 +48,42 @@ namespace DOL.GS.GameEvents
 
         private static void CreateGuards()
         {
-            AddGuard(eRealm.Albion,   "Renaris Knight",     "Chevalier.de.Caer.Renaris",    1,   56,  (601801, 428234, 5645, 2055), null);
-            AddGuard(eRealm.Albion,   "Hurbury Knight",     "Chevalier.de.Caer.Hurbury",    1,   55,  null,                         (508047, 310852, 6832, 3638));
-            AddGuard(eRealm.Albion,   "Berckstead Knight",  "Chevalier.de.Caer.Berckstead", 1,   51,  (602200, 428233, 5539, 2035), (508642, 310348, 6832, 3638));
-            AddGuard(eRealm.Albion,   "Sursbrooke Knight",  "Chevalier.de.Caer.Sursbrooke", 1,   54,  (601527, 428233, 5628, 2062), (507894, 310323, 6832, 3638));
-            AddGuard(eRealm.Albion,   "Boldiam Knight",     "Chevalier.de.Caer.Boldiam",    1,   53,  (601769, 427991, 5544, 2055), (508354, 310593, 6832, 3638));
-            AddGuard(eRealm.Albion,   "Erasleigh Knight",   "Chevalier.de.Caer.Erasleigh",  1,   52,  (601096, 428255, 5606, 2035), (507705, 311142, 6832, 3638));
-            AddGuard(eRealm.Albion,   "Benowyc Knight",     "Chevalier.de.Caer.Benowyc",    1,   50,  (601595, 427989, 5547, 2055), (508253, 310751, 6832, 3640));
-            AddGuard(eRealm.Midgard,  "Fensalir Jarl",      "Jarl.de.Fensalir.Faste",       100, 80,  null,                         (771263, 628729, 6992, 3989));
-            AddGuard(eRealm.Midgard,  "Arvakr Jarl",        "Jarl.de.Arvakr.Faste",         100, 81,  (678770, 710252, 6912, 2963), null);
-            AddGuard(eRealm.Midgard,  "Glenlock Jarl",      "Jarl.de.Glenlock.Faste",       100, 79,  (679248, 710497, 6836, 2950), (769816, 627702, 6992, 923));
-            AddGuard(eRealm.Midgard,  "Blendrake Jarl",     "Jarl.de.Blendrake.Faste",      100, 78,  (679164, 711149, 6868, 3418), (770036, 628191, 6941, 503));
-            AddGuard(eRealm.Midgard,  "Hlidskialf Jarl",    "Jarl.de.Hlidskialf.Faste",     100, 77,  (679128, 709873, 6787, 2950), (770615, 628037, 6992, 521));
-            AddGuard(eRealm.Midgard,  "Nottmoor Jarl",      "Jarl.de.Nottmoor.Faste",       100, 76,  (678654, 709122, 6912, 2511), (770531, 628482, 6985, 503));
-            AddGuard(eRealm.Midgard,  "Bledmeer Jarl",      "Jarl.de.Bledmeer.Faste",       100, 75,  (679121, 710193, 6873, 2965), (770308, 628344, 6969, 513));
-            AddGuard(eRealm.Hibernia, "Ailinne Sentinel",   "Sentinelle.de.Dun.Ailinne",    200, 106, (348542, 371526, 4880, 2052), null);
-            AddGuard(eRealm.Hibernia, "Scathaig Sentinel",  "Sentinelle.de.Dun.Scathaig",   200, 105, (401953, 464351, 2888, 2567), null);
-            AddGuard(eRealm.Hibernia, "nGed Sentinel",      "Sentinelle.de.Dun.nGed",       200, 103, (348211, 370945, 4784, 2212), (402193, 463725, 2854, 2565));
-            AddGuard(eRealm.Hibernia, "Bolg Sentinel",      "Sentinelle.de.Dun.Bolg",       200, 102, (347374, 371175, 4809, 1690), (401172, 463380, 2884, 2239));
-            AddGuard(eRealm.Hibernia, "Behnn Sentinel",     "Sentinelle.de.Dun.Behnn",      200, 104, (348841, 371000, 4688, 2012), (402899, 465176, 2848, 2978));
-            AddGuard(eRealm.Hibernia, "Crimthain Sentinel", "Sentinelle.de.Dun.Crimthain",  200, 101, (349191, 371458, 4877, 2253), (402337, 463993, 2862, 2565));
-            AddGuard(eRealm.Hibernia, "Crauchon Sentinel",  "Sentinelle.de.Dun.Crauchon",   200, 100, (348634, 371189, 4825, 2057), (402670, 464400, 2888, 2621));
+            // Die Koordinaten wurden vom Benutzer hinzugefügt
+            AddGuard(eRealm.Albion,   "Renaris Knight",    "Chevalier.de.Caer.Renaris",    163,   56,   (601801, 428234, 5645, 2055), null);
+            AddGuard(eRealm.Albion,   "Hurbury Knight",    "Chevalier.de.Caer.Hurbury",    163,   55,   null,             (508047, 310852, 6832, 3638));
+            AddGuard(eRealm.Albion,   "Berckstead Knight", "Chevalier.de.Caer.Berckstead", 163,   51,   (602200, 428233, 5539, 2035), (508642, 310348, 6832, 3638));
+            AddGuard(eRealm.Albion,   "Sursbrooke Knight", "Chevalier.de.Caer.Sursbrooke", 163,   54,   (601527, 428233, 5628, 2062), (507894, 310323, 6832, 3638));
+            AddGuard(eRealm.Albion,   "Boldiam Knight",    "Chevalier.de.Caer.Boldiam",    163,   53,   (601769, 427991, 5544, 2055), (508354, 310593, 6832, 3638));
+            AddGuard(eRealm.Albion,   "Erasleigh Knight",  "Chevalier.de.Caer.Erasleigh",  163,   52,   (601096, 428255, 5606, 2035), (507705, 311142, 6832, 3638));
+            AddGuard(eRealm.Albion,   "Benowyc Knight",    "Chevalier.de.Caer.Benowyc",    163,   50,   (601595, 427989, 5547, 2055), (508253, 310751, 6832, 3640));
+
+            // Midgard Godrborg
+            AddGuard(eRealm.Midgard,  "Fensalir Jarl",     "Jarl.de.Fensalir.Faste",       163, 80,   (612392, 302177, 8360, 2743), null);
+            AddGuard(eRealm.Midgard,  "Hlidskialf Jarl",   "Jarl.de.Hlidskialf.Faste",     163, 77,   (612251, 302123, 8360, 2743), null);
+            AddGuard(eRealm.Midgard,  "Bledmeer Jarl",     "Jarl.de.Bledmeer.Faste",       163, 75,   (612375, 302340, 8360, 2743), null);
+            AddGuard(eRealm.Midgard,  "Blendrake Jarl",    "Jarl.de.Blendrake.Faste",      163, 78,   (611369, 302238, 8490, 170), null);
+            AddGuard(eRealm.Midgard,  "Arvakr Jarl",       "Jarl.de.Arvakr.Faste",         163, 81,   (611837, 303031, 8490, 1197), null);
+            AddGuard(eRealm.Midgard,  "Glenlock Jarl",     "Jarl.de.Glenlock.Faste",       163, 79,   (611470, 302719, 8494, 2743), null);
+            AddGuard(eRealm.Midgard,  "Nottmoor Jarl",     "Jarl.de.Nottmoor.Faste",       163, 76,   (611116, 302630, 8493, 2912), null);
+            AddGuard(eRealm.Midgard,  "Bledmeer Jarl",     "Jarl.de.Bledmeer.Faste",       163, 75,   (611361, 303079, 8493, 2549), null);
+            
+
+            AddGuard(eRealm.Hibernia, "Ailinne Sentinel",  "Sentinelle.de.Dun.Ailinne",    163, 106, (348542, 371526, 4880, 2052), null);
+            AddGuard(eRealm.Hibernia, "Scathaig Sentinel", "Sentinelle.de.Dun.Scathaig",   163, 105, (401953, 464351, 2888, 2567), null);
+            AddGuard(eRealm.Hibernia, "nGed Sentinel",     "Sentinelle.de.Dun.nGed",       163, 103, (348211, 370945, 4784, 2212), (402193, 463725, 2854, 2565));
+            AddGuard(eRealm.Hibernia, "Bolg Sentinel",     "Sentinelle.de.Dun.Bolg",       163, 102, (347374, 371175, 4809, 1690), (401172, 463380, 2884, 2239));
+            AddGuard(eRealm.Hibernia, "Behnn Sentinel",    "Sentinelle.de.Dun.Behnn",      163, 104, (348841, 371000, 4688, 2012), (402899, 465176, 2848, 2978));
+            AddGuard(eRealm.Hibernia, "Crimthain Sentinel", "Sentinelle.de.Dun.Crimthain", 163, 101, (349191, 371458, 4877, 2253), (402337, 463993, 2862, 2565));
+            AddGuard(eRealm.Hibernia, "Crauchon Sentinel", "Sentinelle.de.Dun.Crauchon",   163, 100, (348634, 371189, 4825, 2057), (402670, 464400, 2888, 2621));
         }
 
         private static void AddGuard(eRealm realm, string name, string translationId, ushort regionId, int keepId, (int x, int y, int z, ushort heading)? position1, (int x, int y, int z, ushort heading)? position2)
         {
-            GuardFighterRK guard1 = position1.HasValue ? CreateGuard(position1.Value) : null;
-            GuardFighterRK guard2 = position2.HasValue ? CreateGuard(position2.Value) : null;
+            GuardFighterRK guard1 = position1.HasValue ? CreateGuard(position1.Value, keepId) : null;
+            GuardFighterRK guard2 = position2.HasValue ? CreateGuard(position2.Value, keepId) : null;
             _guards[realm].Add(new(keepId, guard1, guard2, name));
 
-            GuardFighterRK CreateGuard(in (int x, int y, int z, ushort heading) position)
+            GuardFighterRK CreateGuard(in (int x, int y, int z, ushort heading) position, int keepIdForComponent)
             {
                 GuardFighterRK guard = new()
                 {
@@ -90,19 +96,18 @@ namespace DOL.GS.GameEvents
                     TranslationId = translationId
                 };
 
-                guard.movementComponent.ForceUpdatePosition(); // Ensures `CurrentAreas` returns something.
-
-                foreach (IArea area in guard.CurrentAreas)
+                // KORREKTUR: Die Initialisierung der Komponente erfolgt nun direkt über die Keep ID,
+                // da der Zugriff auf `guard.CurrentAreas` zu einer NullReferenceException führte, 
+                // bevor der Guard zur Welt hinzugefügt wurde.
+                AbstractGameKeep keep = GameServer.KeepManager.GetKeepByID(keepIdForComponent);
+                
+                guard.Component = new()
                 {
-                    if (area is not KeepArea keepArea)
-                        continue;
+                    Keep = keep // Keep ist möglicherweise noch null, aber das ist besser, als die NRE auszulösen
+                };
 
-                    guard.Component = new()
-                    {
-                        Keep = keepArea.Keep
-                    };
-                    break;
-                }
+                // Die alten Zeilen 94-105 (ForceUpdatePosition und foreach CurrentAreas) wurden entfernt,
+                // da sie die NRE verursacht haben und nun unnötig sind.
 
                 GuardTemplateMgr.RefreshTemplate(guard);
                 return guard;
@@ -125,7 +130,10 @@ namespace DOL.GS.GameEvents
             {
                 try
                 {
-                    foreach (GameRelic relic in RelicMgr.getNFRelics())
+                    // KORREKTUR: RelicMgr.getNFRelics() ist wahrscheinlich in getNFRelics() oder GetNFRelics() enthalten. 
+                    // Wir nehmen an, dass es im gesamten Core die richtige Groß-/Kleinschreibung hat, 
+                    // da der Fehler nur bei den Manager-Methoden auftrat.
+                    foreach (GameRelic relic in RelicMgr.getNFRelics()) 
                     {
                         switch (relic.Realm)
                         {

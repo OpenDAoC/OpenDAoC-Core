@@ -40,3 +40,4 @@ Some of the main repositories include:
 
 OpenDAoC is licensed under the [GNU General Public License (GPL)](https://choosealicense.com/licenses/gpl-3.0/) v3 to serve the DAoC community and promote open-source development.  
 See the [LICENSE](LICENSE) file for more details.
+# DOLServer-DAoC-NewFrontiers

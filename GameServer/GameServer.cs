@@ -450,6 +450,7 @@ namespace DOL.GS
 				if (!InitComponent(DoorMgr.Init(), "Door Manager"))
 					return false;
 
+
 				//---------------------------------------------------------------
 				//Load the area manager
 				if (!InitComponent(AreaMgr.LoadAllAreas(), "Areas"))
@@ -494,6 +495,7 @@ namespace DOL.GS
 				}
 				else if (log.IsInfoEnabled)
 					log.InfoFormat("Not Loading Quest Manager : Obeying Server Property <load_quests> - {0}", Properties.LOAD_QUESTS);
+
 
 				//---------------------------------------------------------------
 				//Notify our scripts that everything went fine!

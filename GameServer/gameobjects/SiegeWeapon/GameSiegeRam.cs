@@ -49,7 +49,7 @@ namespace DOL.GS
 		}
 
 		//Set the maxium rams allowed to attack a target at the same time.
-		private const int MAX_RAMS_ATTACKING_TARGET = 2;
+		private const int MAX_RAMS_ATTACKING_TARGET = 1;
 		public override ushort Type()
 		{
 			return 0x9602;
@@ -100,7 +100,7 @@ namespace DOL.GS
 					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			//Limit 2 Rams aimed at door at a time
+			//Limit 1 Rams aimed at door at a time
 			//Check # of rams on the target
 			int ramsAimedAtTarget=0;
 			foreach (GameNPC npc in Owner.TargetObject.GetNPCsInRadius(600))

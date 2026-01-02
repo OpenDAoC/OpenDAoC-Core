@@ -50,7 +50,7 @@ namespace DOL.GS.Keeps
 			960*60*1000, // 10 960min 16h
 		};
 		
-		private ArrayList m_towers = new ArrayList(4);
+		private ArrayList m_towers = new ArrayList(6);
 		/// <summary>
 		/// The Keep Towers
 		/// </summary>

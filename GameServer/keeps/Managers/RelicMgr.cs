@@ -36,6 +36,8 @@ namespace DOL.GS
 		/// </summary>
 		public static bool Init()
 		{
+			TempleRelicPadsLoader.LoadTemplePads();
+
 			lock (_relicsLock)
 			{
 				//at first remove all relics
