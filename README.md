@@ -1,3 +1,5 @@
+# This project is for the DAoC community and is based of the OpenDAoC repository
+
 # OpenDAoC
 [![Build and Release](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-and-release.yml)
 
