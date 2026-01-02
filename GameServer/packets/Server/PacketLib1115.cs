@@ -142,7 +142,7 @@ namespace DOL.GS.PacketHandler
 						TowerCount++;
 				}
 
-				// Flame on relic temples. Intermediate bits unknown / uncesessary.
+				// Flame on relic temples. Intermediate bits unknown / unnecessary.
 				// Castle Excalibur  = 1 << 1
 				// Castle Myrddin    = 1 << 3
 				// Mjollner Faste    = 1 << 5
