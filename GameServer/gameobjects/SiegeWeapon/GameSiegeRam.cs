@@ -3,13 +3,9 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// GameMovingObject is a base class for boats and siege weapons.
-	/// </summary>
 	public class GameSiegeRam : GameSiegeWeapon
 	{
-		public GameSiegeRam()
-			: base()
+		public GameSiegeRam() : base()
 		{
 			MeleeDamageType = eDamageType.Crush;
 			Name = "siege ram";
@@ -17,6 +13,7 @@ namespace DOL.GS
 			//AmmoType = 0x3B00;
 			//this.Effect = 0x8A1;
 			AmmoType = 0x26;
+			EnableToMove = false; // Disabled to prevent exploits (going through walls) and because rams are automatically placed in a correct position.
 			this.Model = 0xA2A;//0xA28
 			//TODO find all value for ram
 			ActionDelay = new int[]

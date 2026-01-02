@@ -16,6 +16,8 @@ namespace DOL.GS
 	/// </summary>
 	public class GameSiegeWeapon : GameMovingObject
 	{
+		public bool EnableToMove { get; set; }
+
 		public GameSiegeWeapon() : base(new BlankBrain())
 		{
 			this.Realm = 0;
@@ -32,7 +34,7 @@ namespace DOL.GS
 					5000,//loading
 					0//fireing
 				};//en ms
-			m_enableToMove = true;
+			EnableToMove = true;
 			MaxSpeedBase = 50;
 			MinAttackRange = -1;
 			MaxAttackRange = -1;
@@ -312,7 +314,7 @@ namespace DOL.GS
 		public void Move()
 		{
 			if (!CanUse()) return;
-			if (!m_enableToMove) return;
+			if (!EnableToMove) return;
 			if (Owner == null || Owner.GroundTarget == null) return;
             if ( !this.IsWithinRadius( Owner.GroundTarget, 1000 ) )
 			{
@@ -506,14 +508,13 @@ namespace DOL.GS
 		}
 		protected int[] ActionDelay;
 		private ushort m_effect;
-		private bool m_enableToMove;
 
-		/// <summary>
-		/// delay to do action in Ms
-		/// </summary>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		public int GetActionDelay(SiegeTimer.eAction action)
+        /// <summary>
+        /// delay to do action in Ms
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public int GetActionDelay(SiegeTimer.eAction action)
 		{
 			if (action == SiegeTimer.eAction.Fire && GroundTarget != null)
                 return (int)( ActionDelay[(int)action] + this.GetDistanceTo( GroundTarget ) );
@@ -658,12 +659,6 @@ namespace DOL.GS
             this.ExamineArticle = item.ExamineArticle;
             this.MessageArticle = item.MessageArticle;
 			this.Model = (ushort)item.Model;
-		}
-
-		public bool EnableToMove
-		{
-			set { m_enableToMove = value; }
-			get { return m_enableToMove; }
 		}
 
 		public override bool AddToWorld()
