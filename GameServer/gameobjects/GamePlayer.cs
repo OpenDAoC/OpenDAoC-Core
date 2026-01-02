@@ -3779,7 +3779,7 @@ namespace DOL.GS
             {
                 int RR = 0;
 
-                if (RealmLevel > 1)
+                if (RealmLevel > 0)
                     RR = RealmLevel / 10 + 1;
 
                 string realm = string.Empty;
