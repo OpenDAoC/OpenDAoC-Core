@@ -88,9 +88,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            Region region = WorldMgr.GetRegion(_player.CurrentRegion.ID);
-
-            if (region == null || region.GetZone(_player.GroundTarget.X, _player.GroundTarget.Y) == null)
+            if (_player.CurrentRegion.GetZone(_player.GroundTarget.X, _player.GroundTarget.Y) == null)
             {
                 _player.Out.SendMessage("You must have a ground target to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
