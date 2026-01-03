@@ -708,12 +708,6 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("world", "zonepoint_npctemplate", "Display the zonepoint with the following npctemplate. 0 for no display", 0)]
 		public static int ZONEPOINT_NPCTEMPLATE;
-
-		/// <summary>
-		/// Property to cause beneficial spells to target the caster if current target isn't valid
-		/// </summary>
-		[ServerProperty("server", "autoselect_caster", "Set to True if you wish beneficial spells to target the caster if the current target isn't valid.  Allows self-healing without changing targets.", false)]
-		public static bool AUTOSELECT_CASTER;
 		#endregion
 
 		#region RATES
@@ -2218,12 +2212,6 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("spells", "spell_interrupt_duration", "", 3000)]
 		public static int SPELL_INTERRUPT_DURATION;
 
-		[ServerProperty("spells", "spell_interrupt_again", "", 100)]
-		public static int SPELL_INTERRUPT_AGAIN;
-
-		[ServerProperty("spells", "spell_interrupt_maxstagelength", "Max length of stage 1 and 3, 1000 = 1 second", 1500)]
-		public static int SPELL_INTERRUPT_MAXSTAGELENGTH;
-		
 		[ServerProperty("spells", "spell_charm_named_check", "Prevents charm spell to work on Named Mobs, 0 = disable, 1 = enable", 1)]
 		public static int SPELL_CHARM_NAMED_CHECK;
 
