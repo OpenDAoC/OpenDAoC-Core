@@ -65,7 +65,10 @@ namespace DOL.GS
             finally
             {
                 if (livingBeingKilled != null)
+                {
                     ServiceObjectStore.Remove(livingBeingKilled);
+                    livingBeingKilled.Killed.OnReaperServiceHandlingComplete();
+                }
             }
         }
 

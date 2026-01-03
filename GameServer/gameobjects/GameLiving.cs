@@ -34,9 +34,8 @@ namespace DOL.GS
 
 		#region Combat
 
-		// Only meant to be modified by Die() and ProcessDeath().
 		private bool _isBeingHandledByReaperService;
-		public ref bool IsBeingHandledByReaperService => ref _isBeingHandledByReaperService;
+		public bool IsBeingHandledByReaperService => Volatile.Read(ref _isBeingHandledByReaperService);
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -1925,91 +1924,89 @@ namespace DOL.GS
 				ReaperService.KillLiving(this, killer);
 		}
 
+		public void OnReaperServiceHandlingComplete()
+		{
+			Volatile.Write(ref _isBeingHandledByReaperService, false);
+		}
+
 		public virtual void ProcessDeath(GameObject killer)
 		{
-			try
+			attackComponent.StopAttack();
+			List<GamePlayer> playerAttackers = new();
+
+			foreach (GameObject attacker in attackComponent.AttackerTracker.Attackers)
 			{
-				attackComponent.StopAttack();
-				List<GamePlayer> playerAttackers = new();
+				if (attacker is not GameLiving livingAttacker)
+					continue;
 
-				foreach (GameObject attacker in attackComponent.AttackerTracker.Attackers)
+				GamePlayer player = attacker as GamePlayer;
+
+				if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IControlledBrain npcAttackerBrain)
 				{
-					if (attacker is not GameLiving livingAttacker)
-						continue;
-
-					GamePlayer player = attacker as GamePlayer;
-
-					if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IControlledBrain npcAttackerBrain)
-					{
-						// Ok, we're a pet - if our Player owner isn't in the attacker list, let's make them a 'virtual' attacker
-						player = npcAttackerBrain.GetPlayerOwner();
-
-						if (player != null)
-						{
-							if (!attackComponent.AttackerTracker.ContainsAttacker(player))
-							{
-								if (!playerAttackers.Contains(player))
-									playerAttackers.Add(player);
-							}
-
-							// Pet gets the killed message as well
-							livingAttacker.EnemyKilled(this);
-						}
-					}
+					// Ok, we're a pet - if our Player owner isn't in the attacker list, let's make them a 'virtual' attacker
+					player = npcAttackerBrain.GetPlayerOwner();
 
 					if (player != null)
 					{
-						if (!playerAttackers.Contains(player))
-							playerAttackers.Add(player);
-
-						if (player.Group != null)
+						if (!attackComponent.AttackerTracker.ContainsAttacker(player))
 						{
-							foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
-							{
-								if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE) && playerAttackers.Contains(groupPlayer) == false)
-									playerAttackers.Add(groupPlayer);
-							}
+							if (!playerAttackers.Contains(player))
+								playerAttackers.Add(player);
 						}
-					}
-					else
+
+						// Pet gets the killed message as well
 						livingAttacker.EnemyKilled(this);
+					}
 				}
 
-				foreach (GamePlayer player in playerAttackers)
-					player.EnemyKilled(this);
+				if (player != null)
+				{
+					if (!playerAttackers.Contains(player))
+						playerAttackers.Add(player);
 
-				foreach (Quests.DataQuest q in DataQuestList)
-					q.Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer, playerAttackers));
-
-				attackComponent.AttackerTracker.Clear();
-
-				// clear all of our targets
-				rangeAttackComponent.AutoFireTarget = null;
-				TargetObject = null;
-
-				// cancel all left effects
-				EffectList.CancelAll();
-				effectListComponent.CancelAll();
-
-				// Stop the regeneration timers
-				StopHealthRegeneration();
-				StopPowerRegeneration();
-				StopEnduranceRegeneration();
-
-				//Reduce health to zero
-				Health = 0;
-
-				// Remove all last attacked times
-				LastAttackedByEnemyTickPvE = 0;
-				LastAttackedByEnemyTickPvP = 0;
-
-				//Let's send the notification at the end
-				Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
+					if (player.Group != null)
+					{
+						foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
+						{
+							if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE) && playerAttackers.Contains(groupPlayer) == false)
+								playerAttackers.Add(groupPlayer);
+						}
+					}
+				}
+				else
+					livingAttacker.EnemyKilled(this);
 			}
-			finally
-			{
-				IsBeingHandledByReaperService = false;
-			}
+
+			foreach (GamePlayer player in playerAttackers)
+				player.EnemyKilled(this);
+
+			foreach (Quests.DataQuest q in DataQuestList)
+				q.Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer, playerAttackers));
+
+			attackComponent.AttackerTracker.Clear();
+
+			// clear all of our targets
+			rangeAttackComponent.AutoFireTarget = null;
+			TargetObject = null;
+
+			// cancel all left effects
+			EffectList.CancelAll();
+			effectListComponent.CancelAll();
+
+			// Stop the regeneration timers
+			StopHealthRegeneration();
+			StopPowerRegeneration();
+			StopEnduranceRegeneration();
+
+			//Reduce health to zero
+			Health = 0;
+
+			// Remove all last attacked times
+			LastAttackedByEnemyTickPvE = 0;
+			LastAttackedByEnemyTickPvP = 0;
+
+			//Let's send the notification at the end
+			Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
 		}
 
 		public void GainExperience(eXPSource xpSource, long exp, bool allowMultiply = false)

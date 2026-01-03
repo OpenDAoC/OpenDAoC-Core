@@ -2772,48 +2772,40 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
-			try
+			Brain?.KillFSM();
+			FireAmbientSentence(eAmbientTrigger.dying, killer);
+
+			if (ControlledBrain != null)
+				ControlledNPC_Release();
+
+			StopMoving();
+			CurrentWaypoint = null;
+
+			if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
+				killer = petBrain.GetPlayerOwner();
+
+			if (killer != null)
 			{
-				Brain?.KillFSM();
-				FireAmbientSentence(eAmbientTrigger.dying, killer);
+				Message.SystemToArea(this, $"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, killer);
 
-				if (ControlledBrain != null)
-					ControlledNPC_Release();
+				if (killer is GamePlayer player)
+					player.Out.SendMessage($"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
 
-				StopMoving();
-				CurrentWaypoint = null;
-
-				if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
-					killer = petBrain.GetPlayerOwner();
-
-				if (killer != null)
-				{
-					Message.SystemToArea(this, $"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, killer);
-
-					if (killer is GamePlayer player)
-						player.Out.SendMessage($"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
-
-					// Deal out experience, realm points, loot... Based on server rules.
-					GameServer.ServerRules.OnNpcKilled(this, killer);
-				}
-
-				Group?.RemoveMember(this);
-				base.ProcessDeath(killer);
-
-				lock (XpGainersLock)
-				{
-					XPGainers.Clear();
-				}
-
-				Delete();
-				TempProperties.RemoveAllProperties();
-				StartRespawn();
+				// Deal out experience, realm points, loot... Based on server rules.
+				GameServer.ServerRules.OnNpcKilled(this, killer);
 			}
-			finally
+
+			Group?.RemoveMember(this);
+			base.ProcessDeath(killer);
+
+			lock (XpGainersLock)
 			{
-				if (IsBeingHandledByReaperService)
-					base.ProcessDeath(killer);
+				XPGainers.Clear();
 			}
+
+			Delete();
+			TempProperties.RemoveAllProperties();
+			StartRespawn();
 		}
 
 		/// <summary>
