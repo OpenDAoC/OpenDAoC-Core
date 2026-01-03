@@ -28,6 +28,7 @@ using DOL.Language;
 using DOL.Logging;
 using DOL.Mail;
 using DOL.Network;
+using DOL.Timing;
 using JNogueira.Discord.WebhookClient;
 
 namespace DOL.GS
@@ -1237,7 +1238,7 @@ namespace DOL.GS
 
 			try
 			{
-				long startTick = GameLoop.GetRealTime();
+				long startTick = MonotonicTime.NowMs;
 
 				if (log.IsInfoEnabled)
 					log.Info("Saving database...");
@@ -1262,7 +1263,7 @@ namespace DOL.GS
 					Save(AppealMgr.Save, ref appeals);
 				}
 
-				startTick = GameLoop.GetRealTime() - startTick;
+				startTick = MonotonicTime.NowMs - startTick;
 
 				if (log.IsInfoEnabled)
 				{
@@ -1293,9 +1294,9 @@ namespace DOL.GS
 
 			static void Save(Func<int> save, ref (int count, long elapsed) result)
 			{
-				result.elapsed = GameLoop.GetRealTime();
+				result.elapsed = MonotonicTime.NowMs;
 				result.count = save();
-				result.elapsed = GameLoop.GetRealTime() - result.elapsed;
+				result.elapsed = MonotonicTime.NowMs - result.elapsed;
 			}
 		}
 

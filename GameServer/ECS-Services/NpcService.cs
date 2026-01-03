@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using DOL.AI;
 using DOL.Logging;
+using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -61,9 +62,9 @@ namespace DOL.GS
                         return;
                     }
 
-                    long startTick = GameLoop.GetRealTime();
+                    long startTick = MonotonicTime.NowMs;
                     brain.Think();
-                    long stopTick = GameLoop.GetRealTime();
+                    long stopTick = MonotonicTime.NowMs;
 
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
                         log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");

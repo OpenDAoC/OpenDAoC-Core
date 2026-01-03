@@ -5,6 +5,7 @@ using System.Threading;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Logging;
+using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -53,9 +54,9 @@ namespace DOL.GS
                 if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref Instance.EntityCount);
 
-                long startTick = GameLoop.GetRealTime();
+                long startTick = MonotonicTime.NowMs;
                 TickEffect(effect);
-                long stopTick = GameLoop.GetRealTime();
+                long stopTick = MonotonicTime.NowMs;
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {Instance.ServiceName}.{nameof(TickInternal)} for {effect.Owner.Name}({effect.Owner.ObjectID}) Effect: {effect.EffectType} Time: {stopTick - startTick}ms");

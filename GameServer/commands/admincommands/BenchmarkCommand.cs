@@ -23,6 +23,8 @@
 *  into the comment above the affected message return(s). This is
 *  done for ease of reference. */
 
+using DOL.Timing;
+
 namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
@@ -67,14 +69,14 @@ namespace DOL.GS.Commands
 				// See the comments above 'using' about SendMessage translation IDs
 				case "listskills":
 				{
-					start = GameLoop.GetRealTime();
+					start = MonotonicTime.NowMs;
 
 					// For each usable skill, execute the ActionSkill method until the max range is hit
 					for (int i = min; i < max; i++)
 						client.Player.GetAllUsableSkills(true);
 
 					// Final duration to list full range of spells/skills
-					spent = GameLoop.GetRealTime() - start;
+					spent = MonotonicTime.NowMs - start;
 					
 					// Message: "The skills benchmark took {0}ms to list {1} usable skills."
 					ChatUtil.SendErrorMessage(client, "AdminCommands.Benchmark.Msg.SkillsIterations", spent, max);
@@ -87,12 +89,12 @@ namespace DOL.GS.Commands
 				// See the comments above 'using' about SendMessage translation IDs
 				case "listspells":
 				{
-					start = GameLoop.GetRealTime();
+					start = MonotonicTime.NowMs;
 
 					for (int i = min; i < max; i++)
 						client.Player.GetAllUsableListSpells(true);
 
-					spent = GameLoop.GetRealTime() - start;
+					spent = MonotonicTime.NowMs - start;
 					
 					// Message: "The spells benchmark took {0}ms to list {1} usable spells."
 					ChatUtil.SendErrorMessage(client, "AdminCommands.Benchmark.Msg.SpellsIterations", spent, max);

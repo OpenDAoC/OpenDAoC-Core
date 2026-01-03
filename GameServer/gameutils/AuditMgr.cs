@@ -4,6 +4,7 @@ using System.Text;
 using System.Timers;
 using DOL.Database;
 using DOL.Database.Attributes;
+using DOL.Threading;
 
 namespace DOL.GS
 {

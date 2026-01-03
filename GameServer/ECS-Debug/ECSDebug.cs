@@ -7,6 +7,7 @@ using System.Threading;
 using DOL.Events;
 using DOL.GS;
 using DOL.Logging;
+using DOL.Timing;
 using ECS.Debug;
 
 namespace ECS.Debug
@@ -191,7 +192,7 @@ namespace ECS.Debug
                     {
                         _gameEventMgrNotifyProfilingEnabled = true;
                         _gameEventMgrNotifyTimerInterval = _notifyProfilingIntervalRequest;
-                        _gameEventMgrNotifyTimerStartTick = GameLoop.GetRealTime();
+                        _gameEventMgrNotifyTimerStartTick = MonotonicTime.NowMs;
                     }
                 }
                 else
@@ -238,10 +239,10 @@ namespace ECS.Debug
 
         private static void ReportGameEventMgrNotifyTimes()
         {
-            if (!_gameEventMgrNotifyProfilingEnabled || GameLoop.GetRealTime() - _gameEventMgrNotifyTimerStartTick <= _gameEventMgrNotifyTimerInterval)
+            if (!_gameEventMgrNotifyProfilingEnabled || MonotonicTime.NowMs - _gameEventMgrNotifyTimerStartTick <= _gameEventMgrNotifyTimerInterval)
                 return;
 
-            ReadOnlySpan<char> actualInterval = TruncateString((GameLoop.GetRealTime() - _gameEventMgrNotifyTimerStartTick).ToString(), 5);
+            ReadOnlySpan<char> actualInterval = TruncateString((MonotonicTime.NowMs - _gameEventMgrNotifyTimerStartTick).ToString(), 5);
             log.Debug($"==== GameEventMgr Notify() Costs (Requested Interval: {_gameEventMgrNotifyTimerInterval}ms | Actual Interval: {actualInterval}ms) ====");
 
             lock (_gameEventMgrNotifyLock)
@@ -276,7 +277,7 @@ namespace ECS.Debug
                 }
 
                 _gameEventMgrNotifyTimes.Clear();
-                _gameEventMgrNotifyTimerStartTick = GameLoop.GetRealTime();
+                _gameEventMgrNotifyTimerStartTick = MonotonicTime.NowMs;
                 log.Debug("---------------------------------------------------------------------------");
             }
         }

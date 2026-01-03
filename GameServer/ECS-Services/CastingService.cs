@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using DOL.Logging;
+using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -50,9 +51,9 @@ namespace DOL.GS
                 if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref Instance.EntityCount);
 
-                long startTick = GameLoop.GetRealTime();
+                long startTick = MonotonicTime.NowMs;
                 castingComponent.Tick();
-                long stopTick = GameLoop.GetRealTime();
+                long stopTick = MonotonicTime.NowMs;
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");

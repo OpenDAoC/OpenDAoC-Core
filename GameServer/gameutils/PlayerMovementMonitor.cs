@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using DOL.Timing;
 
 namespace DOL.GS 
 {
@@ -39,7 +40,7 @@ namespace DOL.GS
 
         public void RecordPosition()
         {
-            long timestamp = GameLoop.GetRealTime();
+            long timestamp = MonotonicTime.NowMs;
 
             if (_pausedUntil > timestamp)
                 return;
@@ -137,7 +138,7 @@ namespace DOL.GS
             _previous = default;
             _current = default;
 
-            long now = GameLoop.GetRealTime();
+            long now = MonotonicTime.NowMs;
             long previousPauseUntil = Math.Max(_pausedUntil, now);
             _pausedUntil = now + LatencyBuffer;
             _accumulatedPauseTime += _pausedUntil - previousPauseUntil;

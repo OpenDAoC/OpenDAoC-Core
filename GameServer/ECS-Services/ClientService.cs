@@ -6,6 +6,8 @@ using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using DOL.Logging;
+using DOL.Threading;
+using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -152,9 +154,9 @@ namespace DOL.GS
 
         private static void Receive(GameClient client)
         {
-            long startTick = GameLoop.GetRealTime();
+            long startTick = MonotonicTime.NowMs;
             client.Receive();
-            long stopTick = GameLoop.GetRealTime();
+            long stopTick = MonotonicTime.NowMs;
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {Instance.ServiceName}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
@@ -162,9 +164,9 @@ namespace DOL.GS
 
         private static void Send(GameClient client)
         {
-            long startTick = GameLoop.GetRealTime();
+            long startTick = MonotonicTime.NowMs;
             client.PacketProcessor.SendPendingPackets();
-            long stopTick = GameLoop.GetRealTime();
+            long stopTick = MonotonicTime.NowMs;
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {Instance.ServiceName}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
@@ -774,7 +776,7 @@ namespace DOL.GS
         private static void UpdateWorld(GamePlayer player)
         {
             // Players aren't updated here on purpose.
-            long startTick = GameLoop.GetRealTime();
+            long startTick = MonotonicTime.NowMs;
 
             lock (player.PlayerObjectCache.NpcUpdateCacheLock)
             {
@@ -796,7 +798,7 @@ namespace DOL.GS
                 UpdateHouses(player);
             }
 
-            long stopTick = GameLoop.GetRealTime();
+            long stopTick = MonotonicTime.NowMs;
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {Instance.ServiceName}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
