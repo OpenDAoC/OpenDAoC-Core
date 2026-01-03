@@ -2202,6 +2202,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("classes", "ress_sickness_level", "What level should ress sickness start to apply?", (byte)6)]
 		public static byte RESS_SICKNESS_LEVEL;
 
+		[ServerProperty("classes", "volley_roof_check", "Enables roof obstruction checks for Volley", false)]
+		public static bool VOLLEY_ROOF_CHECK;
+
 		#endregion
 
 		#region SPELLS
