@@ -55,7 +55,7 @@ namespace DOL.GS.Keeps
         private static readonly List<int> MID_POWER_CHAIN = new List<int> { 75, 76, 79, 81 };
         public static RelicGate Door_Mid_Power = null;
         
-        private static readonly List<int> MID_STRENGTH_CHAIN = new List<int> { 75, 78, 77, 82 };
+        private static readonly List<int> MID_STRENGTH_CHAIN = new List<int> { 75, 78, 77, 80 };
         public static RelicGate Door_Mid_Strength = null;
         
         private static readonly List<int> HIB_POWER_CHAIN = new List<int> { 100, 101, 103, 105 };
@@ -91,8 +91,6 @@ namespace DOL.GS.Keeps
             if (log.IsDebugEnabled)
                 log.Debug($"RelicGateMgr: Assigned door with InternalID {internalID} to static field and chain dictionary.");
         }
-        
-        // ... (GetRelicGateType unverändert) ...
         
         public static Type GetRelicGateType(int internalID)
         {
