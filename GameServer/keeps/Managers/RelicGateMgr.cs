@@ -300,10 +300,10 @@ namespace DOL.GS.Keeps
             }
 
             // Nachricht formatieren
-            string message = $"{realmName} {relicType} relic door has been {action}.";
+            string message = $"{realmName} {relicType} relic door has been {action}!";
             
             // Senden der zentrierten Nachricht
-            PlayerMgr.BroadcastCenteredSystemMessage(message);
+            PlayerMgr.BroadcastRelicGateMessage(message, eRealm.None);
             
             log.Info($"GLOBAL: Sent Relic Door status message: {message}");
         }

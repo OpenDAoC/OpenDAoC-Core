@@ -1,6 +1,7 @@
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using JNogueira.Discord.WebhookClient;
+using DOL.GS;
 
 namespace DOL.GS.Keeps
 {
@@ -141,22 +142,28 @@ namespace DOL.GS.Keeps
 		/// <param name="capturingrealm">The realm that captured the keep</param>
 		public static void BroadcastKeepTakeMessage(string message, eRealm capturingrealm)
 		{
-			foreach (GamePlayer player in ClientService.Instance.GetPlayers())
+			const int RELIC_REGION_ID = 163;
+			Region targetRegion = WorldMgr.GetRegion(RELIC_REGION_ID); 
+			eRealm[] targetRealms = { eRealm.Albion, eRealm.Midgard, eRealm.Hibernia }; 
+			foreach (eRealm playerRealm in targetRealms)
 			{
-				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Out.SendMessage(message, eChatType.CT_ScreenCenter,  eChatLoc.CL_SystemWindow);
-				
-				switch (capturingrealm)
+				foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegionAndRealm(targetRegion, playerRealm))
 				{
-					case eRealm.Albion:
-						player.Out.SendSoundEffect(220, 0, 0, 0, 0, 0);
-						break;
-					case eRealm.Midgard:
-						player.Out.SendSoundEffect(218, 0, 0, 0, 0, 0);
-						break;
-					case eRealm.Hibernia:
-						player.Out.SendSoundEffect(219, 0, 0, 0, 0, 0);
-						break;
+					player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(message, eChatType.CT_ScreenCenter,  eChatLoc.CL_SystemWindow);
+					
+					switch (capturingrealm)
+					{
+						case eRealm.Albion:
+							player.Out.SendSoundEffect(220, 0, 0, 0, 0, 0);
+							break;
+						case eRealm.Midgard:
+							player.Out.SendSoundEffect(218, 0, 0, 0, 0, 0);
+							break;
+						case eRealm.Hibernia:
+							player.Out.SendSoundEffect(219, 0, 0, 0, 0, 0);
+							break;
+					}
 				}
 			}
 		}
@@ -310,15 +317,43 @@ namespace DOL.GS.Keeps
 		}
 
 		/// <summary>
-        /// Sends a prominent message to the center of the screen for all players.
-        /// </summary>
-        /// <param name="message">The message text.</param>
-        public static void BroadcastCenteredSystemMessage(string message)
-        {
-            foreach (GamePlayer player in ClientService.Instance.GetPlayers())
-            {
-                player.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-            }
-        }
+		/// Sends the relic gate message to all players in the specified region (163).
+		/// </summary>
+		/// <param name="message">The message text.</param>
+		/// <param name="realm">The realm that triggered the relic event (used for NewsMgr).</param>
+		public static void BroadcastRelicGateMessage(string message, eRealm realm)
+		{
+			// Die spezifische Regions-ID
+			const int RELIC_REGION_ID = 163;
+			
+			// Annahme: WorldMgr.GetRegion() funktioniert jetzt.
+			Region targetRegion = WorldMgr.GetRegion(RELIC_REGION_ID); 
+
+			if (targetRegion == null)
+			{
+				log.ErrorFormat("Failed to find Relic Gate Region with ID {0} for broadcast.", RELIC_REGION_ID);
+				return;
+			}
+
+			// 1. Nachricht einmalig im News-System speichern.
+			NewsMgr.CreateNews(message, realm, eNewsType.RvRGlobal, false); 
+
+			// 2. KORRIGIERTE LOGIK: Iterieren Sie durch alle drei Spieler-Realms.
+			// Wir nehmen an, dass die Realms 1 (Albion), 2 (Midgard) und 3 (Hibernia) sind.
+			// Um Realm 4 (Mordred) oder zukünftige Realms abzudecken, könnte man eine Liste nutzen.
+			
+			// Erstellen Sie eine Liste der Realms, an die gesendet werden soll (Alle Spieler-Realms)
+			eRealm[] targetRealms = { eRealm.Albion, eRealm.Midgard, eRealm.Hibernia }; 
+
+			foreach (eRealm playerRealm in targetRealms)
+			{
+				// Ruft nun alle Spieler in der Region 163 ab, die zum jeweiligen Realm gehören (Albion ODER Midgard ODER Hibernia)
+				foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegionAndRealm(targetRegion, playerRealm))
+				{
+					player.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow); // Screen Center
+					player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow); // Important
+				}
+			}
+		}
 	}
 }
