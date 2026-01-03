@@ -1,11 +1,16 @@
+#include "DetourInterface.hpp"
+#include <algorithm>
+#include <cfloat>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
-#include <exception>
+#include <DetourAlloc.h>
+#include <DetourCommon.h>
+#include <DetourNavMesh.h>
+#include <DetourNavMeshQuery.h>
+#include <DetourStatus.h>
 #include <functional>
-#include <iostream>
 #include <random>
-
-#include "DetourInterface.hpp"
 
 // RAII helper
 struct RAII
@@ -23,6 +28,7 @@ struct dtNavMeshSetHeader
 	std::int32_t numTiles;
 	dtNavMeshParams params;
 };
+
 struct dtNavMeshTileHeader
 {
 	dtTileRef ref;
@@ -96,6 +102,7 @@ DLLEXPORT bool CreateNavMeshQuery(dtNavMesh *mesh, dtNavMeshQuery **const query)
 	}
 	return true;
 }
+
 DLLEXPORT bool FreeNavMeshQuery(dtNavMeshQuery *queryPtr)
 {
 	if (queryPtr)
@@ -219,6 +226,72 @@ DLLEXPORT dtStatus FindClosestPoint(dtNavMeshQuery *query, float center[], float
 	if (dtStatusSucceed(status))
 		status = query->closestPointOnPoly(centerRef, center, outputVector, nullptr);
 	return status;
+}
+
+DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[], float boxExtents[], float referencePos[], dtPolyFlags queryFilter[], float *outputVector)
+{
+	dtQueryFilter filter;
+	filter.setIncludeFlags(queryFilter[0]);
+	filter.setExcludeFlags(queryFilter[1]);
+
+	dtPolyRef polys[32];
+	int polyCount = 0;
+
+	// Find all polygons overlapping the box.
+	dtStatus status = query->queryPolygons(boxCenter, boxExtents, &filter, polys, &polyCount, 32);
+
+	if (dtStatusSucceed(status) && polyCount > 0)
+	{
+		float minDistSq = FLT_MAX;
+		bool found = false;
+		float tempVec[3];
+
+		// Small tolerance to handle potential floating point errors on the edges.
+		const float EPSILON = 1e-4f;
+
+		for (int i = 0; i < polyCount; ++i)
+		{
+			// Find closest point on this specific polygon.
+			query->closestPointOnPoly(polys[i], referencePos, tempVec, nullptr);
+
+			// Ensure point is actually inside the box.
+			bool isInsideBox = true;
+			for (int axis = 0; axis < 3; ++axis)
+			{
+				float minBound = boxCenter[axis] - boxExtents[axis] - EPSILON;
+				float maxBound = boxCenter[axis] + boxExtents[axis] + EPSILON;
+
+				if (tempVec[axis] < minBound || tempVec[axis] > maxBound)
+				{
+					isInsideBox = false;
+					break;
+				}
+			}
+
+			if (!isInsideBox)
+				continue; // Point is on a valid polygon, but the point itself is outside our volume.
+
+			// Check distance.
+			float dx = tempVec[0] - referencePos[0];
+			float dy = tempVec[1] - referencePos[1];
+			float dz = tempVec[2] - referencePos[2];
+			float dSq = dx * dx + dy * dy + dz * dz;
+
+			if (dSq < minDistSq)
+			{
+				minDistSq = dSq;
+				outputVector[0] = tempVec[0];
+				outputVector[1] = tempVec[1];
+				outputVector[2] = tempVec[2];
+				found = true;
+			}
+		}
+
+		if (found)
+			return DT_SUCCESS;
+	}
+
+	return DT_FAILURE;
 }
 
 DLLEXPORT dtStatus GetPolyAt(dtNavMeshQuery *query, float *center, float *extents, unsigned short *queryFilter, dtPolyRef *polyRef, float *point)

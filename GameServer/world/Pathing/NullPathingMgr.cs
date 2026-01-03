@@ -22,7 +22,22 @@ namespace DOL.GS
             return null;
         }
 
-        public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange = 256, float yRange = 256, float zRange = 256)
+        public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange)
+        {
+            return position;
+        }
+
+        public Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset, Vector3? referencePos)
+        {
+            return origin;
+        }
+
+        public Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight)
+        {
+            return position;
+        }
+
+        public Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth)
         {
             return position;
         }

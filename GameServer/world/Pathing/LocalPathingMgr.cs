@@ -114,6 +114,16 @@ namespace DOL.GS
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus FindClosestPointInBox(
+            IntPtr queryPtr,
+            ReadOnlySpan<float> boxCenter,
+            ReadOnlySpan<float> boxExtents,
+            ReadOnlySpan<float> referencePos,
+            ReadOnlySpan<EDtPolyFlags> filter,
+            Span<float> outputVector);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus GetPolyAt(
             IntPtr queryPtr,
             ReadOnlySpan<float> center,
@@ -308,11 +318,10 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange = 256f, float yRange = 256f, float zRange = 256f)
+        public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange)
         {
-            // Assume the point is safe if we don't have a navmesh.
             if (!TryGetQuery(zone, out NavMeshQuery query))
-                return position;
+                return null;
 
             Span<float> center = stackalloc float[3];
             FillRecastFloats(position + Vector3.UnitZ * 8, center);
@@ -327,6 +336,60 @@ namespace DOL.GS
             EDtStatus status = FindClosestPoint(query, center, polyPickEx, filter, outVec);
 
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
+        }
+
+        public Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset, Vector3? referencePos)
+        {
+            if (minOffset.X > maxOffset.X || minOffset.Y > maxOffset.Y || minOffset.Z > maxOffset.Z)
+                throw new ArgumentException($"{nameof(minOffset)} must be <= {nameof(maxOffset)} in all components");
+
+            if (!TryGetQuery(zone, out NavMeshQuery query))
+                return null;
+
+            Vector3 relativeCenter = (minOffset + maxOffset) * 0.5f;
+            Vector3 worldCenter = origin + relativeCenter;
+            Vector3 extents = (maxOffset - minOffset) * 0.5f;
+
+            Span<float> centerArr = stackalloc float[3];
+            FillRecastFloats(worldCenter, centerArr);
+
+            Span<float> extentsArr = stackalloc float[3];
+            FillRecastFloats(extents, extentsArr);
+
+            Span<float> refPosArr = stackalloc float[3];
+            FillRecastFloats(referencePos ?? origin, refPosArr);
+
+            EDtPolyFlags defaultInclude = EDtPolyFlags.ALL ^ EDtPolyFlags.DISABLED;
+            ReadOnlySpan<EDtPolyFlags> filter = [defaultInclude, 0];
+
+            Span<float> outVec = stackalloc float[3];
+            EDtStatus status = FindClosestPointInBox(query, centerArr, extentsArr, refPosArr, filter, outVec);
+
+            return (status & EDtStatus.DT_SUCCESS) == 0 ?  null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
+        }
+
+        public Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight)
+        {
+            const float RADIUS = 3f;
+
+            return GetClosestPointInBounds(
+                zone, position,
+                minOffset: new Vector3(-RADIUS, -RADIUS, 20f), // Slightly above current position to avoid getting the current floor.
+                maxOffset: new Vector3(RADIUS, RADIUS, maxHeight),
+                position
+            );
+        }
+
+        public Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth)
+        {
+            const float RADIUS = 3f;
+
+            return GetClosestPointInBounds(
+                zone, position,
+                new(-RADIUS, -RADIUS, -maxDepth),
+                new(RADIUS, RADIUS, 20f), // Slightly above current position to allow getting the current floor.
+                position
+            );
         }
 
         public bool HasNavmesh(Zone zone)
