@@ -5,6 +5,7 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Logging;
+using System.Threading;
 
 namespace DOL.GS
 {
@@ -25,11 +26,10 @@ namespace DOL.GS
         private GameInventoryItem _item;
         private ECSGameTimer _currentCarrierTimer;
         private DbRelic _dbRelic;
-        private ECSGameTimer _returnRelicTimer;
-        private long _timeRelicOnGround;
+        
         private GameRelicPad _returnRelicPad;
-
-        public DateTime LastCaptureDate { get; set; } = DateTime.Now;
+        public DateTime LastTimePickedUp { get; set; } = DateTime.MinValue; 
+        
         public eRelicType RelicType { get; private set; }
         public eRealm OriginalRealm { get; private set; }
         public eRealm LastRealm { get; private set; } = eRealm.None;
@@ -37,6 +37,7 @@ namespace DOL.GS
         public GamePlayer CurrentCarrier { get; private set; }
         public bool IsMounted => CurrentRelicPad != null;
         public static int ReturnRelicInterval => Properties.RELIC_RETURN_TIME * 1000;
+        
 
         public GameRelic() : base()
         {
@@ -105,6 +106,8 @@ namespace DOL.GS
             CurrentCarrier = player;
             player.TempProperties.SetProperty(PLAYER_CARRY_RELIC_WEAK, this);
             player.Out.SendUpdateMaxSpeed();
+            
+            LastTimePickedUp = DateTime.Now; 
 
             if (IsMounted)
             {
@@ -120,12 +123,6 @@ namespace DOL.GS
             SetHandlers(player, true);
             StartPlayerTimer(player);
 
-            if (_returnRelicTimer != null)
-            {
-                _returnRelicTimer.Stop();
-                _returnRelicTimer = null;
-            }
-
             return true;
         }
 
@@ -136,6 +133,9 @@ namespace DOL.GS
 
             LastRealm = pad.Realm;
             CurrentRelicPad = pad;
+            
+            LastTimePickedUp = DateTime.MinValue; 
+            
             PlayerLoosesRelic(true);
             SaveIntoDatabase();
             AddToWorld();
@@ -147,6 +147,25 @@ namespace DOL.GS
             IList messages = base.GetExamineMessages(player);
             messages.Add(IsMounted ? $"It is owned by {(player.Realm == Realm ? "your realm" : GlobalConstants.RealmToName(Realm))}." : "It is without owner, take it!");
             return messages;
+        }
+
+
+        /// <summary>
+        /// Berechnet die verbleibende Zeit bis zur automatischen Rückkehr des Relikts in vollen Minuten.
+        /// </summary>
+        /// <returns>Einen formatierten String der verbleibenden Minuten (z.B. "30 Minuten verbleibend") oder Status-Hinweis.</returns>
+        public string GetRelicTimeSimple()
+        {
+            TimeSpan maxCarryTime = RelicMgr.MaxRelicCarryTime;
+            TimeSpan timeElapsed = DateTime.Now.Subtract(LastTimePickedUp);
+            TimeSpan timeRemaining = maxCarryTime.Subtract(timeElapsed);
+            if (timeRemaining <= TimeSpan.Zero)
+            {
+                return "0 Minuten verbleibend";
+            }
+            int minutesRemaining = (int)Math.Ceiling(timeRemaining.TotalMinutes); 
+            
+            return minutesRemaining.ToString();
         }
 
         public override void LoadFromDatabase(DataObject obj)
@@ -162,7 +181,9 @@ namespace DOL.GS
             Realm = (eRealm) _dbRelic.Realm;
             OriginalRealm = (eRealm) _dbRelic.OriginalRealm;
             LastRealm = (eRealm) _dbRelic.LastRealm;
-            LastCaptureDate = _dbRelic.LastCaptureDate;
+            
+            LastTimePickedUp = _dbRelic.LastTimePickedUp; 
+            
             Emblem = 0;
             Level = 99;
 
@@ -202,7 +223,8 @@ namespace DOL.GS
             _dbRelic.X = X;
             _dbRelic.Y = Y;
             _dbRelic.Z = Z;
-            _dbRelic.LastCaptureDate = LastCaptureDate;
+            
+            _dbRelic.LastTimePickedUp = LastTimePickedUp; 
 
             if (InternalID == null)
             {
@@ -260,49 +282,53 @@ namespace DOL.GS
 
             if (IsMounted == false)
             {
-                _timeRelicOnGround = GameLoop.GameLoopTime;
-                _returnRelicTimer = new(this, ReturnRelicTick, RELIC_EFFECT_INTERVAL);
-
-                if (log.IsDebugEnabled)
-                    log.Debug($"{Name} dropped, return timer for relic set to {ReturnRelicInterval / 1000} seconds.");
-
+                // NEU: Nur Update(), um das Relikt an die Drop-Position zu setzen. 
+                // Der Timer für die Rückkehr wird nun ausschließlich über RelicMgr verwaltet.
+                
+                // Wir aktualisieren LastTimePickedUp, um den Timer fortzusetzen, 
+                // da es jetzt auf dem Boden liegt, aber weiterhin "unterwegs" ist.
+                // Wenn LastTimePickedUp > DateTime.MinValue ist, wird es vom RelicMgr überprüft.
+                
                 Update();
                 SaveIntoDatabase();
                 AddToWorld();
             }
         }
 
-        protected virtual int ReturnRelicTick(ECSGameTimer timer)
+        // --- ENTFERNT: ReturnRelicTick (Der 30-Minuten-Boden-Timer) ---
+        // ... (Methode entfernt) ...
+
+        /// <summary>
+        /// Wird vom RelicMgr aufgerufen, wenn die maximal erlaubte Zeit überschritten ist.
+        /// Bringt das Relikt zu dem Pad zurück, von dem es gestohlen wurde (_returnRelicPad),
+        /// oder notfalls zu seinem Ursprungs-Pad (FindHomePad()). 
+        /// </summary>
+        public void ReturnToSourcePad()
         {
-            if (GameLoop.GameLoopTime - _timeRelicOnGround < ReturnRelicInterval)
+            GameRelicPad targetPad = _returnRelicPad ?? FindHomePad(); 
+            
+            if (targetPad != null)
             {
-                ushort effectID = (ushort) Util.Random(5811, 5815);
+                if (CurrentCarrier != null)
+                {
+                    PlayerLoosesRelic(false); 
+                }
 
-                foreach (GamePlayer ppl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    ppl.Out.SendSpellEffectAnimation(this, this, effectID, 0, false, 0x01);
-
-                return RELIC_EFFECT_INTERVAL;
-            }
-
-            if (_returnRelicPad != null)
-            {
-                if (log.IsDebugEnabled)
-                    log.Debug($"Relic {Name} is lost and returns to {_returnRelicPad}");
-
-                RemoveFromWorld();
-                RelicPadTakesOver(_returnRelicPad, true);
-                SaveIntoDatabase();
-                AddToWorld();
+                RelicPadTakesOver(targetPad, true);
+                log.Info($"Relic {Name} automatically returned to source pad {targetPad.Name} (Max time rule).");
             }
             else
             {
-                if (log.IsErrorEnabled)
-                    log.Error($"Relic {Name} is lost and ReturnRelicPad is null!");
+                log.Error($"Critical Error: Source or home pad for Relic {Name} not found for automatic return!");
             }
-
-            _returnRelicTimer.Stop();
-            _returnRelicTimer = null;
-            return 0;
+        }
+        
+        /// <summary>
+        /// Hilfsmethode, um das Original-RelicPad zu finden.
+        /// </summary>
+        private GameRelicPad FindHomePad()
+        {
+            return RelicMgr.GetHomePad(OriginalRealm, RelicType); 
         }
 
         protected virtual void StartPlayerTimer(GamePlayer player)
@@ -334,27 +360,15 @@ namespace DOL.GS
         private int CarrierTimerTick(ECSGameTimer timer)
         {
             Update();
-
-            // Disabled for OF.
-            /*if (!GameServer.KeepManager.FrontierRegionsList.Contains(CurrentRegionID) == false)
-            {
-                if (log.IsDebugEnabled)
-                    log.Debug($"{Name} taken out of frontiers, relic returned to previous pad.");
-
-                RelicPadTakesOver(_returnRelicPad, true);
-                SaveIntoDatabase();
-                AddToWorld();
-                return 0;
-            }*/
-
+            
+            // Überprüft weiterhin, ob das Relikt im Inventar ist (z.B. bei Disconnects oder Bugs)
             if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
             {
                 if (log.IsDebugEnabled)
-                    log.Debug($"{Name} not found in carriers backpack, relic returned to previous pad.");
-
-                RelicPadTakesOver(_returnRelicPad, true);
-                SaveIntoDatabase();
-                AddToWorld();
+                    log.Debug($"{Name} not found in carriers backpack, forcing player to lose relic.");
+                
+                // Verliert das Relikt, LastTimePickedUp bleibt aber gesetzt, da es nun auf dem Boden liegt und der 120-Minuten-Timer weiterläuft
+                PlayerLoosesRelic(true);
                 return 0;
             }
 
@@ -368,6 +382,7 @@ namespace DOL.GS
 
         protected virtual void SetHandlers(GamePlayer player, bool activate)
         {
+            // ... (unverändert) ...
             if (activate)
             {
                 GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new(PlayerAbsence));
@@ -398,20 +413,24 @@ namespace DOL.GS
                     return;
 
                 idArgs.GroundItem.RemoveFromWorld();
+                // Beim Fallenlassen soll es auf dem Boden erscheinen (false), aber LastTimePickedUp muss erhalten bleiben
                 PlayerLoosesRelic(false);
                 return;
             }
 
-            PlayerLoosesRelic(true);
+            // Beim Dying, Quit etc. wird das Relikt aus dem Inventar entfernt (true)
+            PlayerLoosesRelic(true); 
         }
 
         public static bool IsPlayerCarryingRelic(GamePlayer player)
         {
             return player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null;
         }
-
+        
+        // ... (GetRelicTemplate und MiniTemp bleiben unverändert)
         public static MiniTemp GetRelicTemplate(eRealm realm, eRelicType relicType)
         {
+            // ... (Unveränderter Code) ...
             MiniTemp template = new();
 
             switch (realm)

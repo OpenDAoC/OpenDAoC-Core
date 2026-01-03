@@ -27,13 +27,13 @@ using DOL.GS.ServerRules;
 
 namespace DOL.GS.Commands
 {
-	[CmdAttribute(
-	"&relics",
-	new string[] {"&relic"},
-	ePrivLevel.Player,
-	"Displays the current relic status.", "/relics")]
-   public class RelicCommandHandler : AbstractCommandHandler, ICommandHandler
-   {
+    [CmdAttribute(
+    "&relics",
+    new string[] { "&relic" },
+    ePrivLevel.Player,
+    "Displays the current relic status.", "/relics")]
+    public class RelicCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
         /*          Relic status
          *
          * Albion Relics:
@@ -53,56 +53,72 @@ namespace DOL.GS.Commands
 
         public void OnCommand(GameClient client, string[] args)
         {
-			if (IsSpammingCommand(client.Player, "relic"))
-				return;
+            if (IsSpammingCommand(client.Player, "relic"))
+                return;
 
             string albStr = string.Empty, albPwr = string.Empty, midStr = string.Empty, midPwr = string.Empty, hibStr = string.Empty, hibPwr = string.Empty;
-			var relicInfo = new List<string>();
-            
+            var relicInfo = new List<string>();
 
 
-            #region Reformat Relics  '[Type]: [OwnerRealm]'
+
+            #region Reformat Relics  '[Type]: [OwnerRealm]'
             foreach (GameRelic relic in RelicMgr.getNFRelics())
             {
                 string relicLoc = string.Empty;
                 if (relic.Realm == eRealm.None)
                 {
-                    relicLoc = $" ({relic.CurrentZone.Description})";
+                    relicLoc = $" {relic.CurrentZone.Description}";
                 }
+
+                string realmName = GlobalConstants.RealmToName(relic.Realm);
+                string strengthTranslation = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength");
+                string powerTranslation = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power");
+                string timleft = " returns in " + RelicMgr.GetRelicReturnMinutesRemaining(relic) + "min";
+                string baseString = "";
+
+                if (relic.Realm == eRealm.None)
+                {
+                    baseString = $"{relicLoc} {timleft}";
+                }
+                else
+                {
+                    baseString = $"{realmName}";
+                }
+
 
                 switch (relic.OriginalRealm)
                 {
                     case eRealm.Albion:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								albStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
+                                albStr = $"{strengthTranslation}: {baseString}";
                             if (relic.RelicType == eRelicType.Magic)
-								albPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
+                                albPwr = $"{powerTranslation}: {baseString}";
                             break;
                         }
 
                     case eRealm.Midgard:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								midStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
+                                midStr = $"{strengthTranslation}: {baseString}";
                             if (relic.RelicType == eRelicType.Magic)
-								midPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
+                                midPwr = $"{powerTranslation}: {baseString}";
                             break;
                         }
 
                     case eRealm.Hibernia:
                         {
                             if (relic.RelicType == eRelicType.Strength)
-								hibStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
+                                hibStr = $"{strengthTranslation}: {baseString}";
                             if (relic.RelicType == eRelicType.Magic)
-								hibPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
+                                hibPwr = $"{powerTranslation}: {baseString}";
                             break;
                         }
                 }
             }
             #endregion
 
-            relicInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.AlbRelics")+ ":");
+            relicInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.AlbRelics") + ":");
             relicInfo.Add(albStr);
             relicInfo.Add(albPwr);
             relicInfo.Add("");
@@ -118,5 +134,5 @@ namespace DOL.GS.Commands
 
             client.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Title"), relicInfo);
         }
-   }
+    }
 }

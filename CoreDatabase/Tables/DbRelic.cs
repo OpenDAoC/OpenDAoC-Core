@@ -19,7 +19,7 @@ namespace DOL.Database
 		private int m_originalRealm;
 		private int m_lastRealm;
 		private int m_type;
-		private DateTime m_lastCaptureDate;
+		private DateTime m_lastTimePickedUp;
 
 
 		/// <summary>
@@ -200,16 +200,16 @@ namespace DOL.Database
 		}
 		
 		[DataElement(AllowDbNull=true)]
-		public DateTime LastCaptureDate
+		public DateTime LastTimePickedUp
 		{
 			get
 			{
-				return m_lastCaptureDate;
+				return m_lastTimePickedUp;
 			}
 			set
 			{
 				Dirty = true;
-				m_lastCaptureDate = value;
+				m_lastTimePickedUp = value;
 			}
 		}
 	}

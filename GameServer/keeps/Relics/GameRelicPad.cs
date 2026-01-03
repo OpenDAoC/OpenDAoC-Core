@@ -159,7 +159,6 @@ namespace DOL.GS
                         player.CapturedRelics++;
                 }
 
-                relic.LastCaptureDate = DateTime.Now;
                 Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
             }
             else
