@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using DOL.Database.Connection;
+using DOL.Timing;
 using MySqlConnector;
 
 namespace DOL.Database.Handlers
@@ -486,7 +487,7 @@ namespace DOL.Database.Handlers
                         {
                             cmd.CommandText = SQLCommand;
                             OpenConnection(conn);
-                            long start = (DateTime.UtcNow.Ticks / 10000);
+                            long start = MonotonicTime.NowMs;
 
                             foreach (var parameter in parameters.Skip(current))
                             {
@@ -494,7 +495,7 @@ namespace DOL.Database.Handlers
 
                                 if (retrieveLastInsertID)
                                 {
-                                    using (var tran = conn.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                                    using (var tran = conn.BeginTransaction(IsolationLevel.ReadUncommitted))
                                     {
                                         try
                                         {
@@ -536,9 +537,14 @@ namespace DOL.Database.Handlers
                             }
 
                             if (log.IsDebugEnabled)
-                                log.DebugFormat("ExecuteScalarImpl: SQL ScalarQuery exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
-                            else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
-                                log.WarnFormat("ExecuteScalarImpl: SQL ScalarQuery took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), SQLCommand);
+                                log.DebugFormat("ExecuteScalarImpl: SQL ScalarQuery exec time {0}ms", MonotonicTime.NowMs - start);
+                            else if (log.IsWarnEnabled)
+                            {
+                                long diff = MonotonicTime.NowMs - start;
+
+                                if (diff > LONG_EXEC_THRESHOLD)
+                                    log.WarnFormat("ExecuteScalarImpl: SQL ScalarQuery took {0}ms!\n{1}", diff, SQLCommand);
+                            }
                         }
                         catch (Exception e)
                         {

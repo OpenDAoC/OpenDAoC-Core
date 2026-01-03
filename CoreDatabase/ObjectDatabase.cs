@@ -9,6 +9,7 @@ using System.Reflection;
 using DOL.Database.Attributes;
 using DOL.Database.Connection;
 using DOL.Database.Handlers;
+using DOL.Logging;
 
 namespace DOL.Database
 {
@@ -17,10 +18,9 @@ namespace DOL.Database
 	/// </summary>
 	public abstract class ObjectDatabase : IObjectDatabase
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+		protected const long LONG_EXEC_THRESHOLD = 100;
 
 		/// <summary>
 		/// Number Format Info to Use for Database
