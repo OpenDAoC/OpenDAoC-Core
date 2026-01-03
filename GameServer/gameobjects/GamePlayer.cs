@@ -5292,13 +5292,14 @@ namespace DOL.GS
         /// <summary>
         /// Switches the active quiver slot to another one
         /// </summary>
-        /// <param name="slot"></param>
-        /// <param name="forced"></param>
         public virtual void SwitchQuiver(eActiveQuiverSlot slot, bool forced)
         {
-            if (slot != eActiveQuiverSlot.None)
+            eActiveQuiverSlot currentActiveQuiverSlot = rangeAttackComponent.ActiveQuiverSlot;
+
+            if (slot is not eActiveQuiverSlot.None)
             {
                 eInventorySlot updatedSlot = eInventorySlot.Invalid;
+
                 if ((slot & eActiveQuiverSlot.Fourth) > 0)
                     updatedSlot = eInventorySlot.FourthQuiver;
                 else if ((slot & eActiveQuiverSlot.Third) > 0)
@@ -5310,11 +5311,13 @@ namespace DOL.GS
 
                 if (Inventory.GetItem(updatedSlot) != null && (rangeAttackComponent.ActiveQuiverSlot != slot || forced))
                 {
-                    rangeAttackComponent.ActiveQuiverSlot = slot;
-                    //GamePlayer.SwitchQuiver.ShootWith:		You will shoot with: {0}.
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.ShootWith", Inventory.GetItem(updatedSlot).GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if (currentActiveQuiverSlot != slot)
+                    {
+                        rangeAttackComponent.ActiveQuiverSlot = slot;
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.ShootWith", Inventory.GetItem(updatedSlot).GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    }
                 }
-                else
+                else if (currentActiveQuiverSlot != slot)
                 {
                     rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NoMoreAmmo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -5332,12 +5335,12 @@ namespace DOL.GS
                     SwitchQuiver(eActiveQuiverSlot.Third, true);
                 else if (Inventory.GetItem(eInventorySlot.FourthQuiver) != null)
                     SwitchQuiver(eActiveQuiverSlot.Fourth, true);
-                else
+                else if (currentActiveQuiverSlot != slot)
                 {
                     rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NotUseQuiver"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    Out.SendInventorySlotsUpdate(null);
                 }
-                Out.SendInventorySlotsUpdate(null);
             }
         }
 
