@@ -5083,6 +5083,8 @@ namespace DOL.GS
 
         #region Combat
 
+        public override bool BenefitsFromRelics => true;
+
         /// <summary>
         /// Gets/Sets safety flag
         /// (delegate to PlayerCharacter)

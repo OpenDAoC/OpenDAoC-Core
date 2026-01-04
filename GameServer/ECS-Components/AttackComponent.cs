@@ -456,8 +456,7 @@ namespace DOL.GS
             }
 
             // Relic bonus is applied to damage only and does not increase cap.
-            double relicBonus = 1.0 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
-            return damage * relicBonus;
+            return damage * RelicMgr.GetRelicBonusModifier(owner, eRelicType.Strength);
         }
 
         public void RequestStartAttack(GameObject attackTarget = null)

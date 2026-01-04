@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 
@@ -259,22 +260,25 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the bonus modifier for a realm/relictype.
 		/// </summary>
-		public static double GetRelicBonusModifier(eRealm realm, eRelicType type)
+		public static double GetRelicBonusModifier(GameLiving living, eRelicType type)
 		{
-			double bonus = 0.0;
+			double modifier = 1.0;
+
+			if (!living.BenefitsFromRelics)
+				return modifier;
+
 			bool owningSelf = false;
 
-			//only playerrealms can get bonus
-			foreach (GameRelic rel in getRelics(realm, type))
+			foreach (GameRelic rel in getRelics(living.Realm, type))
 			{
 				if (rel.Realm == rel.OriginalRealm)
 					owningSelf = true;
 				else
-					bonus += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
+					modifier += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
 			}
 
-			// Bonus apply only if owning original relic
-			return owningSelf ? bonus : 0.0;
+			// Bonus applies only if owning original relic.
+			return owningSelf ? modifier : 1.0;
 		}
 
 		/// <summary>

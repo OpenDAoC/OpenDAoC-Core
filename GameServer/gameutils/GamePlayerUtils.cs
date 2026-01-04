@@ -318,11 +318,11 @@ namespace DOL.GS
 			info.Add(" ");
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Relic"));
 
-			double meleeRelicBonus = RelicMgr.GetRelicBonusModifier(player.Realm, eRelicType.Strength);
-			double magicRelicBonus = RelicMgr.GetRelicBonusModifier(player.Realm, eRelicType.Magic);
+			int meleeRelicBonus = (int) Math.Round((RelicMgr.GetRelicBonusModifier(player, eRelicType.Strength) - 1.0) * 100);
+			int magicRelicBonus = (int) Math.Round((RelicMgr.GetRelicBonusModifier(player, eRelicType.Magic) - 1.0) * 100);
 
-			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Melee", (meleeRelicBonus * 100)));
-			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Magic", (magicRelicBonus * 100)));
+			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Melee", meleeRelicBonus));
+			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Magic", magicRelicBonus));
 
 			// info.Add(" ");
 			// info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Outpost"));

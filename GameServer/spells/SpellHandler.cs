@@ -2994,7 +2994,7 @@ namespace DOL.GS.Spells
 
 			// Relic bonus is applied to damage directly instead of effectiveness (does not increase cap)
 			// This applies to bleeds. Is that intended?
-			spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(Caster.Realm, eRelicType.Magic);
+			spellDamage *= RelicMgr.GetRelicBonusModifier(Caster, eRelicType.Magic);
 			spellDamage *= effectiveness;
 
 			if (DistanceFallOff > 0)

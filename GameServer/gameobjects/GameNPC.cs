@@ -18,6 +18,7 @@ using DOL.GS.Quests;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -27,7 +28,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject, IPooledList<GameNPC>
 	{
-		public static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		public static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConcurrentDictionary<Type, Func<AbstractQuest>> _abstractQuestConstructorCache = new();
 
 		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
@@ -2653,6 +2654,8 @@ namespace DOL.GS
 		#endregion
 
 		#region Combat
+
+		public override bool BenefitsFromRelics => Brain is ControlledMobBrain brain && brain.GetPlayerOwner() != null;
 
 		/// <summary>
 		/// The property that holds charmed tick if any

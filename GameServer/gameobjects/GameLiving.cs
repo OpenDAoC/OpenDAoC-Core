@@ -48,6 +48,8 @@ namespace DOL.GS
 		public virtual double DualWieldDefensePenetrationFactor => 0.5;
 		public virtual double TwoHandedDefensePenetrationFactor => 0.5;
 
+		public virtual bool BenefitsFromRelics => false;
+
 		/// <summary>
 		/// Can this living accept any item regardless of tradable or droppable?
 		/// </summary>
