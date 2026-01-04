@@ -49,18 +49,6 @@ namespace DOL.GS
         public long NextWorldUpdate { get; set; }
         public Lock AwardLock { get; private set; } = new(); // Used by `AbstractServerRules` exclusively.
 
-        public ECSGameTimer PredatorTimeoutTimer
-        {
-            get
-            {
-                if (m_predatortimer == null) m_predatortimer = new ECSGameTimer(this);
-                return m_predatortimer;
-            }
-            set { m_predatortimer = value; }
-        }
-
-        protected ECSGameTimer m_predatortimer;
-
         #region Client/Character/VariousFlags
 
         /// <summary>
