@@ -134,21 +134,6 @@ namespace DOL.GS.Keeps
 
 		#region Combat
 
-		public void GuardStartSpellHealCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is LosCheckResponse.True && HealTarget != null)
-			{
-				Spell healSpell = GetGuardHealSmallSpell(Realm);
-
-				if (healSpell != null && !IsStunned && !IsMezzed)
-				{
-					attackComponent.StopAttack();
-					TargetObject = HealTarget;
-					CastSpell(healSpell, GuardSpellLine);
-				}
-			}
-		}
-
 		private static Spell GetGuardHealSmallSpell(eRealm realm)
 		{
 			switch (realm)
@@ -167,13 +152,12 @@ namespace DOL.GS.Keeps
 		public void CheckAreaForHeals()
 		{
 			GameLiving target = null;
-			GamePlayer LOSChecker = null;
 
 			foreach (GamePlayer player in GetPlayersInRadius(2000))
 			{
-				LOSChecker = player;
+				if (!player.IsAlive)
+					continue;
 
-				if (!player.IsAlive) continue;
 				if (GameServer.ServerRules.IsSameRealm(player, this, true))
 				{
 					if (player.HealthPercent < Properties.KEEP_HEAL_THRESHOLD)
@@ -188,7 +172,9 @@ namespace DOL.GS.Keeps
 			{
 				foreach (GameNPC npc in GetNPCsInRadius(2000))
 				{
-					if (npc is GameSiegeWeapon) continue;
+					if (npc is GameSiegeWeapon)
+						continue;
+
 					if (GameServer.ServerRules.IsSameRealm(npc, this, true))
 					{
 						if (npc.HealthPercent < Properties.KEEP_HEAL_THRESHOLD)
@@ -202,20 +188,11 @@ namespace DOL.GS.Keeps
 
 			if (target != null)
 			{
-				if (LOSChecker == null)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						LOSChecker = player;
-						break;
-					}
-				}
-				if (LOSChecker == null)
+				if (!target.IsAlive)
 					return;
-				if (!target.IsAlive) return;
 
 				HealTarget = target;
-				LOSChecker.Out.SendCheckLos(this, target, new CheckLosResponse(GuardStartSpellHealCheckLos));
+				CastSpell(GetGuardHealSmallSpell(Realm), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), true);
 			}
 		}
 

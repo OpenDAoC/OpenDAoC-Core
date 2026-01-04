@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DOL.Events;
 using DOL.Language;
 using DOL.Logging;
 
@@ -31,57 +30,13 @@ namespace DOL.GS.Spells
 			if (target == null)
 				return;
 
-			if (Spell.Target == eSpellTarget.CONE || (Spell.Target == eSpellTarget.ENEMY && Spell.IsPBAoE))
+			if (Spell.Target is eSpellTarget.CONE || (Spell.Target is eSpellTarget.ENEMY && Spell.IsPBAoE))
 			{
-				GamePlayer player = null;
-				if (target is GamePlayer)
-				{
-					player = target as GamePlayer;
-				}
-				else
-				{
-					if (Caster is GamePlayer)
-						player = Caster as GamePlayer;
-					else if (Caster is GameNPC && (Caster as GameNPC).Brain is AI.Brain.IControlledBrain)
-					{
-						AI.Brain.IControlledBrain brain = (Caster as GameNPC).Brain as AI.Brain.IControlledBrain;
-						//Ryan: edit for BD
-						if (brain.Owner is GamePlayer)
-							player = (GamePlayer)brain.Owner;
-						else
-							player = (GamePlayer)((AI.Brain.IControlledBrain)((GameNPC)brain.Owner).Brain).Owner;
-					}
-				}
-				if (player != null)
-					player.Out.SendCheckLos(Caster, target, new CheckLosResponse(DealDamageCheckLos));
-				else
+				if (!Caster.castingComponent.StartEndOfCastLosCheck(target, this))
 					DealDamage(target);
 			}
-
-			else DealDamage(target);
-		}
-
-		private void DealDamageCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is LosCheckResponse.True)
-			{
-				try
-				{
-					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
-					if (target != null)
-					{
-						DealDamage(target);
-
-						// Due to LOS check delay the actual cast happens after FinishSpellCast does a notify, so we notify again
-						GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
-					}
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error(string.Format("targetOID:{0} caster:{1} exception:{2}", targetOID, Caster, e));
-				}
-			}
+			else
+				DealDamage(target);
 		}
 
 		public override void ApplyEffectOnTarget(GameLiving target)
@@ -90,6 +45,12 @@ namespace DOL.GS.Spells
 
 			if ((Spell.Duration > 0 && Spell.Target is not eSpellTarget.AREA) || Spell.Concentration > 0)
 				OnDirectEffect(target);
+		}
+
+		public override void OnEndOfCastLosCheck(GameLiving target, LosCheckResponse response)
+		{
+			if (response is LosCheckResponse.True)
+				DealDamage(target);
 		}
 
 		private void DealDamage(GameLiving target)

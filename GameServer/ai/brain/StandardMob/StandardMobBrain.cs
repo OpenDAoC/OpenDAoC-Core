@@ -33,13 +33,14 @@ namespace DOL.AI.Brain
         /// </summary>
         public StandardMobBrain() : base()
         {
-            FSM = new FSM();
+            FSM = new();
             FSM.Add(new StandardMobState_WAKING_UP(this));
             FSM.Add(new StandardMobState_IDLE(this));
             FSM.Add(new StandardMobState_AGGRO(this));
             FSM.Add(new StandardMobState_RETURN_TO_SPAWN(this));
             FSM.Add(new StandardMobState_PATROLLING(this));
             FSM.Add(new StandardMobState_ROAMING(this));
+            _aggroLosCheckListener = new(this);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace DOL.AI.Brain
             FireAmbientSentence();
 
             // Check aggro only if our aggro list is empty and we're not in combat.
-            if (AggroLevel > 0 && AggroRange > 0 && Body.CurrentSpellHandler == null && !HasAggro && !IsWaitingForLosCheck)
+            if (AggroLevel > 0 && AggroRange > 0 && Body.CurrentSpellHandler == null && !HasAggro && !_aggroLosCheckListener.HasPendingLosChecks)
             {
                 CheckPlayerAggro();
                 CheckNpcAggro();
@@ -105,7 +106,7 @@ namespace DOL.AI.Brain
                     continue;
 
                 if (Properties.CHECK_LOS_BEFORE_AGGRO)
-                    SendLosCheckForAggro(player, player);
+                    SendAggroLosCheck(player, player);
                 else
                 {
                     AddToAggroList(player);
@@ -134,12 +135,12 @@ namespace DOL.AI.Brain
                     // Check LoS if either the target or the current mob is a pet
                     if (npc.Brain is ControlledMobBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
-                        SendLosCheckForAggro(theirOwner, npc);
+                        SendAggroLosCheck(theirOwner, npc);
                         continue;
                     }
                     else if (this is ControlledMobBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
-                        SendLosCheckForAggro(ourOwner, npc);
+                        SendAggroLosCheck(ourOwner, npc);
                         continue;
                     }
                 }
@@ -147,6 +148,12 @@ namespace DOL.AI.Brain
                 AddToAggroList(npc);
                 return;
             }
+        }
+
+        protected void SendAggroLosCheck(GamePlayer losChecker, GameObject target)
+        {
+            if (losChecker.Out.SendLosCheckRequest(Body, target, _aggroLosCheckListener))
+                _aggroLosCheckListener.OnLosCheckStarted();
         }
 
         public virtual void FireAmbientSentence()
@@ -490,32 +497,47 @@ namespace DOL.AI.Brain
             Body.TargetObject = null;
         }
 
-        private int _pendingLosCheckCount;
-        public int PendingLosCheckCount => _pendingLosCheckCount;
-        public bool IsWaitingForLosCheck => Interlocked.CompareExchange(ref _pendingLosCheckCount, 0, 0) > 0;
+        private readonly AggroLosCheckListener _aggroLosCheckListener;
+        public int PendingAggroLosCheckCount => _aggroLosCheckListener.PendingLosCheckCount;
         protected virtual bool CanAddToAggroListFromMultipleLosChecks => false;
 
-        protected void SendLosCheckForAggro(GamePlayer player, GameObject target)
+        private class AggroLosCheckListener : ILosCheckListener
         {
-            if (player.Out.SendCheckLos(Body, target, new CheckLosResponse(LosCheckForAggroCallback)))
-                Interlocked.Increment(ref _pendingLosCheckCount);
-        }
+            private StandardMobBrain _owner;
+            private int _pendingLosCheckCount;
+            public int PendingLosCheckCount => Volatile.Read(ref _pendingLosCheckCount);
+            public bool HasPendingLosChecks => PendingLosCheckCount > 0;
 
-        protected void LosCheckForAggroCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-        {
-            // This method should not be allowed to be executed at the same time as `CheckPlayerAggro` or `CheckNPCAggro`.
-            if (response is LosCheckResponse.True)
+            public AggroLosCheckListener(StandardMobBrain owner)
             {
-                if (!HasAggro || CanAddToAggroListFromMultipleLosChecks)
-                {
-                    GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
+                _owner = owner;
+            }
 
-                    if (gameObject is GameLiving gameLiving)
-                        AddToAggroList(gameLiving);
+            public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
+            {
+                try
+                {
+                    if (response is LosCheckResponse.True)
+                    {
+                        if (!_owner.HasAggro || _owner.CanAddToAggroListFromMultipleLosChecks)
+                        {
+                            GameObject gameObject = _owner.Body.CurrentRegion.GetObject(targetId);
+
+                            if (gameObject is GameLiving gameLiving)
+                                _owner.AddToAggroList(gameLiving);
+                        }
+                    }
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _pendingLosCheckCount);
                 }
             }
 
-            Interlocked.Decrement(ref _pendingLosCheckCount);
+            public void OnLosCheckStarted()
+            {
+                Interlocked.Increment(ref _pendingLosCheckCount);
+            }
         }
 
         protected virtual bool ShouldBeRemovedFromAggroList(GameLiving living)

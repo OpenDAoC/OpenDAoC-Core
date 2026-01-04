@@ -1,22 +1,5 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using DOL.GS.PacketHandler;
+
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1
 3,Trebuchet,2,ammo,1.03,1
@@ -34,6 +17,7 @@ using DOL.GS.PacketHandler;
 9,Ram High,0,12,13,80,
 10,Ram Mid,0,12,13,80,
 11,Ram Low,0,12,13,80,*/
+
 namespace DOL.GS
 {
 	/// <summary>
@@ -41,8 +25,9 @@ namespace DOL.GS
 	/// </summary>
 	public class GameSiegeBallista : GameSiegeWeapon
 	{
-		public GameSiegeBallista()
-			: base()
+		private FireLosCheckListener _fireLosCheckListener;
+
+		public GameSiegeBallista() : base()
 		{
 			MeleeDamageType = eDamageType.Thrust;
 			Name = "field ballista";
@@ -77,6 +62,7 @@ namespace DOL.GS
 					}
 				}
 			}*/
+			_fireLosCheckListener = new(this);
 		}
 
 		public override void Fire()
@@ -84,17 +70,16 @@ namespace DOL.GS
 			if (TargetObject == null)
 				return;
 
-			Owner?.Out.SendCheckLos(Owner, TargetObject, new CheckLosResponse(FireCheckLos)); //Have to use owner as "source" for now as checking with ballista the client always returns LOS of true
+			Owner?.Out.SendLosCheckRequest(Owner, TargetObject, _fireLosCheckListener); //Have to use owner as "source" for now as checking with ballista the client always returns LOS of true
 		}
-		/// <summary>
-		/// FireCheckLOS is called after Fire method. Will check for LOS between siege and target
-		/// </summary>
-		private void FireCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is LosCheckResponse.True)
-				base.Fire();
 
-			Owner?.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+		public void FireAfterLosCheck(ushort targetId)
+		{
+			// Doesn't handle target changes during LoS checks.
+			if (TargetObject != CurrentRegion.GetObject(targetId))
+				return;
+
+			base.Fire();
 		}
 
 		public override void DoDamage()
@@ -131,8 +116,6 @@ namespace DOL.GS
 
 			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendCombatAnimation(this, target, 0x0000, 0x0000, 0x00, 0x00, 0x14, target.HealthPercent);
-
-
 		}
 
 		/// <summary>
@@ -153,5 +136,22 @@ namespace DOL.GS
 			return base.ReceiveItem(source, item);
 		}
 
+		private class FireLosCheckListener : ILosCheckListener
+		{
+			private GameSiegeBallista _owner;
+
+			public FireLosCheckListener(GameSiegeBallista owner)
+			{
+				_owner = owner;
+			}
+
+			public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
+			{
+				if (response is LosCheckResponse.True)
+					_owner.FireAfterLosCheck(targetId);
+				else if (response is LosCheckResponse.False)
+					_owner.Owner?.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+			}
+		}
 	}
 }

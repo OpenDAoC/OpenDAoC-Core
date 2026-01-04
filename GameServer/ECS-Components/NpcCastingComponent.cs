@@ -5,7 +5,7 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
-    public class NpcCastingComponent : CastingComponent
+    public class NpcCastingComponent : CastingComponent, ILosCheckListener
     {
         private GameNPC _npcOwner;
         private Dictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
@@ -38,7 +38,7 @@ namespace DOL.GS
                     _spellsWaitingForLosCheck[target] = [spellWaitingForLosCheck];
             }
 
-            losChecker.Out.SendCheckLos(_npcOwner, target, CastSpellLosCheckReply);
+            losChecker.Out.SendLosCheckRequest(_npcOwner, target, this);
             return true; // Consider the NPC is casting while waiting for the reply to prevent it from moving.
         }
 
@@ -97,9 +97,9 @@ namespace DOL.GS
             return livingTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingTarget.IsWithinRadius(_npcOwner, livingTarget.attackComponent.AttackRange);
         }
 
-        private void CastSpellLosCheckReply(GamePlayer losChecker, LosCheckResponse response, ushort sourceOID, ushort targetOID)
+        public void HandleLosCheckResponse(GamePlayer losChecker, LosCheckResponse response, ushort targetId)
         {
-            GameObject target = _npcOwner.CurrentRegion.GetObject(targetOID);
+            GameObject target = _npcOwner.CurrentRegion.GetObject(targetId);
 
             if (target == null)
                 return;

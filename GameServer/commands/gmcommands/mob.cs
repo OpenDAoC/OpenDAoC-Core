@@ -2983,10 +2983,10 @@ namespace DOL.GS.Commands
 
 			if (targetMob.Brain is StandardMobBrain standardBrain)
 			{
-				int pendingLosCheckCount = standardBrain.PendingLosCheckCount;
-				
-				if (pendingLosCheckCount != 0)
-					text.Add($"PendingLosCheckCount: {pendingLosCheckCount}");
+				int pendingAggroLosCheckCount = standardBrain.PendingAggroLosCheckCount;
+
+				if (pendingAggroLosCheckCount != 0)
+					text.Add($"PendingAggroLosCheckCount: {pendingAggroLosCheckCount}");
 
 				List<OrderedAggroListElement> aggroList = standardBrain.GetOrderedAggroList();
 

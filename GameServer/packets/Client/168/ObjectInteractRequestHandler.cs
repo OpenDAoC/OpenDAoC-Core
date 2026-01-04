@@ -9,17 +9,17 @@ namespace DOL.GS.PacketHandler.Client.v168
             uint playerX = packet.ReadInt();
             uint playerY = packet.ReadInt();
             int sessionId = packet.ReadShort();
-            ushort targetOid = packet.ReadShort();
+            ushort targetId = packet.ReadShort();
             GamePlayer player = client.Player;
             Region region = player.CurrentRegion;
 
             if (region == null)
                 return;
 
-            GameObject targeObject = region.GetObject(targetOid);
+            GameObject targeObject = region.GetObject(targetId);
 
             if (targeObject == null || !player.IsWithinRadius(targeObject, WorldMgr.VISIBILITY_DISTANCE))
-                player.Out.SendObjectDelete(targetOid);
+                player.Out.SendObjectDelete(targetId);
             else
                 targeObject.Interact(player);
 

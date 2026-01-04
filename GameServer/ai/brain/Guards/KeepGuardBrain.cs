@@ -44,7 +44,7 @@ namespace DOL.AI.Brain
                     continue;
 
                 WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
-                SendLosCheckForAggro(player, player);
+                SendAggroLosCheck(player, player);
                 // We don't know if the LoS check will be positive, so we have to ask other players
             }
         }
@@ -66,7 +66,7 @@ namespace DOL.AI.Brain
                     continue;
 
                 WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
-                SendLosCheckForAggro(player, npc);
+                SendAggroLosCheck(player, npc);
                 // We don't know if the LoS check will be positive, so we have to ask other players.
             }
         }

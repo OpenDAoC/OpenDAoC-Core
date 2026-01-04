@@ -6,12 +6,15 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
+using DOL.Logging;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
     public class CastingComponent : IServiceObject
     {
+        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private const string ALREADY_CASTING_MESSAGE = "You are already casting a spell!";
         private const int NO_QUEUE_INPUT_BUFFER = 250; // 250ms is roughly equivalent to the delay between inputs imposed by the client.
 
@@ -19,6 +22,8 @@ namespace DOL.GS
         private readonly Queue<CastSpellRequest> _castSpellRequestPool = new();
         private readonly Queue<UseAbilityRequest> _useAbilityRequestPool = new();
         private readonly Lock _startSkillRequestsLock = new();
+        private readonly DuringCastLosCheckListener _duringCastLosCheckListener;
+        private readonly EndOfCastLosCheckListener _endOfCastLosCheckListener;
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
@@ -29,6 +34,8 @@ namespace DOL.GS
         protected CastingComponent(GameLiving owner)
         {
             Owner = owner;
+            _duringCastLosCheckListener = new(this);
+            _endOfCastLosCheckListener = new(this);
         }
 
         public static CastingComponent Create(GameLiving living)
@@ -106,6 +113,28 @@ namespace DOL.GS
             return null;
         }
 
+        public bool StartDuringCastLosCheck(GameLiving target)
+        {
+            // Target check may appear redundant since CastingComponent is supposed to set LosChecker to null when no LoS check is required.
+            // But for player casted spells, the target is determined by SpellHandler.
+            if (SpellHandler.LosChecker == null || target == Owner)
+                return false;
+
+            _duringCastLosCheckListener.SpellHandler = SpellHandler;
+            SpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, target, _duringCastLosCheckListener);
+            return true;
+        }
+
+        public bool StartEndOfCastLosCheck(GameLiving target, SpellHandler spellHandler)
+        {
+            if (SpellHandler.LosChecker == null || target == Owner)
+                return false;
+
+            _endOfCastLosCheckListener.AddPendingLosCheck(target, spellHandler);
+            SpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, target, _endOfCastLosCheckListener);
+            return true;
+        }
+
         public void RequestUseAbility(Ability ability)
         {
             // Always allowed. The handler will check if the ability can be used or not.
@@ -175,11 +204,8 @@ namespace DOL.GS
 
         public virtual void OnSpellCast(Spell spell) { }
 
-        public void OnSpellHandlerCleanUp(Spell currentSpell)
+        public void PromoteQueuedSpellHandler()
         {
-            if (currentSpell.CastTime <= 0)
-                return;
-
             if (Owner is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroBrain)
                 necroBrain.CheckAttackSpellQueue();
 
@@ -392,6 +418,79 @@ namespace DOL.GS
             }
 
             public virtual void StartSkill() { }
+        }
+
+        private class DuringCastLosCheckListener : ILosCheckListener
+        {
+            private CastingComponent _castingComponent;
+
+            public SpellHandler SpellHandler { get; set; }
+
+            public DuringCastLosCheckListener(CastingComponent castingComponent)
+            {
+                _castingComponent = castingComponent;
+            }
+
+            public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
+            {
+                // Ensure the spell handler is still relevant.
+                if (SpellHandler == null || SpellHandler != _castingComponent.SpellHandler)
+                    return;
+
+                // Let the spell handler handle the response on its next tick.
+                SpellHandler.HasLos = response is LosCheckResponse.True;
+            }
+        }
+
+        private class EndOfCastLosCheckListener : ILosCheckListener
+        {
+            private CastingComponent _castingComponent;
+            private Dictionary<ushort, List<SpellHandler>> _pendingLosChecks;
+
+            public EndOfCastLosCheckListener(CastingComponent castingComponent)
+            {
+                _castingComponent = castingComponent;
+            }
+
+            public void AddPendingLosCheck(GameLiving target, SpellHandler spellHandler)
+            {
+                _pendingLosChecks ??= new();
+
+                if (_pendingLosChecks.TryGetValue(target.ObjectID, out var list))
+                    list.Add(spellHandler);
+                else
+                    _pendingLosChecks[target.ObjectID] = [spellHandler]; // Consider pooling if end of cast LoS checks become common.
+            }
+
+            public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
+            {
+                if (_pendingLosChecks == null)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"{nameof(EndOfCastLosCheckListener)} encountered null {nameof(_pendingLosChecks)}");
+
+                    return;
+                }
+
+                if (!_pendingLosChecks.Remove(targetId, out var spellHandlers))
+                    return;
+
+                if (_castingComponent.Owner.CurrentRegion.GetObject(targetId) is not GameLiving target)
+                    return;
+
+                foreach (SpellHandler spellHandler in spellHandlers)
+                {
+                    if (spellHandler.CastState is not eCastState.Finished)
+                    {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"{nameof(EndOfCastLosCheckListener)} received LoS response for spell handler not in {nameof(eCastState.Finished)} state. (Spell handler: {spellHandler})");
+
+                        continue;
+                    }
+
+                    spellHandler.OnEndOfCastLosCheck(target, response);
+                }
+            }
         }
     }
 }

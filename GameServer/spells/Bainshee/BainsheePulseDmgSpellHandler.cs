@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -10,8 +9,6 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.BainsheePulseDmg)]
 	public class BainsheePulseDmgSpellHandler : SpellHandler
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 		public const string FOCUS_WEAK = "FocusSpellHandler.Online";
 		/// <summary>
 		/// Execute direct damage spell
@@ -68,46 +65,19 @@ namespace DOL.GS.Spells
 			if (target == null)
 				return;
 
-			if (Spell.Target == eSpellTarget.CONE || (Spell.Target == eSpellTarget.ENEMY && Spell.IsPBAoE))
+			if (Spell.Target is eSpellTarget.CONE || (Spell.Target is eSpellTarget.ENEMY && Spell.IsPBAoE))
 			{
-				GamePlayer player = null;
-				if (target is GamePlayer)
-					player = target as GamePlayer;
-				else
-				{
-					if (Caster is GamePlayer)
-						player = Caster as GamePlayer;
-					else if (Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain)
-					{
-						IControlledBrain brain = (Caster as GameNPC).Brain as IControlledBrain;
-						player = brain.GetPlayerOwner();
-					}
-				}
-				if (player != null)
-					player.Out.SendCheckLos(Caster, target, new CheckLosResponse(DealDamageCheckLos));
-				else
+				if (!Caster.castingComponent.StartEndOfCastLosCheck(target, this))
 					DealDamage(target);
 			}
-			else DealDamage(target);
+			else
+				DealDamage(target);
 		}
 
-		private void DealDamageCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
+		public override void OnEndOfCastLosCheck(GameLiving target, LosCheckResponse response)
 		{
 			if (response is LosCheckResponse.True)
-			{
-				try
-				{
-					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
-
-					if (target != null)
-						DealDamage(target);
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error(string.Format("targetOID:{0} caster:{1} exception:{2}", targetOID, Caster, e));
-				}
-			}
+				DealDamage(target);
 		}
 
 		private void DealDamage(GameLiving target)

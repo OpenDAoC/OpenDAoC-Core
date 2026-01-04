@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 
 		public GameLiving Target { get; set; }
 		public eCastState CastState { get; private set; }
-		protected bool HasLos { get; private set; }
+		public bool HasLos { get; set; } // Modified by CastingComponent during LoS checks.
 		protected double DistanceFallOff { get; private set; }
 		protected double CasterEffectiveness { get; private set; } = 1.0; // Needs to default to 1 since some spell handlers override `StartSpell`, preventing it from being set.
 		protected virtual bool IsDualComponentSpell => false; // Dual component spells have a higher chance to be resisted.
@@ -803,25 +803,24 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		private void CheckPlayerLosDuringCastCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			HasLos = response is LosCheckResponse.True;
-		}
-
-		private void CheckNpcLosDuringCastCallback(GameLiving living, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			HasLos = response is LosCheckResponse.True;
-
-			if (!HasLos)
-				InterruptCasting(false);
-		}
+		public virtual void OnEndOfCastLosCheck(GameLiving target, LosCheckResponse response) { }
 
 		/// <summary>
 		/// Checks after casting before spell is executed
 		/// </summary>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
-			bool verbose = CheckVerbosity();
+			bool verbose;
+
+			if (!m_spell.IsPulsing)
+				verbose = true;
+			else if (GameLoop.GameLoopTime - _puslingSpellLastEndOfCastMessage >= PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL)
+			{
+				_puslingSpellLastEndOfCastMessage = GameLoop.GameLoopTime;
+				verbose = true;
+			}
+			else
+				verbose = false;
 
 			if (IsSummoningSpell && Caster.CurrentRegion.IsCapitalCity)
 			{
@@ -960,20 +959,6 @@ namespace DOL.GS.Spells
 
 			Caster.castingComponent.OnSpellCast(Spell);
 			return true;
-
-			bool CheckVerbosity()
-			{
-				if (!m_spell.IsPulsing)
-					return true;
-
-				if (GameLoop.GameLoopTime - _puslingSpellLastEndOfCastMessage >= PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL)
-				{
-					_puslingSpellLastEndOfCastMessage = GameLoop.GameLoopTime;
-					return true;
-				}
-
-				return false;
-			}
 		}
 
 		public virtual bool CheckDuringCast(GameLiving target)
@@ -1002,15 +987,8 @@ namespace DOL.GS.Spells
 			{
 				_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
 
-				// Target check may appear redundant since CastingComponent is supposed to set LosChecker to null when no LoS check is required.
-				// But for player casted spells, the target is determined by SpellHandler.
-				if (LosChecker != null && target != Caster)
-				{
-					if (Caster is GameNPC npc)
-						LosChecker.Out.SendCheckLos(npc, target, CheckNpcLosDuringCastCallback);
-					else if (Caster is GamePlayer player)
-						LosChecker.Out.SendCheckLos(player, target, CheckPlayerLosDuringCastCallback);
-				}
+				if (!m_caster.castingComponent.StartDuringCastLosCheck(target))
+					HasLos = true;
 			}
 
 			return true;
@@ -1125,7 +1103,12 @@ namespace DOL.GS.Spells
 			}
 
 			if (CastState is eCastState.Cleanup)
-				Caster.castingComponent.OnSpellHandlerCleanUp(Spell);
+			{
+				if (Spell.CastTime <= 0)
+					return;
+
+				Caster.castingComponent.PromoteQueuedSpellHandler();
+			}
 		}
 
 		/// <summary>

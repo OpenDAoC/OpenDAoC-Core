@@ -47,8 +47,12 @@ namespace DOL.GS
             timer.Tick();
         }
 
-        public bool StartLosCheck(GameObject source, GameObject target, CheckLosResponse callback)
+        public bool StartLosCheck(GameObject source, GameObject target, ILosCheckListener listener)
         {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(target);
+            ArgumentNullException.ThrowIfNull(listener);
+
             ushort sourceObjectId = source.ObjectID;
             ushort targetObjectId = target.ObjectID;
 
@@ -71,26 +75,26 @@ namespace DOL.GS
                 {
                     if (!timer.HasCachedResponse)
                     {
-                        timer.AddCallback(callback);
+                        timer.AddCallback(listener);
                         return true;
                     }
 
                     if (sourceObjectLastMovementTick <= timer.SourceLastMovementTick &&
                         targetObjectLastMovementTick <= timer.TargetLastMovementTick)
                     {
-                        callback(_owner, timer.Response, sourceObjectId, targetObjectId);
+                        listener.HandleLosCheckResponse(_owner, timer.Response, targetObjectId);
                         timer.UpdateResponseExpireTime();
                         return true;
                     }
 
-                    timer.Setup(sourceObjectId, targetObjectId, sourceObjectLastMovementTick, targetObjectLastMovementTick, callback);
+                    timer.Setup(sourceObjectId, targetObjectId, sourceObjectLastMovementTick, targetObjectLastMovementTick, listener);
                 }
                 else
                 {
                     if (!_timerPool.TryDequeue(out LosCheckTimer newTimer))
                         newTimer = new(_owner, ReturnTimerToPool);
 
-                    newTimer.Setup(sourceObjectId, targetObjectId, sourceObjectLastMovementTick, targetObjectLastMovementTick, callback);
+                    newTimer.Setup(sourceObjectId, targetObjectId, sourceObjectLastMovementTick, targetObjectLastMovementTick, listener);
                     _timers[key] = newTimer;
                 }
             }
@@ -132,7 +136,7 @@ namespace DOL.GS
             public bool HasCachedResponse => _responseExpireTime > 0; // Don't rely on Response.
 
             private long _responseExpireTime;
-            private Queue<CheckLosResponse> _callbacks = new();
+            private Queue<ILosCheckListener> _listeners = new();
             private readonly Action<LosCheckTimer> _completionCallback;
 
             public LosCheckTimer(GamePlayer owner, Action<LosCheckTimer> completionCallback) : base(owner)
@@ -140,7 +144,7 @@ namespace DOL.GS
                 _completionCallback = completionCallback ?? throw new ArgumentNullException(nameof(completionCallback));
             }
 
-            public void Setup(ushort sourceObjectId, ushort targetObjectId, long sourceLastMovementTick, long targetLastMovementTick, CheckLosResponse initialCallback)
+            public void Setup(ushort sourceObjectId, ushort targetObjectId, long sourceLastMovementTick, long targetLastMovementTick, ILosCheckListener listener)
             {
                 SourceObjectId = sourceObjectId;
                 TargetObjectId = targetObjectId;
@@ -148,13 +152,13 @@ namespace DOL.GS
                 TargetLastMovementTick = targetLastMovementTick;
                 Response = LosCheckResponse.None;
                 _responseExpireTime = 0;
-                _callbacks.Enqueue(initialCallback);
+                AddCallback(listener);
                 Start(ServerProperties.Properties.LOS_CHECK_TIMEOUT);
             }
 
-            public void AddCallback(CheckLosResponse callback)
+            public void AddCallback(ILosCheckListener listener)
             {
-                _callbacks.Enqueue(callback);
+                _listeners.Enqueue(listener);
             }
 
             public void UpdateResponseExpireTime()
@@ -171,12 +175,12 @@ namespace DOL.GS
                 Response = LosCheckResponse.None;
                 _responseExpireTime = 0;
 
-                if (_callbacks.Count > 0)
+                if (_listeners.Count > 0)
                 {
                     if (log.IsErrorEnabled)
                         log.Error($"Cleared a LoS check timer with uncalled callbacks ({this}) (CurrentTime = {GameLoop.GameLoopTime})");
 
-                    _callbacks.Clear();
+                    _listeners.Clear();
                 }
 
                 Stop();
@@ -216,11 +220,11 @@ namespace DOL.GS
 
             private void InvokeCallbacks()
             {
-                while (_callbacks.TryDequeue(out CheckLosResponse callback))
+                while (_listeners.TryDequeue(out ILosCheckListener listener))
                 {
                     try
                     {
-                        callback(Owner as GamePlayer, Response, SourceObjectId, TargetObjectId);
+                        listener.HandleLosCheckResponse(Owner as GamePlayer, Response, TargetObjectId);
                     }
                     catch (Exception e)
                     {
@@ -237,7 +241,7 @@ namespace DOL.GS
                     $"{nameof(Response)}: {Response}, " +
                     $"{nameof(_responseExpireTime)}: {_responseExpireTime}, " +
                     $"{nameof(GameLoop.GameLoopTime)}: {GameLoop.GameLoopTime}, " +
-                    $"{nameof(_callbacks)}: {_callbacks.Count}";
+                    $"{nameof(_listeners)}: {_listeners.Count}";
             }
         }
 
@@ -279,7 +283,10 @@ namespace DOL.GS
         }
     }
 
-    public delegate void CheckLosResponse(GamePlayer player, LosCheckResponse response, ushort sourceId, ushort targetId);
+    public interface ILosCheckListener
+    {
+        public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId);
+    }
 
     public enum LosCheckResponse
     {

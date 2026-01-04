@@ -1,12 +1,11 @@
-﻿using System;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public class NpcAttackAction : AttackAction
+    public class NpcAttackAction : AttackAction, ILosCheckListener
     {
         private const double TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH = 500; // NPCs will switch to ranged if further than melee range + (this * maxSpeed * 0.001).
 
@@ -170,7 +169,7 @@ namespace DOL.GS
             if (Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK)
             {
                 if (_checkLosTimer == null)
-                    _checkLosTimer = new CheckLosTimer(_npcOwner, _target, OnLosCheck, ForceLos);
+                    _checkLosTimer = new(_npcOwner, _target, this);
                 else if (_losCheckTarget != _target)
                 {
                     _hasLos = false;
@@ -204,6 +203,24 @@ namespace DOL.GS
             base.CleanUp();
         }
 
+        public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
+        {
+            _losCheckTarget = _npcOwner.CurrentRegion.GetObject(targetId);
+
+            if (_losCheckTarget == null || _losCheckTarget != _target)
+                _hasLos = false;
+            else
+                _hasLos = response is LosCheckResponse.True;
+
+            if (!_hasLos)
+            {
+                OnOutOfRangeOrNoLosRangedAttack();
+                return;
+            }
+
+            _npcOwner.TurnTo(_losCheckTarget);
+        }
+
         private void SwitchToMeleeAndTick()
         {
             if (_npcOwner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
@@ -220,24 +237,6 @@ namespace DOL.GS
             _npcOwner.StartAttackWithRangedWeapon(_target);
         }
 
-        private void OnLosCheck(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-        {
-            _losCheckTarget = _npcOwner.CurrentRegion.GetObject(targetOID);
-
-            if (_losCheckTarget == null || _losCheckTarget != _target)
-                _hasLos = false;
-            else
-                _hasLos = response is LosCheckResponse.True;
-
-            if (!_hasLos)
-            {
-                OnOutOfRangeOrNoLosRangedAttack();
-                return;
-            }
-
-            _npcOwner.TurnTo(_losCheckTarget);
-        }
-
         private void ForceLos()
         {
             _hasLos = true;
@@ -248,15 +247,13 @@ namespace DOL.GS
         {
             private GameNPC _npcOwner;
             private GameObject _target;
-            private CheckLosResponse _callback;
-            private Action _forceLos;
+            private NpcAttackAction _attackAction;
             private GamePlayer _losChecker;
 
-            public CheckLosTimer(GameObject owner, GameObject target, CheckLosResponse callback, Action forceLos) : base(owner)
+            public CheckLosTimer(GameObject owner, GameObject target, NpcAttackAction attackAction) : base(owner)
             {
                 _npcOwner = owner as GameNPC;
-                _callback = callback;
-                _forceLos = forceLos;
+                _attackAction = attackAction;
                 ChangeTarget(target);
             }
 
@@ -283,7 +280,7 @@ namespace DOL.GS
                 // Don't bother starting the timer if there's no one to perform the LoS check.
                 if (_losChecker == null)
                 {
-                    _forceLos();
+                    _attackAction.ForceLos();
                     return;
                 }
 
@@ -300,7 +297,7 @@ namespace DOL.GS
                 if (!_npcOwner.attackComponent.AttackState || _npcOwner.ObjectState is not eObjectState.Active)
                     return 0;
 
-                _losChecker.Out.SendCheckLos(_npcOwner, _target, new CheckLosResponse(_callback));
+                _losChecker.Out.SendLosCheckRequest(_npcOwner, _target, _attackAction);
                 return LosCheckInterval;
             }
         }

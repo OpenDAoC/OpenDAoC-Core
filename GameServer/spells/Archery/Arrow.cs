@@ -65,16 +65,6 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		private void DealDamageCheckLOS(GamePlayer player, bool response, ushort targetOID)
-		{
-			if (response)
-			{
-				GameLiving target = (GameLiving)(Caster.CurrentRegion.GetObject(targetOID));
-				if (target != null)
-					DealDamage(target);
-			}
-		}
-
 		private void DealDamage(GameLiving target)
 		{
 			int ticksToTarget = m_caster.GetDistanceTo(target) * 100 / 85; // 85 units per 1/10s

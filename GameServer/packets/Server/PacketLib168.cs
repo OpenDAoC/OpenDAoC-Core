@@ -735,7 +735,7 @@ namespace DOL.GS.PacketHandler
 			ushort heading;
 			ushort targetZoneSkinId = 0;
 			byte flags = 0;
-			int targetOID = 0;
+			int targetId = 0;
 
 			if (obj is not GameNPC npc)
 			{
@@ -800,7 +800,7 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-				// `targetOID` does three things:
+				// `targetId` does three things:
 				// * Enables the NPC's attack state if > 0.
 				// * Client side, forces the NPC to face the object having this ID at all time, and walk towards if it has any speed (incompatible with pathing).
 				// * Prevents the NPC from overshooting the target, which for some reason seems to prevent smooth movement when the target is close (very janky).
@@ -815,9 +815,9 @@ namespace DOL.GS.PacketHandler
 					GameObject target = npc.TargetObject;
 
 					if (target?.ObjectState is GameObject.eObjectState.Active && npc.CurrentSpeed == 0 && npc.IsWithinRadius(target, npc.attackComponent.AttackRange))
-						targetOID = target.ObjectID;
+						targetId = target.ObjectID;
 					else
-						targetOID = 65535;
+						targetId = 65535;
 				}
 			}
 
@@ -845,7 +845,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(z);
 				pak.WriteShort(zOffsetInTargetZone);
 				pak.WriteShort(obj.ObjectID);
-				pak.WriteShort((ushort) targetOID);
+				pak.WriteShort((ushort) targetId);
 
 				if (obj is GameLiving)
 					pak.WriteByte((obj as GameLiving).HealthPercent);
@@ -1530,12 +1530,12 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
+		public virtual bool SendLosCheckRequest(GameObject source, GameObject target, ILosCheckListener listener)
 		{
-			if (m_gameClient.ClientState is not GameClient.eClientState.Playing || source == null || target == null)
+			if (m_gameClient.ClientState is not GameClient.eClientState.Playing)
 				return false;
 
-			return m_gameClient.Player.LosCheckHandler.StartLosCheck(source, target, callback);
+			return m_gameClient.Player.LosCheckHandler.StartLosCheck(source, target, listener);
 		}
 
 		public virtual void SendQuestListUpdate()
