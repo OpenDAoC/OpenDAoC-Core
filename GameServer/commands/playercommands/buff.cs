@@ -142,8 +142,8 @@ namespace DOL.GS.Commands
                 buffKeys = _buffLookupTable.Keys.ToArray();
 
             List<(Spell, SpellLine)> buffsToCast = new(buffKeys.Length);
-            List<Tuple<Skill, Skill>> useableSkills = client.Player.GetAllUsableSkills();
-            List<Tuple<SpellLine, List<Skill>>> useableLists = client.Player.GetAllUsableListSpells();
+            List<(Skill, Skill)> useableSkills = client.Player.GetAllUsableSkills();
+            List<(SpellLine, List<Skill>)> useableLists = client.Player.GetAllUsableListSpells();
 
             foreach (string buffKey in buffKeys)
             {
@@ -155,7 +155,7 @@ namespace DOL.GS.Commands
                     continue;
                 }
 
-                foreach (Tuple<Skill, Skill> useableSkill in useableSkills)
+                foreach ((Skill, Skill) useableSkill in useableSkills)
                 {
                     Spell useableSpell = useableSkill.Item1 as Spell;
 
@@ -163,7 +163,7 @@ namespace DOL.GS.Commands
                         strongestSpell = (useableSpell, useableSkill.Item2 as SpellLine);
                 }
 
-                foreach (Tuple<SpellLine, List<Skill>> useableList in useableLists)
+                foreach ((SpellLine, List<Skill>) useableList in useableLists)
                 {
                     foreach (Skill useableSkill in useableList.Item2)
                     {

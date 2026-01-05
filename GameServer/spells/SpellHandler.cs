@@ -1376,13 +1376,13 @@ namespace DOL.GS.Spells
 			{
 				List<Tuple<Skill, int>> toDisable = [];
 
-				foreach (Tuple<Skill, Skill> skill in playerCaster.GetAllUsableSkills())
+				foreach ((Skill, Skill) skill in playerCaster.GetAllUsableSkills())
 				{
 					if (IsSameSpellOrOfSameGroup(skill.Item1 as Spell))
 						toDisable.Add(new Tuple<Skill, int>(skill.Item1, m_spell.RecastDelay));
 				}
 
-				foreach (Tuple<SpellLine, List<Skill>> spellLine in playerCaster.GetAllUsableListSpells())
+				foreach ((SpellLine, List<Skill>) spellLine in playerCaster.GetAllUsableListSpells())
 				{
 					foreach (Skill skill in spellLine.Item2)
 					{

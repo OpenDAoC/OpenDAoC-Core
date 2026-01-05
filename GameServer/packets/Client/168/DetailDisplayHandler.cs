@@ -8,6 +8,7 @@ using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -20,7 +21,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
@@ -2003,9 +2004,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 		public static string DelveStyle(GameClient client, int id)
 		{
 			Style style = null;
-			Tuple<Skill, Skill> skill = client.Player.GetAllUsableSkills().Where(s => s.Item1.InternalID == id && s.Item1 is Style).FirstOrDefault();
+			var skill = client.Player.GetAllUsableSkills().Where(s => s.Item1.InternalID == id && s.Item1 is Style).FirstOrDefault();
 
-			if (skill == null || skill.Item1 == null)
+			if (skill == default)
 				style = SkillBase.GetStyleByInternalID(id);
 			else
 				style = skill.Item1 as Style;
