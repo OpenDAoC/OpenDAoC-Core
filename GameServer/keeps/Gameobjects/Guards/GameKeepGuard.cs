@@ -119,8 +119,6 @@ namespace DOL.GS.Keeps
 
 		private bool m_changingPositions = false;
 
-		public GameLiving HealTarget = null;
-
 		/// <summary>
 		/// The keep lord is under attack, go help them
 		/// </summary>
