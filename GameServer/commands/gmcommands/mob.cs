@@ -449,6 +449,7 @@ namespace DOL.GS.Commands
 				mob.Realm = (eRealm)realm;
 				mob.Name = name;
 				mob.Model = model;
+				mob.RoamingRange = 400;
 
 				//Fill the living variables
 				if (mob.Brain is IOldAggressiveBrain)
@@ -461,6 +462,8 @@ namespace DOL.GS.Commands
 				mob.GuildName = string.Empty;
 				mob.Size = 50;
 				mob.AddToWorld();
+				mob.LoadedFromScript = false;
+				mob.SaveIntoDatabase();
 				client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 		}
@@ -2535,7 +2538,11 @@ namespace DOL.GS.Commands
 				mob.Z = client.Player.Z;
 				mob.Heading = client.Player.Heading;
 				mob.CurrentRegion = client.Player.CurrentRegion;
+				DbNpcTemplate sourceTemplate = DOLDB<DbNpcTemplate>.SelectObjects(DB.Column("TemplateId").IsEqualTo(args[2])).FirstOrDefault();
+				mob.EquipmentTemplateID = sourceTemplate.EquipmentTemplateID;
 				mob.AddToWorld();
+				mob.LoadedFromScript = false;
+				mob.SaveIntoDatabase();
 				DisplayMessage(client, "Created npc based on template " + id, new object[] { });
 			}
 			else

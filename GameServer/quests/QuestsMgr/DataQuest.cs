@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -960,6 +961,7 @@ namespace DOL.GS.Quests
 			if (charQuest == null && create)
 			{
 				charQuest = new DbCharacterXDataQuest(player.QuestPlayerID, ID);
+
 				charQuest.Count = 0;
 				charQuest.Step = 0;
 				GameServer.Database.AddObject(charQuest);
@@ -2729,12 +2731,15 @@ namespace DOL.GS.Quests
 								}
 							}
 							AdvanceQuestStep(living);
+							player.Out.SendMessage(StepText, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+
 						}
 						break;
 
 					case eStepType.KillFinish:
 						{
 							FinishQuest(living, true);
+							player.Out.SendMessage("Mobs fertig", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 						break;
 				}
@@ -2907,6 +2912,7 @@ namespace DOL.GS.Quests
 							if (item != null)
 							{
 								GiveItem(m_questPlayer, item);
+								m_questPlayer.Out.SendMessage("Item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
 						}
 	
@@ -2940,7 +2946,7 @@ namespace DOL.GS.Quests
 					}
 					// Reward quest receives everything on last interactFinish step.
 					if (StartType == eStartType.RewardQuest)
-					{
+					{						
 						if (m_rewardXPs.Count > 0)
 						{
 							rewardXP = m_rewardXPs[0];

@@ -32,7 +32,6 @@ namespace DOL.GS.Commands
 					eChatType.CT_System,
 					eChatLoc.CL_SystemWindow
 					);
-				RelicGateMgr.CheckKeeps(); // DEBUG LINE TO CHECK IF THIS CAUSES ISSUES
 				return;
 			}
             

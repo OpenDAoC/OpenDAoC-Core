@@ -9,6 +9,7 @@ using DOL.Events;
 using DOL.GS.Behaviour;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using System.Linq;
 
 namespace DOL.GS.Quests
 {
@@ -58,7 +59,7 @@ namespace DOL.GS.Quests
             {
                 Character_ID = questingPlayer.QuestPlayerID,
                 Name = GetType().FullName,
-                Step = step
+                Step = step,
             };
 
             m_dbQuest = dbQuest;
@@ -198,6 +199,7 @@ namespace DOL.GS.Quests
         public virtual void OnQuestAssigned(GamePlayer player)
         {
             player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.OnQuestAssigned.GetQuest", Name)), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+            player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client, "AbstractQuest.OnQuestAssigned.GetQuest", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
         }
 
         #region Quest Commands
@@ -318,6 +320,7 @@ namespace DOL.GS.Quests
             // Typically this would be when giving the player an item and advancing the step.
             QuestPlayer.Out.SendMessage("Error, command completed handler not overridden for quest!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
+
 
         #endregion Quest Commands
 
@@ -681,5 +684,74 @@ namespace DOL.GS.Quests
             SEARCH,
             SEARCH_START
         }
+
+        #region Quest Management Commands
+
+        /// <summary>
+        /// Ruft alle abgeschlossenen Quest-Datensätze (Step = -2) eines Spielers aus der Datenbank ab.
+        /// </summary>
+        /// <param name="player">Der GamePlayer.</param>
+        /// <returns>Ein Array aller DbCharacterXDataQuest-Objekte mit Step = -2.</returns>
+        private static DbCharacterXDataQuest[] GetFinishedQuestsFromDatabase(GamePlayer player)
+        {
+            string charIDString = player.QuestPlayerID;
+
+            return GameServer.Database.SelectObjects<DbCharacterXDataQuest>(
+                DB.Column("Character_ID")
+                  .IsEqualTo(charIDString)
+                  .And(
+                      DB.Column("Step")
+                        .IsEqualTo(0)
+                  )
+            ).ToArray();
+        }
+        /// <summary>
+        /// Entfernt alle Quests, die der Spieler in der Vergangenheit abgeschlossen hat (Step = -2), 
+        /// aus der Datenbank.
+        /// </summary>
+        /// <param name="player">Der GamePlayer, dessen abgeschlossene Quests gelöscht werden sollen.</param>
+        public static void ClearFinishedQuests(GamePlayer player)
+        {
+            if (player == null)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Attempted to clear finished quests for a null player!");
+                return;
+            }
+
+            try
+            {
+                // Ruft die vorhandene GamePlayer-Methode auf.
+                // Das Predicate 'quest => true' sorgt dafür, dass ALLE Quests
+                // in _questListFinished ausgewählt und gelöscht werden.
+                player.RemoveFinishedQuests(quest => true); 
+                
+                // Die RemoveFinishedQuests-Methode kümmert sich um:
+                // 1. Entfernen aus dem In-Memory-Cache (_questListFinished).
+                // 2. Löschen des Quest-Objekts aus der Datenbank (quest.DeleteFromDatabase()).
+                
+                player.Out.SendMessage(
+                    "Alle abgeschlossenen Quest-Einträge wurden erfolgreich gelöscht. Die Quests sind nun wieder annehmbar.", 
+                    eChatType.CT_Important, 
+                    eChatLoc.CL_SystemWindow);
+
+                if (log.IsInfoEnabled)
+                    log.Info($"Cleared ALL finished quests for player {player.Name} (Character_ID: {player.QuestPlayerID}).");
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Error clearing finished quests for player {player.Name}: {ex.Message}", ex);
+                
+                player.Out.SendMessage(
+                    "Fehler beim Löschen der abgeschlossenen Quests. Prüfen Sie die Server-Logs.", 
+                    eChatType.CT_Important, 
+                    eChatLoc.CL_SystemWindow);
+            }
+
+            player.SaveIntoDatabase();
+        }
+
+        #endregion Quest Management Commands
     }
 }
