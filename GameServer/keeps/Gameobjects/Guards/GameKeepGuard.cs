@@ -149,7 +149,7 @@ namespace DOL.GS.Keeps
 			return null;
 		}
 
-		public void CheckAreaForHeals()
+		public bool CheckAreaForHeals()
 		{
 			GameLiving target = null;
 
@@ -172,7 +172,7 @@ namespace DOL.GS.Keeps
 			{
 				foreach (GameNPC npc in GetNPCsInRadius(2000))
 				{
-					if (npc is GameSiegeWeapon)
+					if (npc is GameSiegeWeapon || !npc.IsAlive)
 						continue;
 
 					if (GameServer.ServerRules.IsSameRealm(npc, this, true))
@@ -186,14 +186,14 @@ namespace DOL.GS.Keeps
 				}
 			}
 
-			if (target != null)
-			{
-				if (!target.IsAlive)
-					return;
+			if (target == null)
+				return false;
 
-				HealTarget = target;
-				CastSpell(GetGuardHealSmallSpell(Realm), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), true);
-			}
+			GameObject oldTarget = TargetObject;
+			TargetObject = target;
+			bool cast = CastSpell(GetGuardHealSmallSpell(Realm), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), true);
+			TargetObject = oldTarget;
+			return cast;
 		}
 
 		/// <summary>
