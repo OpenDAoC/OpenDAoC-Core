@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Reflection;
+using System.Security.Cryptography;
 using DOL.Database;
 using DOL.GS.Keeps;
 
@@ -244,9 +247,54 @@ namespace DOL.GS.PacketHandler
 							GameKeep theKeep = keep as GameKeep;
 							if (theKeep != null)
 							{
-								if (theKeep.OwnsAllTowers && !theKeep.InCombat)
+								AbstractGameKeep supply1 = null;
+								AbstractGameKeep supply2 = null;
+								AbstractGameKeep last1 = null;
+								AbstractGameKeep last2 = null;
+								switch (m_gameClient.Player.Realm)
 								{
-									flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+										case eRealm.Midgard:
+												supply1 = GameServer.KeepManager.GetKeepByID(79);   // Glenlock
+												supply2 = GameServer.KeepManager.GetKeepByID(75);   // Bledmeer
+												last1 = GameServer.KeepManager.GetKeepByID(80);   // Fensalir
+												last2 = GameServer.KeepManager.GetKeepByID(81);   // Arvakre
+												break;
+										case eRealm.Albion:
+												supply1 = GameServer.KeepManager.GetKeepByID(50);   // Benowyc
+												supply2 = GameServer.KeepManager.GetKeepByID(53);   // Boldiam
+												last1 = GameServer.KeepManager.GetKeepByID(56);   // Benowyc
+												last2 = GameServer.KeepManager.GetKeepByID(55);   // Boldiam
+												break;
+										case eRealm.Hibernia:
+												supply1 = GameServer.KeepManager.GetKeepByID(103);   // nGed
+												supply2 = GameServer.KeepManager.GetKeepByID(100);   // Crauchon
+												last1 = GameServer.KeepManager.GetKeepByID(106);   // Ailinne
+												last2 = GameServer.KeepManager.GetKeepByID(105);   // Scataigh
+												break;
+								}
+								// Teleport Flags for keeps inside our own realm
+								// Summary: If we own middle keep (nged) and all towers from keep
+								if (m_gameClient.Player.Realm == keep.OriginalRealm && (keep as GameKeep).OwnsAllTowers == true)
+								{
+									if (supply1.Realm == supply1.OriginalRealm && (last1.Realm == last1.OriginalRealm || last2.Realm == last2.OriginalRealm))
+									{
+										flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+									}
+									else if (supply1.Realm != supply1.OriginalRealm)
+									{
+										if (keep.KeepID == last1.KeepID || keep.KeepID == last2.KeepID)
+										{
+											flag |= (byte)eRealmWarmapKeepFlags.Teleportable; // Can always teleport to last two keeps
+										}
+									}
+								} 
+								else if (m_gameClient.Player.Realm != keep.OriginalRealm && (keep as GameKeep).OwnsAllTowers == true && supply1.Realm == supply1.OriginalRealm && supply2.Realm == supply2.OriginalRealm && (last1.Realm == last1.OriginalRealm || last2.Realm == last2.OriginalRealm))
+								{
+									if (keep.Name == "Dun Crauchon" || keep.Name == "Dun Crimthain" || keep.Name == "Dun Bolg" || keep.Name == "Nottmoor Faste" || keep.Name == "Bledmeer Faste" || keep.Name == "Blendrake Faste" || keep.Name == "Caer Benowyc" || keep.Name == "Caer Erasleigh" || keep.Name == "Caer Berkstead")
+									{
+										// Special case for border keeps, only allow teleport if both supply keeps are owned
+										flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+									}
 								}
 							}
 						}
