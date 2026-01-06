@@ -1080,8 +1080,10 @@ namespace DOL.GS.Keeps
 
 			//change realm
 			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
+			{
 				player.Out.SendKeepComponentUpdate(this, false);
-
+				player.Out.SendWarmapUpdate(GameServer.KeepManager.GetKeepsByRealmMap(player.WarMapPage)); // Update Warmap when tower/keep changes realm
+			}
 			//we reset all doors
 			foreach(GameKeepDoor door in Doors.Values)
 				door.Reset(realm);

@@ -127,13 +127,11 @@ namespace DOL.GS.Keeps
         /// </summary>
         public static void OnLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("RelicGateMgr: Starting initial keep check (via ScriptEvent.Loaded)...");
             CheckKeeps();
         }
         
         public static void CheckKeeps()
         {
-            log.Info("DEBUG: CheckKeeps is running..."); 
             
             foreach (var chainEntry in ALL_RELIC_CHAINS)
             {
@@ -174,12 +172,10 @@ namespace DOL.GS.Keeps
                 
                 if (currentKeep == null) continue;
                 
-                log.Info($"DEBUG: RelicGateMgr - Keep ID {currentKeep.KeepID} ({currentKeep.Name}). Current Realm: {currentKeep.Realm}. Required Realm: {requiredRealm}.");
                 
                 if (currentKeep.Realm == requiredRealm || currentKeep.Realm == eRealm.None)
                 {
                     isChainBlocked = true;
-                    log.Info($"DEBUG: Chain BLOCKED by Keep ID {currentKeep.KeepID}. BREAKING LOOP.");
                     break;
                 }
             }
@@ -190,8 +186,6 @@ namespace DOL.GS.Keeps
                 {
                     door.CloseDoor();
                     SendRelicDoorStatusMessage(door, false);
-                    
-                    log.Info($"ACTION: Relic Gate {door.Name} CLOSED. Kette blockiert durch Realm {requiredRealm} oder Neutral.");
                 }
             }
             else 
@@ -200,17 +194,13 @@ namespace DOL.GS.Keeps
                 {
                     door.OpenDoor();
                     SendRelicDoorStatusMessage(door, true);
-
-                    log.Info($"ACTION: Relic Gate {door.Name} OPENED. ALLE Keeps von Feinden erobert.");
                 }
             }
         }
 
         public static void OnKeepChange(DOLEvent e, object sender, EventArgs args)
         {
-            log.Warn("!! RELICGATE MGR EVENT FIRED !! Starting check..."); 
             CheckKeeps();
-            log.Info("RelicGateMgr: Re-checking all Relic Gates after Keep change event.");
         }
 
         // ====================================================================

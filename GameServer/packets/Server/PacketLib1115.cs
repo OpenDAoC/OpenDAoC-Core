@@ -251,6 +251,8 @@ namespace DOL.GS.PacketHandler
 								AbstractGameKeep supply2 = null;
 								AbstractGameKeep last1 = null;
 								AbstractGameKeep last2 = null;
+								AbstractGameKeep town1 = null;
+								AbstractGameKeep town2 = null;
 								switch (m_gameClient.Player.Realm)
 								{
 										case eRealm.Midgard:
@@ -258,20 +260,33 @@ namespace DOL.GS.PacketHandler
 												supply2 = GameServer.KeepManager.GetKeepByID(75);   // Bledmeer
 												last1 = GameServer.KeepManager.GetKeepByID(80);   // Fensalir
 												last2 = GameServer.KeepManager.GetKeepByID(81);   // Arvakre
+												town1 = GameServer.KeepManager.GetKeepByID(12);   // Godrborg
+												town2 = GameServer.KeepManager.GetKeepByID(13);   // Rensamark
 												break;
 										case eRealm.Albion:
 												supply1 = GameServer.KeepManager.GetKeepByID(50);   // Benowyc
 												supply2 = GameServer.KeepManager.GetKeepByID(53);   // Boldiam
 												last1 = GameServer.KeepManager.GetKeepByID(56);   // Benowyc
 												last2 = GameServer.KeepManager.GetKeepByID(55);   // Boldiam
+												town1 = GameServer.KeepManager.GetKeepByID(10);   // Catterick Hamlet
+												town2 = GameServer.KeepManager.GetKeepByID(11);   // Dinas Emrys
 												break;
 										case eRealm.Hibernia:
 												supply1 = GameServer.KeepManager.GetKeepByID(103);   // nGed
 												supply2 = GameServer.KeepManager.GetKeepByID(100);   // Crauchon
 												last1 = GameServer.KeepManager.GetKeepByID(106);   // Ailinne
 												last2 = GameServer.KeepManager.GetKeepByID(105);   // Scataigh
+												town1 = GameServer.KeepManager.GetKeepByID(14);   // Crair Treflan
+												town2 = GameServer.KeepManager.GetKeepByID(15);   // Magh Tuireadh
 												break;
 								}
+								// Towns teleports are always available
+								if (keep.KeepID == town1.KeepID || keep.KeepID == town2.KeepID)
+									{
+										flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+									}
+								
+								
 								// Teleport Flags for keeps inside our own realm
 								// Summary: If we own middle keep (nged) and all towers from keep
 								if (m_gameClient.Player.Realm == keep.OriginalRealm && (keep as GameKeep).OwnsAllTowers == true)
