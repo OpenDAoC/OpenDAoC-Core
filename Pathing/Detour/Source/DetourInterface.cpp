@@ -91,9 +91,8 @@ DLLEXPORT bool FreeNavMesh(dtNavMesh *meshPtr)
 
 DLLEXPORT bool CreateNavMeshQuery(dtNavMesh *mesh, dtNavMeshQuery **const query)
 {
-
 	*query = dtAllocNavMeshQuery();
-	auto status = (*query)->init(mesh, 2048);
+	auto status = (*query)->init(mesh, MAX_NODES);
 	if (dtStatusFailed(status))
 	{
 		dtFreeNavMeshQuery(*query);

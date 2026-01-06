@@ -10,7 +10,8 @@
 #	define DLLEXPORT extern "C"
 #endif
 
-#define MAX_POLY 256
+constexpr auto MAX_POLY = 256;
+constexpr auto MAX_NODES = 4096;
 
 enum dtPolyFlags : unsigned short
 {
