@@ -1254,7 +1254,14 @@ namespace DOL.GS
 				baseBlockChance *= shield.Quality * 0.01 * shield.ConditionPercent * 0.01;
 			}
 			else
+			{
 				baseBlockChance = GetModified(eProperty.BlockChance);
+
+				// Ensure NPCs with no base block chance set don't receive any bonus.
+				// This is probably a NPC with an offhand weapon but no offhand swing chance set either.
+				if (baseBlockChance == 0)
+					return 0;
+			}
 
 			baseBlockChance /= 1000; // Not a typo.
 
