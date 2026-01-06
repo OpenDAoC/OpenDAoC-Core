@@ -67,7 +67,7 @@ namespace DOL.GS.Commands
             {
                 if (finishedQuests.Count < 10)
                 {
-                    message += "\nYou have completed the following quest(s):";
+                    message += "\n------- Completed Quests -------";
 
                     foreach (AbstractQuest quest in finishedQuests)
                     {
@@ -83,7 +83,7 @@ namespace DOL.GS.Commands
                     message += $"\nYou have completed {finishedQuests.Count} quests.";
             }
 
-            message += "\nUse the '/journal' command to view your full ongoing and completed quests.";
+            message += "\nUse the '/journal' command to view your full ongoing quests.";
             DisplayMessage(client, message);
         }
     }

@@ -168,7 +168,7 @@ namespace DOL.GS.PlayerClass
 
 		public override List<PlayerRace> EligibleRaces => new()
 		{
-			// PlayerRace.Celt, PlayerRace.Elf, PlayerRace.Lurikeen,
+			PlayerRace.Celt, PlayerRace.Elf, PlayerRace.Lurikeen,
 		};
 	}
 	#endregion

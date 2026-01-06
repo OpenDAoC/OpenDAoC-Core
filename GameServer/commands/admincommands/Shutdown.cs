@@ -90,7 +90,7 @@ namespace DOL.GS.Commands
 				DateTime date;
 				date = DateTime.Now;
 				date = date.AddSeconds(m_counter);
-				string msg = $"Automated server restart in {m_counter / 60} mins! (Restart at {date:HH:mm \"GMT\" zzz})";
+				string msg = $"Server restart in {m_counter / 60} mins! (Restart at {date:HH:mm \"GMT\" zzz})";
 
 				foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, msg);
