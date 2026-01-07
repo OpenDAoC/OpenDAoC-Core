@@ -85,11 +85,18 @@ namespace DOL.GS.Scripts
             LegionBrain.CanThrow = false;
             LegionBrain.RemoveAdds = false;
             LegionBrain.IsCreatingSouls = false;
-
             // demon
             BodyType = 2;
-            RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
+
+            // Custom Respawn +/- 20%
+            int baseRespawnMS = 14400000; 
+            int maxOffsetMS = 2880000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
             Faction = FactionMgr.GetFactionByID(191);
+
 
             LegionBrain sBrain = new LegionBrain();
             SetOwnBrain(sBrain);
@@ -118,10 +125,17 @@ namespace DOL.GS.Scripts
             }
 
             bool canReportNews = true;
-
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("daemon_blood_seal");
+            int itemCount = 500;
             // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
+                DbInventoryItem item = GameInventoryItem.Create(template);
+                item.Count = itemCount;
+                if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+                }
                 player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
                 if (!canReportNews || GameServer.ServerRules.CanGenerateNews(player) != false) continue;
@@ -262,7 +276,7 @@ namespace DOL.GS.Scripts
         private void ReportNews(GameObject killer)
         {
             int numPlayers = AwardLegionKillPoint();
-            String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+            String message = String.Format("{0} has been slain by {1} enemies!", Name, numPlayers);
             NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
             if (Properties.GUILD_MERIT_ON_LEGION_KILL <= 0) return;

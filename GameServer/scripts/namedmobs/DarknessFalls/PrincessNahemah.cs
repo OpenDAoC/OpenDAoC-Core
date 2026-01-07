@@ -57,15 +57,24 @@ namespace DOL.GS
             sBrain.AggroLevel = 100;
             sBrain.AggroRange = 500;
             PrincessNahemahBrain.spawnMinions = true;
-
             // demon
             BodyType = 2;
-            RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
+
+            // Custom Respawn +/- 20% 4h
+            int baseRespawnMS = 14400000; 
+            int maxOffsetMS = 2880000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
+
+
             Faction = FactionMgr.GetFactionByID(191);
             SaveIntoDatabase();
             base.AddToWorld();
             return true;
         }
+
         public override void Die(GameObject killer)
         {
             base.Die(killer);
@@ -77,7 +86,45 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
+            bool canReportNews = true;
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("daemon_blood_seal");
+            int itemCount = 50;
+            // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                DbInventoryItem item = GameInventoryItem.Create(template);
+                item.Count = itemCount;
+                if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+                }
+                player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+
+                if (!canReportNews || GameServer.ServerRules.CanGenerateNews(player) != false) continue;
+                if (player.Client.Account.PrivLevel == (int) ePrivLevel.Player)
+                    canReportNews = false;
+            }
+
+            if (canReportNews)
+            {
+                ReportNews(killer);
+            }
         }
+        private void ReportNews(GameObject killer)
+        {
+            //int numPlayers = AwardHLKillPoint();
+            String message = String.Format("{0} has been slain!", Name/*, numPlayers*/);
+            NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+        }
+        /*private int AwardHLKillPoint()
+        {
+            int count = 0;
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                count++;
+            }
+            return count;
+        }*/
     }
 }
 
