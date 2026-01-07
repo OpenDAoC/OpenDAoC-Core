@@ -858,366 +858,584 @@ namespace DOL.GS
             //10 == maxHP =  *.25
             //11-19 == resists = *2
             //20-115 == skill = *5
-            //163 == all magic = *5
+            //163 == all magic skill = *10
             //164 == all melee = *5
             //167 == all dual weild = *5
             //168 == all archery = *5
+            // --- Bonus 1 ---
             if (Bonus1Type != 0 &&
                 Bonus1 != 0)
             {
-                if (Bonus1Type < 9 || Bonus1Type == 156)
+                if (Bonus1Type < 9 || Bonus1Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus1 * .6667;
                 }
-                else if (Bonus1Type == 9)
-                {
-                    totalUti += Bonus1;
-                }
-                else if (Bonus1Type == 10)
-                {
-                    totalUti += Bonus1 * .25;
-                }
-                else if (Bonus1Type < 20)
+                else if (Bonus1Type == 9
+                || Bonus1Type == 196
+                || Bonus1Type == 190
+                || Bonus1Type == 199
+                || Bonus1Type == 193
+                || Bonus1Type == 211 // Neu hinzugefügt
+                || Bonus1Type == 202 // Neu hinzugefügt
+                || Bonus1Type == 209 // Neu hinzugefügt
+                || Bonus1Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
                     totalUti += Bonus1 * 2;
                 }
-                else if (Bonus1Type < 115)
+                else if (Bonus1Type == 10) // MaxHealth correct
+                {
+                    totalUti += Bonus1 * 0.25;
+                }
+                else if (Bonus1Type < 20) // Resists & Power Pool (pre-TOA) correct
+                {
+                    totalUti += Bonus1 * 2;
+                }
+                else if (Bonus1Type == 148) // Power Pool (TOA) correct
+                {
+                    totalUti += Bonus1;
+                }
+                else if (Bonus1Type < 115
+                || Bonus1Type == 198
+                || Bonus1Type == 191
+                || Bonus1Type == 197
+                || Bonus1Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus1 * 5;
                 }
-                else if (Bonus1Type == 163
-                  || Bonus1Type == 164
-                  || Bonus1Type == 167
-                  || Bonus1Type == 168
-                  || Bonus1Type == 213)
+                else if (Bonus1Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus1Type == 164
+                || Bonus1Type == 167
+                || Bonus1Type == 168
+                || Bonus1Type == 213)
                 {
-                    totalUti += Bonus1 * 5;
+                    totalUti += Bonus1 * 10;
                 }
             }
 
+            // --- Bonus 2 (UPDATED) ---
             if (Bonus2Type != 0 &&
                 Bonus2 != 0)
             {
-                if (Bonus2Type < 9 || Bonus2Type == 156)
+                if (Bonus2Type < 9 || Bonus2Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus2 * .6667;
                 }
-                else if (Bonus2Type == 9)
+                else if (Bonus2Type == 9
+                || Bonus2Type == 196
+                || Bonus2Type == 190
+                || Bonus2Type == 199
+                || Bonus2Type == 193
+                || Bonus2Type == 211
+                || Bonus2Type == 202
+                || Bonus2Type == 209
+                || Bonus2Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus2;
+                    // Consistency update: using *2
+                    totalUti += Bonus2 * 2; 
                 }
-                else if (Bonus2Type == 10)
+                else if (Bonus2Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus2 * .25;
                 }
-                else if (Bonus2Type < 20)
+                else if (Bonus2Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus2 * 2;
                 }
-                else if (Bonus2Type < 115)
+                else if (Bonus2Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus2 * 1;
+                }
+                else if (Bonus2Type < 115
+                || Bonus2Type == 198
+                || Bonus2Type == 191
+                || Bonus2Type == 197
+                || Bonus2Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus2 * 5;
                 }
-                else if (Bonus2Type == 163
-                  || Bonus2Type == 164
-                  || Bonus2Type == 167
-                  || Bonus2Type == 168
-                  || Bonus2Type == 213)
+                else if (Bonus2Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus2Type == 164
+                || Bonus2Type == 167
+                || Bonus2Type == 168
+                || Bonus2Type == 213)
                 {
-                    totalUti += Bonus2 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus2 * 10; 
                 }
             }
 
+            // --- Bonus 3 (UPDATED) ---
             if (Bonus3Type != 0 &&
                 Bonus3 != 0)
             {
-                if (Bonus3Type < 9 || Bonus3Type == 156)
+                if (Bonus3Type < 9 || Bonus3Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus3 * .6667;
                 }
-                else if (Bonus3Type == 9)
+                else if (Bonus3Type == 9
+                || Bonus3Type == 196
+                || Bonus3Type == 190
+                || Bonus3Type == 199
+                || Bonus3Type == 193
+                || Bonus3Type == 211
+                || Bonus3Type == 202
+                || Bonus3Type == 209
+                || Bonus3Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus3;
+                    // Consistency update: using *2
+                    totalUti += Bonus3 * 2;
                 }
-                else if (Bonus3Type == 10)
+                else if (Bonus3Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus3 * .25;
                 }
-                else if (Bonus3Type < 20)
+                else if (Bonus3Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus3 * 2;
                 }
-                else if (Bonus3Type < 115)
+                else if (Bonus3Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus3 * 1;
+                }
+                else if (Bonus3Type < 115
+                || Bonus3Type == 198
+                || Bonus3Type == 191
+                || Bonus3Type == 197
+                || Bonus3Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus3 * 5;
                 }
-                else if (Bonus3Type == 163
-                  || Bonus3Type == 164
-                  || Bonus3Type == 167
-                  || Bonus3Type == 168
-                  || Bonus3Type == 213)
+                else if (Bonus3Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus3Type == 164
+                || Bonus3Type == 167
+                || Bonus3Type == 168
+                || Bonus3Type == 213)
                 {
-                    totalUti += Bonus3 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus3 * 10;
                 }
             }
 
+            // --- Bonus 4 (UPDATED) ---
             if (Bonus4Type != 0 &&
                 Bonus4 != 0)
             {
-                if (Bonus4Type < 9 || Bonus4Type == 156)
+                if (Bonus4Type < 9 || Bonus4Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus4 * .6667;
                 }
-                else if (Bonus4Type == 9)
+                else if (Bonus4Type == 9
+                || Bonus4Type == 196
+                || Bonus4Type == 190
+                || Bonus4Type == 199
+                || Bonus4Type == 193
+                || Bonus4Type == 211
+                || Bonus4Type == 202
+                || Bonus4Type == 209
+                || Bonus4Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus4;
+                    // Consistency update: using *2
+                    totalUti += Bonus4 * 2;
                 }
-                else if (Bonus4Type == 10)
+                else if (Bonus4Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus4 * .25;
                 }
-                else if (Bonus4Type < 20)
+                else if (Bonus4Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus4 * 2;
                 }
-                else if (Bonus4Type < 115)
+                else if (Bonus4Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus4 * 1;
+                }
+                else if (Bonus4Type < 115
+                || Bonus4Type == 198
+                || Bonus4Type == 191
+                || Bonus4Type == 197
+                || Bonus4Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus4 * 5;
                 }
-                else if (Bonus4Type == 163
-                  || Bonus4Type == 164
-                  || Bonus4Type == 167
-                  || Bonus4Type == 168
-                  || Bonus4Type == 213)
+                else if (Bonus4Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus4Type == 164
+                || Bonus4Type == 167
+                || Bonus4Type == 168
+                || Bonus4Type == 213)
                 {
-                    totalUti += Bonus4 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus4 * 10;
                 }
             }
 
+            // --- Bonus 5 (UPDATED) ---
             if (Bonus5Type != 0 &&
                 Bonus5 != 0)
             {
-                if (Bonus5Type < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> Bonus5Type
+                if (Bonus5Type < 9 || Bonus5Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus5 * .6667;
                 }
-                else if (Bonus5Type == 9)
+                else if (Bonus5Type == 9
+                || Bonus5Type == 196
+                || Bonus5Type == 190
+                || Bonus5Type == 199
+                || Bonus5Type == 193
+                || Bonus5Type == 211
+                || Bonus5Type == 202
+                || Bonus5Type == 209
+                || Bonus5Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus5;
+                    // Consistency update: using *2
+                    totalUti += Bonus5 * 2;
                 }
-                else if (Bonus5Type == 10)
+                else if (Bonus5Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus5 * .25;
                 }
-                else if (Bonus5Type < 20)
+                else if (Bonus5Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus5 * 2;
                 }
-                else if (Bonus5Type < 115)
+                else if (Bonus5Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus5 * 1;
+                }
+                else if (Bonus5Type < 115
+                || Bonus5Type == 198
+                || Bonus5Type == 191
+                || Bonus5Type == 197
+                || Bonus5Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus5 * 5;
                 }
-                else if (Bonus5Type == 163
-                  || Bonus5Type == 164
-                  || Bonus5Type == 167
-                  || Bonus5Type == 168
-                  || Bonus5Type == 213)
+                else if (Bonus5Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus5Type == 164
+                || Bonus5Type == 167
+                || Bonus5Type == 168
+                || Bonus5Type == 213)
                 {
-                    totalUti += Bonus5 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus5 * 10;
                 }
             }
 
+            // --- Bonus 6 (UPDATED) ---
             if (Bonus6Type != 0 &&
                 Bonus6 != 0)
             {
-                if (Bonus6Type < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> Bonus6Type
+                if (Bonus6Type < 9 || Bonus6Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus6 * .6667;
                 }
-                else if (Bonus6Type == 9)
+                else if (Bonus6Type == 9
+                || Bonus6Type == 196
+                || Bonus6Type == 190
+                || Bonus6Type == 199
+                || Bonus6Type == 193
+                || Bonus6Type == 211
+                || Bonus6Type == 202
+                || Bonus6Type == 209
+                || Bonus6Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus6;
+                    // Consistency update: using *2
+                    totalUti += Bonus6 * 2;
                 }
-                else if (Bonus6Type == 10)
+                else if (Bonus6Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus6 * .25;
                 }
-                else if (Bonus6Type < 20)
+                else if (Bonus6Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus6 * 2;
                 }
-                else if (Bonus6Type < 115)
+                else if (Bonus6Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus6 * 1;
+                }
+                else if (Bonus6Type < 115
+                || Bonus6Type == 198
+                || Bonus6Type == 191
+                || Bonus6Type == 197
+                || Bonus6Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus6 * 5;
                 }
-                else if (Bonus6Type == 163
-                  || Bonus6Type == 164
-                  || Bonus6Type == 167
-                  || Bonus6Type == 168
-                  || Bonus6Type == 213)
+                else if (Bonus6Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus6Type == 164
+                || Bonus6Type == 167
+                || Bonus6Type == 168
+                || Bonus6Type == 213)
                 {
-                    totalUti += Bonus6 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus6 * 10;
                 }
             }
 
+            // --- Bonus 7 (UPDATED) ---
             if (Bonus7Type != 0 &&
                 Bonus7 != 0)
             {
-                if (Bonus7Type < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> Bonus7Type
+                if (Bonus7Type < 9 || Bonus7Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus7 * .6667;
                 }
-                else if (Bonus7Type == 9)
+                else if (Bonus7Type == 9
+                || Bonus7Type == 196
+                || Bonus7Type == 190
+                || Bonus7Type == 199
+                || Bonus7Type == 193
+                || Bonus7Type == 211
+                || Bonus7Type == 202
+                || Bonus7Type == 209
+                || Bonus7Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus7;
+                    // Consistency update: using *2
+                    totalUti += Bonus7 * 2;
                 }
-                else if (Bonus7Type == 10)
+                else if (Bonus7Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus7 * .25;
                 }
-                else if (Bonus7Type < 20)
+                else if (Bonus7Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus7 * 2;
                 }
-                else if (Bonus7Type < 115)
+                else if (Bonus7Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus7 * 1;
+                }
+                else if (Bonus7Type < 115
+                || Bonus7Type == 198
+                || Bonus7Type == 191
+                || Bonus7Type == 197
+                || Bonus7Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus7 * 5;
                 }
-                else if (Bonus7Type == 163
-                  || Bonus7Type == 164
-                  || Bonus7Type == 167
-                  || Bonus7Type == 168
-                  || Bonus7Type == 213)
+                else if (Bonus7Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus7Type == 164
+                || Bonus7Type == 167
+                || Bonus7Type == 168
+                || Bonus7Type == 213)
                 {
-                    totalUti += Bonus7 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus7 * 10;
                 }
             }
+
+            // --- Bonus 8 (UPDATED) ---
             if (Bonus8Type != 0 &&
                 Bonus8 != 0)
             {
-                if (Bonus8Type < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> Bonus8Type
+                if (Bonus8Type < 9 || Bonus8Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus8 * .6667;
                 }
-                else if (Bonus8Type == 9)
+                else if (Bonus8Type == 9
+                || Bonus8Type == 196
+                || Bonus8Type == 190
+                || Bonus8Type == 199
+                || Bonus8Type == 193
+                || Bonus8Type == 211
+                || Bonus8Type == 202
+                || Bonus8Type == 209
+                || Bonus8Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus8;
+                    // Consistency update: using *2
+                    totalUti += Bonus8 * 2;
                 }
-                else if (Bonus8Type == 10)
+                else if (Bonus8Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus8 * .25;
                 }
-                else if (Bonus8Type < 20)
+                else if (Bonus8Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus8 * 2;
                 }
-                else if (Bonus8Type < 115)
+                else if (Bonus8Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus8 * 1;
+                }
+                else if (Bonus8Type < 115
+                || Bonus8Type == 198
+                || Bonus8Type == 191
+                || Bonus8Type == 197
+                || Bonus8Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus8 * 5;
                 }
-                else if (Bonus8Type == 163
-                  || Bonus8Type == 164
-                  || Bonus8Type == 167
-                  || Bonus8Type == 168
-                  || Bonus8Type == 213)
+                else if (Bonus8Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus8Type == 164
+                || Bonus8Type == 167
+                || Bonus8Type == 168
+                || Bonus8Type == 213)
                 {
-                    totalUti += Bonus8 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus8 * 10;
                 }
             }
+
+            // --- Bonus 9 (UPDATED) ---
             if (Bonus9Type != 0 &&
                 Bonus9 != 0)
             {
-                if (Bonus9Type < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> Bonus9Type
+                if (Bonus9Type < 9 || Bonus9Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus9 * .6667;
                 }
-                else if (Bonus9Type == 9)
+                else if (Bonus9Type == 9
+                || Bonus9Type == 196
+                || Bonus9Type == 190
+                || Bonus9Type == 199
+                || Bonus9Type == 193
+                || Bonus9Type == 211
+                || Bonus9Type == 202
+                || Bonus9Type == 209
+                || Bonus9Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus9;
+                    // Consistency update: using *2
+                    totalUti += Bonus9 * 2;
                 }
-                else if (Bonus9Type == 10)
+                else if (Bonus9Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus9 * .25;
                 }
-                else if (Bonus9Type < 20)
+                else if (Bonus9Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus9 * 2;
                 }
-                else if (Bonus9Type < 115)
+                else if (Bonus9Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus9 * 1;
+                }
+                else if (Bonus9Type < 115
+                || Bonus9Type == 198
+                || Bonus9Type == 191
+                || Bonus9Type == 197
+                || Bonus9Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus9 * 5;
                 }
-                else if (Bonus9Type == 163
-                  || Bonus9Type == 164
-                  || Bonus9Type == 167
-                  || Bonus9Type == 168
-                  || Bonus9Type == 213)
+                else if (Bonus9Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus9Type == 164
+                || Bonus9Type == 167
+                || Bonus9Type == 168
+                || Bonus9Type == 213)
                 {
-                    totalUti += Bonus9 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus9 * 10;
                 }
             }
+
+            // --- Bonus 10 (UPDATED) ---
             if (Bonus10Type != 0 &&
                 Bonus10 != 0)
             {
-                if (Bonus10Type < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> Bonus10Type
+                if (Bonus10Type < 9 || Bonus10Type == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += Bonus10 * .6667;
                 }
-                else if (Bonus10Type == 9)
+                else if (Bonus10Type == 9
+                || Bonus10Type == 196
+                || Bonus10Type == 190
+                || Bonus10Type == 199
+                || Bonus10Type == 193
+                || Bonus10Type == 211
+                || Bonus10Type == 202
+                || Bonus10Type == 209
+                || Bonus10Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += Bonus10;
+                    // Consistency update: using *2
+                    totalUti += Bonus10 * 2;
                 }
-                else if (Bonus10Type == 10)
+                else if (Bonus10Type == 10) // MaxHealth correct
                 {
                     totalUti += Bonus10 * .25;
                 }
-                else if (Bonus10Type < 20)
+                else if (Bonus10Type < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += Bonus10 * 2;
                 }
-                else if (Bonus10Type < 115)
+                else if (Bonus10Type == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += Bonus10 * 1;
+                }
+                else if (Bonus10Type < 115
+                || Bonus10Type == 198
+                || Bonus10Type == 191
+                || Bonus10Type == 197
+                || Bonus10Type == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += Bonus10 * 5;
                 }
-                else if (Bonus10Type == 163
-                  || Bonus10Type == 164
-                  || Bonus10Type == 167
-                  || Bonus10Type == 168
-                  || Bonus10Type == 213)
+                else if (Bonus10Type == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || Bonus10Type == 164
+                || Bonus10Type == 167
+                || Bonus10Type == 168
+                || Bonus10Type == 213)
                 {
-                    totalUti += Bonus10 * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus10 * 10;
                 }
             }
+
+            // --- Extra Bonus (UPDATED) ---
             if (ExtraBonusType != 0 &&
                 ExtraBonus != 0)
             {
-                if (ExtraBonusType < 9 || Bonus1Type == 156)
+                // Typo fix: Bonus1Type -> ExtraBonusType
+                if (ExtraBonusType < 9 || ExtraBonusType == 156) // All Stats inkl. Acuity correct
                 {
                     totalUti += ExtraBonus * .6667;
                 }
-                else if (ExtraBonusType == 9)
+                else if (ExtraBonusType == 9
+                || ExtraBonusType == 196
+                || ExtraBonusType == 190
+                || ExtraBonusType == 199
+                || ExtraBonusType == 193
+                || ExtraBonusType == 211
+                || ExtraBonusType == 202
+                || ExtraBonusType == 209
+                || ExtraBonusType == 254) /// Power Cap correct (UPDATED IDs)
                 {
-                    totalUti += ExtraBonus;
+                    // Consistency update: using *2
+                    totalUti += ExtraBonus * 2;
                 }
-                else if (ExtraBonusType == 10)
+                else if (ExtraBonusType == 10) // MaxHealth correct
                 {
                     totalUti += ExtraBonus * .25;
                 }
-                else if (ExtraBonusType < 20)
+                else if (ExtraBonusType < 20) // Resists & Power Pool (pre-TOA) correct
                 {
                     totalUti += ExtraBonus * 2;
                 }
-                else if (ExtraBonusType < 115)
+                else if (ExtraBonusType == 148) // Power Pool (TOA) correct - Added ID 148
+                {
+                    totalUti += ExtraBonus * 1;
+                }
+                else if (ExtraBonusType < 115
+                || ExtraBonusType == 198
+                || ExtraBonusType == 191
+                || ExtraBonusType == 197
+                || ExtraBonusType == 153) // Weapon/Spell & TOA skills correct
                 {
                     totalUti += ExtraBonus * 5;
                 }
-                else if (ExtraBonusType == 163
-                  || ExtraBonusType == 164
-                  || ExtraBonusType == 167
-                  || ExtraBonusType == 168
-                  || ExtraBonusType == 213)
+                else if (ExtraBonusType == 163 // All magic/melee skill (with 164, 167, 168, 213)
+                || ExtraBonusType == 164
+                || ExtraBonusType == 167
+                || ExtraBonusType == 168
+                || ExtraBonusType == 213)
                 {
-                    totalUti += ExtraBonus * 5;
+                    // Consistency update: using *10
+                    totalUti += ExtraBonus * 10;
                 }
             }
 
@@ -1228,49 +1446,64 @@ namespace DOL.GS
         {
             double totalUti = 0;
 
-            //based off of eProperty
-            //1-8 == stats = *.6667
-            //9 == power cap = *2
-            //10 == maxHP =  *.25
-            //11-19 == resists = *2
-            //20-115 == skill = *5
-            //163 == all magic = *5
-            //164 == all melee = *5
-            //167 == all dual wield = *5
-            //168 == all archery = *5
+            // based off of eProperty
+            // 1-8 == stats = *.6667 (Includes Acuity via 156)
+            // 9, 196, 190, 199, 193, 211, 202, 209, 254 == power cap = *2 (UPDATED IDs)
+            // 10 == maxHP =  *.25
+            // 11-19 == resists & power pool (pre-TOA) = *2
+            // 148 == Power Pool (TOA) = *1
+            // 20-114, 198, 191, 197, 153 == skill & TOA skills = *5
+            // 163, 164, 167, 168, 213 == all magic/melee/etc skills = *10
+
             if (BonusType != 0 &&
                 Bonus != 0)
             {
-                if (BonusType < 9 || BonusType == 156)
+                if (BonusType < 9 || BonusType == 156) // All Stats inkl. Acuity
                 {
                     totalUti += Bonus * .6667;
                 }
-                else if (BonusType == 9)
-                {
-                    totalUti += Bonus;
-                }
-                else if (BonusType == 10)
-                {
-                    totalUti += Bonus * .25;
-                }
-                else if (BonusType < 20)
+                else if (BonusType == 9
+                || BonusType == 196
+                || BonusType == 190
+                || BonusType == 199
+                || BonusType == 193
+                || BonusType == 211
+                || BonusType == 202
+                || BonusType == 209
+                || BonusType == 254) /// Power Cap (UPDATED IDs)
                 {
                     totalUti += Bonus * 2;
                 }
-                else if (BonusType < 115)
+                else if (BonusType == 10) // MaxHealth
+                {
+                    totalUti += Bonus * .25;
+                }
+                else if (BonusType < 20) // Resists & Power Pool (pre-TOA)
+                {
+                    totalUti += Bonus * 2;
+                }
+                else if (BonusType == 148) // Power Pool (TOA) - ID 148
+                {
+                    totalUti += Bonus * 1;
+                }
+                else if (BonusType < 115
+                || BonusType == 198
+                || BonusType == 191
+                || BonusType == 197
+                || BonusType == 153) // Weapon/Spell & TOA skills
                 {
                     totalUti += Bonus * 5;
                 }
-                else if (BonusType == 163
-                  || BonusType == 164
-                  || BonusType == 167
-                  || BonusType == 168
-                  || BonusType == 213)
+                else if (BonusType == 163 // All magic/melee/dual wield/archery skills
+                || BonusType == 164
+                || BonusType == 167
+                || BonusType == 168
+                || BonusType == 213)
                 {
-                    totalUti += Bonus * 5;
+                    // Consistency update: using *10
+                    totalUti += Bonus * 10;
                 }
             }
-
 
             return totalUti;
         }
