@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class MovementComponent : IServiceObject
     {
-        private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
+        private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 2000; // Subzone update is forced by OnPositionUpdate, so this doesn't need to be very frequent.
 
         protected Vector3 _ownerPosition;
         private bool _relocationCheckPending;
@@ -49,7 +49,7 @@ namespace DOL.GS
 
         protected virtual void TickInternal()
         {
-            if (!_relocationCheckPending || !GameServiceUtils.ShouldTick(_nextRelocationCheckTick))
+            if (!_relocationCheckPending && !GameServiceUtils.ShouldTick(_nextRelocationCheckTick))
                 return;
 
             Owner.SubZoneObject.CheckForRelocation();
