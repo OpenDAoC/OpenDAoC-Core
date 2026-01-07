@@ -19,15 +19,16 @@ namespace DOL.GS
                 return false;
             }
 
-            string message = $"Greetings {player.Name}, nice meeting you.\n";
-            message += "I am happy to offer you my services.\n\n";
-            message += "You can browse the [first] or [second] page of your Account Vault.";
-            player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            string message = $"Greetings {player.Name}, nice meeting you! I can store your items for your entire account, making shared storage and item transfers easy! \n";
+            /* message += "I am happy to offer you my services.\n\n"; second page
+             message += "You can browse the [first] or [second] page of your Account Vault."; second page */
+            player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_SystemWindow); // eChatLoc.CL_PopupWindow for second page
             player.ActiveInventoryObject = player.AccountVault;
             player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
             return true;
         }
 
+        /*
         public override bool WhisperReceive(GameLiving source, string text)
         {
             if (!base.WhisperReceive(source, text))
@@ -52,6 +53,7 @@ namespace DOL.GS
 
             return true;
         }
+        */
 
         public static DbItemTemplate GetDummyVaultItem(GamePlayer player)
         {
