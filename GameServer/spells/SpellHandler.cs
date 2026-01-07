@@ -1968,29 +1968,30 @@ namespace DOL.GS.Spells
 				targets = SelectTargets(Target);
 
 			CasterEffectiveness = Caster.Effectiveness;
-
+			/*
 			/// [Atlas - Takii] No effectiveness drop in OF MOC.
-// 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-// 			{
-// 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
-// 				if (ra != null && ra.Level > 0)
-// 				{
-// 					_casterEffectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-// 				}
-// 			}
+ 			if (Caster.EffectList.GetOfType<XMasteryofConcentrationEffect>() != null)
+ 			{
+ 				XMasteryofConcentrationEffect ra = Caster.GetAbility<XMasteryofConcentrationEffect>();
+ 				if (ra != null && ra.Level > 0)
+ 				{
+ 					_casterEffectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+ 				}
+ 			}
 
 			//[StephenxPimentel] Reduce Damage if necro is using MoC
-// 			if (Caster is NecromancerPet)
-// 			{
-// 				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-// 				{
-// 					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
-// 					if (necroRA != null && necroRA.Level > 0)
-// 					{
-// 						_casterEffectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
-// 					}
-// 				}
-// 			}
+			if (Caster is NecromancerPet)
+ 			{
+ 				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<XMasteryofConcentrationEffect>() != null)
+ 				{
+ 					XMasteryofConcentrationEffect necroRA = (Caster as NecromancerPet).Owner.GetAbility<XMasteryofConcentrationEffect>();
+ 					if (necroRA != null && necroRA.Level > 0)
+ 					{
+ 						_casterEffectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
+ 					}
+ 				}
+ 			}
+			*/
 
 			if (Caster is GamePlayer && (Caster as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Warlock && m_spell.IsSecondary)
 			{
