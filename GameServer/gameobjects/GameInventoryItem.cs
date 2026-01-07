@@ -521,6 +521,7 @@ namespace DOL.GS
 
         protected virtual void WriteMagicalBonuses(List<string> output, GameClient client, bool shortInfo)
         {
+            output.Add("Total utility: " + String.Format("{0:0.00}", GetTotalUtility())); // Total Utility to the top
             int oldCount = output.Count;
 
             WriteBonusLine(output, client, Bonus1Type, Bonus1);
@@ -844,10 +845,6 @@ namespace DOL.GS
                     }
                 }
                 #endregion
-                
-                output.Add("Total utility: " + String.Format("{0:0.00}", GetTotalUtility()));
-                output.Add(" ");
-                
             }
         }
 
