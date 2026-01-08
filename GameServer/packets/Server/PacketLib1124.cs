@@ -290,43 +290,34 @@ namespace DOL.GS.PacketHandler
 
 			// Hack to make NPCs untargetable with TAB on a PvP server. There might be a better way to do it.
 			// Relies on 'SendObjectGuildID' not to be called after this.
-			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
+			if (GameServer.Instance.Configuration.ServerType is EGameServerType.GST_PvP)
 			{
 				if (npc.Brain is IControlledBrain npcBrain)
-					SendPetFakeFriendlyGuildID(npc, npcBrain);
-				else
-					SendNpcFakeFriendlyGuildID(npc);
-			}
-
-			void SendPetFakeFriendlyGuildID(GameNPC pet, IControlledBrain petBrain)
-			{
-				GamePlayer playerOwner = petBrain.GetPlayerOwner();
-				GamePlayer player = m_gameClient.Player;
-				Guild playerGuild = player.Guild;
-
-				// Leave if the player we send this packet to isn't the pet's owner and isn't in the same guild or group.
-				if (playerOwner != player)
 				{
-					Guild playerOwnerGuild = playerOwner.Guild;
+					GamePlayer playerOwner = npcBrain.GetPlayerOwner();
+					GamePlayer player = m_gameClient.Player;
+					Guild playerGuild = player.Guild;
 
-					if (playerOwnerGuild == null || playerGuild == null || playerOwnerGuild != playerGuild)
+					// Leave if the player we send this packet to isn't the pet's owner and isn't in the same guild or group.
+					if (playerOwner != player)
 					{
-						Group playerOwnerGroup = playerOwner.Group;
+						Guild playerOwnerGuild = playerOwner.Guild;
 
-						if (playerOwnerGroup == null || !playerOwnerGroup.GetMembersInTheGroup().Contains(player))
-							return;
+						if (playerOwnerGuild == null || playerGuild == null || playerOwnerGuild != playerGuild)
+						{
+							Group playerOwnerGroup = playerOwner.Group;
+
+							if (playerOwnerGroup == null || !playerOwnerGroup.GetMembersInTheGroup().Contains(player))
+								return;
+						}
 					}
+
+					// Make the client believe the pet is in the same guild as them.
+					// Use a dummy guild for guildless players.
+					SendObjectGuildID(npc, playerGuild ?? Guild.DummyGuild);
+					SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
 				}
-
-				// Make the client believe the pet is in the same guild as them.
-				// Use a dummy guild for guildless players.
-				SendObjectGuildID(pet, playerGuild ?? Guild.DummyGuild);
-				SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
-			}
-
-			void SendNpcFakeFriendlyGuildID(GameNPC npc)
-			{
-				if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != eRealm.None)
+				else if ((npc.Flags & GameNPC.eFlags.PEACE) != 0 || npc.Realm is not eRealm.None)
 				{
 					GamePlayer player = m_gameClient.Player;
 					Guild playerGuild = player.Guild;
