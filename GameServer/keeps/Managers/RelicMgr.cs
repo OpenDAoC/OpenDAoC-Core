@@ -1,322 +1,258 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// RelicManager
-	/// The manager that keeps track of the relics.
-	/// </summary>
-	public sealed class RelicMgr
-	{
-		/// <summary>
-		/// table of all relics, id as key
-		/// </summary>
-		private static readonly Hashtable m_relics = new Hashtable();
-		private static readonly Lock _relicsLock = new Lock();
+    public class RelicMgr
+    {
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        /// <summary>
-        /// list of all relicPads
-        /// </summary>
-        private static readonly ArrayList m_relicPads = new ArrayList();
-		private static readonly Lock _relicPadsLock = new Lock();
+        // Relics are not expected to be modified after initialization.
+        private static readonly Dictionary<int, GameRelic> _relicsMap = [];
+        private static volatile GameRelic[] _relicsArray = [];
 
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        // Relic pads are loaded concurrently via GameRelicPad.AddToWorld.
+        private static readonly List<GameRelicPad> _relicPads = [];
+        private static readonly Lock _relicPadsLock = new();
 
-		/// <summary>
-		/// load all relics from DB
-		/// </summary>
-		public static bool Init()
-		{
-			lock (_relicsLock)
-			{
-				//at first remove all relics
-				foreach (GameRelic rel in m_relics.Values)
-				{
-					rel.SaveIntoDatabase();
-					rel.RemoveFromWorld();
-				}
+        public static bool Init()
+        {
+            lock (_relicPadsLock)
+            {
+                foreach (GameRelic relic in _relicsMap.Values)
+                {
+                    relic.SaveIntoDatabase();
+                    relic.RemoveFromWorld();
+                }
 
-				//then clear the hashtable
-				m_relics.Clear();
+                _relicsMap.Clear();
+                _relicsArray = [];
 
-				//then we remove all relics from the pads
-				foreach (GameRelicPad pad in m_relicPads)
-				{
-					pad.RemoveRelics();
-				}
+                foreach (GameRelicPad pad in _relicPads)
+                    pad.RemoveRelics();
 
-				// if relics are on the ground during init we will return them to their owners
-				List<GameRelic> lostRelics = new List<GameRelic>();
+                List<GameRelic> lostRelics = [];
+                IList<DbRelic> dbRelics = GameServer.Database.SelectAllObjects<DbRelic>();
 
-				var relics = GameServer.Database.SelectAllObjects<DbRelic>();
-				foreach (DbRelic datarelic in relics)
-				{
-					if (datarelic.relicType < 0 || datarelic.relicType > 1
-						|| datarelic.OriginalRealm < 1 || datarelic.OriginalRealm > 3)
-					{
-						log.Warn("DBRelic: Could not load " + datarelic.RelicID + ": Realm or Type missmatch.");
-						continue;
-					}
+                foreach (DbRelic dbRelic in dbRelics)
+                {
+                    if (dbRelic.relicType < 0 || dbRelic.relicType > 1 || dbRelic.OriginalRealm < 1 || dbRelic.OriginalRealm > 3)
+                    {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Could not load {dbRelic.RelicID}: Realm or Type mismatch.");
 
-					if (WorldMgr.GetRegion((ushort)datarelic.Region) == null)
-					{
-						log.Warn("DBRelic: Could not load " + datarelic.RelicID + ": Region missmatch.");
-						continue;
-					}
-					GameRelic relic = new GameRelic(datarelic);
-					m_relics.Add(datarelic.RelicID, relic);
+                        continue;
+                    }
 
-					relic.AddToWorld();
-					GameRelicPad pad = GetPadAtRelicLocation(relic);
-					if (pad != null)
-					{
-						if (relic.RelicType == pad.PadType)
-						{
-							relic.RelicPadTakesOver(pad, true);
-							log.Debug("DBRelic: " + relic.Name + " has been loaded and added to pad " + pad.Name + ".");
-						}
-					}
-					else
-					{
-						lostRelics.Add(relic);
-					}
-				}
+                    if (WorldMgr.GetRegion((ushort) dbRelic.Region) == null)
+                    {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Could not load {dbRelic.RelicID}: Region mismatch.");
 
-				foreach (GameRelic lostRelic in lostRelics)
-				{
-					eRealm returnRealm = (eRealm)lostRelic.LastRealm;
+                        continue;
+                    }
 
-					if (returnRealm == eRealm.None)
-					{
-						returnRealm = lostRelic.OriginalRealm;
-					}
+                    GameRelic relic = new(dbRelic);
+                    _relicsMap[dbRelic.RelicID] = relic;
+                    relic.AddToWorld();
+                    GameRelicPad pad = null;
 
-					// ok, now we have a realm to return the relic too, lets find a pad
+                    foreach (GameRelicPad relicPad in _relicPads)
+                    {
+                        if (relic.IsWithinRadius(relicPad, 200))
+                            pad = relicPad;
+                    }
 
-					foreach (GameRelicPad pad in m_relicPads)
-					{
-						if (pad.Realm == returnRealm && pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
-						{
-							if (log.IsDebugEnabled)
-								log.Debug($"Lost relic '{lostRelic.Name}' has returned to last pad '{pad.Name}'");
-						}
-					}
-				}
+                    if (pad != null)
+                    {
+                        if (relic.RelicType == pad.PadType)
+                        {
+                            relic.RelicPadTakesOver(pad, true);
 
-				// Final cleanup.  If any relic is still unmounted then mount the damn thing to any empty pad
+                            if (log.IsDebugEnabled)
+                                log.Debug($"{relic.Name} has been loaded and added to pad {pad.Name}.");
+                        }
+                    }
+                    else
+                        lostRelics.Add(relic);
+                }
 
-				foreach (GameRelic lostRelic in lostRelics)
-				{
-					if (lostRelic.CurrentRelicPad == null)
-					{
-						foreach (GameRelicPad pad in m_relicPads)
-						{
-							if (pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
-							{
-								if (log.IsDebugEnabled)
-									log.Debug($"Lost relic '{lostRelic.Name}' auto assigned to pad '{pad.Name}'");
-							}
-						}
-					}
-				}
-			}
+                foreach (GameRelic lostRelic in lostRelics)
+                {
+                    eRealm returnRealm = lostRelic.LastRealm;
 
-			log.Debug(m_relicPads.Count + " relicpads" + ((m_relicPads.Count > 1) ? "s were" : " was") + " loaded.");
-			log.Debug(m_relics.Count + " relic" + ((m_relics.Count > 1) ? "s were" : " was") + " loaded.");
-			return true;
-		}
-		
-		public static int GetDaysSinceCapture(GameRelic relic)
-		{
-			TimeSpan daysPassed = DateTime.Now.Subtract(relic.LastCaptureDate);
-			return daysPassed.Days;
-		}
+                    if (returnRealm is eRealm.None)
+                        returnRealm = lostRelic.OriginalRealm;
 
-		/// <summary>
-		/// This is called when the GameRelicPads are added to world
-		/// </summary>
-		public static void AddRelicPad(GameRelicPad pad)
-		{
-			lock (_relicPadsLock)
-			{
-				if (!m_relicPads.Contains(pad))
-					m_relicPads.Add(pad);
-			}
-		}
+                    foreach (GameRelicPad pad in _relicPads)
+                    {
+                        if (pad.Realm == returnRealm && pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
+                        {
+                            if (log.IsDebugEnabled)
+                                log.Debug($"Lost relic '{lostRelic.Name}' has returned to last pad '{pad.Name}'");
+                        }
+                    }
+                }
 
-		/// <summary>
-		/// This is called on during the loading. It looks for relicpads and where it could be stored.
-		/// </summary>
-		/// <returns>null if no GameRelicPad was found at the relic's position.</returns>
-		private static GameRelicPad GetPadAtRelicLocation(GameRelic relic)
-		{
-			lock (_relicPadsLock)
-			{
-				foreach (GameRelicPad pad in m_relicPads)
-				{
-					if (relic.IsWithinRadius(pad, 200))
-						//if (pad.X == relic.X && pad.Y == relic.Y && pad.Z == relic.Z && pad.CurrentRegionID == relic.CurrentRegionID)
-						return pad;
-				}
-				return null;
-			}
-		}
+                foreach (GameRelic lostRelic in lostRelics)
+                {
+                    if (lostRelic.CurrentRelicPad == null)
+                    {
+                        foreach (GameRelicPad pad in _relicPads)
+                        {
+                            if (pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
+                            {
+                                if (log.IsDebugEnabled)
+                                    log.Debug($"Lost relic '{lostRelic.Name}' auto assigned to pad '{pad.Name}'");
+                            }
+                        }
+                    }
+                }
 
-		/// <summary>
-		/// get relic by ID
-		/// </summary>
-		public static GameRelic getRelic(int id)
-		{
-			return m_relics[id] as GameRelic;
-		}
+                _relicsArray = [.. _relicsMap.Values];
 
-		#region Helpers
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"{_relicPads.Count} relic pad{(_relicPads.Count > 1 ? "s were" : " was")} loaded.");
+                    log.Debug($"{_relicsMap.Count} relic{(_relicsMap.Count > 1 ? "s were" : " was")} loaded.");
+                }
+            }
 
-		public static IList getNFRelics()
-		{
-			ArrayList myRelics = new ArrayList();
-			foreach (GameRelic relic in m_relics.Values)
-			{
-				myRelics.Add(relic);
-			}
-			return myRelics;
-		}
+            return true;
+        }
 
-		/// <summary>
-		/// Returns an enumeration with all mounted Relics of an realm
-		/// </summary>
-		public static IEnumerable getRelics(eRealm Realm)
-		{
-			ArrayList realmRelics = new ArrayList();
-			lock (m_relics)
-			{
-				foreach (GameRelic relic in m_relics.Values)
-				{
-					if (relic.Realm == Realm && relic.IsMounted)
-						realmRelics.Add(relic);
-				}
-			}
-			return realmRelics;
-		}
+        public static int GetDaysSinceCapture(GameRelic relic)
+        {
+            TimeSpan daysPassed = DateTime.Now.Subtract(relic.LastCaptureDate);
+            return daysPassed.Days;
+        }
 
-		/// <summary>
-		/// Returns an enumeration with all mounted Relics of an realm by a specified RelicType
-		/// </summary>
-		public static IEnumerable getRelics(eRealm Realm, eRelicType RelicType)
-		{
-			ArrayList realmTypeRelics = new ArrayList();
-			foreach (GameRelic relic in getRelics(Realm))
-			{
-				if (relic.RelicType == RelicType)
-					realmTypeRelics.Add(relic);
-			}
-			return realmTypeRelics;
-		}
+        public static void AddRelicPad(GameRelicPad pad)
+        {
+            lock (_relicPadsLock)
+            {
+                if (!_relicPads.Contains(pad))
+                    _relicPads.Add(pad);
+            }
+        }
 
-		/// <summary>
-		/// get relic count by realm
-		/// </summary>
-		public static int GetRelicCount(eRealm realm)
-		{
-			int index = 0;
-			lock (_relicsLock)
-			{
-				foreach (GameRelic relic in m_relics.Values)
-				{
-					if ((relic.Realm == realm) && (relic is GameRelic))
-						index++;
-				}
-			}
-			return index;
-		}
+        public static void RemoveRelicPad(GameRelicPad pad)
+        {
+            lock (_relicPadsLock)
+            {
+                _relicPads.Remove(pad);
+            }
+        }
 
-		/// <summary>
-		/// get relic count by realm and relictype
-		/// </summary>
-		public static int GetRelicCount(eRealm realm, eRelicType type)
-		{
-			int index = 0;
-			lock (_relicsLock)
-			{
-				foreach (GameRelic relic in m_relics.Values)
-				{
-					if ((relic.Realm == realm) && (relic.RelicType == type) && (relic is GameRelic))
-						index++;
-				}
-			}
-			return index;
-		}
+        public static GameRelic GetRelic(int id)
+        {
+            return _relicsMap.TryGetValue(id, out GameRelic relic) ? relic : null;
+        }
 
-		/// <summary>
-		/// Gets the bonus modifier for a realm/relictype.
-		/// </summary>
-		public static double GetRelicBonusModifier(GameLiving living, eRelicType type)
-		{
-			double modifier = 1.0;
+        public static int GetRelicCount(eRealm realm)
+        {
+            int count = 0;
+            GameRelic[] snapshot = _relicsArray;
 
-			if (!living.BenefitsFromRelics)
-				return modifier;
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic relic = snapshot[i];
 
-			bool owningSelf = false;
+                if (relic.Realm == realm && relic.IsMounted)
+                    count++;
+            }
 
-			foreach (GameRelic rel in getRelics(living.Realm, type))
-			{
-				if (rel.Realm == rel.OriginalRealm)
-					owningSelf = true;
-				else
-					modifier += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
-			}
+            return count;
+        }
 
-			// Bonus applies only if owning original relic.
-			return owningSelf ? modifier : 1.0;
-		}
+        public static int GetRelicCount(eRealm realm, eRelicType type)
+        {
+            int count = 0;
+            GameRelic[] snapshot = _relicsArray;
 
-		/// <summary>
-		/// Returns if a player is allowed to pick up a mounted relic (depends if they own their own relic of the same type)
-		/// </summary>
-		public static bool CanPickupRelicFromShrine(GamePlayer player, GameRelic relic)
-		{
-			//debug: if (player == null || relic == null) return false;
-			//their own relics can always be picked up.
-			if (player.Realm == relic.OriginalRealm)
-				return true;
-			IEnumerable list = getRelics(player.Realm, relic.RelicType);
-			foreach (GameRelic curRelic in list)
-			{
-				if (curRelic.Realm == curRelic.OriginalRealm)
-					return true;
-			}
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic relic = snapshot[i];
 
-			return false;
-		}
+                if (relic.Realm == realm && relic.RelicType == type && relic.IsMounted)
+                    count++;
+            }
 
-		/// <summary>
-		/// Gets a copy of the current relics table, keyvalue is the relicId
-		/// </summary>
-		public static Hashtable GetAllRelics()
-		{
-			lock (_relicsLock)
-			{
-				return (Hashtable)m_relics.Clone();
-			}
-		}
+            return count;
+        }
 
-		#endregion
+        public static GameRelic[] GetRelics()
+        {
+            return _relicsArray;
+        }
 
-		[ScriptLoadedEvent]
-		private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-		{
-			Init();
-		}
-	}
+        public static double GetRelicBonusModifier(GameLiving living, eRelicType type)
+        {
+            double modifier = 1.0;
+
+            if (!living.BenefitsFromRelics)
+                return modifier;
+
+            bool owningSelf = false;
+            eRealm realm = living.Realm;
+            GameRelic[] snapshot = _relicsArray;
+
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic relic = snapshot[i];
+
+                if (relic.Realm == realm && relic.RelicType == type && relic.IsMounted)
+                {
+                    if (relic.Realm == relic.OriginalRealm)
+                        owningSelf = true;
+                    else
+                        modifier += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
+                }
+            }
+
+            // Bonus applies only if owning original relic.
+            return owningSelf ? modifier : 1.0;
+        }
+
+        public static bool CanPickupRelicFromShrine(GamePlayer player, GameRelic relic)
+        {
+            if (player == null || relic == null)
+                return false;
+
+            // A player can always pick up their own realm's original relic.
+            if (player.Realm == relic.OriginalRealm)
+                return true;
+
+            eRealm playerRealm = player.Realm;
+            eRelicType type = relic.RelicType;
+            GameRelic[] snapshot = _relicsArray;
+
+            // Ensure the player's realm possesses its original relic of the same type.
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic otherRelic = snapshot[i];
+
+                if (otherRelic.Realm == playerRealm &&
+                    otherRelic.OriginalRealm == playerRealm &&
+                    otherRelic.RelicType == type &&
+                    otherRelic.IsMounted)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        [ScriptLoadedEvent]
+        private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        {
+            Init();
+        }
+    }
 }

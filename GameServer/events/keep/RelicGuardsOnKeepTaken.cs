@@ -125,7 +125,7 @@ namespace DOL.GS.GameEvents
             {
                 try
                 {
-                    foreach (GameRelic relic in RelicMgr.getNFRelics())
+                    foreach (GameRelic relic in RelicMgr.GetRelics())
                     {
                         switch (relic.Realm)
                         {

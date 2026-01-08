@@ -62,7 +62,7 @@ namespace DOL.GS.Commands
 
 
             #region Reformat Relics  '[Type]: [OwnerRealm]'
-            foreach (GameRelic relic in RelicMgr.getNFRelics())
+            foreach (GameRelic relic in RelicMgr.GetRelics())
             {
                 string relicLoc = string.Empty;
                 if (relic.Realm == eRealm.None)
