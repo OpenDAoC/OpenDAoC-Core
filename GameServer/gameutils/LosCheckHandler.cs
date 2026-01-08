@@ -92,7 +92,7 @@ namespace DOL.GS
                 else
                 {
                     if (!_timerPool.TryDequeue(out LosCheckTimer newTimer))
-                        newTimer = new(_owner, ReturnTimerToPool);
+                        newTimer = new(this);
 
                     newTimer.Setup(sourceObjectId, targetObjectId, sourceObjectLastMovementTick, targetObjectLastMovementTick, listener);
                     _timers[key] = newTimer;
@@ -137,11 +137,11 @@ namespace DOL.GS
 
             private long _responseExpireTime;
             private Queue<ILosCheckListener> _listeners = new();
-            private readonly Action<LosCheckTimer> _completionCallback;
+            private readonly LosCheckHandler _handler;
 
-            public LosCheckTimer(GamePlayer owner, Action<LosCheckTimer> completionCallback) : base(owner)
+            public LosCheckTimer(LosCheckHandler handler) : base(handler._owner)
             {
-                _completionCallback = completionCallback ?? throw new ArgumentNullException(nameof(completionCallback));
+                _handler = handler ?? throw new ArgumentNullException(nameof(handler));
             }
 
             public void Setup(ushort sourceObjectId, ushort targetObjectId, long sourceLastMovementTick, long targetLastMovementTick, ILosCheckListener listener)
@@ -195,7 +195,7 @@ namespace DOL.GS
                         return (int) (_responseExpireTime - GameLoop.GameLoopTime);
 
                     // Notify the handler that this timer is finished, so it can be pooled.
-                    _completionCallback(this);
+                    _handler.ReturnTimerToPool(this);
                     return 0;
                 }
 
@@ -208,7 +208,7 @@ namespace DOL.GS
 
                     Response = LosCheckResponse.Timeout;
                     InvokeCallbacks();
-                    _completionCallback(this);
+                    _handler.ReturnTimerToPool(this);
                     return 0;
                 }
 
