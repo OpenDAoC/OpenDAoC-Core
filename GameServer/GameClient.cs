@@ -28,7 +28,7 @@ namespace DOL.GS
             set
             {
                 field = value;
-                this.InitFromCollection(value.CustomParams, param => param.KeyName, param => param.Value);
+                this.Init(value.CustomParams, param => param.KeyName, param => param.Value);
                 GameEventMgr.Notify(GameClientEvent.AccountLoaded, this);
             }
         }
@@ -75,7 +75,7 @@ namespace DOL.GS
         }
 
         public IPEndPoint UdpEndPoint { get; set; }
-        public Dictionary<string, List<string>> CustomParamsDictionary { get; set; } = [];
+        public Dictionary<string, object> CustomParamsDictionary { get; set; }
         public bool IsPlaying => ClientState is eClientState.Playing or eClientState.Linkdead;
         public ushort SessionID => SessionId.Value;
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Client);
