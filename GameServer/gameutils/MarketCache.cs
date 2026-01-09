@@ -75,10 +75,7 @@ namespace DOL.GS
                 return false;
 
             // There is no elegant way to update an item in the search engine, so we remove and re-add it.
-
-            if (!RemoveItem(item))
-                return false;
-
+            RemoveItem(item);
             updateAction(item, state);
             return AddItem(item);
         }
