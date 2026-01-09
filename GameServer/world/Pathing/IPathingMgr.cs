@@ -29,7 +29,10 @@ namespace DOL.GS
         ///   Returns the closest point on the navmesh, if available, or no point found.
         ///   Returns the input position if no navmesh is available
         /// </summary>
-        Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange = 256f, float yRange = 256f, float zRange = 256f);
+        Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange);
+        Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset, Vector3? referencePos);
+        Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight);
+        Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth);
 
         /// <summary>
         ///   True if pathing is enabled for the specified zone

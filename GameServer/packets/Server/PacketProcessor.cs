@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using DOL.Logging;
 using DOL.Network;
+using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS.PacketHandler
@@ -190,9 +191,9 @@ namespace DOL.GS.PacketHandler
 
             try
             {
-                long startTick = GameLoop.GetRealTime();
+                long startTick = MonotonicTime.NowMs;
                 packetHandler.HandlePacket(_client, packet);
-                long stopTick = GameLoop.GetRealTime();
+                long stopTick = MonotonicTime.NowMs;
 
                 if (log.IsWarnEnabled)
                 {

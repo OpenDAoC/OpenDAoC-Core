@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -396,6 +395,12 @@ namespace DOL.GS
 
         #endregion
 
+        [ScriptLoadedEvent]
+        private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        {
+            Init();
+        }
+    }
         [ScriptLoadedEvent]
         private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {

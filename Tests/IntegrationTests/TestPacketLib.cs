@@ -309,10 +309,10 @@ namespace DOL.Tests
 		{
 			if (SendCustomDialogMethod != null) SendCustomDialogMethod(this, msg, callback);
 		}
-		public Func<TestPacketLib, GameObject, GameObject, CheckLosResponse, bool> SendCheckLOSMethod { get; set; }
-		public bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
+		public Func<TestPacketLib, GameObject, GameObject, ILosCheckListener, bool> SendCheckLOSMethod { get; set; }
+		public bool SendLosCheckRequest(GameObject source, GameObject target, ILosCheckListener listener)
 		{
-			return SendCheckLOSMethod != null ? SendCheckLOSMethod(this, source, target, callback) : false;
+			return SendCheckLOSMethod != null ? SendCheckLOSMethod(this, source, target, listener) : false;
 		}
 		public Action<TestPacketLib, GamePlayer, string> SendGuildLeaveCommandMethod { get; set; }
 		public void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage)

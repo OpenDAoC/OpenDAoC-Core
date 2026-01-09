@@ -16,6 +16,8 @@ namespace DOL.GS
 	/// </summary>
 	public class GameSiegeWeapon : GameMovingObject
 	{
+		public bool EnableToMove { get; set; }
+
 		public GameSiegeWeapon() : base(new BlankBrain())
 		{
 			this.Realm = 0;
@@ -32,7 +34,7 @@ namespace DOL.GS
 					5000,//loading
 					0//fireing
 				};//en ms
-			m_enableToMove = true;
+			EnableToMove = true;
 			MaxSpeedBase = 50;
 			MinAttackRange = -1;
 			MaxAttackRange = -1;
@@ -312,7 +314,7 @@ namespace DOL.GS
 		public void Move()
 		{
 			if (!CanUse()) return;
-			if (!m_enableToMove) return;
+			if (!EnableToMove) return;
 			if (Owner == null || Owner.GroundTarget == null) return;
             if ( !this.IsWithinRadius( Owner.GroundTarget, 1000 ) )
 			{
@@ -506,14 +508,13 @@ namespace DOL.GS
 		}
 		protected int[] ActionDelay;
 		private ushort m_effect;
-		private bool m_enableToMove;
 
-		/// <summary>
-		/// delay to do action in Ms
-		/// </summary>
-		/// <param name="action"></param>
-		/// <returns></returns>
-		public int GetActionDelay(SiegeTimer.eAction action)
+        /// <summary>
+        /// delay to do action in Ms
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public int GetActionDelay(SiegeTimer.eAction action)
 		{
 			if (action == SiegeTimer.eAction.Fire && GroundTarget != null)
                 return (int)( ActionDelay[(int)action] + this.GetDistanceTo( GroundTarget ) );
@@ -566,17 +567,22 @@ namespace DOL.GS
 			if (SiegeWeaponTimer.IsAlive)
 			{
 				SiegeWeaponTimer.Stop();
-				if (Owner != null)
-					Owner.Out.SendSiegeWeaponCloseInterface();
+				Owner?.Out.SendSiegeWeaponCloseInterface();
 			}
+
 			SiegeWeaponTimer.Start(GetActionDelay(SiegeWeaponTimer.CurrentAction));
+
 			if (Owner != null)
 			{
-				if(this is GameSiegeRam) //Ram Siege Interface is 2 seconds fast for some reason. adding 2 seconds to the action delay for rams
-					Owner.Out.SendSiegeWeaponInterface(this, (GetActionDelay(SiegeWeaponTimer.CurrentAction) + 2000) / 100);
-				else
-				Owner.Out.SendSiegeWeaponInterface(this, GetActionDelay(SiegeWeaponTimer.CurrentAction) / 100);
+				int actionDelay = GetActionDelay(SiegeWeaponTimer.CurrentAction) / 100;
+
+				// Ram siege interface is 2 seconds faster for some reason. Adding 2 seconds to the action delay.
+				if (this is GameSiegeRam)
+					actionDelay += 20;
+
+				Owner.Out.SendSiegeWeaponInterface(this, actionDelay);
 			}
+
 			BroadcastAnimation();
 		}
 
@@ -658,12 +664,6 @@ namespace DOL.GS
             this.ExamineArticle = item.ExamineArticle;
             this.MessageArticle = item.MessageArticle;
 			this.Model = (ushort)item.Model;
-		}
-
-		public bool EnableToMove
-		{
-			set { m_enableToMove = value; }
-			get { return m_enableToMove; }
 		}
 
 		public override bool AddToWorld()

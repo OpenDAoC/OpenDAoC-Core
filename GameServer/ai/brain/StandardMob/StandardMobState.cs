@@ -68,7 +68,7 @@ namespace DOL.AI.Brain
             if (_brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
                 return;
 
-            if (_brain.HasPatrolPath())
+            if (_brain.Body.CanMoveOnPath)
                 _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
             else if (!_brain.Body.IsNearSpawn)
                 _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
@@ -230,15 +230,32 @@ namespace DOL.AI.Brain
             base.Enter();
         }
 
+        public override void Exit()
+        {
+            _brain.Body.StopMovingOnPath();
+            base.Exit();
+        }
+
         public override void Think()
         {
+            // While NPCs will resume their path after casting a spell or losing aggro, they will do it by moving to the previous node.
+            // Need to find a better way to do this, for example by saving the current position and resuming from there.
+
+            if (_brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
+                return;
+
             if (_brain.CheckProximityAggro())
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
                 return;
             }
 
-            // TODO: NPCs can get stuck here. Find a way to resume patrols.
+            if (!_brain.Body.IsMovingOnPath)
+            {
+                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+                return;
+            }
+
             base.Think();
         }
     }

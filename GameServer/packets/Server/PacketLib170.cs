@@ -324,7 +324,7 @@ namespace DOL.GS.PacketHandler
 				byte albMagic=0;
 				byte hibMagic=0;
 				byte midMagic=0;
-				foreach (GameRelic relic in RelicMgr.getNFRelics())
+				foreach (GameRelic relic in RelicMgr.GetRelics())
 				{
 					switch (relic.OriginalRealm)
 	                {

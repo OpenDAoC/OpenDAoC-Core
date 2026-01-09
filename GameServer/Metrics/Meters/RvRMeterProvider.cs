@@ -25,48 +25,44 @@ public class RvRMeterProvider : IMeterProvider
         );
     }
 
-    /// <summary>
-    /// Get active players in RvR zones
-    /// </summary>
-    /// <returns></returns>
     private static List<Measurement<int>> OnlinePlayerInRvRZones()
     {
         try
         {
-            List<GameClient> activePlayers = ClientService.Instance.GetClients().Where(IsPlayerInRvRZone).ToList();
+            List<GamePlayer> activePlayers = ClientService.Instance.GetPlayers<object>(IsPlayerInRvRZone);
 
-            static bool IsPlayerInRvRZone(GameClient client)
+            static bool IsPlayerInRvRZone(GamePlayer player, object unused)
             {
-                return client.ClientState is GameClient.eClientState.Playing &&
-                    (ePrivLevel) client.Account.PrivLevel is ePrivLevel.Player &&
-                    (client.Player.CurrentRegion.IsRvR || client.Player.CurrentZone.IsRvR);
+                return player.Client.ClientState is GameClient.eClientState.Playing &&
+                    (ePrivLevel) player.Client.Account.PrivLevel is ePrivLevel.Player &&
+                    (player.CurrentRegion.IsRvR || player.CurrentZone.IsRvR);
             }
 
             // Albion players in RvR
             Measurement<int> albionRvRPlayers = new(
-                activePlayers.Count(c => c.Player.Realm == eRealm.Albion),
+                activePlayers.Count(p => p.Realm is eRealm.Albion),
                 [new("realm", "Albion")]
             );
 
             // Hibernia players in RvR
             Measurement<int> hiberniaRvRPlayers = new(
-                activePlayers.Count(c => c.Player.Realm == eRealm.Hibernia),
+                activePlayers.Count(p => p.Realm is eRealm.Hibernia),
                 [new("realm", "Hibernia")]
             );
 
             // Midgard players in RvR
             Measurement<int> midgardRvRPlayers = new(
-                activePlayers.Count(c => c.Player.Realm == eRealm.Midgard),
+                activePlayers.Count(p => p.Realm is eRealm.Midgard),
                 [new("realm", "Midgard")]
             );
 
-            return 
+            return
             [
                 albionRvRPlayers,
                 hiberniaRvRPlayers,
                 midgardRvRPlayers
             ];
-        } 
+        }
         catch (Exception e)
         {
             log.Error("MetricsCollector.CollectMetrics threw an exception", e);

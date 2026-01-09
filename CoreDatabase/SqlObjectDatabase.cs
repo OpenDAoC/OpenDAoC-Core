@@ -9,6 +9,7 @@ using System.Threading;
 using DOL.Database.Attributes;
 using DOL.Database.Connection;
 using DOL.Database.UniqueID;
+using DOL.Timing;
 
 namespace DOL.Database
 {
@@ -612,7 +613,7 @@ namespace DOL.Database
                         try
                         {
                             OpenConnection(conn);
-                            long start = (DateTime.UtcNow.Ticks / 10000);
+                            long start = MonotonicTime.NowMs;
 
                             foreach (var parameter in parameters.Skip(current))
                             {
@@ -639,10 +640,14 @@ namespace DOL.Database
                             }
 
                             if (log.IsDebugEnabled)
-                                log.DebugFormat("ExecuteSelectImpl: SQL Select exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
-                            else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
-                                log.WarnFormat("ExecuteSelectImpl: SQL Select took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), SQLCommand);
+                                log.DebugFormat("ExecuteSelectImpl: SQL Select exec time {0}ms", MonotonicTime.NowMs - start);
+                            else if (log.IsWarnEnabled)
+                            {
+                                long diff = MonotonicTime.NowMs - start;
 
+                                if (diff > LONG_EXEC_THRESHOLD)
+                                    log.WarnFormat("ExecuteSelectImpl: SQL Select took {0}ms!\n{1}", diff, SQLCommand);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -685,7 +690,7 @@ namespace DOL.Database
                     try
                     {
                         OpenConnection(conn);
-                        long start = (DateTime.UtcNow.Ticks / 10000);
+                        long start = MonotonicTime.NowMs;
 
                         foreach (var whereClause in whereClauseBatch.Skip(current))
                         {
@@ -712,9 +717,14 @@ namespace DOL.Database
                         }
 
                         if (log.IsDebugEnabled)
-                            log.DebugFormat("ExecuteSelectImpl: SQL Select exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
-                        else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
-                            log.WarnFormat("ExecuteSelectImpl: SQL Select took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), selectFromExpression);
+                            log.DebugFormat("ExecuteSelectImpl: SQL Select exec time {0}ms", MonotonicTime.NowMs - start);
+                        else if (log.IsWarnEnabled)
+                        {
+                            long diff = MonotonicTime.NowMs - start;
+
+                            if (diff > LONG_EXEC_THRESHOLD)
+                                log.WarnFormat("ExecuteSelectImpl: SQL Select took {0}ms!\n{1}", diff, selectFromExpression);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -827,7 +837,7 @@ namespace DOL.Database
                         {
                             cmd.CommandText = SQLCommand;
                             OpenConnection(conn);
-                            long start = (DateTime.UtcNow.Ticks / 10000);
+                            long start = MonotonicTime.NowMs;
 
                             foreach (var parameter in parameters.Skip(current))
                             {
@@ -859,9 +869,14 @@ namespace DOL.Database
                             }
 
                             if (log.IsDebugEnabled)
-                                log.DebugFormat("ExecuteNonQueryImpl: SQL NonQuery exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
-                            else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
-                                log.WarnFormat("ExecuteNonQueryImpl: SQL NonQuery took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), SQLCommand);
+                                log.DebugFormat("ExecuteNonQueryImpl: SQL NonQuery exec time {0}ms", MonotonicTime.NowMs - start);
+                            else if (log.IsWarnEnabled)
+                            {
+                                long diff = MonotonicTime.NowMs - start;
+
+                                if (diff > LONG_EXEC_THRESHOLD)
+                                    log.WarnFormat("ExecuteNonQueryImpl: SQL NonQuery took {0}ms!\n{1}", diff, SQLCommand);
+                            }
                         }
                         catch (Exception e)
                         {

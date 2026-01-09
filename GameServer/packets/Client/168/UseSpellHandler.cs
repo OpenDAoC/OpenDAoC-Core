@@ -110,7 +110,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             sk = null;
             sl = null;
 
-            List<Tuple<SpellLine, List<Skill>>> snap = player.GetAllUsableListSpells();
+            var snap = player.GetAllUsableListSpells();
 
             if (spellLineIndex >= snap.Count)
                 return;

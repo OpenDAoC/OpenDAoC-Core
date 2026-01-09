@@ -151,7 +151,7 @@ namespace DOL.GS.Spells
     //no shared timer
     #region Sojourner-8
     [SpellHandler(eSpellType.Zephyr)]
-    public class FZSpellHandler : MasterlevelHandling
+    public class FZSpellHandler : MasterlevelHandling, ILosCheckListener
     {
         protected ECSGameTimer m_expireTimer;
         protected GameNPC m_npc;
@@ -284,11 +284,11 @@ namespace DOL.GS.Spells
             {
                 //Calculate random target
                 m_loc = GetTargetLoc();
-                playerCaster.Out.SendCheckLos(playerCaster, m_npc, new CheckLosResponse(ZephyrCheckLos));
+                playerCaster.Out.SendLosCheckRequest(playerCaster, m_npc, this);
             }
         }
 
-        public void ZephyrCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
+        public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
         {
             if (response is LosCheckResponse.True)
                 m_npc.WalkTo(m_loc, 100);

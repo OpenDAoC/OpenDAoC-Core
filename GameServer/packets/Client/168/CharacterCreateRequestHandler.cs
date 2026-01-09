@@ -555,6 +555,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                     character.FaceType = (byte)pdata.FaceType;
                     character.HairStyle = (byte)pdata.HairStyle;
                     character.MoodType = (byte)pdata.MoodType;
+                    character.CreationModel = pdata.CreationModel;
+                    character.CurrentModel = character.CreationModel;
                 }
 
                 if (pdata.CustomMode != 3)
@@ -702,9 +704,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                         character.FaceType = (byte)pdata.FaceType;
                         character.HairStyle = (byte)pdata.HairStyle;
                         character.MoodType = (byte)pdata.MoodType;
-
+                        character.CreationModel = pdata.CreationModel;
+                        character.CurrentModel = character.CreationModel;
                     }
                 }
+
                 if (type == 2 || type == 3) // attributes changes
                 {
                     if (pdata.CustomMode != 3)//patch 0042 // TODO check out these different custommodes

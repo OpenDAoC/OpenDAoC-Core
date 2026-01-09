@@ -21,8 +21,11 @@ namespace DOL.GS.Spells
         {
             foreach (GameLiving livingTarget in SelectTargets(target))
             {
-                if (livingTarget is GamePlayer playerTarget && Spell.Target is eSpellTarget.CONE)
-                    playerTarget.Out.SendCheckLos(Caster, playerTarget, LosCheckCallback);
+                if (Spell.Target is eSpellTarget.CONE || (Spell.Target is eSpellTarget.ENEMY && Spell.IsPBAoE))
+                {
+                    if (!Caster.castingComponent.StartEndOfCastLosCheck(livingTarget, this))
+                        LaunchBolt(target);
+                }
                 else
                     LaunchBolt(livingTarget);
             }
@@ -133,13 +136,10 @@ namespace DOL.GS.Spells
             base.StartSpell(target);
         }
 
-        private void LosCheckCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
+        public override void OnEndOfCastLosCheck(GameLiving target, LosCheckResponse response)
         {
             if (response is LosCheckResponse.True)
-            {
-                if (Caster.CurrentRegion.GetObject(targetOID) is GameLiving target)
-                    LaunchBolt(target);
-            }
+                LaunchBolt(target);
         }
 
         private void LaunchBolt(GameLiving target)
@@ -150,7 +150,7 @@ namespace DOL.GS.Spells
             foreach (GamePlayer playerInRadius in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 playerInRadius.Out.SendSpellEffectAnimation(Caster, target, m_spell.ClientEffect, (ushort) delay, false, 1);
 
-            new BoltOnTargetTimer(target, this, ticksToTarget);
+            _ = new BoltOnTargetTimer(target, this, ticksToTarget);
         }
 
         protected class BoltOnTargetTimer

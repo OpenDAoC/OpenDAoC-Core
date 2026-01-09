@@ -56,7 +56,16 @@ namespace DOL.GS
             }
         }
 
-        public override byte HealthPercentGroupWindow => Player.ControlledBrain == null ? Player.HealthPercent : Player.ControlledBrain.Body.HealthPercent;
+        public override byte HealthPercentGroupWindow
+        {
+            get
+            {
+                // Snapshot to prevent null reference if the pet is released mid-call.
+                // Seems to happen during EffectListService tick, via EffectListComponent.SendPlayerUpdates > PacketHandler.PacketLib1125.WriteGroupMemberUpdate.
+                GameNPC pet = Player.ControlledBrain?.Body;
+                return pet == null ? Player.HealthPercent : pet.HealthPercent;
+            }
+        }
 
         public override bool CreateShadeEffect(out ECSGameAbilityEffect effect)
         {

@@ -425,12 +425,6 @@ namespace DOL.GS.Keeps
 
 		#endregion
 
-		~AbstractGameKeep()
-		{
-			log.Debug("AbstractGameKeep destructor called for " + Name);
-		}
-
-
 		#region LOAD/UNLOAD
 
 		/// <summary>

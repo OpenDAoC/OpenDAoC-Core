@@ -662,7 +662,7 @@ namespace DOL.GS.PacketHandler
                            bool autoWrapText, string message);
 
         void SendCustomDialog(string msg, CustomDialogResponse callback);
-        bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback);
+        bool SendLosCheckRequest(GameObject source, GameObject target, ILosCheckListener listener);
         void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage);
         void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage);
         void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest);

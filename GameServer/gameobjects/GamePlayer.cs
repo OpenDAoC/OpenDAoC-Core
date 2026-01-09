@@ -49,18 +49,6 @@ namespace DOL.GS
         public long NextWorldUpdate { get; set; }
         public Lock AwardLock { get; private set; } = new(); // Used by `AbstractServerRules` exclusively.
 
-        public ECSGameTimer PredatorTimeoutTimer
-        {
-            get
-            {
-                if (m_predatortimer == null) m_predatortimer = new ECSGameTimer(this);
-                return m_predatortimer;
-            }
-            set { m_predatortimer = value; }
-        }
-
-        protected ECSGameTimer m_predatortimer;
-
         #region Client/Character/VariousFlags
 
         /// <summary>
@@ -2011,15 +1999,8 @@ namespace DOL.GS
         /// </summary>
         public override string GuildName
         {
-            get
-            {
-                if (m_guild == null)
-                    return string.Empty;
-
-                return m_guild.Name;
-            }
-            set
-            { }
+            get => m_guild == null ? string.Empty : m_guild.Name;
+            set { }
         }
 
         /// <summary>
@@ -3413,247 +3394,60 @@ namespace DOL.GS
             return null;
         }
 
-        /// <summary>
-        /// Skill cache, maintained for network order on "skill use" request...
-        /// Second item is for "Parent" Skill if applicable
-        /// </summary>
-        protected ReaderWriterList<Tuple<Skill, Skill>> m_usableSkills = new ReaderWriterList<Tuple<Skill, Skill>>();
+        private volatile List<(Skill, Skill)> _usableSkills = new();
+        private readonly Lock _usableSkillsLock = new();
 
-        /// <summary>
-        /// List Cast cache, maintained for network order on "spell use" request...
-        /// Second item is for "Parent" SpellLine if applicable
-        /// </summary>
-        protected ReaderWriterList<Tuple<SpellLine, List<Skill>>> m_usableListSpells = new ReaderWriterList<Tuple<SpellLine, List<Skill>>>();
+        private volatile List<(SpellLine, List<Skill>)> _usableListSpells = new();
+        private readonly Lock _usableListSpellsLock = new();
 
-        /// <summary>
-        /// Get All Usable Spell for a list Caster.
-        /// </summary>
-        /// <param name="update"></param>
-        /// <returns></returns>
-        public virtual List<Tuple<SpellLine, List<Skill>>> GetAllUsableListSpells(bool update = false)
+        public virtual List<(SpellLine, List<Skill>)> GetAllUsableListSpells(bool update = false)
         {
+            // The returned list must not be modified by the caller.
+
             if (!update)
             {
-                if (m_usableListSpells.Count > 0)
-                    return [.. m_usableListSpells];
+                var snapshot = _usableListSpells;
+
+                if (snapshot.Count > 0)
+                    return snapshot;
             }
 
-            List<Tuple<SpellLine, List<Skill>>> results = new List<Tuple<SpellLine, List<Skill>>>();
+            lock (_usableListSpellsLock)
+            {
+                if (!update && _usableListSpells.Count > 0)
+                    return _usableListSpells;
 
-            // lock during all update, even if replace only take place at end...
-            m_usableListSpells.FreezeWhile(innerList => {
-
-                List<Tuple<SpellLine, List<Skill>>> finalbase = new List<Tuple<SpellLine, List<Skill>>>();
-                List<Tuple<SpellLine, List<Skill>>> finalspec = new List<Tuple<SpellLine, List<Skill>>>();
-
-                // Add Lists spells ordered.
-                foreach (Specialization spec in GetSpecList().Where(item => !item.HybridSpellList))
-                {
-                    var spells = spec.GetLinesSpellsForLiving(this);
-
-                    foreach (SpellLine sl in spec.GetSpellLinesForLiving(this))
-                    {
-                        List<Tuple<SpellLine, List<Skill>>> working;
-                        if (sl.IsBaseLine)
-                        {
-                            working = finalbase;
-                        }
-                        else
-                        {
-                            working = finalspec;
-                        }
-
-                        List<Skill> sps = new List<Skill>();
-                        SpellLine key = spells.Keys.FirstOrDefault(el => el.ID == sl.ID);
-
-                        if (key != null && spells.TryGetValue(key, out List<Skill> spellsInLine))
-                        {
-                            foreach (Skill sp in spellsInLine)
-                                sps.Add(sp);
-                        }
-
-                        working.Add(new Tuple<SpellLine, List<Skill>>(sl, sps));
-                    }
-                }
-
-                // Linq isn't used, we need to keep order ! (SelectMany, GroupBy, ToDictionary can't be used !)
-                innerList.Clear();
-                foreach (var tp in finalbase)
-                {
-                    innerList.Add(tp);
-                    results.Add(tp);
-                }
-
-                foreach (var tp in finalspec)
-                {
-                    innerList.Add(tp);
-                    results.Add(tp);
-                }
-            });
-
-            return results;
+                // Copy-on-write.
+                List<(SpellLine, List<Skill>)> newList = [.. _usableListSpells];
+                GamePlayerUtils.UpdateUsableListSpells(this, newList);
+                _usableListSpells = newList;
+                return newList;
+            }
         }
 
-        /// <summary>
-        /// Get All Player Usable Skill Ordered in Network Order (usefull to check for useskill)
-        /// This doesn't get player's List Cast Specs...
-        /// </summary>
-        /// <param name="update"></param>
-        /// <returns></returns>
-        public virtual List<Tuple<Skill, Skill>> GetAllUsableSkills(bool update = false)
+        public List<(Skill, Skill)> GetAllUsableSkills(bool update = false)
         {
-            List<Tuple<Skill, Skill>> results = [];
+            // The returned list must not be modified by the caller.
 
             if (!update)
             {
-                if (m_usableSkills.Count > 0)
-                    results = new List<Tuple<Skill, Skill>>(m_usableSkills);
+                var snapshot = _usableSkills;
 
-                // return results if cache is valid.
-                if (results.Count > 0)
-                    return results;
+                if (snapshot.Count > 0)
+                    return snapshot;
             }
 
-            // need to lock for all update.
-            m_usableSkills.FreezeWhile(innerList => {
+            lock (_usableSkillsLock)
+            {
+                if (!update && _usableSkills.Count > 0)
+                    return _usableSkills;
 
-                IList<Specialization> specs = GetSpecList();
-                List<Tuple<Skill, Skill>> copylist = new List<Tuple<Skill, Skill>>(innerList);
-
-                // Add Spec
-                foreach (Specialization spec in specs.Where(item => item.Trainable))
-                {
-                    int index = innerList.FindIndex(e => (e.Item1 is Specialization specialization) && specialization.ID == spec.ID);
-
-                    if (index < 0)
-                    {
-                        // Specs must be appended to spec list
-                        innerList.Insert(innerList.Count(e => e.Item1 is Specialization), new Tuple<Skill, Skill>(spec, spec));
-                    }
-                    else
-                    {
-                        copylist.Remove(innerList[index]);
-                        // Replace...
-                        innerList[index] = new Tuple<Skill, Skill>(spec, spec);
-                    }
-                }
-
-                // Add Abilities (Realm ability should be a custom spec)
-                // Abilities order should be saved to db and loaded each time
-                foreach (Specialization spec in specs)
-                {
-                    foreach (Ability abv in spec.GetAbilitiesForLiving(this))
-                    {
-                        // We need the Instantiated Ability Object for Displaying Correctly According to Player "Activation" Method (if Available)
-                        Ability ab = GetAbility(abv.KeyName);
-
-                        if (ab == null)
-                            ab = abv;
-
-                        int index = innerList.FindIndex(k => (k.Item1 is Ability ability) && ability.ID == ab.ID);
-
-                        if (index < 0)
-                        {
-                            // add
-                            innerList.Add(new Tuple<Skill, Skill>(ab, spec));
-                        }
-                        else
-                        {
-                            copylist.Remove(innerList[index]);
-                            // replace
-                            innerList[index] = new Tuple<Skill, Skill>(ab, spec);
-                        }
-                    }
-                }
-
-                // Add Hybrid spells
-                foreach (Specialization spec in specs.Where(item => item.HybridSpellList))
-                {
-                    foreach (KeyValuePair<SpellLine, List<Skill>> sl in spec.GetLinesSpellsForLiving(this))
-                    {
-                        int index = -1;
-
-                        foreach (Spell sp in sl.Value.Where(it => (it is Spell) && !((Spell)it).NeedInstrument).Cast<Spell>())
-                        {
-                            if (index < innerList.Count)
-                                index = innerList.FindIndex(index + 1, e => (e.Item2 is SpellLine spellLine) && spellLine.ID == sl.Key.ID && (e.Item1 is Spell spell) && !spell.NeedInstrument);
-
-                            if (index < 0 || index >= innerList.Count)
-                            {
-                                // add
-                                innerList.Add(new Tuple<Skill, Skill>(sp, sl.Key));
-                                // disable replace
-                                index = innerList.Count;
-                            }
-                            else
-                            {
-                                copylist.Remove(innerList[index]);
-                                // replace
-                                innerList[index] = new Tuple<Skill, Skill>(sp, sl.Key);
-                            }
-                        }
-                    }
-                }
-
-                // Add Songs
-                int songIndex = -1;
-                foreach (Specialization spec in specs.Where(item => item.HybridSpellList))
-                {
-                    foreach(KeyValuePair<SpellLine, List<Skill>> sl in spec.GetLinesSpellsForLiving(this))
-                    {
-                        foreach (Spell sp in sl.Value.Where(it => (it is Spell) && ((Spell)it).NeedInstrument).Cast<Spell>())
-                        {
-                            if (songIndex < innerList.Count)
-                                songIndex = innerList.FindIndex(songIndex + 1, e => (e.Item1 is Spell) && ((Spell)e.Item1).NeedInstrument);
-
-                            if (songIndex < 0 || songIndex >= innerList.Count)
-                            {
-                                // add
-                                innerList.Add(new Tuple<Skill, Skill>(sp, sl.Key));
-                                // disable replace
-                                songIndex = innerList.Count;
-                            }
-                            else
-                            {
-                                copylist.Remove(innerList[songIndex]);
-                                // replace
-                                innerList[songIndex] = new Tuple<Skill, Skill>(sp, sl.Key);
-                            }
-                        }
-                    }
-                }
-
-                // Add Styles
-                foreach (Specialization spec in specs)
-                {
-                    foreach(Style st in spec.GetStylesForLiving(this))
-                    {
-                        int index = innerList.FindIndex(e => (e.Item1 is Style) && e.Item1.ID == st.ID);
-                        if (index < 0)
-                        {
-                            // add
-                            innerList.Add(new Tuple<Skill, Skill>(st, spec));
-                        }
-                        else
-                        {
-                            copylist.Remove(innerList[index]);
-                            // replace
-                            innerList[index] = new Tuple<Skill, Skill>(st, spec);
-                        }
-                    }
-                }
-
-                // clean all not re-enabled skills
-                foreach (Tuple<Skill, Skill> item in copylist)
-                {
-                    innerList.Remove(item);
-                }
-
-                foreach (Tuple<Skill, Skill> el in innerList)
-                    results.Add(el);
-            });
-
-            return results;
+                // Copy-on-write.
+                List<(Skill, Skill)> newList = [.. _usableSkills];
+                GamePlayerUtils.UpdateUsableSkills(this, newList);
+                _usableSkills = newList;
+                return newList;
+            }
         }
 
         /// <summary>
@@ -5102,6 +4896,8 @@ namespace DOL.GS
 
         #region Combat
 
+        public override bool BenefitsFromRelics => true;
+
         /// <summary>
         /// Gets/Sets safety flag
         /// (delegate to PlayerCharacter)
@@ -5299,13 +5095,14 @@ namespace DOL.GS
         /// <summary>
         /// Switches the active quiver slot to another one
         /// </summary>
-        /// <param name="slot"></param>
-        /// <param name="forced"></param>
         public virtual void SwitchQuiver(eActiveQuiverSlot slot, bool forced)
         {
-            if (slot != eActiveQuiverSlot.None)
+            eActiveQuiverSlot currentActiveQuiverSlot = rangeAttackComponent.ActiveQuiverSlot;
+
+            if (slot is not eActiveQuiverSlot.None)
             {
                 eInventorySlot updatedSlot = eInventorySlot.Invalid;
+
                 if ((slot & eActiveQuiverSlot.Fourth) > 0)
                     updatedSlot = eInventorySlot.FourthQuiver;
                 else if ((slot & eActiveQuiverSlot.Third) > 0)
@@ -5317,11 +5114,13 @@ namespace DOL.GS
 
                 if (Inventory.GetItem(updatedSlot) != null && (rangeAttackComponent.ActiveQuiverSlot != slot || forced))
                 {
-                    rangeAttackComponent.ActiveQuiverSlot = slot;
-                    //GamePlayer.SwitchQuiver.ShootWith:		You will shoot with: {0}.
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.ShootWith", Inventory.GetItem(updatedSlot).GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if (currentActiveQuiverSlot != slot)
+                    {
+                        rangeAttackComponent.ActiveQuiverSlot = slot;
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.ShootWith", Inventory.GetItem(updatedSlot).GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    }
                 }
-                else
+                else if (currentActiveQuiverSlot != slot)
                 {
                     rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NoMoreAmmo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -5339,12 +5138,12 @@ namespace DOL.GS
                     SwitchQuiver(eActiveQuiverSlot.Third, true);
                 else if (Inventory.GetItem(eInventorySlot.FourthQuiver) != null)
                     SwitchQuiver(eActiveQuiverSlot.Fourth, true);
-                else
+                else if (currentActiveQuiverSlot != slot)
                 {
                     rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NotUseQuiver"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    Out.SendInventorySlotsUpdate(null);
                 }
-                Out.SendInventorySlotsUpdate(null);
             }
         }
 
@@ -5765,17 +5564,22 @@ namespace DOL.GS
             return GetModified(eProperty.Strength);
         }
 
-        public int GetArmorFactorCap(eObjectType type)
+        public int GetArmorFactorCap(eObjectType type, out int itemArmorFactorCap)
         {
             if (!GlobalConstants.IsArmor((int) type))
                 throw new ArgumentException($"{nameof(type)} must be an armor type");
 
-            int characterLevel = Level;
+            int modifiedCharacterLevel = Level;
 
             if (RealmLevel > 39)
-                characterLevel++;
+                modifiedCharacterLevel++;
 
-            return type is eObjectType.Cloth ? characterLevel : characterLevel * 2;
+            // Returns two caps:
+            // * One for player AF, which is twice the modified character level and is meant to be applied after base AF buffs.
+            // * One for the item AF, which depends on the armor type and is meant to be applied first.
+            int playerArmorFactorCap = modifiedCharacterLevel * 2;
+            itemArmorFactorCap = type is eObjectType.Cloth ? modifiedCharacterLevel : playerArmorFactorCap;
+            return playerArmorFactorCap;
         }
 
         /// <summary>
@@ -5791,8 +5595,8 @@ namespace DOL.GS
             if (item == null)
                 return 0;
 
-            int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type);
-            double armorFactor = Math.Min(item.DPS_AF, armorFactorCap);
+            int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
+            double armorFactor = Math.Min(item.DPS_AF, itemArmorFactorCap); // Cap item AF first.
             armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
@@ -10002,16 +9806,19 @@ namespace DOL.GS
                 }
             }
 
-            // Build Serialized Ability List to save Order
-            foreach (Ability ability in m_usableSkills.Where(e => e.Item1 is Ability).Select(e => e.Item1).Cast<Ability>())
-            {					
-                if (ability != null)
-                {
-                    if (ab.Length > 0)
+            lock (_usableSkillsLock)
+            {
+                // Build Serialized Ability List to save Order
+                foreach (Ability ability in _usableSkills.Where(e => e.Item1 is Ability).Select(e => e.Item1).Cast<Ability>())
+                {					
+                    if (ability != null)
                     {
-                        ab.Append(";");
+                        if (ab.Length > 0)
+                        {
+                            ab.Append(";");
+                        }
+                        ab.AppendFormat("{0}|{1}", ability.KeyName, ability.Level);
                     }
-                    ab.AppendFormat("{0}|{1}", ability.KeyName, ability.Level);
                 }
             }
 
@@ -10213,7 +10020,7 @@ namespace DOL.GS
 
                 var innerTasks = characterDataQuests.Select(async characterQuest =>
                 {
-                    var dbDataQuest = await DOLDB<DbDataQuest>.SelectObjectAsync(DB.Column("DataQuestID").IsEqualTo(characterQuest.DataQuestID));
+                    var dbDataQuest = await DOLDB<DbDataQuest>.FindObjectByKeyAsync(characterQuest.DataQuestID);
 
                     if (dbDataQuest == null || (DataQuest.eStartType)dbDataQuest.StartType is DataQuest.eStartType.Collection)
                         return null;
@@ -10399,20 +10206,23 @@ namespace DOL.GS
 
                 tmpStr = DBCharacter.SerializedAbilities;
 
-                if (tmpStr != null && tmpStr.Length > 0 && m_usableSkills.Count == 0)
+                lock (_usableSkillsLock)
                 {
-                    foreach (string abilities in Util.SplitCSV(tmpStr))
+                    if (tmpStr != null && tmpStr.Length > 0 && _usableSkills.Count == 0)
                     {
-                        string[] values = abilities.Split('|');
-
-                        if (values.Length >= 2)
+                        foreach (string abilities in Util.SplitCSV(tmpStr))
                         {
-                            if (int.TryParse(values[1], out int level))
-                            {
-                                Ability ability = SkillBase.GetAbility(values[0], level);
+                            string[] values = abilities.Split('|');
 
-                                if (ability != null)
-                                    m_usableSkills.Add(new Tuple<Skill, Skill>(ability, ability));
+                            if (values.Length >= 2)
+                            {
+                                if (int.TryParse(values[1], out int level))
+                                {
+                                    Ability ability = SkillBase.GetAbility(values[0], level);
+
+                                    if (ability != null)
+                                        _usableSkills.Add(new(ability, ability));
+                                }
                             }
                         }
                     }
@@ -11052,7 +10862,7 @@ namespace DOL.GS
         /// <summary>
         /// Uncovers the player if a mob is too close
         /// </summary>
-        protected class UncoverStealthAction : ECSGameTimerWrapperBase
+        protected class UncoverStealthAction : ECSGameTimerWrapperBase, ILosCheckListener
         {
             /// <summary>
             /// Constructs a new uncover stealth action
@@ -11132,7 +10942,7 @@ namespace DOL.GS
                     if (Util.Chance(chanceToUncover))
                     {
                         if (canSeePlayer)
-                            player.Out.SendCheckLos(player, npc, new CheckLosResponse(player.UncoverLosHandler));
+                            player.Out.SendLosCheckRequest(player, npc, this);
                         else
                             npc.TurnTo(player, 10000);
                     }
@@ -11140,21 +10950,19 @@ namespace DOL.GS
 
                 return Interval;
             }
-        }
-        /// <summary>
-        /// This handler is called by the unstealth check of mobs
-        /// </summary>
-        public void UncoverLosHandler(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-        {
-            GameObject target = CurrentRegion.GetObject(targetOID);
 
-            if (target == null || !player.IsStealthed)
-                return;
-
-            if (response is LosCheckResponse.True)
+            public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
             {
-                player.Out.SendMessage(target.GetName(0, true) + " uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Stealth(false);
+                GameObject target = Owner.CurrentRegion.GetObject(targetId);
+
+                if (target == null || !player.IsStealthed)
+                    return;
+
+                if (response is LosCheckResponse.True)
+                {
+                    player.Out.SendMessage($"{target.GetName(0, true)} uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Stealth(false);
+                }
             }
         }
 

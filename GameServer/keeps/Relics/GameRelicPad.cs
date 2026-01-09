@@ -49,22 +49,31 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            _area = new(this);
-            CurrentRegion.AddArea(_area);
             bool success = base.AddToWorld();
 
             if (success)
+            {
+                _area = new(this);
+                CurrentRegion.AddArea(_area);
                 RelicMgr.AddRelicPad(this);
+            }
 
             return success;
         }
 
         public override bool RemoveFromWorld()
         {
-            if (_area != null)
-                CurrentRegion.RemoveArea(_area);
+            bool success = base.RemoveFromWorld();
 
-            return base.RemoveFromWorld();
+            if (success)
+            {
+                if (_area != null)
+                    CurrentRegion.RemoveArea(_area);
+
+                RelicMgr.RemoveRelicPad(this);
+            }
+
+            return success;
         }
 
         public bool IsMountedHere(GameRelic relic)

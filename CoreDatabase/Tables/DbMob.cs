@@ -48,7 +48,6 @@ namespace DOL.Database
 		private int m_houseNumber;
 		private string m_brain;
 		private string m_pathID;
-		private int m_maxdistance;
 		private string m_ownerID;
 		private int m_roamingRange;
 		private bool m_isCloakHoodUp;
@@ -73,7 +72,6 @@ namespace DOL.Database
 			m_houseNumber = 0;
 			m_brain = string.Empty;
 			m_pathID = string.Empty;
-			m_maxdistance = 0;
 			m_Constitution = 30;
 			m_Dexterity = 30;
 			m_Strength = 30;

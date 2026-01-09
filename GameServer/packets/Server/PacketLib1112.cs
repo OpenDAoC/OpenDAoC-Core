@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using DOL.Database;
 using DOL.GS.Styles;
 
@@ -10,8 +9,6 @@ namespace DOL.GS.PacketHandler
 	[PacketLib(1112, GameClient.eClientVersion.Version1112)]
 	public class PacketLib1112 : PacketLib1111
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
 		/// <summary>
 		/// Constructs a new PacketLib for Client Version 1.112
 		/// </summary>
@@ -27,7 +24,7 @@ namespace DOL.GS.PacketHandler
 				return;
 
 			// Get Skills as "Usable Skills" which are in network order ! (with forced update)
-			List<Tuple<Skill, Skill>> usableSkills = m_gameClient.Player.GetAllUsableSkills(updateInternalCache);
+			var usableSkills = m_gameClient.Player.GetAllUsableSkills(updateInternalCache);
 
 			bool sent = false; // set to true once we can't send packet anymore !
 			int index = 0; // index of our position in the list !
@@ -195,7 +192,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null)
 				return;
 
-			List<Tuple<SpellLine, List<Skill>>> spellsXLines = player.GetAllUsableListSpells(true);
+			var spellsXLines = player.GetAllUsableListSpells(true);
 
 			int lineIndex = 0;
 			foreach (var spXsl in spellsXLines)

@@ -1,8 +1,6 @@
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Reflection;
 using DOL.Logging;
 using OpenTelemetry.Metrics;
@@ -35,15 +33,11 @@ public class PlayerMeterProvider : IMeterProvider
         );
     }
 
-    /// <summary>
-    /// Calculate the current online player
-    /// </summary>
-    /// <returns></returns>
     private static int OnlineTotalPlayerCount()
     {
         try
         {
-            return ClientService.Instance.GetClients().Count(client => client.ClientState == GameClient.eClientState.Playing);
+            return ClientService.Instance.GetPlayers().Count;
         }
         catch (Exception e)
         {
@@ -53,35 +47,34 @@ public class PlayerMeterProvider : IMeterProvider
         return 0;
     }
 
-    /// <summary>
-    /// Get classes per realm online
-    /// </summary>
-    /// <returns></returns>
     private static List<Measurement<int>> OnlineClassesPerRealm()
     {
         try
         {
-            List<Measurement<int>> classes = [];
-            List<GameClient> clients = [.. ClientService.Instance.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing)];
+            List<GamePlayer> players = ClientService.Instance.GetPlayers();
 
-            if (clients.Count == 0)
+            if (players.Count == 0)
+                return [];
+
+            Dictionary<eCharacterClass, int> counts = new();
+
+            foreach (var player in players)
             {
-                return classes;
+                var cls = (eCharacterClass)player.CharacterClass.ID;
+                counts[cls] = counts.GetValueOrDefault(cls) + 1;
             }
+
+            List<Measurement<int>> classes = new(classIds.Length);
 
             foreach (eCharacterClass characterClass in classIds)
             {
-                // Get current players by class id
-                var classCount = clients.Count(c => c.Player.CharacterClass.ID == (int)characterClass);
-                string realmName = GetRealmForCharacterClass(characterClass);
+                counts.TryGetValue(characterClass, out int classCount);
 
-                Measurement<int> measurement = new(
+                classes.Add(new Measurement<int>(
                     classCount,
-                    new("realm", realmName),
+                    new("realm", GetRealmForCharacterClass(characterClass)),
                     new("class", characterClass.ToString())
-                );
-
-                classes.Add(measurement);
+                ));
             }
 
             return classes;
@@ -89,17 +82,10 @@ public class PlayerMeterProvider : IMeterProvider
         catch (Exception e)
         {
             log.Error("MetricsCollector.CollectMetrics threw an exception", e);
+            return [];
         }
-
-        return [];
     }
 
-    /// <summary>
-    /// Get the realm name for a class
-    /// </summary>
-    /// <param name="characterClass"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
     private static string GetRealmForCharacterClass(eCharacterClass characterClass)
     {
         switch (characterClass)

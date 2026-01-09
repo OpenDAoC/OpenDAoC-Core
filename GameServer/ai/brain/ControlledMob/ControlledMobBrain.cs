@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using DOL.GS;
@@ -215,7 +216,7 @@ namespace DOL.AI.Brain
                     else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
                     {
                         Body.StopFollowing();
-                        Body.PathTo(new(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
+                        Body.PathTo(new Vector3(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
                     }
                 }
             }
@@ -883,7 +884,7 @@ namespace DOL.AI.Brain
 				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
 				{
 					Body.StopFollowing();
-					Body.PathTo(new(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
+					Body.PathTo(new Vector3(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
 				}
 			}
 		}

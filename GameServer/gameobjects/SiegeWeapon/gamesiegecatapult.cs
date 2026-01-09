@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
@@ -28,8 +9,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameSiegeCatapult : GameSiegeWeapon
 	{
-		public GameSiegeCatapult()
-			: base()
+		public GameSiegeCatapult() : base()
 		{
 			MeleeDamageType = eDamageType.Crush;
 			Name = "field catapult";
@@ -101,8 +81,6 @@ namespace DOL.GS
 				return;
 			}
 
-			//CheckGTLOS(newGroundTarget);
-
 			CurrentState &= ~eState.Aimed;
 			SetGroundTarget(newGroundTarget.X, newGroundTarget.Y, newGroundTarget.Z);
 			SiegeWeaponTimer.CurrentAction = SiegeTimer.eAction.Aiming;
@@ -112,58 +90,6 @@ namespace DOL.GS
 			{
 				Owner.Out.SendMessage(GetName(0, true) + " is turning to your target. (" + (GetActionDelay(SiegeTimer.eAction.Aiming) / 1000).ToString("N") + "s)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
-		}
-
-		private void CheckGTLOS(Point3D gt)
-		{
-			loschecks=0;
-			tempLOSSkyChecker = new GameNPC();
-			tempLOSSkyChecker.Name = "tempLOSSkyChecker";
-			tempLOSSkyChecker.Flags ^= GameNPC.eFlags.FLYING | GameNPC.eFlags.PEACE;
-		
-			tempLOSSkyChecker.Model = 408; //temp model for testing
-			tempLOSSkyChecker.Create(this.CurrentRegionID,gt.X, gt.Y, gt.Z+2000,0);
-
-			tempLOSGTChecker = new GameNPC();
-			tempLOSGTChecker.Name = "tempLOSGTChecker";
-			tempLOSGTChecker.Flags ^= GameNPC.eFlags.FLYING | GameNPC.eFlags.PEACE;
-			tempLOSGTChecker.Model = 408; //temp model for testing
-			tempLOSGTChecker.Create(this.CurrentRegionID,gt.X, gt.Y, gt.Z,0);
-
-			if (Owner is GamePlayer)
-			{
-				ClientService.UpdateNpcForPlayer(Owner, tempLOSSkyChecker);
-				ClientService.UpdateNpcForPlayer(Owner, tempLOSGTChecker);
-				Owner.Out.SendCheckLos(tempLOSSkyChecker, tempLOSGTChecker, new CheckLosResponse(CheckGTLosCallback));
-			}
-		}
-
-		private void CheckGTLosCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			log.Debug($"LOSCallback {player} {response} {targetOID}");
-
-			if (response is LosCheckResponse.True)
-			{
-				log.Debug($"LOSCheck Succeeded {response} GroundTarget set to: {tempLOSGTChecker.X} {tempLOSGTChecker.Y} {tempLOSGTChecker.Z}");
-				loschecks=0;
-				SetGroundTarget(tempLOSGTChecker.X, tempLOSGTChecker.Y, tempLOSGTChecker.Z);
-				//tempLOSSkyChecker.Delete();
-				//tempLOSGTChecker.Delete();
-			} 
-			else if(loschecks<10)
-			{
-				log.Debug("LOSCheck Failed, raising GT Z by 200");
-				loschecks++;
-				tempLOSGTChecker.MoveTo(tempLOSGTChecker.CurrentRegionID, tempLOSGTChecker.X, tempLOSGTChecker.Y, tempLOSGTChecker.Z+200, tempLOSGTChecker.Heading);
-
-				if (Owner is GamePlayer)
-				{
-					ClientService.UpdateNpcForPlayer(Owner, tempLOSGTChecker);
-					Owner.Out.SendCheckLos(tempLOSSkyChecker, tempLOSGTChecker, new CheckLosResponse(CheckGTLosCallback));
-				}
-			}
-			else
-				log.Debug ("Could not get LOS");
 		}
 
 		protected IList SelectTargets()

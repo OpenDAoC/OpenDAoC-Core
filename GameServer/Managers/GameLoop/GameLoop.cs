@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.ServerProperties;
@@ -18,19 +17,12 @@ namespace DOL.GS
         private static Thread _gameLoopThread;
         private static GameLoopThreadPool _threadPool;
         private static GameLoopTickPacer _tickPacer;
-        private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static bool _running;
         private static List<TickStep> _tickSequence;
 
         public static double TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
         public static string ActiveService { get; set; }
-
-        // This is unrelated to the game loop and should probably be moved elsewhere.
-        public static long GetRealTime()
-        {
-            return Stopwatch.GetTimestamp() / _stopwatchFrequencyMilliseconds;
-        }
 
         public static bool Init()
         {

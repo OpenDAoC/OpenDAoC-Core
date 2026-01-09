@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using DOL.Database;
 
@@ -68,18 +67,13 @@ namespace DOL.GS
 		protected bool m_isShearable = false;
 		// tooltip
 		protected ushort m_tooltipId = 0;
+
 		// params
-		protected Dictionary<string, List<string>> m_paramCache = null;
+		public Dictionary<string, object> CustomParamsDictionary { get; set; }
 
-		public Dictionary<string, List<string>> CustomParamsDictionary
-		{
-			get { return m_paramCache; }
-			set { m_paramCache = value; }
-		}
-
-        #region member access properties
-        #region warlocks
-        public bool IsPrimary
+		#region member access properties
+		#region warlocks
+		public bool IsPrimary
 		{
 			get { return m_isprimary; }
 		}
@@ -368,7 +362,7 @@ namespace DOL.GS
         }
 
         public Spell(DbSpell dbspell, int requiredLevel, bool minotaur)
-			: base(dbspell.Name, dbspell.SpellID, (ushort)dbspell.Icon, requiredLevel, dbspell.TooltipId)
+			: base(dbspell.Name, dbspell.SpellID, (ushort) dbspell.Icon, requiredLevel, dbspell.TooltipId)
 		{
 			m_description = dbspell.Description;
 			m_target = Enum.Parse<eSpellTarget>(dbspell.Target, true);
@@ -409,7 +403,10 @@ namespace DOL.GS
 			m_sharedtimergroup = dbspell.SharedTimerGroup;
 			m_minotaurspell = minotaur;
 			// Params
-			this.InitFromCollection(dbspell.CustomValues, param => param.KeyName, param => param.Value);
+			this.Init(dbspell.CustomValues, param => param.KeyName, param => param.Value);
+			this.PrewarmParamValue<ushort>(nameof(InternalIconID));
+			this.PrewarmParamList<int>(nameof(MultipleSubSpells));
+			this.PrewarmParamValue<bool>(nameof(AllowCoexisting));
 		}
 
 		/// <summary>
@@ -419,7 +416,7 @@ namespace DOL.GS
 		/// <param name="spell"></param>
 		/// <param name="spellType"></param>
 		public Spell(Spell spell, eSpellType spellType) :
-			base(spell.Name, spell.ID, (ushort)spell.Icon, spell.Level, spell.InternalID)
+			base(spell.Name, spell.ID, spell.Icon, spell.Level, spell.InternalID)
 		{
 			m_description = spell.Description;
 			m_target = spell.Target;
@@ -459,8 +456,8 @@ namespace DOL.GS
 			m_allowbolt = spell.AllowBolt;
 			m_sharedtimergroup = spell.SharedTimerGroup;
 			m_minotaurspell = spell.m_minotaurspell;
-            // Params
-			m_paramCache = new Dictionary<string, List<string>>(spell.m_paramCache);
+			// Params
+			CustomParamsDictionary = new(spell.CustomParamsDictionary);
 		}
 
 		/// <summary>
@@ -678,31 +675,35 @@ namespace DOL.GS
         	}
         }
 
-		
-        #endregion
+		#endregion
 		#region utils
 
 		public ushort InternalIconID
 		{
 			get
 			{
-				return this.GetParamValue<ushort>("InternalIconID");
+				_ = this.TryGetParamSingle(nameof(InternalIconID), out ushort result);
+				return result;
 			}
 		}
-		
+
 		public IList<int> MultipleSubSpells
 		{
 			get
 			{
-				return this.GetParamValues<int>("MultipleSubSpellID").Where(id => id > 0).ToList();
+				if (CustomParamsExtensions.IsSuccessfulRetrieval(this.TryGetParamList(nameof(MultipleSubSpells), out List<int> result)))
+					return result;
+				else
+					return Array.Empty<int>();
 			}
 		}
-		
+
 		public bool AllowCoexisting
 		{
 			get
 			{
-				return this.GetParamValue<bool>("AllowCoexisting");
+				_ = this.TryGetParamSingle(nameof(AllowCoexisting), out bool result);
+				return result;
 			}
 		}
 

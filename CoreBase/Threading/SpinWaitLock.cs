@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace DOL
+namespace DOL.Threading
 {
 	/// <summary>
 	/// An efficient spin-wait lock implementation.

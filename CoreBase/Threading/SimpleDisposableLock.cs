@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace DOL
+namespace DOL.Threading
 {
     // A wrapper for a `ReaderWriterLockSlim` implementing `IDisposable`.
     // `Dispose` only takes care of the unlocking; it doesn't invalidate the underlying lock.

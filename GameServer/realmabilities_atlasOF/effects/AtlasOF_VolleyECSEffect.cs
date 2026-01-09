@@ -6,6 +6,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
+using DOL.GS.ServerProperties;
 using DOL.Language;
 
 namespace DOL.GS.Effects
@@ -146,10 +147,7 @@ namespace DOL.GS.Effects
 
             foreach (GamePlayer playerTarget in WorldMgr.GetPlayersCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget.X, OwnerPlayer.GroundTarget.Y, OwnerPlayer.GroundTarget.Z, EFFECT_RADIUS))
             {
-                if (!GameServer.ServerRules.IsAllowedToAttack(OwnerPlayer, playerTarget, true))
-                    continue;
-
-                if (Util.Chance(50))
+                if (IsValidTarget(OwnerPlayer, playerTarget))
                     potentialTargets.Add(playerTarget);
             }
 
@@ -158,17 +156,28 @@ namespace DOL.GS.Effects
                 if (npcTarget is GameSiegeWeapon)
                     continue;
 
-                if (npcTarget.ObjectState != GameObject.eObjectState.Active)
-                    continue;
-
-                if (!GameServer.ServerRules.IsAllowedToAttack(OwnerPlayer, npcTarget, true))
-                    continue;
-
-                if (Util.Chance(50))
+                if (IsValidTarget(OwnerPlayer, npcTarget))
                     potentialTargets.Add(npcTarget);
             }
 
             return potentialTargets;
+
+            static bool IsValidTarget(GameLiving attacker, GameLiving target)
+            {
+                const int TARGET_SELECTION_CHANCE = 50;
+                const float ROOF_SEARCH_MAX_HEIGHT = 1024f;
+
+                if (!Util.Chance(TARGET_SELECTION_CHANCE))
+                    return false;
+
+                if (!GameServer.ServerRules.IsAllowedToAttack(attacker, target, true))
+                    return false;
+
+                if (Properties.VOLLEY_ROOF_CHECK && PathingMgr.Instance.GetRoofAbove(target.CurrentZone, new(target.X, target.Y, target.Z), ROOF_SEARCH_MAX_HEIGHT).HasValue)
+                    return false;
+
+                return true;
+            }
         }
 
         public void DecideNextShoot()

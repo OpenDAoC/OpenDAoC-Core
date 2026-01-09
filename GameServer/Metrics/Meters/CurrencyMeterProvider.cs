@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Reflection;
 using DOL.Logging;
 using OpenTelemetry.Metrics;
@@ -24,24 +23,20 @@ public class CurrencyMeterProvider : IMeterProvider
         );
     }
 
-    /// <summary>
-    /// Get the current ingame money
-    /// </summary>
-    /// <returns>The total amount of money in copper</returns>
     private static long TotalCopper()
     {
         try
         {
-            return ClientService.Instance.GetClients().Where(IsPlayerActive).Select(GetPlayerMoney).Sum();
+            long sum = 0;
 
-            static bool IsPlayerActive(GameClient client)
-            {
-                return client.ClientState is GameClient.eClientState.Playing && (ePrivLevel) client.Account.PrivLevel is ePrivLevel.Player;
-            }
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers<object>(IsValidPlayer))
+                sum += player.GetCurrentMoney();
 
-            static long GetPlayerMoney(GameClient client)
+            return sum;
+
+            static bool IsValidPlayer(GamePlayer player, object unused)
             {
-                return client.Player.GetCurrentMoney();
+                return (ePrivLevel) player.Client.Account.PrivLevel is ePrivLevel.Player;
             }
         }
         catch (Exception ex)

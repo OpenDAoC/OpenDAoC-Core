@@ -12,7 +12,7 @@ namespace DOL.Tests.Unit.Gameserver
     {
         public FakePacketLib() : base(null) { }
 
-        public override bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback) { return true; }
+        public override bool SendLosCheckRequest(GameObject source, GameObject target, ILosCheckListener listener) { return true; }
         public override void SendMessage(string msg, eChatType type, eChatLoc loc) { }
         public override void SendUpdateIcons(System.Collections.IList changedEffects, ref int lastUpdateEffectsCount) { }
         public override void SendConcentrationList() { }

@@ -167,7 +167,7 @@ public class Realm
         var cache = _cache.Get<List<RelicInfo>>(_allRelicsCacheKey);
         if (cache == null)
         {
-            foreach (GameRelic relic in RelicMgr.getNFRelics())
+            foreach (GameRelic relic in RelicMgr.GetRelics())
             {
                 var tempRelic = new RelicInfo(relic);
                 relicInfos.Add(tempRelic);

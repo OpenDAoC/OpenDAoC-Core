@@ -32,12 +32,8 @@ namespace DOL.GS.Commands
 		/// <returns></returns>
 		public static bool IsValidGuildName(string guildName)
 		{
-			if (!Regex.IsMatch(guildName, @"^[a-zA-Z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+$") || guildName.Length < 0)
-
-			{
-				return false;
-			}
-			return true;
+			// "None" is a client reserved name.
+			return Regex.IsMatch(guildName, @"^[a-zA-Z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+$") && !guildName.Equals("None", StringComparison.OrdinalIgnoreCase);
 		}
 		private static bool IsNearRegistrar(GamePlayer player)
 		{
@@ -1548,6 +1544,36 @@ namespace DOL.GS.Commands
 							ply.Out.SendMessage(LanguageMgr.GetTranslation(ply.Client, "Scripts.Player.Guild.MadeLeaderOther", newLeader.Name, newLeader.Guild.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 						}
 
+						break;
+					}
+					case "emblem":
+					{
+						if (client.Player.Guild == null)
+						{
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+						if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader))
+						{
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivileges"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+						if (client.Player.Guild.Emblem != 0)
+						{
+							if (client.Player.TargetObject is not EmblemNPC)
+							{
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemAlready"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								return;
+							}
+							client.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemRedo"), new CustomDialogResponse(EmblemChange));
+							return;
+						}
+						if (client.Player.TargetObject is not EmblemNPC)
+						{
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemNPCNotSelected"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+						client.Out.SendEmblemDialogue();
 						break;
 					}
 					case "autoremove":

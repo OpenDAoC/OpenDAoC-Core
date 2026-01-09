@@ -1,262 +1,204 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Allow to handle Custom Params Valuable Interface Member as typed generic imported from string collections.
-	/// </summary>
-	public static class CustomParamsExtensions
-	{
-		#region getters
-		/// <summary>
-		/// Search Params Collection to Extract the Value identified by Key.
-		/// From Dictionary&lt;stringKey, List&lt;stringValue&gt;&gt; (List&lt;stringValue&gt;.First() Casted to T)
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="def">Default Value</param>
-		/// <returns>Param Value or Default if Key not found</returns>
-		public static T GetParamValue<T>(this ICustomParamsValuable obj, string key, T def = default(T))
-		{
-			if (obj.CustomParamsDictionary == null || obj.CustomParamsDictionary.Count == 0)
-				return def;
-			
-			// Is key existing ?
-			List<string> list;
-			if (obj.CustomParamsDictionary.TryGetValue(key, out list))
-			{
-				try
-				{
-					return (T)Convert.ChangeType(obj.CustomParamsDictionary[key].First(), typeof(T));
-				}
-				catch
-				{
-					return def;
-				}
-			}
-			
-			return def;
-		}
-		
-		/// <summary>
-		/// Search Params Collection to Extract the Values Collection identified by Key.
-		/// From Dictionary&lt;stringKey, List&lt;stringValue&gt;&gt; (List&lt;stringValue&gt; Casted to List&lt;T&gt;)
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <returns>Params Values collection or empty collection if not found</returns>
-		public static IList<T> GetParamValues<T>(this ICustomParamsValuable obj, string key)
-		{
-			if (obj.CustomParamsDictionary == null || obj.CustomParamsDictionary.Count == 0)
-				return new List<T>();
+    public static class CustomParamsExtensions
+    {
+        public enum RetrievalResult
+        {
+            KeyNotFound,
+            Success,
+            SuccessFromConversion,
+            ConversionFailed
+        }
 
-			List<string> list;
-			
-			// Is key existing ?
-			if (obj.CustomParamsDictionary.TryGetValue(key, out list))
-			{
-				return list.Select(val => {
-				                   	try
-				                   	{
-				                   		return new Tuple<bool, T>(true, (T)Convert.ChangeType(val, typeof(T)));
-				                   	}
-				                   	catch
-				                   	{
-				                   		return new Tuple<bool, T>(false, default(T));
-				                   	}
-				                   }).Where(t => t.Item1).Select(t => t.Item2).ToList();
-			}
-			
-			return new List<T>();
-		}
-		#endregion
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		#region Setters
-		/// <summary>
-		/// Set or Replace Value in Params Collection with given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="value">Object Value</param>
-		public static void SetParamValue<T>(this ICustomParamsValuable obj, string key, T value)
-		{
-			obj.ReplaceEntry(key, new [] { Convert.ToString(value) }.ToList());
-		}
+        public static RetrievalResult TryGetParamSingle<T>(this ICustomParamsValuable obj, string key, out T result)
+        {
+            if (obj.CustomParamsDictionary == null)
+                throw new InvalidOperationException($"{nameof(obj.CustomParamsDictionary)} is null");
 
-		/// <summary>
-		/// Set or Replace Values in Params Collection with given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="values">Values Enumerable</param>
-		public static void SetParamValues<T>(this ICustomParamsValuable obj, string key, IEnumerable<T> values)
-		{
-			obj.ReplaceEntry(key, values.Select(v => Convert.ToString(v)).ToList());
-		}
-		
-		/// <summary>
-		/// Add Value in Params Collection with given Key 
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="value">Object Value</param>
-		public static void AddParamValue<T>(this ICustomParamsValuable obj, string key, T value)
-		{
-			List<string> list;
-			if (!obj.CustomParamsDictionary.TryGetValue(key, out list))
-				list = new List<string>();
-			
-			obj.ReplaceEntry(key, list.Concat(new [] { Convert.ToString(value) }).ToList());
-		}
+            if (!obj.CustomParamsDictionary.TryGetValue(key, out object entry))
+            {
+                result = default;
+                return RetrievalResult.KeyNotFound;
+            }
 
-		/// <summary>
-		/// Add Values in Params Collection with given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="values">Values Enumerable</param>
-		public static void AddParamValues<T>(this ICustomParamsValuable obj, string key, IEnumerable<T> values)
-		{
-			List<string> list;
-			if (!obj.CustomParamsDictionary.TryGetValue(key, out list))
-				list = new List<string>();
-			
-			obj.ReplaceEntry(key, list.Concat(values.Select(v => Convert.ToString(v))).ToList());
-		}
-		
-		/// <summary>
-		/// Remove Value in Params Collection with given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="value">Object Value to be removed</param>
-		/// <returns>True if Value was removed</returns>
-		public static bool RemoveParamValue<T>(this ICustomParamsValuable obj, string key, T value)
-		{
-			List<string> list;
-			if (!obj.CustomParamsDictionary.TryGetValue(key, out list))
-				list = new List<string>();
-			
-			bool removed = false;
-			
-			obj.ReplaceEntry(key, list.Where(val => {
-			                                 	try
-			                                 	{
-			                                 		var item = (T)Convert.ChangeType(val, typeof(T));
-			                                 		
-			                                 		if (value.Equals(item))
-			                                 		{
-			                                 			removed = true;
-			                                 			return false;
-			                                 		}
-		                                 			return true;
-			                                 	}
-			                                 	catch
-			                                 	{
-			                                 		return true;
-			                                 	}
-			                                 }).ToList());
-			return removed;
-		}
-		
-		/// <summary>
-		/// Remove Value in Params Collection with given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="values">Values Enumerable to be removed</param>
-		/// <returns>True if ANY Value was removed</returns>
-		public static bool RemoveParamValues<T>(this ICustomParamsValuable obj, string key, IEnumerable<T> values)
-		{
-			List<string> list;
-			if (!obj.CustomParamsDictionary.TryGetValue(key, out list))
-				list = new List<string>();
-			
-			bool removed = false;
-			
-			obj.ReplaceEntry(key, list.Where(val => {
-			                                 	try
-			                                 	{
-			                                 		var item = (T)Convert.ChangeType(val, typeof(T));
-			                                 		
-			                                 		if (values.Contains(item))
-			                                 		{
-			                                 			removed = true;
-			                                 			return false;
-			                                 		}
-		                                 			return true;
-			                                 	}
-			                                 	catch
-			                                 	{
-			                                 		return true;
-			                                 	}
-			                                 }).ToList());
-			return removed;
-		}
-		
-		/// <summary>
-		/// Remove all Values in Params Collection with given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		public static void RemoveParam(this ICustomParamsValuable obj, string key)
-		{
-			obj.ReplaceEntry(key, new List<string>());
-		}
-		
-		/// <summary>
-		/// Replace Params Collection Value at given Key
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="key">Param Key</param>
-		/// <param name="val">Values Enumerable to set</param>
-		private static void ReplaceEntry(this ICustomParamsValuable obj, string key, List<string> val)
-		{
-			obj.CustomParamsDictionary = 
-				obj.CustomParamsDictionary.Select(kv => kv.Key == key ? new KeyValuePair<string, List<string>>(key, val) : kv)
-				.ToDictionary(kv => kv.Key, kv => kv.Value);
-		}		
-		#endregion
-		
-		/// <summary>
-		/// Init Object Params Collection from Source Collection
-		/// </summary>
-		/// <param name="obj">Custom Params Object</param>
-		/// <param name="collection">Source Collection</param>
-		/// <param name="key">Key Selector</param>
-		/// <param name="value">Value Selector</param>
-		public static void InitFromCollection<T>(this ICustomParamsValuable obj, IEnumerable<T> collection, Func<T, string> key, Func<T, string> value)
-		{
-			if (collection == null)
-			{
-				obj.CustomParamsDictionary = new Dictionary<string, List<string>>();
-				return;
-			}
-			
-			obj.CustomParamsDictionary = collection.GroupBy(item => key(item))
-				.ToDictionary(grp => grp.Key, grp => grp.Select(item => value(item)).ToList());
-		}
-	}
+            if (entry is T typedValue)
+            {
+                result = typedValue;
+                return RetrievalResult.Success;
+            }
+
+            // Misuse. Asking for Single, but cached as List<T>.
+            // Return first item.
+            if (entry is List<T> typedList)
+            {
+                result = typedList.Count > 0 ? typedList[0] : default;
+                return RetrievalResult.Success;
+            }
+
+            if (TryConvertAndCacheSingle(obj, key, entry, out result))
+                return RetrievalResult.SuccessFromConversion;
+
+            result = default;
+            return RetrievalResult.ConversionFailed;
+        }
+
+        public static RetrievalResult TryGetParamList<T>(this ICustomParamsValuable obj, string key, out List<T> result)
+        {
+            if (obj.CustomParamsDictionary == null)
+                throw new InvalidOperationException($"{nameof(obj.CustomParamsDictionary)} is null");
+
+            if (!obj.CustomParamsDictionary.TryGetValue(key, out object entry))
+            {
+                result = default;
+                return RetrievalResult.KeyNotFound;
+            }
+
+            if (entry is List<T> typedList)
+            {
+                result = typedList;
+                return RetrievalResult.Success;
+            }
+
+            // Misuse. Asking for List<T>, but cached as Single.
+            // Upgrade to List<T>.
+            if (TryConvertAndCacheList(obj, key, entry, out result))
+                return RetrievalResult.SuccessFromConversion;
+
+            result = default;
+            return RetrievalResult.ConversionFailed;
+        }
+
+        public static void PrewarmParamValue<T>(this ICustomParamsValuable obj, string key)
+        {
+            _ = TryGetParamSingle<T>(obj, key, out _);
+        }
+
+        public static void PrewarmParamList<T>(this ICustomParamsValuable obj, string key)
+        {
+            _ = TryGetParamList<T>(obj, key, out _);
+        }
+
+        public static void Init<T>(this ICustomParamsValuable obj, ReadOnlySpan<T> data, Func<T, string> keySelector, Func<T, string> valueSelector)
+        {
+            if (data.IsEmpty)
+            {
+                obj.CustomParamsDictionary = [];
+                return;
+            }
+
+            Dictionary<string, object> dictionary = [];
+
+            foreach (T item in data)
+            {
+                string key = keySelector(item);
+                string value = valueSelector(item);
+
+                if (!dictionary.TryGetValue(key, out object existing))
+                    dictionary[key] = value;
+                else
+                {
+                    if (existing is List<string> list)
+                        list.Add(value);
+                    else if (existing is string singleValue)
+                    {
+                        List<string> newList = [singleValue, value];
+                        dictionary[key] = newList;
+                    }
+                }
+            }
+
+            obj.CustomParamsDictionary = dictionary;
+        }
+
+        public static bool IsSuccessfulRetrieval(RetrievalResult result)
+        {
+            return result is RetrievalResult.Success or RetrievalResult.SuccessFromConversion;
+        }
+
+        private static bool TryConvertAndCacheSingle<T>(ICustomParamsValuable obj, string key, object entry, out T result)
+        {
+            result = default;
+
+            try
+            {
+                if (entry is List<string> rawList)
+                {
+                    if (rawList.Count == 0)
+                        return false;
+
+                    result = (T) Convert.ChangeType(rawList[0], typeof(T));
+                    // Don't overwrite the list.
+                    return true;
+                }
+
+                if (entry is string rawString)
+                {
+                    result = (T) Convert.ChangeType(rawString, typeof(T));
+                    obj.CustomParamsDictionary[key] = result;
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Failed to convert and cache custom param single for key '{key}' on type '{obj.GetType().FullName}'", ex);
+
+                return false;
+            }
+        }
+
+        private static bool TryConvertAndCacheList<T>(ICustomParamsValuable obj, string key, object entry, out List<T> result)
+        {
+            result = null;
+
+            try
+            {
+                if (entry is List<string> rawList)
+                {
+                    List<T> list = new(rawList.Count);
+
+                    foreach (string item in rawList)
+                        list.Add((T) Convert.ChangeType(item, typeof(T)));
+
+                    obj.CustomParamsDictionary[key] = list;
+                    result = list;
+                    return true;
+                }
+
+                if (entry is string rawString)
+                {
+                    List<T> list = [(T) Convert.ChangeType(rawString, typeof(T))];
+                    obj.CustomParamsDictionary[key] = list;
+                    result = list;
+                    return true;
+                }
+
+                if (entry is T singleTyped)
+                {
+                    List<T> list = [singleTyped];
+                    obj.CustomParamsDictionary[key] = list;
+                    result = list;
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Failed to convert and cache custom param list for key '{key}' on type '{obj.GetType().FullName}'", ex);
+
+                return false;
+            }
+        }
+    }
 }

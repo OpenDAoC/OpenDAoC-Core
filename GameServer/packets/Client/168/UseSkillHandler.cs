@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 
@@ -9,11 +7,6 @@ namespace DOL.GS.PacketHandler.Client.v168
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.UseSkill, "Handles Player Use Skill Request.", eClientStatus.PlayerInGame)]
     public class UseSkillHandler : IPacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
             if (client.Player.ObjectState is not GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing)
@@ -47,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             player.TargetInView = (flagSpeedData & 0xa000) != 0; // why 2 bits? that has to be figured out
             player.GroundTargetInView = ((flagSpeedData & 0x1000) != 0);
 
-            List<Tuple<Skill, Skill>> snap = player.GetAllUsableSkills();
+            var snap = player.GetAllUsableSkills();
             Skill sk = null;
             Skill sksib = null;
 

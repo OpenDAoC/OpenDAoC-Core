@@ -1,17 +1,18 @@
 ﻿using System;
+using DOL.Timing;
 
 namespace DOL.GS.PerformanceStatistics
 {
     public class PerSecondStatistic : IPerformanceStatistic
     {
-        private DateTime _lastMeasurementTime;
+        private long _lastMeasurementTime;
         private readonly IPerformanceStatistic _totalValueStatistic;
         private double _lastTotal;
 
         public PerSecondStatistic(IPerformanceStatistic totalValueStatistic)
         {
             _totalValueStatistic = totalValueStatistic;
-            _lastMeasurementTime = DateTime.UtcNow;
+            _lastMeasurementTime = MonotonicTime.NowMs;
             _lastTotal = _totalValueStatistic.GetNextValue();
         }
 
@@ -20,9 +21,9 @@ namespace DOL.GS.PerformanceStatistics
             if (_totalValueStatistic == null)
                 return 0.0;
 
-            DateTime currentTime = DateTime.UtcNow;
+            long currentTime = MonotonicTime.NowMs;
             double currentTotal = _totalValueStatistic.GetNextValue();
-            double secondsPassed = (currentTime - _lastMeasurementTime).TotalSeconds;
+            double secondsPassed = (currentTime - _lastMeasurementTime) / 1000.0;
 
             if (secondsPassed <= 0)
                 return 0.0;

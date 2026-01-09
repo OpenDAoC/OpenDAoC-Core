@@ -393,23 +393,26 @@ namespace DOL.GS
 
         public double AttackDamage(DbInventoryItem weapon, WeaponAction action, out double damageCap)
         {
-            damageCap = 0;
+            double damage;
 
             if (owner is GamePlayer player)
             {
                 if (weapon == null)
+                {
+                    damageCap = 0;
                     return 0;
+                }
 
-                damageCap = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
+                damage = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
 
                 if (player.ActiveLeftWeapon != null)
                 {
                     if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
-                        damageCap *= CalculateLeftAxeModifier();
+                        damage *= CalculateLeftAxeModifier();
                 }
                 else if (weapon.Item_Type is Slot.RANGED)
                 {
-                    damageCap *= CalculateTwoHandedDamageModifier(weapon);
+                    damage *= CalculateTwoHandedDamageModifier(weapon);
                     DbInventoryItem ammo = GetAttackAmmo(action);
 
                     if (ammo != null)
@@ -417,29 +420,28 @@ namespace DOL.GS
                         switch ((ammo.SPD_ABS) & 0x3)
                         {
                             case 0:
-                                damageCap *= 0.85;
+                                damage *= 0.85;
                                 break; // Blunt (light) -15%.
                             case 1:
                                 break; // Bodkin (medium) 0%.
                             case 2:
-                                damageCap *= 1.15;
+                                damage *= 1.15;
                                 break; // Doesn't exist on live.
                             case 3:
-                                damageCap *= 1.25;
+                                damage *= 1.25;
                                 break; // Broadhead (X-heavy) +25%.
                         }
                     }
                 }
                 else if (weapon.Item_Type is Slot.TWOHAND)
-                    damageCap *= CalculateTwoHandedDamageModifier(weapon);
+                    damage *= CalculateTwoHandedDamageModifier(weapon);
 
-                double damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
-                damageCap *= 3;
-                return damage;
+                damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damage);
+                damageCap = damage * 3;
             }
             else
             {
-                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
+                damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
 
                 if (owner is GameNPC npc)
                     damage *= npc.DamageFactor;
@@ -451,9 +453,10 @@ namespace DOL.GS
 
                 if (owner is GameEpicBoss)
                     damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
-
-                return damage;
             }
+
+            // Relic bonus is applied to damage only and does not increase cap.
+            return damage * RelicMgr.GetRelicBonusModifier(owner, eRelicType.Strength);
         }
 
         public void RequestStartAttack(GameObject attackTarget = null)
@@ -1091,9 +1094,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    // Relic bonus is applied to damage only and does not increase cap.
-                    double relicBonus = 1.0 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
-                    double damage = AttackDamage(weapon, action, out double baseDamageCap) * relicBonus;
+                    double damage = AttackDamage(weapon, action, out double baseDamageCap);
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -1101,7 +1102,7 @@ namespace DOL.GS
 
                     double weaponSkill = CalculateWeaponSkill(weapon, ad.Target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
-                    double damageMod = weaponSkill / armorMod * relicBonus;
+                    double damageMod = weaponSkill / armorMod;
 
                     // Badge Of Valor Calculation 1+ absorb or 1- absorb
                     // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
