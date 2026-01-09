@@ -26,7 +26,7 @@ namespace DOL.GS
             try
             {
                 WhereClause filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.Consignment_First).And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.Consignment_Last));
-                IList<DbInventoryItem> list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreaterThan(0)));
+                IList<DbInventoryItem> list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot);
 
                 foreach (DbInventoryItem item in list)
                     _searchEngine.AddItem(GameInventoryItem.Create(item));
@@ -75,7 +75,10 @@ namespace DOL.GS
                 return false;
 
             // There is no elegant way to update an item in the search engine, so we remove and re-add it.
-            RemoveItem(item);
+
+            if (!RemoveItem(item))
+                return false;
+
             updateAction(item, state);
             return AddItem(item);
         }
