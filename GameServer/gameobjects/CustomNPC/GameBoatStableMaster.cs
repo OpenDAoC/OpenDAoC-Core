@@ -92,7 +92,7 @@ namespace DOL.GS
 			{
 				GamePlayer player = (GamePlayer)source;
 
-                if (item.Name.ToLower().StartsWith(LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo")) && item.Item_Type == 40)
+                if (item.Name.ToLower().StartsWith("ticket to ") && item.Item_Type == 40)
 				{
 					foreach (GameNPC npc in GetNPCsInRadius(1500))
 					{
@@ -102,12 +102,13 @@ namespace DOL.GS
                             return false;
 						}
 					}
-
-                    String destination = item.Name.Substring(LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo").Length);
+                    String destination = item.Name.Substring("Ticket to ".Length);
 					PathPoint path = MovementMgr.LoadPath(item.Id_nb);
+					player.Out.SendMessage(item.Id_nb, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					//PathPoint path = MovementMgr.Instance.LoadPath(this.Name + "=>" + destination);
                     if ((path != null) && ((Math.Abs(path.X - this.X)) < 500) && ((Math.Abs(path.Y - this.Y)) < 500))
 					{
+						player.Out.SendMessage("4:", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						player.Inventory.RemoveCountFromStack(item, 1);
                         InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
 
@@ -123,7 +124,7 @@ namespace DOL.GS
 						boat.CurrentWaypoint = path;
 						//GameEventMgr.AddHandler(boat, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						//new MountHorseAction(player, boat).Start(400);
-						new HorseRideAction(boat).Start(30 * 1000);
+						new HorseRideAction(boat).Start(10 * 1000);
 
                         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.SummonedBoat", this.Name, destination), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return true;

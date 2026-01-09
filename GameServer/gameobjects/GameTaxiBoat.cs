@@ -19,7 +19,7 @@ namespace DOL.GS
             Level = 0;
             Flags = eFlags.PEACE;
             Name = "boat";
-            MaxSpeedBase = 1000;
+            MaxSpeedBase = 3000;
         }
 
         public override int InteractDistance => 666;
@@ -28,6 +28,6 @@ namespace DOL.GS
 
         public override int SLOT_OFFSET => 1;
 
-        public override short MaxSpeed => 1000;
+        public override short MaxSpeed => 3000;
     }
 }
