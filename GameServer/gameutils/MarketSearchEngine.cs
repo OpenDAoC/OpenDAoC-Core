@@ -12,13 +12,6 @@ namespace DOL.GS
         public readonly bool? IsCrafted { get; init; }
         public readonly bool? HasVisual { get; init; }
         public readonly string Owner { get; init; }
-
-        public bool HasAny =>
-            Realm.HasValue ||
-            Slot.HasValue ||
-            IsCrafted.HasValue ||
-            HasVisual.HasValue ||
-            !string.IsNullOrEmpty(Owner);
     }
 
     public class MarketSearchEngine : IDisposable
@@ -102,8 +95,12 @@ namespace DOL.GS
             {
                 List<HashSet<DbInventoryItem>> resultSets = GetMatchingSets(query);
 
-                if (resultSets == null || resultSets.Count == 0)
-                    return query.HasAny ? [] : [.. _itemKeyCache.Keys];
+                // Return the full list if no filter was provided.
+                if (resultSets == null)
+                    return [.. _itemKeyCache.Keys];
+
+                if (resultSets.Count == 0)
+                    return [];
 
                 // Find the smallest set to start with.
                 HashSet<DbInventoryItem> smallestSet = resultSets[0];
