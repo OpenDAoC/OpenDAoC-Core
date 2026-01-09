@@ -475,7 +475,9 @@ namespace DOL.AI.Brain
 					CanSpawnMessengers = true;
 				}
 			}
-			base.Think();
+
+			if (!IsRestless)
+				base.Think();
 		}
 		#region Dragon Roaming Path
 		private void DragonFlyingPath()
