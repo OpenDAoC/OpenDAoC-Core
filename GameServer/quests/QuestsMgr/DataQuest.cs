@@ -284,7 +284,7 @@ namespace DOL.GS.Quests
 		/// <param name="dataQuest"></param>
 		/// <param name="charQuest"></param>
 		public DataQuest(GamePlayer questingPlayer, DbDataQuest dataQuest, DbCharacterXDataQuest charQuest)
-			: this(questingPlayer, dataQuest, charQuest)
+			: this(questingPlayer, null, dataQuest, charQuest)
 		{
 		}
 
