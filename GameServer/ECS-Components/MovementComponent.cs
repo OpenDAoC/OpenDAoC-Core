@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class MovementComponent : IServiceObject
     {
-        private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 2000;
+        private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 2000; // Subzone update is forced by OnPositionUpdate, so this doesn't need to be very frequent.
 
         protected Vector3 _ownerPosition;
         private bool _relocationCheckPending;

@@ -290,43 +290,34 @@ namespace DOL.GS.PacketHandler
 
 			// Hack to make NPCs untargetable with TAB on a PvP server. There might be a better way to do it.
 			// Relies on 'SendObjectGuildID' not to be called after this.
-			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
+			if (GameServer.Instance.Configuration.ServerType is EGameServerType.GST_PvP)
 			{
 				if (npc.Brain is IControlledBrain npcBrain)
-					SendPetFakeFriendlyGuildID(npc, npcBrain);
-				else
-					SendNpcFakeFriendlyGuildID(npc);
-			}
-
-			void SendPetFakeFriendlyGuildID(GameNPC pet, IControlledBrain petBrain)
-			{
-				GamePlayer playerOwner = petBrain.GetPlayerOwner();
-				GamePlayer player = m_gameClient.Player;
-				Guild playerGuild = player.Guild;
-
-				// Leave if the player we send this packet to isn't the pet's owner and isn't in the same guild or group.
-				if (playerOwner != player)
 				{
-					Guild playerOwnerGuild = playerOwner.Guild;
+					GamePlayer playerOwner = npcBrain.GetPlayerOwner();
+					GamePlayer player = m_gameClient.Player;
+					Guild playerGuild = player.Guild;
 
-					if (playerOwnerGuild == null || playerGuild == null || playerOwnerGuild != playerGuild)
+					// Leave if the player we send this packet to isn't the pet's owner and isn't in the same guild or group.
+					if (playerOwner != player)
 					{
-						Group playerOwnerGroup = playerOwner.Group;
+						Guild playerOwnerGuild = playerOwner.Guild;
 
-						if (playerOwnerGroup == null || !playerOwnerGroup.GetMembersInTheGroup().Contains(player))
-							return;
+						if (playerOwnerGuild == null || playerGuild == null || playerOwnerGuild != playerGuild)
+						{
+							Group playerOwnerGroup = playerOwner.Group;
+
+							if (playerOwnerGroup == null || !playerOwnerGroup.GetMembersInTheGroup().Contains(player))
+								return;
+						}
 					}
+
+					// Make the client believe the pet is in the same guild as them.
+					// Use a dummy guild for guildless players.
+					SendObjectGuildID(npc, playerGuild ?? Guild.DummyGuild);
+					SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
 				}
-
-				// Make the client believe the pet is in the same guild as them.
-				// Use a dummy guild for guildless players.
-				SendObjectGuildID(pet, playerGuild ?? Guild.DummyGuild);
-				SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
-			}
-
-			void SendNpcFakeFriendlyGuildID(GameNPC npc)
-			{
-				if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != eRealm.None)
+				else if ((npc.Flags & GameNPC.eFlags.PEACE) != 0 || npc.Realm is not eRealm.None)
 				{
 					GamePlayer player = m_gameClient.Player;
 					Guild playerGuild = player.Guild;
@@ -692,7 +683,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(flag); //byte Ammo,  byte SiegeMoving(1/0)
 				pak.WriteByte(0);
 				pak.WriteByte(0); // Close interface(1/0)
-				pak.WriteByte((byte)(time));//time x 100 eg 50 = 5000ms
+				pak.WriteByte((byte)Math.Clamp(time, 0, 255));//time x 100 eg 50 = 5000ms
 				pak.WriteByte((byte)siegeWeapon.Ammo.Count); // external ammo count
 				pak.WriteByte((byte)siegeWeapon.SiegeWeaponTimer.CurrentAction);
 				pak.WriteByte((byte)siegeWeapon.AmmoSlot);
@@ -854,33 +845,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)(living.X - zone.XOffset));
 				pak.WriteShort((ushort)(living.Y - zone.YOffset));
 			}
-		}
-
-		// Füge diese Methode zur Klasse PacketLib1124 hinzu
-		public void WriteQuestTargetMapUpdate(GSTCPPacketOut pak, Zone zone, int x, int y)
-		{
-			// Stellen Sie sicher, dass die Zone gültig ist, um Fehler zu vermeiden.
-			if (zone == null)
-				return;
-
-			// Wir wählen eine neue, unbenutzte Kennung (z.B. 0x80) oder eine spezifische Quest-Kennung, 
-			// die sich von der Gruppen-ID (0x40) unterscheidet. 
-			// Da es sich um eine benutzerdefinierte Erweiterung handelt, müssen Sie sicherstellen, 
-			// dass der Client diese ID erkennt und als Quest-Marker interpretiert.
-			// Ich verwende hier 0x80 als Beispiel, falls die oberste 4. Bit nicht für die Group-ID genutzt wird.
-			// Bei manchen Paketen wird das oberste Bit für eine spezielle Kennung verwendet.
-			// Wir nehmen eine beliebige ungenutzte ID, z.B. 0x48.
-
-			pak.WriteByte((byte)(0x48)); // Quest Target Map Update Kennung
-			
-			// ZoneSkinID für das Quest-Ziel. Der Client benötigt diese, um die richtige Karte anzuzeigen.
-			pak.WriteShort(zone.ZoneSkinID); 
-
-			// Absolute X-Koordinate minus Zone Offset
-			pak.WriteShort((ushort)(x - zone.XOffset));
-			
-			// Absolute Y-Koordinate minus Zone Offset
-			pak.WriteShort((ushort)(y - zone.YOffset));
 		}
 
 		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)

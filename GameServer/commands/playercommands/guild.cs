@@ -967,10 +967,7 @@ namespace DOL.GS.Commands
 								"Remove: " + (rank.Remove ? "y" : "n") + " View: " + (rank.View ? "y" : "n"),
 								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							client.Out.SendMessage(
-								"Dues: " + (rank.Dues ? "y" : "n") + " Buff: " + (rank.Buff ? "y" : "n"),
-								eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								client.Out.SendMessage(
-								"Withdraw: " + (rank.Withdraw ? "y" : "n"),
+								"Dues: " + (rank.Dues ? "y" : "n") + " Withdraw: " + (rank.Withdraw ? "y" : "n"),
 								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
 

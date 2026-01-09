@@ -18,6 +18,7 @@ using DOL.GS.Quests;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -27,7 +28,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject, IPooledList<GameNPC>
 	{
-		public static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		public static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		private static ConcurrentDictionary<Type, Func<AbstractQuest>> _abstractQuestConstructorCache = new();
 
 		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
@@ -670,22 +671,14 @@ namespace DOL.GS
 			}
 		}
 
-
-		public override bool IsUnderwater
-		{
-			get { return (m_flags & eFlags.SWIMMING) == eFlags.SWIMMING || base.IsUnderwater; }
-		}
-
+		public override bool IsUnderwater => (m_flags & eFlags.SWIMMING) is eFlags.SWIMMING || base.IsUnderwater;
 
 		/// <summary>
 		/// Shows wether any player sees that mob
 		/// we dont need to calculate things like AI if mob is in no way
 		/// visible to at least one player
 		/// </summary>
-		public virtual bool IsVisibleToPlayers
-		{
-			get { return GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
-		}
+		public virtual bool IsVisibleToPlayers => GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN;
 
 		/// <summary>
 		/// Gets or sets the spawnposition of this npc
@@ -823,6 +816,7 @@ namespace DOL.GS
 		public bool IsDestinationValid => movementComponent.IsDestinationValid;
 		public bool IsAtDestination => movementComponent.IsAtDestination;
 		public bool CanRoam => movementComponent.CanRoam;
+		public bool CanMoveOnPath => movementComponent.CanMoveOnPath;
 
 		public void WalkTo(Point3D target, short speed)
 		{
@@ -2661,6 +2655,8 @@ namespace DOL.GS
 
 		#region Combat
 
+		public override bool BenefitsFromRelics => Brain is ControlledMobBrain brain && brain.GetPlayerOwner() != null;
+
 		/// <summary>
 		/// The property that holds charmed tick if any
 		/// </summary>
@@ -2779,47 +2775,40 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
-			try
+			Brain?.KillFSM();
+			FireAmbientSentence(eAmbientTrigger.dying, killer);
+
+			if (ControlledBrain != null)
+				ControlledNPC_Release();
+
+			StopMoving();
+			CurrentWaypoint = null;
+
+			if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
+				killer = petBrain.GetPlayerOwner();
+
+			if (killer != null)
 			{
-				Brain?.KillFSM();
-				FireAmbientSentence(eAmbientTrigger.dying, killer);
+				Message.SystemToArea(this, $"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, killer);
 
-				if (ControlledBrain != null)
-					ControlledNPC_Release();
+				if (killer is GamePlayer player)
+					player.Out.SendMessage($"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
 
-				StopMoving();
-
-				if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
-					killer = petBrain.GetPlayerOwner();
-
-				if (killer != null)
-				{
-					Message.SystemToArea(this, $"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, killer);
-
-					if (killer is GamePlayer player)
-						player.Out.SendMessage($"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
-
-					// Deal out experience, realm points, loot... Based on server rules.
-					GameServer.ServerRules.OnNpcKilled(this, killer);
-				}
-
-				Group?.RemoveMember(this);
-				base.ProcessDeath(killer);
-
-				lock (XpGainersLock)
-				{
-					XPGainers.Clear();
-				}
-
-				Delete();
-				TempProperties.RemoveAllProperties();
-				StartRespawn();
+				// Deal out experience, realm points, loot... Based on server rules.
+				GameServer.ServerRules.OnNpcKilled(this, killer);
 			}
-			finally
+
+			Group?.RemoveMember(this);
+			base.ProcessDeath(killer);
+
+			lock (XpGainersLock)
 			{
-				if (IsBeingHandledByReaperService)
-					base.ProcessDeath(killer);
+				XPGainers.Clear();
 			}
+
+			Delete();
+			TempProperties.RemoveAllProperties();
+			StartRespawn();
 		}
 
 		/// <summary>

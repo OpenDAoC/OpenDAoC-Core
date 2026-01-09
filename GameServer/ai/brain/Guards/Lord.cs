@@ -42,12 +42,12 @@ namespace DOL.AI.Brain
 			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
 			{
 				GuardLord lord = Body as GuardLord;
-				long currenttime = DateTime.UtcNow.Ticks;
+				long currentTime = GameLoop.GameLoopTime;
 
-				if (lord != null && m_nextCallForHelpTime < currenttime)
+				if (lord != null && m_nextCallForHelpTime < currentTime)
 				{
 					// Don't call for help more than once every minute
-					m_nextCallForHelpTime = currenttime + TimeSpan.TicksPerMinute;
+					m_nextCallForHelpTime = currentTime + 60000;
 
 					int iGuardsResponding = 0;
 

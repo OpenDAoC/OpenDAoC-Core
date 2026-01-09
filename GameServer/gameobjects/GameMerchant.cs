@@ -50,7 +50,6 @@ namespace DOL.GS
 		/// <summary>
 		/// send the merchants item offer window to a player
 		/// </summary>
-		/// <param name="player"></param>
 		public virtual void SendMerchantWindow(GamePlayer player)
 		{
 			player.Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Normal);
@@ -471,6 +470,11 @@ namespace DOL.GS
 				} // foreach
 		}
 
+		public override void SendMerchantWindow(GamePlayer player)
+		{
+			player.Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Bp);
+		}
+
 		/// <summary>
 		/// Exchange special currency for BPs
 		/// </summary>
@@ -640,6 +644,11 @@ namespace DOL.GS
 			TurnTo(player, 10000);
 			SendInteractMessage(player);
 			return true;
+		}
+
+		public override void SendMerchantWindow(GamePlayer player)
+		{
+			player.Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Count);
 		}
 
 		protected virtual void SendInteractMessage(GamePlayer player)

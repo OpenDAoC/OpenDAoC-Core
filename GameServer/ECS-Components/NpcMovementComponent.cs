@@ -52,7 +52,8 @@ namespace DOL.GS
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsDestinationValid { get; private set; }
         public bool IsAtDestination => !IsDestinationValid || (_destination - _ownerPosition).LengthSquared() < 1.0f;
-        public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && string.IsNullOrWhiteSpace(PathID);
+        public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && !CanMoveOnPath;
+        public bool CanMoveOnPath => !string.IsNullOrEmpty(PathID);
         public double HorizontalVelocityForClient { get; private set; }
         public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
@@ -244,14 +245,15 @@ namespace DOL.GS
 
         public void StopMovingOnPath()
         {
-            // Without this, horses would be immediately removed since 'MoveOnPath' immediately calls 'StopMoving', which calls 'StopMovingOnPath'.
-            if (IsFlagSet(MovementState.ON_PATH))
-            {
-                if (Owner is GameTaxi or GameTaxiBoat)
-                    Owner.RemoveFromWorld();
+            if (!IsFlagSet(MovementState.ON_PATH))
+                return;
 
-                UnsetFlag(MovementState.ON_PATH);
-            }
+            UnsetFlag(MovementState.ON_PATH);
+
+            if (Owner is GameTaxi or GameTaxiBoat)
+                Owner.RemoveFromWorld();
+
+            // We don't reset CurrentWaypoint here to allow the path to be resumed. This must be done manually if needed (on NPC death for example).
         }
 
         public void ReturnToSpawnPoint()

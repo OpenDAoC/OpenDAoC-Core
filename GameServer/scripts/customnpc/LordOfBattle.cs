@@ -103,7 +103,7 @@ namespace DOL.GS {
             if (playersToKill == null)
                 playersToKill = new List<GamePlayer>();
 
-            if (Body.Flags.HasFlag(GameNPC.eFlags.GHOST))
+            if ((Body.Flags & GameNPC.eFlags.GHOST) != 0)
                 return;
 
             foreach(GamePlayer player in Body.GetPlayersInRadius(7000))
