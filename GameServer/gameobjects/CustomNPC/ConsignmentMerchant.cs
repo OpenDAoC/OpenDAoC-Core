@@ -349,7 +349,9 @@ namespace DOL.GS
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} set sell price of '{item.Name}' to {item.SellPrice} for consignment merchant on lot {HouseNumber}.");
 
-            GameServer.Database.SaveObject(item);
+            if (item.Dirty)
+                GameServer.Database.SaveObject(item);
+
             return true;
         }
 
@@ -622,6 +624,8 @@ namespace DOL.GS
 
             foreach (DbInventoryItem item in items)
                 MarketCache.UpdateItem(item, static (item, lot) => item.OwnerLot = lot, HouseNumber);
+
+            GameServer.Database.SaveObject(items);
 
             if (log.IsDebugEnabled)
                 log.Debug($"CM: Updated {nameof(DbInventoryItem.OwnerLot)} for {items.Count()} items on consignment merchant on lot {HouseNumber}.");
