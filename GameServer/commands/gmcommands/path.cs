@@ -340,7 +340,7 @@ namespace DOL.GS.Commands
             if (client.Player.TargetObject is GameStableMaster)
                 merchant = client.Player.TargetObject as GameStableMaster;
             if (client.Player.TargetObject is GameBoatStableMaster)
-                merchant = client.Player.TargetObject as GameBoatStableMaster;							if (client.Player.TargetObject is GameWyvernStableMaster)                merchant = client.Player.TargetObject as GameWyvernStableMaster;
+                merchant = client.Player.TargetObject as GameBoatStableMaster;
             if (merchant == null)
             {
                 DisplayMessage(client, "You must select a stable master to assign a taxi route!");

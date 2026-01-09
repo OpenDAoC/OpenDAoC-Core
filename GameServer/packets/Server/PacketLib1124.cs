@@ -856,6 +856,33 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
+		// Füge diese Methode zur Klasse PacketLib1124 hinzu
+		public void WriteQuestTargetMapUpdate(GSTCPPacketOut pak, Zone zone, int x, int y)
+		{
+			// Stellen Sie sicher, dass die Zone gültig ist, um Fehler zu vermeiden.
+			if (zone == null)
+				return;
+
+			// Wir wählen eine neue, unbenutzte Kennung (z.B. 0x80) oder eine spezifische Quest-Kennung, 
+			// die sich von der Gruppen-ID (0x40) unterscheidet. 
+			// Da es sich um eine benutzerdefinierte Erweiterung handelt, müssen Sie sicherstellen, 
+			// dass der Client diese ID erkennt und als Quest-Marker interpretiert.
+			// Ich verwende hier 0x80 als Beispiel, falls die oberste 4. Bit nicht für die Group-ID genutzt wird.
+			// Bei manchen Paketen wird das oberste Bit für eine spezielle Kennung verwendet.
+			// Wir nehmen eine beliebige ungenutzte ID, z.B. 0x48.
+
+			pak.WriteByte((byte)(0x48)); // Quest Target Map Update Kennung
+			
+			// ZoneSkinID für das Quest-Ziel. Der Client benötigt diese, um die richtige Karte anzuzeigen.
+			pak.WriteShort(zone.ZoneSkinID); 
+
+			// Absolute X-Koordinate minus Zone Offset
+			pak.WriteShort((ushort)(x - zone.XOffset));
+			
+			// Absolute Y-Koordinate minus Zone Offset
+			pak.WriteShort((ushort)(y - zone.YOffset));
+		}
+
 		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)

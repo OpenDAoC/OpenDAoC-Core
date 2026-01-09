@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using DOL.AI.Brain;
@@ -89,7 +90,7 @@ namespace DOL.GS.Scripts
             BodyType = 2;
 
 
-            // Custom Respawn +/- 20%
+            // Custom Respawn +/- 20% 4h
             int baseRespawnMS = 14400000; 
             int maxOffsetMS = 2880000; 
             Random rnd = new Random();
@@ -127,6 +128,7 @@ namespace DOL.GS.Scripts
             bool canReportNews = true;
             DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("daemon_blood_seal");
             int itemCount = 500;
+            string message_currency = "Legion drops " + itemCount + " " + template.Name + ".";
             // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -134,6 +136,7 @@ namespace DOL.GS.Scripts
                 item.Count = itemCount;
                 if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
                 {
+                    player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
                     InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
                 }
                 player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
@@ -143,14 +146,14 @@ namespace DOL.GS.Scripts
                     canReportNews = false;
             }
 
-            var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("legion_throw");//cancel teleport
+            var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("legion_throw"); //cancel teleport
             if (throwPlayer != null)
             {
                 throwPlayer.Stop();
                 TempProperties.RemoveProperty("legion_throw");
             }
 
-            var castaoe = TempProperties.GetProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+            var castaoe = TempProperties.GetProperty<ECSGameTimer>("legion_castaoe"); //cancel cast aoe
             if (castaoe != null)
             {
                 castaoe.Stop();

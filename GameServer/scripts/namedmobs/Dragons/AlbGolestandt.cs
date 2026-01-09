@@ -122,10 +122,21 @@ namespace DOL.GS
 					log.Error("Dragon Killed: killer is null!");
 				else
 					log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
+
 				bool canReportNews = true;
+				DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
+				int itemCount = 500;
+				string message_currency = "Golestandt drops " + itemCount + " " + template.Name + ".";
 				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
 				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
+					DbInventoryItem item = GameInventoryItem.Create(template);
+					item.Count = itemCount;
+					if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+					{
+						player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+						InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+					}
 					player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 					if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
 					{
@@ -208,6 +219,9 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157497);
 			LoadTemplate(npcTemplate);
 			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RoamingRange = 0;
+			Model = 613;
+			Size = 50;
 			#region All bools here
 			AlbGolestandtBrain.ResetChecks = false;
 			AlbGolestandtBrain.IsRestless = false;
@@ -268,7 +282,7 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 			ThinkInterval = 5000;
 			
-			_roamingPathPoints.Add(new Point3D(391129, 755603, 378));//spawn
+			/*_roamingPathPoints.Add(new Point3D(391129, 755603, 378));//spawn
 			_roamingPathPoints.Add(new Point3D(385865, 756961, 3504));
 			_roamingPathPoints.Add(new Point3D(378547, 755862, 3504));
 			_roamingPathPoints.Add(new Point3D(373114, 749008, 3504));
@@ -295,7 +309,7 @@ namespace DOL.AI.Brain
 			_roamingPathPoints.Add(new Point3D(397830, 713380, 3512));
 			_roamingPathPoints.Add(new Point3D(407425, 720655, 3512));
 			_roamingPathPoints.Add(new Point3D(408918, 742335, 3512));
-			_roamingPathPoints.Add(new Point3D(397944, 754701, 3512));
+			_roamingPathPoints.Add(new Point3D(397944, 754701, 3512));*/
 		}
 		public static bool CanGlare = false;
 		public static bool CanGlare2 = false;

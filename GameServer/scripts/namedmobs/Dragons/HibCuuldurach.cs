@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -122,9 +123,19 @@ namespace DOL.GS
 				else
 					log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
 				bool canReportNews = true;
+				DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
+				int itemCount = 500;
+				string message_currency = "Cuuldurach drops " + itemCount + " " + template.Name + ".";
 				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
 				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
+					DbInventoryItem item = GameInventoryItem.Create(template);
+					item.Count = itemCount;
+					if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+					{
+						player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+						InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+					}
 					player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 					if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
 					{
@@ -209,6 +220,9 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(678903);
 			LoadTemplate(npcTemplate);
 			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RoamingRange = 0;
+			Model = 613;
+			Size = 50;
 			#region All bools here
 			HibCuuldurachBrain.ResetChecks = false;
 			HibCuuldurachBrain.IsRestless = false;
@@ -269,7 +283,7 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 			ThinkInterval = 5000;
 			
-			_roamingPathPoints.Add(new Point3D(408646, 706432, 2965));//spawn
+			/*_roamingPathPoints.Add(new Point3D(408646, 706432, 2965));//spawn
 			_roamingPathPoints.Add(new Point3D(399021, 704912, 6212));
 			_roamingPathPoints.Add(new Point3D(391823, 706981, 6212));
 			_roamingPathPoints.Add(new Point3D(379666, 707613, 6212));
@@ -296,7 +310,7 @@ namespace DOL.AI.Brain
 			_roamingPathPoints.Add(new Point3D(411408, 655769, 8321));
 			_roamingPathPoints.Add(new Point3D(411061, 673862, 6722));
 			_roamingPathPoints.Add(new Point3D(409199, 679881, 6722));
-			_roamingPathPoints.Add(new Point3D(409781, 696669, 7148));
+			_roamingPathPoints.Add(new Point3D(409781, 696669, 7148));*/
 
 		}
 		public static bool CanGlare = false;
@@ -423,8 +437,8 @@ namespace DOL.AI.Brain
 				LockIsRestless = true;
 			}
 
-			if (IsRestless)
-				DragonFlyingPath();//make dragon follow the path
+			//if (IsRestless)
+				//DragonFlyingPath();//make dragon follow the path
 
 			if (!ResetChecks && _lastRoamIndex >= _roamingPathPoints.Count)
 			{
@@ -480,7 +494,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Dragon Roaming Path
-		private void DragonFlyingPath()
+		/*private void DragonFlyingPath()
 		{
 			if (IsRestless && Body.IsAlive)
 			{
@@ -495,7 +509,7 @@ namespace DOL.AI.Brain
 				else if(!Body.IsMoving)
 					Body.WalkTo(_roamingPathPoints[_lastRoamIndex], speed);
 			}
-		}
+		}*/
 		#endregion
 
 		#region Throw Players

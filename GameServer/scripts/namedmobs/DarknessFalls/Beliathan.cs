@@ -5,6 +5,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
+
 #region Beliathan Inizializator
 
 namespace DOL.GS
@@ -76,7 +77,7 @@ namespace DOL.AI.Brain
         {
         }
 
-        public override int ThinkInterval => 600000; // 10 min
+        public override int ThinkInterval => 300000; // 5 min
 
         public override void Think()
         {
@@ -219,6 +220,27 @@ namespace DOL.GS
                 {
                     npc.RemoveFromWorld();
                 }
+            }
+
+            bool canReportNews = true;
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("daemon_blood_seal");
+            int itemCount = 100;
+            string message_currency = "Beliathan drops " + itemCount + " " + template.Name + ".";
+            // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                DbInventoryItem item = GameInventoryItem.Create(template);
+                item.Count = itemCount;
+                if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+                    InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+                }
+                player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+
+                if (!canReportNews || GameServer.ServerRules.CanGenerateNews(player) != false) continue;
+                if (player.Client.Account.PrivLevel == (int) ePrivLevel.Player)
+                    canReportNews = false;
             }
         }
         private static void PlayerKilledByBeliathan(DOLEvent e, object sender, EventArgs args)

@@ -315,7 +315,8 @@ namespace DOL.GS
 				info.Add(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Specs", player.RealmLevel / 10)));
 			else
 				info.Add(" none");
-			info.Add(" ");
+			// Removed Relic Bonuses in general
+			/*info.Add(" ");
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Relic"));
 
 			double meleeRelicBonus = RelicMgr.GetRelicBonusModifier(player.Realm, eRelicType.Strength);
@@ -326,7 +327,7 @@ namespace DOL.GS
 
 			// info.Add(" ");
 			// info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Outpost"));
-			// info.Add("TODO, this needs to be written");
+			// info.Add("TODO, this needs to be written");*/
 
 			return info;
 		}
