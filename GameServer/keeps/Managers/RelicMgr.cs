@@ -4,39 +4,25 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.ServerProperties; // Hinzugefügt, um auf Properties zugreifen zu können
+using DOL.Logging;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// RelicManager
-    /// The manager that keeps track of the relics.
-    /// </summary>
-    public sealed class RelicMgr
+    public class RelicMgr
     {
-        /// <summary>
-        /// table of all relics, id as key
-        /// </summary>
-        private static readonly Hashtable m_relics = new Hashtable();
-        private static readonly Lock _relicsLock = new Lock();
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        /// <summary>
-        /// list of all relicPads
-        /// </summary>
-        private static readonly ArrayList m_relicPads = new ArrayList();
-        private static readonly Lock _relicPadsLock = new Lock();
+        // Relics are not expected to be modified after initialization.
+        private static readonly Dictionary<int, GameRelic> _relicsMap = [];
+        private static volatile GameRelic[] _relicsArray = [];
 
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        // --- NEUE 120-MINUTEN LOGIK START ---
-        
+        // Relic pads are loaded concurrently via GameRelicPad.AddToWorld.
+        private static readonly List<GameRelicPad> _relicPads = [];
+        private static readonly Lock _relicPadsLock = new();
         // Timer für die automatische Überprüfung verlorener Relikte (alle 5 Minuten)
         private static Timer _relicCheckTimer;
         // Intervall in Millisekunden (121 Minuten check, to be sure timer is already over)
-        private const int RELIC_CHECK_INTERVAL = 121 * 60 * 1000; 
+        private const int RELIC_CHECK_INTERVAL = 121 * 60 * 1000;
 
         /// <summary>
         /// Gibt die maximal erlaubte Trage-/Bodenzeit für ein Relikt zurück (aus ServerProperties).
@@ -44,84 +30,79 @@ namespace DOL.GS
         public static TimeSpan MaxRelicCarryTime
         {
             // Geht davon aus, dass RELIC_RETURN_TIME in ServerProperties die Dauer in Minuten enthält.
-            get { return TimeSpan.FromMinutes(ServerProperties.Properties.RELIC_RETURN_TIME); } 
+            get { return TimeSpan.FromMinutes(ServerProperties.Properties.RELIC_RETURN_TIME); }
         }
 
-        // --- NEUE 120-MINUTEN LOGIK ENDE ---
-
-        /// <summary>
-        /// load all relics from DB
-        /// </summary>
         public static bool Init()
         {
-            // ... (Initialisierungs-Code bleibt unverändert) ...
-            TempleRelicPadsLoader.LoadTemplePads();
-
-            lock (_relicsLock)
+            lock (_relicPadsLock)
             {
-                //at first remove all relics
-                foreach (GameRelic rel in m_relics.Values)
+                foreach (GameRelic relic in _relicsMap.Values)
                 {
-                    rel.SaveIntoDatabase();
-                    rel.RemoveFromWorld();
+                    relic.SaveIntoDatabase();
+                    relic.RemoveFromWorld();
                 }
 
-                //then clear the hashtable
-                m_relics.Clear();
+                _relicsMap.Clear();
+                _relicsArray = [];
 
-                //then we remove all relics from the pads
-                foreach (GameRelicPad pad in m_relicPads)
-                {
+                foreach (GameRelicPad pad in _relicPads)
                     pad.RemoveRelics();
-                }
 
-                // if relics are on the ground during init we will return them to their owners
-                List<GameRelic> lostRelics = new List<GameRelic>();
+                List<GameRelic> lostRelics = [];
+                IList<DbRelic> dbRelics = GameServer.Database.SelectAllObjects<DbRelic>();
 
-                var relics = GameServer.Database.SelectAllObjects<DbRelic>();
-                foreach (DbRelic datarelic in relics)
+                foreach (DbRelic dbRelic in dbRelics)
                 {
-                    if (datarelic.relicType < 0 || datarelic.relicType > 1
-                        || datarelic.OriginalRealm < 1 || datarelic.OriginalRealm > 3)
+                    if (dbRelic.relicType < 0 || dbRelic.relicType > 1 || dbRelic.OriginalRealm < 1 || dbRelic.OriginalRealm > 3)
                     {
-                        log.Warn("DBRelic: Could not load " + datarelic.RelicID + ": Realm or Type missmatch.");
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Could not load {dbRelic.RelicID}: Realm or Type mismatch.");
+
                         continue;
                     }
 
-                    if (WorldMgr.GetRegion((ushort)datarelic.Region) == null)
+                    if (WorldMgr.GetRegion((ushort)dbRelic.Region) == null)
                     {
-                        log.Warn("DBRelic: Could not load " + datarelic.RelicID + ": Region missmatch.");
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Could not load {dbRelic.RelicID}: Region mismatch.");
+
                         continue;
                     }
-                    GameRelic relic = new GameRelic(datarelic);
-                    m_relics.Add(datarelic.RelicID, relic);
 
+                    GameRelic relic = new(dbRelic);
+                    _relicsMap[dbRelic.RelicID] = relic;
                     relic.AddToWorld();
-                    GameRelicPad pad = GetPadAtRelicLocation(relic);
+                    GameRelicPad pad = null;
+
+                    foreach (GameRelicPad relicPad in _relicPads)
+                    {
+                        if (relic.IsWithinRadius(relicPad, 200))
+                            pad = relicPad;
+                    }
+
                     if (pad != null)
                     {
                         if (relic.RelicType == pad.PadType)
                         {
                             relic.RelicPadTakesOver(pad, true);
-                            log.Debug("DBRelic: " + relic.Name + " has been loaded and added to pad " + pad.Name + ".");
+
+                            if (log.IsDebugEnabled)
+                                log.Debug($"{relic.Name} has been loaded and added to pad {pad.Name}.");
                         }
                     }
                     else
-                    {
                         lostRelics.Add(relic);
-                    }
                 }
 
                 foreach (GameRelic lostRelic in lostRelics)
                 {
-                    eRealm returnRealm = (eRealm)lostRelic.LastRealm;
+                    eRealm returnRealm = lostRelic.LastRealm;
 
-                    if (returnRealm == eRealm.None)
-                    {
+                    if (returnRealm is eRealm.None)
                         returnRealm = lostRelic.OriginalRealm;
-                    }
 
-                    foreach (GameRelicPad pad in m_relicPads)
+                    foreach (GameRelicPad pad in _relicPads)
                     {
                         if (pad.Realm == returnRealm && pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
                         {
@@ -131,13 +112,11 @@ namespace DOL.GS
                     }
                 }
 
-                // Final cleanup.  If any relic is still unmounted then mount the damn thing to any empty pad
-
                 foreach (GameRelic lostRelic in lostRelics)
                 {
                     if (lostRelic.CurrentRelicPad == null)
                     {
-                        foreach (GameRelicPad pad in m_relicPads)
+                        foreach (GameRelicPad pad in _relicPads)
                         {
                             if (pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
                             {
@@ -147,17 +126,139 @@ namespace DOL.GS
                         }
                     }
                 }
-            }
 
-            log.Debug(m_relicPads.Count + " relicpads" + ((m_relicPads.Count > 1) ? "s were" : " was") + " loaded.");
-            log.Debug(m_relics.Count + " relic" + ((m_relics.Count > 1) ? "s were" : " was") + " loaded.");
+                _relicsArray = [.. _relicsMap.Values];
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug($"{_relicPads.Count} relic pad{(_relicPads.Count > 1 ? "s were" : " was")} loaded.");
+                    log.Debug($"{_relicsMap.Count} relic{(_relicsMap.Count > 1 ? "s were" : " was")} loaded.");
+                }
+            }
             
-            // Startet den Timer für die Rückkehr nach maximaler Zeit
-            StartRelicCheckTimer();
-            
+            // Timer starten, nachdem Init abgeschlossen ist
+            StartRelicCheckTimer(); 
+
             return true;
         }
-        
+
+        public static void AddRelicPad(GameRelicPad pad)
+        {
+            lock (_relicPadsLock)
+            {
+                if (!_relicPads.Contains(pad))
+                    _relicPads.Add(pad);
+            }
+        }
+
+        public static void RemoveRelicPad(GameRelicPad pad)
+        {
+            lock (_relicPadsLock)
+            {
+                _relicPads.Remove(pad);
+            }
+        }
+
+        public static GameRelic GetRelic(int id)
+        {
+            return _relicsMap.TryGetValue(id, out GameRelic relic) ? relic : null;
+        }
+
+        public static int GetRelicCount(eRealm realm)
+        {
+            int count = 0;
+            GameRelic[] snapshot = _relicsArray;
+
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic relic = snapshot[i];
+
+                if (relic.Realm == realm && relic.IsMounted)
+                    count++;
+            }
+
+            return count;
+        }
+
+        public static int GetRelicCount(eRealm realm, eRelicType type)
+        {
+            int count = 0;
+            GameRelic[] snapshot = _relicsArray;
+
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic relic = snapshot[i];
+
+                if (relic.Realm == realm && relic.RelicType == type && relic.IsMounted)
+                    count++;
+            }
+
+            return count;
+        }
+
+        public static GameRelic[] GetRelics()
+        {
+            return _relicsArray;
+        }
+
+        public static double GetRelicBonusModifier(GameLiving living, eRelicType type)
+        {
+            double modifier = 1.0;
+
+            if (!living.BenefitsFromRelics)
+                return modifier;
+
+            bool owningSelf = false;
+            eRealm realm = living.Realm;
+            GameRelic[] snapshot = _relicsArray;
+
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic relic = snapshot[i];
+
+                if (relic.Realm == realm && relic.RelicType == type && relic.IsMounted)
+                {
+                    if (relic.Realm == relic.OriginalRealm)
+                        owningSelf = true;
+                    else
+                        modifier += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
+                }
+            }
+
+            // Bonus applies only if owning original relic.
+            return owningSelf ? modifier : 1.0;
+        }
+
+        public static bool CanPickupRelicFromShrine(GamePlayer player, GameRelic relic)
+        {
+            if (player == null || relic == null)
+                return false;
+
+            // A player can always pick up their own realm's original relic.
+            if (player.Realm == relic.OriginalRealm)
+                return true;
+
+            eRealm playerRealm = player.Realm;
+            eRelicType type = relic.RelicType;
+            GameRelic[] snapshot = _relicsArray;
+
+            // Ensure the player's realm possesses its original relic of the same type.
+            for (int i = 0; i < snapshot.Length; i++)
+            {
+                GameRelic otherRelic = snapshot[i];
+
+                if (otherRelic.Realm == playerRealm &&
+                    otherRelic.OriginalRealm == playerRealm &&
+                    otherRelic.RelicType == type &&
+                    otherRelic.IsMounted)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         // --- 120-MINUTEN LOGIK START ---
 
         /// <summary>
@@ -181,37 +282,38 @@ namespace DOL.GS
                 log.Debug("Checking relics for exceeding max carry time.");
 
             // Die Überprüfung der DB-Property findet hier statt, um den aktuellen Wert zu nutzen.
-            TimeSpan maxTime = MaxRelicCarryTime; 
+            TimeSpan maxTime = MaxRelicCarryTime;
 
-            lock (_relicsLock)
+            // Iteration über die RelicsMap, da diese die aktiven GameRelic-Objekte enthält.
+            foreach (GameRelic relic in _relicsMap.Values) // KORRIGIERT: _relicsMap.Values für die Iteration
             {
-                foreach (GameRelic relic in m_relics.Values)
+                // lastTimePickedUp > DateTime.MinValue bedeutet: Das Relikt wurde einmal aufgenommen und ist nicht montiert.
+                if (relic.LastTimePickedUp > DateTime.MinValue)
                 {
-                    // lastTimePickedUp > DateTime.MinValue bedeutet: Das Relikt wurde einmal aufgenommen und ist nicht montiert.
-                    if (relic.LastTimePickedUp > DateTime.MinValue)
-                    {
-                        TimeSpan carryDuration = DateTime.Now.Subtract(relic.LastTimePickedUp);
+                    // KORRIGIERT: LastCaptureDate ersetzt durch LastTimePickedUp
+                    TimeSpan carryDuration = DateTime.Now.Subtract(relic.LastTimePickedUp); 
 
-                        if (carryDuration > maxTime)
-                        {
-                            string carrierName = relic.CurrentCarrier?.Name ?? "Nobody (On Ground)";
-                            log.Warn($"Relic '{relic.Name}' carried by {carrierName} for too long ({carryDuration.TotalMinutes:F1} minutes). Returning it automatically.");
-                            
-                            relic.ReturnToSourcePad(); 
-                        }
+                    if (carryDuration > maxTime)
+                    {
+                        string carrierName = relic.CurrentCarrier?.Name ?? "Nobody (On Ground)";
+                        log.Warn($"Relic '{relic.Name}' carried by {carrierName} for too long ({carryDuration.TotalMinutes:F1} minutes). Returning it automatically.");
+
+                        relic.ReturnToSourcePad();
                     }
                 }
             }
         }
-        
+
         /// <summary>
         /// Gibt das ursprüngliche RelicPad für ein gegebenes Reich und einen gegebenen Typ zurück.
         /// </summary>
         public static GameRelicPad GetHomePad(eRealm realm, eRelicType relicType)
         {
+            // KORRIGIERT: _relicsLock ersetzt durch _relicPadsLock
             lock (_relicPadsLock)
             {
-                foreach (GameRelicPad pad in m_relicPads)
+                // KORRIGIERT: m_relicPads ersetzt durch _relicPads
+                foreach (GameRelicPad pad in _relicPads) 
                 {
                     if (pad.Realm == realm && pad.PadType == relicType)
                     {
@@ -225,182 +327,40 @@ namespace DOL.GS
 
 
         /// <summary>
-		/// Berechnet die verbleibende Zeit bis zur automatischen Rückkehr des Relikts in vollen Minuten.
-		/// </summary>
-		/// <param name="relic">Das zu prüfende Relikt.</param>
-		/// <returns>Die Anzahl der verbleibenden Minuten (int). Gibt 0 zurück, wenn die Zeit abgelaufen ist.</returns>
-		public static int GetRelicReturnMinutesRemaining(GameRelic relic)
-		{
-			// 1. Prüfen, ob das Relikt überhaupt "unterwegs" ist (nicht montiert)
-			if (relic.IsMounted || relic.LastTimePickedUp <= DateTime.MinValue)
-			{
-				return -1; // -1 als Indikator, dass das Relikt montiert ist oder ungültigen Status hat.
-			}
-			
-			// 2. Maximale Tragezeit aus der RelicMgr-Eigenschaft abrufen
-			TimeSpan maxCarryTime = RelicMgr.MaxRelicCarryTime;
-			
-			// 3. Vergangene Zeit seit der letzten Aufnahme berechnen
-			TimeSpan timeElapsed = DateTime.Now.Subtract(relic.LastTimePickedUp); 
-			
-			// 4. Verbleibende Zeit berechnen
-			TimeSpan timeRemaining = maxCarryTime.Subtract(timeElapsed);
-			
-			// 5. Ergebnis in Minuten umwandeln und behandeln
-			if (timeRemaining <= TimeSpan.Zero)
-			{
-				return 0; // Zeit ist abgelaufen oder fast abgelaufen
-			}
-			else
-			{
-				// TotalMinutes gibt double zurück. Wir runden auf die nächste volle Minute auf (Ceiling), 
-				// um immer die korrekte, volle Minute anzuzeigen.
-				return (int)Math.Ceiling(timeRemaining.TotalMinutes);
-			}
-		}
-
-        /// <summary>
-        /// This is called when the GameRelicPads are added to world
+        /// Berechnet die verbleibende Zeit bis zur automatischen Rückkehr des Relikts in vollen Minuten.
         /// </summary>
-        public static void AddRelicPad(GameRelicPad pad)
+        /// <param name="relic">Das zu prüfende Relikt.</param>
+        /// <returns>Die Anzahl der verbleibenden Minuten (int). Gibt 0 zurück, wenn die Zeit abgelaufen ist.</returns>
+        public static int GetRelicReturnMinutesRemaining(GameRelic relic)
         {
-            lock (_relicPadsLock)
+            // 1. Prüfen, ob das Relikt überhaupt "unterwegs" ist (nicht montiert)
+            if (relic.IsMounted || relic.LastTimePickedUp <= DateTime.MinValue)
             {
-                if (!m_relicPads.Contains(pad))
-                    m_relicPads.Add(pad);
+                return -1; // -1 als Indikator, dass das Relikt montiert ist oder ungültigen Status hat.
+            }
+
+            // 2. Maximale Tragezeit aus der RelicMgr-Eigenschaft abrufen
+            TimeSpan maxCarryTime = RelicMgr.MaxRelicCarryTime;
+
+            // 3. Vergangene Zeit seit der letzten Aufnahme berechnen
+            TimeSpan timeElapsed = DateTime.Now.Subtract(relic.LastTimePickedUp);
+
+            // 4. Verbleibende Zeit berechnen
+            TimeSpan timeRemaining = maxCarryTime.Subtract(timeElapsed);
+
+            // 5. Ergebnis in Minuten umwandeln und behandeln
+            if (timeRemaining <= TimeSpan.Zero)
+            {
+                return 0; // Zeit ist abgelaufen oder fast abgelaufen
+            }
+            else
+            {
+                // TotalMinutes gibt double zurück. Wir runden auf die nächste volle Minute auf (Ceiling), 
+                // um immer die korrekte, volle Minute anzuzeigen.
+                return (int)Math.Ceiling(timeRemaining.TotalMinutes);
             }
         }
 
-        // ... (GetPadAtRelicLocation, getRelic, Helper-Methoden bleiben unverändert) ...
-        private static GameRelicPad GetPadAtRelicLocation(GameRelic relic)
-        {
-            lock (_relicPadsLock)
-            {
-                foreach (GameRelicPad pad in m_relicPads)
-                {
-                    if (relic.IsWithinRadius(pad, 200))
-                        return pad;
-                }
-                return null;
-            }
-        }
-
-        public static GameRelic getRelic(int id)
-        {
-            return m_relics[id] as GameRelic;
-        }
-
-        #region Helpers
-
-        public static IList getNFRelics()
-        {
-            ArrayList myRelics = new ArrayList();
-            foreach (GameRelic relic in m_relics.Values)
-            {
-                myRelics.Add(relic);
-            }
-            return myRelics;
-        }
-
-        public static IEnumerable getRelics(eRealm Realm)
-        {
-            ArrayList realmRelics = new ArrayList();
-            lock (m_relics)
-            {
-                foreach (GameRelic relic in m_relics.Values)
-                {
-                    if (relic.Realm == Realm && relic.IsMounted)
-                        realmRelics.Add(relic);
-                }
-            }
-            return realmRelics;
-        }
-
-        public static IEnumerable getRelics(eRealm Realm, eRelicType RelicType)
-        {
-            ArrayList realmTypeRelics = new ArrayList();
-            foreach (GameRelic relic in getRelics(Realm))
-            {
-                if (relic.RelicType == RelicType)
-                    realmTypeRelics.Add(relic);
-            }
-            return realmTypeRelics;
-        }
-
-        public static int GetRelicCount(eRealm realm)
-        {
-            int index = 0;
-            lock (_relicsLock)
-            {
-                foreach (GameRelic relic in m_relics.Values)
-                {
-                    if ((relic.Realm == realm) && (relic is GameRelic))
-                        index++;
-                }
-            }
-            return index;
-        }
-
-        public static int GetRelicCount(eRealm realm, eRelicType type)
-        {
-            int index = 0;
-            lock (_relicsLock)
-            {
-                foreach (GameRelic relic in m_relics.Values)
-                {
-                    if ((relic.Realm == realm) && (relic.RelicType == type) && (relic is GameRelic))
-                        index++;
-                }
-            }
-            return index;
-        }
-
-        public static double GetRelicBonusModifier(eRealm realm, eRelicType type)
-        {
-            double bonus = 0.0;
-            bool owningSelf = false;
-
-            foreach (GameRelic rel in getRelics(realm, type))
-            {
-                if (rel.Realm == rel.OriginalRealm)
-                    owningSelf = true;
-                else
-                    bonus += ServerProperties.Properties.RELIC_OWNING_BONUS * 0.01;
-            }
-
-            return owningSelf ? bonus : 0.0;
-        }
-
-        public static bool CanPickupRelicFromShrine(GamePlayer player, GameRelic relic)
-        {
-            if (player.Realm == relic.OriginalRealm)
-                return true;
-            IEnumerable list = getRelics(player.Realm, relic.RelicType);
-            foreach (GameRelic curRelic in list)
-            {
-                if (curRelic.Realm == curRelic.OriginalRealm)
-                    return true;
-            }
-
-            return false;
-        }
-
-        public static Hashtable GetAllRelics()
-        {
-            lock (_relicsLock)
-            {
-                return (Hashtable)m_relics.Clone();
-            }
-        }
-
-        #endregion
-
-        [ScriptLoadedEvent]
-        private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            Init();
-        }
-    }
         [ScriptLoadedEvent]
         private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {

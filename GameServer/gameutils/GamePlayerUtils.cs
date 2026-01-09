@@ -314,9 +314,13 @@ namespace DOL.GS
 			info.Add(" ");
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Realm"));
 			if (player.RealmLevel > 10)
+            {
 				info.Add(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Specs", player.RealmLevel / 10)));
-			else
+            }
+            else
+            {
 				info.Add(" none");
+            }
 			// Removed Relic Bonuses in general
 			/*info.Add(" ");
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Relic"));
@@ -329,8 +333,7 @@ namespace DOL.GS
 
             // info.Add(" ");
             // info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Outpost"));
-            // info.Add("TODO, this needs to be written");
-
+            // info.Add("TODO, this needs to be written"); */
             return info;
         }
         

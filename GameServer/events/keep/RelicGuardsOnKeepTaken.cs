@@ -130,10 +130,7 @@ namespace DOL.GS.GameEvents
             {
                 try
                 {
-                    // KORREKTUR: RelicMgr.getNFRelics() ist wahrscheinlich in getNFRelics() oder GetNFRelics() enthalten. 
-                    // Wir nehmen an, dass es im gesamten Core die richtige Groß-/Kleinschreibung hat, 
-                    // da der Fehler nur bei den Manager-Methoden auftrat.
-                    foreach (GameRelic relic in RelicMgr.getNFRelics()) 
+                    foreach (GameRelic relic in RelicMgr.GetRelics())
                     {
                         switch (relic.Realm)
                         {
