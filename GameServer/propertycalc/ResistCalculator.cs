@@ -38,25 +38,6 @@ namespace DOL.GS.PropertyCalc
             int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist) property);
             int buffBonus = CalcValueFromBuffs(living, property);
 
-            switch (property)
-            {
-                case eProperty.Resist_Body:
-                case eProperty.Resist_Cold:
-                case eProperty.Resist_Energy:
-                case eProperty.Resist_Heat:
-                case eProperty.Resist_Matter:
-                case eProperty.Resist_Spirit:
-                case eProperty.Resist_Natural:
-                {
-                    abilityBonus += livingToCheck.AbilityBonus[eProperty.MagicAbsorption];
-
-                    if (!forCrowdControlDuration)
-                        abilityBonus += livingToCheck.OtherBonus[eProperty.MagicAbsorption];
-
-                    break;
-                }
-            }
-
             int result = itemBonus + buffBonus; // Primary resists.
             result += (int) ((1 - result * 0.01) * abilityBonus); // Secondary resists.
 
@@ -87,24 +68,7 @@ namespace DOL.GS.PropertyCalc
             int buff = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
             buff = livingToCheck is GameNPC ? buff : Math.Min(buff, BuffBonusCap);
             int debuff = Math.Abs(living.DebuffCategory[property]) + Math.Abs(living.SpecDebuffCategory[property]);
-
-            switch (property)
-            {
-                case eProperty.Resist_Body:
-                case eProperty.Resist_Cold:
-                case eProperty.Resist_Energy:
-                case eProperty.Resist_Heat:
-                case eProperty.Resist_Matter:
-                case eProperty.Resist_Spirit:
-                case eProperty.Resist_Natural:
-                {
-                    buff += living.BaseBuffBonusCategory[eProperty.MagicAbsorption] + living.SpecBuffBonusCategory[eProperty.MagicAbsorption];
-                    debuff += Math.Abs(living.DebuffCategory[eProperty.MagicAbsorption]);
-                    break;
-                }
-            }
-
-            buff -= Math.Abs(debuff);
+            buff -= debuff;
 
             if (buff < 0 && living is GamePlayer)
                 buff /= 2;

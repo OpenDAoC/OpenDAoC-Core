@@ -257,12 +257,6 @@ namespace DOL.GS.Spells
         public override eProperty Property1 => eProperty.ToHitBonus;
     }
 
-    [SpellHandler(eSpellType.MagicResistsBuff)]
-    public class MagicResistsBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
-    {
-        public override eProperty Property1 => eProperty.MagicAbsorption;
-    }
-
     [SpellHandler(eSpellType.StyleAbsorbBuff)]
     public class StyleAbsorbBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {

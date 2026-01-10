@@ -3001,12 +3001,16 @@ namespace DOL.GS.Spells
 					finalDamage *= Properties.PVE_SPELL_DAMAGE;
 			}
 
-			// Calculate resistances and conversion.
+			// Apply absorption.
+			double absorptionMod = 1 - target.GetModified(eProperty.MagicAbsorption) * 0.01;
+			finalDamage *= absorptionMod;
+
+			// Apply resistances.
 			finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
+
+			// Apply conversion.
 			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target);
-			double preConversionDamage = finalDamage;
 			finalDamage *= conversionMod;
-			ad.Modifier += (int) Math.Floor(finalDamage - preConversionDamage);
 
 			// Apply damage cap.
 			finalDamage = Math.Min(finalDamage, DamageCap(effectiveness));
