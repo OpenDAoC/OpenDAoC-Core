@@ -90,7 +90,7 @@ namespace DOL.GS
             if ((requestedUpdates & EffectHelper.PlayerUpdate.WeaponArmor) != 0)
                 _owner.Out.SendUpdateWeaponAndArmorStats();
 
-            if ((requestedUpdates & EffectHelper.PlayerUpdate.Encumberance) != 0)
+            if ((requestedUpdates & EffectHelper.PlayerUpdate.Encumbrance) != 0)
                 _owner.UpdateEncumbrance();
 
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Concentration) != 0)
