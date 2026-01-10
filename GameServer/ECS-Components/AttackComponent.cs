@@ -1304,19 +1304,9 @@ namespace DOL.GS
                 if (playerOwner.SpecLock > 0)
                     return (playerOwner.SpecLock, playerOwner.SpecLock);
 
-                // Characters below level 5 get a bonus to their spec to help with the very wide variance at this level range.
-                // Target level, lower bound at 2, lower bound at 1:
-                // 0 | 1      | 0.25
-                // 1 | 0.625  | 0.25
-                // 2 | 0.5    | 0.25
-                // 3 | 0.4375 | 0.25
-                // 4 | 0.4    | 0.25
-                // 5 | 0.375  | 0.25
-                // Absolute minimum spec is set to 1 to prevent an issue where the lower bound (with staffs for example) would slightly rise with the target's level.
-                // Also prevents negative values.
-                spec = Math.Max(owner.Level < 5 ? 2 : 1, spec);
-                double specVsTargetLevelMod = (spec - 1) / ((double) target.Level + 1);
-                varianceRange = (Math.Min(0.75 * specVsTargetLevelMod + 0.25, 1.0), Math.Min(Math.Max(1.25 + (3.0 * specVsTargetLevelMod - 2) * 0.25, 1.25), 1.5));
+                double specRatio = Math.Min((spec - 1) / ((double) target.Level + 1), 1.0);
+                double minVariance = 0.75 + 0.5 * specRatio;
+                varianceRange = (minVariance, minVariance + 0.5);
             }
             else
                 varianceRange = (0.9, 1.1);
