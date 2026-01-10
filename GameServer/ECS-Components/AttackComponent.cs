@@ -19,9 +19,6 @@ namespace DOL.GS
 {
     public class AttackComponent : IServiceObject
     {
-        public const double INHERENT_WEAPON_SKILL = 15.0;
-        public const double INHERENT_ARMOR_FACTOR = 12.5;
-
         public GameLiving owner;
         public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
@@ -1263,7 +1260,7 @@ namespace DOL.GS
 
         public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
-            baseWeaponSkill = owner.GetWeaponSkill(weapon) + INHERENT_WEAPON_SKILL;
+            baseWeaponSkill = owner.GetWeaponSkill(weapon);
             return baseWeaponSkill * specModifier;
         }
 
@@ -1336,7 +1333,7 @@ namespace DOL.GS
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
         {
-            armorFactor = target.GetArmorAF(armorSlot) + INHERENT_ARMOR_FACTOR;
+            armorFactor = target.GetArmorAF(armorSlot);
 
             // Gives an extra 0.4~20 bonus AF to players. Ideally this should be done in `ArmorFactorCalculator`.
             if (target is GamePlayer or GameTrainingDummy)

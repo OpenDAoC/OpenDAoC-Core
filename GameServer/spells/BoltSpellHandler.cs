@@ -70,7 +70,7 @@ namespace DOL.GS.Spells
 
                 // We need a fake weapon skill for the target's armor to have something to be compared with.
                 // Since 'damage' is already modified by intelligence, power relics, spell variance, and everything else; we can use a constant only modified by the caster's level.
-                double weaponSkill = Caster.Level * 2.5 + AttackComponent.INHERENT_WEAPON_SKILL;
+                double weaponSkill = Caster.Level * 2.5;
                 double targetArmor = AttackComponent.CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out _, out _);
                 damage += weaponSkill / targetArmor * halfBaseDamage;
             }
