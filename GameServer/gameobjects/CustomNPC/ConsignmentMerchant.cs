@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -147,6 +148,7 @@ namespace DOL.GS
             if (house == null)
                 return null;
 
+            // Get all items owned by the owner of the house. Ignore the lot number.
             ItemQuery query = new() { Owner = house.OwnerID };
             return MarketCache.SearchItems(query);
         }
@@ -347,7 +349,9 @@ namespace DOL.GS
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} set sell price of '{item.Name}' to {item.SellPrice} for consignment merchant on lot {HouseNumber}.");
 
-            GameServer.Database.SaveObject(item);
+            if (item.Dirty)
+                GameServer.Database.SaveObject(item);
+
             return true;
         }
 
@@ -544,8 +548,6 @@ namespace DOL.GS
             if (!base.Interact(player))
                 return false;
 
-            CheckInventory();
-
             if (player.ActiveInventoryObject != null)
             {
                 player.ActiveInventoryObject.RemoveObserver(player);
@@ -581,7 +583,9 @@ namespace DOL.GS
 
             if (house == null)
             {
-                log.Error($"CM: Can't find house {HouseNumber}. Deleting CM.");
+                if (log.IsErrorEnabled)
+                    log.Error($"CM: Can't find house {HouseNumber}. Deleting CM.");
+
                 DeleteFromDatabase();
 
                 if (houseCM != null)
@@ -599,7 +603,9 @@ namespace DOL.GS
                 TotalMoney = houseCM.Money;
             else
             {
-                log.Error($"CM: Can't find {nameof(DbHouseConsignmentMerchant)} for house {HouseNumber}. Deleting CM.");
+                if (log.IsErrorEnabled)
+                    log.Error($"CM: Can't find {nameof(DbHouseConsignmentMerchant)} for house {HouseNumber}. Deleting CM.");
+
                 DeleteFromDatabase();
                 return false;
             }
@@ -607,36 +613,22 @@ namespace DOL.GS
             base.AddToWorld();
             house.ConsignmentMerchant = this;
             SetEmblem();
-            CheckInventory();
             return true;
         }
 
-        /// <summary>
-        /// Check all items that belong to this `OwnerID` and fix `OwnerLot` if needed.
-        /// </summary>
-        public virtual bool CheckInventory()
+        public void UpdateItems()
         {
-            House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
+            // This is needed in case the player had his house repossessed, and they bought a new one on a different lot.
 
-            if (house == null)
-                return false;
-
-            bool isFixed = false;
-            IList<DbInventoryItem> items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(house.OwnerID).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot)).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot)).And(DB.Column("OwnerLot").IsEqualTo(0)));
+            IEnumerable<DbInventoryItem> items = GetDbItems(null);
 
             foreach (DbInventoryItem item in items)
-            {
-                item.OwnerLot = HouseNumber;
-                MarketCache.AddItem(item);
-
-                if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-                    log.Debug($"CM: Fixed {nameof(DbInventoryItem.OwnerLot)} for item '{item.Name}' on CM for lot {HouseNumber}");
-
-                isFixed = true;
-            }
+                MarketCache.UpdateItem(item, static (item, lot) => item.OwnerLot = lot, HouseNumber);
 
             GameServer.Database.SaveObject(items);
-            return isFixed;
+
+            if (log.IsDebugEnabled)
+                log.Debug($"CM: Updated {nameof(DbInventoryItem.OwnerLot)} for {items.Count()} items on consignment merchant on lot {HouseNumber}.");
         }
 
         public virtual void SetInventoryTemplate()

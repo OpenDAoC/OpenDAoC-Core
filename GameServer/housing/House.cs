@@ -870,6 +870,7 @@ namespace DOL.GS.Housing
 				con.GuildName = DatabaseItem.GuildName;
 
 			con.AddToWorld();
+			con.UpdateItems();
 			con.SaveIntoDatabase();
 
 			DatabaseItem.HasConsignment = true;

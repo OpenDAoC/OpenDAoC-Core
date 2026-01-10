@@ -539,7 +539,8 @@ namespace DOL.GS
             candidates = candidates.Where(item =>
                 item != null &&
                 item.IsTradable &&
-                item.SellPrice > 0
+                item.SellPrice > 0 &&
+                item.OwnerLot > 0
             );
 
             // Name filter.
