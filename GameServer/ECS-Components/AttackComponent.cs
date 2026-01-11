@@ -1095,22 +1095,16 @@ namespace DOL.GS
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
                     double damageMod = weaponSkill / armorMod;
 
-                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                    // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                    //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    // else
-                    //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-
                     if (ad.IsOffHand)
-                        damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
+                        damageMod *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
 
                     // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
                     if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                     {
                         if (target is GamePlayer)
-                            damage *= Properties.PVP_MELEE_DAMAGE;
+                            damageMod *= Properties.PVP_MELEE_DAMAGE;
                         else if (target is GameNPC)
-                            damage *= Properties.PVE_MELEE_DAMAGE;
+                            damageMod *= Properties.PVE_MELEE_DAMAGE;
                     }
 
                     damage *= damageMod;
@@ -1347,12 +1341,16 @@ namespace DOL.GS
         {
             armorFactor = target.GetArmorAF(armorSlot);
 
-            // Gives an extra 0.4~20 bonus AF to players. Ideally this should be done in `ArmorFactorCalculator`.
+            // Give an extra 0.4~20 bonus AF to players. Ideally this should be done in `ArmorFactorCalculator`.
             if (target is GamePlayer or GameTrainingDummy)
                 armorFactor += target.Level * 20 / 50.0;
 
-            absorb = target.GetArmorAbsorb(armorSlot);
-            return absorb >= 1 ? double.MaxValue : armorFactor / (1 - absorb);
+            double armorAbsorb = target.GetArmorAbsorb(armorSlot);
+            // Badge of Valor check should go here.
+            double physicalAbsorb = target.GetModified(eProperty.PhysicalAbsorption) * 0.01;
+            double absorbDivisor = (1 - armorAbsorb) * (1 - physicalAbsorb);
+            absorb = 1 - absorbDivisor;
+            return absorb >= 1 ? double.MaxValue : armorFactor / absorbDivisor;
         }
 
         public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, DbInventoryItem armor)

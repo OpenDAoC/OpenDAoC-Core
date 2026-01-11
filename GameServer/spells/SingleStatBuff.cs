@@ -155,8 +155,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.ArmorAbsorptionBuff)]
     public class ArmorAbsorptionBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
-        public override string ShortDescription => $"Increases {TargetPronoun} physical damage {PropertyToString(Property1)} by {Spell.Value}%.";
-        public override eProperty Property1 => eProperty.ArmorAbsorption;
+        public override string ShortDescription => $"Increases {TargetPronoun} {PropertyToString(Property1)} by {Spell.Value}%.";
+        public override eProperty Property1 => eProperty.PhysicalAbsorption;
 
         protected override void SendUpdates(GameLiving target) { }
     }

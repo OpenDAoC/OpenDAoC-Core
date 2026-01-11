@@ -307,6 +307,7 @@
         RealmPoints = 253,
         ArcaneSyphon = 254,
         LivingEffectiveness = 255,
-        MaxProperty = 255
+        PhysicalAbsorption = 256,
+        MaxProperty = 256
     }
 }

@@ -305,13 +305,14 @@ namespace DOL.GS
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
-            // Mostly a copy paste of `GamePlayer.GetArmorAF`. but we ignore the slot.
+            // Mostly a copy paste of `GamePlayer.GetArmorAF`, but we force the slot to torso.
             DbInventoryItem item = Inventory.GetItem(eInventorySlot.TorsoArmor);
 
             if (item == null)
                 return 0;
 
-            return Math.Clamp((item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01, 0, 1);
+            double absorb = item.SPD_ABS * 0.01 * (1 + GetModified(eProperty.ArmorAbsorption) * 0.01);
+            return Math.Clamp(absorb, 0, 1); // Debuffs can't lower absorb below 0%: https://darkageofcamelot.com/article/friday-grab-bag-08302019
         }
 
         private void SetDefaultResists()

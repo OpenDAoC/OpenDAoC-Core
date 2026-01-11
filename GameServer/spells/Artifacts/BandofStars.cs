@@ -1,5 +1,4 @@
 using System;
-using DOL.AI.Brain;
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -97,7 +96,7 @@ namespace DOL.GS.Spells
             effect.Owner.DebuffCategory[eProperty.Quickness] += (int)m_spell.Value;
             effect.Owner.DebuffCategory[eProperty.Intelligence] += (int)m_spell.Value;
             effect.Owner.DebuffCategory[eProperty.Charisma] += (int)m_spell.Value;   
-            effect.Owner.DebuffCategory[eProperty.ArmorAbsorption] += (int)m_spell.Value; 
+            effect.Owner.DebuffCategory[eProperty.PhysicalAbsorption] += (int)m_spell.Value; 
             effect.Owner.DebuffCategory[eProperty.MagicAbsorption] += (int)m_spell.Value; 
             
             if(effect.Owner is GamePlayer)
@@ -122,7 +121,7 @@ namespace DOL.GS.Spells
             effect.Owner.DebuffCategory[eProperty.Quickness] -= (int)m_spell.Value;
             effect.Owner.DebuffCategory[eProperty.Intelligence] -= (int)m_spell.Value;
             effect.Owner.DebuffCategory[eProperty.Charisma] -= (int)m_spell.Value;        
-            effect.Owner.DebuffCategory[eProperty.ArmorAbsorption] -= (int)m_spell.Value; 
+            effect.Owner.DebuffCategory[eProperty.PhysicalAbsorption] -= (int)m_spell.Value; 
             effect.Owner.DebuffCategory[eProperty.MagicAbsorption] -= (int)m_spell.Value; 
 
             if(effect.Owner is GamePlayer)

@@ -2,7 +2,6 @@ namespace DOL.GS
 {
     public enum eEffect
     {
-        
         #region Positive Effects
         //positive effects
         Bladeturn,
@@ -28,7 +27,7 @@ namespace DOL.GS
         BaseAFBuff,
         SpecAFBuff,
         PaladinAf,
-        ArmorAbsorptionBuff,
+        PhysicalAbsorptionBuff,
 
         //resists
         BodyResistBuff,
