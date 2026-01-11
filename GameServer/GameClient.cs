@@ -78,7 +78,7 @@ namespace DOL.GS
         public Dictionary<string, object> CustomParamsDictionary { get; set; }
         public bool IsPlaying => ClientState is eClientState.Playing or eClientState.Linkdead;
         public ushort SessionID => SessionId.Value;
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Client);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Client);
         public bool HasSeenPatchNotes { get; set; }
         public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache { get; set; }
         public long LinkDeathTime { get; set; }

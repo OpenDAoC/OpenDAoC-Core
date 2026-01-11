@@ -25,7 +25,7 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.AttackComponent);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.AttackComponent);
         public AttackerTracker AttackerTracker { get; private set; }
 
         private BlockRoundHandler _blockRoundHandler;

@@ -33,7 +33,7 @@ namespace DOL.GS
 
         public GameLiving Owner { get; }
         public int UsedConcentration => Volatile.Read(ref _usedConcentration);
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.EffectListComponent);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.EffectListComponent);
 
         protected EffectListComponent(GameLiving owner)
         {
