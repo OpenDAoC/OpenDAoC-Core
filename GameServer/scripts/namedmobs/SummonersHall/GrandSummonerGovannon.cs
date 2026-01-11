@@ -5,6 +5,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -92,8 +93,64 @@ namespace DOL.GS
 						npc.RemoveFromWorld();
 				}
 			}
+
+			// debug
+			if (killer == null)
+				log.Error("Grand Summoner Govannon Killed: killer is null!");
+			else
+				log.Debug("Grand Summoner Govannon Killed: killer is " + killer.Name + ", attackers:");
+
+			bool canReportNews = true;
+			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("grimoire_pages");
+			int itemCount = 300;
+			string message_currency = "Grand Summoner Govannon drops " + itemCount + " " + template.Name + ".";
+			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				DbInventoryItem item = GameInventoryItem.Create(template);
+				item.Count = itemCount;
+				if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+				{
+					player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+					InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+				}
+				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+				{
+					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+						canReportNews = false;
+				}
+			}
 			base.Die(killer);
+			if (canReportNews)
+			{
+				ReportNews(killer);
+			}
         }
+
+		/// <summary>
+		/// Post a message in the server news and award a dragon kill point for
+		/// every XP gainer in the raid.
+		/// </summary>
+		/// <param name="killer">The living that got the killing blow.</param>
+		protected void ReportNews(GameObject killer)
+		{
+			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain!", Name);
+			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+
+			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player.IsEligibleToGiveMeritPoints)
+					{
+						GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+					}
+				}
+			}
+		}
+
         public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18801);
@@ -104,12 +161,12 @@ namespace DOL.GS
 			GrandSummonerGovannonBrain.Stage2 = false;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 86, 43, 0, 0); //Slot,model,color,effect,extension
+			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 744, 0, 0, 0); //Slot,model,color,effect,extension
 			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 88, 43);
 			template.AddNPCEquipment(eInventorySlot.LegsArmor, 87, 43);
 			template.AddNPCEquipment(eInventorySlot.HandsArmor, 89, 43, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.FeetArmor, 90, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 65, 0, 0);
+			template.AddNPCEquipment(eInventorySlot.Cloak, 0, 0, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 0, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
@@ -126,7 +183,7 @@ namespace DOL.GS
 		{
 			GameNPC[] npcs;
 
-			npcs = WorldMgr.GetNPCsByNameFromRegion("Grand Summoner Govannon", 248, (eRealm)0);
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Grand Summoner Govannon", 233, (eRealm)0);
 			if (npcs.Length == 0)
 			{
 				log.Warn("Grand Summoner Govannon not found, creating it...");
@@ -138,7 +195,7 @@ namespace DOL.GS
 				OF.Realm = 0;
 				OF.Level = 80;
 				OF.Size = 65;
-				OF.CurrentRegionID = 248;//OF summoners hall
+				OF.CurrentRegionID = 233;//NF summoners hall
 
 				OF.Strength = 5;
 				OF.Intelligence = 200;
@@ -151,12 +208,12 @@ namespace DOL.GS
 				OF.MeleeDamageType = eDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(206);
 
-				OF.X = 34577;
-				OF.Y = 31371;
-				OF.Z = 15998;
+				OF.X = 30825;
+				OF.Y = 32058;
+				OF.Z = 16044;
 				OF.TetherRange = 1300;
 				OF.MaxSpeedBase = 250;
-				OF.Heading = 19;
+				OF.Heading = 3060;
 				OF.IsCloakHoodUp = true;
 
 				GrandSummonerGovannonBrain ubrain = new GrandSummonerGovannonBrain();

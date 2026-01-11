@@ -24,7 +24,7 @@
             return base.HasAbility(keyName);
         }
 
-        public override short MaxSpeedBase => (short) (191 + Level * 2);
+        public override short MaxSpeedBase => (short) (191 + Level);
 
         public override int MaxHealth => 10000 + Level * 125;
     }

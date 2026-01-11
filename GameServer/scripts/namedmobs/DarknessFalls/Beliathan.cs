@@ -4,6 +4,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 
 #region Beliathan Inizializator
@@ -243,6 +244,29 @@ namespace DOL.GS
                     canReportNews = false;
             }
         }
+
+        /// <summary>
+		/// Post a message in the server news and award a dragon kill point for
+		/// every XP gainer in the raid.
+		/// </summary>
+		/// <param name="killer">The living that got the killing blow.</param>
+		protected void ReportNews(GameObject killer)
+		{
+			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain!", Name);
+			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+
+			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player.IsEligibleToGiveMeritPoints)
+					{
+						GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+					}
+				}
+			}
+		}
         private static void PlayerKilledByBeliathan(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;

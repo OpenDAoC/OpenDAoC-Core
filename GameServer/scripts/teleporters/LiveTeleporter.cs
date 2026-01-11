@@ -108,70 +108,97 @@ namespace DOL.GS.Scripts
             switch (Realm)
             {
                 case eRealm.Albion:
+                    {
+                        message = "Greetings, " + player.Name +
+                                " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                                "[Castle Sauvage] in Camelot Hills,\n" +
+                                "[Snowdonia Fortress] in Black Mtns. North,\n" +
+                                "[Catterick Hamlet] in New Frontiers,\n" +
+                                "[Camelot] our glorious capital,\n" +
+                                "[Cotswold] in Camelot Hills,\n" +
+                                "[Caer Ulfwych] in Campacorentin Forest,\n" +
+                                "[Yarley's Farm] in Cornwall,\n" +
+                                "[Gothwaite Harbor] in the SI, Isle of Glass,\n" +
+                                "[Wearyall Village] in the SI, Avalon Isle,\n" +
+                                "[Caer Diogel] in the SI, Aldland,\n" +
+                                "[Fort Gwyntel] in the SI, Dales of Devwy,\n" +
+                                "[Holtham] Tutorial Zone,\n"; 
 
-                    message = "Greetings, " + player.Name +
-                              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                              "[Castle Sauvage] in Camelot Hills,\n" +
-                              "[Snowdonia Fortress] in Black Mtns. North,\n" +
-                              "[Catterick Hamlet] in New Frontiers,\n" +
-                              "[Camelot] our glorious capital,\n" +
-                              "[Cotswold] in Camelot Hills,\n" +
-                              "[Caer Ulfwych] in Campacorentin Forest,\n" +
-                              "[Yarley's Farm] in Cornwall,\n" +
-                              "[Gothwaite Harbor] in the SI, Isle of Glass,\n" +
-                              "[Wearyall Village] in the SI, Avalon Isle,\n" +
-                              "[Caer Diogel] in the SI, Aldland,\n" +
-                              "[Fort Gwyntel] in the SI, Dales of Devwy,\n" +
-                              "[Holtham] Tutorial Zone,\n\n" +
-                              
-                              
-                              "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
-                              //"For this event duration, I can send you to [Darkness Falls]";
-                    break;
+                        if (player.Level != 50 || player.Level < 10)
+                        {
+                            // Fügt die Battlegrounds-Zeile an
+                            message += "[Battleground],\n\n"; 
+                        }
+
+                        // Fügt die Housing-Optionen an
+                        message += "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
+                        
+                        // message += "\n//For this event duration, I can send you to [Darkness Falls]"; // Auskommentiert gelassen
+                        
+                        break;
+                    }
 
                 case eRealm.Midgard:
-                    
-                    message = "Greetings, " + player.Name +
-                              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                              "[Svasud Faste] in Vale of Mularn,\n" +
-                              "[Vindsaul Faste] in West Svealand,\n" +
-                              "[Godrborg] in New Frontiers,\n" +
-                              "[Jordheim] our glorious capital,\n" +
-                              "[Mularn] in Vale of Mularn,\n" +
-                              "[Galplen] in Myrkwood Forest,\n" +
-                              "[West Skona] in Skona Ravine,\n" +
-                              "[Aegirhamn] in the SI, Aegir's Landing,\n" +
-                              "[Bjarken] in the SI, Gripklosa Mountains,\n" +
-                              "[Knarr] in the SI, Munin Sound,\n" +
-                              "[Hagall] in the SI, Faraheim,\n" +
-                              "[Hafheim] Tutorial Zone,\n\n" +
-                              
-                              
-                              "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
-                              //"For this event duration, I can send you to [Darkness Falls]";
-                    break;
+                    {
+                        message = "Greetings, " + player.Name +
+                                " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                                "[Svasud Faste] in Vale of Mularn,\n" +
+                                "[Vindsaul Faste] in West Svealand,\n" +
+                                "[Godrborg] in New Frontiers,\n" +
+                                "[Jordheim] our glorious capital,\n" +
+                                "[Mularn] in Vale of Mularn,\n" +
+                                "[Galplen] in Myrkwood Forest,\n" +
+                                "[West Skona] in Skona Ravine,\n" +
+                                "[Aegirhamn] in the SI, Aegir's Landing,\n" +
+                                "[Bjarken] in the SI, Gripklosa Mountains,\n" +
+                                "[Knarr] in the SI, Munin Sound,\n" +
+                                "[Hagall] in the SI, Faraheim,\n" +
+                                "[Hafheim] Tutorial Zone,\n";
+                        
+                        if (player.Level != 50 || player.Level < 10)
+                        {
+                            // Fügt die Battlegrounds-Zeile an
+                            message += "[Battleground],\n\n";
+                        }
 
+                        // Fügt die Housing-Optionen an
+                        message += "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
+                        
+                        // message += "\n//For this event duration, I can send you to [Darkness Falls]"; // Auskommentiert gelassen
+
+                        break;
+                    }
                 case eRealm.Hibernia:
-                    
-                    message = "Greetings, " + player.Name +
-                              " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
-                              "[Druim Ligen] in Connacht,\n" +
-                              "[Druim Cain] in Valley of Bri Leith,\n" +
-                              "[Crair Treflan] in New Frontiers,\n" +
-                              "[Tir Na Nog] our glorious capital,\n" +
-                              "[Mag Mell] in Lough Derg,\n" +
-                              "[Connla] in Shannon Estuary,\n" +
-                              "[Innis Carthaig] in Lough Gur,\n" +
-                              "[Grove of Domnann] in the SI, Domnann,\n" +
-                              "[Droighaid] in the SI, Caillte Garran,\n" +
-                              "[Grove of Aalid Feie] in the SI, Vale of Balor,\n" +
-                              "[Necht] in the SI, Vigilant Rock,\n" +
-                              "[Fintain] Tutorial Zone,\n\n" +
-                              
-                              
-                              "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
-                              //"For this event duration, I can send you to [Darkness Falls]";
-                    break;
+                    {
+                        message = "Greetings, " + player.Name +
+                                " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
+                                "[Druim Ligen] in Connacht,\n" +
+                                "[Druim Cain] in Valley of Bri Leith,\n" +
+                                "[Crair Treflan] in New Frontiers,\n" +
+                                "[Tir Na Nog] our glorious capital,\n" +
+                                "[Mag Mell] in Lough Derg,\n" +
+                                "[Connla] in Shannon Estuary,\n" +
+                                "[Innis Carthaig] in Lough Gur,\n" +
+                                "[Grove of Domnann] in the SI, Domnann,\n" +
+                                "[Droighaid] in the SI, Caillte Garran,\n" +
+                                "[Grove of Aalid Feie] in the SI, Vale of Balor,\n" +
+                                "[Necht] in the SI, Vigilant Rock,\n" +
+                                "[Fintain] Tutorial Zone,\n"; // <- Zeichenkette hier beendet und Semikolon gesetzt
+
+                        if (player.Level != 50 || player.Level < 10)
+                        {
+                            // Die Zeichenkette wird der 'message' hinzugefügt
+                            message += "[Battleground]\n\n"; 
+                        }
+
+                        // Die letzten Zeilen werden der 'message' hinzugefügt
+                        message += "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
+                        
+                        // Die auskommentierte Zeile ist optional
+                        //message += "\n//For this event duration, I can send you to [Darkness Falls]";
+                        
+                        break;
+                    }
 
                 default:
                     SayTo(player, "I have no Realm set, so don't know what locations to offer..");
@@ -452,6 +479,113 @@ namespace DOL.GS.Scripts
                         return false;
                 }
             }
+            if (text.ToLower() == "battleground")
+            {
+                // Hills of Claret: Level 10-14
+                if (player.Level >= 10 && player.Level <= 14)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Claret_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Claret_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Claret_Hib");
+                    }
+                }
+                // Killaloe: Level 15-19
+                else if (player.Level >= 15 && player.Level <= 19)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Killaloe_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Killaloe_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Killaloe_Hib");
+                    }
+                }
+                // Thidranki: Level 20-24
+                else if (player.Level >= 20 && player.Level <= 24)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Thidranki_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Thidranki_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Thidranki_Hib");
+                    }
+                }
+                // Braemar: Level 25-29
+                else if (player.Level >= 25 && player.Level <= 29)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Braemar_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Braemar_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Braemar_Hib");
+                    }
+                }
+                // Wilton: Level 30-34
+                else if (player.Level >= 30 && player.Level <= 34)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Wilton_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Wilton_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Wilton_Hib");
+                    }
+                }
+                // Molvik: Level 35-39
+                else if (player.Level >= 35 && player.Level <= 39)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Molvik_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Molvik_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Molvik_Hib");
+                    }
+                }
+                // Leirvik: Level 40-44
+                else if (player.Level >= 40 && player.Level <= 44)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "Leirvik_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "Leirvik_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "Leirvik_Hib");
+                    }
+                }
+                // Cathal Valley: Level 45-49
+                else if (player.Level >= 45 && player.Level <= 49)
+                {
+                    switch (player.Realm)
+                    {
+                        case eRealm.Albion:
+                            return GetTeleportLocation(player, "CathalValley_Alb");
+                        case eRealm.Midgard:
+                            return GetTeleportLocation(player, "CathalValley_Mid");
+                        case eRealm.Hibernia:
+                            return GetTeleportLocation(player, "CathalValley_Hib");
+                    }
+                }
+            }
 
             // Find the teleport location in the database.
             DbTeleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
@@ -490,7 +624,7 @@ namespace DOL.GS.Scripts
                 return;
             }
             
-            var message = $"{Name} says, \"I'm now teleporting you to {destination.TeleportID}.\"";
+            var message = $"{Name} says, \"I'm now teleporting you to {region.Description}.\"";
             
             player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
             

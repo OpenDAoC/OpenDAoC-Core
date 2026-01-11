@@ -102,7 +102,7 @@ namespace DOL.GS
 						teleportExitID = "HibThroneExit";
 						break;
 				}
-
+				
 				if (throneRegionID == 0)
 				{
 					log.ErrorFormat("Can't find King for player {0} speaking to {1} of realm {2}!", player.Name, Name, Realm);

@@ -62,6 +62,54 @@ namespace DOL.GS
 			}
 		}
 
+		public override void Die(GameObject killer)
+        {
+			// debug
+			if (killer == null)
+				log.Error("Summoner Cunovinda Killed: killer is null!");
+			else
+				log.Debug("Summoner Cunovinda Killed: killer is " + killer.Name + ", attackers:");
+
+			bool canReportNews = true;
+			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("grimoire_pages");
+			int itemCount = 100;
+			string message_currency = "Summoner Cunovinda drops " + itemCount + " " + template.Name + ".";
+			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				DbInventoryItem item = GameInventoryItem.Create(template);
+				item.Count = itemCount;
+				if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+				{
+					player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+					InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+				}
+				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+				{
+					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+						canReportNews = false;
+				}
+			}
+			base.Die(killer);
+			if (canReportNews)
+			{
+				ReportNews(killer);
+			}
+        }
+
+		/// <summary>
+		/// Post a message in the server news and award a dragon kill point for
+		/// every XP gainer in the raid.
+		/// </summary>
+		/// <param name="killer">The living that got the killing blow.</param>
+		protected void ReportNews(GameObject killer)
+		{
+			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain!", Name);
+			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+		}
+
 		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
@@ -103,7 +151,7 @@ namespace DOL.GS
 		{
 			GameNPC[] npcs;
 
-			npcs = WorldMgr.GetNPCsByNameFromRegion("Summoner Cunovinda", 248, (eRealm)0);
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Summoner Cunovinda", 233, (eRealm)0);
 			if (npcs.Length == 0)
 			{
 				log.Warn("Summoner Cunovinda not found, creating it...");
@@ -115,7 +163,7 @@ namespace DOL.GS
 				OF.Realm = 0;
 				OF.Level = 75;
 				OF.Size = 65;
-				OF.CurrentRegionID = 248;//OF summoners hall
+				OF.CurrentRegionID = 233;//NF summoners hall
 
 				OF.Strength = 5;
 				OF.Intelligence = 200;
@@ -128,12 +176,12 @@ namespace DOL.GS
 				OF.MeleeDamageType = eDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(187);
 
-				OF.X = 26023;
-				OF.Y = 36132;
-				OF.Z = 15998;
+				OF.X = 37114;
+				OF.Y = 35081;
+				OF.Z = 16063;
 				OF.TetherRange = 1300;
 				OF.MaxSpeedBase = 250;
-				OF.Heading = 19;
+				OF.Heading = 3065;
 				OF.IsCloakHoodUp = true;
 
 				SummonerCunovindaBrain ubrain = new SummonerCunovindaBrain();

@@ -279,7 +279,7 @@ namespace DOL.GS.Scripts
         private void ReportNews(GameObject killer)
         {
             int numPlayers = AwardLegionKillPoint();
-            String message = String.Format("{0} has been slain by {1} enemies!", Name, numPlayers);
+            String message = String.Format("{0} has been slain!", Name);
             NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
             if (Properties.GUILD_MERIT_ON_LEGION_KILL <= 0) return;

@@ -785,7 +785,7 @@ namespace DOL.GS
 
 	public class GameBloodSealsMerchant : GameItemCurrencyMerchant
 	{
-		public override string MoneyKey { get { return "BloodSeal"; } }
+		public override string MoneyKey { get { return "daemon_blood_seal"; } }
 	}
 
 	public class GameDiamondSealsMerchant : GameItemCurrencyMerchant
@@ -816,5 +816,22 @@ namespace DOL.GS
 	public class GameDragonMerchant : GameItemCurrencyMerchant
 	{
 		public override string MoneyKey { get { return "dragonscales"; } }
+	}
+	public class GameSummonerMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "grimoire_pages"; } }
+	}
+	public class GameGalladoriaMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "galladoria_roots"; } }
+	}
+	public class GameTGMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "tuscaran_glacier_ice"; } }
+	}
+
+	public class GameSidiMerchant : GameItemCurrencyMerchant
+	{
+		public override string MoneyKey { get { return "sidi_soul"; } }
 	}
 }

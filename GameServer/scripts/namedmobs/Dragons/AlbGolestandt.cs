@@ -86,8 +86,8 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
-			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
+			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain!", Name);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
 			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
@@ -117,52 +117,52 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-				// debug
-				if (killer == null)
-					log.Error("Dragon Killed: killer is null!");
-				else
-					log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
+			// debug
+			if (killer == null)
+				log.Error("Dragon Killed: killer is null!");
+			else
+				log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
 
-				bool canReportNews = true;
-				DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
-				int itemCount = 500;
-				string message_currency = "Golestandt drops " + itemCount + " " + template.Name + ".";
-				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			bool canReportNews = true;
+			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
+			int itemCount = 500;
+			string message_currency = "Golestandt drops " + itemCount + " " + template.Name + ".";
+			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			{
+				DbInventoryItem item = GameInventoryItem.Create(template);
+				item.Count = itemCount;
+				if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
 				{
-					DbInventoryItem item = GameInventoryItem.Create(template);
-					item.Count = itemCount;
-					if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
-					{
-						player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
-						InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
-					}
-					player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
-					if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
-					{
-						if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
-							canReportNews = false;
-					}
+					player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+					InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
 				}
+				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+				{
+					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+						canReportNews = false;
+				}
+			}
 
-				var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("golestandt_messengers");
-				if (spawnMessengers != null)
-				{
-					spawnMessengers.Stop();
-					TempProperties.RemoveProperty("golestandt_messengers");
-				}
+			var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("golestandt_messengers");
+			if (spawnMessengers != null)
+			{
+				spawnMessengers.Stop();
+				TempProperties.RemoveProperty("golestandt_messengers");
+			}
 
 			AwardDragonKillPoint();
-				base.Die(killer);
+			base.Die(killer);
 
-				foreach (String message in m_deathAnnounce)
-				{
-					BroadcastMessage(String.Format(message, Name));
-				}
-				if (canReportNews)
-				{
-					ReportNews(killer);
-				}
+			foreach (String message in m_deathAnnounce)
+			{
+				BroadcastMessage(String.Format(message, Name));
+			}
+			if (canReportNews)
+			{
+				ReportNews(killer);
+			}
 		}
 		#endregion
 		public override int GetResist(eDamageType damageType)
