@@ -1211,7 +1211,7 @@ namespace DOL.AI.Brain
                     {
                         if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
                             AggroList.TryAdd(player, new());
-                        else
+                        else if (RandomTarget != null)
                             AggroList.TryRemove(RandomTarget, out _);
                     }
                 }
@@ -1244,7 +1244,7 @@ namespace DOL.AI.Brain
                     if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView)
                     {
                         PrepareToDD();
-                        if (Util.Chance(15) && RandomTarget != null)
+                        if (Util.Chance(15))
                         {
                             Body.TargetObject = RandomTarget;
                             if (!RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
@@ -1262,16 +1262,16 @@ namespace DOL.AI.Brain
 
         private int CastDD(ECSGameTimer timer)
         {
-            GameObject oldTarget = Body.TargetObject;
-
-            Body.TargetObject = RandomTarget;
-            if (Body.TargetObject != null)
+            if (RandomTarget != null)
             {
+                GameObject oldTarget = Body.TargetObject;
+                Body.TargetObject = RandomTarget;
                 Body.CastSpell(AirDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 AggroList.TryRemove(RandomTarget, out _);
+                RandomTarget = null;
+                Body.TargetObject = oldTarget;
             }
-            RandomTarget = null;
-            if (oldTarget != null) Body.TargetObject = oldTarget;
+
             return 0;
         }
 
