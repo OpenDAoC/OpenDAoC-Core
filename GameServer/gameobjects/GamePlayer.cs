@@ -5597,10 +5597,10 @@ namespace DOL.GS
 
             int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
             double armorFactor = Math.Min(item.DPS_AF, itemArmorFactorCap); // Cap item AF first.
-            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
+            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 5.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
-            armorFactor += GetModified(eProperty.ArmorFactor) / 6.0; // Don't call base here.
+            armorFactor += GetModified(eProperty.ArmorFactor) / 5.0; // Don't call base here.
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)

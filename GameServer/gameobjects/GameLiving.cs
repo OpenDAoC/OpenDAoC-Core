@@ -320,7 +320,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual double GetArmorAF(eArmorSlot slot)
 		{
-			return Math.Max(0, GetModified(eProperty.ArmorFactor) / 6.0);
+			return Math.Max(0, GetModified(eProperty.ArmorFactor) / 5.0);
 		}
 
 		/// <summary>
