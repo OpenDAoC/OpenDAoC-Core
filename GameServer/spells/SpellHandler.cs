@@ -3015,7 +3015,7 @@ namespace DOL.GS.Spells
 			// Apply damage cap.
 			finalDamage = Math.Min(finalDamage, DamageCap(effectiveness));
 
-			// Apply conversion.
+			// Apply conversion regen. Unsure how this should interact with the damage cap.
 			if (conversionMod < 1)
 			{
 				double conversionAmount = conversionMod > 0 ? finalDamage / conversionMod - finalDamage : finalDamage;
