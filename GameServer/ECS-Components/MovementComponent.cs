@@ -19,7 +19,7 @@ namespace DOL.GS
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed != 0;
         public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.MovementComponent);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.MovementComponent);
 
         protected MovementComponent(GameLiving owner)
         {

@@ -79,7 +79,7 @@ namespace DOL.GS
         public long NextTick { get; protected set; }
         public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Timer);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Timer);
         private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject timerOwner)

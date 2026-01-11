@@ -87,7 +87,7 @@ namespace DOL.GS
         public SubZone CurrentSubZone { get; set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.SubZoneObject);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.SubZoneObject);
 
         public SubZoneObject(GameObject obj)
         {

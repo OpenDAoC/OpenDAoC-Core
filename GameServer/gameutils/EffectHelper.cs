@@ -460,7 +460,7 @@ namespace DOL.GS
                 case eEffect.Disease:
                 {
                     playerUpdate |= PlayerUpdate.Stats;
-                    playerUpdate |= PlayerUpdate.Encumberance;
+                    playerUpdate |= PlayerUpdate.Encumbrance;
                     break;
                 }
                 case eEffect.StrengthConBuff:
@@ -468,7 +468,7 @@ namespace DOL.GS
                 {
                     playerUpdate |= PlayerUpdate.Status;
                     playerUpdate |= PlayerUpdate.Stats;
-                    playerUpdate |= PlayerUpdate.Encumberance;
+                    playerUpdate |= PlayerUpdate.Encumbrance;
                     break;
                 }
                 case eEffect.ConstitutionBuff:
@@ -594,7 +594,7 @@ namespace DOL.GS
             Stats =         1 << 5,
             Resists =       1 << 4,
             WeaponArmor =   1 << 3,
-            Encumberance =  1 << 2,
+            Encumbrance =   1 << 2,
             Concentration = 1,
             None =          0
         }

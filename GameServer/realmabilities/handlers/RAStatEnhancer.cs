@@ -78,7 +78,7 @@ namespace DOL.GS.RealmAbilities
 			// Stagger the update and delegate to the effect list component to avoid redundant packets and solve a case of deadlock.
 			// We're typically holding an ability lock here, and sending a weapon/armor update requires an inventory lock.
 			// But threads holding a lock on inventory seems to be able to request a lock on abilities too (encumbrance update maybe?).
-			target.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.Encumberance | EffectHelper.PlayerUpdate.WeaponArmor | EffectHelper.PlayerUpdate.Stats | EffectHelper.PlayerUpdate.Status);
+			target.effectListComponent.RequestPlayerUpdate(EffectHelper.PlayerUpdate.Encumbrance | EffectHelper.PlayerUpdate.WeaponArmor | EffectHelper.PlayerUpdate.Stats | EffectHelper.PlayerUpdate.Status);
 		}
 
 		public override void Activate(GameLiving living, bool sendUpdates)

@@ -34,7 +34,7 @@ namespace DOL.GS
         public bool TriggersImmunity { get; set; }
         public int ImmunityDuration { get; protected set; } = 60000;
         public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Effect);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Effect);
 
         // State properties.
         public bool IsActive => _state is State.Active;

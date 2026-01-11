@@ -83,12 +83,11 @@ namespace DOL.GS
     {
         public GameLiving Killed { get; private set; }
         public GameObject Killer { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; set; }
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.LivingBeingKilled);
 
         private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
             Initialize(killed, killer);
-            ServiceObjectId = new ServiceObjectId(ServiceObjectType.LivingBeingKilled);
         }
 
         public static void Create(GameLiving killed, GameObject killer)

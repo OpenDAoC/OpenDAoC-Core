@@ -28,7 +28,7 @@ namespace DOL.GS
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
         public SpellHandler QueuedSpellHandler { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.CastingComponent);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.CastingComponent);
         public bool IsCasting => SpellHandler != null; // May not be actually casting yet.
 
         protected CastingComponent(GameLiving owner)

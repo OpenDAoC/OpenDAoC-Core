@@ -25,19 +25,13 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
-        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.AttackComponent);
+        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.AttackComponent);
         public AttackerTracker AttackerTracker { get; private set; }
 
         private BlockRoundHandler _blockRoundHandler;
         private GameObject _startAttackTarget;
-        private int _startAttackRequested;
+        private bool _startAttackRequested;
         private GameLiving[] _broadcastExcludes = new GameLiving[3];
-
-        public bool StartAttackRequested
-        {
-            get => Interlocked.CompareExchange(ref _startAttackRequested, 0, 0) == 1;
-            set => Interlocked.Exchange(ref _startAttackRequested, Convert.ToInt32(value));
-        }
 
         public AttackComponent(GameLiving owner)
         {
@@ -56,9 +50,9 @@ namespace DOL.GS
                 return;
             }
 
-            if (StartAttackRequested)
+            if (_startAttackRequested)
             {
-                StartAttackRequested = false;
+                _startAttackRequested = false;
                 StartAttack();
             }
 
@@ -137,7 +131,7 @@ namespace DOL.GS
 
         public virtual bool AttackState
         {
-            get => _attackState || StartAttackRequested;
+            get => _attackState || _startAttackRequested;
             set => _attackState = value;
         }
 
@@ -462,7 +456,7 @@ namespace DOL.GS
         public void RequestStartAttack(GameObject attackTarget = null)
         {
             _startAttackTarget = attackTarget ?? owner.TargetObject;
-            StartAttackRequested = true;
+            _startAttackRequested = true;
             ServiceObjectStore.Add(this);
         }
 
@@ -754,7 +748,7 @@ namespace DOL.GS
 
         public void StopAttack()
         {
-            StartAttackRequested = false;
+            _startAttackRequested = false;
 
             if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
