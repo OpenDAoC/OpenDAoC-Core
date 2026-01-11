@@ -18,11 +18,15 @@ namespace DOL.GS
 			m_deathAnnounce = new String[] { "A soul-piercing howl echoes throughout the land, and then all is quiet." };
 		}
 
+		private static IArea gjalpinulvaArea = null;
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Gjalpinulva Initializing...");
+			Region region = WorldMgr.GetRegion(100);
+            gjalpinulvaArea = region.AddArea(new Area.Circle("Gjalpinulva's Lair", 708888, 1021439, 3014, LairRadius));
 		}
 		#region Custom Methods
 		public static ushort LairRadius
@@ -36,10 +40,6 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			base.LoadFromDatabase(obj);
-			String[] dragonName = Name.Split(new char[] { ' ' });
-			WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle(String.Format("{0}'s Lair",
-				dragonName[0]),
-				X, Y, 0, LairRadius + 200));
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
@@ -85,8 +85,8 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
-			String message = String.Format("{0} has been slain!", Name);
+			int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
 			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
@@ -216,10 +216,12 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(694189);
 			LoadTemplate(npcTemplate);
-			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-			RoamingRange = 0;
-			Model = 612;
-			Size = 50;
+			// Custom Respawn +/- 20% 6h
+			int baseRespawnMS = 21600000; 
+            int maxOffsetMS = 4320000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
 			#region All bools here
 			MidGjalpinulvaBrain.ResetChecks = false;
 			MidGjalpinulvaBrain.IsRestless = false;
@@ -280,7 +282,7 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 			ThinkInterval = 5000;
 			
-			/*_roamingPathPoints.Add(new Point3D(712650, 1016043, 5106));
+			_roamingPathPoints.Add(new Point3D(712650, 1016043, 5106));
 			_roamingPathPoints.Add(new Point3D(710579, 1007943, 5106));
 			_roamingPathPoints.Add(new Point3D(703830, 998367, 5106));
 			_roamingPathPoints.Add(new Point3D(695888, 990438, 5106));
@@ -307,7 +309,7 @@ namespace DOL.AI.Brain
 			_roamingPathPoints.Add(new Point3D(747080, 1023245, 5341));
 			_roamingPathPoints.Add(new Point3D(727530, 1027210, 5341));
 			_roamingPathPoints.Add(new Point3D(715303, 1025848, 5341));
-			_roamingPathPoints.Add(new Point3D(708888, 1021439, 3014));//spawn*/
+			_roamingPathPoints.Add(new Point3D(708888, 1021439, 3014));//spawn
 		}
 		public static bool CanGlare = false;
 		public static bool CanGlare2 = false;
@@ -404,7 +406,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			#region Dragon IsRestless fly route activation
+			/*#region Dragon IsRestless fly route activation
 			if (Body.CurrentRegion.IsPM && Body.CurrentRegion.IsNightTime == false && !LockIsRestless && !Body.InCombatInLast(30000) && _lastRoamIndex < _roamingPathPoints.Count)//Dragon will start roam
 			{
 				if (Glare_Enemys.Count > 0)
@@ -433,8 +435,8 @@ namespace DOL.AI.Brain
 				LockIsRestless = true;
 			}
 
-			//if (IsRestless)
-			//	DragonFlyingPath();//make dragon follow the path
+			if (IsRestless)
+				DragonFlyingPath();//make dragon follow the path
 
 			if (!ResetChecks && _lastRoamIndex >= _roamingPathPoints.Count)
 			{
@@ -457,7 +459,7 @@ namespace DOL.AI.Brain
 					CanGlare2 = true;
 				}
 			}
-            #endregion
+            #endregion*/
             if (HasAggro && Body.TargetObject != null)
             {
 				checkForMessangers = false;
@@ -493,7 +495,7 @@ namespace DOL.AI.Brain
 		}
         #region Dragon Roaming Path
         
-		/*private void DragonFlyingPath()
+		private void DragonFlyingPath()
         {
 	        if (IsRestless && Body.IsAlive)
             {
@@ -508,7 +510,7 @@ namespace DOL.AI.Brain
 				else if(!Body.IsMoving)
 					Body.WalkTo(_roamingPathPoints[_lastRoamIndex], speed);
             }
-        }*/
+        }
 
 		#endregion
 

@@ -19,11 +19,15 @@ namespace DOL.GS
 				"A glowing light begins to form on the mound that served as {0}'s lair." };
 		}
 
+		private static IArea golestandtArea = null;
+		
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Golestandt Initializing...");
+			Region region = WorldMgr.GetRegion(1);
+            golestandtArea = region.AddArea(new Area.Circle("Golestandt's Lair", 391344, 755419, 227, LairRadius));
 		}
 		#region Custom Methods
 		public static ushort LairRadius
@@ -37,10 +41,6 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			base.LoadFromDatabase(obj);
-			String[] dragonName = Name.Split(new char[] { ' ' });
-			WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle(String.Format("{0}'s Lair",
-				dragonName[0]),
-				X, Y, 0, LairRadius + 200));
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
@@ -86,8 +86,8 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
-			String message = String.Format("{0} has been slain!", Name);
+			int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
 			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
@@ -117,52 +117,51 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			// debug
-			if (killer == null)
-				log.Error("Dragon Killed: killer is null!");
-			else
-				log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
-
-			bool canReportNews = true;
-			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
-			int itemCount = 500;
-			string message_currency = "Golestandt drops " + itemCount + " " + template.Name + ".";
-			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				DbInventoryItem item = GameInventoryItem.Create(template);
-				item.Count = itemCount;
-				if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+				// debug
+				if (killer == null)
+					log.Error("Dragon Killed: killer is null!");
+				else
+					log.Debug("Dragon Killed: killer is " + killer.Name + ", attackers:");
+				bool canReportNews = true;
+				DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
+				int itemCount = 500;
+				string message_currency = "Golestandt drops " + itemCount + " " + template.Name + ".";
+				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
-					InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+					DbInventoryItem item = GameInventoryItem.Create(template);
+					item.Count = itemCount;
+					if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+					{
+						player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+						InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+					}
+					player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
+					if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
+					{
+						if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+							canReportNews = false;
+					}
 				}
-				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
-				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
-				{
-					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
-						canReportNews = false;
-				}
-			}
 
-			var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("golestandt_messengers");
-			if (spawnMessengers != null)
-			{
-				spawnMessengers.Stop();
-				TempProperties.RemoveProperty("golestandt_messengers");
-			}
+				var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("golestandt_messengers");
+				if (spawnMessengers != null)
+				{
+					spawnMessengers.Stop();
+					TempProperties.RemoveProperty("golestandt_messengers");
+				}
 
 			AwardDragonKillPoint();
-			base.Die(killer);
+				base.Die(killer);
 
-			foreach (String message in m_deathAnnounce)
-			{
-				BroadcastMessage(String.Format(message, Name));
-			}
-			if (canReportNews)
-			{
-				ReportNews(killer);
-			}
+				foreach (String message in m_deathAnnounce)
+				{
+					BroadcastMessage(String.Format(message, Name));
+				}
+				if (canReportNews)
+				{
+					ReportNews(killer);
+				}
 		}
 		#endregion
 		public override int GetResist(eDamageType damageType)
@@ -211,17 +210,19 @@ namespace DOL.GS
 			else
 				base.StartAttack(target);
 		}
-		private static Point3D spawnPoint = new Point3D(391344, 755419, 395);
-		public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 2071; }
+		private static Point3D spawnPoint = new Point3D(391344, 755419, 227);
+		public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 2045; }
 		public override Point3D SpawnPoint { get => spawnPoint; set => base.SpawnPoint = spawnPoint; }
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157497);
 			LoadTemplate(npcTemplate);
-			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-			RoamingRange = 0;
-			Model = 613;
-			Size = 50;
+			// Custom Respawn +/- 20% 6h
+			int baseRespawnMS = 21600000; 
+            int maxOffsetMS = 4320000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
 			#region All bools here
 			AlbGolestandtBrain.ResetChecks = false;
 			AlbGolestandtBrain.IsRestless = false;
@@ -282,7 +283,7 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 			ThinkInterval = 5000;
 			
-			/*_roamingPathPoints.Add(new Point3D(391129, 755603, 378));//spawn
+			_roamingPathPoints.Add(new Point3D(391129, 755603, 378));//spawn
 			_roamingPathPoints.Add(new Point3D(385865, 756961, 3504));
 			_roamingPathPoints.Add(new Point3D(378547, 755862, 3504));
 			_roamingPathPoints.Add(new Point3D(373114, 749008, 3504));
@@ -309,7 +310,7 @@ namespace DOL.AI.Brain
 			_roamingPathPoints.Add(new Point3D(397830, 713380, 3512));
 			_roamingPathPoints.Add(new Point3D(407425, 720655, 3512));
 			_roamingPathPoints.Add(new Point3D(408918, 742335, 3512));
-			_roamingPathPoints.Add(new Point3D(397944, 754701, 3512));*/
+			_roamingPathPoints.Add(new Point3D(397944, 754701, 3512));
 		}
 		public static bool CanGlare = false;
 		public static bool CanGlare2 = false;
@@ -406,7 +407,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			#region Dragon IsRestless fly route activation
+			/*#region Dragon IsRestless fly route activation
 			if (Body.CurrentRegion.IsPM && Body.CurrentRegion.IsNightTime == false && !LockIsRestless && !Body.InCombatInLast(30000) && _lastRoamIndex < _roamingPathPoints.Count)//Dragon will start roam
 			{
 				if (Glare_Enemys.Count > 0)
@@ -459,7 +460,7 @@ namespace DOL.AI.Brain
 					CanGlare2 = true;
 				}
 			}
-			#endregion
+			#endregion*/
 			if (HasAggro && Body.TargetObject != null)
 			{
 				checkForMessangers = false;
@@ -1040,7 +1041,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			Model = 2386;
+			Model = 616;
 			Name = "Golestandt's messenger";
 			Size = 80;
 			Level = (byte)Util.Random(50, 55);
@@ -1374,9 +1375,9 @@ namespace DOL.GS
 			Name = adds_names[Util.Random(0, adds_names.Count - 1)];
 			switch (Name)
 			{
-				case "granite giant stonelord": Model = 2386; Size = (byte)Util.Random(150, 170); break;
-				case "granite giant pounder": Model = 2386; Size = (byte)Util.Random(130, 150); break;
-				case "granite giant outlooker": Model = 2386; Size = (byte)Util.Random(130, 140); break;
+				case "granite giant stonelord": Model = 616; Size = (byte)Util.Random(150, 170); break;
+				case "granite giant pounder": Model = 615; Size = (byte)Util.Random(130, 150); break;
+				case "granite giant outlooker": Model = 615; Size = (byte)Util.Random(130, 140); break;
 			}
 			Level = (byte)Util.Random(60, 64);
 			Faction = FactionMgr.GetFactionByID(31);

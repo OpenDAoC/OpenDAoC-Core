@@ -127,7 +127,12 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18806);
 			LoadTemplate(npcTemplate);
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			// Custom Respawn +/- 20% 2h
+			int baseRespawnMS = 7200000; 
+            int maxOffsetMS = 1440000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
 			Faction = FactionMgr.GetFactionByID(206);
 			IsCloakHoodUp = true;
 			SummonerLossrenBrain.IsCreatingSouls = false;

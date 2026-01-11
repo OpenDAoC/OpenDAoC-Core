@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -19,11 +18,15 @@ namespace DOL.GS
 			m_deathAnnounce = new String[] { "The hills seem to weep for the loss of their king." };
 		}
 
+		private static IArea cuuldurachArea = null;
+
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Cuuldurach the Glimmer King Initializing...");
+			Region region = WorldMgr.GetRegion(200);
+            cuuldurachArea = region.AddArea(new Area.Circle("Cuuldurach the Glimmer King's Lair", 408503, 706279, 2827, LairRadius));
 		}
 		#region Custom Methods
 		public static ushort LairRadius
@@ -37,10 +40,6 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			base.LoadFromDatabase(obj);
-			String[] dragonName = Name.Split(new char[] { ' ' });
-			WorldMgr.GetRegion(CurrentRegionID).AddArea(new Area.Circle(String.Format("{0}'s Lair",
-				dragonName[0]),
-				X, Y, 0, LairRadius + 200));
 		}
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
@@ -86,8 +85,8 @@ namespace DOL.GS
 		/// <param name="killer">The living that got the killing blow.</param>
 		protected void ReportNews(GameObject killer)
 		{
-			// int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
-			String message = String.Format("{0} has been slain!", Name);
+			int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
+			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
 
 			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
@@ -125,7 +124,7 @@ namespace DOL.GS
 				bool canReportNews = true;
 				DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
 				int itemCount = 500;
-				string message_currency = "Cuuldurach drops " + itemCount + " " + template.Name + ".";
+				string message_currency = "Cuuldurach the Glimmer King drops " + itemCount + " " + template.Name + ".";
 				// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
 				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
@@ -212,17 +211,19 @@ namespace DOL.GS
 			else
 				base.StartAttack(target);
 		}
-		private static Point3D spawnPoint = new Point3D(408646, 706432, 2965);
-		public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 1764; }
+		private static Point3D spawnPoint = new Point3D(408503, 706279, 2827);
+		public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 1690; }
 		public override Point3D SpawnPoint { get => spawnPoint; set => base.SpawnPoint = spawnPoint; }
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(678903);
 			LoadTemplate(npcTemplate);
-			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-			RoamingRange = 0;
-			Model = 613;
-			Size = 50;
+			// Custom Respawn +/- 20% 6h
+			int baseRespawnMS = 21600000; 
+            int maxOffsetMS = 4320000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
 			#region All bools here
 			HibCuuldurachBrain.ResetChecks = false;
 			HibCuuldurachBrain.IsRestless = false;
@@ -283,7 +284,7 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 			ThinkInterval = 5000;
 			
-			/*_roamingPathPoints.Add(new Point3D(408646, 706432, 2965));//spawn
+			_roamingPathPoints.Add(new Point3D(408646, 706432, 2965));//spawn
 			_roamingPathPoints.Add(new Point3D(399021, 704912, 6212));
 			_roamingPathPoints.Add(new Point3D(391823, 706981, 6212));
 			_roamingPathPoints.Add(new Point3D(379666, 707613, 6212));
@@ -310,7 +311,7 @@ namespace DOL.AI.Brain
 			_roamingPathPoints.Add(new Point3D(411408, 655769, 8321));
 			_roamingPathPoints.Add(new Point3D(411061, 673862, 6722));
 			_roamingPathPoints.Add(new Point3D(409199, 679881, 6722));
-			_roamingPathPoints.Add(new Point3D(409781, 696669, 7148));*/
+			_roamingPathPoints.Add(new Point3D(409781, 696669, 7148));
 
 		}
 		public static bool CanGlare = false;
@@ -408,7 +409,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			#region Dragon IsRestless fly route activation
+			/*#region Dragon IsRestless fly route activation
 			if (Body.CurrentRegion.IsPM && Body.CurrentRegion.IsNightTime == false && !LockIsRestless && !Body.InCombatInLast(30000))//Dragon will start roam
 			{
 				if (Glare_Enemys.Count > 0)
@@ -437,8 +438,8 @@ namespace DOL.AI.Brain
 				LockIsRestless = true;
 			}
 
-			//if (IsRestless)
-				//DragonFlyingPath();//make dragon follow the path
+			if (IsRestless)
+				DragonFlyingPath();//make dragon follow the path
 
 			if (!ResetChecks && _lastRoamIndex >= _roamingPathPoints.Count)
 			{
@@ -461,7 +462,7 @@ namespace DOL.AI.Brain
 					CanGlare2 = true;
 				}
 			}
-			#endregion
+			#endregion*/
 			if (HasAggro && Body.TargetObject != null)
 			{
 				checkForMessangers = false;
@@ -496,7 +497,7 @@ namespace DOL.AI.Brain
 				base.Think();
 		}
 		#region Dragon Roaming Path
-		/*private void DragonFlyingPath()
+		private void DragonFlyingPath()
 		{
 			if (IsRestless && Body.IsAlive)
 			{
@@ -511,7 +512,7 @@ namespace DOL.AI.Brain
 				else if(!Body.IsMoving)
 					Body.WalkTo(_roamingPathPoints[_lastRoamIndex], speed);
 			}
-		}*/
+		}
 		#endregion
 
 		#region Throw Players
@@ -1044,7 +1045,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			Model = 2389;
+			Model = 618;
 			Name = "Cuuldurach's messenger";
 			Size = 50;
 			Level = (byte)Util.Random(50, 55);
@@ -1378,9 +1379,9 @@ namespace DOL.GS
 			Name = adds_names[Util.Random(0, adds_names.Count - 1)];
 			switch (Name)
 			{
-				case "glimmer knight": Model = 2390; Size = (byte)Util.Random(50, 55); break;
-				case "glimmer deathwatcher": Model = 2389; Size = (byte)Util.Random(50, 55); break;
-				case "glimmer geist": Model = 2388; Size = (byte)Util.Random(50, 55); break;
+				case "glimmer knight": Model = 620; Size = (byte)Util.Random(50, 55); break;
+				case "glimmer deathwatcher": Model = 619; Size = (byte)Util.Random(50, 55); break;
+				case "glimmer geist": Model = 618; Size = (byte)Util.Random(50, 55); break;
 			}
 			Level = (byte)Util.Random(60, 64);
 			Faction = FactionMgr.GetFactionByID(83);
