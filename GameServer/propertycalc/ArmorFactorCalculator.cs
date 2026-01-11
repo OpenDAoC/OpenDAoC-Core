@@ -27,15 +27,15 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
                 case IGameEpicNpc epicNpc:
-                    return CalculateLivingArmorFactor(living, property, 12 * epicNpc.ArmorFactorScalingFactor, 50);
+                    return CalculateLivingArmorFactor(living, property, 15 * epicNpc.ArmorFactorScalingFactor, 50);
                 case NecromancerPet:
-                    return CalculateLivingArmorFactor(living, property, 12, 121);
+                    return CalculateLivingArmorFactor(living, property, 15, 121);
                 case GameSummonedPet:
-                    return CalculateLivingArmorFactor(living, property, 12, 175);
+                    return CalculateLivingArmorFactor(living, property, 15, 175);
                 case GuardLord:
-                    return CalculateLivingArmorFactor(living, property, 12, 134);
+                    return CalculateLivingArmorFactor(living, property, 15, 134);
                 default:
-                    return CalculateLivingArmorFactor(living, property, 12, 200);
+                    return CalculateLivingArmorFactor(living, property, 15, 200);
             }
 
             static int CalculatePlayerArmorFactor(GameLiving living, eProperty property)
