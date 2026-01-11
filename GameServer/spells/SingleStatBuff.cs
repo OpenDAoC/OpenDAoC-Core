@@ -135,7 +135,7 @@ namespace DOL.GS.Spells
     public class BaseArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
         // List caster AF buffs use their delve value as is.
-        public override bool BuffReceivesSpecBonus => Caster is GamePlayer player ? player.CharacterClass.ClassType is not eClassType.ListCaster : true;
+        public override bool BuffReceivesSpecBonus => Caster is not GamePlayer player || player.CharacterClass.ClassType is not eClassType.ListCaster;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
     }
 
@@ -143,7 +143,7 @@ namespace DOL.GS.Spells
     public class SpecArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
         // Spec AF chants (Paladin) are uncapped.
-        public override eBuffBonusCategory BonusCategory1 => spell.IsChant ? eBuffBonusCategory.OtherBuff : eBuffBonusCategory.SpecBuff;
+        public override eBuffBonusCategory BonusCategory1 => Spell.IsChant ? eBuffBonusCategory.OtherBuff : eBuffBonusCategory.SpecBuff;
     }
 
     [SpellHandler(eSpellType.PaladinArmorFactorBuff)]
