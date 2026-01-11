@@ -1867,8 +1867,6 @@ namespace DOL.GS.ServerRules
 
         private static long CalculateOutpostExperienceBonus(GamePlayer playerToAward, long baseXpReward)
         {
-            long outpostBonus = 0;
-
             //outpost XP
             //1.54 http://www.camelotherald.com/more/567.shtml
             //- Players now receive an exp bonus when fighting within 16,000
@@ -1876,20 +1874,26 @@ namespace DOL.GS.ServerRules
             //You get 20% bonus if your guild owns the keep or a 10% bonus
             //if your realm owns the keep.
 
-            AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(playerToAward.CurrentRegionID, playerToAward, 16000);
+            const double GUILD_OUTPOST_PERCENT_BONUS = 0.2;
+            const double REALM_OUTPOST_PERCENT_BONUS = 0.1;
+            const int OUTPOST_RADIUS = 16000;
 
-            if (keep != null)
+            double outpostPercentBonus = 0.0;
+
+            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsCloseToSpot(playerToAward.CurrentRegionID, playerToAward, OUTPOST_RADIUS))
             {
-                byte bonus = 0;
-
                 if (keep.Guild != null && keep.Guild == playerToAward.Guild)
-                    bonus = 20;
-                else if (GameServer.Instance.Configuration.ServerType is EGameServerType.GST_Normal && keep.Realm == playerToAward.Realm)
-                    bonus = 10;
-
-                outpostBonus = (long) (baseXpReward / 100.0 * bonus);
+                {
+                    outpostPercentBonus = GUILD_OUTPOST_PERCENT_BONUS;
+                    break; // Max bonus found, stop searching.
+                }
+                else if (keep.Realm == playerToAward.Realm && GameServer.Instance.Configuration.ServerType is EGameServerType.GST_Normal)
+                    outpostPercentBonus = REALM_OUTPOST_PERCENT_BONUS;
             }
 
+            long outpostBonus = (long) (baseXpReward * outpostPercentBonus);
+
+            // Merge global keep bonuses for simplicity's sake.
             if (KeepBonusMgr.RealmHasBonus(eKeepBonusType.Experience_5, playerToAward.Realm))
                 outpostBonus += (long) (baseXpReward / 100.0 * 5);
             else if (KeepBonusMgr.RealmHasBonus(eKeepBonusType.Experience_3, playerToAward.Realm))
