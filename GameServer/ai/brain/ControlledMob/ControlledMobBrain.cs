@@ -458,6 +458,7 @@ namespace DOL.AI.Brain
         {
             GameLiving target = null;
 
+            // This does not include every spell type.
             switch (spell.SpellType)
             {
                 #region Buffs

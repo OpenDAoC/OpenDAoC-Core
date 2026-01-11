@@ -38,48 +38,25 @@ namespace DOL.AI.Brain
             {
                 case eCheckSpellType.Defensive:
                 {
-                    switch (spell.SpellType)
-                    {
-                        case eSpellType.HeatColdMatterBuff:
-                        case eSpellType.BodySpiritEnergyBuff:
-                        case eSpellType.ArmorAbsorptionBuff:
-                        case eSpellType.AblativeArmor:
-                        {
-                            GameLiving target = FindTargetForDefensiveSpell(spell);
+                    GameLiving target = FindTargetForDefensiveSpell(spell);
 
-                            if (target != null)
-                                return TrustCast(spell, eCheckSpellType.Defensive, FindTargetForDefensiveSpell(spell), CheckLosBeforeCastingDefensiveSpells);
+                    if (target != null)
+                        return TrustCast(spell, eCheckSpellType.Defensive, target, CheckLosBeforeCastingDefensiveSpells);
 
-                            break;
-                        }
-                    }
-
-                    return false;
+                    break;
                 }
                 case eCheckSpellType.Offensive:
                 {
-                    switch (spell.SpellType)
-                    {
-                        case eSpellType.DirectDamage:
-                        case eSpellType.DamageSpeedDecrease:
-                        case eSpellType.SpeedDecrease:
-                        case eSpellType.Taunt:
-                        case eSpellType.MeleeDamageDebuff:
-                        {
-                            GameLiving target = CalculateNextAttackTarget();
+                    GameLiving target = CalculateNextAttackTarget();
 
-                            if (target != null)
-                                return TrustCast(spell, eCheckSpellType.Offensive, target, CheckLosBeforeCastingOffensiveSpells);
+                    if (target != null)
+                        return TrustCast(spell, eCheckSpellType.Offensive, target, CheckLosBeforeCastingOffensiveSpells);
 
-                            break;
-                        }
-                    }
-
-                    return false;
+                    break;
                 }
-                default:
-                    return false;
             }
+
+            return false;
         }
 
         protected override GameLiving FindTargetForDefensiveSpell(Spell spell)
