@@ -47,7 +47,7 @@ namespace DOL.GS.Keeps
 	public interface IKeepManager
 	{
 		Logging.Logger Log { get; }
-		Hashtable Keeps { get; }
+		Dictionary<int, AbstractGameKeep> Keeps { get; }
 		List<uint> FrontierRegionsList { get; }
 
 		bool Load();

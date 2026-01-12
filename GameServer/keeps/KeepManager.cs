@@ -17,12 +17,9 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// list of all keeps
 		/// </summary>
-		protected Hashtable m_keepList = new Hashtable();
+		protected Dictionary<int, AbstractGameKeep> m_keepList = new();
 
-		public virtual Hashtable Keeps
-		{
-			get { return m_keepList; }
-		}
+		public virtual Dictionary<int, AbstractGameKeep> Keeps => m_keepList;
 
 		protected List<DbBattleground> m_battlegrounds = new List<DbBattleground>();
 
