@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -1183,102 +1182,79 @@ namespace DOL.AI.Brain
 {
     public class AirPrimalBrain : StandardMobBrain
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public AirPrimalBrain()
-            : base()
+        private class CastDdTimer : ECSGameTimerWrapperBase
+        {
+            private AirPrimalBrain _brain;
+
+            public GamePlayer Target { get; set; }
+
+            public CastDdTimer(AirPrimalBrain brain, GameObject owner) : base(owner)
+            {
+                _brain = brain;
+                Start(1500);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                _brain.CastDD(Target);
+                return 0;
+            }
+        }
+
+        private CastDdTimer _castDdTimer;
+
+        public AirPrimalBrain(): base()
         {
             AggroLevel = 100;
             AggroRange = 0;
             ThinkInterval = 2000;
+            _castDdTimer = new(this, Body);
         }
 
-        private GameLiving randomtarget = null;
-        private GameLiving RandomTarget
+        public void CastDD(GamePlayer target)
         {
-            get { return randomtarget; }
-            set { randomtarget = value; }
+            GameObject previousTarget = Body.TargetObject;
+            Body.TargetObject = target;
+            Body.CastSpell(AirDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            Body.TargetObject = previousTarget;
         }
-        List<GamePlayer> inRangeLiving;
+
+        public void CastMez(GamePlayer target)
+        {
+            GameObject previousTarget = Body.TargetObject;
+            Body.TargetObject = target;
+            Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+            Body.TargetObject = previousTarget;
+        }
+
         public void PickRandomTarget()
         {
-            List<GameLiving> enemies = AggroList.Keys.ToList();
+            if (_castDdTimer.IsAlive)
+                return;
+
+            List<GamePlayer> enemies = GameLoop.GetListForTick<GamePlayer>();
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
             {
-                if (player != null)
-                {
-                    if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                    {
-                        if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
-                            AggroList.TryAdd(player, new());
-                        else if (RandomTarget != null)
-                            AggroList.TryRemove(RandomTarget, out _);
-                    }
-                }
+                if (GameServer.ServerRules.IsAllowedToAttack(Body, player, true))
+                    enemies.Add(player);
             }
 
             if (enemies.Count == 0)
                 return;
-            else
-            {
-                List<GameLiving> damage_enemies = new List<GameLiving>();
-                for (int i = 0; i < enemies.Count; i++)
-                {
-                    if (enemies[i] == null)
-                        continue;
-                    if (!(enemies[i] is GameLiving))
-                        continue;
-                    if (!(enemies[i] as GameLiving).IsAlive)
-                        continue;
-                    GameLiving living = null;
-                    living = enemies[i] as GameLiving;
-                    if (living.IsVisibleTo(Body) && Body.TargetInView)
-                    {
-                        damage_enemies.Add(enemies[i] as GameLiving);
-                    }
-                }
 
-                if (damage_enemies.Count > 0)
-                {
-                    RandomTarget = damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
-                    if (RandomTarget.IsVisibleTo(Body) && Body.TargetInView)
-                    {
-                        PrepareToDD();
-                        if (Util.Chance(15))
-                        {
-                            Body.TargetObject = RandomTarget;
-                            if (!RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
-                            {
-                                Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                                AggroList.TryRemove(RandomTarget, out _);
-                            }
-                        }
-                    }
-                    else
-                        AggroList.TryRemove(RandomTarget, out _);
-                }
-            }
-        }
+            GamePlayer randomTarget = enemies[Util.Random(0, enemies.Count - 1)];
 
-        private int CastDD(ECSGameTimer timer)
-        {
-            if (RandomTarget != null)
+            if (Util.Chance(15))
             {
-                GameObject oldTarget = Body.TargetObject;
-                Body.TargetObject = RandomTarget;
-                Body.CastSpell(AirDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                AggroList.TryRemove(RandomTarget, out _);
-                RandomTarget = null;
-                Body.TargetObject = oldTarget;
+                if (!randomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+                    CastMez(randomTarget);
             }
 
-            return 0;
+            _castDdTimer.Target = randomTarget;
+            _castDdTimer.Start();
         }
 
-        private void PrepareToDD()
-        {
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 1200);
-        }
         public static bool path1 = false;
         public static bool path2 = false;
         public static bool path3 = false;
@@ -1324,8 +1300,6 @@ namespace DOL.AI.Brain
             Point3D point11 = new Point3D();
             point11.X = 40355; point11.Y = 61543; point11.Z = 12372;
 
-            if (inRangeLiving == null)
-                inRangeLiving = new List<GamePlayer>();
             if (Body.InCombatInLast(20 * 1000) == false && this.Body.InCombatInLast(25 * 1000))
             {
                 Body.Health = Body.MaxHealth;
