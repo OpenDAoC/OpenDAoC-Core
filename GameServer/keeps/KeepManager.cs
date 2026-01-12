@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using DOL.Database;
 
 namespace DOL.GS.Keeps
@@ -19,7 +18,6 @@ namespace DOL.GS.Keeps
 		/// list of all keeps
 		/// </summary>
 		protected Hashtable m_keepList = new Hashtable();
-		private readonly Lock _lock = new();
 
 		public virtual Hashtable Keeps
 		{
@@ -69,106 +67,103 @@ namespace DOL.GS.Keeps
 			if (!ServerProperties.Properties.LOAD_KEEPS)
 				return true;
 
-			lock (_lock)
+			m_keepList.Clear();
+
+			var keeps = GameServer.Database.SelectAllObjects<DbKeep>();
+			foreach (DbKeep datakeep in keeps)
 			{
-				m_keepList.Clear();
-
-				var keeps = GameServer.Database.SelectAllObjects<DbKeep>();
-				foreach (DbKeep datakeep in keeps)
-				{
-					Region keepRegion = WorldMgr.GetRegion(datakeep.Region);
-					if (keepRegion == null)
-						continue;
+				Region keepRegion = WorldMgr.GetRegion(datakeep.Region);
+				if (keepRegion == null)
+					continue;
 				
-					AbstractGameKeep keep;
-					// if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
-					// {
-					// 	keep = keepRegion.CreateGameKeepTower();
-					// }
-					// else
-					// {
-					
-					// set SkinType to 99 for relic keeps
-					keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
-						
-					// }
-
-					keep.Load(datakeep);
-					RegisterKeep(datakeep.KeepID, keep);
-				}
-
-				// This adds owner keeps to towers / portal keeps
-				// foreach (AbstractGameKeep keep in m_keepList.Values)
+				AbstractGameKeep keep;
+				// if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
 				// {
-				// 	GameKeepTower tower = keep as GameKeepTower;
-				// 	if (tower != null)
-				// 	{
-				// 		int index = tower.KeepID & 0xFF;
-				// 		GameKeep ownerKeep = GetKeepByID(index) as GameKeep;
-				// 		if (ownerKeep != null)
-				// 		{
-				// 			ownerKeep.AddTower(tower);
-				// 		}
-				// 		tower.Keep = ownerKeep;
-				// 		tower.OwnerKeepID = index;
-				//
-				// 		if (tower.OwnerKeepID < 10)
-				// 		{
-				// 			log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
-				// 		}
-				// 	}
+				// 	keep = keepRegion.CreateGameKeepTower();
 				// }
-				if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
-					log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
-				    
-				// var keepcomponents = default(IList<DBKeepComponent>); Why was this done this way rather than being strictly typed?
-				IList<DbKeepComponent> keepcomponents = null;
+				// else
+				// {
+					
+				// set SkinType to 99 for relic keeps
+				keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
+						
+				// }
 
-				if (ServerProperties.Properties.USE_NEW_KEEPS == 0 || ServerProperties.Properties.USE_NEW_KEEPS == 2)
-					keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsLessThan(20));
-				else if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
-					keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreaterThan(20));
-
-				if (keepcomponents != null)
-				{
-					keepcomponents
-					.GroupBy(x => x.KeepID)
-					.AsParallel()
-					.ForAll(components =>
-					{
-						foreach (DbKeepComponent component in components)
-						{
-							AbstractGameKeep keep = GetKeepByID(component.KeepID);
-							if (keep == null)
-							{
-								//missingKeeps = true;
-								continue;
-							}
-
-							GameKeepComponent gamecomponent = keep.CurrentRegion.CreateGameKeepComponent();
-							gamecomponent.LoadFromDatabase(component, keep);
-							keep.KeepComponents.Add(gamecomponent);
-						}
-					});
-				}
-
-				/*if (missingKeeps && log.IsWarnEnabled)
-				{
-					log.WarnFormat("Some keeps not found while loading components, possibly old/new keeptypes.");
-				}*/
-
-				if (m_keepList.Count != 0)
-				{
-					foreach (AbstractGameKeep keep in m_keepList.Values)
-					{
-						if (keep.KeepComponents.Count != 0)
-							keep.KeepComponents.Sort();
-					}
-				}
-				LoadHookPoints();
-
-				log.Info("Loaded " + m_keepList.Count + " keeps successfully");
+				keep.Load(datakeep);
+				RegisterKeep(datakeep.KeepID, keep);
 			}
+
+			// This adds owner keeps to towers / portal keeps
+			// foreach (AbstractGameKeep keep in m_keepList.Values)
+			// {
+			// 	GameKeepTower tower = keep as GameKeepTower;
+			// 	if (tower != null)
+			// 	{
+			// 		int index = tower.KeepID & 0xFF;
+			// 		GameKeep ownerKeep = GetKeepByID(index) as GameKeep;
+			// 		if (ownerKeep != null)
+			// 		{
+			// 			ownerKeep.AddTower(tower);
+			// 		}
+			// 		tower.Keep = ownerKeep;
+			// 		tower.OwnerKeepID = index;
+			//
+			// 		if (tower.OwnerKeepID < 10)
+			// 		{
+			// 			log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
+			// 		}
+			// 	}
+			// }
+			if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
+				log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
+				    
+			// var keepcomponents = default(IList<DBKeepComponent>); Why was this done this way rather than being strictly typed?
+			IList<DbKeepComponent> keepcomponents = null;
+
+			if (ServerProperties.Properties.USE_NEW_KEEPS == 0 || ServerProperties.Properties.USE_NEW_KEEPS == 2)
+				keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsLessThan(20));
+			else if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
+				keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreaterThan(20));
+
+			if (keepcomponents != null)
+			{
+				keepcomponents
+				.GroupBy(x => x.KeepID)
+				.AsParallel()
+				.ForAll(components =>
+				{
+					foreach (DbKeepComponent component in components)
+					{
+						AbstractGameKeep keep = GetKeepByID(component.KeepID);
+						if (keep == null)
+						{
+							//missingKeeps = true;
+							continue;
+						}
+
+						GameKeepComponent gamecomponent = keep.CurrentRegion.CreateGameKeepComponent();
+						gamecomponent.LoadFromDatabase(component, keep);
+						keep.KeepComponents.Add(gamecomponent);
+					}
+				});
+			}
+
+			/*if (missingKeeps && log.IsWarnEnabled)
+			{
+				log.WarnFormat("Some keeps not found while loading components, possibly old/new keeptypes.");
+			}*/
+
+			if (m_keepList.Count != 0)
+			{
+				foreach (AbstractGameKeep keep in m_keepList.Values)
+				{
+					if (keep.KeepComponents.Count != 0)
+						keep.KeepComponents.Sort();
+				}
+			}
+			LoadHookPoints();
+
+			log.Info("Loaded " + m_keepList.Count + " keeps successfully");
 
 			if (ServerProperties.Properties.USE_KEEP_BALANCING)
 				UpdateBaseLevels();
@@ -409,20 +404,17 @@ namespace DOL.GS.Keeps
 			List<AbstractGameKeep> closeKeeps = new List<AbstractGameKeep>();
 			long radiussqrt = radius * radius;
 
-			lock (_lock)
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
-				{
-					if (keep.DBKeep == null || keep.CurrentRegion.ID != regionid)
-						continue;
+				if (keep.DBKeep == null || keep.CurrentRegion.ID != regionid)
+					continue;
 
-					long xdiff = keep.DBKeep.X - x;
-					long ydiff = keep.DBKeep.Y - y;
-					long range = xdiff * xdiff + ydiff * ydiff;
-					if (range < radiussqrt)
-					{
-						closeKeeps.Add(keep);
-					}
+				long xdiff = keep.DBKeep.X - x;
+				long ydiff = keep.DBKeep.Y - y;
+				long range = xdiff * xdiff + ydiff * ydiff;
+				if (range < radiussqrt)
+				{
+					closeKeeps.Add(keep);
 				}
 			}
 
@@ -442,28 +434,25 @@ namespace DOL.GS.Keeps
 		{
 			AbstractGameKeep closestKeep = null;
 
-			lock (_lock)
+			long radiussqrt = radius * radius;
+			long lastKeepDistance = radiussqrt;
+
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				long radiussqrt = radius * radius;
-				long lastKeepDistance = radiussqrt;
+				if (keep == null || keep.DBKeep == null || keep.DBKeep.Region != regionid)
+					continue;
 
-				foreach (AbstractGameKeep keep in m_keepList.Values)
+				long xdiff = keep.DBKeep.X - x;
+				long ydiff = keep.DBKeep.Y - y;
+				long range = xdiff * xdiff + ydiff * ydiff;
+
+				if (range > radiussqrt)
+					continue;
+
+				if (closestKeep == null || range <= lastKeepDistance)
 				{
-					if (keep == null || keep.DBKeep == null || keep.DBKeep.Region != regionid)
-						continue;
-
-					long xdiff = keep.DBKeep.X - x;
-					long ydiff = keep.DBKeep.Y - y;
-					long range = xdiff * xdiff + ydiff * ydiff;
-
-					if (range > radiussqrt)
-						continue;
-
-					if (closestKeep == null || range <= lastKeepDistance)
-					{
-						closestKeep = keep;
-						lastKeepDistance = range;
-					}
+					closestKeep = keep;
+					lastKeepDistance = range;
 				}
 			}
 
@@ -478,15 +467,14 @@ namespace DOL.GS.Keeps
 		public virtual int GetTowerCountByRealm(eRealm realm)
 		{
 			int index = 0;
-			lock (_lock)
+
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
-				{
-					if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
-					if (((eRealm)keep.Realm == realm) && (keep is GameKeepTower))
-						index++;
-				}
+				if (m_frontierRegionsList.Contains(keep.Region) == false) continue;
+				if (((eRealm)keep.Realm == realm) && (keep is GameKeepTower))
+					index++;
 			}
+
 			return index;
 		}
 
@@ -501,14 +489,11 @@ namespace DOL.GS.Keeps
 			realmXTower.Add(eRealm.Hibernia, 0);
 			realmXTower.Add(eRealm.Midgard, 0);
 
-			lock (_lock)
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
+				if (m_frontierRegionsList.Contains(keep.Region) && keep is GameKeepTower)
 				{
-					if (m_frontierRegionsList.Contains(keep.Region) && keep is GameKeepTower)
-					{
-						realmXTower[keep.Realm] += 1;
-					}
+					realmXTower[keep.Realm] += 1;
 				}
 			}
 
@@ -527,14 +512,11 @@ namespace DOL.GS.Keeps
 			realmXTower.Add(eRealm.Midgard, 0);
 			realmXTower.Add(eRealm.None, 0);
 
-			lock (_lock)
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
+				if (m_frontierRegionsList.Contains(keep.Region) && keep is GameKeepTower && zones.Contains(keep.CurrentZone.ID))
 				{
-					if (m_frontierRegionsList.Contains(keep.Region) && keep is GameKeepTower && zones.Contains(keep.CurrentZone.ID))
-					{
-						realmXTower[keep.Realm] += 1;
-					}
+					realmXTower[keep.Realm] += 1;
 				}
 			}
 
@@ -550,36 +532,33 @@ namespace DOL.GS.Keeps
 		{
 			int index = 0;
 
-			lock (_lock)
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
+				if (!m_frontierRegionsList.Contains(keep.Region))
+					continue;
+
+				// Redundant battleground check?
+				if (GetBattleground(keep.CurrentRegion.ID) != null || keep.Region is 250 or 251 or 252 or 253 or 165)
+					continue;
+
+				if (keep.Realm != realm || keep is not GameKeep || keep.IsPortalKeep)
+					continue;
+
+				if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("lamfotha", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
 				{
-					if (!m_frontierRegionsList.Contains(keep.Region))
-						continue;
-
-					// Redundant battleground check?
-					if (GetBattleground(keep.CurrentRegion.ID) != null || keep.Region is 250 or 251 or 252 or 253 or 165)
-						continue;
-
-					if (keep.Realm != realm || keep is not GameKeep || keep.IsPortalKeep)
-						continue;
-
-					if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
-						keep.Name.Contains("lamfotha", StringComparison.OrdinalIgnoreCase) ||
-						keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
-						keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
-						keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
-						keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
-						keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
-					{
-						continue;
-					}
-
-					index++;
+					continue;
 				}
 
-				return index;
+				index++;
 			}
+
+			return index;
 		}
 
 		public virtual ICollection<AbstractGameKeep> GetAllKeeps()
@@ -783,35 +762,32 @@ namespace DOL.GS.Keeps
 
 		public virtual void UpdateBaseLevels()
 		{
-			lock (_lock)
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
+				if (m_frontierRegionsList.Contains(keep.Region) == false) 
+					continue;
+
+				byte newLevel = keep.BaseLevel;
+
+				if (ServerProperties.Properties.BALANCE_TOWERS_SEPARATE)
 				{
-					if (m_frontierRegionsList.Contains(keep.Region) == false) 
-						continue;
-
-					byte newLevel = keep.BaseLevel;
-
-					if (ServerProperties.Properties.BALANCE_TOWERS_SEPARATE)
-					{
-						if (keep is GameKeepTower)
-							newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmTowerBonusLevel((eRealm)keep.Realm));
-						else
-							newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmKeepBonusLevel((eRealm)keep.Realm));
-					}
+					if (keep is GameKeepTower)
+						newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmTowerBonusLevel((eRealm)keep.Realm));
 					else
-					{
-						newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmKeepBonusLevel((eRealm)keep.Realm) + GameServer.KeepManager.GetRealmTowerBonusLevel((eRealm)keep.Realm));
-					}
+						newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmKeepBonusLevel((eRealm)keep.Realm));
+				}
+				else
+				{
+					newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmKeepBonusLevel((eRealm)keep.Realm) + GameServer.KeepManager.GetRealmTowerBonusLevel((eRealm)keep.Realm));
+				}
 
-					if (keep.BaseLevel != newLevel)
-					{
-						keep.BaseLevel = newLevel;
+				if (keep.BaseLevel != newLevel)
+				{
+					keep.BaseLevel = newLevel;
 
-						foreach (GameKeepGuard guard in keep.Guards.Values)
-						{
-							guard.SetLevel();
-						}
+					foreach (GameKeepGuard guard in keep.Guards.Values)
+					{
+						guard.SetLevel();
 					}
 				}
 			}
@@ -854,18 +830,15 @@ namespace DOL.GS.Keeps
 		{
 			return GetKeepsShortName(shortname);
 		}
+
 		public virtual AbstractGameKeep GetKeepsShortName(string shortname)
 		{
-
-			lock (_lock)
+			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				foreach (AbstractGameKeep keep in m_keepList.Values)
-				{
-					if (keep.DBKeep == null || keep.Name.ToLower() != shortname.ToLower())
-						continue;
+				if (keep.DBKeep == null || keep.Name.ToLower() != shortname.ToLower())
+					continue;
 
-					return keep;
-				}
+				return keep;
 			}
 
 			return null;
