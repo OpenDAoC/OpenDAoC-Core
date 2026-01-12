@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
             return 0;
         }
         #region Spawn primals and other mobs
-        private int SpawnPrimals(ECSGameTimer timer)//real timer to cast spell and reset check
+        public int SpawnPrimals(ECSGameTimer timer)//real timer to cast spell and reset check
         {
             SpawnAir();
             SpawnWater();
@@ -130,7 +130,7 @@ namespace DOL.AI.Brain
             SpawnMagicalEarthmender();
             SpawnNaturalEarthmender();
             SpawnShadowyEarthmender();
-            SpawnVortex();
+            //SpawnVortex();
             return 0;
         }
         public void SpawnAir()
@@ -1211,8 +1211,6 @@ namespace DOL.AI.Brain
                     {
                         if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
                             AggroList.TryAdd(player, new());
-                        else if (RandomTarget != null)
-                            AggroList.TryRemove(RandomTarget, out _);
                     }
                 }
             }
@@ -1262,13 +1260,19 @@ namespace DOL.AI.Brain
 
         private int CastDD(ECSGameTimer timer)
         {
-            if (RandomTarget != null)
+            GameLiving targetToUse = RandomTarget; 
+            
+            if (targetToUse != null)
             {
                 GameObject oldTarget = Body.TargetObject;
-                Body.TargetObject = RandomTarget;
+                Body.TargetObject = targetToUse;
                 Body.CastSpell(AirDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                AggroList.TryRemove(RandomTarget, out _);
-                RandomTarget = null;
+                
+                if (targetToUse != null) 
+                {
+                    AggroList.TryRemove(targetToUse, out _);
+                }
+                RandomTarget = null; 
                 Body.TargetObject = oldTarget;
             }
 
@@ -1291,6 +1295,7 @@ namespace DOL.AI.Brain
         public static bool path10 = false;
         public static bool path11 = false;
 
+        
         public override void Think()
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
