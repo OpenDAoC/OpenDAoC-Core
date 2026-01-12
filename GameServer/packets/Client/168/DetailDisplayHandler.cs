@@ -332,7 +332,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							if (questID == 0)
 								return; // questID == 0, wrong ID ?
 							
-							if (questID <= DataQuest.DATAQUEST_CLIENTOFFSET)
+							/*if (questID <= DataQuest.DATAQUEST_CLIENTOFFSET)
 							{
 								AbstractQuest q = client.Player.IsDoingQuest(QuestMgr.GetQuestTypeForID(questID));
 
@@ -373,7 +373,34 @@ namespace DOL.GS.PacketHandler.Client.v168
 								{
 									item = rewards[index];
 								}
-							}
+							}*/
+								DQRewardQ dqrq = null;
+								questID = (ushort)(objectId >> 4);
+								
+								foreach (DBDQRewardQ d in GameObject.DQRewardCache)
+								{
+									if (d.ID == questID)
+									{
+										dqrq = new DQRewardQ(d);
+										break;
+									}
+								}
+
+								if (dqrq != null)
+								{
+									List<DbItemTemplate> rewards = null;
+									if (index < 8)
+										rewards = dqrq.FinalRewards;
+									else
+									{
+										rewards = dqrq.OptionalRewards;
+										index -= 8;
+									}
+									if (rewards != null && index >= 0 && index < rewards.Count)
+									{
+										item = rewards[index];
+									}
+								}
 							else // Data quest support, check for RewardQuest type
 							{
 								DataQuest dq = null;

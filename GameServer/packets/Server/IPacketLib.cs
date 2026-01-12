@@ -669,6 +669,8 @@ namespace DOL.GS.PacketHandler
         void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest);
         void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest);
         void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest);
+        void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DQRewardQ quest); // added as patch new Quest type
+		void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DQRewardQ quest); // added as patch new Quest type
         void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage);
         void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage);
         void SendGroupWindowUpdate();

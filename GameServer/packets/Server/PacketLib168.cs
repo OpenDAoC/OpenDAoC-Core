@@ -1428,9 +1428,18 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
+		public virtual void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DQRewardQ quest)
+		{
+		}
+
+		public virtual void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DQRewardQ quest)
+		{
+		}
+
 		public virtual void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
 		{
 		}
+
 
 		protected virtual void SendQuestWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest, bool offer)
 		{

@@ -9991,6 +9991,7 @@ namespace DOL.GS
             var craftingForRealmTask = DOLDB<DbAccountXCrafting>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(AccountName).And(DB.Column("Realm").IsEqualTo(Realm)));
             var scriptedQuestsTask = DOLDB<DbQuest>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
             var dataQuestsTask = LoadDataQuestsAsync();
+            var dataQuestsRewardTask = LoadDataQuestsRewardAsync();
             var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
             var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
             var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
@@ -10003,7 +10004,7 @@ namespace DOL.GS
             HandleInventory(await inventoryTask);
             HandleCharacterSkills();
             HandleCraftingSkills(await craftingForRealmTask);
-            HandleQuests(await scriptedQuestsTask, await dataQuestsTask);
+            HandleQuests(await scriptedQuestsTask, await dataQuestsTask, await dataQuestsRewardTask);
             FactionMgr.LoadAllAggroToFaction(this, await factionRelationsTask);
             HandleTasks(await tasksTask);
             HandleMasterLevels(await masterLevelsTask);
@@ -10029,6 +10030,23 @@ namespace DOL.GS
                 });
 
                 DataQuest[] completedQuests = await Task.WhenAll(innerTasks);
+                return completedQuests.Where(q => q != null).ToArray();
+            }
+            async Task<DQRewardQ[]> LoadDataQuestsRewardAsync()
+            {
+                var characterDQRewardQuests = await DOLDB<CharacterXDQRewardQ>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+
+                var innerTasks = characterDQRewardQuests.Select(async characterQuest =>
+                {
+                    var dbDQRewardQuest = await DOLDB<DBDQRewardQ>.FindObjectByKeyAsync(characterQuest.DataQuestID);
+
+                    if (dbDQRewardQuest == null)
+                        return null;
+
+                    return new DQRewardQ(this, dbDQRewardQuest, characterQuest);
+                });
+
+                DQRewardQ[] completedQuests = await Task.WhenAll(innerTasks);
                 return completedQuests.Where(q => q != null).ToArray();
             }
 
@@ -10387,7 +10405,7 @@ namespace DOL.GS
                 }
             }
 
-            void HandleQuests(IList<DbQuest> scriptedQuests, DataQuest[] dataQuests)
+            void HandleQuests(IList<DbQuest> scriptedQuests, DataQuest[] dataQuests, DQRewardQ[] dataQuestsReward)
             {
                 AvailableQuestIndexes.Clear();
                 QuestList.Clear();
@@ -10432,6 +10450,14 @@ namespace DOL.GS
                         QuestList.TryAdd(dataQuest, (byte) activeQuestCount++);
                     else if (dataQuest.Count > 0)
                         _questListFinished.Add(dataQuest);
+                }
+
+                foreach (DQRewardQ dqrewardq in dataQuestsReward)
+                {
+                    if (dqrewardq.Step > 0)
+                        QuestList.TryAdd(dqrewardq, (byte) activeQuestCount++);
+                    else if (dqrewardq.Count > 0)
+                        _questListFinished.Add(dqrewardq);
                 }
             }
 

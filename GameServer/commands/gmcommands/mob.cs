@@ -62,6 +62,7 @@ namespace DOL.GS.Commands
 	     "'/mob respawn <duration>' set the mob's respawn time (in ms).",
 	     "'/mob questinfo' show mob's quest info.",
 	     "'/mob refreshquests' Update this mobs list of data quests.",
+		 "'/mob refreshquestsreward' Update this mobs list of reward quests.",
 	     "'/mob equipinfo' show mob's inventory info.",
 	     "'/mob equiptemplate load <EquipmentTemplateID>' to load the inventory template from the database, it is open for modification after.",
 	     "'/mob equiptemplate create' to create an empty inventory template.",
@@ -201,6 +202,7 @@ namespace DOL.GS.Commands
 						case "respawn": respawn(client, targetMob, args); break;
 						case "questinfo": questinfo(client, targetMob, args); break;
 						case "refreshquests": refreshquests(client, targetMob, args); break;
+						case "refreshquestsreward": refreshquestsreward(client, targetMob, args); break;
 						case "equipinfo": equipinfo(client, targetMob, args); break;
 						case "equiptemplate": equiptemplate(client, targetMob, args); break;
 						case "visibleslot": visibleslot(client, targetMob, args); break;
@@ -1519,6 +1521,25 @@ namespace DOL.GS.Commands
 					player.Out.SendNPCsQuestEffect(targetMob, targetMob.GetQuestIndicator(player));
 				}
 				client.Out.SendMessage(targetMob.DataQuestList.Count + " Data Quests loaded for this mob.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			catch (Exception ex)
+			{
+				Log.Error("Error refreshing quests.", ex);
+				throw;
+			}
+		}
+
+		private void refreshquestsreward(GameClient client, GameNPC targetMob, string[] args)
+		{
+			try
+			{
+				GameObject.FillDQRewardQCache();
+				targetMob.LoadDQRewardQs(client.Player);
+				foreach (GamePlayer player in targetMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					player.Out.SendNPCsQuestEffect(targetMob, targetMob.GetQuestIndicator(player));
+				}
+				client.Out.SendMessage(targetMob.DQRewardQList.Count + " Data Quests loaded for this mob.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			catch (Exception ex)
 			{

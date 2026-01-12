@@ -659,6 +659,7 @@ namespace DOL.GS
 
 			if (!_isDataQuestsLoaded)
 				LoadDataQuests();
+				LoadDQRewardQs();
 
 			return true;
 		}
@@ -766,6 +767,10 @@ namespace DOL.GS
 		/// </summary>
 		protected static Dictionary<ushort, List<DbDataQuest>> _dataQuestCache = null;
 
+		public static IList<DBDQRewardQ> DQRewardCache
+        {
+            get { return m_dqRewardQCache.SelectMany(k => k).ToList(); }
+        }
 		/// <summary>
 		/// List of DataQuests available for this object
 		/// </summary>
@@ -850,6 +855,110 @@ namespace DOL.GS
 			if (_dataQuests.Contains(quest))
 				_dataQuests.Remove(quest);
 		}
+
+
+		// some logic for new DQ reward quest system, needs refactoring
+        /// <summary>
+        /// A cache of every DBDataQuest object
+        /// </summary>
+        protected static ILookup<ushort, DBDQRewardQ> m_dqRewardQCache = null;
+
+		/// <summary>
+        /// List of DataQuests available for this object
+        /// </summary>
+        protected List<DQRewardQ> m_dqRewardQs = new List<DQRewardQ>();
+
+        /// <summary>
+        /// Flag to prevent loading quests on every respawn
+        /// </summary>
+        protected bool m_isDQRewardQsLoaded = false;
+
+        
+        public static void FillDQRewardQCache()
+        {
+            if (m_dqRewardQCache != null)
+            {
+                m_dqRewardQCache = null;
+            }
+
+            m_dqRewardQCache = GameServer.Database.SelectAllObjects<DBDQRewardQ>().ToLookup(k => k.StartRegionID);
+        }
+
+        /// <summary>
+        /// Load any data driven quests for this object
+        /// </summary>
+        public void LoadDQRewardQs(GamePlayer player = null)
+        {
+            if (m_dqRewardQCache == null)
+            {
+                FillDQRewardQCache();
+            }
+
+            m_dqRewardQs.Clear();
+
+            try
+            {
+                foreach (DBDQRewardQ quest in m_dqRewardQCache[CurrentRegionID])
+                {
+                    if (quest.StartNPC == Name)
+                    {
+                        DQRewardQ dq = new DQRewardQ(quest, this);
+                        AddDQRewardq(dq);
+
+                        // if a player forced the reload report any errors
+                        if (player != null && dq.LastErrorText != "")
+                        {
+                            ChatUtil.SendErrorMessage(player, dq.LastErrorText);
+                        }
+                    }
+                }
+            }
+            catch
+			{
+				Console.WriteLine("Error loading DQRewardQ for region " + CurrentRegionID);
+			}
+
+            try
+            {
+                foreach (DBDQRewardQ quest in m_dqRewardQCache[0])
+                {
+                    if (quest.StartNPC == Name)
+                    {
+                        DQRewardQ dq = new DQRewardQ(quest, this);
+                        AddDQRewardq(dq);
+
+                        // if a player forced the reload report any errors
+                        if (player != null && dq.LastErrorText != "")
+                        {
+                            ChatUtil.SendErrorMessage(player, dq.LastErrorText);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        public void AddDQRewardq(DQRewardQ quest)
+        {
+            if (!m_dqRewardQs.Contains(quest))
+                m_dqRewardQs.Add(quest);
+        }
+
+        public void RemoveDQRewardQ(DQRewardQ quest)
+        {
+            if (m_dqRewardQs.Contains(quest))
+                m_dqRewardQs.Remove(quest);
+        }
+
+        /// <summary>
+        /// All the data driven quests for this object
+        /// </summary>
+        public List<DQRewardQ> DQRewardQList
+        {
+            get { return m_dqRewardQs; }
+        }
 
 		/// <summary>
 		/// All the data driven quests for this object
@@ -1192,6 +1301,7 @@ namespace DOL.GS
 		static GameObject()
 		{
 			FillDataQuestCache();
+			FillDQRewardQCache();
 		}
 
 		/// <summary>
