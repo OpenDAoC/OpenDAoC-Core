@@ -187,7 +187,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 
 							// Check Keep & Tower status closest to the player
-							AbstractGameKeep source_keep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, 10000);
+							AbstractGameKeep source_keep = GameServer.KeepManager.GetClosestKeepToSpot(client.Player.CurrentRegionID, client.Player, 10000);
 
 							if (source_keep != null && source_keep is GameKeep sourceGameKeep)
 							{

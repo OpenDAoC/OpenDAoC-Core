@@ -1248,12 +1248,8 @@ namespace DOL.AI.Brain
                     CastMez(randomTarget);
             }
 
-            return 0;
-        }
-
-        private void PrepareToDD()
-        {
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 1200);
+            _castDdTimer.Target = randomTarget;
+            _castDdTimer.Start();
         }
 
         public static bool path1 = false;
@@ -1268,7 +1264,6 @@ namespace DOL.AI.Brain
         public static bool path10 = false;
         public static bool path11 = false;
 
-        
         public override void Think()
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))

@@ -264,10 +264,19 @@ namespace DOL.GS.Keeps
 		/// get keep by ID
 		/// </summary>
 		/// <param name="id">id of keep</param>
-		/// <returns> Game keep object with keepid = id</returns>
+		/// <returns> Game keep object with keepid = id or null if not found</returns>
 		public virtual AbstractGameKeep GetKeepByID(int id)
 		{
-			return m_keepList[id] as AbstractGameKeep;
+			AbstractGameKeep keep;
+			
+			// Verwenden Sie TryGetValue anstelle des Indexers [id]
+			if (m_keepList.TryGetValue(id, out keep))
+			{
+				return keep;
+			}
+			
+			// Wenn der Schlüssel nicht gefunden wird, geben Sie null zurück (keine Exception)
+			return null; 
 		}
 
 		/// <summary>
