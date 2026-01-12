@@ -243,7 +243,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();					
 					m_OonaDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OonaDD);
 				}
 				return m_OonaDD;
 			}
@@ -272,7 +271,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.Bolt.ToString();
 					m_OonaBolt = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OonaBolt);
 				}
 				return m_OonaBolt;
 			}

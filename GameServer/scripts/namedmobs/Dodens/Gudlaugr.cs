@@ -185,7 +185,6 @@ namespace DOL.GS.Scripts
 						spell.Message1 = "You begin to move more slowly!";
 						spell.Message2 = "{0} begins moving more slowly!";
 						m_Snare = new Spell(spell, 60);
-						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Snare);
 					}
 					return m_Snare;
 				}
@@ -226,7 +225,6 @@ namespace DOL.GS.Scripts
 						spell.Message1 = "You are bleeding! ";
 						spell.Message2 = "{0} is bleeding! ";
 						m_Bleed = new Spell(spell, 60);
-						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bleed);
 					}
 					return m_Bleed;
 				}

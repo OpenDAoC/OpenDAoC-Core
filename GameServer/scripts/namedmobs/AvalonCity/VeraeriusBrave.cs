@@ -155,7 +155,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					m_VeraeriusHeal = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VeraeriusHeal);
 				}
 				return m_VeraeriusHeal;
 			}

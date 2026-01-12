@@ -97,7 +97,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_SpriggitDD = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpriggitDD);
 				}
 				return m_SpriggitDD;
 			}
@@ -127,7 +126,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					spell.Uninterruptible = true;
 					m_SpriggitRoot = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpriggitRoot);
 				}
 				return m_SpriggitRoot;
 			}

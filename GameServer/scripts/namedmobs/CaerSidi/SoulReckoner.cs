@@ -311,7 +311,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Body; //Body DMG Type
                     m_Reckoner_Lifetap = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Reckoner_Lifetap);
                 }
                 return m_Reckoner_Lifetap;
             }

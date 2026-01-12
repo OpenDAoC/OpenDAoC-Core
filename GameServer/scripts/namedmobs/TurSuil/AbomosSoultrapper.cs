@@ -133,7 +133,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_LifedrainProc = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LifedrainProc);
 				}
 				return m_LifedrainProc;
 			}

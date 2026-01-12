@@ -2762,8 +2762,28 @@ namespace DOL.GS
 		/// <summary>
 		/// Tests if this MOB should give XP and loot based on the XPGainers
 		/// </summary>
-		/// <returns>true if it should deal XP and give loot</returns>
-		public virtual bool IsWorthReward => Brain is not IControlledBrain && CurrentRegion.Time - CHARMED_NOEXP_TIMEOUT >= TempProperties.GetProperty<long>(CHARMED_TICK_PROP);
+		public virtual RewardEligibility RewardStatus
+		{
+			get
+			{
+				if (Brain is IControlledBrain)
+					return RewardEligibility.DeniedInvalid;
+
+				long charmedTick = TempProperties.GetProperty<long>(CHARMED_TICK_PROP);
+
+				if (charmedTick != 0 && CurrentRegion.Time < charmedTick + CHARMED_NOEXP_TIMEOUT)
+					return RewardEligibility.DeniedRecentlyCharmed;
+
+				return RewardEligibility.Eligible;
+			}
+		}
+
+		public enum RewardEligibility
+		{
+			Eligible,
+			DeniedInvalid,
+			DeniedRecentlyCharmed
+		}
 
 		protected void ControlledNPC_Release()
 		{

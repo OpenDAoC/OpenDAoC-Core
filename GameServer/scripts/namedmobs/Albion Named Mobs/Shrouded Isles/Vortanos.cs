@@ -113,7 +113,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_VortanosSCDebuff = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VortanosSCDebuff);
 				}
 				return m_VortanosSCDebuff;
 			}
@@ -143,7 +142,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_VortanosDebuffDQ = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VortanosDebuffDQ);
 				}
 				return m_VortanosDebuffDQ;
 			}
@@ -348,7 +346,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Vortanos_DD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Vortanos_DD);
 				}
 				return m_Vortanos_DD;
 			}
@@ -386,7 +383,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Vortanos_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Vortanos_Dot);
 				}
 				return m_Vortanos_Dot;
 			}

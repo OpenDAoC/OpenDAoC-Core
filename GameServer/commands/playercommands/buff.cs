@@ -217,7 +217,7 @@ namespace DOL.GS.Commands
                 }
 
                 // The radius should be large enough for players to be able to cast from outside.
-                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, 2500);
+                AbstractGameKeep keep = GameServer.KeepManager.GetClosestKeepToSpot(client.Player.CurrentRegionID, client.Player, 2500);
 
                 if (keep != null && keep.IsPortalKeep)
                     return true;

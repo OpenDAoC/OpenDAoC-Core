@@ -178,7 +178,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CliodnaDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CliodnaDD);
 				}
 				return m_CliodnaDD;
 			}
@@ -208,7 +207,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Cliodna_stun = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Cliodna_stun);
 				}
 				return m_Cliodna_stun;
 			}

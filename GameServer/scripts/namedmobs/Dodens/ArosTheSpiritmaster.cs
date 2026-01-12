@@ -73,7 +73,6 @@ namespace DOL.GS.Scripts
                     spell.Message1 = "You feel more vulnerable to spirit magic!";
                     spell.Message2 = "{0} seems vulnerable to spirit magic!";
                     m_Debuff = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Debuff);
                 }
                 return m_Debuff;
             }
@@ -106,7 +105,6 @@ namespace DOL.GS.Scripts
                     spell.MoveCast = false;
                     spell.Type = eSpellType.SpiritResistDebuff.ToString();
                     m_Summon = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Summon);
                 }
                 return m_Summon;
             }
@@ -138,7 +136,6 @@ namespace DOL.GS.Scripts
                     spell.MoveCast = false;
                     spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                     m_BombSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BombSpell);
                 }
                 return m_BombSpell;
             }
@@ -170,7 +167,6 @@ namespace DOL.GS.Scripts
                     spell.MoveCast = false;
                     spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                     m_BigBombSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BigBombSpell);
                 }
                 return m_BigBombSpell;
             }

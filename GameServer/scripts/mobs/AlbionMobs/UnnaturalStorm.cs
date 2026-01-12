@@ -126,7 +126,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_StormDD = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_StormDD);
 				}
 				return m_StormDD;
 			}

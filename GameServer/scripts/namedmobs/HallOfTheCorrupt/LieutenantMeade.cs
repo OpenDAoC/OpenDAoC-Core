@@ -283,7 +283,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit;
                     m_Meade_Pulse = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Meade_Pulse);
                 }
                 return m_Meade_Pulse;
             }

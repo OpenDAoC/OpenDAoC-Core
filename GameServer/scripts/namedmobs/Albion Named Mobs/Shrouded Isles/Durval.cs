@@ -169,7 +169,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Boss_Mezz = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Boss_Mezz);
 				}
 				return m_Boss_Mezz;
 			}
@@ -202,7 +201,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_DurvalDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DurvalDisease);
 				}
 				return m_DurvalDisease;
 			}
@@ -230,7 +228,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Bubble = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bubble);
 				}
 				return m_Bubble;
 			}
@@ -259,7 +256,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Durval_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Durval_DD);
 				}
 				return m_Durval_DD;
 			}

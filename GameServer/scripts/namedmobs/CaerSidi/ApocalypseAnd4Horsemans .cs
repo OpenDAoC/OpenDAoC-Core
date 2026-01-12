@@ -1795,7 +1795,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int)eDamageType.Body; //Energy DMG Type
                     m_black_plague = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_black_plague);
                 }
                 return m_black_plague;
             }
@@ -2440,7 +2439,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Heat;
                     m_Apoc_Gtaoe = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Apoc_Gtaoe);
                 }
                 return m_Apoc_Gtaoe;
             }
@@ -2727,7 +2725,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Heat;
                     m_Apoc_Rain_of_Fire = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Apoc_Rain_of_Fire);
                 }
                 return m_Apoc_Rain_of_Fire;
             }

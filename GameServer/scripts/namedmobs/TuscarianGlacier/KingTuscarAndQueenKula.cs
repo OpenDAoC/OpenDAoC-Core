@@ -233,7 +233,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy;
                     m_Cold_DD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Cold_DD);
                 }
                 return m_Cold_DD;
             }
@@ -475,7 +474,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
                 return m_mezSpell;
             }
@@ -506,7 +504,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
                     m_RootSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RootSpell);
                 }
                 return m_RootSpell;
             }
@@ -737,7 +734,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy;
                     m_Hammers_aoe = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hammers_aoe);
                 }
                 return m_Hammers_aoe;
             }
@@ -767,7 +763,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy;
                     m_Thunder_aoe = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Thunder_aoe);
                 }
                 return m_Thunder_aoe;
             }
@@ -797,7 +792,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy;
                     m_Hammers_aoe2 = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hammers_aoe2);
                 }
                 return m_Hammers_aoe2;
             }
@@ -827,7 +821,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy;
                     m_Thunder_aoe2 = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Thunder_aoe2);
                 }
                 return m_Thunder_aoe2;
             }
@@ -861,7 +854,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Body;
                     m_Bleed = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bleed);
                 }
                 return m_Bleed;
             }

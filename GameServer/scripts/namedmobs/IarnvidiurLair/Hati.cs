@@ -98,7 +98,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Cold;
 					m_HatiDD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HatiDD);
 				}
 				return m_HatiDD;
 			}
@@ -174,7 +173,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Hati_Mezz = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hati_Mezz);
 				}
 				return m_Hati_Mezz;
 			}

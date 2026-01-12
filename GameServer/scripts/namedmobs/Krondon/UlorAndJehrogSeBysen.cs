@@ -186,7 +186,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					m_Ulor_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ulor_DD);
 				}
 				return m_Ulor_DD;
 			}
@@ -219,7 +218,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.BodyResistDebuff.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					m_Ulor_DebuffBody = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ulor_DebuffBody);
 				}
 				return m_Ulor_DebuffBody;
 			}
@@ -254,7 +252,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Ulor_aoedot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ulor_aoedot);
 				}
 				return m_Ulor_aoedot;
 			}

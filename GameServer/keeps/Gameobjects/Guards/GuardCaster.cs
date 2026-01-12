@@ -19,15 +19,12 @@ namespace DOL.GS.Keeps
 
             spell = new Spell(CreateAlbionSpell(), 0);
             _spells[eRealm.Albion] = spell;
-            AddScriptedSpell(spell);
 
             spell = new Spell(CreateMidgardSpell(), 0);
             _spells[eRealm.Midgard] = spell;
-            AddScriptedSpell(spell);
 
             spell = new Spell(CreateHiberniaSpell(), 0);
             _spells[eRealm.Hibernia] = spell;
-            AddScriptedSpell(spell);
 
             static DbSpell CreateAlbionSpell()
             {
@@ -78,11 +75,6 @@ namespace DOL.GS.Keeps
                     Type = eSpellType.DirectDamage.ToString(),
                     DamageType = (int) eDamageType.Heat
                 };
-            }
-
-            static void AddScriptedSpell(Spell spell)
-            {
-                SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, spell);
             }
         }
 

@@ -621,7 +621,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Energy; //Energy DMG Type
                     m_black_plague = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_black_plague);
                 }
 
                 return m_black_plague;
@@ -653,7 +652,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Energy; //Energy DMG Type
                     m_damage_add = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_damage_add);
                 }
 
                 return m_damage_add;
@@ -685,7 +683,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Heat; //heat DMG Type
                     m_damage_shield = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_damage_shield);
                 }
 
                 return m_damage_shield;

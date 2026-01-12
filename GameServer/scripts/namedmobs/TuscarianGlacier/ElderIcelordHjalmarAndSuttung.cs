@@ -118,7 +118,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
                     m_SuttungDisease = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SuttungDisease);
                 }
                 return m_SuttungDisease;
             }
@@ -268,7 +267,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
                     m_IcelordHjalmar_aoe = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IcelordHjalmar_aoe);
                 }
                 return m_IcelordHjalmar_aoe;
             }
@@ -621,7 +619,6 @@ namespace DOL.GS
                     spell.Type = eSpellType.Heal.ToString();
                     spell.Uninterruptible = true;
                     m_MorkimmaHeal = new Spell(spell, 50);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MorkimmaHeal);
                 }
                 return m_MorkimmaHeal;
             }

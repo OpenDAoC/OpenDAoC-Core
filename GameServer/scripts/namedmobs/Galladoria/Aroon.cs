@@ -581,7 +581,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Matter;
                     m_AroonRoot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AroonRoot);
                 }
 
                 return m_AroonRoot;

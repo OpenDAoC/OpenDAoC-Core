@@ -112,7 +112,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD);
 				}
 				return m_Tabor_DD;
 			}
@@ -141,7 +140,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD2 = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD2);
 				}
 				return m_Tabor_DD2;
 			}
@@ -178,7 +176,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_Dot = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_Dot);
 				}
 				return m_Tabor_Dot;
 			}
@@ -215,7 +212,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_Tabor_Dot2 = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_Dot2);
 				}
 				return m_Tabor_Dot2;
 			}
@@ -320,7 +316,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD);
 				}
 				return m_Tabor_DD;
 			}
@@ -349,7 +344,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_DD2 = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_DD2);
 				}
 				return m_Tabor_DD2;
 			}
@@ -386,7 +380,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Tabor_Dot = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_Dot);
 				}
 				return m_Tabor_Dot;
 			}
@@ -423,7 +416,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_Tabor_Dot2 = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Tabor_Dot2);
 				}
 				return m_Tabor_Dot2;
 			}

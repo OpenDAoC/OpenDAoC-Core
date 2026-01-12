@@ -395,7 +395,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                     m_BossmezSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BossmezSpell);
                 }
                 return m_BossmezSpell;
             }

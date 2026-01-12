@@ -141,7 +141,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             static void CheckNearbyKeepAndMoveIfUnsafe(GamePlayer player)
             {
-                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
+                AbstractGameKeep keep = GameServer.KeepManager.GetClosestKeepToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 
                 if (keep != null && GameServer.KeepManager.IsEnemy(keep, player))
                 {

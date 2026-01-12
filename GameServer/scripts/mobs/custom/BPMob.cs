@@ -48,7 +48,7 @@ public class BPMob : GameNPC
 
         int playersonline = ClientService.Instance.GetNonGmPlayers().Count;
 
-        if (player != null && IsWorthReward)
+        if (player != null && RewardStatus is RewardEligibility.Eligible)
         {
             if (player.Group != null)
             {

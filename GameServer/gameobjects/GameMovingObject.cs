@@ -37,7 +37,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override bool IsWorthReward => false;
+		public override RewardEligibility RewardStatus => RewardEligibility.DeniedInvalid;
 
 		/// <summary>
 		/// This methode is override to remove XP system

@@ -293,7 +293,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
                     m_AOE_Poison = new Spell(spell, 50);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AOE_Poison);
                 }
                 return m_AOE_Poison;
             }
@@ -324,7 +323,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
                     m_DamageShield = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageShield);
                 }
                 return m_DamageShield;
             }
@@ -352,7 +350,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_OEMEffect = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OEMEffect);
                 }
                 return m_OEMEffect;
             }
@@ -518,7 +515,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Energy;
                     m_FeederSCDebuff = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederSCDebuff);
                 }
                 return m_FeederSCDebuff;
             }
@@ -549,7 +545,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Energy;
                     m_FeederHasteDebuff = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederHasteDebuff);
                 }
                 return m_FeederHasteDebuff;
             }
@@ -580,7 +575,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Body;
                     m_FeederRoot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederRoot);
                 }
                 return m_FeederRoot;
             }

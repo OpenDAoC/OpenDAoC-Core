@@ -1025,6 +1025,14 @@ namespace DOL.GS.ServerRules
 
         public virtual void OnNpcKilled(GameNPC killedNpc, GameObject killer)
         {
+            GameNPC.RewardEligibility rewardEligibility = killedNpc.RewardStatus;
+
+            if (rewardEligibility is not GameNPC.RewardEligibility.Eligible)
+            {
+                SendNotWorthRewardMessage(killedNpc, rewardEligibility);
+                return;
+            }
+
             if (!ProcessXpGainers(killedNpc,
                 out double totalDamage,
                 out Dictionary<GamePlayer, EntityCountTotalDamagePair> playerCountAndDamage,
@@ -1034,7 +1042,7 @@ namespace DOL.GS.ServerRules
                 out Dictionary<BattleGroup, EntityCountTotalDamagePair> battlegroupCountAndDamage,
                 out ItemOwnerTotalDamagePair mostDamagingBattlegroup))
             {
-                SendNotWorthRewardMessage(killedNpc);
+                SendNotWorthRewardMessage(killedNpc, GameNPC.RewardEligibility.DeniedInvalid);
                 return;
             }
 
@@ -1078,14 +1086,14 @@ namespace DOL.GS.ServerRules
                 DropLoot(killedNpc, killer, itemOwners);
             }
 
-            static void SendNotWorthRewardMessage(GameNPC killedNpc)
+            static void SendNotWorthRewardMessage(GameNPC killedNpc, GameNPC.RewardEligibility rewardEligibility)
             {
                 string message;
 
-                if (killedNpc.CurrentRegion?.Time - GameNPC.CHARMED_NOEXP_TIMEOUT >= killedNpc.TempProperties.GetProperty<long>(GameNPC.CHARMED_TICK_PROP))
-                    message = "You gain no experience from this kill!";
-                else
+                if (rewardEligibility is GameNPC.RewardEligibility.DeniedRecentlyCharmed)
                     message = "This monster has been charmed recently and is worth no experience.";
+                else
+                    message = "You gain no experience from this kill!";
 
                 foreach (var pair in killedNpc.XPGainers)
                 {
@@ -1113,9 +1121,6 @@ namespace DOL.GS.ServerRules
 
                 battlegroupCountAndDamage = null;
                 mostDamagingBattlegroup = null;
-
-                if (!killedNpc.IsWorthReward)
-                    return false;
 
                 foreach (var pair in killedNpc.XPGainers)
                 {
@@ -1879,17 +1884,12 @@ namespace DOL.GS.ServerRules
             const int OUTPOST_RADIUS = 16000;
 
             double outpostPercentBonus = 0.0;
+            AbstractGameKeep keep = GameServer.KeepManager.GetClosestKeepToSpot(playerToAward.CurrentRegionID, playerToAward, OUTPOST_RADIUS);
 
-            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsCloseToSpot(playerToAward.CurrentRegionID, playerToAward, OUTPOST_RADIUS))
-            {
-                if (keep.Guild != null && keep.Guild == playerToAward.Guild)
-                {
-                    outpostPercentBonus = GUILD_OUTPOST_PERCENT_BONUS;
-                    break; // Max bonus found, stop searching.
-                }
-                else if (keep.Realm == playerToAward.Realm && GameServer.Instance.Configuration.ServerType is EGameServerType.GST_Normal)
-                    outpostPercentBonus = REALM_OUTPOST_PERCENT_BONUS;
-            }
+            if (keep.Guild != null && keep.Guild == playerToAward.Guild)
+                outpostPercentBonus = GUILD_OUTPOST_PERCENT_BONUS;
+            else if (keep.Realm == playerToAward.Realm && GameServer.Instance.Configuration.ServerType is EGameServerType.GST_Normal)
+                outpostPercentBonus = REALM_OUTPOST_PERCENT_BONUS;
 
             long outpostBonus = (long) (baseXpReward * outpostPercentBonus);
 

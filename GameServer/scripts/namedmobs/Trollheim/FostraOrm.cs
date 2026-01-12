@@ -119,7 +119,6 @@ namespace DOL.AI.Brain
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
 					m_OrmDot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OrmDot);
 				}
 				return m_OrmDot;
 			}
@@ -151,7 +150,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_OrmDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OrmDisease);
 				}
 				return m_OrmDisease;
 			}

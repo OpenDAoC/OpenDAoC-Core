@@ -9,7 +9,7 @@ namespace DOL.GS.Scripts
         {
             GamePlayer player = killer as GamePlayer;
 
-            if (player is GamePlayer && IsWorthReward)
+            if (player is GamePlayer && RewardStatus is RewardEligibility.Eligible)
                 player.GainBountyPoints((this.Level * 5));
 
             base.Die(killer);

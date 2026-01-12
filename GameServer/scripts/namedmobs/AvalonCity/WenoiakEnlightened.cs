@@ -131,7 +131,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Light_dd = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Light_dd);
 				}
 				return m_Light_dd;
 			}
@@ -161,7 +160,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Light_pbaoe = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Light_pbaoe);
 				}
 				return m_Light_pbaoe;
 			}

@@ -518,7 +518,6 @@ namespace DOL.GS.Quests.Midgard
 					spell.DamageType = 0;
 					spell.Message1 = "Dextz looks calmer.";
 					m_HealthRegen = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HealthRegen);
 				}
 				return m_HealthRegen;
 			}
@@ -574,7 +573,6 @@ namespace DOL.GS.Quests.Midgard
 					spell.DamageType = 0;
 					spell.Message1 = "Thor Boyaux will be protected with Enhancement.";
 					m_SpeedSong = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpeedSong);
 				}
 				return m_SpeedSong;
 			}
@@ -630,7 +628,6 @@ namespace DOL.GS.Quests.Midgard
 					spell.DamageType = 0;
 					spell.Message1 = "Exiled Vaettir will swing their weapons with zeal.";
 					m_DamageAdd = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageAdd);
 				}
 				return m_DamageAdd;
 			}
@@ -683,7 +680,6 @@ namespace DOL.GS.Quests.Midgard
 					spell.DamageType = 0;
 					spell.Message1 = "You are protected from energy!";
 					m_Resistance = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Resistance);
 				}
 				return m_Resistance;
 			}

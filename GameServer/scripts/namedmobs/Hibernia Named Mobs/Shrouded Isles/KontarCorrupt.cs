@@ -238,7 +238,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CorruptorBodyguardDD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CorruptorBodyguardDD);
 				}
 				return m_CorruptorBodyguardDD;
 			}
@@ -300,7 +299,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CorruptorBodyguardHeal = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CorruptorBodyguardHeal);
 				}
 				return m_CorruptorBodyguardHeal;
 			}

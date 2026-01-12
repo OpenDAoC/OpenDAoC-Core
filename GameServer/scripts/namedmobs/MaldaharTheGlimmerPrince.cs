@@ -185,7 +185,6 @@ namespace DOL.AI.Brain
                     spell.Type = "Lifedrain";
                     spell.DamageType = (int) eDamageType.Body;
                     m_Lifetap = new Spell(spell, 60);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Lifetap);
                 }
 
                 return m_Lifetap;
@@ -221,7 +220,6 @@ namespace DOL.AI.Brain
                     spell.Type = "DirectDamage";
                     spell.DamageType = (int) eDamageType.Energy;
                     m_PBAoe = new Spell(spell, 60);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_PBAoe);
                 }
 
                 return m_PBAoe;

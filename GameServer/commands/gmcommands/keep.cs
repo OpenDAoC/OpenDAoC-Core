@@ -74,7 +74,7 @@ namespace DOL.GS.Commands
 			}
 
 			AbstractGameKeep myKeep = client.Player.TempProperties.GetProperty<AbstractGameKeep>(TEMP_KEEP_LAST);
-			if (myKeep == null) myKeep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, 10000);
+			if (myKeep == null) myKeep = GameServer.KeepManager.GetClosestKeepToSpot(client.Player.CurrentRegionID, client.Player, 10000);
 			
 			switch (args[1])
 			{

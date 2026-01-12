@@ -418,7 +418,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Body;
                     m_IceweaverPoison = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IceweaverPoison);
                 }
                 return m_IceweaverPoison;
             }

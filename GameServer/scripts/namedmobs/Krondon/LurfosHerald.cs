@@ -117,7 +117,6 @@ namespace DOL.GS
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Weapon_Heat = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Weapon_Heat);
 				}
 				return m_Weapon_Heat;
 			}
@@ -145,7 +144,6 @@ namespace DOL.GS
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Cold;
 					m_Weapon_Cold = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Weapon_Cold);
 				}
 				return m_Weapon_Cold;
 			}

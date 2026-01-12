@@ -420,7 +420,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_Paladin_Heal = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Paladin_Heal);
                 }
 
                 return m_Paladin_Heal;

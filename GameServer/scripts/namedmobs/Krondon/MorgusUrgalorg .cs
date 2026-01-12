@@ -243,7 +243,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Morgus_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Morgus_DD);
 				}
 				return m_Morgus_DD;
 			}
@@ -271,7 +270,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Morgus_Bolt = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Morgus_Bolt);
 				}
 				return m_Morgus_Bolt;
 			}
@@ -299,7 +297,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Morgus_Bolt2 = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Morgus_Bolt2);
 				}
 				return m_Morgus_Bolt2;
 			}

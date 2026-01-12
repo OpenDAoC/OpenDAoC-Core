@@ -103,7 +103,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_DelegaltDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DelegaltDisease);
 				}
 				return m_DelegaltDisease;
 			}

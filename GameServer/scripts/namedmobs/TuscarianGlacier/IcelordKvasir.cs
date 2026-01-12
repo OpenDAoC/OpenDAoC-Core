@@ -259,7 +259,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
                 return m_mezSpell;
             }
@@ -290,7 +289,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
                     m_IssoRoot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IssoRoot);
                 }
                 return m_IssoRoot;
             }

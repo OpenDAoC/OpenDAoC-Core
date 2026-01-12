@@ -233,7 +233,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_BadbDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BadbDD);
 				}
 				return m_BadbDD;
 			}

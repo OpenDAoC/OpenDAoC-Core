@@ -89,7 +89,6 @@ namespace DOL.GS
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_FlameDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FlameDD);
 				}
 				return m_FlameDD;
 			}

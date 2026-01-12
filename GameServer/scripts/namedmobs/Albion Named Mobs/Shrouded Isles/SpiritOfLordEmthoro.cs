@@ -226,7 +226,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_LifedrianPulse = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LifedrianPulse);
 				}
 				return m_LifedrianPulse;
 			}

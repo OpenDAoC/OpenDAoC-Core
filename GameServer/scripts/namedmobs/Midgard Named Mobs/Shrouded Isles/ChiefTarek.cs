@@ -119,7 +119,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					m_ChiefTarekHeal = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ChiefTarekHeal);
 				}
 				return m_ChiefTarekHeal;
 			}

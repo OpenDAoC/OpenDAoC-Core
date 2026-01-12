@@ -168,7 +168,6 @@ namespace DOL.AI.Brain
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
 					m_RotodddjurDot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RotodddjurDot);
 				}
 				return m_RotodddjurDot;
 			}

@@ -56,7 +56,6 @@ namespace DOL.GS
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_DoobenDD = new Spell(spell, 10);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DoobenDD);
 				}
 				return m_DoobenDD;
 			}

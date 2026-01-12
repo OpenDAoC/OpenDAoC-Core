@@ -166,7 +166,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_KelicDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KelicDD);
 				}
 				return m_KelicDD;
 			}
@@ -200,7 +199,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_KelicDisease = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KelicDisease);
 				}
 				return m_KelicDisease;
 			}
@@ -230,7 +228,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					spell.Uninterruptible = true;
 					m_KelicRoot = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KelicRoot);
 				}
 				return m_KelicRoot;
 			}

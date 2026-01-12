@@ -135,7 +135,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_HeatProc = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatProc);
 				}
 				return m_HeatProc;
 			}

@@ -166,7 +166,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OGDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGDD);
                 }
                 return m_OGDD;
             }
@@ -383,7 +382,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Heat;
                     m_OGDS = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGDS);
                 }
                 return m_OGDS;
             }
@@ -412,7 +410,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Matter;
                     m_OGRoot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGRoot);
                 }
                 return m_OGRoot;
             }
@@ -443,7 +440,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OGAoeSnare = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGAoeSnare);
                 }
                 return m_OGAoeSnare;
             }
@@ -470,7 +466,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_OGBubbleEffect = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OGBubbleEffect);
                 }
                 return m_OGBubbleEffect;
             }
@@ -638,7 +633,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Body;
                     m_addstun = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_addstun);
                 }
                 return m_addstun;
             }

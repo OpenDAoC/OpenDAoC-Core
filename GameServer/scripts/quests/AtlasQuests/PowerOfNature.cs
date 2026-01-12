@@ -590,7 +590,6 @@ namespace DOL.GS.Quests.Hibernia
                     spell.DamageType = 0;
                     spell.Message1 = "The power of nature surrounds you.";
                     m_effect = new Spell(spell, 1);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_effect);
                 }
                 return m_effect;
             }

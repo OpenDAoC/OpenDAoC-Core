@@ -254,7 +254,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
                     m_BlackLady_DD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BlackLady_DD);
                 }
 
                 return m_BlackLady_DD;

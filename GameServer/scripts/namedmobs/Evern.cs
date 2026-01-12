@@ -394,7 +394,6 @@ namespace DOL.AI.Brain
                     spell.Type = "Heal";
                     m_Fairy_Heal = new Spell(spell, 70);
                     spell.Uninterruptible = true;
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Fairy_Heal);
                 }
                 return m_Fairy_Heal;
             }

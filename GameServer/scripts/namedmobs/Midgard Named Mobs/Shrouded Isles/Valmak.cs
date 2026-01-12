@@ -96,7 +96,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Valmak_Mezz = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Valmak_Mezz);
 				}
 				return m_Valmak_Mezz;
 			}

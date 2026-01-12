@@ -68,7 +68,6 @@ namespace DOL.GS {
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_SINeckBossDD = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SINeckBossDD);
 				}
 				return m_SINeckBossDD;
 			}

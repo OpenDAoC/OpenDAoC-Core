@@ -118,7 +118,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
                     m_TorstDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstDD);
                 }
                 return m_TorstDD;
             }
@@ -393,7 +392,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Cold;
                     m_TorstRoot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TorstRoot);
                 }
                 return m_TorstRoot;
             }
@@ -855,7 +853,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
                     m_ColdGroundDD = new Spell(spell, 60);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ColdGroundDD);
                 }
                 return m_ColdGroundDD;
             }

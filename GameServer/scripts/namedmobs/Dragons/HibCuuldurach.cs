@@ -880,7 +880,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Dragon_DD2 = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_DD2);
 				}
 				return m_Dragon_DD2;
 			}
@@ -909,7 +908,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Dragon_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_DD);
 				}
 				return m_Dragon_DD;
 			}
@@ -938,7 +936,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Dragon_PBAOE = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_PBAOE);
 				}
 				return m_Dragon_PBAOE;
 			}
@@ -967,7 +964,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_Dragon_Stun = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_Stun);
 				}
 				return m_Dragon_Stun;
 			}
@@ -998,7 +994,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Dragon_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Dragon_Debuff);
 				}
 				return m_Dragon_Debuff;
 			}

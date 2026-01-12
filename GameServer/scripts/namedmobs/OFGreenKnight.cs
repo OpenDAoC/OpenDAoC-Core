@@ -253,7 +253,6 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.EffectGroup = 0;
                     m_HeatDDSpell = new Spell(spell, 50);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatDDSpell);
                 }
                 return m_HeatDDSpell;
             }
@@ -643,7 +642,6 @@ namespace DOL.AI.Brain
                     m_GreenKnightHeal = new Spell(spell, 70);
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GreenKnightHeal);
                 }
                 return m_GreenKnightHeal;
             }

@@ -253,7 +253,6 @@ namespace DOL.GS
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Matter;
 					m_KrevoAddBomb = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KrevoAddBomb);
 				}
 				return m_KrevoAddBomb;
 			}

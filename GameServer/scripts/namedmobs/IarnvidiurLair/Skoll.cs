@@ -101,7 +101,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_SkollDD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SkollDD);
 				}
 				return m_SkollDD;
 			}
@@ -206,7 +205,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Skoll_Haste_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Skoll_Haste_Debuff);
 				}
 				return m_Skoll_Haste_Debuff;
 			}
@@ -241,7 +239,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Skoll_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Skoll_Dot);
 				}
 				return m_Skoll_Dot;
 			}
