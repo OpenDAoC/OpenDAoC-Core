@@ -270,27 +270,15 @@ namespace DOL.GS.Keeps
 		}
 
 		/// <summary>
-		/// get list of keep close to spot
-		/// </summary>
-		/// <param name="regionid"></param>
-		/// <param name="point3d"></param>
-		/// <param name="radius"></param>
-		/// <returns></returns>
-		public virtual IEnumerable GetKeepsCloseToSpot(ushort regionid, IPoint3D point3d, int radius)
-		{
-			return GetKeepsCloseToSpot(regionid, point3d.X, point3d.Y, point3d.Z, radius);
-		}
-
-		/// <summary>
 		/// get the keep with minimum distance close to spot
 		/// </summary>
 		/// <param name="regionid"></param>
 		/// <param name="point3d"></param>
 		/// <param name="radius"></param>
 		/// <returns></returns>
-		public virtual AbstractGameKeep GetKeepCloseToSpot(ushort regionid, IPoint3D point3d, int radius)
+		public virtual AbstractGameKeep GetClosestKeepToSpot(ushort regionid, IPoint3D point3d, int radius)
 		{
-			return GetKeepCloseToSpot(regionid, point3d.X, point3d.Y, point3d.Z, radius);
+			return GetClosestKeepToSpot(regionid, point3d.X, point3d.Y, point3d.Z, radius);
 		}
 
 		/// <summary>
@@ -388,37 +376,6 @@ namespace DOL.GS.Keeps
 		}
 
 		/// <summary>
-		///  get list of keep close to spot
-		/// </summary>
-		/// <param name="regionid"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="radius"></param>
-		/// <returns></returns>
-		public virtual ICollection<AbstractGameKeep> GetKeepsCloseToSpot(ushort regionid, int x, int y, int z, int radius)
-		{
-			List<AbstractGameKeep> closeKeeps = new List<AbstractGameKeep>();
-			long radiussqrt = radius * radius;
-
-			foreach (AbstractGameKeep keep in m_keepList.Values)
-			{
-				if (keep.DBKeep == null || keep.CurrentRegion.ID != regionid)
-					continue;
-
-				long xdiff = keep.DBKeep.X - x;
-				long ydiff = keep.DBKeep.Y - y;
-				long range = xdiff * xdiff + ydiff * ydiff;
-				if (range < radiussqrt)
-				{
-					closeKeeps.Add(keep);
-				}
-			}
-
-			return closeKeeps;
-		}
-
-		/// <summary>
 		/// get the keep with minimum distance close to spot
 		/// </summary>
 		/// <param name="regionid"></param>
@@ -427,7 +384,7 @@ namespace DOL.GS.Keeps
 		/// <param name="z"></param>
 		/// <param name="radius"></param>
 		/// <returns></returns>
-		public virtual AbstractGameKeep GetKeepCloseToSpot(ushort regionid, int x, int y, int z, int radius)
+		public virtual AbstractGameKeep GetClosestKeepToSpot(ushort regionid, int x, int y, int z, int radius)
 		{
 			AbstractGameKeep closestKeep = null;
 

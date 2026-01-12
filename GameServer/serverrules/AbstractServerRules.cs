@@ -1879,17 +1879,12 @@ namespace DOL.GS.ServerRules
             const int OUTPOST_RADIUS = 16000;
 
             double outpostPercentBonus = 0.0;
+            AbstractGameKeep keep = GameServer.KeepManager.GetClosestKeepToSpot(playerToAward.CurrentRegionID, playerToAward, OUTPOST_RADIUS);
 
-            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsCloseToSpot(playerToAward.CurrentRegionID, playerToAward, OUTPOST_RADIUS))
-            {
-                if (keep.Guild != null && keep.Guild == playerToAward.Guild)
-                {
-                    outpostPercentBonus = GUILD_OUTPOST_PERCENT_BONUS;
-                    break; // Max bonus found, stop searching.
-                }
-                else if (keep.Realm == playerToAward.Realm && GameServer.Instance.Configuration.ServerType is EGameServerType.GST_Normal)
-                    outpostPercentBonus = REALM_OUTPOST_PERCENT_BONUS;
-            }
+            if (keep.Guild != null && keep.Guild == playerToAward.Guild)
+                outpostPercentBonus = GUILD_OUTPOST_PERCENT_BONUS;
+            else if (keep.Realm == playerToAward.Realm && GameServer.Instance.Configuration.ServerType is EGameServerType.GST_Normal)
+                outpostPercentBonus = REALM_OUTPOST_PERCENT_BONUS;
 
             long outpostBonus = (long) (baseXpReward * outpostPercentBonus);
 
