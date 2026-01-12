@@ -191,7 +191,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Droom_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Droom_Dot);
 				}
 				return m_Droom_Dot;
 			}
@@ -228,7 +227,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_Droom_Dot2 = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Droom_Dot2);
 				}
 				return m_Droom_Dot2;
 			}
@@ -258,7 +256,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Droom_SC_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Droom_SC_Debuff);
 				}
 				return m_Droom_SC_Debuff;
 			}
@@ -288,7 +285,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Droom_Haste_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Droom_Haste_Debuff);
 				}
 				return m_Droom_Haste_Debuff;
 			}
@@ -321,7 +317,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_DroomDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DroomDisease);
 				}
 				return m_DroomDisease;
 			}

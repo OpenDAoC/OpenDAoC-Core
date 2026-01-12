@@ -98,7 +98,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Cold;
 					m_SyverDD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SyverDD);
 				}
 				return m_SyverDD;
 			}
@@ -219,7 +218,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Syver_Str_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Syver_Str_Debuff);
 				}
 				return m_Syver_Str_Debuff;
 			}
@@ -253,7 +251,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_SyverDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SyverDisease);
 				}
 				return m_SyverDisease;
 			}
@@ -284,7 +281,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Syver_Haste_Buff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Syver_Haste_Buff);
 				}
 				return m_Syver_Haste_Buff;
 			}

@@ -148,7 +148,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IcetouchHeal = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IcetouchHeal);
 				}
 				return m_IcetouchHeal;
 			}
@@ -182,7 +181,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IcetouchMezz = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IcetouchMezz);
 				}
 				return m_IcetouchMezz;
 			}
@@ -215,7 +213,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IcetouchRoot = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IcetouchRoot);
 				}
 				return m_IcetouchRoot;
 			}

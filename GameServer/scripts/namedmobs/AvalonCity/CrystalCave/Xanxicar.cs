@@ -432,7 +432,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Energy;
 					m_XanxicarStomp = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_XanxicarStomp);
 				}
 				return m_XanxicarStomp;
 			}
@@ -461,7 +460,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Energy;
 					m_XanxicarGlare = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_XanxicarGlare);
 				}
 				return m_XanxicarGlare;
 			}

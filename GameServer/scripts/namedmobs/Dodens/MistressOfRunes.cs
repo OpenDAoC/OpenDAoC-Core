@@ -386,7 +386,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = false;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_AoESpell = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AoESpell);
 				}
 				return m_AoESpell;
 			}
@@ -426,7 +425,6 @@ namespace DOL.AI.Brain
 					spell.Message1 = "You are blinded!";
 					spell.Message2 = "{0} is blinded!";
 					m_NearsightSpell = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_NearsightSpell);
 				}
 				return m_NearsightSpell;
 			}

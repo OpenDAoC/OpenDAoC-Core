@@ -218,7 +218,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
 					m_LokenDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD);
 				}
 				return m_LokenDD;
 			}
@@ -250,7 +249,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
 					m_LokenDD2 = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD2);
 				}
 				return m_LokenDD2;
 			}
@@ -277,7 +275,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.Bolt.ToString();
 					m_LokenBolt = new Spell(spell, 60);
 					spell.Uninterruptible = true;
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenBolt);
 				}
 				return m_LokenBolt;
 			}

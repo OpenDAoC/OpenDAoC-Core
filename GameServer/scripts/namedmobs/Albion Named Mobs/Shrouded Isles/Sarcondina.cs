@@ -130,7 +130,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Sarcondina_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Sarcondina_Dot);
 				}
 				return m_Sarcondina_Dot;
 			}

@@ -112,7 +112,6 @@ namespace DOL.GS
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_ZytkaDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ZytkaDD);
 				}
 				return m_ZytkaDD;
 			}

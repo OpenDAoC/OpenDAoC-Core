@@ -261,7 +261,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_OreyBomb = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OreyBomb);
 				}
 				return m_OreyBomb;
 			}
@@ -290,7 +289,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					m_Orey_SC_Debuff = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Orey_SC_Debuff);
 				}
 				return m_Orey_SC_Debuff;
 			}
@@ -317,7 +315,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_OreyDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OreyDD);
 				}
 				return m_OreyDD;
 			}

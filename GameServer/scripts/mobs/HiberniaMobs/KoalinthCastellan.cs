@@ -73,7 +73,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.CombatSpeedDebuff.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					m_KoalinthElder_HasteDebuff = new Spell(spell, 13);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KoalinthElder_HasteDebuff);
 				}
 				return m_KoalinthElder_HasteDebuff;
 			}

@@ -218,7 +218,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_YdeniaDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_YdeniaDD);
 				}
 				return m_YdeniaDD;
 			}
@@ -246,7 +245,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
 					m_Ydenia_SC_Debuff = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ydenia_SC_Debuff);
 				}
 				return m_Ydenia_SC_Debuff;
 			}

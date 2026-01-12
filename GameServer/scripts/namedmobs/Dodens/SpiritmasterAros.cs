@@ -292,7 +292,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Aros_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aros_DD);
 				}
 				return m_Aros_DD;
 			}
@@ -321,7 +320,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Aros_Bomb = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aros_Bomb);
 				}
 				return m_Aros_Bomb;
 			}
@@ -353,7 +351,6 @@ namespace DOL.AI.Brain
 					spell.Message2 = "{0} seems vulnerable to spirit magic!";
 					spell.Uninterruptible = true;
 					m_Aros_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aros_Debuff);
 				}
 				return m_Aros_Debuff;
 			}
@@ -473,7 +470,6 @@ namespace DOL.GS
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					m_SpiritChampion_stun = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpiritChampion_stun);
 				}
 				return m_SpiritChampion_stun;
 			}

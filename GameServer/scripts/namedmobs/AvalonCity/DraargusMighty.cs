@@ -139,7 +139,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_FireDS = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireDS);
 				}
 				return m_FireDS;
 			}
@@ -300,7 +299,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Sphere_pbaoe = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Sphere_pbaoe);
 				}
 				return m_Sphere_pbaoe;
 			}

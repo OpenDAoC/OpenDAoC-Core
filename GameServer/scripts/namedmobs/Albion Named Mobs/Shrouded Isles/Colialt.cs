@@ -206,7 +206,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_ColialtLifeDrain = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ColialtLifeDrain);
 				}
 				return m_ColialtLifeDrain;
 			}

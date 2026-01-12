@@ -103,7 +103,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_DyranapurDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DyranapurDisease);
 				}
 				return m_DyranapurDisease;
 			}
@@ -181,7 +180,6 @@ namespace DOL.AI.Brain
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
 					m_Boss_Lifedrain = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Boss_Lifedrain);
 				}
 				return m_Boss_Lifedrain;
 			}

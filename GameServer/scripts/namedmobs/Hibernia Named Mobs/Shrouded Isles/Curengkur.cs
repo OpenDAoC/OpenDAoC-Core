@@ -157,7 +157,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CurengkurDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CurengkurDD);
 				}
 				return m_CurengkurDD;
 			}
@@ -192,7 +191,6 @@ namespace DOL.AI.Brain
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
 					m_CurengkurPoison = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CurengkurPoison);
 				}
 				return m_CurengkurPoison;
 			}
@@ -284,7 +282,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CurengkurDD2 = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CurengkurDD2);
 				}
 				return m_CurengkurDD2;
 			}

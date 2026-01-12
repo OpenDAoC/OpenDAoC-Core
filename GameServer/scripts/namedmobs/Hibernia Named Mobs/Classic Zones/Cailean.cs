@@ -268,7 +268,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CaileanHeal = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CaileanHeal);
 				}
 				return m_CaileanHeal;
 			}
@@ -296,7 +295,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					m_TreeRoot = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot);
 				}
 				return m_TreeRoot;
 			}
@@ -325,7 +323,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
 					m_BossmezSpell = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BossmezSpell);
 				}
 				return m_BossmezSpell;
 			}
@@ -429,7 +426,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					m_TreeRoot = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot);
 				}
 				return m_TreeRoot;
 			}
@@ -466,7 +462,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_CaileanTree_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CaileanTree_Dot);
 				}
 				return m_CaileanTree_Dot;
 			}
@@ -578,7 +573,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					m_TreeRoot = new Spell(spell, 40);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot);
 				}
 				return m_TreeRoot;
 			}
@@ -606,7 +600,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.SpeedDecrease.ToString();
 					m_TreeRoot2 = new Spell(spell, 40);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot2);
 				}
 				return m_TreeRoot2;
 			}

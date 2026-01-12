@@ -217,7 +217,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Bolt.ToString();
 					m_CailleachUragaigDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CailleachUragaigDD);
 				}
 				return m_CailleachUragaigDD;
 			}
@@ -245,7 +244,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.Bolt.ToString();
 					m_CailleachUragaigDD2 = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CailleachUragaigDD2);
 				}
 				return m_CailleachUragaigDD2;
 			}
@@ -369,7 +367,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.Bolt.ToString();
 					m_Torch_Of_Light_Bolt = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Torch_Of_Light_Bolt);
 				}
 				return m_Torch_Of_Light_Bolt;
 			}

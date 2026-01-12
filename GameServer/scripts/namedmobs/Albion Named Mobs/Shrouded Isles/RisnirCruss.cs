@@ -197,7 +197,6 @@ namespace DOL.AI.Brain
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;
 					m_Boss_PBAOE = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Boss_PBAOE);
 				}
 				return m_Boss_PBAOE;
 			}
@@ -228,7 +227,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Boss_Mezz = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Boss_Mezz);
 				}
 				return m_Boss_Mezz;
 			}

@@ -296,7 +296,6 @@ namespace DOL.GS.Spells
                     spell.Target = eSpellTarget.SELF.ToString();
                     spell.Type = eSpellType.Disarm.ToString();
                     Disarm_Weapon = new Spell(spell, 50);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Combat_Styles_Effect, Disarm_Weapon);
                 }
                 return Disarm_Weapon;
             }

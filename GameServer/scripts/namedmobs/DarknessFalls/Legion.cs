@@ -707,7 +707,6 @@ namespace DOL.AI.Brain
                     spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     m_LegionLifetapAoe = new Spell(spell, 60);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LegionLifetapAoe);
                 }
                 return m_LegionLifetapAoe;
             }

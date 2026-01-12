@@ -280,7 +280,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_GreenSpriteHeal = new Spell(spell, 30);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GreenSpriteHeal);
 				}
 				return m_GreenSpriteHeal;
 			}

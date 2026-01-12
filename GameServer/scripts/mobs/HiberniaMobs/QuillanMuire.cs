@@ -85,7 +85,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy;
 					m_QuillanMuire_DD = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_QuillanMuire_DD);
 				}
 				return m_QuillanMuire_DD;
 			}
@@ -114,7 +113,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy;
 					m_QuillanMuire_DD2 = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_QuillanMuire_DD2);
 				}
 				return m_QuillanMuire_DD2;
 			}
@@ -269,7 +267,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					m_MuireHerbalistHeal = new Spell(spell, 15);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MuireHerbalistHeal);
 				}
 				return m_MuireHerbalistHeal;
 			}
@@ -297,7 +294,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.StrengthBuff.ToString();
 					spell.Uninterruptible = true;
 					m_MuireHerbalist_Buff_STR = new Spell(spell, 15);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MuireHerbalist_Buff_STR);
 				}
 				return m_MuireHerbalist_Buff_STR;
 			}

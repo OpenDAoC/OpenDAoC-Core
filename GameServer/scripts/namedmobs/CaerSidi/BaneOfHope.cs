@@ -152,7 +152,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
                     m_BaneOfHope_Aoe_Dot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BaneOfHope_Aoe_Dot);
                 }
 
                 return m_BaneOfHope_Aoe_Dot;

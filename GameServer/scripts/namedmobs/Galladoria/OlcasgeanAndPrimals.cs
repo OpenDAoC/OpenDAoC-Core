@@ -517,7 +517,6 @@ namespace DOL.GS
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OlcasgeanDD);
                 }
                 return m_OlcasgeanDD;
             }
@@ -827,7 +826,6 @@ namespace DOL.AI.Brain
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OlcasgeanDD);
                 }
                 return m_OlcasgeanDD;
             }
@@ -1025,7 +1023,6 @@ namespace DOL.GS
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.DamageType = (int)eDamageType.Matter;
                     m_OlcasgeanDD2 = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OlcasgeanDD2);
                 }
                 return m_OlcasgeanDD2;
             }
@@ -1439,7 +1436,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit;
                     m_AirDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AirDD);
                 }
                 return m_AirDD;
             }
@@ -1469,7 +1465,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
                 return m_mezSpell;
             }
@@ -1779,7 +1774,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_WaterEffect = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WaterEffect);
                 }
                 return m_WaterEffect;
             }
@@ -2005,7 +1999,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Heat;
                     m_FireDS = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireDS);
                 }
                 return m_FireDS;
             }
@@ -2140,7 +2133,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Heat;
                     m_FireGroundDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
                 }
                 return m_FireGroundDD;
             }
@@ -2349,7 +2341,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Cold;
                     m_EarthRoot = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthRoot);
                 }
                 return m_EarthRoot;
             }
@@ -2558,7 +2549,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_EarthmenderHeal = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
                 return m_EarthmenderHeal;
             }
@@ -2768,7 +2758,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_EarthmenderHeal = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
                 return m_EarthmenderHeal;
             }
@@ -2975,7 +2964,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_EarthmenderHeal = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
                 return m_EarthmenderHeal;
             }
@@ -3182,7 +3170,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_EarthmenderHeal = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EarthmenderHeal);
                 }
                 return m_EarthmenderHeal;
             }
@@ -3306,7 +3293,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Spirit;
                     m_VortexDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VortexDD);
                 }
                 return m_VortexDD;
             }

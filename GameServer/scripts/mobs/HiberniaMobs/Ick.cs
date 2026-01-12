@@ -134,7 +134,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IckDD = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IckDD);
 				}
 				return m_IckDD;
 			}

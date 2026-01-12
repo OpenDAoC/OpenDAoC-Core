@@ -95,7 +95,6 @@ namespace DOL.GS
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					m_Mortufoghus_stun = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mortufoghus_stun);
 				}
 				return m_Mortufoghus_stun;
 			}
@@ -204,7 +203,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_MortufoghusDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MortufoghusDD);
 				}
 				return m_MortufoghusDD;
 			}

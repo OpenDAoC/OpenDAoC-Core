@@ -146,7 +146,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Mahattava_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mahattava_Dot);
 				}
 				return m_Mahattava_Dot;
 			}
@@ -174,7 +173,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter; 
 					m_Mahattava_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mahattava_DD);
 				}
 				return m_Mahattava_DD;
 			}

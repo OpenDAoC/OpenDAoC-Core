@@ -230,7 +230,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Heat;
                     m_fireDDSpell = new Spell(spell, 50);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_fireDDSpell);
                 }
 
                 return m_fireDDSpell;

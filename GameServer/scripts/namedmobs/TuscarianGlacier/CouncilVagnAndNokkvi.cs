@@ -133,7 +133,6 @@ namespace DOL.AI.Brain
                     spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     m_VagnDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VagnDD);
                 }
                 return m_VagnDD;
             }

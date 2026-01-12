@@ -158,7 +158,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body; //Body DMG Type
 					m_Vasrem_Lifetap = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Vasrem_Lifetap);
 				}
 				return m_Vasrem_Lifetap;
 			}
@@ -187,7 +186,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_VasremSCDebuff = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VasremSCDebuff);
 				}
 				return m_VasremSCDebuff;
 			}
@@ -217,7 +215,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_VasremDebuffDQ = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VasremDebuffDQ);
 				}
 				return m_VasremDebuffDQ;
 			}

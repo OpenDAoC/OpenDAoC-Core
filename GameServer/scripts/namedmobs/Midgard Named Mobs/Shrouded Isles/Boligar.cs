@@ -191,7 +191,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Boligar_Mezz = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Boligar_Mezz);
 				}
 				return m_Boligar_Mezz;
 			}

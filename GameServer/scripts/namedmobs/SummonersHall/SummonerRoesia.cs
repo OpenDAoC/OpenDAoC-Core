@@ -294,7 +294,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					m_RoesiaDot = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RoesiaDot);
 				}
 				return m_RoesiaDot;
 			}
@@ -326,7 +325,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.HealOverTime.ToString();
 					m_RoesiaHOT = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RoesiaHOT);
 				}
 				return m_RoesiaHOT;
 			}
@@ -355,7 +353,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_RoesiaDS = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RoesiaDS);
 				}
 				return m_RoesiaDS;
 			}

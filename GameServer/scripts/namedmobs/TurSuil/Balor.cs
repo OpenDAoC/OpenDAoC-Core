@@ -273,7 +273,6 @@ namespace DOL.AI.Brain
 					spell.MoveCast = true;
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_EyeDD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EyeDD);
 				}
 				return m_EyeDD;
 			}

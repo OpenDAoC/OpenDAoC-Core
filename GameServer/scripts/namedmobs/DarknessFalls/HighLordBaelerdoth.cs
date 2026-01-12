@@ -117,7 +117,6 @@ namespace DOL.GS
                     spell.MoveCast = true;
                     spell.DamageType = (int) eDamageType.Spirit;
                     m_absDebuffSpell = new Spell(spell, 50);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_absDebuffSpell);
                 }
 
                 return m_absDebuffSpell;

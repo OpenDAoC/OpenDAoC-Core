@@ -105,7 +105,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_RylieDD = new Spell(spell, 15);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RylieDD);
 				}
 				return m_RylieDD;
 			}
@@ -135,7 +134,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Rylie_stun = new Spell(spell, 15);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Rylie_stun);
 				}
 				return m_Rylie_stun;
 			}

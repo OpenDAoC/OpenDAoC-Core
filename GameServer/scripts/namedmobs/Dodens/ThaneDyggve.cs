@@ -186,7 +186,6 @@ namespace DOL.GS.Scripts
 						spell.MoveCast = false;
 						spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 						m_Mjollnir = new Spell(spell, 50);
-						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mjollnir);
 					}
 					return m_Mjollnir;
 				}

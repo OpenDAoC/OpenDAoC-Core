@@ -223,7 +223,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Body;
                     m_AvartackDD = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AvartackDD);
                 }
                 return m_AvartackDD;
             }

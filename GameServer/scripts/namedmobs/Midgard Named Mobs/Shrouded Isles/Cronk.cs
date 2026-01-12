@@ -97,7 +97,6 @@ namespace DOL.GS
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					m_CronkDD = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CronkDD);
 				}
 				return m_CronkDD;
 			}
@@ -127,7 +126,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_DebuffDQ = new Spell(spell, 60);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DebuffDQ);
 				}
 				return m_DebuffDQ;
 			}

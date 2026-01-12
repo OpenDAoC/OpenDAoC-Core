@@ -260,7 +260,6 @@ namespace DOL.GS
 					spell.MoveCast = true;
 					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
 					m_HydraDisease = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HydraDisease);
 				}
 				return m_HydraDisease;
 			}
@@ -290,7 +289,6 @@ namespace DOL.GS
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Hydra_Haste_Debuff = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_Haste_Debuff);
 				}
 				return m_Hydra_Haste_Debuff;
 			}
@@ -690,7 +688,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_Hydra_Dot = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_Dot);
 				}
 				return m_Hydra_Dot;
 			}
@@ -719,7 +716,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Hydra_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_DD);
 				}
 				return m_Hydra_DD;
 			}
@@ -748,7 +744,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Hydra_DD2 = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_DD2);
 				}
 				return m_Hydra_DD2;
 			}
@@ -777,7 +772,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Hydra_PBAOE = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_PBAOE);
 				}
 				return m_Hydra_PBAOE;
 			}
@@ -806,7 +800,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Body;
 					m_Hydra_Stun = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_Stun);
 				}
 				return m_Hydra_Stun;
 			}
@@ -1010,7 +1003,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Cold;
 					m_Head2_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head2_DD);
 				}
 				return m_Head2_DD;
 			}
@@ -1215,7 +1207,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Head3_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head3_DD);
 				}
 				return m_Head3_DD;
 			}
@@ -1420,7 +1411,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Spirit;
 					m_Head4_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head4_DD);
 				}
 				return m_Head4_DD;
 			}
@@ -1624,7 +1614,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.DamageType = (int)eDamageType.Matter;
 					m_Head5_DD = new Spell(spell, 70);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head5_DD);
 				}
 				return m_Head5_DD;
 			}

@@ -226,7 +226,6 @@ namespace DOL.AI.Brain
                 spell.MoveCast = true;
                 spell.DamageType = (int) eDamageType.Cold;
                 m_AgmundrDD = new Spell(spell, 70);
-                SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AgmundrDD);
                 return m_AgmundrDD;
             }
         }

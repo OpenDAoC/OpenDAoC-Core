@@ -95,7 +95,6 @@ namespace DOL.AI.Brain
 					spell.Type = eSpellType.DamageAdd.ToString();
 					spell.Uninterruptible = true;
 					m_RuckusDA = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RuckusDA);
 				}
 				return m_RuckusDA;
 			}
@@ -122,7 +121,6 @@ namespace DOL.AI.Brain
 					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Stun.ToString();
 					m_Ruckus_stun = new Spell(spell, 20);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ruckus_stun);
 				}
 				return m_Ruckus_stun;
 			}

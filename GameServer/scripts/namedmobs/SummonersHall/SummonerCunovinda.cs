@@ -270,7 +270,6 @@ namespace DOL.AI.Brain
 					spell.Uninterruptible = true;
 					spell.Type = eSpellType.Bolt.ToString();
 					m_CunovindaBolt = new Spell(spell, 50);
-					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CunovindaBolt);
 				}
 				return m_CunovindaBolt;
 			}

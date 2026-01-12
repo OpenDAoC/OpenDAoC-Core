@@ -288,7 +288,6 @@ namespace DOL.AI.Brain
                     spell.MoveCast = true;
                     spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
                     m_co_poison = new Spell(spell, 70);
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_poison);
                 }
                 return m_co_poison;
             }
@@ -317,7 +316,6 @@ namespace DOL.AI.Brain
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_co_aoe = new Spell(spell, 70);                   
-                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_aoe);
                 }
                 return m_co_aoe;
             }
