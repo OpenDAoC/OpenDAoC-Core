@@ -85,8 +85,18 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("galladoria_roots");
+            int itemCount = 50;
+            string message_currency = "Easmarach drops " + itemCount + " " + template.Name + ".";
             foreach(GamePlayer player in GetPlayersInRadius(10000))
             {
+                DbInventoryItem item = GameInventoryItem.Create(template);
+                item.Count = itemCount;
+                if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+                    InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+                }
                 if(player != null)
                 {
                     player.Out.SendMessage("With the death of the Easmarach, the current of the falls reduces significantly.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);

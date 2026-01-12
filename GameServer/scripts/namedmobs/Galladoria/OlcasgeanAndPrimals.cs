@@ -425,9 +425,20 @@ namespace DOL.GS
             OIBrain.DeadPrimalsCount = 0;
 
             bool canReportNews = true;
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("galladoria_roots");
+            int itemCount = 500;
+            string message_currency = "Olcasgean drops " + itemCount + " " + template.Name + ".";
             // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
+                DbInventoryItem item = GameInventoryItem.Create(template);
+                item.Count = itemCount;
+                if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                {
+                    player.Out.SendMessage(message_currency, eChatType.CT_Loot, eChatLoc.CL_ChatWindow);
+                    InventoryLogging.LogInventoryAction(player, player, eInventoryActionType.Other, template, itemCount);
+                }
+                // All get credit which are in visible distance of mob
                 player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
                 if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
