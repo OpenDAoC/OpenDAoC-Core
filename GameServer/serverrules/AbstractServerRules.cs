@@ -1025,6 +1025,14 @@ namespace DOL.GS.ServerRules
 
         public virtual void OnNpcKilled(GameNPC killedNpc, GameObject killer)
         {
+            GameNPC.RewardEligibility rewardEligibility = killedNpc.RewardStatus;
+
+            if (rewardEligibility is not GameNPC.RewardEligibility.Eligible)
+            {
+                SendNotWorthRewardMessage(killedNpc, rewardEligibility);
+                return;
+            }
+
             if (!ProcessXpGainers(killedNpc,
                 out double totalDamage,
                 out Dictionary<GamePlayer, EntityCountTotalDamagePair> playerCountAndDamage,
@@ -1034,7 +1042,7 @@ namespace DOL.GS.ServerRules
                 out Dictionary<BattleGroup, EntityCountTotalDamagePair> battlegroupCountAndDamage,
                 out ItemOwnerTotalDamagePair mostDamagingBattlegroup))
             {
-                SendNotWorthRewardMessage(killedNpc);
+                SendNotWorthRewardMessage(killedNpc, GameNPC.RewardEligibility.DeniedInvalid);
                 return;
             }
 
@@ -1078,14 +1086,14 @@ namespace DOL.GS.ServerRules
                 DropLoot(killedNpc, killer, itemOwners);
             }
 
-            static void SendNotWorthRewardMessage(GameNPC killedNpc)
+            static void SendNotWorthRewardMessage(GameNPC killedNpc, GameNPC.RewardEligibility rewardEligibility)
             {
                 string message;
 
-                if (killedNpc.CurrentRegion?.Time - GameNPC.CHARMED_NOEXP_TIMEOUT >= killedNpc.TempProperties.GetProperty<long>(GameNPC.CHARMED_TICK_PROP))
-                    message = "You gain no experience from this kill!";
-                else
+                if (rewardEligibility is GameNPC.RewardEligibility.DeniedRecentlyCharmed)
                     message = "This monster has been charmed recently and is worth no experience.";
+                else
+                    message = "You gain no experience from this kill!";
 
                 foreach (var pair in killedNpc.XPGainers)
                 {
@@ -1113,9 +1121,6 @@ namespace DOL.GS.ServerRules
 
                 battlegroupCountAndDamage = null;
                 mostDamagingBattlegroup = null;
-
-                if (!killedNpc.IsWorthReward)
-                    return false;
 
                 foreach (var pair in killedNpc.XPGainers)
                 {
