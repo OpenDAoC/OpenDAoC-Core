@@ -464,7 +464,7 @@ namespace DOL.GS
             if (result is not AddEffectResult.Failed)
                 OnEffectAddedOrEnabled(this, result, effect);
             else
-                OnEffectNotAdded(effect);
+                OnEffectNotAdded(this, effect);
 
             static void OnEffectAddedOrEnabled(EffectListComponent component, AddEffectResult result, ECSGameEffect effect)
             {
@@ -519,27 +519,38 @@ namespace DOL.GS
                 }
             }
 
-            static void OnEffectNotAdded(ECSGameEffect effect)
+            static void OnEffectNotAdded(EffectListComponent component, ECSGameEffect effect)
             {
                 try
                 {
-                    if (effect is not ECSGameSpellEffect spellEffect)
-                        return;
+                    component._pendingEffects.Enqueue(new(effect, static (effect, _) =>
+                    {
+                        try
+                        {
+                            if (effect is not ECSGameSpellEffect spellEffect)
+                                return;
 
-                    // Temporarily include `BleedECSEffect` since they're set as pulsing spells in the DB, even though they should work like DoTs instead.
-                    if (spellEffect.SpellHandler.Spell.IsPulsing && spellEffect is not BleedECSEffect)
-                        return;
+                            // Temporarily include `BleedECSEffect` since they're set as pulsing spells in the DB, even though they should work like DoTs instead.
+                            if (spellEffect.SpellHandler.Spell.IsPulsing && spellEffect is not BleedECSEffect)
+                                return;
 
-                    EffectHelper.SendSpellResistAnimation(spellEffect);
-                    GamePlayer playerToNotify = null;
+                            EffectHelper.SendSpellResistAnimation(spellEffect);
+                            GamePlayer playerToNotify = null;
 
-                    if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
-                        playerToNotify = playerCaster;
-                    else if (spellEffect.SpellHandler.Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain brain && brain.Owner is GamePlayer casterOwner)
-                        playerToNotify = casterOwner;
+                            if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
+                                playerToNotify = playerCaster;
+                            else if (spellEffect.SpellHandler.Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain brain && brain.Owner is GamePlayer casterOwner)
+                                playerToNotify = casterOwner;
 
-                    if (playerToNotify != null)
-                        ChatUtil.SendResistMessage(playerToNotify, "GamePlayer.Caster.Buff.EffectAlreadyActive", spellEffect.Owner.GetName(0, true));
+                            if (playerToNotify != null)
+                                ChatUtil.SendResistMessage(playerToNotify, "GamePlayer.Caster.Buff.EffectAlreadyActive", spellEffect.Owner.GetName(0, true));
+                        }
+                        catch (Exception e)
+                        {
+                            if (log.IsErrorEnabled)
+                                log.Error($"Failed processing an effect not added to {effect.Owner}'s effect list", e);
+                        }
+                    }, false));
                 }
                 catch (Exception e)
                 {
