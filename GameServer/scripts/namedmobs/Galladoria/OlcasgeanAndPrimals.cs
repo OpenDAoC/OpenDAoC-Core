@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
             return 0;
         }
         #region Spawn primals and other mobs
-        public int SpawnPrimals(ECSGameTimer timer)//real timer to cast spell and reset check
+        private int SpawnPrimals(ECSGameTimer timer)//real timer to cast spell and reset check
         {
             SpawnAir();
             SpawnWater();
