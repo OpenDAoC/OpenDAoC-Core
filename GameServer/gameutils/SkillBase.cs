@@ -2468,38 +2468,40 @@ namespace DOL.GS
 			}
 
 			m_syncLockUpdates.EnterWriteLock();
+
 			try
 			{
-				// Cannot store it in spell index !! ID could be wrongly set we can't rely on it !
-				if (!m_lineSpells.ContainsKey(spellLineID))
-					m_lineSpells.Add(spellLineID, new List<Spell>());
-
-				// search for duplicates
-				bool added = false;
-				for (int r = 0; r < m_lineSpells[spellLineID].Count; r++)
+				if (!m_lineSpells.TryGetValue(spellLineID, out List<Spell> lineSpells))
 				{
-					try
+					lineSpells = [];
+					m_lineSpells[spellLineID] = lineSpells;
+				}
+
+				bool added = false;
+
+				// Search for duplicates.
+				for (int i = 0; i < lineSpells.Count; i++)
+				{
+					Spell existingSpell = lineSpells[i];
+
+					if (existingSpell != null &&
+						existingSpell.SpellType == spell.SpellType &&
+						string.Equals(existingSpell.Name, spell.Name, StringComparison.OrdinalIgnoreCase))
 					{
-						// Yo what the fuck.
-						if ((m_lineSpells[spellLineID][r] != null &&
-							spell.ID > 0 && m_lineSpells[spellLineID][r].ID == spell.ID && m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower()))
-							|| (m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower())))
-						{
-							m_lineSpells[spellLineID][r] = spell;
-							added = true;
-						}
-					}
-					catch
-					{
+						lineSpells[i] = spell;
+						added = true;
+						break;
 					}
 				}
 
-				// try regular add (this could go wrong if duplicate detection is bad...)
 				if (!added)
-					m_lineSpells[spellLineID].Add(spell);
+					lineSpells.Add(spell);
 
-				m_lineSpells[spellLineID] = m_lineSpells[spellLineID].OrderBy(e => e.Level).ThenBy(e => e.ID).ToList();
-
+				lineSpells.Sort(static (a, b) =>
+				{
+					int result = a.Level.CompareTo(b.Level);
+					return result != 0 ? result : a.ID.CompareTo(b.ID);
+				});
 			}
 			finally
 			{
