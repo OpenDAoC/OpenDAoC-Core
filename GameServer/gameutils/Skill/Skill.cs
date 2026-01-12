@@ -9,7 +9,7 @@ namespace DOL.GS
 	public abstract class Skill
 	{
 		protected int m_id;
-		protected string m_name;
+		protected string m_name = string.Empty;
 		protected int m_level;
 		protected ushort m_icon;
 		protected int m_internalID;
