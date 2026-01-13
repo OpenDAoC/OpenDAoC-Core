@@ -1347,7 +1347,7 @@ namespace DOL.GS
             double physicalAbsorb = target.GetModified(eProperty.PhysicalAbsorption) * 0.01;
             double absorbDivisor = (1 - armorAbsorb) * (1 - physicalAbsorb);
             absorb = 1 - absorbDivisor;
-            return absorb >= 1 ? double.MaxValue : armorFactor / absorbDivisor;
+            return absorb >= 1 ? double.MaxValue : Math.Max(1, armorFactor / absorbDivisor);
         }
 
         public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, DbInventoryItem armor)
