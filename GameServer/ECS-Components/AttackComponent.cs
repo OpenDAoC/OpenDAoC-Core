@@ -382,72 +382,79 @@ namespace DOL.GS
             };
         }
 
-        public double AttackDamage(DbInventoryItem weapon, WeaponAction action, out double damageCap)
+        public double WeaponDamage(DbInventoryItem weapon, WeaponAction action, double effectiveness, out double damageCap)
         {
-            double damage;
+            double damage = owner is GamePlayer player ? CalculatePlayerDamage(player, weapon, action) : CalculateNpcDamage(weapon);
+            damage *= effectiveness;
+            damageCap = CalculateDamageCap(damage);
 
-            if (owner is GamePlayer player)
+            // Quality and condition don't affect damage cap.
+            damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damage);
+            return damage;
+        }
+
+        private double CalculatePlayerDamage(GamePlayer player, DbInventoryItem weapon, WeaponAction action)
+        {
+            if (weapon == null)
+                return 0;
+
+            double damage = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
+
+            if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
             {
-                if (weapon == null)
-                {
-                    damageCap = 0;
-                    return 0;
-                }
-
-                damage = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
-
                 if (player.ActiveLeftWeapon != null)
-                {
-                    if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
-                        damage *= CalculateLeftAxeModifier();
-                }
-                else if (weapon.Item_Type is Slot.RANGED)
-                {
-                    damage *= CalculateTwoHandedDamageModifier(weapon);
-                    DbInventoryItem ammo = GetAttackAmmo(action);
+                    damage *= CalculateLeftAxeModifier();
 
-                    if (ammo != null)
-                    {
-                        switch ((ammo.SPD_ABS) & 0x3)
-                        {
-                            case 0:
-                                damage *= 0.85;
-                                break; // Blunt (light) -15%.
-                            case 1:
-                                break; // Bodkin (medium) 0%.
-                            case 2:
-                                damage *= 1.15;
-                                break; // Doesn't exist on live.
-                            case 3:
-                                damage *= 1.25;
-                                break; // Broadhead (X-heavy) +25%.
-                        }
-                    }
-                }
-                else if (weapon.Item_Type is Slot.TWOHAND)
+                if (weapon.Item_Type is Slot.TWOHAND)
                     damage *= CalculateTwoHandedDamageModifier(weapon);
-
-                damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damage);
-                damageCap = damage * 3;
             }
-            else
+            else if (weapon.Item_Type is Slot.RANGED)
             {
-                damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
-
-                if (owner is GameNPC npc)
-                    damage *= npc.DamageFactor;
-
-                if (weapon?.SlotPosition is Slot.TWOHAND or Slot.RANGED)
-                    damage *= CalculateTwoHandedDamageModifier(weapon);
-
-                damageCap = damage * 3;
-
-                if (owner is GameEpicBoss)
-                    damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                damage *= CalculateTwoHandedDamageModifier(weapon);
+                damage *= GetAmmoModifier(action);
             }
 
-            // Relic bonus is applied to damage only and does not increase cap.
-            return damage * RelicMgr.GetRelicBonusModifier(owner, eRelicType.Strength);
+            return damage;
+        }
+
+        private double GetAmmoModifier(WeaponAction action)
+        {
+            DbInventoryItem ammo = GetAttackAmmo(action);
+
+            if (ammo == null)
+                return 1.0;
+
+            return (ammo.SPD_ABS & 0x3) switch
+            {
+                0 => 0.85,  // Blunt (light) -15%
+                1 => 1.0,   // Bodkin (medium) 0%
+                2 => 1.15,  // Doesn't exist on live
+                3 => 1.25,  // Broadhead (X-heavy) +25%
+                _ => 1.0
+            };
+        }
+
+        private double CalculateNpcDamage(DbInventoryItem weapon)
+        {
+            double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
+
+            if (owner is GameNPC npc)
+                damage *= npc.DamageFactor;
+
+            if (weapon?.SlotPosition is Slot.TWOHAND or Slot.RANGED)
+                damage *= CalculateTwoHandedDamageModifier(weapon);
+
+            return damage;
+        }
+
+        private double CalculateDamageCap(double damage)
+        {
+            double damageCap = damage * 3.0;
+
+            if (owner is GameEpicBoss)
+                damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+
+            return damageCap;
         }
 
         public void RequestStartAttack(GameObject attackTarget = null)
@@ -1085,7 +1092,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    double damage = AttackDamage(weapon, action, out double baseDamageCap);
+                    double damage = WeaponDamage(weapon, action, effectiveness, out double baseDamageCap);
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -1093,7 +1100,9 @@ namespace DOL.GS
 
                     double weaponSkill = CalculateWeaponSkill(weapon, ad.Target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
+
                     double damageMod = weaponSkill / armorMod;
+                    damageMod *= RelicMgr.GetRelicBonusModifier(owner, eRelicType.Strength);
 
                     // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
                     if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
@@ -1106,6 +1115,10 @@ namespace DOL.GS
 
                     damage *= damageMod;
 
+                    // The wiki applies resistance on the damage mod then eventually caps it at 3.
+                    // We apply the resistances later, and calculate the cap differently. But it should be mathematically equivalent.
+                    double resistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
+
                     // Melee damage and style damage ToA bonuses are pretty weird.
                     // * They're both calculated from base damage.
                     // * They effectively add the same amount of damage when used independently.
@@ -1113,61 +1126,48 @@ namespace DOL.GS
                     // * However, the first one will be added to base damage, and the second one to style damage. This is really just for display purposes.
                     // * They stack multiplicatively. Assuming a GR of 0, two 10% bonuses result in the attack doing 21% more damage.
                     // * The higher the GR, the lower their contribution to total damage is (since GR is actually ignored).
+                    double baseDamageSnapshot = damage;
 
-                    effectiveness *= CalculateEffectiveness(weapon); // Augment the passed effectiveness with the weapon's effectiveness (ToA bonuses, etc.).
-                    double preEffectivenessDamage = damage; // Damage snapshot before applying effectiveness, to be used to calculate style damage.
-                    double preEffectivenessBaseDamageCap = baseDamageCap; // Damage cap snapshot before applying effectiveness, to be used to calculate style damage.
-                    damage *= effectiveness;
-                    baseDamageCap *= effectiveness;
+                    // These bonuses don't increase the cap. This is correct for ToA melee bonus, but unknown for Savage/Cleric self-buff (they currently are of the same type).
+                    damage *= CalculateDamageTypeModifier(weapon);
 
-                    double resistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
-
-                    // Calculate the modifier now, before the cap. This matches Live behavior.
-                    // We also snapshot raw damage for style calculations, as the combat log is allowed to show uncapped values.
-
-                    double preResistDamage = damage;
-                    double postResistDamage = damage * resistMod;
-                    double modifier = postResistDamage - damage;
-
-                    // Update current damage tracking to the resisted value.
-                    damage = postResistDamage;
-
-                    double styleDamage = 0;
-                    double styleDamageCap = 0;
+                    double styleDamage = 0.0;
+                    double styleDamageCap = 0.0;
+                    double resistModifier = 0.0;
 
                     if (style != null)
                     {
-                        if (StyleProcessor.ExecuteStyle(ad, preEffectivenessDamage, preEffectivenessBaseDamageCap, out styleDamage, out styleDamageCap, out int animationId))
+                        if (StyleProcessor.ExecuteStyle(ad, baseDamageSnapshot, baseDamageCap, out styleDamage, out styleDamageCap, out int animationId))
                         {
                             // Apply style bonus, calculated on base damage.
-                            double styleDamageBonus = preResistDamage * owner.GetModified(eProperty.StyleDamage) * 0.01;
-                            styleDamage += styleDamageBonus;
-                            styleDamageCap += styleDamageBonus;
+                            styleDamage += damage * owner.GetModified(eProperty.StyleDamage) * 0.01;
 
                             // Save the raw unresisted style damage for the AttackData. To be used by the combat log only.
                             ad.StyleDamage = (int) styleDamage;
 
-                            // Apply resistances to style damage, and update the modifier.
+                            // Apply resistances to style damage and update resist modifier.
                             double postResistStyle = styleDamage * resistMod;
-                            modifier += postResistStyle - styleDamage;
+                            resistModifier += postResistStyle - styleDamage;
 
                             // Update style damage tracking
                             styleDamage = postResistStyle;
-
                             ad.AttackResult = eAttackResult.HitStyle;
                         }
 
                         ad.AnimationId = animationId;
                     }
 
+                    // Apply resistances to base damage and update resist modifier.
+                    double postResistDamage = damage * resistMod;
+                    resistModifier += postResistDamage - damage;
+                    damage = postResistDamage;
+
                     // Apply conversion.
                     double conversionMod = CalculateTargetConversion(ad.Target);
                     damage *= conversionMod;
+                    styleDamage *= conversionMod;
 
-                    if (style != null)
-                        styleDamage *= conversionMod;
-
-                    // Apply damage cap.
+                    // Apply base damage cap and add style damage.
                     damage = Math.Min(damage, baseDamageCap);
 
                     if (style != null && styleDamage > 0)
@@ -1187,7 +1187,7 @@ namespace DOL.GS
                         damage = 0;
 
                     ad.Damage = (int) damage;
-                    ad.Modifier = (int) Math.Floor(modifier);
+                    ad.Modifier = (int) Math.Floor(resistModifier);
                     ad.CriticalChance = CalculateCriticalChance(action);
                     ad.CriticalDamage = CalculateCriticalDamage(ad);
 
@@ -1244,24 +1244,15 @@ namespace DOL.GS
             return ad;
         }
 
-        public double CalculateEffectiveness(DbInventoryItem weapon)
+        public double CalculateDamageTypeModifier(DbInventoryItem weapon)
         {
-            double effectiveness = 100;
-
             if (weapon == null || weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
-                effectiveness += owner.GetModified(eProperty.MeleeDamage);
-            else if (weapon.Item_Type is Slot.RANGED)
-            {
-                if ((eObjectType) weapon.Object_Type is eObjectType.Longbow or eObjectType.RecurvedBow or eObjectType.CompositeBow)
-                {
-                    if (Properties.ALLOW_OLD_ARCHERY)
-                        effectiveness += owner.GetModified(eProperty.RangedDamage);
-                    else
-                        effectiveness += owner.GetModified(eProperty.SpellDamage);
-                }
-            }
+                return 1 + owner.GetModified(eProperty.MeleeDamage) * 0.01;
 
-            return effectiveness * 0.01;
+            if (weapon.Item_Type is Slot.RANGED && (eObjectType) weapon.Object_Type is eObjectType.Longbow or eObjectType.RecurvedBow or eObjectType.CompositeBow)
+                return 1 + owner.GetModified(eProperty.RangedDamage) * 0.01;
+
+            return 1.0;
         }
 
         public double CalculateWeaponSkill(DbInventoryItem weapon, GameLiving target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill)
