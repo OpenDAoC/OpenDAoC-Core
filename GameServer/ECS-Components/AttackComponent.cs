@@ -1252,11 +1252,11 @@ namespace DOL.GS
                 effectiveness += owner.GetModified(eProperty.MeleeDamage);
             else if (weapon.Item_Type is Slot.RANGED)
             {
-                effectiveness += owner.GetModified(eProperty.RangedDamage);
-
                 if ((eObjectType) weapon.Object_Type is eObjectType.Longbow or eObjectType.RecurvedBow or eObjectType.CompositeBow)
                 {
-                    if (!Properties.ALLOW_OLD_ARCHERY)
+                    if (Properties.ALLOW_OLD_ARCHERY)
+                        effectiveness += owner.GetModified(eProperty.RangedDamage);
+                    else
                         effectiveness += owner.GetModified(eProperty.SpellDamage);
                 }
             }
