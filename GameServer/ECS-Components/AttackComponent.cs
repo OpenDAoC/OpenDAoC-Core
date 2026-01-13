@@ -1095,9 +1095,6 @@ namespace DOL.GS
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
                     double damageMod = weaponSkill / armorMod;
 
-                    if (ad.IsOffHand)
-                        damageMod *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
-
                     // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
                     if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                     {
@@ -2246,7 +2243,7 @@ namespace DOL.GS
 
             if (specLevel > 0)
             {
-                int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+                int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
                 return 25 + specLevel * 68 * 0.01 + bonus;
             }
 
@@ -2266,7 +2263,7 @@ namespace DOL.GS
             double doubleSwingChance = specLevel * 0.5; // specLevel >> 1
             double tripleSwingChance = specLevel >= 25 ? doubleSwingChance * 0.5 : 0; // specLevel >> 2
             double quadSwingChance = specLevel >= 40 ? tripleSwingChance * 0.25 : 0; // specLevel >> 4
-            int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+            int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
             doubleSwingChance += bonus; // It's apparently supposed to only affect double swing chance around 1.65, which puts it more in line with DW / CD.
             return (doubleSwingChance, tripleSwingChance, quadSwingChance);
         }
