@@ -3,11 +3,12 @@
 This repo is based of the OpenDAoC repo. I'm still working on it and want to implement the following:
 
 - Implementing New Frontiers
-- New Summoners Hall
-- Big Dragons
 - Epic Dungeons
 - CL5 Dungeons
+- New Summoners Hall
+- Big Dragons
 - Epic Currency
+- New Quest System (incl. Map Dots & Goals)
 - NO Artifacts
 
 
