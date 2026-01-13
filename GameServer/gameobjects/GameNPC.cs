@@ -1634,12 +1634,43 @@ namespace DOL.GS
 			if (CanShowOneQuest(player))
 				return eQuestIndicator.Available;
 
+			// Interact goal?
+            if (CanShowInteractIndicator(player))
+            {
+                return eQuestIndicator.Pending; // patch 0031
+            }
 			// Finishing one ?
 			if (CanFinishOneQuest(player))
 				return eQuestIndicator.Finish;
 
 			return eQuestIndicator.None;
 		}
+
+		/// <summary>
+		/// check if mob shows interact indicator for 
+		/// DQ reward quest
+		/// </summary>		
+		public bool CanShowInteractIndicator(GamePlayer player)
+        {
+           lock (_questListToGiveLock)
+			{
+				foreach (AbstractQuest q in m_questListToGive)
+				{
+					DQRewardQ dqrQuest = null;
+					if (q is DQRewardQ)
+					{
+						dqrQuest = (DQRewardQ)q;
+
+						if (dqrQuest != null && dqrQuest.CheckInteractPendingIcon(this))
+						{
+							return true;
+						}
+					}
+				}
+            	
+			}
+			return false;
+        }
 
 		/// <summary>
 		/// Check if the npc can show a quest indicator to a player
@@ -1674,6 +1705,18 @@ namespace DOL.GS
 				}
 			}
 
+			// Data driven reward quests // patch 0026
+            lock (m_dqRewardQs)
+            {
+                foreach (DQRewardQ quest in DQRewardQList)
+                {
+                    if (quest.CheckQuestQualification(player))
+                    {
+                        return true;
+                    }
+                }
+            }
+
 			return false;
 		}
 
@@ -1702,6 +1745,17 @@ namespace DOL.GS
 							return true;
 					}
 				}
+
+				DQRewardQ dqrQuest = null;
+                if (quest is DQRewardQ)
+                {
+                    dqrQuest = (DQRewardQ)quest;
+
+                    if (dqrQuest != null && dqrQuest.CheckGoalsCompleted() && dqrQuest.FinishName == Name) // patch 0026
+                    {
+                        return true;
+                    }
+                }
 
 				// Handle Reward Quest here.
 				if (quest is RewardQuest rewardQuest && rewardQuest.QuestGiver == this)

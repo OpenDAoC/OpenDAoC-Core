@@ -1003,6 +1003,12 @@ namespace DOL.GS
 				q.Notify(GameObjectEvent.Interact, this, new InteractEventArgs(player));
 			}
 
+			foreach (DQRewardQ dqr in DQRewardQList)
+			{
+				// Notify all our potential quests of the interaction so we can check for quest offers
+				dqr.Notify(GameObjectEvent.Interact, this, new InteractEventArgs(player));
+			}
+
 			return true;
 		}
 

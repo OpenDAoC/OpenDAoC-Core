@@ -491,8 +491,6 @@ namespace DOL.GS.Quests
 					}
 				}
                 m_questPlayer.Out.SendQuestListUpdate();
-                m_questPlayer.Out.SendMessage("To see the next step, open your Journal", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-                m_questPlayer.Out.SendMessage("To see the next step, open your Journal", eChatType.CT_Important, eChatLoc.CL_SystemWindow);	
 				
 				if (m_startNPC != null)
 				{
@@ -515,7 +513,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public override string Name
 		{
-			get	{ return m_dqRewardQ.QuestName; }
+			get	{ return m_dqRewardQ.QuestName + " (Level " + m_dqRewardQ.MinLevel + ")"; }
 		}		
 						
 		/// <summary>
@@ -922,15 +920,17 @@ namespace DOL.GS.Quests
 		/// </summary>		
         public int ExperiencePercent(GamePlayer player)
         {
+			Console.WriteLine(m_dqRewardQ.RewardXP);
             int currentLevel = player.Level;
-            if (currentLevel > GamePlayer.MAX_LEVEL)
-            {
+            if (currentLevel >= GamePlayer.MAX_LEVEL)
+            {	
             	return 0;
             }
             long experienceToLevel = player.GetExperienceNeededForLevel(currentLevel + 1) -
                 player.GetExperienceNeededForLevel(currentLevel);
-
-            return (int)((RewardXP * 100) / experienceToLevel);
+			Console.WriteLine((int)(m_dqRewardQ.RewardXP * 100 / experienceToLevel));	
+            return (int)(m_dqRewardQ.RewardXP * 100 / experienceToLevel);
+			
         }        
         
 		/// <summary>
@@ -939,6 +939,12 @@ namespace DOL.GS.Quests
 		protected long RewardXP
 		{
 			get { return m_dqRewardQ.RewardXP; }
+			set
+                {
+                    m_dqRewardQ.RewardXP = value;
+                    if (m_dqRewardQ.RewardXP < 0)
+                        m_dqRewardQ.RewardXP = 0;
+                }
 		}
 		/// <summary>
 		/// Championlevel xp for completing quest
@@ -1209,10 +1215,9 @@ namespace DOL.GS.Quests
 		{
             try
             {
-                // Check, ob das Event "Quest annehmen" ist
+				 // Player is accepting a DQRewardQ
                 if (e == GamePlayerEvent.AcceptQuest)
                 {
-                    // Sicherer Cast der Argumente
                     if (args is not QuestEventArgs qargs)
                         return;
 
@@ -1221,7 +1226,6 @@ namespace DOL.GS.Quests
 
                     foreach (DBDQRewardQ quest in GameObject.DQRewardCache)
                     {
-                        // ID-Abgleich inklusive Client-Offset
                         if ((quest.ID + DQREWARDQ_CLIENTOFFSET) == qargs.QuestID)
                         {
                             CharacterXDQRewardQ charQuest = GetCharacterQuest(player, quest.ID, true);
@@ -1230,29 +1234,22 @@ namespace DOL.GS.Quests
                             dq.Step = 1;
                             player.AddQuest(dq);
 
-                            // Quest-Indicator am NPC (Ausrufezeichen/Fragezeichen) aktualisieren
+							// Update Quest Indicator
                             if (giver is GameNPC npc)
                             {
                                 player.Out.SendNPCsQuestEffect(npc, npc.GetQuestIndicator(player));
                             }
 
-                            // Feedback an den Spieler
                             player.Out.SendSoundEffect(7, 0, 0, 0, 0, 0);
-                            player.Out.SendMessage($"You have acquired the quest: {dq.Name}", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 
                             if (!string.IsNullOrWhiteSpace(dq.AcceptText))
                             {
-                                // Zeilenumbrüche formatieren
                                 var formatMsg = dq.AcceptText.Replace(@"\n", "\n");
-
-                                // Da deine Funktion statisch definiert ist (ohne 'this'), rufen wir sie hier regulär auf.
-                                // WICHTIG: 'rangeCheck' auf 'false', da es sich um einen Dialogtext handelt.
-                                // Ersetze 'KlassenName' durch den Namen der Klasse, in der SplitCSV steht.
                                 var finalMsg = Util.SplitCSV(formatMsg, false);
 
                                 player.Out.SendCustomTextWindow($"{giver.Name} says", finalMsg);
                             }
-                            break; // Quest gefunden und verarbeitet, Loop verlassen
+                            break;
                         }
                     }
                 }
@@ -1609,11 +1606,11 @@ namespace DOL.GS.Quests
             m_questPlayer.Out.SendMessage("You have completed the quest: " + Name, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
             m_questPlayer.Out.SendMessage(String.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-            // Remove this quest from the players active quest list and either
-            // Add or update the quest in the players finished list
-			m_questPlayer.Out.SendQuestListUpdate();
             if (m_questPlayer.QuestList.TryRemove(this, out byte value))
 				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
+			// Remove this quest from the players active quest list and either
+            // Add or update the quest in the players finished list
+			m_questPlayer.Out.SendQuestListUpdate();
 
 			bool addq = true;
 			lock (m_questPlayer.GetFinishedQuests())
@@ -1680,11 +1677,11 @@ namespace DOL.GS.Quests
 			if (m_questPlayer == null || m_charQuest == null || !m_charQuest.IsPersisted) return;
 			
 			Step = 0;
-			m_questPlayer.Out.SendQuestListUpdate();
             m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 			if (m_questPlayer.QuestList.TryRemove(this, out byte value))
 				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
+			m_questPlayer.Out.SendQuestListUpdate();
 
 			if (m_charQuest.Count == 0)
 			{
@@ -1886,7 +1883,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public string Description
 		{
-			get { return m_quest.QuestPlayer != null ? String.Format("Quest Goal: {0} ({1}/{2})", m_description, Current, Target) : m_description; }
+			get { return m_quest.QuestPlayer != null ? String.Format("{0} ({1}/{2})", m_description, Current, Target) : m_description; }
 		}
 
 		/// <summary>
