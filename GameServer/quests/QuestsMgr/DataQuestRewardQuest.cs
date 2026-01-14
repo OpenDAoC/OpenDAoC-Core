@@ -475,6 +475,11 @@ namespace DOL.GS.Quests
 		{
 			try
 			{
+				// Only show one step at a time
+				if (m_goals != null && m_goals.Count > 0)
+				{
+					m_goals.Clear();
+				}
 				foreach (int nextGoals in m_goalStepPosition)			
 				{				
 					if (nextGoals == Step)
