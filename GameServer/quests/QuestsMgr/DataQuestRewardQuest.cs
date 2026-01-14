@@ -921,35 +921,57 @@ namespace DOL.GS.Quests
 		}
                 
 		/// <summary>
-		/// The experience reward for a player, displayed as a percentage of thier current level in quest window
-		/// </summary>		
-        public int ExperiencePercent(GamePlayer player)
-        {
-			Console.WriteLine(m_dqRewardQ.RewardXP);
-            int currentLevel = player.Level;
-            if (currentLevel >= GamePlayer.MAX_LEVEL)
-            {	
-            	return 0;
-            }
-            long experienceToLevel = player.GetExperienceNeededForLevel(currentLevel + 1) -
-                player.GetExperienceNeededForLevel(currentLevel);
-			Console.WriteLine((int)(m_dqRewardQ.RewardXP * 100 / experienceToLevel));	
-            return (int)(m_dqRewardQ.RewardXP * 100 / experienceToLevel);
+		/// The experience reward for a player, displayed as a percentage of their current level in quest window
+		/// </summary>      
+		public int ExperiencePercent(GamePlayer player)
+		{
+			int currentLevel = player.Level;
+			if (currentLevel >= GamePlayer.MAX_LEVEL)
+			{   
+				return 0;
+			}
+
+			// When XP is negative, return absolute value as percentage
+			if (m_dqRewardQ.RewardXP < 0)
+			{
+				return (int)Math.Abs(m_dqRewardQ.RewardXP);
+			}
+
+			// If not normal xp calculation
+			long experienceToLevel = player.GetExperienceNeededForLevel(currentLevel + 1) -
+									player.GetExperienceNeededForLevel(currentLevel);
+
+			if (experienceToLevel <= 0) return 0;
+
+			int percent = (int)(m_dqRewardQ.RewardXP * 100 / experienceToLevel);
 			
-        }        
-        
+			return percent;
+		}
+
 		/// <summary>
-		/// Xp reward for completing quest
+		/// Real XP reward for completing quest
+		/// </summary>
+		public long GetFinalRewardXP(GamePlayer player)
+		{
+			if (m_dqRewardQ.RewardXP < 0)
+			{
+				long percentValue = Math.Abs(m_dqRewardQ.RewardXP);
+				long experienceToLevel = player.GetExperienceNeededForLevel(player.Level + 1) -
+										player.GetExperienceNeededForLevel(player.Level);
+				
+				return (long)(experienceToLevel * percentValue / 100);
+			}
+
+			return m_dqRewardQ.RewardXP;
+		}
+
+		/// <summary>
+		/// XP reward for completing quest
 		/// </summary>
 		protected long RewardXP
 		{
 			get { return m_dqRewardQ.RewardXP; }
-			set
-                {
-                    m_dqRewardQ.RewardXP = value;
-                    if (m_dqRewardQ.RewardXP < 0)
-                        m_dqRewardQ.RewardXP = 0;
-                }
+			set { m_dqRewardQ.RewardXP = value; } // Wir erlauben jetzt negative Werte für die Logik
 		}
 		/// <summary>
 		/// Championlevel xp for completing quest
@@ -1548,8 +1570,13 @@ namespace DOL.GS.Quests
                             QuestPlayer.Out.SendMessage(rpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 							return false;
 						}
+						// Give the correct amount of XP based on percentage or fixed value
+                        long xpToGive = GetFinalRewardXP(m_questPlayer);
 
-                        m_questPlayer.ForceGainExperience(RewardXP);
+						if (xpToGive > 0)
+						{
+							m_questPlayer.ForceGainExperience(xpToGive);
+						}
 					}
 
 					if (RewardRP > 0)
