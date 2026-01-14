@@ -724,6 +724,7 @@ namespace DOL.GS.Quests
 				if (!m_allowedClasses.Contains((byte)player.CharacterClass.ID))
 				{
 					return false;
+					
 				}
 			}						
 
@@ -746,7 +747,7 @@ namespace DOL.GS.Quests
 				{
 					if (q is DQRewardQ && (q as DQRewardQ).ID == ID)
 					{
-						if (q.IsDoingQuest() || (q as DQRewardQ).Count >= MaxQuestCount)
+						if ((q as DQRewardQ).Count >= MaxQuestCount)
 						{
 							return false; // player has done this quest the max number of times
 						}
@@ -778,19 +779,6 @@ namespace DOL.GS.Quests
 			}
 
 			return true;
-		}
-
-		/// <summary>
-		/// Is the player currently doing this quest
-		/// </summary>		
-		public bool IsDoingQuest(AbstractQuest checkQuest)
-		{
-			if (checkQuest is DQRewardQ && (checkQuest as DQRewardQ).ID == ID)
-			{
-				return Step > 0;
-			}
-
-			return false;
 		}
 
 		/// <summary>
