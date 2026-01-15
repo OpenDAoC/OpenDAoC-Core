@@ -429,7 +429,7 @@ namespace DOL.GS.Quests
 		/// <returns>true if all goals are completed</returns>
 		public bool CheckGoalsCompleted()
 		{
-			foreach (DQRQuestGoal goal in Goals)
+			foreach (DQRQuestGoal goal in m_goals)
 			{
 				if (goal.Type == DQRQuestGoal.GoalType.InteractFinish)
 				{
@@ -440,7 +440,6 @@ namespace DOL.GS.Quests
 					return false;
 				}
 			}
-			
 			return true;
 		}
 		
@@ -532,12 +531,21 @@ namespace DOL.GS.Quests
             get { return m_dqRewardQ.AcceptText; }
         }
 		
-		/// <summary>
-		/// List of all goals for this quest
-		/// </summary>
 		public List<DQRQuestGoal> Goals
 		{
-			get { return m_goals; }
+			get 
+			{ 
+				// Wir filtern m_goals so, dass nur Ziele zurückgegeben werden,
+				// deren hinterlegter Step-Index dem aktuellen Quest-Step entspricht.
+				return m_goals.Where(g => {
+					int index = m_goals.IndexOf(g);
+					if (index >= 0 && index < m_goalStepPosition.Count)
+					{
+						return m_goalStepPosition[index] == Step;
+					}
+					return false;
+				}).ToList(); 
+			}
 		}
 		
 		/// <summary>

@@ -133,7 +133,7 @@ namespace DOL.GS.Scripts
                         // Fügt die Housing-Optionen an
                         message += "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
                         
-                        // message += "\n//For this event duration, I can send you to [Darkness Falls]"; // Auskommentiert gelassen
+                        // message += "\n//For this event duration, I can send you to [Darkness Falls]";
                         
                         break;
                     }
@@ -164,7 +164,7 @@ namespace DOL.GS.Scripts
                         // Fügt die Housing-Optionen an
                         message += "Housing [Entrance], [Personal House], [Guild House], [House Bind]";
                         
-                        // message += "\n//For this event duration, I can send you to [Darkness Falls]"; // Auskommentiert gelassen
+                        // message += "\n//For this event duration, I can send you to [Darkness Falls]";
 
                         break;
                     }
