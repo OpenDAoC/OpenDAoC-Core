@@ -5653,7 +5653,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            return ApplyWeaponQualityAndConditionToDamage(weapon, WeaponDamageWithoutQualityAndCondition(weapon));
+            return WeaponDamageWithoutQualityAndCondition(weapon) * AttackComponent.GetWeaponQualityConditionModifier(weapon);
         }
 
         public double GetWeaponDpsCap()
@@ -5677,11 +5677,6 @@ namespace DOL.GS
             double dps = Math.Min(weaponDps, GetWeaponDpsCap());
             dps *= 1 + GetModified(eProperty.DPS) * 0.01;
             return dps;
-        }
-
-        public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
-        {
-            return damage * weapon.Quality * 0.01 * weapon.ConditionPercent * 0.01;
         }
 
         public override bool CanCastWhileAttacking()

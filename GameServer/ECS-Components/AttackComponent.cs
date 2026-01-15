@@ -389,7 +389,7 @@ namespace DOL.GS
             damageCap = CalculateDamageCap(damage);
 
             // Quality and condition don't affect damage cap.
-            damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damage);
+            damage *= GetWeaponQualityConditionModifier(weapon);
             return damage;
         }
 
@@ -455,6 +455,11 @@ namespace DOL.GS
                 damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
 
             return damageCap;
+        }
+
+        public static double GetWeaponQualityConditionModifier(DbInventoryItem weapon)
+        {
+            return weapon == null ? 1.0 : weapon.Quality * weapon.ConditionPercent * 0.0001;
         }
 
         public void RequestStartAttack(GameObject attackTarget = null)
