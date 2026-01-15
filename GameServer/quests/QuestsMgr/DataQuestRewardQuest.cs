@@ -1426,9 +1426,6 @@ namespace DOL.GS.Quests
 			return false;
 		}
 		
-		/// <summary>
-		/// Check if a target object is in players quest goals.
-		/// </summary>		
 		public bool CheckTargetToGoalList(GameObject target)
 		{
 			try
@@ -1440,10 +1437,32 @@ namespace DOL.GS.Quests
 				
 				foreach (DQRQuestGoal goal in Goals)
 				{
-					if (!goal.IsAchieved && goal.TargetObject.Equals(target.Name, StringComparison.OrdinalIgnoreCase) && goal.ZoneID1 == target.CurrentZone.ID)
+					// Wir prüfen nur Ziele, die noch nicht abgeschlossen sind
+					if (!goal.IsAchieved)
 					{
-						CurrentGoal = goal;
-						return true;
+						// Wir holen den String aus der DB (z.B. "goblin warrior,goblin wolfhound")
+						string dbTargetString = goal.TargetObject;
+
+						if (!string.IsNullOrEmpty(dbTargetString))
+						{
+							// Wir splitten nach Komma
+							string[] allowedTargets = dbTargetString.Split(',');
+
+							foreach (string allowedName in allowedTargets)
+							{
+								// Wir vergleichen den getöteten Namen mit dem aktuellen Listeneintrag
+								// Trim() entfernt versehentliche Leerzeichen vor/nach dem Komma
+								if (allowedName.Trim().Equals(target.Name, StringComparison.OrdinalIgnoreCase))
+								{
+									// Optional: Falls du die Zone-Prüfung behalten willst:
+									if (goal.ZoneID1 == 0 || goal.ZoneID1 == target.CurrentZone.ID)
+									{
+										CurrentGoal = goal;
+										return true;
+									}
+								}
+							}
+						}
 					}
 				}
 				return false;
