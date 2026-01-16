@@ -1,4 +1,5 @@
 using System;
+using DOL.GS.API;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -31,7 +32,7 @@ namespace DOL.GS.Spells
                     playerCaster = playerOwner;
 
                 if (playerCaster != null)
-                    effectiveness = CalculateEffectivenessFromSpec(playerCaster);
+                    effectiveness = CalculateEffectivenessFromSpec(playerCaster.GetModifiedSpecLevel(m_spellLine.Spec), Spell.Level);
                 else
                     effectiveness = 1.0; // NPC (necromancer pet excluded).
             }
@@ -43,9 +44,9 @@ namespace DOL.GS.Spells
 
             return base.CalculateBuffDebuffEffectiveness() * effectiveness;
 
-            double CalculateEffectivenessFromSpec(GamePlayer player)
+            static double CalculateEffectivenessFromSpec(int spec, int spellLevel)
             {
-                double effectiveness = 0.75 + (player.GetModifiedSpecLevel(m_spellLine.Spec) - 1.0) * 0.5 / Spell.Level;
+                double effectiveness = 0.75 + (spec - 1.0) * 0.5 / spellLevel;
                 return Math.Clamp(effectiveness, 0.75, 1.25);
             }
         }
