@@ -500,45 +500,121 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				// reward quest delve 1.115+	
 				case 29: // patch 0020 delve items in quest window 1.115+
-					{
+					{						
 						if (objectType == 29)
-						{
+						{							
 							int index = objectId & 0x0F;
 							ushort questID = (ushort)((extraId >> 5) | (ushort)(objectId >> 4));
 							GameLiving questGiver = null;
 							if (client.Player.TargetObject is GameLiving) //- Unty
 								questGiver = (GameLiving)client.Player.TargetObject;
 
-							ChatUtil.SendDebugMessage(client, $"Quest ID: {questID}");
+							ChatUtil.SendDebugMessage(client, "Quest ID: " + questID);
 
 							if (questID == 0)
-								return;
-							questID = (ushort)(objectId >> 4);
-
-							DataQuest dq = null;
-							questID = (ushort)(objectId >> 4);
-							foreach (DbDataQuest d in GameObject.DataQuestCache)
+								return; // questID == 0, wrong ID ?
+							/*
+							if (questID <= DataQuest.DATAQUEST_CLIENTOFFSET)
 							{
-								if (d.ID == questID)
+								AbstractQuest q = client.Player.IsDoingQuest(QuestMgr.GetQuestTypeForID(questID));
+
+								if (q == null)
 								{
-									dq = new DataQuest(d);
-									break;
-								}
-							}
+									// player not doing quest, most likely on offer screen
+									if (questGiver != null)
+									{
+										try
+										{
+											q = (AbstractQuest)Activator.CreateInstance(QuestMgr.GetQuestTypeForID(questID), new object[] { client.Player, 1 });
+										}
+										catch (Exception e)
+										{
+											log.ErrorFormat("Error creating instance - {0}", e);
+										}
+									}
 
-							if (dq != null && dq.StartType == DataQuest.eStartType.RewardQuest)
-							{
+									if (q == null)
+									{
+										ChatUtil.SendDebugMessage(client, "Can't find or create quest!");
+										return;
+									}
+								}
+
+								if (!(q is RewardQuest))
+									return; // this is not new quest
+
 								List<DbItemTemplate> rewards = null;
 								if (index < 8)
-									rewards = dq.FinalRewards;
+									rewards = (q as RewardQuest).Rewards.BasicItems;
 								else
 								{
-									rewards = dq.OptionalRewards;
+									rewards = (q as RewardQuest).Rewards.OptionalItems;
 									index -= 8;
 								}
 								if (rewards != null && index >= 0 && index < rewards.Count)
 								{
 									item = rewards[index];
+								}
+							}*/
+							//if (questID > DataQuest.DATAQUEST_CLIENTOFFSET) // patch 0026
+							// patch 0031
+								DQRewardQ dqrq = null;
+								questID = (ushort)(objectId >> 4);
+								
+								foreach (DBDQRewardQ d in GameObject.DQRewardCache)
+								{
+									if (d.ID == questID)
+									{
+										dqrq = new DQRewardQ(d);
+										break;
+									}
+								}
+
+								if (dqrq != null)
+								{
+									List<DbItemTemplate> rewards = null;
+									if (index < 8)
+										rewards = dqrq.FinalRewards;
+									else
+									{
+										rewards = dqrq.OptionalRewards;
+										index -= 8;
+									}
+									if (rewards != null && index >= 0 && index < rewards.Count)
+									{
+										item = rewards[index];
+									}
+								}
+							
+							else // Data quest support, check for RewardQuest type
+							{
+								DataQuest dq = null;
+								questID = (ushort)(objectId >> 4);
+								//int index = (ushort)(objectID - DataQuest.DATAQUEST_CLIENTOFFSET - questID);
+								//questID = (ushort)(DataQuest.ClientQuestID - DataQuest.DATAQUEST_CLIENTOFFSET);
+								foreach (DbDataQuest d in GameObject.DataQuestCache)
+								{
+									if (d.ID == questID)
+									{
+										dq = new DataQuest(d);
+										break;
+									}
+								}
+
+								if (dq != null && dq.StartType == DataQuest.eStartType.RewardQuest)
+								{
+									List<DbItemTemplate> rewards = null;
+									if (index < 8)
+										rewards = dq.FinalRewards;
+									else
+									{
+										rewards = dq.OptionalRewards;
+										index -= 8;
+									}
+									if (rewards != null && index >= 0 && index < rewards.Count)
+									{
+										item = rewards[index];
+									}
 								}
 							}
 						}
@@ -548,7 +624,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						caption = item.Name;
 
-						client.Player.DelveItem(item, objectInfo);
+						if (client.Player.DelveItem<DbItemTemplate>(item, objectInfo))
+							break;
 						break;
 					}
 				#endregion
