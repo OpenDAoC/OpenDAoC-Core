@@ -214,10 +214,30 @@ namespace DOL.GS.Keeps
 			{
 				whereClause = whereClause.And(DB.Column("ComponentRotation").IsEqualTo(ComponentHeading));
 			}
-			if (bg != null && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
+			// If this is a portal keep, do not load any positions other than GameKeepDoor
+			if (Keep.IsPortalKeep)
 			{
-				// Battlegrounds, ignore all but GameKeepDoor
 				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
+			}
+			if (bg != null)
+			{
+				int requiredKeepType = 12; // Standard-Fallback (BG 1)
+
+				// Mapping der Regionen auf die KeepTypes laut deiner Liste
+				// Passe die Case-Zahlen (Region-IDs) an deine Datenbank an!
+				switch (region)
+				{
+					case 236: requiredKeepType = 12; break; // BG 1 The Hills of Claret
+					case 237: requiredKeepType = 14; break; // BG 2 Killaloe
+					case 238: requiredKeepType = 16; break; // BG 3 Thidranki
+					case 239: requiredKeepType = 18; break; // BG 4 Braemar
+					case 240: requiredKeepType = 20; break; // BG 5 Wilton
+					case 241: requiredKeepType = 22; break; // BG 6 Molvik
+					case 231: requiredKeepType = 28; break; // BG 7 Leivrik
+					case 165: requiredKeepType = 30; break; // BG 8 Cathal Valley
+				}
+
+				whereClause = whereClause.And(DB.Column("KeepType").IsEqualTo(requiredKeepType));
 			}
 			var DBPositions = DOLDB<DbKeepPosition>.SelectObjects(whereClause);
 
