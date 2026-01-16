@@ -94,7 +94,13 @@ namespace DOL.GS
 
 			MaxSpeedBase = 250;
 			TetherRange = 1800;
-			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+
+			// Custom Respawn +/- 20% 1h
+            int baseRespawnMS = 3600000; 
+            int maxOffsetMS = 720000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 841, 0, 0, 0);
@@ -282,6 +288,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
+			// Master of Pain spawns when Kierac the Destroyer dies
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163806);
 			LoadTemplate(npcTemplate);
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds

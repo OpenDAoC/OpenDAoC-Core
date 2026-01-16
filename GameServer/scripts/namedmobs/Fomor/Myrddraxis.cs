@@ -158,7 +158,13 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164337);
 			LoadTemplate(npcTemplate);
 
-			RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			// Custom Respawn +/- 20% 1h
+            int baseRespawnMS = 3600000; 
+            int maxOffsetMS = 720000; 
+            Random rnd = new Random();
+            int randomOffset = rnd.Next(maxOffsetMS * 2) - maxOffsetMS;
+            RespawnInterval = baseRespawnMS + randomOffset;
+			
 			MaxSpeedBase = 0;
 			X = 32302;
 			Y = 32221;
