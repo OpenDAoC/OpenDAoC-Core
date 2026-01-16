@@ -313,40 +313,38 @@ namespace DOL.GS
 			return GetModified(eProperty.Strength);
 		}
 
-		/// <summary>
-		/// calculate item armor factor influenced by quality, con and duration
-		/// </summary>
-		/// <param name="slot"></param>
-		/// <returns></returns>
 		public virtual double GetArmorAF(eArmorSlot slot)
 		{
 			return Math.Max(0, GetModified(eProperty.ArmorFactor) / 5.0);
 		}
 
-		/// <summary>
-		/// Calculates armor absorb level
-		/// </summary>
 		public virtual double GetArmorAbsorb(eArmorSlot slot)
 		{
-			double baseAbsorb;
-
-			if (this is NecromancerPet necromancerPet)
-				baseAbsorb = necromancerPet.Owner.Level * 0.0068; // 34% at owner level 50.
-			else
-				baseAbsorb = Level * 0.0054; // 27% at level 50.
-
-			// Stat buffs can be very high, and absorption should not be allowed to reach 100%.
-			// However, stat debuffs can freely drop absorption to 0%.
-			double absorptionFromConstitution = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Constitution) / 5.5;
-			double absorptionFromDexterity = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Dexterity) / 5.5;
-
-			// eProperty.ArmorAbsorption is normally used as an armor effectiveness debuff, where 50% increases damage taken by 50%.
-			// If used for buffs, this could push ABS to 100%.
-			double armorAbsorptionBuffDebuffMod = 1 + GetModified(eProperty.ArmorAbsorption) * 0.01;
-
-			double absorb = 1 - (1 - baseAbsorb) * (1 - absorptionFromConstitution) * (1 - absorptionFromDexterity);
-			absorb *= armorAbsorptionBuffDebuffMod;
+			// Combine base and stats using multiplicative stacking for diminishing returns.
+			// This doesn't apply to `eProperty.ArmorAbsorption` (normally used as debuffs).
+			double absorb = 1 - (1 - GetBaseAbsorb()) * (1 - GetStatContributionToArmorAbsorb());
+			absorb *= 1 + GetModified(eProperty.ArmorAbsorption) * 0.01;
 			return Math.Clamp(absorb, 0, 1);
+		}
+
+		private double GetBaseAbsorb()
+		{
+			const double NECRO_ABSORB_PER_LEVEL = 0.0068; // 34% at lvl 50
+			const double NPC_ABSORB_PER_LEVEL = 0.0054;   // 27% at lvl 50
+
+			// Use owner level for necromancer pets.
+			if (this is NecromancerPet necromancerPet)
+				return necromancerPet.Owner.Level * NECRO_ABSORB_PER_LEVEL;
+
+			return Level * NPC_ABSORB_PER_LEVEL;
+		}
+
+		private double GetStatContributionToArmorAbsorb()
+		{
+			const double DIVISOR = 5.5;
+			double conPart = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Constitution) / DIVISOR;
+			double dexPart = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Dexterity) / DIVISOR;
+			return 1 - (1 - conPart) * (1 - dexPart);
 		}
 
 		/// <summary>
