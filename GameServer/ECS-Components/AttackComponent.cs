@@ -387,9 +387,6 @@ namespace DOL.GS
             double damage = owner is GamePlayer player ? CalculatePlayerDamage(player, weapon, action) : CalculateNpcDamage(weapon);
             damage *= effectiveness;
             damageCap = CalculateDamageCap(damage);
-
-            // Quality and condition don't affect damage cap.
-            damage *= GetWeaponQualityConditionModifier(weapon);
             return damage;
         }
 
@@ -414,6 +411,7 @@ namespace DOL.GS
                 damage *= GetAmmoModifier(action);
             }
 
+            damage *= GetWeaponQualityConditionModifier(weapon);
             return damage;
         }
 
