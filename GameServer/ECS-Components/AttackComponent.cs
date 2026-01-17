@@ -1332,11 +1332,18 @@ namespace DOL.GS
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
         {
+            // Give an extra 0.4–20 armor factor to players.
+            // This matches the formula on https://camelotherald.fandom.com/wiki/Melee_Damage.
+            // The formula seems to work when compared against a couple of old combat logs,
+            // but not on Live servers, hinting that it was either increased at some point,
+            // or that the variance min and max modifiers were lowered (while preserving the spread, since it still matches).
+            // On Phoenix, it was increased to 45 at level 50 (0.9 per level), which is still lower than what Live appears to be using (Jan 2026).
+            const double PLAYER_EXTRA_AF_PER_LEVEL = 0.4;
+
             armorFactor = target.GetArmorAF(armorSlot);
 
-            // Give an extra 0.4~20 bonus AF to players. Ideally this should be done in `ArmorFactorCalculator`.
             if (target is GamePlayer or GameTrainingDummy)
-                armorFactor += target.Level * 20 / 50.0;
+                armorFactor += target.Level * PLAYER_EXTRA_AF_PER_LEVEL;
 
             double armorAbsorb = target.GetArmorAbsorb(armorSlot);
             // Badge of Valor check should go here.
