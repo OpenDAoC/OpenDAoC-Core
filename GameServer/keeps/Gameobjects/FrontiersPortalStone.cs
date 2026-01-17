@@ -27,10 +27,37 @@ namespace DOL.GS.Keeps
 
 		public void LoadFromPosition(DbKeepPosition pos, GameKeepComponent component)
 		{
+			// 1. Performance-Check: Wenn das Level nicht reicht, direkt raus.
 			if (component.Keep.DBKeep.BaseLevel < 50)
+			{
+				// Falls ein Stein existiert, der jetzt nicht mehr da sein darf: Weg damit.
+				if (component.Keep.TeleportStone != null)
+				{
+					component.Keep.TeleportStone.Delete();
+					component.Keep.TeleportStone = null;
+				}
 				return;
+			}
+
+			// 2. Dubletten-Check: Wenn die Referenz bereits auf ein aktives Objekt zeigt,
+			// erstelle KEIN neues Objekt. Das spart CPU-Zyklen und RAM.
+			if (component.Keep.TeleportStone != null && 
+				component.Keep.TeleportStone.ObjectState == GameObject.eObjectState.Active)
+			{
+				return; 
+			}
+
+			// 3. Falls das Objekt im Speicher als gelöscht markiert ist, aber die Referenz noch da ist:
+			// Altes "Wrack" aufräumen.
+			if (component.Keep.TeleportStone != null)
+			{
+				component.Keep.TeleportStone = null;
+			}
+
+			// 4. Erst jetzt (wenn wirklich nötig) die teure Logik ausführen:
 			m_component = component;
 			PositionMgr.LoadKeepItemPosition(pos, this);
+			
 			this.m_component.Keep.TeleportStone = this;
 			this.AddToWorld();
 		}
