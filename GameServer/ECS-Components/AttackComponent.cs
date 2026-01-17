@@ -387,6 +387,7 @@ namespace DOL.GS
             double damage = owner is GamePlayer player ? CalculatePlayerDamage(player, weapon, action) : CalculateNpcDamage(weapon);
             damage *= effectiveness;
             damageCap = CalculateDamageCap(damage);
+            damage *= GetWeaponQualityConditionModifier(weapon); // Quality and condition don't affect damage cap.
             return damage;
         }
 
@@ -411,7 +412,6 @@ namespace DOL.GS
                 damage *= GetAmmoModifier(action);
             }
 
-            damage *= GetWeaponQualityConditionModifier(weapon);
             return damage;
         }
 
@@ -455,9 +455,12 @@ namespace DOL.GS
             return damageCap;
         }
 
-        public static double GetWeaponQualityConditionModifier(DbInventoryItem weapon)
+        public double GetWeaponQualityConditionModifier(DbInventoryItem weapon)
         {
-            return weapon == null ? 1.0 : weapon.Quality * weapon.ConditionPercent * 0.0001;
+            if (owner is not GamePlayer || weapon == null)
+                return 1.0;
+
+            return weapon.Quality * weapon.ConditionPercent * 0.0001;
         }
 
         public void RequestStartAttack(GameObject attackTarget = null)
