@@ -5597,10 +5597,10 @@ namespace DOL.GS
 
             int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
             double armorFactor = Math.Min(item.DPS_AF, itemArmorFactorCap); // Cap item AF first.
-            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
+            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 5.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
-            armorFactor += GetModified(eProperty.ArmorFactor) / 6.0; // Don't call base here.
+            armorFactor += GetModified(eProperty.ArmorFactor) / 5.0; // Don't call base here.
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
@@ -5614,7 +5614,7 @@ namespace DOL.GS
         /// </summary>
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
-            if (slot == eArmorSlot.NOTSET)
+            if (slot is eArmorSlot.NOTSET)
                 return 0;
 
             DbInventoryItem item = Inventory.GetItem((eInventorySlot)slot);
@@ -5623,7 +5623,9 @@ namespace DOL.GS
                 return 0;
 
             // Debuffs can't lower absorb below 0%: https://darkageofcamelot.com/article/friday-grab-bag-08302019
-            return Math.Clamp((item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01, 0, 1);
+            // ABS debuffs can either be multiplicative (if appended with a minus sign) or flat. In 1.65, all debuffs are believed to be multiplicative.
+            double absorb = item.SPD_ABS * 0.01 * (1 + GetModified(eProperty.ArmorAbsorption) * 0.01);
+            return Math.Clamp(absorb, 0, 1);
         }
 
         /// <summary>
@@ -5651,7 +5653,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            return ApplyWeaponQualityAndConditionToDamage(weapon, WeaponDamageWithoutQualityAndCondition(weapon));
+            return WeaponDamageWithoutQualityAndCondition(weapon) * AttackComponent.GetWeaponQualityConditionModifier(weapon);
         }
 
         public double GetWeaponDpsCap()
@@ -5675,11 +5677,6 @@ namespace DOL.GS
             double dps = Math.Min(weaponDps, GetWeaponDpsCap());
             dps *= 1 + GetModified(eProperty.DPS) * 0.01;
             return dps;
-        }
-
-        public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
-        {
-            return damage * weapon.Quality * 0.01 * weapon.ConditionPercent * 0.01;
         }
 
         public override bool CanCastWhileAttacking()

@@ -79,7 +79,7 @@ namespace DOL.GS
                 case eSpellType.AcuityBuff:
                     return eEffect.AcuityBuff;
                 case eSpellType.ArmorAbsorptionBuff:
-                    return eEffect.ArmorAbsorptionBuff;
+                    return eEffect.PhysicalAbsorptionBuff; // Every ABS buff are applied as secondary ABS buff and don't modify armor ABS.
                 case eSpellType.BaseArmorFactorBuff:
                     return eEffect.BaseAFBuff;
                 case eSpellType.SpecArmorFactorBuff:
@@ -348,9 +348,11 @@ namespace DOL.GS
                 case eEffect.ArmorFactorDebuff:
                     list.Add(eProperty.ArmorFactor);
                     return list;
-                case eEffect.ArmorAbsorptionBuff:
                 case eEffect.ArmorAbsorptionDebuff:
                     list.Add(eProperty.ArmorAbsorption);
+                    return list;
+                case eEffect.PhysicalAbsorptionBuff:
+                    list.Add(eProperty.PhysicalAbsorption);
                     return list;
                 case eEffect.MeleeDamageBuff:
                 case eEffect.MeleeDamageDebuff:

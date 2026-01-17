@@ -281,37 +281,49 @@ namespace DOL.GS
             effectListComponent.CancelAll();
         }
 
+        public int GetArmorFactorCap(eObjectType type, out int itemArmorFactorCap)
+        {
+            // Copy paste of `GamePlayer.GetArmorFactorCap`, without RR5 check.
+            if (!GlobalConstants.IsArmor((int) type))
+                throw new ArgumentException($"{nameof(type)} must be an armor type");
+
+            int modifiedCharacterLevel = Level;
+
+            // Returns two caps:
+            // * One for player AF, which is twice the modified character level and is meant to be applied after base AF buffs.
+            // * One for the item AF, which depends on the armor type and is meant to be applied first.
+            int playerArmorFactorCap = modifiedCharacterLevel * 2;
+            itemArmorFactorCap = type is eObjectType.Cloth ? modifiedCharacterLevel : playerArmorFactorCap;
+            return playerArmorFactorCap;
+        }
+
         public override double GetArmorAF(eArmorSlot slot)
         {
-            // Mostly a copy paste of `GamePlayer.GetArmorAF`. but we ignore the slot.
+            // Mostly a copy paste of `GamePlayer.GetArmorAF`, but we force the slot to torso.
             DbInventoryItem item = Inventory.GetItem(eInventorySlot.TorsoArmor);
 
             if (item == null)
                 return 0;
 
-            int characterLevel = Level;
-
-            if (Level > 50)
-                characterLevel++;
-
-            int armorFactorCap = characterLevel * 2;
-            double armorFactor = Math.Min(item.DPS_AF, (eObjectType) item.Object_Type is eObjectType.Cloth ? characterLevel : armorFactorCap);
-            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buff.
+            int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
+            double armorFactor = Math.Min(item.DPS_AF, itemArmorFactorCap); // Cap item AF first.
+            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 5.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
-            armorFactor += base.GetArmorAF(slot);
-            return armorFactor;
+            armorFactor += GetModified(eProperty.ArmorFactor) / 5.0; // Don't call base here.
+            return Math.Max(0, armorFactor);
         }
 
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
-            // Mostly a copy paste of `GamePlayer.GetArmorAF`. but we ignore the slot.
+            // Mostly a copy paste of `GamePlayer.GetArmorAF`, but we force the slot to torso.
             DbInventoryItem item = Inventory.GetItem(eInventorySlot.TorsoArmor);
 
             if (item == null)
                 return 0;
 
-            return Math.Clamp((item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01, 0, 1);
+            double absorb = item.SPD_ABS * 0.01 * (1 + GetModified(eProperty.ArmorAbsorption) * 0.01);
+            return Math.Clamp(absorb, 0, 1); // Debuffs can't lower absorb below 0%: https://darkageofcamelot.com/article/friday-grab-bag-08302019
         }
 
         private void SetDefaultResists()

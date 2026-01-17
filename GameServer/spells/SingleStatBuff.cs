@@ -136,7 +136,7 @@ namespace DOL.GS.Spells
     public class BaseArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
         // List caster AF buffs use their delve value as is.
-        public override bool BuffReceivesSpecBonus => Caster is GamePlayer player ? player.CharacterClass.ClassType is not eClassType.ListCaster : true;
+        public override bool BuffReceivesSpecBonus => Caster is not GamePlayer player || player.CharacterClass.ClassType is not eClassType.ListCaster;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
     }
 
@@ -144,7 +144,7 @@ namespace DOL.GS.Spells
     public class SpecArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
         // Spec AF chants (Paladin) are uncapped.
-        public override eBuffBonusCategory BonusCategory1 => spell.IsChant ? eBuffBonusCategory.OtherBuff : eBuffBonusCategory.SpecBuff;
+        public override eBuffBonusCategory BonusCategory1 => Spell.IsChant ? eBuffBonusCategory.OtherBuff : eBuffBonusCategory.SpecBuff;
     }
 
     [SpellHandler(eSpellType.PaladinArmorFactorBuff)]
@@ -156,8 +156,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.ArmorAbsorptionBuff)]
     public class ArmorAbsorptionBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
-        public override string ShortDescription => $"Increases {TargetPronoun} physical damage {PropertyToString(Property1)} by {Spell.Value}%.";
-        public override eProperty Property1 => eProperty.ArmorAbsorption;
+        public override string ShortDescription => $"Increases {TargetPronoun} {PropertyToString(Property1)} by {Spell.Value}%.";
+        public override eProperty Property1 => eProperty.PhysicalAbsorption;
 
         protected override void SendUpdates(GameLiving target) { }
     }
@@ -256,12 +256,6 @@ namespace DOL.GS.Spells
     public class ToHitSkillBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
         public override eProperty Property1 => eProperty.ToHitBonus;
-    }
-
-    [SpellHandler(eSpellType.MagicResistsBuff)]
-    public class MagicResistsBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
-    {
-        public override eProperty Property1 => eProperty.MagicAbsorption;
     }
 
     [SpellHandler(eSpellType.StyleAbsorbBuff)]

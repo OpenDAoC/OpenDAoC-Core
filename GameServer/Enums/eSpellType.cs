@@ -421,7 +421,6 @@ namespace DOL.GS
         QuicknessBuff,
         DPSBuff,
         StealthSkillBuff,
-        MagicResistsBuff,
         StyleAbsorbBuff,
         ResiPierceBuff,
         DPSDebuff,

@@ -215,7 +215,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.MLABSBuff)]
     public class MLABSBuff : MasterlevelBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.ArmorAbsorption; } }
+        public override eProperty Property1 { get { return eProperty.PhysicalAbsorption; } }
 
         public MLABSBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
