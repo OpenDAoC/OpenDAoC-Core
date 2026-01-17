@@ -5635,19 +5635,29 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            int baseWeaponSkill = (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
-            int stat = GetWeaponStat(weapon) & ~1; // Not accurate. Live rounds down to the closest even number on both Str and Dex, then on the result. It also adds a penalty when a stat is <50.
-            string specName = SkillBase.ObjectTypeToSpec((eObjectType) weapon.Object_Type);
-            int itemBonus = specName == null ? 0 : GetModifiedFromItems(SkillBase.SpecToSkill(specName));
-            int realmBonus = RealmLevel / 10;
-            int weaponSpec = WeaponSpecLevel(weapon);
-            int trainedSpec = weaponSpec - itemBonus - realmBonus;
+            int trainedSpec = WeaponBaseSpecLevel(weapon);
+            int itemBonus = 0;
+            int weaponSpec = 0;
 
+            if (trainedSpec > 0)
+            {
+                string specName = SkillBase.ObjectTypeToSpec((eObjectType) weapon.Object_Type);
+
+                if (specName != null)
+                    itemBonus = GetModifiedFromItems(SkillBase.SpecToSkill(specName));
+
+                int realmBonus = RealmLevel / 10;
+                weaponSpec = itemBonus + realmBonus + trainedSpec;
+            }
+
+            int baseWeaponSkill = (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
+            int stat = GetWeaponStat(weapon) & ~1; // Live rounds down to the closest even number on both Str and Dex, then on the result. It also adds a penalty when a stat is <50.
             int damageTable = Level * baseWeaponSkill / 20;
-            double b = Math.Floor(damageTable * (200 + (trainedSpec > 0 ? 1 : 0) * itemBonus) / 500.0);
-            double c = Math.Floor(b * (100 + (stat - 50) / 2.0) / 100.0);
-            double d = Math.Floor(c * (100 + (trainedSpec > 0 ? weaponSpec : 0)) / 100.0);
-            return (int) Math.Floor(d * GetModified(eProperty.WeaponSkill) * 0.01);
+
+            double damageWithBonus = Math.Floor(damageTable * (200 + itemBonus) / 500.0);
+            double damageWithStat = Math.Floor(damageWithBonus * (100 + (stat - 50) / 2.0) / 100.0);
+            double damageWithSpec = Math.Floor(damageWithStat * (100 + weaponSpec) / 100.0);
+            return (int) Math.Floor(damageWithSpec * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 
         /// <summary>
