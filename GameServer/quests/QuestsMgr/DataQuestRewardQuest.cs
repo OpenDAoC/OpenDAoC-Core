@@ -1934,7 +1934,7 @@ namespace DOL.GS.Quests
 				if (this.Type == DQRQuestGoal.GoalType.InteractFinish)
 					return m_description;
 
-				return String.Format("{0} ({1}/{2})", m_description, Current, Target); 
+				return String.Format("{0} {1}/{2}", m_description, Current, Target); 
 			}
 		}
 

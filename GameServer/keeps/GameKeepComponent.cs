@@ -99,7 +99,26 @@ namespace DOL.GS.Keeps
 
 		protected int m_oldMaxHealth;
 
-		public override byte Level => (byte)(Keep.BaseLevel-10 + (Keep.Level * 3));
+		public override byte Level
+		{
+			get
+			{
+				return (byte)(Keep.Level switch
+				{
+					1 => 40,
+					2 => 42,
+					3 => 44,
+					4 => 46,
+					5 => 48,
+					6 => 52, // Sprung auf 52
+					7 => 54,
+					8 => 56,
+					9 => 58,
+					10 => 62, // Sprung auf 62
+					_ => 40    // Fallback
+				});
+			}
+		}
 
 		public override eRealm Realm
 		{
@@ -219,12 +238,10 @@ namespace DOL.GS.Keeps
 			{
 				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
 			}
-			if (bg != null)
+			if (bg != null && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
 			{
-				int requiredKeepType = 12; // Standard-Fallback (BG 1)
+				int requiredKeepType = 12;
 
-				// Mapping der Regionen auf die KeepTypes laut deiner Liste
-				// Passe die Case-Zahlen (Region-IDs) an deine Datenbank an!
 				switch (region)
 				{
 					case 236: requiredKeepType = 12; break; // BG 1 The Hills of Claret

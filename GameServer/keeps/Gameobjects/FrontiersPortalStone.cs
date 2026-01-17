@@ -92,7 +92,7 @@ namespace DOL.GS.Keeps
 					case eRealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
 				}
 
-				player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, "");
+				player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, string.Empty);
 			}
 
 			//if no component assigned, teleport to the border keep

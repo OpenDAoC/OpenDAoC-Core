@@ -141,6 +141,30 @@ namespace DOL.GS.Keeps
         {
             m_lastRealm = eRealm.None;
 
+            if (this.Component != null && this.Component.Keep != null)
+            {
+                // Check if region is a battleground
+                DbBattleground bg = GameServer.KeepManager.GetBattleground((ushort)CurrentRegionID);
+                
+                if (bg != null)
+                {
+                    eRealm captureRealm = (killer != null) ? killer.Realm : eRealm.None;
+
+                    foreach (GamePlayer player in GetPlayersInRadius(2000))
+                    {
+                        // Check if BG limits are reched and realm check
+                        if (player != null && player.Realm == captureRealm && player.Level < bg.MaxLevel)
+                        {
+                            // Give Player complete level of current level
+                            long xpToNextLevel = player.GetExperienceNeededForLevel(player.Level + 1);
+                            long xpCurrentLevel = player.GetExperienceNeededForLevel(player.Level);
+                            long oneFullLevelXP = xpToNextLevel - xpCurrentLevel;
+                            player.ForceGainExperience(oneFullLevelXP);
+                        }
+                    }
+                }
+            }
+
             if (Properties.LOG_KEEP_CAPTURES)
             {
                 try
@@ -212,7 +236,7 @@ namespace DOL.GS.Keeps
             if (Component == null)
                 return false;
 
-            if (InCombat || Component.Keep.InCombat)
+            /*if (InCombat || Component.Keep.InCombat)
             {
                 player.Out.SendMessage("You can't talk to the lord while under siege.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
@@ -220,7 +244,7 @@ namespace DOL.GS.Keeps
 
             if (GameServer.ServerRules.IsAllowedToClaim(player, CurrentRegion))
                 player.Out.SendMessage("Would you like to [Claim Keep] now? Or maybe [Release Keep]?", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-
+            */
             return true;
         }
 

@@ -902,6 +902,43 @@ namespace DOL.GS.Commands
                         
                 } 
                     break;
+                case "center":
+                {
+                    if (client.Player == null)
+                        return;
+
+                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+
+                    var isLeader = mybattlegroup.IsBGLeader(client.Player);
+                    var isModerator = mybattlegroup.IsBGModerator(client.Player);
+
+                    if (!isLeader && !isModerator)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    if (args.Length < 2)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Usage"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    StringBuilder text = new StringBuilder();
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        if (i > 1) text.Append(" ");
+                        text.Append(args[i]);
+                    }
+                    
+                    var broadcastMessage = text.ToString();
+
+                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
+                    {
+                        ply.Out.SendMessage(broadcastMessage, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                    }
+                    break;
+                }
 
                 default:
                     {
