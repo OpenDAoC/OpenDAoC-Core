@@ -1925,7 +1925,17 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public string Description
 		{
-			get { return m_quest.QuestPlayer != null ? String.Format("{0} ({1}/{2})", m_description, Current, Target) : m_description; }
+			get 
+			{ 
+				if (m_quest.QuestPlayer == null) 
+					return m_description;
+
+				// Wir versuchen es mit 'Type' (groß geschrieben)
+				if (this.Type == DQRQuestGoal.GoalType.InteractFinish)
+					return m_description;
+
+				return String.Format("{0} ({1}/{2})", m_description, Current, Target); 
+			}
 		}
 
 		/// <summary>
@@ -2027,22 +2037,20 @@ namespace DOL.GS.Quests
 			if (Current < Target)
 			{
 				Current++;
-				m_quest.QuestPlayer.Out.SendMessage(Description, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-				m_quest.QuestPlayer.Out.SendQuestUpdate(m_quest);
 				
-				// Check for updates
+				if (this.Type != DQRQuestGoal.GoalType.InteractFinish)
+				{
+					m_quest.QuestPlayer.Out.SendMessage(this.Description, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					m_quest.QuestPlayer.Out.SendQuestUpdate(m_quest);
+				}
 				if (IsAchieved)
 				{
-					// check if all quest is achieved
 					bool done = true;
 					foreach (DQRQuestGoal goal in m_quest.Goals)
 					{
 						done &= goal.IsAchieved;
 					}
-					
-					//if (done && m_quest.QuestGiver.IsWithinRadius(m_quest.QuestPlayer, WorldMgr.VISIBILITY_DISTANCE)) // do this elsewhere
-					//	m_quest.QuestPlayer.Out.SendNPCsQuestEffect(m_quest.QuestGiver, m_quest.QuestGiver.GetQuestIndicator(m_quest.QuestPlayer));
-				}					
+				}                   
 			}
 		}
         // goal location info to put red dot on map
