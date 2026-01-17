@@ -5670,7 +5670,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            return WeaponDamageWithoutQualityAndCondition(weapon) * AttackComponent.GetWeaponQualityConditionModifier(weapon);
+            return WeaponDamageWithoutQualityAndCondition(weapon) * attackComponent.GetWeaponQualityConditionModifier(weapon);
         }
 
         public double GetWeaponDpsCap()
