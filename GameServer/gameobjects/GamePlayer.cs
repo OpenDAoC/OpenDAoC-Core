@@ -5524,7 +5524,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            int classBaseWeaponSkill = weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
+            int classBaseWeaponSkill = (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
             double weaponSkill = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
             return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
         }
@@ -5597,10 +5597,10 @@ namespace DOL.GS
 
             int armorFactorCap = GetArmorFactorCap((eObjectType) item.Object_Type, out int itemArmorFactorCap);
             double armorFactor = Math.Min(item.DPS_AF, itemArmorFactorCap); // Cap item AF first.
-            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buffs need to be applied manually for players.
+            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 5.0; // Base AF buffs need to be applied manually for players.
             armorFactor *= item.Quality * 0.01 * item.ConditionPercent * 0.01; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
-            armorFactor += GetModified(eProperty.ArmorFactor) / 6.0; // Don't call base here.
+            armorFactor += GetModified(eProperty.ArmorFactor) / 5.0; // Don't call base here.
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
@@ -5614,7 +5614,7 @@ namespace DOL.GS
         /// </summary>
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
-            if (slot == eArmorSlot.NOTSET)
+            if (slot is eArmorSlot.NOTSET)
                 return 0;
 
             DbInventoryItem item = Inventory.GetItem((eInventorySlot)slot);
@@ -5623,22 +5623,41 @@ namespace DOL.GS
                 return 0;
 
             // Debuffs can't lower absorb below 0%: https://darkageofcamelot.com/article/friday-grab-bag-08302019
-            return Math.Clamp((item.SPD_ABS + GetModified(eProperty.ArmorAbsorption)) * 0.01, 0, 1);
+            // ABS debuffs can either be multiplicative (if appended with a minus sign) or flat. In 1.65, all debuffs are believed to be multiplicative.
+            double absorb = item.SPD_ABS * 0.01 * (1 + GetModified(eProperty.ArmorAbsorption) * 0.01);
+            return Math.Clamp(absorb, 0, 1);
         }
 
-        /// <summary>
-        /// Weaponskill thats shown to the player
-        /// </summary>
-        public virtual int DisplayedWeaponSkill
+        public int GetDisplayedWeaponSkill()
         {
-            get
+            DbInventoryItem weapon = ActiveWeapon;
+
+            if (weapon == null)
+                return 0;
+
+            int trainedSpec = WeaponBaseSpecLevel(weapon);
+            int itemBonus = 0;
+            int weaponSpec = 0;
+
+            if (trainedSpec > 0)
             {
-                int itemBonus = WeaponSpecLevel(ActiveWeapon) - WeaponBaseSpecLevel(ActiveWeapon) - RealmLevel / 10;
-                double m = 0.56 + itemBonus / 70.0;
-                double weaponSpec = WeaponSpecLevel(ActiveWeapon) + itemBonus * m;
-                double oldWStoNewWSScalar = (3 + .02 * GetWeaponStat(ActiveWeapon) ) /(1 + .005 * GetWeaponStat(ActiveWeapon));
-                return (int)(GetWeaponSkill(ActiveWeapon) * (1.00 + weaponSpec * 0.01) * oldWStoNewWSScalar);
+                string specName = SkillBase.ObjectTypeToSpec((eObjectType) weapon.Object_Type);
+
+                if (specName != null)
+                    itemBonus = GetModifiedFromItems(SkillBase.SpecToSkill(specName));
+
+                int realmBonus = RealmLevel / 10;
+                weaponSpec = itemBonus + realmBonus + trainedSpec;
             }
+
+            int baseWeaponSkill = (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
+            int stat = GetWeaponStat(weapon) & ~1; // Live rounds down to the closest even number on both Str and Dex, then on the result. It also adds a penalty when a stat is <50.
+            int damageTable = Level * baseWeaponSkill / 20;
+
+            double damageWithBonus = Math.Floor(damageTable * (200 + itemBonus) / 500.0);
+            double damageWithStat = Math.Floor(damageWithBonus * (100 + (stat - 50) / 2.0) / 100.0);
+            double damageWithSpec = Math.Floor(damageWithStat * (100 + weaponSpec) / 100.0);
+            return (int) Math.Floor(damageWithSpec * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 
         /// <summary>
@@ -5651,7 +5670,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            return ApplyWeaponQualityAndConditionToDamage(weapon, WeaponDamageWithoutQualityAndCondition(weapon));
+            return WeaponDamageWithoutQualityAndCondition(weapon) * AttackComponent.GetWeaponQualityConditionModifier(weapon);
         }
 
         public double GetWeaponDpsCap()
@@ -5675,11 +5694,6 @@ namespace DOL.GS
             double dps = Math.Min(weaponDps, GetWeaponDpsCap());
             dps *= 1 + GetModified(eProperty.DPS) * 0.01;
             return dps;
-        }
-
-        public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
-        {
-            return damage * weapon.Quality * 0.01 * weapon.ConditionPercent * 0.01;
         }
 
         public override bool CanCastWhileAttacking()

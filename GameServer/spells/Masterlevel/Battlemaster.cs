@@ -573,7 +573,7 @@ namespace DOL.GS.Spells
 
             if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
             {
-                double damage = player.attackComponent.AttackDamage(weapon, null, out _) * effectiveness;
+                double damage = player.attackComponent.WeaponDamage(weapon, null, effectiveness, out _);
 
                 if (target is GamePlayer)
                     ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
@@ -610,7 +610,7 @@ namespace DOL.GS.Spells
                 damage += resistModifier;
                 ad.Modifier += resist;
                 ad.Damage = (int)damage;
-                ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.AttackDamage(weapon, null, out _) * effectiveness));
+                ad.Damage = Math.Min(ad.Damage, (int)player.attackComponent.WeaponDamage(weapon, null, effectiveness, out _));
                 ad.Damage = (int)(ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
 
                 if (ad.Damage == 0)

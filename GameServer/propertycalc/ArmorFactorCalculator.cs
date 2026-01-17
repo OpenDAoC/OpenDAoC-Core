@@ -27,15 +27,15 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
                 case IGameEpicNpc epicNpc:
-                    return CalculateLivingArmorFactor(living, property, 12 * epicNpc.ArmorFactorScalingFactor, 50);
+                    return CalculateLivingArmorFactor(living, property, 12.5 * epicNpc.ArmorFactorScalingFactor, 50);
                 case NecromancerPet:
-                    return CalculateLivingArmorFactor(living, property, 12, 121);
+                    return CalculateLivingArmorFactor(living, property, 12.5, 121);
                 case GameSummonedPet:
-                    return CalculateLivingArmorFactor(living, property, 12, 175);
+                    return CalculateLivingArmorFactor(living, property, 12.5, 175);
                 case GuardLord:
-                    return CalculateLivingArmorFactor(living, property, 12, 134);
+                    return CalculateLivingArmorFactor(living, property, 12.5, 134);
                 default:
-                    return CalculateLivingArmorFactor(living, property, 12, 200);
+                    return CalculateLivingArmorFactor(living, property, 12.5, 200);
             }
 
             static int CalculatePlayerArmorFactor(GameLiving living, eProperty property)
@@ -70,7 +70,7 @@ namespace DOL.GS.PropertyCalc
                     component = living as GameKeepComponent;
 
                 if (component == null)
-                    return 1;
+                    return 0;
 
                 double keepLevelMod = 1 + component.Keep.Level * 0.1;
                 int typeMod = component.Keep is GameKeep ? 24 : 12;

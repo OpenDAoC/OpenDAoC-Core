@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -416,7 +417,8 @@ namespace DOL.GS
 
                 foreach (ECSGameSpellEffect damageAdd in regularDamageAdds)
                 {
-                    (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
+                    double effectiveness = damageAdd.Effectiveness * Math.ScaleB(1.0, -numRegularDmgAddsApplied);
+                    (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, effectiveness);
                     numRegularDmgAddsApplied++;
                 }
             }
@@ -434,7 +436,8 @@ namespace DOL.GS
                 if (!damageShield.IsActive)
                     continue;
 
-                (damageShield.SpellHandler as DamageShieldSpellHandler).Handle(ad, 1);
+                double effectiveness = damageShield.Effectiveness;
+                (damageShield.SpellHandler as DamageShieldSpellHandler).Handle(ad, effectiveness);
             }
         }
 

@@ -365,7 +365,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(wd % 256));
 				pak.WriteByte(0x00);
 				// weaponskill
-				int ws = m_gameClient.Player.DisplayedWeaponSkill;
+				int ws = m_gameClient.Player.GetDisplayedWeaponSkill();
 				pak.WriteByte((byte)(ws >> 8));
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte)(ws & 0xff));

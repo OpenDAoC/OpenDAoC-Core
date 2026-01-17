@@ -28,7 +28,6 @@ namespace DOL.GS.Spells
             {
                 CalculateDamageVariance(target, out double minVariance, out double maxVariance);
                 double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
-                effectiveness *= 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
                 damage = Spell.Damage * variance * effectiveness * attackData.Interval * 0.001;
             }
             else
@@ -54,13 +53,6 @@ namespace DOL.GS.Spells
 
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x0A, target.HealthPercent);
-        }
-
-        public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
-        {
-            // Incomplete implementation. See base method for details.
-            min = 0.8;
-            max = min * (5 / 3.0);
         }
     }
 
@@ -90,7 +82,6 @@ namespace DOL.GS.Spells
             {
                 CalculateDamageVariance(target, out double minVariance, out double maxVariance);
                 double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
-                effectiveness *= 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
                 damage = Spell.Damage * variance * effectiveness * attackData.Interval * 0.001;
             }
             else
@@ -114,30 +105,19 @@ namespace DOL.GS.Spells
             foreach (GamePlayer player in attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x14, target.HealthPercent);
         }
-
-        public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
-        {
-            // Incomplete implementation. See base method for details.
-            min = 0.85;
-            max = min * (5 / 3.0);
-        }
     }
 
-    public abstract class AbstractDamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : SpellHandler(caster, spell, spellLine)
+    public abstract class AbstractDamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : SingleStatBuff(caster, spell, spellLine)
     {
+        public override bool BuffReceivesSpecBonus => true;
+        public override eProperty Property1 => eProperty.Undefined; // Not a real property, SingleStatBuff is only implemented to apply buff spec bonus.
+
         public abstract void Handle(AttackData attackData, double effectiveness);
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
-            // According to live tests, a lower bound of 1.0 should be (or close to) the best variance possible.
-            // However, lower bound is supposed to be allowed to go below 1 for both damage adds and damage shields.
-            // Damage adds are supposed to scale with weaponskill / armor, but independently from the attack's damage.
-            // Damage shields are supposed to scale with spec to some extent.
-            // Upper bound is equal to lower*(5/3) most of the time, but doesn't seem to be the case for damage adds when weaponskill is very low for example.
-            // A similar effectiveness bonus as buffs may be used.
-            // In practice, a damage add seems to do less damage than a damage shield of the same value, probably due to the different way they scale.
-            // We may want to take level difference into account despite not being live like.
-            base.CalculateDamageVariance(target, out min, out max);
+            min = 0.75;
+            max = 1.25;
         }
 
         protected static bool AreArgumentsValid(AttackData attackData, out GameLiving attacker, out GameLiving target)
@@ -172,7 +152,6 @@ namespace DOL.GS.Spells
 
         protected AttackData CreateAttackData(double damage, GameLiving attacker, GameLiving target)
         {
-            // Damage adds and shields are unaffected by resistances.
             return new()
             {
                 Attacker = attacker,

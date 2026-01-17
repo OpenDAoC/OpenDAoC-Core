@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
                 Body.AbilityBonus[eProperty.Resist_Crush] = summonedValue;
                 Body.AbilityBonus[eProperty.Resist_Thrust] = summonedValue;
                 Body.AbilityBonus[eProperty.MagicAbsorption] = summonedValue + 100;
-                Body.AbilityBonus[eProperty.ArmorAbsorption] = summonedValue + 100;
+                Body.AbilityBonus[eProperty.PhysicalAbsorption] = summonedValue + 100;
                 Body.AbilityBonus[eProperty.StyleAbsorb] = summonedValue + 100;
             }
             else
@@ -126,7 +126,7 @@ namespace DOL.AI.Brain
                 Body.AbilityBonus[eProperty.Resist_Crush] = min_value;
                 Body.AbilityBonus[eProperty.Resist_Thrust] = min_value;
                 Body.AbilityBonus[eProperty.MagicAbsorption] = 10;
-                Body.AbilityBonus[eProperty.ArmorAbsorption] = 10;
+                Body.AbilityBonus[eProperty.PhysicalAbsorption] = 10;
                 Body.AbilityBonus[eProperty.StyleAbsorb] = 10;
             }
         }

@@ -129,20 +129,24 @@ namespace DOL.GS
             ReadOnlySpan<float> center,
             ReadOnlySpan<float> polyPickExt,
             ReadOnlySpan<EDtPolyFlags> queryFilter,
-            out uint outputPolyRef,
+            out ulong outputPolyRef,
             Span<float> outputVector);
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, EDtPolyFlags flags);
+        private static partial EDtStatus SetPolyFlags(
+            IntPtr meshPtr,
+            ulong polyRef,
+            EDtPolyFlags flags);
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus QueryPolygons(IntPtr queryPtr,
+        private static partial EDtStatus QueryPolygons(
+            IntPtr queryPtr,
             ReadOnlySpan<float> center,
             ReadOnlySpan<float> polyPickExt,
             ReadOnlySpan<EDtPolyFlags> queryFilter,
-            Span<uint> outputPolyRefs,
+            Span<ulong> outputPolyRefs,
             out int outputPolyCount,
             int maxPolyCount);
 

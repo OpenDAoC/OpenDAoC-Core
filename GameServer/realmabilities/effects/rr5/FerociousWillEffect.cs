@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Effects
 {
@@ -34,7 +30,7 @@ namespace DOL.GS.Effects
                     p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
                 }
             }
-            owner.BaseBuffBonusCategory[eProperty.ArmorAbsorption] += m_currentBonus;
+            owner.BaseBuffBonusCategory[eProperty.PhysicalAbsorption] += m_currentBonus;
         }
 
 		public override string Name { get { return "Ferocious Will"; } }
@@ -43,7 +39,7 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
-			owner.BaseBuffBonusCategory[eProperty.ArmorAbsorption] -= m_currentBonus;
+			owner.BaseBuffBonusCategory[eProperty.PhysicalAbsorption] -= m_currentBonus;
 			base.Stop();
 		}
 
