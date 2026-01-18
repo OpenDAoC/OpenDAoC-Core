@@ -48,34 +48,34 @@ namespace DOL.GS.PacketHandler.Client.v168
 		private static readonly Dictionary<ushort, TeleportLocation> KeepTeleportLocations = new Dictionary<ushort, TeleportLocation>()
 		{
             // Hibernia Keeps
-            { 106, new TeleportLocation(409943, 607106, 8588, 3075) }, // Ailinne
-            { 105, new TeleportLocation(448260, 666891, 6812, 4095) }, // Scataigh
-            { 103, new TeleportLocation(442211, 578542, 8972, 2042) }, // nGed
-            { 104, new TeleportLocation(475451, 596571, 8460, 3066) }, // da Behn
-            { 102, new TeleportLocation(474569, 543271, 8324, 3071) }, // Bolg
-            { 101, new TeleportLocation(431337, 508335, 8844, 2049) }, // Crim
-            { 100, new TeleportLocation(472164, 501244, 8868, 2174) }, // Crauchon
+            { 106, new TeleportLocation(409943, 607106, 8588, 3075) },	// Ailinne
+            { 105, new TeleportLocation(448260, 666891, 6812, 4095) },	// Scataigh
+            { 103, new TeleportLocation(442211, 578542, 8972, 2042) },	// nGed
+            { 104, new TeleportLocation(475451, 596571, 8460, 3066) },	// da Behn
+            { 102, new TeleportLocation(474569, 543271, 8324, 3071) },	// Bolg
+            { 101, new TeleportLocation(431337, 508335, 8844, 2049) },	// Crim
+            { 100, new TeleportLocation(472164, 501244, 8868, 2174) },	// Crauchon
             
             // Midgard Keeps
-            { 80, new TeleportLocation(639349, 345895, 8756, 1027) }, // Fensalir
-            { 81, new TeleportLocation(684664, 391064, 8788, 2048) }, // Arvakre
-            { 79, new TeleportLocation(609628, 377849, 8996, 2037) }, // Glenlock
-            { 77, new TeleportLocation(639950, 412130, 8516, 2497) }, // Hlidskialf
-            { 78, new TeleportLocation(603012, 408550, 8372, 1020) }, // Blendrake
-            { 76, new TeleportLocation(534443, 365387, 8812, 3088) }, // Nottmor
-            { 75, new TeleportLocation(533670, 407442, 9036, 1022) }, // Bledmeer
+            { 80, new TeleportLocation(639349, 345895, 8756, 1027) },	// Fensalir
+            { 81, new TeleportLocation(684664, 391064, 8788, 2048) },	// Arvakre
+            { 79, new TeleportLocation(609628, 377849, 8996, 2037) },	// Glenlock
+            { 77, new TeleportLocation(639950, 412130, 8516, 2497) },	// Hlidskialf
+            { 78, new TeleportLocation(603012, 408550, 8372, 1020) },	// Blendrake
+            { 76, new TeleportLocation(534443, 365387, 8812, 3088) },	// Nottmor
+            { 75, new TeleportLocation(533670, 407442, 9036, 1022) },	// Bledmeer
             
             // Albion Keeps
-            { 56, new TeleportLocation(627140, 607067, 8668, 2209) }, // Renaris
-            { 55, new TeleportLocation(600731, 648787, 8516, 105) },  // Hurbury
-            { 53, new TeleportLocation(606521, 574815, 8972, 1) },    // Bold
-            { 54, new TeleportLocation(581780, 602761, 8588, 2047) }, // Sursbrook
-            { 52, new TeleportLocation(573112, 549037, 8324, 1305) }, // Erasleigh
-            { 51, new TeleportLocation(617045, 510315, 8844, 4089) }, // Berkstead
-            { 50, new TeleportLocation(576554, 502127, 8868, 1241) }, // Benowyc
+            { 56, new TeleportLocation(627140, 607067, 8668, 2209) },	// Renaris
+            { 55, new TeleportLocation(600731, 648787, 8516, 105) },	// Hurbury
+            { 53, new TeleportLocation(606521, 574815, 8972, 1) },		// Bold
+            { 54, new TeleportLocation(581780, 602761, 8588, 2047) },	// Sursbrook
+            { 52, new TeleportLocation(573112, 549037, 8324, 1305) },	// Erasleigh
+            { 51, new TeleportLocation(617045, 510315, 8844, 4089) },	// Berkstead
+            { 50, new TeleportLocation(576554, 502127, 8868, 1241) },	// Benowyc
         };
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			int code = packet.ReadByte();
 			int RealmMap = packet.ReadByte();
