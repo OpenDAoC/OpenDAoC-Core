@@ -24,7 +24,7 @@ namespace DOL.GS.PacketHandler
             {
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 {
-                    string context = GetLogContext();
+                    string context = GetLogContext(client, packet);
                     string contextMsg = string.IsNullOrEmpty(context) ? string.Empty : $" Context: {context}";
                     log.Warn($"Long {nameof(PacketHandler)}.{nameof(HandlePacket)} ({(eClientPackets)packet.Code}) for {client.Player?.Name}({client.Player?.ObjectID}){contextMsg} Time: {stopTick - startTick}ms");
                 }
@@ -33,7 +33,7 @@ namespace DOL.GS.PacketHandler
 
         protected abstract void HandlePacketInternal(GameClient client, GSPacketIn packet);
 
-        protected virtual string GetLogContext()
+        protected virtual string GetLogContext(GameClient client, GSPacketIn packet)
         {
             return null;
         }
