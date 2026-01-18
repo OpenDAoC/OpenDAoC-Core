@@ -4,23 +4,21 @@ using System.Reflection;
 using DOL.Database;
 using DOL.GS.Quests;
 using DOL.GS.ServerRules;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerRegionChangeRequest, "Player Region Change Request handler.", eClientStatus.PlayerInGame)]
-    public class PlayerRegionChangeRequestHandler : IPacketHandler
+    public class PlayerRegionChangeRequestHandler : PacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger Log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Holds jump point types
         /// </summary>
         protected readonly Hashtable m_customJumpPointHandlers = new();
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             ushort zonePointId = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
             eRealm playerRealm = client.Player.Realm;

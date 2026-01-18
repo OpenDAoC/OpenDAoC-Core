@@ -3,9 +3,9 @@ using DOL.GS.Housing;
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.HouseDecorationRequest, "Handles housing decoration request", eClientStatus.PlayerInGame)]
-	public class HousingDecorationRotateRequestHandler : IPacketHandler
+	public class HousingDecorationRotateRequestHandler : PacketHandler
 	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			ushort housenumber = packet.ReadShort();
 			var index = (byte) packet.ReadByte();

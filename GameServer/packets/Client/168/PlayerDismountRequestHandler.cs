@@ -1,9 +1,9 @@
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerDismountRequest, "Handles Player Dismount Request.", eClientStatus.PlayerInGame)]
-    public class PlayerDismountRequestHandler : IPacketHandler
+    public class PlayerDismountRequestHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             GamePlayer player = client.Player;
 

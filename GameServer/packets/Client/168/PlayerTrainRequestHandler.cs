@@ -9,9 +9,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// handles Train clicks from Trainer Window
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.TrainHandlerOld, "Handles Player Train", eClientStatus.PlayerInGame)]
-    public class PlayerTrainHandlerOld : IPacketHandler
+    public class PlayerTrainHandlerOld : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             // Old packet for old clients.
 
@@ -29,9 +29,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// Handles Train clicks from Trainer Window
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.TrainHandler, "Handles Player Train", eClientStatus.PlayerInGame)]
-    public class PlayerTrainHandler : IPacketHandler
+    public class PlayerTrainHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (!TrainCommandHandler.CanTrain(client))
                 return;
@@ -152,9 +152,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// Summon trainer window
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.TrainWindowHandler, "Call Player Train Window", eClientStatus.PlayerInGame)]
-    public class PlayerTrainWindowHandler : IPacketHandler
+    public class PlayerTrainWindowHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (!TrainCommandHandler.CanTrain(client))
                 return;

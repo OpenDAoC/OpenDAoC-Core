@@ -1,9 +1,9 @@
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerTarget, "Handle Player Target Change.", eClientStatus.PlayerInGame)]
-    public class PlayerTargetHandler : IPacketHandler
+    public class PlayerTargetHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             ushort targetId = packet.ReadShort();
             ushort flags = packet.ReadShort();

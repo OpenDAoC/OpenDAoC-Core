@@ -6,18 +6,19 @@ using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.HousePlaceItem, "Handles things like placing indoor/outdoor items.", eClientStatus.PlayerInGame)]
-	public class HousingPlaceItemHandler : IPacketHandler
+	public class HousingPlaceItemHandler : PacketHandler
 	{
 		private const string DeedWeak = "deedItem";
 		private const string TargetHouse = "targetHouse";
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		private int _position;
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			try
 			{

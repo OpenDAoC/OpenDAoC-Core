@@ -8,14 +8,14 @@ using DOL.Language;
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DoorRequest, "Door Interact Request Handler", eClientStatus.PlayerInGame)]
-    public class DoorRequestHandler : IPacketHandler
+    public class DoorRequestHandler : PacketHandler
     {
         public static int HandlerDoorId { get; private set; }
 
         /// <summary>
         /// door index which is unique
         /// </summary>
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             int doorId = (int) packet.ReadInt();
             HandlerDoorId = doorId;

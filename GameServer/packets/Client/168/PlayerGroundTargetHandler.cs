@@ -1,9 +1,9 @@
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerGroundTarget, "Handles Player Ground Target Settings", eClientStatus.PlayerInGame)]
-    public class PlayerGroundTargetHandler : IPacketHandler
+    public class PlayerGroundTargetHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             int groundX = (int) packet.ReadInt();
             int groundY = (int) packet.ReadInt();

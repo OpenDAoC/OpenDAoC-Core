@@ -5,12 +5,12 @@ using DOL.GS.Keeps;
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DialogResponse, "Response Packet from a Question Dialog", eClientStatus.PlayerInGame)]
-    public class DialogResponseHandler : IPacketHandler
+    public class DialogResponseHandler : PacketHandler
     {
         public const string GUILD_INVITE_KEY = "guild_invite";
         public const string GROUP_INVITE_KEY = "group_invite";
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             ushort data1 = packet.ReadShort();
             ushort data2 = packet.ReadShort();

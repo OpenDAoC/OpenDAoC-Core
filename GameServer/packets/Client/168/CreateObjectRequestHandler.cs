@@ -1,9 +1,9 @@
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CreateObjectRequest, "Handles creation packet requests for objects", eClientStatus.PlayerInGame)]
-    public class CreateObjectRequestHandler : IPacketHandler
+    public class CreateObjectRequestHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (client.Player == null)
                 return;

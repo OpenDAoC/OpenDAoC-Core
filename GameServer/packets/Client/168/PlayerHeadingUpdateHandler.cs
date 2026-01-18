@@ -1,13 +1,9 @@
-using System.Reflection;
-
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerHeadingUpdate, "Handles Player Heading Update (Short State)", eClientStatus.PlayerInGame)]
-    public class PlayerHeadingUpdateHandler : IPacketHandler
+    public class PlayerHeadingUpdateHandler : PacketHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (client.Player == null || client.Player.ObjectState is not GameObject.eObjectState.Active)
                 return;
