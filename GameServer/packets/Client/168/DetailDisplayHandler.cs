@@ -16,14 +16,11 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// delve button shift+i = detail of spell object...
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DetailRequest, "Handles detail display", eClientStatus.PlayerInGame)]
-	public class DetailDisplayHandler : IPacketHandler
+	public class DetailDisplayHandler : PacketHandler
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
 		protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			if (client?.Player == null) 
 				return;

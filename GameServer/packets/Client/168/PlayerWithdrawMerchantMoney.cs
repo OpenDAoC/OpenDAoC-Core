@@ -1,17 +1,15 @@
 using System.Reflection;
 using DOL.GS.Housing;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.WithDrawMerchantMoney, "Withdraw GameConsignmentMerchant Merchant Money", eClientStatus.PlayerInGame)]
-    public class PlayerWithdrawMerchantMoney : IPacketHandler
+    public class PlayerWithdrawMerchantMoney : PacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
 			// player is null, return
             if (client.Player == null)

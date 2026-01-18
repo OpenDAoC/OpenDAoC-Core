@@ -1,9 +1,9 @@
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CheckLosRequest, "Handles a LoS Check Response", eClientStatus.PlayerInGame)]
-    public class CheckLosResponseHandler : IPacketHandler
+    public class CheckLosResponseHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             ushort checkerObjectId = packet.ReadShort();
             ushort targetObjectId = packet.ReadShort();

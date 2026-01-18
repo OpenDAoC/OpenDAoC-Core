@@ -1,16 +1,14 @@
 using System.Reflection;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CharacterOverviewRequest, "Handles account realm info and sending char overview", eClientStatus.LoggedIn)]
-	public class CharacterOverviewRequestHandler : IPacketHandler
+	public class CharacterOverviewRequestHandler : PacketHandler
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			// This actually prevents 1124 from entering the game. Should it be > instead of >=?
 			if (client.Version >= GameClient.eClientVersion.Version1124) // 1124 support

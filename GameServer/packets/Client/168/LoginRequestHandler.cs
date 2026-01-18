@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 	///	}
 	/// </remarks>
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.LoginRequest, "Handles the login.", eClientStatus.None)]
-	public class LoginRequestHandler : IPacketHandler
+	public class LoginRequestHandler : PacketHandler
 	{
 		private static readonly Logger Log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -57,7 +57,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		private static HashSet<string> _clientsLoggingIn = new();
 		private static Lock _lock = new();
 
-		public async void HandlePacket(GameClient client, GSPacketIn packet)
+		protected async override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			// Prevent multiple concurrent logins for the same client.
 			if (client == null)

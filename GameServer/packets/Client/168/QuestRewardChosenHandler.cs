@@ -7,9 +7,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// </summary>
     /// <author>Aredhel</author>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.QuestRewardChosen, "Quest Reward Choosing Handler", eClientStatus.PlayerInGame)]
-    public class QuestRewardChosenHandler : IPacketHandler
+    public class QuestRewardChosenHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             byte response = (byte) packet.ReadByte();
 

@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Threading;
 using DOL.Logging;
 using DOL.Network;
-using DOL.Timing;
-using ECS.Debug;
 
 namespace DOL.GS.PacketHandler
 {
@@ -191,15 +189,7 @@ namespace DOL.GS.PacketHandler
 
             try
             {
-                long startTick = MonotonicTime.NowMs;
                 packetHandler.HandlePacket(_client, packet);
-                long stopTick = MonotonicTime.NowMs;
-
-                if (log.IsWarnEnabled)
-                {
-                    if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                        log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} ({(eClientPackets) packet.Code}) for: {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
-                }
             }
             catch (Exception e)
             {

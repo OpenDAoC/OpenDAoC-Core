@@ -5,9 +5,9 @@ using DOL.Language;
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerMoveItem, "Handle Moving Items Request", eClientStatus.PlayerInGame)]
-    public class PlayerMoveItemRequestHandler : IPacketHandler
+    public class PlayerMoveItemRequestHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (client.Player == null)
                 return;

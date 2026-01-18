@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.Commands;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -9,14 +8,11 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// Handles spell cast requests from client
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
-    public class UseSpellHandler : AbstractCommandHandler, IPacketHandler
+    public class UseSpellHandler : PacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger Log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (client.Player.ObjectState is not GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing)
                 return;

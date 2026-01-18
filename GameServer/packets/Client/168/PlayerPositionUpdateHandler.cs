@@ -5,18 +5,16 @@ using System.Text;
 using DOL.Database;
 using DOL.GS.Utils;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PositionUpdate, "Handles player position updates", eClientStatus.PlayerInGame)]
-    public class PlayerPositionUpdateHandler : IPacketHandler
+    public class PlayerPositionUpdateHandler : PacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             //Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
             if (client.Player.ObjectState is not GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing)
@@ -25,11 +23,11 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (!client.Player.IsPositionUpdateFromPacketAllowed())
                 return;
 
-            HandlePacketInternal(client, packet);
+            Handle(client, packet);
             client.Player.OnPositionUpdateFromPacket();
         }
 
-        private static void HandlePacketInternal(GameClient client, GSPacketIn packet)
+        private static void Handle(GameClient client, GSPacketIn packet)
         {
             // In very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
             if (client.Player.ObjectState is not GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing and not GameClient.eClientState.Linkdead)

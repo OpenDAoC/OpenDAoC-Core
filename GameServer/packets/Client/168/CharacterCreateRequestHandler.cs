@@ -7,6 +7,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -15,12 +16,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// in order to support future debugging. - Tolakram
     /// </summary>
     [PacketHandler(PacketHandlerType.TCP, eClientPackets.CharacterCreateRequest, "Handles character creation requests", eClientStatus.LoggedIn)]
-    public class CharacterCreateRequestHandler : IPacketHandler
+    public class CharacterCreateRequestHandler : PacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Max Points to allow on player creation
@@ -38,7 +36,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             Unknown = 0x456789AB,
         }
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             bool needRefresh = false;
 

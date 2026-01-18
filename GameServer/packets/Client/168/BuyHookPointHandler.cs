@@ -22,9 +22,9 @@ using DOL.GS.Keeps;
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.BuyHookPoint, "buy hookpoint siege weapon/mob", eClientStatus.PlayerInGame)]
-	public class BuyHookPointHandler : IPacketHandler
+	public class BuyHookPointHandler : PacketHandler
 	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			ushort keepId = packet.ReadShort();
 			ushort wallId = packet.ReadShort();

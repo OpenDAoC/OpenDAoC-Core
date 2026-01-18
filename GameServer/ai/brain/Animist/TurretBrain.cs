@@ -38,6 +38,9 @@ namespace DOL.AI.Brain
             {
                 case eCheckSpellType.Defensive:
                 {
+                    if (spell.IsHarmful)
+                        return false;
+
                     GameLiving target = FindTargetForDefensiveSpell(spell);
 
                     if (target != null)
@@ -47,6 +50,9 @@ namespace DOL.AI.Brain
                 }
                 case eCheckSpellType.Offensive:
                 {
+                    if (!spell.IsHarmful)
+                        return false;
+
                     GameLiving target = CalculateNextAttackTarget();
 
                     if (target != null)

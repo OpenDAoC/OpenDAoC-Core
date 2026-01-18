@@ -24,7 +24,7 @@ using DOL.GS.Keeps;
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.ShowWarmapRequest, "Show Warmap", eClientStatus.PlayerInGame)]
-	public class WarmapShowRequestHandler : IPacketHandler
+	public class WarmapShowRequestHandler : PacketHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

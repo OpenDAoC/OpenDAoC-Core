@@ -1,15 +1,16 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using DOL.Database;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.WorldInitRequest, "Handles world init replies", eClientStatus.LoggedIn)]
-    public class WorldInitRequestHandler : IPacketHandler
+    public class WorldInitRequestHandler : PacketHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public async void HandlePacket(GameClient client, GSPacketIn packet)
+        protected async override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             if (client.ClientState is not GameClient.eClientState.CharScreen and not GameClient.eClientState.Playing)
                 return;
