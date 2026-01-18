@@ -3,9 +3,9 @@ using DOL.GS.Housing;
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.HouseEnterLeave, "Housing Enter Leave Request.", eClientStatus.PlayerInGame)]
-    public class HouseEnterLeaveHandler : IPacketHandler
+    public class HouseEnterLeaveHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             int pid = packet.ReadShort();
             int houseNumber = packet.ReadShort();

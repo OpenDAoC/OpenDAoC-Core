@@ -1,16 +1,14 @@
 using System.Reflection;
+using DOL.Logging;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PetWindow, "Handle Pet Window Command", eClientStatus.PlayerInGame)]
-    public class PetWindowHandler : IPacketHandler
+    public class PetWindowHandler : PacketHandler
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger Log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             byte aggroState = (byte) packet.ReadByte(); // 1-Aggressive, 2-Defensive, 3-Passive
             byte walkState = (byte) packet.ReadByte(); // 1-Follow, 2-Stay, 3-GoTarget, 4-Here

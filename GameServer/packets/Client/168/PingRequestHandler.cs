@@ -4,7 +4,7 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// Handles the ping packet
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PingRequest, "Sends the ping reply", eClientStatus.None)]
-    public class PingRequestHandler : IPacketHandler
+    public class PingRequestHandler : PacketHandler
     {
         /// <summary>
         /// Called when the packet has been received
@@ -12,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <param name="client">Client that sent the packet</param>
         /// <param name="packet">Packet data</param>
         /// <returns>Non zero if function was successfull</returns>
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             packet.Skip(4); //Skip the first 4 bytes
             client.PingTime = GameLoop.GameLoopTime;

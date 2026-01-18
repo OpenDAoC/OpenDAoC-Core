@@ -8,9 +8,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// No longer used after version 1.104
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CharacterDeleteRequest, "Handles character delete requests", eClientStatus.LoggedIn)]
-    public class CharacterDeleteRequestHandler : IPacketHandler
+    public class CharacterDeleteRequestHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             string charName = packet.ReadString(30);
             DbCoreCharacter[] chars = client.Account.Characters;

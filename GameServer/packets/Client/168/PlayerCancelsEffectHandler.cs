@@ -6,9 +6,9 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// Handles effect cancel requests
     /// </summary>
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerCancelsEffect, "Handle Player Effect Cancel Request.", eClientStatus.PlayerInGame)]
-    public class PlayerCancelsEffectHandler : IPacketHandler
+    public class PlayerCancelsEffectHandler : PacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
             int effectId = packet.ReadShort();
             GamePlayer player = client.Player;

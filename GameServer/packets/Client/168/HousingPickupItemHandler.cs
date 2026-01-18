@@ -7,17 +7,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 	/// Handle housing pickup item requests from the client.
 	/// </summary>
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.PlayerPickupHouseItem, "Handle Housing Pick Up Request.", eClientStatus.PlayerInGame)]
-	public class HousingPickupItemHandler : IPacketHandler
+	public class HousingPickupItemHandler : PacketHandler
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 		/// <summary>
 		/// Handle the packet
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="packet"></param>
 		/// <returns></returns>
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
 		{
 			int unknown = packet.ReadByte();
 			int position = packet.ReadByte();
