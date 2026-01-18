@@ -3,7 +3,7 @@ namespace DOL.GS.PacketHandler.Client.v168
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CommandHandler, "Handles the players commands", eClientStatus.PlayerInGame)]
     public class PlayerCommandHandler : PacketHandler
     {
-        private string _lastUsedCommand = string.Empty;
+        private const string LAST_USED_COMMAND_KEY = "LAST_USED_COMMAND_KEY";
 
         protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
@@ -12,20 +12,21 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (client.Version < GameClient.eClientVersion.Version1127)
                 packet.Skip(7);
 
-            _lastUsedCommand = packet.ReadString(255);
+            string command = packet.ReadString(255);
+            client.Player.TempProperties.SetProperty(LAST_USED_COMMAND_KEY, command);
 
-            if (!ScriptMgr.HandleCommand(client, _lastUsedCommand))
+            if (!ScriptMgr.HandleCommand(client, command))
             {
-                if (_lastUsedCommand.Length > 0 && _lastUsedCommand[0] == '&')
-                    _lastUsedCommand = "/" + _lastUsedCommand[1..];
+                if (command.Length > 0 && command[0] == '&')
+                    command = "/" + command[1..];
 
-                client.Out.SendMessage($"No such command ({_lastUsedCommand})", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage($"No such command ({command})", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
 
-        protected override string GetLogContext()
+        protected override string GetLogContext(GameClient client, GSPacketIn packet)
         {
-            return _lastUsedCommand;
+            return client.Player.TempProperties.GetProperty<string>(LAST_USED_COMMAND_KEY);
         }
     }
 }
