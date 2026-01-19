@@ -10,6 +10,8 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class AbstractCCSpellHandler : ImmunityEffectSpellHandler
     {
+        public AbstractCCSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
         public override void ApplyEffectOnTarget(GameLiving target)
         {
             if (target.HasAbility(Abilities.CCImmunity))
@@ -125,7 +127,10 @@ namespace DOL.GS.Spells
             return resistChance;
         }
 
-        public AbstractCCSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        protected override double CalculateBuffDebuffEffectiveness()
+        {
+            return 1.0; // Unused by hard CCs.
+        }
     }
 
     /// <summary>

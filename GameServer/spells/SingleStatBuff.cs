@@ -1,5 +1,4 @@
 using System;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
