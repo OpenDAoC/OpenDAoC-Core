@@ -661,7 +661,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				text = MoneyItemName + "s";
+				text = MoneyItemName;// + "s"; Is already included in the ItemName
 			}
 
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.BuyItemsFor", this.Name, text), eChatType.CT_Say, eChatLoc.CL_ChatWindow);
