@@ -127,7 +127,7 @@ namespace DOL.GS.Scripts
                         if (player.Level != 50 || player.Level < 10)
                         {
                             // Fügt die Battlegrounds-Zeile an
-                            message += "[Battleground],\n\n"; 
+                            message += "[Battleground]\n\n"; 
                         }
 
                         // Fügt die Housing-Optionen an
@@ -158,7 +158,7 @@ namespace DOL.GS.Scripts
                         if (player.Level != 50 || player.Level < 10)
                         {
                             // Fügt die Battlegrounds-Zeile an
-                            message += "[Battleground],\n\n";
+                            message += "[Battleground]\n\n";
                         }
 
                         // Fügt die Housing-Optionen an
