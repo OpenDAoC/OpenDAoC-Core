@@ -3009,20 +3009,6 @@ namespace DOL.GS.Commands
 					text.Add(attacker.Name);
 			}
 
-			List<ECSGameEffect> allEffects = targetMob.effectListComponent.GetEffects();
-
-			if (allEffects.Count > 0)
-			{
-				text.Add("");
-				text.Add("Effect List:");
-
-				foreach (ECSGameEffect effect in allEffects)
-				{
-					long remaining = effect.IsConcentrationEffect() ? -1 : effect.GetRemainingTimeForClient();
-					text.Add($"{effect.Name} (type: {effect.EffectType}) (remaining: {remaining}) (source: {(effect.SpellHandler == null ? targetMob.Name : effect.SpellHandler.Caster.Name)}) (disabled: {effect.IsDisabled})");
-				}
-			}
-
 			client.Out.SendCustomTextWindow("Mob State", text);
 		}
 

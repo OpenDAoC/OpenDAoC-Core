@@ -29,12 +29,11 @@ namespace DOL.GS.Commands
             AddDefenseInfo(info, target);
             AddMiscellaneousInfo(info, target);
 
-            client.Out.SendCustomTextWindow($"[{target.Name}]", info);
+            client.Out.SendCustomTextWindow($"[{target.Name} stats]", info);
 
             static bool TryValidateTarget(GameClient client, out GameLiving target)
             {
-                target = client.Player.TargetObject as GameLiving;
-                target ??= client.Player;
+                target = (client.Player.TargetObject as GameLiving) ?? client.Player;
 
                 if (target == null)
                 {
