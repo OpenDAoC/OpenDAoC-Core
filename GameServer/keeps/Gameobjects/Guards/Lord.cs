@@ -153,7 +153,7 @@ namespace DOL.GS.Keeps
                     foreach (GamePlayer player in GetPlayersInRadius(2000))
                     {
                         // Check if BG limits are reched and realm check
-                        if (player != null && player.Realm == captureRealm && player.Level < bg.MaxLevel)
+                        if (player != null && player.Realm == captureRealm && player.Level <= bg.MaxLevel)
                         {
                             // Give Player complete level of current level
                             long xpToNextLevel = player.GetExperienceNeededForLevel(player.Level + 1);
