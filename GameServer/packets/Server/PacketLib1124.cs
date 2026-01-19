@@ -551,12 +551,13 @@ namespace DOL.GS.PacketHandler
                 DQRewardQ dqrewardq = quest as DQRewardQ;
                 using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.QuestEntry)))
                 {
+					string fullQuestName = $"{dqrewardq.Name} {dqrewardq.QuestLevel}";
                     pak.WriteByte((byte)index);
-                    pak.WriteByte((byte)dqrewardq.Name.Length);
+                    pak.WriteByte((byte)fullQuestName.Length);
                     pak.WriteShort(0x00); // unknown
                     pak.WriteByte((byte)dqrewardq.Goals.Count);
                     pak.WriteByte((byte)dqrewardq.Level);
-                    pak.WriteNonNullTerminatedString(dqrewardq.Name);
+                    pak.WriteNonNullTerminatedString(fullQuestName);
                     pak.WritePascalString(dqrewardq.Description);
                     int goalindex = 0;
                     foreach (DQRQuestGoal goal in dqrewardq.Goals)

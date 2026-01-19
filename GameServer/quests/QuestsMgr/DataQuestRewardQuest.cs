@@ -512,8 +512,23 @@ namespace DOL.GS.Quests
 		/// </summary>
 		public override string Name
 		{
-			get	{ return m_dqRewardQ.QuestName + " (Level " + m_dqRewardQ.MinLevel + ")"; }
-		}		
+			get	{ return m_dqRewardQ.QuestName; }
+		}	
+
+		/// <summary>
+		/// Quest level of this quest
+		/// </summary>
+		public string QuestLevel
+		{
+			get 
+			{
+				if (m_dqRewardQ.MinLevel != m_dqRewardQ.MaxLevel)
+				{
+					return $"(Level {m_dqRewardQ.MinLevel} - {m_dqRewardQ.MaxLevel})";
+				}
+				return $"(Level {m_dqRewardQ.MinLevel})";
+			}
+		}  	
 						
 		/// <summary>
 		/// Get the quest 'story' formatted with personalized messaging in the packet

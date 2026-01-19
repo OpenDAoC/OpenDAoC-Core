@@ -131,7 +131,8 @@ namespace DOL.GS.PacketHandler
                 pak.WriteByte(0x00); // unknown
                 pak.WriteByte((offer) ? (byte)0x02 : (byte)0x01); // Accept/Decline or Finish/Not Yet
                 pak.WriteByte(0x01); // Wrap
-                pak.WritePascalString(quest.Name);
+                pak.WritePascalString($"{quest.Name} {quest.QuestLevel}");
+				 
 
 				if (quest.Description.Length > 255)
 				{
