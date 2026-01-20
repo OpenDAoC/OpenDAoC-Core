@@ -4644,6 +4644,10 @@ namespace DOL.GS
 
             if (Level == MAX_LEVEL)
             {
+                // Automatically start Champion Level Path
+                this.RemoveChampionLevels();
+                this.Champion = true;
+                this.Out.SendUpdatePlayer();
                 if (GameServer.ServerRules.CanGenerateNews(this))
                 {
                     string newsmessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.Reached", Name, Level, LastPositionUpdateZone.Description);
