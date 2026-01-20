@@ -28,6 +28,11 @@ namespace DOL.GameServerConsole
 				log.Debug(string.Format("({0}, {1}): {2}", type, loc, msg));
 		}
 
+		public void SendRawMessage(string msg, eChatType type, eChatLoc loc)
+		{
+			SendMessage(msg, type, loc);
+		}
+
 		public void SendCustomDialog(string msg, CustomDialogResponse callback)
 		{
 			if (msg == null)

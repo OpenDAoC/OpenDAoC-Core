@@ -1,4 +1,6 @@
-﻿namespace DOL.GS.PacketHandler
+﻿using DOL.GS.Commands;
+
+namespace DOL.GS.PacketHandler
 {
     [PacketLib(1127, GameClient.eClientVersion.Version1127)]
     public class PacketLib1127 : PacketLib1126
@@ -23,6 +25,12 @@
         }
 
         public override void SendMessage(string msg, eChatType type, eChatLoc loc)
+        {
+            SnoopManager.CheckAndBroadcast(m_gameClient.Player, msg, type, loc);
+            SendRawMessage(msg, type, loc);
+        }
+
+        public override void SendRawMessage(string msg, eChatType type, eChatLoc loc)
         {
             if (m_gameClient.ClientState is GameClient.eClientState.CharScreen)
                 return;

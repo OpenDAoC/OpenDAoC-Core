@@ -8,7 +8,7 @@ namespace DOL.GS.Commands
         ePrivLevel.Admin,
         "Change speed hack detection parameters (non-persistent).",
         "/speedhack <parameter> <value>")]
-    public class SpeedHack : AbstractCommandHandler, ICommandHandler
+    public class SpeedHackCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         private const BindingFlags BINDING_FLAGS = BindingFlags.Static | BindingFlags.Public | BindingFlags.IgnoreCase;
 
