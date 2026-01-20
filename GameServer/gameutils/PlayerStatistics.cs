@@ -119,19 +119,16 @@ namespace DOL.GS
 
                 foreach (GamePlayer otherPlayer in ClientService.Instance.GetNonGmPlayers())
                 {
-                    if (otherPlayer.IgnoreStatistics || otherPlayer.Statistics is not PlayerStatistics stats)
+                    if (otherPlayer.IgnoreStatistics || otherPlayer.IsAnonymous || otherPlayer.Statistics is not PlayerStatistics stats)
                         continue;
 
-                    if (otherPlayer.RealmLevel > 31)
-                    {
-                        TryInsertTopStat(topRp, otherPlayer.Name, stats.TotalRealmPointsEarned);
+                    TryInsertTopStat(topRp, otherPlayer.Name, stats.TotalRealmPointsEarned);
 
-                        uint rphs = (uint) Math.Round(RPsPerHour(stats.TotalRealmPointsEarned, now.Subtract(stats._loginTime)));
-                        TryInsertTopStat(topLrp, otherPlayer.Name, rphs);
+                    uint rphs = (uint) Math.Round(RPsPerHour(stats.TotalRealmPointsEarned, now.Subtract(stats._loginTime)));
+                    TryInsertTopStat(topLrp, otherPlayer.Name, rphs);
 
-                        uint irs = (uint) Math.Round(stats.TotalRealmPointsEarned / Math.Max(1.0, stats.Deaths));
-                        TryInsertTopStat(topIrs, otherPlayer.Name, irs);
-                    }
+                    uint irs = (uint) Math.Round(stats.TotalRealmPointsEarned / Math.Max(1.0, stats.Deaths));
+                    TryInsertTopStat(topIrs, otherPlayer.Name, irs);
 
                     TryInsertTopStat(topKill, otherPlayer.Name, stats.KillsThatHaveEarnedRealmPoints);
                     TryInsertTopStat(topDeath, otherPlayer.Name, stats.Deathblows);
@@ -252,13 +249,13 @@ namespace DOL.GS
             {
                 GamePlayer otherPlayer = ClientService.Instance.GetPlayerByPartialName(playerName, out _);
 
-                if (otherPlayer == null)
+                if (otherPlayer == null || otherPlayer.IsAnonymous)
                 {
                     client.Player.Out.SendMessage($"No player with name {playerName} found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (otherPlayer.StatsAnonFlag)
+                if (otherPlayer.IgnoreStatistics)
                 {
                     client.Player.Out.SendMessage($"{playerName} doesn't want you to view his stats.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
