@@ -9,12 +9,12 @@ namespace DOL.GS.Commands
         ePrivLevel.Admin,
         "Snoops",
         "/snoop <player>")]
-    public class Snoop : AbstractCommandHandler, ICommandHandler
+    public class SnoopCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         /*
          * This command allows for the interception of private messages (Whispers/PMs) and
          * system logs. The use of this tool may be subject to data privacy laws such as
-         * GDPR (Europe), CCPA (California), and other regional telecommunications acts
+         * GDPR (Europe), CCPA (California), and other regional telecommunications acts.
          * 
          * By using this code, the Server Administrator assumes full responsibility for:
          * 1. Informing players that their private communications are not end-to-end encrypted
@@ -66,7 +66,7 @@ namespace DOL.GS.Commands
 
     public static class SnoopManager
     {
-        private static SnoopTimer _snoopTimer = new(null);
+        private static readonly SnoopTimer _snoopTimer = new(null);
         private static readonly Dictionary<GamePlayer, List<GamePlayer>> _activeObserver = new();
         private static readonly Lock _lock = new();
 
