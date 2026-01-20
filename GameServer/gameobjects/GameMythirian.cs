@@ -25,11 +25,11 @@ namespace DOL.GS
 		{
 			if (base.CanEquip(player))
 			{
-				if (Type_Damage <= player.ChampionLevel)
-				{
+				//if (Type_Damage <= player.ChampionLevel)
+				//{
 					return true;
-				}
-				player.Out.SendMessage("You do not meet the Champion Level requirement to equip this item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				//}
+				//player.Out.SendMessage("You do not meet the Champion Level requirement to equip this item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			return false;
 		}

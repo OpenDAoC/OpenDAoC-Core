@@ -741,12 +741,13 @@ namespace DOL.GS
                         m_player.Out.SendMessage($"{item.GetName(0, true)} can't go there!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return false;
                     }
-
-                    if (item.Type_Damage > m_player.ChampionLevel)
-                    {
-                        m_player.Out.SendMessage($"You can't use {item.GetName(0, true)}, you should increase your champion level.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return false;
-                    }
+                    
+                    // There shouldnt be a minimum Champion level for mythirians
+                    //if (item.Type_Damage > m_player.ChampionLevel)
+                    //{
+                    //    m_player.Out.SendMessage($"You can't use {item.GetName(0, true)}, you should increase your champion level.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    //    return false;
+                    //}
 
                     break;
                 }
