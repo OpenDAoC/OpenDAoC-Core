@@ -626,6 +626,7 @@ namespace DOL.GS.PacketHandler
         void SendUDPInitReply();
         void SendTime();
         void SendMessage(string msg, eChatType type, eChatLoc loc);
+        void SendRawMessage(string msg, eChatType type, eChatLoc loc);
         void SendPlayerCreate(GamePlayer playerToCreate);
         void SendObjectGuildID(GameObject obj, Guild guild);
         void SendPlayerQuit(bool totalOut);

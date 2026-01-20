@@ -171,6 +171,11 @@ namespace DOL.Tests
 		{
 			if (SendMessageMethod != null) SendMessageMethod(this, msg, type, loc);
 		}
+		public Action<TestPacketLib, string, eChatType, eChatLoc> SendRawMessageMethod { get; set; }
+		public void SendRawMessage(string msg, eChatType type, eChatLoc loc)
+		{
+			if (SendRawMessageMethod != null) SendRawMessageMethod(this, msg, type, loc);
+		}
 		public Action<TestPacketLib, GamePlayer> SendPlayerCreateMethod { get; set; }
 		public void SendPlayerCreate(GamePlayer playerToCreate)
 		{
