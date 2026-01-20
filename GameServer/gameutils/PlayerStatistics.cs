@@ -257,7 +257,7 @@ namespace DOL.GS
 
                 if (otherPlayer.IgnoreStatistics)
                 {
-                    client.Player.Out.SendMessage($"{playerName} doesn't want you to view his stats.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"{otherPlayer.Name} doesn't want you to view his stats.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
