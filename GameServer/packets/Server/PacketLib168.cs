@@ -625,6 +625,12 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
+		public virtual void SendRawMessage(string msg, eChatType type, eChatLoc loc)
+		{
+			// Unsupported.
+			SendMessage(msg, type, loc);
+		}
+
 		public virtual void SendPlayerCreate(GamePlayer playerToCreate)
 		{
 			if (playerToCreate == null)
