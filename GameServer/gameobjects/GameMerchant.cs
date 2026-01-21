@@ -832,6 +832,6 @@ namespace DOL.GS
 
 	public class GameSidiMerchant : GameItemCurrencyMerchant
 	{
-		public override string MoneyKey { get { return "sidi_soul"; } }
+		public override string MoneyKey { get { return "caer_sidi_soul"; } }
 	}
 }
