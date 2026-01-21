@@ -1244,6 +1244,11 @@ namespace DOL.GS.ServerRules
 
             ShowXpStatsToPlayer();
             playerToAward.GainExperience(arguments);
+            // Give Player champion experience
+            if (playerToAward.Champion && playerToAward.Level == 50)
+            {
+                playerToAward.GainChampionExperience(totalReward);
+            }
 
             double CalculateDamagePercent()
             {

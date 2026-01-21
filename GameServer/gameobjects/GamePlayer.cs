@@ -4362,7 +4362,7 @@ namespace DOL.GS
             }
 
             // Get Champion Experience too
-            // GainChampionExperience(expTotal);
+            //GainChampionExperience(expTotal);
 
             if (IsLevelSecondStage)
             {
@@ -13002,7 +13002,7 @@ namespace DOL.GS
             }
 
             System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
-            Out.SendMessage("You get " + experience.ToString("N0", format) + " champion experience points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            Out.SendMessage("You get " + experience.ToString("N0", format) + " champion experience points.", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
 
             ChampionExperience += experience;
             Out.SendUpdatePoints();
