@@ -243,7 +243,6 @@ namespace DOL.GS
 
                 minimum = 1500;
                 double speed = 0;
-                bool bowWeapon = false;
 
                 // If leftWeapon is null even on a dual wield attack, use the mainWeapon instead.
                 switch (UsedHandOnLastDualWieldAttack)
@@ -275,7 +274,7 @@ namespace DOL.GS
                 if (speed == 0)
                     return 0;
 
-                bowWeapon = (eObjectType) mainWeapon.Object_Type is
+                bool bowWeapon = (eObjectType) mainWeapon.Object_Type is
                     eObjectType.Fired or
                     eObjectType.Longbow or
                     eObjectType.Crossbow or
@@ -1173,9 +1172,15 @@ namespace DOL.GS
                     damage *= conversionMod;
                     styleDamage *= conversionMod;
 
-                    // Apply base damage cap and add style damage.
+                    // Apply base damage cap.
                     damage = Math.Min(damage, baseDamageCap);
 
+                    // Snapshot base damage and base damage cap.
+                    // Currently used by damage adds and shields.
+                    ad.BaseDamage = damage;
+                    ad.BaseDamageCap = baseDamageCap;
+
+                    // Apply style damage.
                     if (style != null && styleDamage > 0)
                     {
                         styleDamage = Math.Min(styleDamage, styleDamageCap);
@@ -1749,14 +1754,32 @@ namespace DOL.GS
 
                 bool penetrate = false;
 
-                if (stealthStyle)
-                    return eAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
+                /*
+                 * 1.39:
+                 * When an Assassin class (i.e. Infiltrator, Shadowblade, Nightshade) attacks from a hidden position
+                 * (i.e. when doing a critical strike backstab), the attack cannot be parried, evaded, blocked or bladeturned.
+                 * Please note that the attacker can simply miss, however, which leaves a bladeturn active.
+                 */
 
-                if (ad.Attacker.Level > bladeturn.SpellHandler.Caster.Level && !Util.Chance(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
+                /*
+                 * 1.82:
+                 * Critical strike styles that require the attacker to be stealthed will now destroy any bladeturn spell.
+                 * The attack will hit the target unhindered. (Note: Before this change, the critical strike style would simply bypass the bladeturn,
+                 * and the bladeturn would still block the next style. With this change, the critical strike style will actually destroy the bladeturn,
+                 * preventing it from blocking the next style following the critical strike.)
+                 */
+
+                // What the 1.82 notes describe cannot be confirmed on any era accurate videos,
+                // where stealth openers appear to always penetrate and break the bladeturn.
+                // See https://uthgard.net/tracker/issue/4174/@/Bladeturn_destroyed_with_CS_styles for a couple of examples.
+
+                if (stealthStyle)
+                    penetrate = true;
+                else if (ad.Attacker.Level > bladeturn.SpellHandler.Caster.Level && !Util.Chance(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
                     penetrate = true;
                 else if (ad.AttackType is AttackData.eAttackType.Ranged)
                 {
-                    double effectivenessAgainstBladeturn = CheckEffectivenessAgainstBladeturn(bladeturn);
+                    double effectivenessAgainstBladeturn = CheckEffectivenessAgainstBladeturn(ad.Attacker, action, bladeturn);
 
                     if (effectivenessAgainstBladeturn > 0)
                         penetrate = true;
@@ -1788,19 +1811,19 @@ namespace DOL.GS
                 playerOwner.IsOnHorse = false;
 
             return eAttackResult.HitUnstyled;
+        }
 
-            double CheckEffectivenessAgainstBladeturn(ECSGameEffect bladeturn)
-            {
-                // 1.62: Longshot and Volley always penetrate.
-                if (action.RangedAttackType is eRangedAttackType.Long or eRangedAttackType.Volley)
-                    return 1.0;
+        private double CheckEffectivenessAgainstBladeturn(GameLiving attacker, WeaponAction action, ECSGameEffect bladeturn)
+        {
+            // 1.62: Longshot and Volley always penetrate.
+            if (action.RangedAttackType is eRangedAttackType.Long or eRangedAttackType.Volley)
+                return 1.0;
 
-                // 1.62: Penetrating Arrow penetrates only if the caster != target.
-                if (owner == bladeturn.SpellHandler.Caster)
-                    return 0.0;
+            // 1.62: Penetrating Arrow penetrates only if the caster != target.
+            if (owner == bladeturn.SpellHandler.Caster)
+                return 0.0;
 
-                return 0.25 + ad.Attacker.GetAbilityLevel(Abilities.PenetratingArrow) * 0.25;
-            }
+            return 0.25 + attacker.GetAbilityLevel(Abilities.PenetratingArrow) * 0.25;
         }
 
         private static readonly IReadOnlyDictionary<eAttackResult, string> _simpleAttackMessageKeys = new Dictionary<eAttackResult, string>
