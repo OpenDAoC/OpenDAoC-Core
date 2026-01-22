@@ -1172,10 +1172,15 @@ namespace DOL.GS
                     damage *= conversionMod;
                     styleDamage *= conversionMod;
 
-                    // Apply base damage cap and add style damage.
+                    // Apply base damage cap.
                     damage = Math.Min(damage, baseDamageCap);
-                    ad.BaseDamage = damage;
 
+                    // Snapshot base damage and base damage cap.
+                    // Currently used by damage adds and shields.
+                    ad.BaseDamage = damage;
+                    ad.BaseDamageCap = baseDamageCap;
+
+                    // Apply style damage.
                     if (style != null && styleDamage > 0)
                     {
                         styleDamage = Math.Min(styleDamage, styleDamageCap);
@@ -1754,7 +1759,7 @@ namespace DOL.GS
                  * When an Assassin class (i.e. Infiltrator, Shadowblade, Nightshade) attacks from a hidden position
                  * (i.e. when doing a critical strike backstab), the attack cannot be parried, evaded, blocked or bladeturned.
                  * Please note that the attacker can simply miss, however, which leaves a bladeturn active.
-                */
+                 */
 
                 /*
                  * 1.82:

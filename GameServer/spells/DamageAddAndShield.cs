@@ -1,3 +1,4 @@
+using System;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -117,7 +118,21 @@ namespace DOL.GS.Spells
             CalculateDamageVariance(target, out double minVariance, out double maxVariance);
             double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
             damage *= variance * effectiveness;
-            return damage;
+
+            /*
+             * 1.58:
+             * Damage adds are now clamped to be the maximum possible damage you could have done in a swing
+             * rather than the actual damage done (which was subject to randomness).
+             * This will allow those classes that have damage-adds but cannot spec in weapons (i.e. clerical classes)
+             * to once again be able to use damage-adds to help them solo monsters.
+             */
+
+            // To my knowledge, the game doesn't keep track of the maximum possible damage for styled hits,
+            // and so the patch notes probably refer to the unstyled damage cap.
+            // This mechanic was confirmed to still be used on Live (Jan 2026).
+            // Whether it should affect damage shields too is unknown.
+
+            return Math.Min(damage, attackData.BaseDamageCap);
         }
 
         protected static bool AreArgumentsValid(AttackData attackData, out GameLiving attacker, out GameLiving target)

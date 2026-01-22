@@ -16,6 +16,7 @@ namespace DOL.GS
         public int Damage { get; set; } // Final damage, already modified by resists and style damage.
         public double BaseDamage { get; set; } // For percent-based damage adds and shields, modified by resists.
         public int StyleDamage { get; set; } // This is for display purpose, it's already added to Damage.
+        public double BaseDamageCap { get; set; } // For damage adds and shields.
         public int CriticalDamage { get; set; }
         public int CriticalChance { get; set; }
         public DbInventoryItem Weapon { get; set; }
