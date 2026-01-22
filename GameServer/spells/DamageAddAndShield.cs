@@ -22,17 +22,7 @@ namespace DOL.GS.Spells
             if (!AreArgumentsValid(attackData, out GameLiving attacker, out GameLiving target))
                 return;
 
-            double damage;
-
-            if (Spell.Damage > 0)
-            {
-                CalculateDamageVariance(target, out double minVariance, out double maxVariance);
-                double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
-                damage = Spell.Damage * variance * effectiveness * attackData.Interval * 0.001;
-            }
-            else
-                damage = attackData.Damage * Spell.Damage / -100.0;
-
+            double damage = CalculateDamage(attackData, target, effectiveness);
             AttackData ad = CreateAttackData(damage, attacker, target);
 
             if (ad.Attacker is GameNPC npcAttacker && npcAttacker.Brain is IControlledBrain brain)
@@ -76,17 +66,7 @@ namespace DOL.GS.Spells
             if (!AreArgumentsValid(attackData, out GameLiving target, out GameLiving attacker))
                 return;
 
-            double damage;
-
-            if (Spell.Damage > 0)
-            {
-                CalculateDamageVariance(target, out double minVariance, out double maxVariance);
-                double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
-                damage = Spell.Damage * variance * effectiveness * attackData.Interval * 0.001;
-            }
-            else
-                damage = attackData.Damage * Spell.Damage / -100.0;
-
+            double damage = CalculateDamage(attackData, target, effectiveness);
             AttackData ad = CreateAttackData(damage, attacker, target);
 
             if (attacker is GamePlayer playerAttacker)
@@ -118,6 +98,26 @@ namespace DOL.GS.Spells
         {
             min = 0.75;
             max = 1.25;
+        }
+
+        protected double CalculateDamage(AttackData attackData, GameLiving target, double effectiveness)
+        {
+            // How percent-based damage adds should scale isn't very well documented.
+            // Based on a couple of logs, it isn't x% of the damage inflicted, nor it is x% of the weapon's DPS.
+            // We're doing x% of the base damage inflicted (ignores styles, critical hit, but includes resists).
+            // They're also affected by variance.
+
+            double damage;
+
+            if (Spell.Damage > 0)
+                damage = Spell.Damage * attackData.Interval * 0.001;
+            else
+                damage = attackData.BaseDamage * (1 * -Spell.Damage * 0.01);
+
+            CalculateDamageVariance(target, out double minVariance, out double maxVariance);
+            double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
+            damage *= variance * effectiveness;
+            return damage;
         }
 
         protected static bool AreArgumentsValid(AttackData attackData, out GameLiving attacker, out GameLiving target)

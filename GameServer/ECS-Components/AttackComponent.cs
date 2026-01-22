@@ -243,7 +243,6 @@ namespace DOL.GS
 
                 minimum = 1500;
                 double speed = 0;
-                bool bowWeapon = false;
 
                 // If leftWeapon is null even on a dual wield attack, use the mainWeapon instead.
                 switch (UsedHandOnLastDualWieldAttack)
@@ -275,7 +274,7 @@ namespace DOL.GS
                 if (speed == 0)
                     return 0;
 
-                bowWeapon = (eObjectType) mainWeapon.Object_Type is
+                bool bowWeapon = (eObjectType) mainWeapon.Object_Type is
                     eObjectType.Fired or
                     eObjectType.Longbow or
                     eObjectType.Crossbow or
@@ -1175,6 +1174,7 @@ namespace DOL.GS
 
                     // Apply base damage cap and add style damage.
                     damage = Math.Min(damage, baseDamageCap);
+                    ad.BaseDamage = damage;
 
                     if (style != null && styleDamage > 0)
                     {

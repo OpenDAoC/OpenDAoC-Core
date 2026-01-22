@@ -13,7 +13,8 @@ namespace DOL.GS
         public eDamageType DamageType { get; set; }
         public eAttackType AttackType { get; set; } = eAttackType.Unknown;
         public eAttackResult AttackResult { get; set; } = eAttackResult.Any;
-        public int Damage { get; set; }
+        public int Damage { get; set; } // Final damage, already modified by resists and style damage.
+        public double BaseDamage { get; set; } // For percent-based damage adds and shields, modified by resists.
         public int StyleDamage { get; set; } // This is for display purpose, it's already added to Damage.
         public int CriticalDamage { get; set; }
         public int CriticalChance { get; set; }
