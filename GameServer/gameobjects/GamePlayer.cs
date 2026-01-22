@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -916,6 +917,18 @@ namespace DOL.GS
         /// </summary>
         protected virtual void CleanupOnDisconnect()
         {
+            if (movementComponent.UseSafePosition)
+            {
+                if (movementComponent.TryGetSafePosition(out Vector3 safePosition))
+                {
+                    X = (int) safePosition.X;
+                    Y = (int) safePosition.Y;
+                    Z = (int) safePosition.Z;
+                }
+
+                movementComponent.UseSafePosition = false;
+            }
+
             PlayerObjectCache.Clear();
             attackComponent.StopAttack();
             Stealth(false);
@@ -5922,6 +5935,7 @@ namespace DOL.GS
                 {
                     _quitTimer.Stop();
                     _quitTimer = null;
+                    movementComponent.UseSafePosition = false;
                 }
 
                 m_automaticRelease = m_releaseType == eReleaseType.Duel;
@@ -8721,6 +8735,7 @@ namespace DOL.GS
                 {
                     _quitTimer.Stop();
                     _quitTimer = null;
+                    movementComponent.UseSafePosition = false;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.NoLongerWaitingQuit"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
