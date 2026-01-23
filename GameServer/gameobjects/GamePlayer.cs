@@ -749,7 +749,10 @@ namespace DOL.GS
 
                 _lastCombatTick = GetLastCombatTick();
                 int quitDuration = CalculateQuitDuration(_lastCombatTick);
-                owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                if (quitDuration > MIN_DURATION)
+                    owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
                 owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.YouWillQuit2", quitDuration), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 Start(CalculateFirstInterval(quitDuration));
             }
