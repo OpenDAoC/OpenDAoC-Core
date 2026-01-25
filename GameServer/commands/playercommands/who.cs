@@ -264,7 +264,9 @@ namespace DOL.GS.Commands
 			BattleGroup mybattlegroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 			if (mybattlegroup != null && (mybattlegroup.Members.Contains(player) || mybattlegroup.IsPublic && (bool)mybattlegroup.Members[player] == true))
 			{
-				result.Append(" [BG]");
+				// Added bg purpose to /who command
+				string currentPurpose = mybattlegroup.Purpose;
+				result.Append($" [{currentPurpose}] [BG]");
 			}
 			if (player.IsAnonymous)
 			{

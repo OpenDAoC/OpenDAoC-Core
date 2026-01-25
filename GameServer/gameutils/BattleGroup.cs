@@ -8,6 +8,8 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using static DOL.GS.IGameStaticItemOwner;
+using DOL.GS;
+using DOL.Timing;
 
 namespace DOL.GS
 {
@@ -26,6 +28,10 @@ namespace DOL.GS
 		protected HybridDictionary m_battlegroupMembers = new HybridDictionary();
 		protected readonly Lock _battlegroupMembersLock = new();
         protected GamePlayer m_battlegroupLeader;
+		protected string m_purpose;
+		protected int m_minutesToStart = -1;
+		protected ECSGameTimer m_startTimer;
+		protected string m_meetingPlace = "";
         protected List<GamePlayer> m_battlegroupModerators = new List<GamePlayer>();
 
         protected Dictionary<GamePlayer, int> m_battlegroupRolls;
@@ -83,6 +89,24 @@ namespace DOL.GS
 		{
 			get{return password;}
 			set{password = value;}
+		}
+
+		public string Purpose
+		{
+			get { return m_purpose; }
+			set { m_purpose = value; }
+		}
+
+		public int MinutesToStart
+		{
+			get { return m_minutesToStart; }
+			set { m_minutesToStart = value; }
+		}
+
+		public string MeetingPlace
+		{
+			get { return m_meetingPlace; }
+			set { m_meetingPlace = value; }
 		}
 
 		/// <summary>
@@ -389,6 +413,61 @@ namespace DOL.GS
 
 			}
 			return true;
+		}
+		public void StartCountdown(int minutes)
+		{
+			if (m_startTimer != null)
+			{
+				m_startTimer.Stop();
+				m_startTimer = null;
+			}
+
+			m_minutesToStart = minutes;
+
+			if (m_minutesToStart % 5 == 0 || m_minutesToStart <= 2)
+			{
+				BroadcastMessage($"The Battlegroup starts in {m_minutesToStart} minute(s)!");
+			}
+
+			m_minutesToStart--;
+
+			m_startTimer = new ECSGameTimer(this.Leader, new ECSGameTimer.ECSTimerCallback(OnCountdownTick));
+			m_startTimer.Start(60000); 
+		}
+
+		private int OnCountdownTick(ECSGameTimer timer)
+		{
+			if (m_minutesToStart <= 0)
+			{
+				BroadcastMessage("Starting any moment!");
+				m_minutesToStart = -1;
+				return 0; 
+			}
+
+			if (m_minutesToStart % 5 == 0 || m_minutesToStart == 2 || m_minutesToStart == 1)
+			{
+				BroadcastMessage($"The Battlegroup starts in {m_minutesToStart} minute(s)!");
+			}
+
+			m_minutesToStart--;
+			return 60000;
+		}
+		public void BroadcastMessage(string msg)
+		{
+			if (Members == null) return;
+
+			lock (Members)
+			{
+				foreach (GamePlayer ply in Members.Keys)
+				{
+					if (ply != null && ply.Client != null)
+					{
+						// Send to screen center & bg chat
+						ply.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+						ply.Out.SendMessage("[Battlegroup]: " + msg,eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+					}
+				}
+			}
 		}
 	}
 }

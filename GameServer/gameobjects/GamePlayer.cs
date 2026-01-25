@@ -1628,12 +1628,12 @@ namespace DOL.GS
                 }
                 default:
                 {
-                    // Tutorial.
+                    // Tutorial
                     if (!Properties.DISABLE_TUTORIAL && BindRegion == 27)
                     {
                         switch (Realm)
                         {
-                            case eRealm.Albion:
+                            case eRealm.Albion:/*
                             {
                                 relRegion = 1; // Cotswold.
                                 relX = 8192 + 553251;
@@ -1656,7 +1656,7 @@ namespace DOL.GS
                                 relY = 8192 + 482335;
                                 relZ = 5200;
                                 break;
-                            }
+                            }*/
                             default:
                             {
                                 ValidateAndGetBind(out relRegion, out relX, out relY, out relZ, out relHeading);
@@ -8673,6 +8673,70 @@ namespace DOL.GS
             {
                 AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
                 volley?.OnPlayerMoved();
+            }
+
+            UpdateBGLeaderIcon();
+        }
+
+        public void UpdateBGLeaderIcon()
+        {
+            BattleGroup bg = this.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+            
+            // Prüfen, ob der Spieler in einer BG ist und der Leader ist
+            if (bg != null && bg.IsBGLeader(this))
+            {
+                byte leaderIconID;
+
+                // Zuweisung basierend auf deinen Testergebnissen
+                switch (this.Realm)
+                {
+                    case eRealm.Albion:
+                        leaderIconID = 29; // Albion
+                        break;
+                    case eRealm.Midgard:
+                        leaderIconID = 9;  // Midgard
+                        break;
+                    case eRealm.Hibernia:
+                        leaderIconID = 19; // Hibernia
+                        break;
+                    default:
+                        leaderIconID = 1;
+                        break;
+                }
+
+                // Das Icon an alle Gruppenmitglieder in der gleichen Region senden
+                foreach (GamePlayer member in bg.Members.Keys)
+                {
+                    if (member != null && member.Client != null && member.CurrentRegionID == this.CurrentRegionID)
+                    {
+                        member.Out.SendMinotaurRelicMapUpdate(
+                            leaderIconID, 
+                            this.CurrentRegionID, 
+                            (int)this.X, 
+                            (int)this.Y, 
+                            (int)this.Z
+                        );
+                    }
+                }
+            }
+        }
+
+        public void RemoveBGLeaderIcon()
+        {
+            BattleGroup bg = this.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+            if (bg == null) return;
+
+            byte[] leaderIds = { 9, 19, 29 };
+
+            foreach (GamePlayer member in bg.Members.Keys)
+            {
+                if (member != null && member.Client != null)
+                {
+                    foreach (byte id in leaderIds)
+                    {
+                        member.Out.SendMinotaurRelicMapRemove(id);
+                    }
+                }
             }
         }
 
