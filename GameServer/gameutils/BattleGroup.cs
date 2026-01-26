@@ -10,464 +10,465 @@ using DOL.Language;
 using static DOL.GS.IGameStaticItemOwner;
 using DOL.GS;
 using DOL.Timing;
+using DOL.GS.Housing;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Battlegroups
-	/// </summary>
-	public class BattleGroup : IGameStaticItemOwner
-	{
-		public const string BATTLEGROUP_PROPERTY="battlegroup";
+    /// <summary>
+    /// Battlegroups - Complete Professional Version
+    /// Optimized for Treasurer (Backpack) and Lootchest (Database)
+    /// </summary>
+    public class BattleGroup : IGameStaticItemOwner
+    {
+        public const string BATTLEGROUP_PROPERTY = "battlegroup";
+        public readonly Lock Lock = new();
 
-		public readonly Lock Lock = new();
-
-		/// <summary>
-		/// This holds all players inside the battlegroup
-		/// </summary>
-		protected HybridDictionary m_battlegroupMembers = new HybridDictionary();
-		protected readonly Lock _battlegroupMembersLock = new();
+        protected HybridDictionary m_battlegroupMembers = new();
+        protected readonly Lock _battlegroupMembersLock = new();
         protected GamePlayer m_battlegroupLeader;
-		protected string m_purpose;
-		protected int m_minutesToStart = -1;
-		protected ECSGameTimer m_startTimer;
-		protected string m_meetingPlace = "";
-        protected List<GamePlayer> m_battlegroupModerators = new List<GamePlayer>();
+        
+        protected string m_purpose = "";
+        protected int m_minutesToStart = -1;
+        protected ECSGameTimer m_startTimer;
+        protected string m_meetingPlace = "";
+        
+        protected bool m_lootChestEnabled = false;
+        protected long m_lootChestMoney = 0;
+        private BGLootInventory m_lootChestInventory;
+        protected GameLootChest m_currentChestNPC;
+        
+        protected List<GamePlayer> m_battlegroupModerators = new();
+        protected bool battlegroupLootType = false; 
+        protected GamePlayer battlegroupTreasurer = null;
+        protected int battlegroupLootTypeThreshold = 0;
 
-        protected Dictionary<GamePlayer, int> m_battlegroupRolls;
-        protected readonly Lock _battlegroupRolls = new();
-        protected bool recordingRolls;
-        protected int rollRecordThreshold;
-
-        bool battlegroupLootType = false;
-        GamePlayer battlegroupTreasurer = null;
-        int battlegroupLootTypeThreshold = 0;
-
-		/// <summary>
-		/// constructor of battlegroup
-		/// </summary>
-		public BattleGroup()
-		{
+        public BattleGroup()
+        {
             battlegroupLootType = false;
             battlegroupTreasurer = null;
-            m_battlegroupLeader = null;
-		}
-
-        public GameLiving Leader
-        {
-            get { return m_battlegroupLeader; }
         }
 
-		public HybridDictionary Members
-		{
-			get{return m_battlegroupMembers;}
-			set{m_battlegroupMembers=value;}
-		}
-		
-		public List<GamePlayer> Moderators
-		{
-			get{return m_battlegroupModerators;}
-			set{m_battlegroupModerators=value;}
-		}
+        #region Properties
+        public GameLiving Leader => m_battlegroupLeader;
+        public HybridDictionary Members { get => m_battlegroupMembers; set => m_battlegroupMembers = value; }
+        public List<GamePlayer> Moderators { get => m_battlegroupModerators; set => m_battlegroupModerators = value; }
+        
+        public bool IsPublic { get; set; } = true;
+        public string Password { get; set; } = string.Empty;
+        public string Purpose { get => m_purpose; set => m_purpose = value; }
+        public int MinutesToStart { get => m_minutesToStart; set => m_minutesToStart = value; }
+        public string MeetingPlace { get => m_meetingPlace; set => m_meetingPlace = value; }
 
-		private bool listen=false;
-		public bool Listen
-		{
-			get{return listen;}
-			set{listen = value;}
-		}
+        private bool m_listen = false;
+        public bool Listen { get => m_listen; set => m_listen = value; }
+        
+        public bool LootChestEnabled { get => m_lootChestEnabled; set => m_lootChestEnabled = value; }
+        public long LootChestMoney { get => m_lootChestMoney; set => m_lootChestMoney = value; }
 
-		private bool ispublic=true;
-		public bool IsPublic
+        public BGLootInventory LootChestInventory 
 		{
-			get{return ispublic;}
-			set{ispublic = value;}
-		}
-
-		private string password=string.Empty;
-		public string Password
-		{
-			get{return password;}
-			set{password = value;}
-		}
-
-		public string Purpose
-		{
-			get { return m_purpose; }
-			set { m_purpose = value; }
-		}
-
-		public int MinutesToStart
-		{
-			get { return m_minutesToStart; }
-			set { m_minutesToStart = value; }
-		}
-
-		public string MeetingPlace
-		{
-			get { return m_meetingPlace; }
-			set { m_meetingPlace = value; }
-		}
-
-		/// <summary>
-		/// Adds a player to the chatgroup
-		/// </summary>
-		/// <param name="player">GamePlayer to be added to the group</param>
-		/// <param name="leader"></param>
-		/// <returns>true if added successfully</returns>
-		public virtual bool AddBattlePlayer(GamePlayer player,bool leader) 
-		{
-			if (player == null) return false;
-			lock (_battlegroupMembersLock)
-			{
-				if (m_battlegroupMembers.Contains(player))
-					return false;
-				player.TempProperties.SetProperty(BATTLEGROUP_PROPERTY, this);
-                player.Out.SendMessage("You join the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				foreach(GamePlayer member in Members.Keys)
-				{
-                    member.Out.SendMessage(player.Name + " has joined the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				}
-				m_battlegroupMembers.Add(player,leader);
-
-                player.isInBG = true; //Xarik: Player is in BG
+			get {
+				if (m_lootChestInventory == null && Leader is GamePlayer leaderPlayer)
+					m_lootChestInventory = new BGLootInventory(this);
+				return m_lootChestInventory;
 			}
-			return true;
 		}
+
+        public int PlayerCount => m_battlegroupMembers.Count;
+        public string Name => $"{(Leader == null ? "Empty" : Leader.Name + "'s")} Battlegroup (Size: {PlayerCount})";
+        public object GameStaticItemOwnerComparand => null;
+        #endregion
+
+        #region Member Management
+        public virtual bool AddBattlePlayer(GamePlayer player, bool leader)
+        {
+            if (player == null) return false;
+            lock (_battlegroupMembersLock)
+            {
+                if (m_battlegroupMembers.Contains(player)) return false;
+                
+                player.TempProperties.SetProperty(BATTLEGROUP_PROPERTY, this);
+                player.isInBG = true;
+                
+                m_battlegroupMembers.Add(player, leader);
+                if (leader) m_battlegroupLeader = player;
+
+                player.Out.SendMessage("You join the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				BroadcastNormalMessage($"{player.Name} joined the battle group.");
+            }
+            return true;
+        }
 
         public virtual bool IsInTheBattleGroup(GamePlayer player)
         {
+            if (player == null) return false;
             lock (_battlegroupMembersLock)
             {
                 return m_battlegroupMembers.Contains(player);
             }
         }
 
-        public bool GetBGLootType()
+        public virtual bool RemoveBattlePlayer(GamePlayer player)
         {
-            return battlegroupLootType;
-        }
-        
-        public bool IsRecordingRolls()
-        {
-	        return recordingRolls;
-        }
-        
-        public int GetRecordingThreshold()
-        {
-	        return rollRecordThreshold;
-        }
-        
-        public void StartRecordingRolls(int maxRoll = 1000)
-		{
-	        recordingRolls = true;
-	        rollRecordThreshold = maxRoll;
-	        m_battlegroupRolls = new Dictionary<GamePlayer, int>();
-	        
-	        foreach (GamePlayer ply in Members.Keys)
-	        {
-		        ply.Out.SendMessage($"{Leader.Name} has initiated the recording. Use /random {maxRoll} now to roll for this item.",eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
-	        }
-		}
-
-        public void StopRecordingRolls()
-        {
-	        recordingRolls = false;
-	        foreach (GamePlayer ply in Members.Keys)
-	        {
-		        ply.Out.SendMessage($"{Leader.Name} stopped the recording. Use /bg showrolls to display the results.",eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
-	        }
-        }
-        
-        public void AddRoll(GamePlayer player, int roll)
-		{
-	        if(!recordingRolls)
-		        return;
-	        if (roll > rollRecordThreshold)
-		        return;
-	        lock (_battlegroupRolls)
-	        {
-		        if(m_battlegroupRolls.ContainsKey(player))
-			        return;
-		        m_battlegroupRolls.Add(player, roll);
-	        }
-		}
-        public void ShowRollsWindow(GamePlayer player)
-        {
-	        if (recordingRolls)
-	        {
-		        player.Client.Out.SendMessage("Rolls are being recorded. Please wait.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-		        return;
-	        }
-
-	        if (m_battlegroupRolls == null || m_battlegroupRolls.Count == 0)
-	        {
-		        player.Client.Out.SendMessage("No rolls have been recorded yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-		        return;
-	        }
-	        
-	        var output = new List<string>();
-
-	        var sorted = new List<KeyValuePair<GamePlayer, int>>();
-
-	        sorted = m_battlegroupRolls.ToList();
-	        sorted.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value));
-	        
-
-	        var i = 1;
-	        foreach (var value in sorted)
-	        {
-		        output.Add($"{i}) {value.Key.Name} rolled {value.Value}");
-		        i++;
-	        }
-	        
-	        player.Out.SendCustomTextWindow("LAST ROLL RESULTS", output);
-
-        }
-
-        public GamePlayer GetBGTreasurer()
-        {
-            return battlegroupTreasurer;
-        }
-
-        public GameLiving GetBGLeader()
-        {
-            return m_battlegroupLeader;
-        }
-
-        public bool SetBGLeader(GamePlayer player)
-        {
-            if (player != null)
+            if (player == null) return false;
+            lock (_battlegroupMembersLock)
             {
-                m_battlegroupLeader = player;
-                return true;
+                if (!m_battlegroupMembers.Contains(player)) return false;
+                
+                bool wasLeader = IsBGLeader(player);
+                m_battlegroupMembers.Remove(player);
+                player.TempProperties.RemoveProperty(BATTLEGROUP_PROPERTY);
+                player.isInBG = false;
+
+                if (battlegroupTreasurer == player) SetBGTreasurer(null);
+                if (m_battlegroupModerators.Contains(player)) m_battlegroupModerators.Remove(player);
+
+                player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                BroadcastNormalMessage($"{player.Name} has left the battle group.");
+
+                if (m_battlegroupMembers.Count <= 1)
+                {
+                    ArrayList remaining = new ArrayList(m_battlegroupMembers.Keys);
+                    foreach (GamePlayer plr in remaining) RemoveBattlePlayer(plr);
+                    m_battlegroupLeader = null;
+                }
+                else if (wasLeader)
+                {
+                    var nextLeader = m_battlegroupMembers.Keys.Cast<GamePlayer>().FirstOrDefault(p => p != null);
+                    if (nextLeader != null)
+                    {
+                        SetBGLeader(nextLeader);
+                        m_battlegroupMembers[nextLeader] = true;
+                        BroadcastMessage($"{nextLeader.Name} is the new leader of the battle group.");
+                    }
+                }
             }
-
-            return false;
-        }
-        public bool IsBGTreasurer(GameLiving living)
-        {
-            if (battlegroupTreasurer != null && living != null)
-            {
-                return battlegroupTreasurer == living;
-            }
-
-            return false;
-        }
-        public bool IsBGLeader(GameLiving living)
-        {
-            if (m_battlegroupLeader != null && living != null)
-            {
-                return m_battlegroupLeader == living;
-            }
-
-            return false;
-        }
-        
-        public bool IsBGModerator(GamePlayer living)
-        {
-	        if (m_battlegroupModerators != null && living != null)
-	        {
-		        var ismod = m_battlegroupModerators.Contains(living);
-		        return ismod;
-	        }
-
-	        return false;
+            return true;
         }
 
-        public int GetBGLootTypeThreshold()
-        {
-            return battlegroupLootTypeThreshold;
+        public bool IsBGLeader(GameLiving living) => m_battlegroupLeader != null && living != null && m_battlegroupLeader == living;
+        public bool IsBGTreasurer(GameLiving living) => battlegroupTreasurer != null && living != null && battlegroupTreasurer == living;
+        public bool IsBGModerator(GamePlayer player) => player != null && m_battlegroupModerators.Contains(player);
+
+        public bool SetBGLeader(GamePlayer player) 
+        { 
+            if (player == null) return false; 
+            m_battlegroupLeader = player; 
+            return true; 
+        }
+        #endregion
+
+        #region Treasurer Logic (Personal Collection)
+        public bool GetBGLootType() => battlegroupLootType;
+        public GamePlayer GetBGTreasurer() => battlegroupTreasurer;
+        public void SetBGTreasurer(GamePlayer treasurer) 
+        { 
+            battlegroupTreasurer = treasurer; 
+            battlegroupLootType = (treasurer != null); 
         }
 
-        public bool SetBGLootTypeThreshold(int thresh)
-        {
-            battlegroupLootTypeThreshold = thresh;
-
-            if (thresh < 0 || thresh > 50)
-            {
-                battlegroupLootTypeThreshold = 0;
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public void SetBGLootType(bool type)
+        public int GetBGLootTypeThreshold() => battlegroupLootTypeThreshold;
+        public void SetBGLootTypeThreshold(int thresh) => battlegroupLootTypeThreshold = Math.Clamp(thresh, 0, 50);
+		public void SetBGLootType(bool type)
         {
             battlegroupLootType = type;
         }
 
-        public void SetBGTreasurer(GamePlayer treasurer)
+       
+        /// <summary>
+        /// Lootchest & Treasurer Money Management
+        /// </summary>
+        public TryPickUpResult TryAutoPickUpMoney(GameMoney money)
         {
-            battlegroupTreasurer = treasurer;
-            battlegroupLootType = treasurer != null;
+            if (money == null || money.Value <= 0) return TryPickUpResult.DoesNotWant;
+
+            // Lootchest Money
+            if (LootChestEnabled)
+            {
+                lock (Lock)
+                {
+                    m_lootChestMoney += money.Value;
+                }
+				// Money Message
+				BroadcastNormalMessage($"{Money.GetString(money.Value)} were been added to the loot chest.");
+                money.RemoveFromWorld();
+                return TryPickUpResult.Success;
+            }
+
+            // Treasurer Money
+            if (battlegroupLootType && battlegroupTreasurer != null)
+            {
+                battlegroupTreasurer.AddMoney(money.Value);
+                battlegroupTreasurer.Out.SendMessage($"[Treasurer] You picked up {Money.GetString(money.Value)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                money.RemoveFromWorld();
+                return TryPickUpResult.Success;
+            }
+
+            return TryPickUpResult.DoesNotWant;
         }
 
-        public int PlayerCount
-        {
-            get { return m_battlegroupMembers.Count; }
-        }
+        public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money) => TryAutoPickUpMoney(money);
 
-		public string Name => $"{(Leader == null || PlayerCount <= 0 ? "leaderless" : $"{Leader.Name}'s")} battlegroup (size: {PlayerCount})";
+        /// <summary>
+        /// Lootchest & Treasurer Item Management
+        /// </summary>
+        public TryPickUpResult TryAutoPickUpItem(WorldInventoryItem worldItem) 
+            => TryPickUpItem(battlegroupTreasurer, worldItem);
 
-		public object GameStaticItemOwnerComparand => null;
-
-		public TryPickUpResult TryAutoPickUpMoney(GameMoney money)
+        public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem worldItem)
 		{
-			return TryPickUpMoney(Leader as GamePlayer, money);
-		}
+			if (worldItem == null || worldItem.Item == null) return TryPickUpResult.DoesNotWant;
+			worldItem.AssertLockAcquisition();
 
-		public TryPickUpResult TryAutoPickUpItem(WorldInventoryItem worldItem)
-		{
-			// We don't care if players have auto loot enabled, or if they can see the item (the item isn't added to the world yet anyway), or who attacked last, etc.
-			// This is especially important for battlegroups since they can have an illimited amount of players.
-			return TryPickUpItem(battlegroupTreasurer, worldItem);
-		}
+			if (worldItem.IsPlayerDiscarded) return TryPickUpResult.DoesNotWant;
 
-		public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
-		{
-			money.AssertLockAcquisition();
-
-			// Splitting money in a battlegroup could cause performance issues. Let it fallback to group then solo logic.
-			return TryPickUpResult.DoesNotWant;
-		}
-
-		public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
-		{
-			item.AssertLockAcquisition();
-
-			// A battlegroup is only able to pick up items if it has a treasurer, otherwise it's supposed to fallback to group then solo logic.
-			// There is no range check. If you're in a BG, every item goes to the treasurer or stay on the ground.
-			// If his inventory is full, the item should simply stay on the ground until he makes some room, or another treasurer is appointed.
-			// Items discarded by players can only be picked up by those same players.
-			if (!GetBGLootType() || battlegroupTreasurer == null || item.IsPlayerDiscarded)
-				return TryPickUpResult.DoesNotWant;
-
-			if (!GiveItem(battlegroupTreasurer, item.Item))
+			// Lootchest
+			if (LootChestEnabled)
 			{
-				battlegroupTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				GameInventoryItem chestItem = new GameInventoryItem(worldItem.Item);
+				string bgOwnerID = "BG_" + (Leader?.Name ?? "Unknown");
+				chestItem.OwnerID = bgOwnerID;
+				chestItem.ObjectId = null;
+
+				var itemsInChest = GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(bgOwnerID));
+				
+				int freeSlot = -1;
+				for (int i = 2500; i <= 2599; i++)
+				{
+					if (!itemsInChest.Any(it => it.SlotPosition == i))
+					{
+						freeSlot = i;
+						break;
+					}
+				}
+
+				if (freeSlot != -1)
+				{
+					chestItem.SlotPosition = freeSlot;
+					GameServer.Database.AddObject(chestItem);
+					m_lootChestInventory = null;
+					// Item Message
+					BroadcastNormalMessage($"{worldItem.Item.Name} has been stored in the loot chest.");
+					worldItem.RemoveFromWorld();
+					return TryPickUpResult.Success;
+				}
+				else
+				{
+					BroadcastMessage("[Lootchest] The chest is full (max 100 items)!"); // Send to battlegroup, shouldnt happen
+					return TryPickUpResult.Blocked;
+				}
+			}
+
+			// Treasurer
+			if (battlegroupLootType && battlegroupTreasurer != null)
+			{
+				if (battlegroupTreasurer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, worldItem.Item))
+				{
+					battlegroupTreasurer.Out.SendMessage($"[Treasurer] You picked up: {worldItem.Item.Name}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					worldItem.RemoveFromWorld();
+					return TryPickUpResult.Success;
+				}
+				
+				battlegroupTreasurer.Out.SendMessage("[Treasurer] Backpack full!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return TryPickUpResult.Blocked;
 			}
 
-			battlegroupTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			Message.SystemToOthers(source, LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, item.Item.GetName(1, false)), eChatType.CT_System);
-			InventoryLogging.LogInventoryAction("(ground)", battlegroupTreasurer, eInventoryActionType.Loot, item.Item.Template, item.Item.IsStackable ? item.Item.Count : 1);
-			item.RemoveFromWorld();
-			return TryPickUpResult.Success;
-
-			static bool GiveItem(GamePlayer player, DbInventoryItem item)
-			{
-				if (item.IsStackable)
-					return player.Inventory.AddTemplate(item, item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-
-				return player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
-			}
+			return TryPickUpResult.DoesNotWant;
 		}
+        #endregion
 
-		/// <summary>
-		/// Removes a player from the group
-		/// </summary>
-		/// <param name="player">GamePlayer to be removed</param>
-		/// <returns>true if removed, false if not</returns>
-		public virtual bool RemoveBattlePlayer(GamePlayer player)
+        #region Lootchest Logic
+        public void AddToLootChest(DbInventoryItem dbItem)
+        {
+            if (dbItem == null || Leader == null) return;
+            string bgOwnerID = "BG_" + Leader.Name;
+            
+            var itemsInChest = GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(bgOwnerID));
+            if (itemsInChest.Count >= 100) return;
+
+            int freeSlot = -1;
+            for (int i = 0; i <= 99; i++)
+            {
+                if (!itemsInChest.Any(it => it.SlotPosition == i)) { freeSlot = i; break; }
+            }
+
+            if (freeSlot != -1)
+            {
+                dbItem.OwnerID = bgOwnerID;
+                dbItem.SlotPosition = freeSlot;
+                GameServer.Database.SaveObject(dbItem);
+                m_lootChestInventory = null; 
+            }
+        }
+
+        public void SpawnChest(GamePlayer leader)
+        {
+			// Remove Lootchest from world, when already spawned
+            if (m_currentChestNPC != null) {
+				m_currentChestNPC.Delete();
+				m_currentChestNPC = null;
+				return;
+			}
+            
+            m_currentChestNPC = new GameLootChest(this)
+            {
+                Model = 2255,
+                Name = "Lootchest",
+				Size = 30,
+                GuildName = leader.Name + "'s Battelgroup",
+                Realm = leader.Realm,
+                CurrentRegionID = leader.CurrentRegionID,
+                X = leader.X, 
+				Y = leader.Y, 
+				Z = leader.Z, 
+				Heading = leader.Heading
+            };
+            m_currentChestNPC.AddToWorld();
+        }
+		public void HandoutLoot(GamePlayer leader)
 		{
-			if (player == null) return false;
+			if (leader == null || !IsBGLeader(leader)) return;
+
+			string bgOwnerID = "BG_" + Leader.Name;
+			var dbItemsList = GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(bgOwnerID));
+
 			lock (_battlegroupMembersLock)
 			{
-				if (!m_battlegroupMembers.Contains(player))
-					return false;
-				var leader = IsBGLeader(player);
-				m_battlegroupMembers.Remove(player);
-				player.TempProperties.RemoveProperty(BATTLEGROUP_PROPERTY);
-				player.isInBG = false; //Xarik: Player is no more in the BG
-                player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				foreach(GamePlayer member in Members.Keys)
+				var activeMembers = m_battlegroupMembers.Keys.Cast<GamePlayer>()
+					.Where(p => p?.Client != null && p.ObjectState == GameObject.eObjectState.Active).ToList();
+
+				if (activeMembers.Count == 0) return;
+
+				if (dbItemsList != null && dbItemsList.Count > 0)
 				{
-                    member.Out.SendMessage(player.Name + " has left the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				}
-				if (m_battlegroupMembers.Count == 1)
-				{
-					ArrayList lastPlayers = new ArrayList(m_battlegroupMembers.Count);
-					lastPlayers.AddRange(m_battlegroupMembers.Keys);
-					foreach (GamePlayer plr in lastPlayers)
+					Random rnd = new();
+					foreach (var dbItem in dbItemsList)
 					{
-						RemoveBattlePlayer(plr);
-					}
-					m_battlegroupLeader = null;
-				} else if (leader && m_battlegroupMembers.Count >= 2)
-				{
-					var bgPlayers = new ArrayList(m_battlegroupMembers.Count);
-					bgPlayers.AddRange(m_battlegroupMembers.Keys);
-					var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count - 1)] as GamePlayer;
-					if (randomPlayer == null) return false;
-					SetBGLeader(randomPlayer);
-					m_battlegroupMembers[randomPlayer] = true;
-					foreach(GamePlayer member in Members.Keys)
-					{
-						member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						var winner = activeMembers[rnd.Next(activeMembers.Count)];
+						
+						if (winner.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, dbItem))
+						{
+							foreach (GamePlayer ply in m_battlegroupMembers.Keys)
+							{
+								ply.Out.SendMessage($"{winner.Name} received {dbItem.Name}.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+							}
+							GameServer.Database.DeleteObject(dbItem);
+						}
+						else
+						{
+							winner.Out.SendMessage($"[Battlegroup] Your backpack is full! {dbItem.Name} remains in the chest.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						}
 					}
 				}
 
-			}
-			return true;
-		}
-		public void StartCountdown(int minutes)
-		{
-			if (m_startTimer != null)
-			{
-				m_startTimer.Stop();
-				m_startTimer = null;
-			}
-
-			m_minutesToStart = minutes;
-
-			if (m_minutesToStart % 5 == 0 || m_minutesToStart <= 2)
-			{
-				BroadcastMessage($"The Battlegroup starts in {m_minutesToStart} minute(s)!");
-			}
-
-			m_minutesToStart--;
-
-			m_startTimer = new ECSGameTimer(this.Leader, new ECSGameTimer.ECSTimerCallback(OnCountdownTick));
-			m_startTimer.Start(60000); 
-		}
-
-		private int OnCountdownTick(ECSGameTimer timer)
-		{
-			if (m_minutesToStart <= 0)
-			{
-				BroadcastMessage("Starting any moment!");
-				m_minutesToStart = -1;
-				return 0; 
-			}
-
-			if (m_minutesToStart % 5 == 0 || m_minutesToStart == 2 || m_minutesToStart == 1)
-			{
-				BroadcastMessage($"The Battlegroup starts in {m_minutesToStart} minute(s)!");
-			}
-
-			m_minutesToStart--;
-			return 60000;
-		}
-		public void BroadcastMessage(string msg)
-		{
-			if (Members == null) return;
-
-			lock (Members)
-			{
-				foreach (GamePlayer ply in Members.Keys)
+				if (m_lootChestMoney > 0)
 				{
-					if (ply != null && ply.Client != null)
+					long share = m_lootChestMoney / activeMembers.Count;
+					if (share > 0)
 					{
-						// Send to screen center & bg chat
-						ply.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-						ply.Out.SendMessage("[Battlegroup]: " + msg,eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						activeMembers.ForEach(p => p.AddMoney(share));
+						foreach (GamePlayer ply in m_battlegroupMembers.Keys)
+						{
+							ply.Out.SendMessage($"[Battlegroup] The money was splitted, everyone received: {Money.GetString(share)}.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+						}
 					}
+					m_lootChestMoney = 0;
 				}
+
+				m_lootChestInventory = null; 
 			}
+
+			if (m_currentChestNPC != null) 
+			{ 
+				m_currentChestNPC.Delete(); 
+				m_currentChestNPC = null; 
+			}
+			LootChestEnabled = false;
 		}
-	}
+        #endregion
+
+        #region Utilities & Timer
+        public void StartCountdown(int minutes)
+        {
+            if (m_startTimer != null) m_startTimer.Stop();
+            m_minutesToStart = minutes;
+            BroadcastMessage($"The Battlegroup starts in {m_minutesToStart} minute(s)!");
+            m_minutesToStart--;
+            
+            m_startTimer = new ECSGameTimer(this.Leader, (timer) => {
+                if (m_minutesToStart <= 0)
+                {
+                    BroadcastMessage("The Battlegroup is starting any moment!");
+                    m_minutesToStart = -1;
+                    return 0;
+                }
+                if (m_minutesToStart % 5 == 0 || m_minutesToStart <= 2)
+                    BroadcastMessage($"The Battlegroup starts in {m_minutesToStart} minute(s)!");
+                
+                m_minutesToStart--;
+                return 60000;
+            });
+            m_startTimer.Start(60000);
+        }
+
+        public void BroadcastMessage(string msg)
+        {
+            lock (_battlegroupMembersLock)
+            {
+                foreach (GamePlayer ply in m_battlegroupMembers.Keys)
+                {
+                    if (ply?.Client == null) continue;
+                    ply.Out.SendMessage(msg, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                    ply.Out.SendMessage("[Battlegroup]: " + msg, eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                }
+            }
+        }
+
+		public void BroadcastNormalMessage(string msg)
+        {
+            lock (_battlegroupMembersLock)
+            {
+                foreach (GamePlayer ply in m_battlegroupMembers.Keys)
+                {
+                    if (ply?.Client == null) continue;
+                    ply.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+            }
+        }
+        #endregion
+
+        #region Inner Classes
+        public class BGLootInventory : AccountVault
+        {
+            private string m_bgLeaderName;
+            public BGLootInventory(BattleGroup bg) : base(bg.Leader as GamePlayer, 0, AccountVaultKeeper.GetDummyVaultItem(bg.Leader as GamePlayer))
+                => m_bgLeaderName = (bg.Leader != null) ? bg.Leader.Name : "Unknown";
+
+            public override string GetOwner(GamePlayer player) => "BG_" + m_bgLeaderName;
+            public override bool CanView(GamePlayer player) => true;
+            public override bool CanAddItems(GamePlayer player) => true;
+            public override bool CanRemoveItems(GamePlayer player)
+            {
+                var bg = player.TempProperties.GetProperty<BattleGroup>(BATTLEGROUP_PROPERTY);
+                return bg != null && bg.IsBGLeader(player);
+            }
+        }
+
+		// Loot Chest Interface
+        public class GameLootChest : GameNPC
+        {
+            private BattleGroup m_bg;
+            public GameLootChest(BattleGroup bg) => m_bg = bg;
+            public override bool Interact(GamePlayer player)
+            {
+                if (!base.Interact(player)) return false;
+                player.ActiveInventoryObject = m_bg.LootChestInventory;
+                player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
+                if (m_bg.LootChestMoney > 0)
+                    player.Out.SendMessage($"The loot chest holds: {Money.GetString(m_bg.LootChestMoney)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return true;
+            }
+        }
+        #endregion
+    }
 }

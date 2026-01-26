@@ -97,6 +97,11 @@ Scripts.Players.Groupsort.Leader:			You must be the leader of the group to use t
 ## /battlegroup
 Scripts.Players.Battlegroup.Usage:			Usage: /bg <text>
 Scripts.Players.Battlegroup.UsageInvite:		Usage: /bg invite <playername>
+Scripts.Players.Battlegroup.UsagePurpose:        Usage: /bg purpose summoner|dragon|cl dungeons|minidragons|si_epic|si_dungeons|rvr
+Scripts.Players.Battlegroup.UsageWhen:      Usage: /bg when <minutes>
+Scripts.Players.Battlegroup.UsageLootchest:     Usage: /bg loot chest enable|spawn|handout
+Scripts.Players.Battlegroup.UsageCenter:        Usage: /bg center <text>
+Scripts.Players.Battlegroup.UsageTreasurer:        For Treasurer, you should use /bg loot normal or /bg loot treasurer.
 Scripts.Players.Battlegroup.Help.Count:			/bg count - Counts the number of members in the battle group
 Scripts.Players.Battlegroup.Help.Credit:		/bg credit - Displays credit for Battlegroup Master Level encounters that have been completed within the last 10 minutes.
 Scripts.Players.Battlegroup.Help.GrantCredit:		/bg grantcredit (masterlevel) (playername) - Allows Batttlegroup Leader to grant credit for completed Master Level steps.
@@ -126,10 +131,16 @@ Scripts.Players.Battlegroup.Help.Status:		/bg status - Returns the number of mem
 Scripts.Players.Battlegroup.Help.Treasurer:		/bg treasurer (player name) - Sets the battlegroup treasurer.
 Scripts.Players.Battlegroup.Help.Usage:			/bg usage:
 Scripts.Players.Battlegroup.Help.Who:			/bg who - Lists all members of the battle group
+Scripts.Players.Battlegroup.Help.Center:        /bg center or /bm <text> to display messages on the center of the screen
+Scripts.Players.Battlegroup.Help.Here:          /bg here to set your current location to the meeting point
+Scripts.Players.Battlegroup.Help.When:          /bg when <min> to set the starting time
+Scripts.Players.Battlegroup.Help.Purpose:       /bg purpose to set the purpose of this battlegroup
+Scripts.Players.Battlegroup.Help.Lootchest:     /bg loot chest to manage the loot chest
 Scripts.Players.Battlegroup.InBattleGroup:		You must be in a battle group to use this command.
 Scripts.Players.Battlegroup.InviteYourself:		You cannot invite yourself to a battlegroup.
 Scripts.Players.Battlegroup.JoinBattleGroup:		Do you want to join {0}'s battlegroup?
 Scripts.Players.Battlegroup.LeaderCommand:		You must be a leader of the battle group to use this command.
+Scripts.Players.Battlegroup.LeaderModeratorCommand:     You must be a leader or moderator of the battle group to use this command.
 Scripts.Players.Battlegroup.LeaderInvite:		You must be the leader to invite a player to join the battle group.
 Scripts.Players.Battlegroup.ListenMode:			The listen mode of battlegroup is switch 
 Scripts.Players.Battlegroup.Moderator:			{0} becomes a moderator.

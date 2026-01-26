@@ -70,8 +70,8 @@ namespace DOL.GS.Commands
                 }
 
                 if (ply.IgnoreList.Contains(client.Player)) continue;
-                
-                ply.Out.SendMessage(message,type, eChatLoc.CL_ChatWindow);
+
+                ply.Out.SendMessage(message, type, eChatLoc.CL_ChatWindow);
             }
         }
     }
@@ -193,7 +193,7 @@ namespace DOL.GS.Commands
                                 text.Length = 0;
                                 text.Append(i);
                                 text.Append(") ");
-                                i++; 
+                                i++;
                                 text.Append(grouped.Group.GroupMemberString(grouped));
                                 client.Out.SendMessage(text.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 firstrun = 1;
@@ -250,7 +250,7 @@ namespace DOL.GS.Commands
 
                         foreach (GamePlayer player in mybattlegroup.Members.Keys)
                         {
-                            if (player.Group is {MemberCount: > 1})
+                            if (player.Group is { MemberCount: > 1 })
                             {
                                 curBattleGroupGrouped.Add(player);
                             }
@@ -284,7 +284,7 @@ namespace DOL.GS.Commands
                         }
                     }
                     break;
-                
+
                 case "solo":
                     {
                         if (client.Player == null)
@@ -326,7 +326,7 @@ namespace DOL.GS.Commands
                                 continue;
 
                             var player = nongroupedplayer as GamePlayer;
-                            
+
                             if (mybattlegroup.IsBGLeader(player))
                             {
                                 text.Append(" <Leader> ");
@@ -335,7 +335,7 @@ namespace DOL.GS.Commands
                             {
                                 text.Append(" <Member> ");
                             }
-                            
+
                             text.Append($"{nongrouped.Name}, the level {nongrouped.Level} {nongrouped.CharacterClass.Name} \n");
                             client.Out.SendMessage(text.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
@@ -466,7 +466,7 @@ namespace DOL.GS.Commands
                             ply.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
                     }
-                    break; 
+                    break;
                 case "promote":
                     {
                         if (client.Player == null)
@@ -511,7 +511,7 @@ namespace DOL.GS.Commands
                             mybattlegroup.Moderators.Remove(inviteePlayer);
                             message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.RemoveModerator", inviteePlayer.Name);
                         }
-                        
+
                         foreach (GamePlayer ply in mybattlegroup.Members.Keys)
                         {
                             ply.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -712,39 +712,6 @@ namespace DOL.GS.Commands
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattlegroupCount", curbattlegroup.Members.Count), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
                     break;
-                case "loot":
-                    {
-                        if (client.Player == null)
-                            return;
-
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                        if (mybattlegroup == null)
-                        {
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-                        if (mybattlegroup.Listen == true && (mybattlegroup.IsBGLeader(client.Player) == false))
-                        {
-                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-                        if (args.Length < 3)
-                        {
-                            client.Out.SendMessage("You should use /bg loot normal or /bg loot treasurer.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-                        if (args[2] == "normal" || args[2] == "norm" || args[2] == "n" || args[2] == "N" || args[2] == "Norm" || args[2] == "Normal")
-                        {
-                            mybattlegroup.SetBGLootType(false);
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattleGroupLootNormal"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        }
-                        else if (args[2] == "treasurer" || args[2] == "treasure" || args[2] == "t" || args[2] == "T" || args[2] == "Treasurer" || args[2] == "Treasure")
-                        {
-                            mybattlegroup.SetBGLootType(true);
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattleGroupLootTreasurer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        }
-                    }
-                    break;
                 case "lootlevel":
                     {
                         if (client.Player == null)
@@ -838,301 +805,302 @@ namespace DOL.GS.Commands
                         }
                     }
                     break;
-                case "recordstart":
+                case "center":
                     {
                         if (client.Player == null)
                             return;
 
                         BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                        if (mybattlegroup == null)
+                        if (mybattlegroup == null) return;
+
+                        var isLeader = mybattlegroup.IsBGLeader(client.Player);
+                        var isModerator = mybattlegroup.IsBGModerator(client.Player);
+
+                        if (!isLeader && !isModerator)
                         {
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderModeratorCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
                         }
-                        if (!mybattlegroup.IsBGLeader(client.Player))
-                        {
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-                        
+
                         if (args.Length < 3)
                         {
-                            client.Out.SendMessage("You need to specify a valid max roll value (i.e. /bg recordstart 1000)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsageCenter"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
                             return;
                         }
 
-                        int maxRoll;
-                        
-                        try
+                        StringBuilder text = new StringBuilder();
+                        for (int i = 2; i < args.Length; i++)
                         {
-                            maxRoll = Convert.ToInt32(args[2]);
+                            if (i > 2) text.Append(" ");
+                            text.Append(args[i]);
                         }
-                        catch (Exception)
+
+                        var broadcastMessage = text.ToString();
+
+                        foreach (GamePlayer ply in mybattlegroup.Members.Keys)
                         {
-                            client.Out.SendMessage("You need to specify a valid max roll value (i.e. /bg recordstart 1000)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-                        
-                        mybattlegroup.StartRecordingRolls(maxRoll);
-                        
-                    }
-                    break;
-                case "recordstop":
-                {
-                    if (client.Player == null)
-                        return;
-
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null)
-                    {
-                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-                    if (!mybattlegroup.IsBGLeader(client.Player))
-                    {
-                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-                        
-                    mybattlegroup.StopRecordingRolls();
-                    mybattlegroup.ShowRollsWindow(client.Player);
-                        
-                } 
-                    break;
-                case "showrolls":
-                {
-                    if (client.Player == null)
-                        return;
-
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null)
-                    {
-                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-                    
-                    mybattlegroup.ShowRollsWindow(client.Player);
-                        
-                } 
-                    break;
-                case "center":
-                {
-                    if (client.Player == null)
-                        return;
-
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null) return;
-
-                    var isLeader = mybattlegroup.IsBGLeader(client.Player);
-                    var isModerator = mybattlegroup.IsBGModerator(client.Player);
-
-                    if (!isLeader && !isModerator)
-                    {
-                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    if (args.Length < 3)
-                    {
-                        client.Player.Out.SendMessage("Usage: /bg center <text>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    StringBuilder text = new StringBuilder();
-                    for (int i = 2; i < args.Length; i++)
-                    {
-                        if (i > 2) text.Append(" ");
-                        text.Append(args[i]);
-                    }
-                    
-                    var broadcastMessage = text.ToString();
-
-                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
-                    {
-                        if (ply != null && ply.Client != null)
-                        {
-                            ply.Out.SendMessage(broadcastMessage, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                            if (ply != null && ply.Client != null)
+                            {
+                                ply.Out.SendMessage(broadcastMessage, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                            }
                         }
                     }
                     break;
-                }
                 case "purpose":
-                {
-                    if (client.Player == null) return;
-
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null) return;
-
-                    if (!mybattlegroup.IsBGLeader(client.Player) && !mybattlegroup.IsBGModerator(client.Player))
                     {
-                        client.Player.Out.SendMessage("Only the Leader or Moderators can set the purpose.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
+                        if (client.Player == null) return;
 
-                    if (args.Length < 3)
-                    {
-                        client.Player.Out.SendMessage("Usage: /bg purpose summoner|dragon|cl dungeons|minidragons|si_epic|si_dungeons|rvr", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                        if (mybattlegroup == null) return;
 
-                    string input = args[2].ToLower();
-                    // Handle "cl dungeons" if typed as two words
-                    if (input == "cl" && args.Length >= 4 && args[3].ToLower() == "dungeons")
-                    {
-                        input = "cl_dungeons";
-                    }
-
-                    string displayName = "";
-
-                    // Mapping short commands to pretty names
-                    switch (input)
-                    {
-                        case "summoner": displayName = "Summoner's Hall"; break;
-                        case "dragon": displayName = "Dragon Raid"; break;
-                        case "cl_dungeons": displayName = "CL5 Dungeon"; break;
-                        case "minidragons": displayName = "Mini Dragons"; break;
-                        case "si_epic": displayName = "Epic Dungeon"; break;
-                        case "si_dungeons": displayName = "SI Dungeon"; break;
-                        case "rvr": displayName = "RvR"; break;
-                        default:
-                            client.Player.Out.SendMessage("Usage: /bg purpose summoner|dragon|cl dungeons|minidragons|si_epic|si_dungeons|rvr", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        if (!mybattlegroup.IsBGLeader(client.Player) && !mybattlegroup.IsBGModerator(client.Player))
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
                             return;
-                    }
+                        }
 
-                    // Store the pretty name directly in the BG object
-                    mybattlegroup.Purpose = displayName;
-
-                    // Message to the group
-                    string msg = $"The Battlegroup purpose has been set to: {displayName}";
-                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
-                    {
-                        if (ply != null && ply.Client != null)
+                        if (args.Length < 3)
                         {
-                            ply.Out.SendMessage(msg, eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsagePurpose"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        string input = args[2].ToLower();
+                        // Handle "cl dungeons" if typed as two words
+                        if (input == "cl" && args.Length >= 4 && args[3].ToLower() == "dungeons")
+                        {
+                            input = "cl_dungeons";
+                        }
+
+                        string displayName = "";
+
+                        // Mapping short commands to pretty names
+                        switch (input)
+                        {
+                            case "summoner": displayName = "Summoner's Hall"; break;
+                            case "dragon": displayName = "Dragon Raid"; break;
+                            case "cl_dungeons": displayName = "CL5 Dungeon"; break;
+                            case "minidragons": displayName = "Mini Dragons"; break;
+                            case "si_epic": displayName = "Epic Dungeon"; break;
+                            case "si_dungeons": displayName = "SI Dungeon"; break;
+                            case "rvr": displayName = "RvR"; break;
+                            default:
+                                client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsagePurpose"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                                return;
+                        }
+
+                        // Store the pretty name directly in the BG object
+                        mybattlegroup.Purpose = displayName;
+
+                        // Message to the battlegroup
+                        string msg = $"[Battlegroup] The purpose has been set to: {displayName}";
+                        foreach (GamePlayer ply in mybattlegroup.Members.Keys)
+                        {
+                            if (ply != null && ply.Client != null)
+                            {
+                                ply.Out.SendMessage(msg, eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                            }
                         }
                     }
                     break;
-                }
                 case "info":
-                {
-                    if (client.Player == null) return;
-
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null)
                     {
-                        client.Out.SendMessage("You are not in a Battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
+                        if (client.Player == null) return;
 
-                    // 1. Get the Leader name
-                    string leaderName = (mybattlegroup.Leader != null) ? mybattlegroup.Leader.Name : "Unknown";
-
-                    // 2. Collect all Moderators
-                    ArrayList mods = new ArrayList();
-                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
-                    {
-                        if (mybattlegroup.IsBGModerator(ply))
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                        if (mybattlegroup == null)
                         {
-                            mods.Add(ply.Name);
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        // 1. Get the Leader name
+                        string leaderName = (mybattlegroup.Leader != null) ? mybattlegroup.Leader.Name : "Unknown";
+
+                        // 2. Collect all Moderators
+                        ArrayList mods = new ArrayList();
+                        foreach (GamePlayer ply in mybattlegroup.Members.Keys)
+                        {
+                            if (mybattlegroup.IsBGModerator(ply))
+                            {
+                                mods.Add(ply.Name);
+                            }
+                        }
+                        string moderatorsList = (mods.Count > 0) ? string.Join(", ", (string[])mods.ToArray(typeof(string))) : "";
+
+                        // 3. Get the Purpose
+                        string purpose = (!string.IsNullOrEmpty(mybattlegroup.Purpose)) ? mybattlegroup.Purpose : "";
+
+                        // 4. Get the Time
+                        string whenDisplay = (mybattlegroup.MinutesToStart > 0)
+                        ? $"{mybattlegroup.MinutesToStart} minute(s)"
+                        : "";
+
+                        // 5. Get Location
+                        string whereDisplay = (!string.IsNullOrEmpty(mybattlegroup.MeetingPlace)) ? mybattlegroup.MeetingPlace : "";
+
+                        string lootchest_state = mybattlegroup.LootChestEnabled ? "Enabled" : "Disabled";
+
+                        // 5. Send the information block
+                        client.Out.SendMessage("Battlegroup Information:", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage($"Leader: {leaderName}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage($"Moderators: {moderatorsList}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage($"Purpose: {purpose}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage($"When: {whenDisplay}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage($"Location: {whereDisplay}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage($"Lootchest: {lootchest_state}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                    }
+                    break;
+                case "when":
+                    {
+                        if (client.Player == null) return;
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                        if (mybattlegroup == null) return;
+
+                        if (!mybattlegroup.IsBGLeader(client.Player) && !mybattlegroup.IsBGModerator(client.Player))
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderModeratorCommand"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (args.Length < 3)
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsageWhen"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (!int.TryParse(args[2], out int minutes) || minutes < 1)
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsageWhen"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        mybattlegroup.MinutesToStart = minutes;
+                        mybattlegroup.StartCountdown(minutes);
+
+                        // Initial confirmation message
+                        foreach (GamePlayer ply in mybattlegroup.Members.Keys)
+                        {
+                            ply.Out.SendMessage($"[Battlegroup]: Starting time has been set to {minutes} minutes.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
                         }
                     }
-                    string moderatorsList = (mods.Count > 0) ? string.Join(", ", (string[])mods.ToArray(typeof(string))) : "";
-
-                    // 3. Get the Purpose
-                    string purpose = (!string.IsNullOrEmpty(mybattlegroup.Purpose)) ? mybattlegroup.Purpose : "";
-
-                    // 4. Get the Time
-                    string whenDisplay = (mybattlegroup.MinutesToStart > 0) 
-                    ? $"{mybattlegroup.MinutesToStart} minute(s)" 
-                    : "";
-
-                    // 5. Get Location
-                    string whereDisplay = (!string.IsNullOrEmpty(mybattlegroup.MeetingPlace)) ? mybattlegroup.MeetingPlace : "";
-
-                    // 5. Send the information block
-                    client.Out.SendMessage("Battlegroup Information:", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage($"Leader: {leaderName}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage($"Moderators: {moderatorsList}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage($"Purpose: {purpose}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage($"When: {whenDisplay}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage($"Location: {whereDisplay}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    client.Out.SendMessage("Lootchest: [Coming Soon]", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                break;
-                }
-                case "when":
-                {
-                    if (client.Player == null) return;
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null) return;
-
-                    if (!mybattlegroup.IsBGLeader(client.Player) && !mybattlegroup.IsBGModerator(client.Player))
-                    {
-                        client.Player.Out.SendMessage("Only the Leader or Moderators can set the purpose.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    if (args.Length < 3)
-                    {
-                        client.Player.Out.SendMessage("Usage: /bg when <minutes>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    if (!int.TryParse(args[2], out int minutes) || minutes < 1)
-                    {
-                        client.Player.Out.SendMessage("Usage: /bg when <minutes>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    mybattlegroup.MinutesToStart = minutes;
-                    mybattlegroup.StartCountdown(minutes);
-
-                    // Initial confirmation message
-                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
-				    {
-                        ply.Out.SendMessage($"[Battlegroup]: Start timer set to {minutes} minutes.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-                    }
                     break;
-                }
                 case "here":
-                {
-                    if (client.Player == null) return;
-
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup == null) return;
-
-                    if (!mybattlegroup.IsBGLeader(client.Player) && !mybattlegroup.IsBGModerator(client.Player))
                     {
-                        client.Player.Out.SendMessage("Only the Leader or Moderators can set the meeting point.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
+                        if (client.Player == null) return;
 
-                    string locationName = "Unknown Location";
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                        if (mybattlegroup == null) return;
 
-                    // 1. Suche nach einem Keep in der Nähe (Radius 10.000 Units)
-                    // Nutzt deine spezifische Funktion aus dem GameServer.KeepManager
-                    var myKeep = GameServer.KeepManager.GetClosestKeepToSpot(client.Player.CurrentRegionID, client.Player, 5000);
+                        if (!mybattlegroup.IsBGLeader(client.Player) && !mybattlegroup.IsBGModerator(client.Player))
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderModeratorCommand"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
 
-                    if (myKeep != null)
-                    {
-                        locationName = myKeep.Name;
-                    }
-                    else if (client.Player.CurrentZone != null)
-                    {
-                        locationName = client.Player.CurrentZone.Description;
-                    }
-                    else if (client.Player.CurrentRegion != null)
-                    {
-                        locationName = client.Player.CurrentRegion.Description;
-                    }
+                        string locationName = "Unknown Location";
+                        var myKeep = GameServer.KeepManager.GetClosestKeepToSpot(client.Player.CurrentRegionID, client.Player, 5000);
 
-                    mybattlegroup.MeetingPlace = locationName;
+                        if (myKeep != null)
+                        {
+                            locationName = myKeep.Name;
+                        }
+                        else if (client.Player.CurrentZone != null)
+                        {
+                            locationName = client.Player.CurrentZone.Description;
+                        }
+                        else if (client.Player.CurrentRegion != null)
+                        {
+                            locationName = client.Player.CurrentRegion.Description;
+                        }
 
-                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
-				    {
-                        ply.Out.SendMessage($"[Battlegroup]: Meeting point has been set to: {locationName}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        mybattlegroup.MeetingPlace = locationName;
+
+                        foreach (GamePlayer ply in mybattlegroup.Members.Keys)
+                        {
+                            ply.Out.SendMessage($"[Battlegroup]: Meeting point has been set to: {locationName}", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                        }
                     }
                     break;
-                }    
+                case "loot":
+                    {
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+
+                        if (mybattlegroup == null)
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (!mybattlegroup.IsBGLeader(client.Player))
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (args.Length < 3)
+                        {
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsageLootchest"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsageTreasurer"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (args[2].ToLower() == "chest")
+                        {
+                            if (args.Length < 4)
+                            {
+                                client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.UsageLootchest"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+                                return;
+                            }
+
+                            string action = args[3].ToLower();
+
+                            if (action == "enable")
+                            {
+                                if (!mybattlegroup.LootChestEnabled)
+                                {
+                                    mybattlegroup.LootChestEnabled = true;
+                                    foreach (GamePlayer ply in mybattlegroup.Members.Keys)
+                                    {
+                                        ply.Out.SendMessage("[Battlegroup] Loot Chest has been enabled.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+                                    }
+                                }
+                                else
+                                {
+                                    client.Player.Out.SendMessage("The loot chest is already enabled.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                }
+                            }
+                            else if (action == "spawn")
+                            {
+                                if (!mybattlegroup.LootChestEnabled)
+                                {
+                                    client.Player.Out.SendMessage("You have to enable to loot chest first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+                                mybattlegroup.SpawnChest(client.Player);
+                            }
+                            else if (action == "handout")
+                            {
+                                if (!mybattlegroup.LootChestEnabled)
+                                {
+                                    client.Player.Out.SendMessage("You have to enable to loot chest first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+                                mybattlegroup.HandoutLoot(client.Player);
+                            }
+                        }
+                        else if (args[2].ToLower() == "normal")
+                        {
+                            mybattlegroup.SetBGLootType(false);
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattleGroupLootNormal"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }
+                        else if (args[2].ToLower() == "treasurer")
+                        {
+                            mybattlegroup.SetBGLootType(false);
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattleGroupLootNormal"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }
+                    }
+                    break;
                 default:
                     {
                         PrintHelp(client);
@@ -1166,9 +1134,7 @@ namespace DOL.GS.Commands
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Loot"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Treasurer"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.LootLevel"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.RecordStart"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.RecordStop"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.ShowRolls"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.LootLevel"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
         }
 
         protected const string JOIN_BATTLEGROUP_PROPERTY = "JOIN_BATTLEGROUP_PROPERTY";
@@ -1229,7 +1195,7 @@ namespace DOL.GS.Commands
                     }
                     else
                         player.Client.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Battlegroup.NoPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    
+
                 }
             }
             player.TempProperties.RemoveProperty(JOIN_BATTLEGROUP_PROPERTY);
