@@ -16,6 +16,7 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 */
+using DOL.GS;
 
 namespace DOL.GS.Commands
 {
@@ -27,7 +28,16 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (client.Player.MinotaurRelic == null) return;
+            if (client.Player.MinotaurRelic == null) 
+            {
+                // Fix for bg beam drop button
+                BattleGroup bg = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                if (bg != null)
+                {
+                    bg.ApplyBeam("remove", client.Player);
+                }
+                return; 
+            }
 
             client.Player.MinotaurRelic.PlayerLoosesRelic(client.Player, false);
         }

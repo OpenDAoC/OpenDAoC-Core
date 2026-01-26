@@ -245,7 +245,8 @@ namespace DOL.GS.ServerRules
         /// <param name="args"></param>
         public virtual void OnRegionChanged(DOLEvent e, object sender, EventArgs args)
         {
-            StartImmunityTimer((GamePlayer)sender, ServerProperties.Properties.TIMER_REGION_CHANGED * 1000);
+            GamePlayer player = (GamePlayer)sender;
+            StartImmunityTimer(player, ServerProperties.Properties.TIMER_REGION_CHANGED * 1000);
         }
 
         /// <summary>
@@ -258,6 +259,11 @@ namespace DOL.GS.ServerRules
         {
             GamePlayer player = (GamePlayer)sender;
             StartImmunityTimer(player, ServerProperties.Properties.TIMER_KILLED_BY_MOB * 1000);//When Killed by a Mob
+            BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+            if (bg != null)
+            {
+                bg.RefreshBeamsForPlayer(player);
+            }
         }
 
         /// <summary>
@@ -268,7 +274,6 @@ namespace DOL.GS.ServerRules
         /// <param name="destination"></param>
         public virtual void OnPlayerTeleport(GamePlayer player, GameLocation source, DbTeleport destination)
         {
-            // override this in order to do something, like set immunity, when a player teleports
         }
 
         /// <summary>

@@ -1077,6 +1077,13 @@ namespace DOL.GS.Commands
                                     client.Player.Out.SendMessage("You have to enable to loot chest first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                     return;
                                 }
+
+                                if (client.Player.CurrentRegion.IsRvR)
+                                {
+                                    client.Player.Out.SendMessage("You cannot spawn the loot chest in a rvr zone.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+
                                 mybattlegroup.SpawnChest(client.Player);
                             }
                             else if (action == "handout")
@@ -1098,6 +1105,52 @@ namespace DOL.GS.Commands
                         {
                             mybattlegroup.SetBGLootType(false);
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.BattleGroupLootNormal"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }
+                    }
+                    break;
+                case "beam":
+                    {
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+
+                        if (mybattlegroup == null)
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (!mybattlegroup.IsBGLeader(client.Player))
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.LeaderCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        if (args.Length < 4)
+                        {
+                            client.Player.Out.SendMessage("Usage: /bg beam <red|white|yellow|remove> <playername>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        string action = args[2].ToLower();
+                        string targetName = args[3].ToLower();
+                        GamePlayer targetPlayer = null;
+
+                        foreach (object key in mybattlegroup.Members.Keys)
+                        {
+                            GamePlayer member = key as GamePlayer;
+                            if (member != null && member.Name.ToLower() == targetName)
+                            {
+                                targetPlayer = member;
+                                break;
+                            }
+                        }
+
+                        if (targetPlayer != null)
+                        {
+                            mybattlegroup.ApplyBeam(action, targetPlayer);
+                        }
+                        else
+                        {
+                            client.Player.Out.SendMessage("Player '" + targetName + "' not found in your battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
                     }
                     break;
@@ -1134,7 +1187,8 @@ namespace DOL.GS.Commands
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Loot"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Treasurer"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.LootLevel"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.LootLevel"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Center"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Help.Here"), eChatType.CT_BattleGroup, eChatLoc.CL_SystemWindow);
         }
 
         protected const string JOIN_BATTLEGROUP_PROPERTY = "JOIN_BATTLEGROUP_PROPERTY";
