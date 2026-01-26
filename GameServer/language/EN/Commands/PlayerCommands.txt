@@ -137,6 +137,7 @@ Scripts.Players.Battlegroup.Help.Here:              /bg here to set your current
 Scripts.Players.Battlegroup.Help.When:              /bg when <min> to set the starting time
 Scripts.Players.Battlegroup.Help.Purpose:           /bg purpose to set the purpose of this battlegroup
 Scripts.Players.Battlegroup.Help.Lootchest:         /bg loot chest to manage the loot chest
+Scripts.Players.Battlegroup.Help.Lootchest:         /bg beam red|yellow|white <player> to give a player a beam
 Scripts.Players.Battlegroup.InBattleGroup:		    You must be in a battle group to use this command.
 Scripts.Players.Battlegroup.InviteYourself:		    You cannot invite yourself to a battlegroup.
 Scripts.Players.Battlegroup.JoinBattleGroup:		Do you want to join {0}'s battlegroup?
