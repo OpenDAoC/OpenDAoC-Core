@@ -134,6 +134,8 @@ namespace DOL.GS
 				if (battlegroupTreasurer == player) SetBGTreasurer(null);
 				if (m_battlegroupModerators.Contains(player)) m_battlegroupModerators.Remove(player);
 
+				// Remove player's beam effect if he had one
+				this.ApplyBeam("remove", player);
 				// Remove BG leader icon on player leave
 				player.Out.SendMinotaurRelicMapRemove(9);
 				player.Out.SendMinotaurRelicMapRemove(19);
@@ -144,8 +146,7 @@ namespace DOL.GS
 
 				if (m_battlegroupMembers.Count <= 1)
 				{
-					ArrayList remaining = new ArrayList(m_battlegroupMembers.Keys);
-					foreach (GamePlayer plr in remaining) RemoveBattlePlayer(plr);
+					foreach (GamePlayer plr in m_battlegroupMembers.Keys) RemoveBattlePlayer(plr);
 					m_battlegroupLeader = null;
 					// Cleanup loot chest when bg is closed
 					if (LootChestEnabled)
@@ -381,11 +382,13 @@ namespace DOL.GS
 
 						if (winner.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, dbItem))
 						{
+							dbItem.OwnerID = winner.InternalID;
+							GameServer.Database.SaveObject(dbItem);
+
 							foreach (GamePlayer ply in m_battlegroupMembers.Keys)
 							{
 								ply.Out.SendMessage($"{winner.Name} received {dbItem.Name}.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
 							}
-							GameServer.Database.DeleteObject(dbItem);
 						}
 						else
 						{
@@ -613,20 +616,18 @@ namespace DOL.GS
 		{
 			if (player?.Out == null) return;
 
-			foreach (var entry in m_savedBeams)
+			// Wir prüfen nur, ob der gerade gespawnte Spieler einen aktiven Beam in der Liste hat
+			if (m_savedBeams.TryGetValue(player.InternalID, out int effectID))
 			{
-				string targetID = entry.Key;
-				int effectID = entry.Value;
-
-				foreach (GamePlayer target in m_battlegroupMembers.Keys)
+				lock (_battlegroupMembersLock)
 				{
-					if (target.InternalID == targetID)
+					foreach (GamePlayer member in m_battlegroupMembers.Keys)
 					{
-						if (player.IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE))
+						if (member?.Out != null)
 						{
-							player.Out.SendMinotaurRelicWindow(target, effectID, true);
+							// Wir senden dem Member die Info: "Dieser Spieler (player) hat hier einen Beam"
+							member.Out.SendMinotaurRelicWindow(player, effectID, true);
 						}
-						break;
 					}
 				}
 			}
