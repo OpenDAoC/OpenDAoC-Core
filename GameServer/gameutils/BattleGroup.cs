@@ -24,7 +24,16 @@ namespace DOL.GS
 		protected HybridDictionary m_battlegroupMembers = new();
 		protected readonly Lock _battlegroupMembersLock = new();
 		protected GamePlayer m_battlegroupLeader;
-
+		private string m_bgID;
+		public string BgID
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(m_bgID))
+					m_bgID = Guid.NewGuid().ToString().Substring(0, 8);
+				return m_bgID;
+			}
+		}
 		protected string m_purpose = "";
 		protected int m_minutesToStart = -1;
 		protected ECSGameTimer m_startTimer;
@@ -63,7 +72,6 @@ namespace DOL.GS
 
 		public bool LootChestEnabled { get => m_lootChestEnabled; set => m_lootChestEnabled = value; }
 		public long LootChestMoney { get => m_lootChestMoney; set => m_lootChestMoney = value; }
-
 		protected Dictionary<GamePlayer, ushort> m_activeBeams = new Dictionary<GamePlayer, ushort>();
 
 		public BGLootInventory LootChestInventory
@@ -139,6 +147,17 @@ namespace DOL.GS
 					ArrayList remaining = new ArrayList(m_battlegroupMembers.Keys);
 					foreach (GamePlayer plr in remaining) RemoveBattlePlayer(plr);
 					m_battlegroupLeader = null;
+					// Cleanup loot chest when bg is closed
+					if (LootChestEnabled)
+					{
+						if (m_currentChestNPC != null)
+						{
+							m_currentChestNPC.Delete();
+							m_currentChestNPC = null;
+						}
+						m_lootChestInventory = null;
+						LootChestEnabled = false;
+					}
 				}
 				else if (wasLeader)
 				{
@@ -147,6 +166,11 @@ namespace DOL.GS
 					{
 						SetBGLeader(nextLeader);
 						m_battlegroupMembers[nextLeader] = true;
+						// Cleanup loot chest on leader change, not deleting any items
+						if (LootChestEnabled)
+						{
+							m_lootChestInventory = null;
+						}
 						BroadcastMessage($"{nextLeader.Name} is the new leader of the battle group.");
 					}
 				}
@@ -234,7 +258,7 @@ namespace DOL.GS
 			if (LootChestEnabled)
 			{
 				GameInventoryItem chestItem = new GameInventoryItem(worldItem.Item);
-				string bgOwnerID = "BG_" + (Leader?.Name ?? "Unknown");
+				string bgOwnerID = "BG_ID_" + this.BgID;
 				chestItem.OwnerID = bgOwnerID;
 				chestItem.ObjectId = null;
 
@@ -289,7 +313,7 @@ namespace DOL.GS
 		public void AddToLootChest(DbInventoryItem dbItem)
 		{
 			if (dbItem == null || Leader == null) return;
-			string bgOwnerID = "BG_" + Leader.Name;
+			string bgOwnerID = "BG_ID_" + this.BgID;
 
 			var itemsInChest = GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(bgOwnerID));
 			if (itemsInChest.Count >= 100) return;
@@ -338,7 +362,7 @@ namespace DOL.GS
 		{
 			if (leader == null || !IsBGLeader(leader)) return;
 
-			string bgOwnerID = "BG_" + Leader.Name;
+			string bgOwnerID = "BG_ID_" + this.BgID;
 			var dbItemsList = GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(bgOwnerID));
 
 			lock (_battlegroupMembersLock)
@@ -450,11 +474,26 @@ namespace DOL.GS
 		#region Inner Classes
 		public class BGLootInventory : AccountVault
 		{
-			private string m_bgLeaderName;
-			public BGLootInventory(BattleGroup bg) : base(bg.Leader as GamePlayer, 0, AccountVaultKeeper.GetDummyVaultItem(bg.Leader as GamePlayer))
-				=> m_bgLeaderName = (bg.Leader != null) ? bg.Leader.Name : "Unknown";
+			private readonly BattleGroup m_bg;
+			public BGLootInventory(BattleGroup bg)
+				: base(bg.Leader as GamePlayer, 0, AccountVaultKeeper.GetDummyVaultItem(bg.Leader as GamePlayer))
+			{
+				m_bg = bg;
+			}
+			public override string GetOwner(GamePlayer player)
+			{
+				if (m_bg != null)
+				{
+					return "BG_ID_" + m_bg.BgID;
+				}
+				if (player != null)
+				{
+					var tempBG = player.TempProperties.GetProperty<BattleGroup>(BATTLEGROUP_PROPERTY);
+					if (tempBG != null) return "BG_ID_" + tempBG.BgID;
+				}
 
-			public override string GetOwner(GamePlayer player) => "BG_" + m_bgLeaderName;
+				return "BG_Unknown";
+			}
 			public override bool CanView(GamePlayer player) => true;
 			public override bool CanAddItems(GamePlayer player) => true;
 			public override bool CanRemoveItems(GamePlayer player)
@@ -462,39 +501,67 @@ namespace DOL.GS
 				var bg = player.TempProperties.GetProperty<BattleGroup>(BATTLEGROUP_PROPERTY);
 				return bg != null && bg.IsBGLeader(player);
 			}
+
+			public override bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot)
+			{
+				bool success = base.OnAddItem(player, item, previousSlot);
+
+				if (success && m_bg != null && item != null && player != null)
+				{
+					foreach (GamePlayer ply in m_bg.m_battlegroupMembers.Keys)
+					{
+						ply.Out.SendMessage($"[Battlegroup] {player.Name} added {item.Name} to the loot chest.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+					}
+				}
+				return success;
+			}
+
+			public override bool OnRemoveItem(GamePlayer player, DbInventoryItem item, int previousSlot)
+			{
+				bool success = base.OnRemoveItem(player, item, previousSlot);
+
+				if (success && m_bg != null && item != null && player != null)
+				{
+					foreach (GamePlayer ply in m_bg.m_battlegroupMembers.Keys)
+					{
+						ply.Out.SendMessage($"[Battlegroup] {player.Name} removed {item.Name} from the loot chest.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+					}
+				}
+				return success;
+			}
 		}
 
 		// Loot Chest Interface
-        public class GameLootChest : GameNPC
-        {
-            private BattleGroup m_bg;
-            public GameLootChest(BattleGroup bg) => m_bg = bg;
+		public class GameLootChest : GameNPC
+		{
+			private BattleGroup m_bg;
+			public GameLootChest(BattleGroup bg) => m_bg = bg;
 
-            public override bool Interact(GamePlayer player)
-            {
-                if (!base.Interact(player)) return false;
+			public override bool Interact(GamePlayer player)
+			{
+				if (!base.Interact(player)) return false;
 
-                // FIX: Wir prüfen über das Dictionary der BG (m_bg), ob der Player drin ist
-                if (player == null || m_bg == null || !m_bg.IsInTheBattleGroup(player))
-                {
-                    player.Out.SendMessage("You are not a member of this Battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return false;
-                }
+				// FIX: Wir prüfen über das Dictionary der BG (m_bg), ob der Player drin ist
+				if (player == null || m_bg == null || !m_bg.IsInTheBattleGroup(player))
+				{
+					player.Out.SendMessage("You are not a member of this Battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return false;
+				}
 
-                // FIX: Die Daten liegen in der BG (m_bg), nicht in der Truhe selbst
-                player.ActiveInventoryObject = m_bg.LootChestInventory;
-                
-                if (player.ActiveInventoryObject != null)
-                {
-                    player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
-                }
+				// FIX: Die Daten liegen in der BG (m_bg), nicht in der Truhe selbst
+				player.ActiveInventoryObject = m_bg.LootChestInventory;
 
-                if (m_bg.LootChestMoney > 0)
-                    player.Out.SendMessage($"The loot chest holds: {Money.GetString(m_bg.LootChestMoney)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if (player.ActiveInventoryObject != null)
+				{
+					player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
+				}
 
-                return true;
-            }
-        }
+				if (m_bg.LootChestMoney > 0)
+					player.Out.SendMessage($"The loot chest holds: {Money.GetString(m_bg.LootChestMoney)}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+				return true;
+			}
+		}
 		#endregion
 
 
