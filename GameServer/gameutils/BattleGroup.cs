@@ -122,33 +122,57 @@ namespace DOL.GS
 		public virtual bool RemoveBattlePlayer(GamePlayer player)
 		{
 			if (player == null) return false;
+
 			lock (_battlegroupMembersLock)
 			{
-				if (!m_battlegroupMembers.Contains(player)) return false;
+				if (!m_battlegroupMembers.Contains(player))
+					return false;
 
-				bool wasLeader = IsBGLeader(player);
+				// Remove Beam Logic
+				if (m_battlegroupMembers.Count <= 2)
+				{
+					ArrayList currentMembers = new ArrayList(m_battlegroupMembers.Keys);
+					foreach (GamePlayer p in currentMembers)
+					{
+						this.ApplyBeam("remove", p);
+					}
+				}
+				else
+				{
+					this.ApplyBeam("remove", player);
+				}
+
+				var leader = IsBGLeader(player);
 				m_battlegroupMembers.Remove(player);
 				player.TempProperties.RemoveProperty(BATTLEGROUP_PROPERTY);
 				player.isInBG = false;
 
+				// Cleanup Treasurer/Moderators & Icons
 				if (battlegroupTreasurer == player) SetBGTreasurer(null);
 				if (m_battlegroupModerators.Contains(player)) m_battlegroupModerators.Remove(player);
 
-				// Remove player's beam effect if he had one
-				this.ApplyBeam("remove", player);
-				// Remove BG leader icon on player leave
 				player.Out.SendMinotaurRelicMapRemove(9);
 				player.Out.SendMinotaurRelicMapRemove(19);
 				player.Out.SendMinotaurRelicMapRemove(29);
 
 				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				BroadcastNormalMessage($"{player.Name} has left the battle group.");
 
-				if (m_battlegroupMembers.Count <= 1)
+				foreach (GamePlayer member in m_battlegroupMembers.Keys)
 				{
-					foreach (GamePlayer plr in m_battlegroupMembers.Keys) RemoveBattlePlayer(plr);
+					member.Out.SendMessage(player.Name + " has left the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				if (m_battlegroupMembers.Count == 1)
+				{
+					ArrayList lastPlayers = new ArrayList(m_battlegroupMembers.Count);
+					lastPlayers.AddRange(m_battlegroupMembers.Keys);
+					foreach (GamePlayer plr in lastPlayers)
+					{
+						RemoveBattlePlayer(plr);
+					}
 					m_battlegroupLeader = null;
-					// Cleanup loot chest when bg is closed
+
+					// Loot Chest Cleanup
 					if (LootChestEnabled)
 					{
 						if (m_currentChestNPC != null)
@@ -160,19 +184,22 @@ namespace DOL.GS
 						LootChestEnabled = false;
 					}
 				}
-				else if (wasLeader)
+				else if (leader && m_battlegroupMembers.Count >= 2)
 				{
+					var bgPlayers = new ArrayList(m_battlegroupMembers.Keys);
 					var nextLeader = m_battlegroupMembers.Keys.Cast<GamePlayer>().FirstOrDefault(p => p != null);
+
 					if (nextLeader != null)
 					{
 						SetBGLeader(nextLeader);
 						m_battlegroupMembers[nextLeader] = true;
-						// Cleanup loot chest on leader change, not deleting any items
-						if (LootChestEnabled)
+
+						if (LootChestEnabled) m_lootChestInventory = null;
+
+						foreach (GamePlayer member in m_battlegroupMembers.Keys)
 						{
-							m_lootChestInventory = null;
+							member.Out.SendMessage(nextLeader.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
 						}
-						BroadcastMessage($"{nextLeader.Name} is the new leader of the battle group.");
 					}
 				}
 			}
@@ -544,14 +571,12 @@ namespace DOL.GS
 			{
 				if (!base.Interact(player)) return false;
 
-				// FIX: Wir prüfen über das Dictionary der BG (m_bg), ob der Player drin ist
 				if (player == null || m_bg == null || !m_bg.IsInTheBattleGroup(player))
 				{
 					player.Out.SendMessage("You are not a member of this Battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 
-				// FIX: Die Daten liegen in der BG (m_bg), nicht in der Truhe selbst
 				player.ActiveInventoryObject = m_bg.LootChestInventory;
 
 				if (player.ActiveInventoryObject != null)
@@ -579,35 +604,39 @@ namespace DOL.GS
 			int relicEffectID = 0;
 			bool active = true;
 
-			switch (action.ToLower())
+			if (string.Equals(action, "remove", StringComparison.OrdinalIgnoreCase))
 			{
-				case "red": relicEffectID = 159; break;
-				case "white": relicEffectID = 160; break;
-				case "yellow":
-				case "gold": relicEffectID = 161; break;
-				case "remove":
-					relicEffectID = 0;
-					active = false;
-					m_savedBeams.Remove(target.InternalID); // Löschen beim Entfernen
-					break;
-				default: return;
+				relicEffectID = 0;
+				active = false;
+				m_savedBeams.Remove(target.InternalID);
+			}
+			else
+			{
+				switch (action.ToLower())
+				{
+					case "red": relicEffectID = 159; break;
+					case "white": relicEffectID = 160; break;
+					case "yellow":
+					case "gold": relicEffectID = 161; break;
+					default: return;
+				}
+				m_savedBeams[target.InternalID] = relicEffectID;
 			}
 
-			if (active)
-			{
-				m_savedBeams[target.InternalID] = relicEffectID; // Speichern
-			}
-
+			GamePlayer[] members;
 			lock (_battlegroupMembersLock)
 			{
-				foreach (GamePlayer member in m_battlegroupMembers.Keys)
-				{
-					if (member?.Out == null) continue;
-					if (member.Realm == target.Realm && member.IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE))
-					{
-						member.Out.SendMinotaurRelicWindow(target, relicEffectID, active);
-					}
-				}
+				members = m_battlegroupMembers.Keys.Cast<GamePlayer>().ToArray();
+			}
+
+			ushort targetActiveId = (ushort)relicEffectID;
+
+			foreach (GamePlayer member in members)
+			{
+				if (member?.Out == null || member.Realm != target.Realm)
+					continue;
+
+					member.Out.SendMinotaurRelicWindow(target, targetActiveId, active);
 			}
 		}
 
@@ -616,17 +645,30 @@ namespace DOL.GS
 		{
 			if (player?.Out == null) return;
 
-			// Wir prüfen nur, ob der gerade gespawnte Spieler einen aktiven Beam in der Liste hat
-			if (m_savedBeams.TryGetValue(player.InternalID, out int effectID))
+			lock (_battlegroupMembersLock)
 			{
-				lock (_battlegroupMembersLock)
+				foreach (var entry in m_savedBeams)
+				{
+					string ownerID = entry.Key;
+					int effectID = entry.Value;
+
+					foreach (GamePlayer member in m_battlegroupMembers.Keys)
+					{
+						if (member.InternalID == ownerID)
+						{
+							player.Out.SendMinotaurRelicWindow(member, effectID, true);
+							break;
+						}
+					}
+				}
+
+				if (m_savedBeams.TryGetValue(player.InternalID, out int selfEffectID))
 				{
 					foreach (GamePlayer member in m_battlegroupMembers.Keys)
 					{
 						if (member?.Out != null)
 						{
-							// Wir senden dem Member die Info: "Dieser Spieler (player) hat hier einen Beam"
-							member.Out.SendMinotaurRelicWindow(player, effectID, true);
+							member.Out.SendMinotaurRelicWindow(player, selfEffectID, true);
 						}
 					}
 				}
