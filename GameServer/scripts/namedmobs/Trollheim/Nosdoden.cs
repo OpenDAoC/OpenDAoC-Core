@@ -8,6 +8,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -83,6 +84,7 @@ namespace DOL.GS
 			AwardDragonKillPoint();
 
 			base.Die(killer);
+			DungeonTeleporter.Create(this);
 			foreach (String message in m_deathAnnounce)
 			{
 				BroadcastMessage(String.Format(message, Name));

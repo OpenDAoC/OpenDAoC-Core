@@ -4,6 +4,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -127,6 +128,12 @@ namespace DOL.GS
 				return m_HeatAoeProc;
 			}
 		}
+
+		public override void Die(GameObject killer)
+        {
+            base.Die(killer);
+			DungeonTeleporter.Create(this);
+        }
 	}
 }
 namespace DOL.AI.Brain

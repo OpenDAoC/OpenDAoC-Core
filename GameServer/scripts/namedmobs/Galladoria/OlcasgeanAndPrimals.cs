@@ -6,6 +6,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using DOL.GS.Scripts;
 
 #region Olcasgean Initializator
 /// <summary>
@@ -453,6 +454,7 @@ namespace DOL.GS
                     ReportNews(killer);
             }
             base.Die(killer);
+            DungeonTeleporter.Create(this);
         }
         #endregion
         public override bool AddToWorld()

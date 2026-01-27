@@ -4,6 +4,7 @@ using DOL.Database;
 using DOL.GS;
 using DOL.Events;
 using System.Collections.Generic;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -61,6 +62,7 @@ namespace DOL.GS
 				}
 			}
 			base.Die(killer);
+			DungeonTeleporter.Create(this);
         }
         public override bool AddToWorld()
 		{

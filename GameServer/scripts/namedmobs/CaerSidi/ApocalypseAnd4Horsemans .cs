@@ -7,6 +7,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using Timer = System.Timers.Timer;
+using DOL.GS.Scripts;
 
 #region Apoc Initializator
 namespace DOL.GS
@@ -2089,6 +2090,7 @@ namespace DOL.GS
             ApocInitializator.start_respawn_check = false;
             ApocUP = false;
             base.Die(killer);
+            DungeonTeleporter.Create(this);
         }      
         
         protected int AwardEpicEncounterKillPoint()

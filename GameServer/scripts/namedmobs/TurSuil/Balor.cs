@@ -4,6 +4,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -98,6 +99,12 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
+
+		public override void Die(GameObject killer)
+        {
+            base.Die(killer);
+			DungeonTeleporter.Create(this);
+        }
 	}
 }
 namespace DOL.AI.Brain

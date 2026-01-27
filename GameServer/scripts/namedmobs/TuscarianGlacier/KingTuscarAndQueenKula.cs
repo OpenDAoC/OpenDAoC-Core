@@ -7,6 +7,7 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
+using DOL.GS.Scripts;
 
 namespace DOL.GS
 {
@@ -160,6 +161,7 @@ namespace DOL.GS
                 ReportNews(killer);
             }
             base.Die(killer);
+            DungeonTeleporter.Create(this);
         }
         #endregion
         #region AddToWorld
