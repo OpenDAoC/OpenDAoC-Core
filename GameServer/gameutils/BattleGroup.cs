@@ -126,6 +126,11 @@ namespace DOL.GS
 				if (battlegroupTreasurer == player) SetBGTreasurer(null);
 				if (m_battlegroupModerators.Contains(player)) m_battlegroupModerators.Remove(player);
 
+				// Remove BG leader icon on player leave
+				player.Out.SendMinotaurRelicMapRemove(9);
+				player.Out.SendMinotaurRelicMapRemove(19);
+				player.Out.SendMinotaurRelicMapRemove(29);
+
 				player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				BroadcastNormalMessage($"{player.Name} has left the battle group.");
 
