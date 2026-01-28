@@ -123,6 +123,7 @@ namespace DOL.GS
 						
 						// item.Color of ticket is used for npctemplate. defaults to standard horse if item.color is 0
 						// item.Color(313)=hib horse, item.Color(312)=mid horse, item.Color(311)=alb horse
+						// item.Color(303)=hib fly, item.Color(302)=mid fly, item.Color(301)=alb fly
 						if (item.Color > 0)
 						{
 							mount = new GameTaxi(NpcTemplateMgr.GetTemplate(item.Color));

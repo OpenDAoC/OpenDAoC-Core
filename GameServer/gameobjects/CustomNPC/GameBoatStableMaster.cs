@@ -104,11 +104,9 @@ namespace DOL.GS
 					}
                     String destination = item.Name.Substring("Ticket to ".Length);
 					PathPoint path = MovementMgr.LoadPath(item.Id_nb);
-					player.Out.SendMessage(item.Id_nb, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					//PathPoint path = MovementMgr.Instance.LoadPath(this.Name + "=>" + destination);
                     if ((path != null) && ((Math.Abs(path.X - this.X)) < 500) && ((Math.Abs(path.Y - this.Y)) < 500))
 					{
-						player.Out.SendMessage("4:", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						player.Inventory.RemoveCountFromStack(item, 1);
                         InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
 
