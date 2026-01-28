@@ -14,18 +14,48 @@ namespace DOL.GS.Scripts
     public class DungeonTeleporter : GameNPC
     {
         protected ECSGameTimer m_cleanupTimer;
+        protected DbTeleport m_destination;
+
+        // What happens when player clicks on me
         public override bool Interact(GamePlayer player)
         {
-            if (!base.Interact(player)) return false;
-            string targetLocation = this.GuildName;
-            DbTeleport destination = WorldMgr.GetTeleportLocation(player.Realm, string.Format("{0}:{1}", string.Empty, targetLocation));
-            if (player.InCombat == false && destination != null)
+            if (!this.IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
             {
-                GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
-                player.MoveTo((ushort) destination.RegionID, destination.X, destination.Y, destination.Z, (ushort) destination.Heading);
-                GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
+                player.Out.SendMessage("You are too far away!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                return false;
             }
-            return false;
+            string msg = $"Greetings, " + player.Name + " you want me to bring you to the [entrance] of the dungeon ?";
+            SayTo(player, msg);
+            return true;
+        }
+
+        // When played clicked [entrance] or did /whisper entrance
+        public override bool WhisperReceive(GameLiving source, string text)
+        {
+            GamePlayer player = source as GamePlayer;
+            if (player == null) return false;
+
+            // Distance check
+            if (!this.IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
+            {
+                player.Out.SendMessage("You are too far away!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+            if (text.ToLower().Contains("entrance"))
+            {
+                if (m_destination != null && !player.InCombat)
+                {
+                    GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
+                    player.MoveTo((ushort)m_destination.RegionID, m_destination.X, m_destination.Y, m_destination.Z, (ushort)m_destination.Heading);
+                    GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, m_destination);
+                }
+                else if (player.InCombat)
+                {
+                    player.Out.SendMessage("You cannot leave while in combat!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+            }
+            return true;
         }
 
         public static void Create(GameObject boss)
@@ -33,8 +63,6 @@ namespace DOL.GS.Scripts
             if (boss == null) return;
 
             string npcGuild;
-            ushort targetRegion, targetHeading;
-            int targetX, targetY, targetZ;
 
             switch (boss.Name)
             {
@@ -91,12 +119,16 @@ namespace DOL.GS.Scripts
                 default:
                     return;
             }
+            DbTeleport destination = DOLDB<DbTeleport>.SelectObject(DB.Column("TeleportID").IsEqualTo(npcGuild));
+
+            // Dont create NPC when teleport location not found
+            if (destination == null) return;
 
             DungeonTeleporter teleNPC = new DungeonTeleporter();
 
             teleNPC.Name = "Entrance";
             teleNPC.GuildName = npcGuild;
-            teleNPC.Model = 1904;
+            teleNPC.Model = 826;
             teleNPC.Size = 70;
             teleNPC.Level = 40;
             teleNPC.Realm = 0;
@@ -108,16 +140,11 @@ namespace DOL.GS.Scripts
             teleNPC.Y = boss.Y;
             teleNPC.Z = boss.Z;
             teleNPC.Heading = boss.Heading;
+            teleNPC.m_destination = destination;
 
             teleNPC.AddToWorld();
 
             teleNPC.StartCleanupTimer(5);
-
-
-            foreach (GamePlayer plr in teleNPC.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                plr.Out.SendMessage($"{teleNPC.Name} has been spawned, he brings you to the entrance!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
         }
 
         // Automatically remove NPC after 5min
