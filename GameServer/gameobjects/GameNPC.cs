@@ -2774,7 +2774,7 @@ namespace DOL.GS
 			StartAttack(target);
 		}
 
-		private double damageFactor = 1;
+		private double damageFactor = 0.66;
 
 		public override double GetWeaponSkill(DbInventoryItem weapon)
 		{
