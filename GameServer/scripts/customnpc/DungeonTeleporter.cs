@@ -86,8 +86,8 @@ namespace DOL.GS.Scripts
                 case "Orylle":
                     npcGuild = "Krondon";
                     break;
-                // Avalon City
-                case "Dura'ek the Empowered":
+                // Avalon City / Crystal Cave
+                case "Xanxicar":
                     npcGuild = "Avalon City";
                     break;
                 // Caer Sidi

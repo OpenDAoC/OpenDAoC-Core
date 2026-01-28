@@ -132,7 +132,6 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
         {
             base.Die(killer);
-			DungeonTeleporter.Create(this);
         }
 	}
 }

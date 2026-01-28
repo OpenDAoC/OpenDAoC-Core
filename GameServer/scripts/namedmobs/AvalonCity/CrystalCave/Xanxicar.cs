@@ -94,6 +94,7 @@ namespace DOL.GS
 			AwardDragonKillPoint();
 
 			base.Die(killer);
+			DungeonTeleporter.Create(this);
 
 			foreach (String message in m_deathAnnounce)
 			{
