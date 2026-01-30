@@ -12,8 +12,8 @@ namespace DOL.GS {
     /// </summary>
     public class ROGMobGenerator : LootGeneratorBase {
 
-        //base chance in %
-        public static ushort BASE_ROG_CHANCE = 14;
+        //base rog drop chance in %
+        public static ushort BASE_ROG_CHANCE = 50;
 
 
         /// <summary>

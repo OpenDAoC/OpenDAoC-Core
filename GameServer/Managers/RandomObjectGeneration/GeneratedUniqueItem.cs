@@ -11,8 +11,9 @@ namespace DOL.GS
     /// GeneratedUniqueItem is a subclass of UniqueItem used to create RoG object
     /// Using it as a class is much more extendable to other usage than just loot and inventory
     /// </summary>
-    public class GeneratedUniqueItem : DbItemUnique {
-        
+    public class GeneratedUniqueItem : DbItemUnique
+    {
+
         //The following properties are weights for each roll
         //It is *not* a direct chance to receive the item. It is instead
         //a chance for that item type to be randomly selected as a valid generation type
@@ -37,13 +38,13 @@ namespace DOL.GS
 
         private eCharacterClass charClass = eCharacterClass.Unknown;
 
-        private static Dictionary<int,Spell> ProcSpells = new Dictionary<int,Spell>();
+        private static Dictionary<int, Spell> ProcSpells = new Dictionary<int, Spell>();
 
         protected static Dictionary<eProperty, string> hPropertyToMagicPrefix = new Dictionary<eProperty, string>();
 
         [ScriptLoadedEvent]
         public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        { 
+        {
             InitializeHashtables();
         }
 
@@ -316,7 +317,7 @@ namespace DOL.GS
 
             this.ProcChance = 10;
 
-            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield))
+            if (((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield))
             {
                 if (Util.Chance(50))
                 {
@@ -407,7 +408,7 @@ namespace DOL.GS
                     }
                 }
             }
-            else if(this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO)
+            else if (this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO)
             {
                 if (Util.Chance(50))
                 {
@@ -497,7 +498,7 @@ namespace DOL.GS
                         this.LevelRequirement = 40;
                     }
                 }
-                
+
             }
         }
 
@@ -511,27 +512,27 @@ namespace DOL.GS
                 validColors.Add(6); //grey
                 validColors.Add(4); //old yellow
             }
-            
+
             if (Level > 20)
             {
                 validColors.Add(17); //iron
                 validColors.Add(16); //bronze
             }
-            
+
             if (Level > 30)
             {
                 validColors.Add(18); //steel
                 validColors.Add(19); //alloy
                 validColors.Add(72); //grey1
             }
-            
+
             if (Level > 40)
             {
                 validColors.Add(22); //asterite
                 validColors.Add(20); //fine alloy
                 validColors.Add(73); //gray2
             }
-            
+
             if (Level > 50)
             {
                 validColors.Add(21); //mithril
@@ -541,32 +542,33 @@ namespace DOL.GS
                 validColors.Add(74); //grey3
                 validColors.Add(118); //charcoal
             }
-            
-            switch(realm){
+
+            switch (realm)
+            {
                 case eRealm.Hibernia:
                     if (Level > 10)
                     {
                         validColors.Add(2); //old green
                     }
-            
+
                     if (Level > 20)
                     {
                         validColors.Add(10); //leather green
-                        
+
                     }
-            
+
                     if (Level > 30)
                     {
                         validColors.Add(31); //yellow green
                         validColors.Add(32); //green
                     }
-            
+
                     if (Level > 40)
                     {
                         validColors.Add(33); //blue green
                         validColors.Add(68); //green1
                     }
-            
+
                     if (Level > 50)
                     {
                         validColors.Add(70); //green3
@@ -579,25 +581,25 @@ namespace DOL.GS
                     {
                         validColors.Add(1); //old red
                     }
-            
+
                     if (Level > 20)
                     {
                         validColors.Add(9); //leather red
-                        
+
                     }
-            
+
                     if (Level > 30)
                     {
                         validColors.Add(24); //yellow red
                         validColors.Add(27); //red
                     }
-            
+
                     if (Level > 40)
                     {
                         validColors.Add(64); //red1
                         validColors.Add(65); //red2
                     }
-            
+
                     if (Level > 50)
                     {
                         validColors.Add(66); //red3
@@ -610,25 +612,25 @@ namespace DOL.GS
                     {
                         validColors.Add(3); //old red
                     }
-            
+
                     if (Level > 20)
                     {
                         validColors.Add(14); //leather red
-                        
+
                     }
-            
+
                     if (Level > 30)
                     {
                         validColors.Add(34); //turqoise cloth
                         validColors.Add(35); //light blue
                     }
-            
+
                     if (Level > 40)
                     {
                         validColors.Add(36); //blue
                         validColors.Add(51); //blue1
                     }
-            
+
                     if (Level > 50)
                     {
                         validColors.Add(52); //blue2
@@ -644,57 +646,42 @@ namespace DOL.GS
 
         private void GenerateMagicalBonuses(bool toa)
         {
-            // unique objects have more bonuses as level rises
-
             int number = 0;
 
-            // WHRIA
-            //if (this.Level>60) number++;
             if (this.Level > 60 && Util.Chance(10)) number++;
             if (this.Level > 70 && Util.Chance(25)) number++;
             if (this.Level > 70 && Util.Chance(25)) number++;
             if (this.Level > 80 && Util.Chance(80)) number++;
-            // END
 
-            if (Util.Chance(MagicalItemOffset + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
+            if (Util.Chance(MagicalItemOffset + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical)
             {
-                //1
                 number++;
-
-                if (Util.Chance(this.Level * 8 - 40)) // level 6 - 17 (100%)
+                if (Util.Chance(this.Level * 8 - 40))
                 {
-                    //2
-                    number++;
-
-                    if (Util.Chance(this.Level * 6 - 60)) // level 11 - 27 (100%)
+                    number++; // 2. Slot
+                    if (Util.Chance(this.Level * 6 - 60))
                     {
-                        //3
-                        number++;
-
-                        if (Util.Chance(this.Level * 4 - 80)) // level 21 - 45 (100%)
+                        number++; // 3. Slot
+                        if (Util.Chance(this.Level * 4 - 80))
                         {
-                            //4
-                            number++;
-
+                            number++; // 4. Slot
                             if (this.Level > 75)
-                                number++; // 5
+                                number++; // 5. Slot
                         }
                     }
                 }
-
             }
 
-
-            // Magical items have at least 1 bonus
-            if (this.Object_Type == (int)eObjectType.Magical && number < 1)
-                number = 1;
-
+            // Force minimum stats
+            if (number < 1) number = 1;
+            if (this.Level >= 40 && number < 2) number = 2;
+            if (this.Level >= 50 && number < 3) number = 3;
 
             bool fMagicScaled = false;
             bool fAddedBonus = false;
 
+            int attempts = 0;
             double quality = (double)this.Quality * .01;
-
             double multiplier = (quality * quality * quality) + 0.20;
 
             if (toa)
@@ -704,27 +691,41 @@ namespace DOL.GS
 
             for (int i = 0; i < number; i++)
             {
+                attempts++;
+                if (attempts > 50) break;
+
                 eBonusType type = this.GetPropertyType(toa);
                 eProperty property = this.GetProperty(type);
-                double tmpMulti = multiplier;
-                if (type == eBonusType.Stat)
-                    tmpMulti = 1;
+
+                int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property));
+
+                // Force 1 Stat at least
+                if (amount <= 0) amount = 1;
+
+                // Check if stat already exisits on item
                 if (!this.BonusExists(property))
                 {
-                    int amount = (int)Math.Ceiling((double)GetBonusAmount(type, property));
                     this.WriteBonus(property, amount);
                     fAddedBonus = true;
+
                     if (!fMagicScaled)
                     {
                         fMagicScaled = true;
                         multiplier *= 0.75;
                     }
                 }
+                else
+                {
+                    // Bonus exists already, repeat
+                    i--;
+                }
             }
 
-            // non magical items get lowercase names
+            // Small name if no bonus added
             if (number == 0 || !fAddedBonus)
+            {
                 this.Name = this.Name.ToLower();
+            }
         }
 
         private eProperty GetPropertyFromBonusLine(int BonusLine)
@@ -776,12 +777,12 @@ namespace DOL.GS
             //allfocus
             if (CanAddFocus())
                 return eBonusType.Focus;
-            
-			// ToA allows stat cap bonuses
-			if (toa && Util.Chance(ToaItemChance))
-			{
-				return eBonusType.AdvancedStat;
-			}
+
+            // ToA allows stat cap bonuses
+            if (toa && Util.Chance(ToaItemChance))
+            {
+                return eBonusType.AdvancedStat;
+            }
 
             if (Level < 10)
             {
@@ -798,7 +799,7 @@ namespace DOL.GS
                 if (Util.Chance(ItemStatWeight)) { bonTypes.Add(eBonusType.Stat); }
                 if (Util.Chance(ItemResistWeight)) { bonTypes.Add(eBonusType.Resist); }
                 if (Util.Chance(ItemSkillWeight) && !HasSkill) { bonTypes.Add(eBonusType.Skill); }
-            
+
                 //if none of the object types were added, randomly pick between stat/resist
                 if (bonTypes.Count < 1)
                 {
@@ -809,7 +810,7 @@ namespace DOL.GS
 
                 return bonTypes[Util.Random(bonTypes.Count - 1)];
             }
-            
+
             //simple generation
             int rand = Util.Random(100);
             if (rand < 15)
@@ -821,17 +822,20 @@ namespace DOL.GS
 
         private bool HasSkill
         {
-            get { return (this.Bonus1Type == (int) eBonusType.Skill
-                || this.Bonus2Type == (int) eBonusType.Skill
-                || this.Bonus3Type == (int) eBonusType.Skill
-                || this.Bonus4Type == (int) eBonusType.Skill
-                || this.Bonus5Type == (int) eBonusType.Skill
-                || this.Bonus6Type == (int) eBonusType.Skill
-                || this.Bonus7Type == (int) eBonusType.Skill
-                || this.Bonus8Type == (int) eBonusType.Skill
-                || this.Bonus9Type == (int) eBonusType.Skill
-                || this.Bonus10Type == (int) eBonusType.Skill
-                ); }
+            get
+            {
+                return (this.Bonus1Type == (int)eBonusType.Skill
+                || this.Bonus2Type == (int)eBonusType.Skill
+                || this.Bonus3Type == (int)eBonusType.Skill
+                || this.Bonus4Type == (int)eBonusType.Skill
+                || this.Bonus5Type == (int)eBonusType.Skill
+                || this.Bonus6Type == (int)eBonusType.Skill
+                || this.Bonus7Type == (int)eBonusType.Skill
+                || this.Bonus8Type == (int)eBonusType.Skill
+                || this.Bonus9Type == (int)eBonusType.Skill
+                || this.Bonus10Type == (int)eBonusType.Skill
+                );
+            }
         }
 
         private bool CanAddFocus()
@@ -955,18 +959,15 @@ namespace DOL.GS
 
                             type = eBonusType.Stat;
 
-                            switch (Util.Random(0, 4))
+                            int randomStat = Util.Random(0, 5);
+                            switch (randomStat)
                             {
-                                case 0:
-                                    return eProperty.MaxHealth;
-                                case 1:
-                                    return eProperty.Strength;
-                                case 2:
-                                    return eProperty.Dexterity;
-                                case 3:
-                                    return eProperty.Quickness;
-                                case 4:
-                                    return eProperty.Constitution;
+                                case 0: return eProperty.MaxHealth;
+                                case 1: return eProperty.Strength;
+                                case 2: return eProperty.Dexterity;
+                                case 3: return eProperty.Constitution;
+                                case 4: return eProperty.Quickness;
+                                case 5: return eProperty.Acuity; // Wichtig für Caster!
                             }
                         }
 
@@ -1006,7 +1007,7 @@ namespace DOL.GS
         private bool IsCompetingSkillLine(eProperty prop)
         {
             List<eProperty> skillsToCheck = new List<eProperty>();
-            if(prop == eProperty.Skill_Slashing || prop == eProperty.Skill_Thrusting || prop == eProperty.Skill_Crushing)
+            if (prop == eProperty.Skill_Slashing || prop == eProperty.Skill_Thrusting || prop == eProperty.Skill_Crushing)
             {
                 skillsToCheck.Add(eProperty.Skill_Slashing);
                 skillsToCheck.Add(eProperty.Skill_Thrusting);
@@ -1140,7 +1141,7 @@ namespace DOL.GS
                 case eCharacterClass.Animist:
                     if (Util.Chance(20))
                         return eProperty.MaxMana;
-                    
+
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
@@ -1180,7 +1181,7 @@ namespace DOL.GS
                     else if (rand <= 75)
                         return eProperty.Piety;
                     else return eProperty.Constitution;
-                
+
                 case eCharacterClass.Cleric:
                 case eCharacterClass.Shaman:
                     if (Util.Chance(20))
@@ -1194,7 +1195,7 @@ namespace DOL.GS
                     else if (rand <= 80)
                         return eProperty.Piety;
                     else return eProperty.Constitution;
-                
+
                 case eCharacterClass.Thane:
                 case eCharacterClass.Reaver:
                     if (Util.Chance(20))
@@ -1220,7 +1221,7 @@ namespace DOL.GS
                         return eProperty.Constitution;
                     else return eProperty.Quickness;
 
-                
+
                 case eCharacterClass.Druid:
                     if (Util.Chance(20))
                         return eProperty.MaxMana;
@@ -4673,7 +4674,7 @@ namespace DOL.GS
                 case eBonusType.Resist:
                     {
                         int max = (int)Math.Ceiling((((this.Level / 2.0) + 1) / 4));
-                        return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
+                        return Math.Max(1, Util.Random((int)Math.Ceiling((double)max / 2.0), max));
                     }
                 case eBonusType.Skill:
                     {
@@ -4684,24 +4685,24 @@ namespace DOL.GS
                             property == eProperty.AllMeleeWeaponSkills ||
                             property == eProperty.AllArcherySkills)
                             max = (int)Math.Ceiling((double)max / 2.0);
-                        return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
+                        return Math.Max(1, Util.Random((int)Math.Ceiling((double)max / 2.0), max));
                     }
                 case eBonusType.Stat:
                     {
                         if (property == eProperty.MaxHealth)
                         {
                             int max = (int)Math.Ceiling(((double)this.Level * 4.0) / 4);
-                            return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
+                            return Math.Max(1, Util.Random((int)Math.Ceiling((double)max / 2.0), max));
                         }
                         else if (property == eProperty.MaxMana)
                         {
                             int max = (int)Math.Ceiling(((double)this.Level / 2.0 + 1) / 4);
-                            return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
+                            return Math.Max(1, Util.Random((int)Math.Ceiling((double)max / 2.0), max));
                         }
                         else
                         {
                             int max = (int)Math.Ceiling(((double)this.Level * 1) / 3);
-                            return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
+                            return Math.Max(1, Util.Random((int)Math.Ceiling((double)max / 2.0), max));
                         }
                     }
                 case eBonusType.AdvancedStat:
@@ -4724,16 +4725,16 @@ namespace DOL.GS
             if (utilityMinimum < 1) utilityMinimum = 1;
 
             cap = mobLevel - 5;
-            
+
             if (mobLevel > 70)
                 cap = mobLevel + (Util.Random(1, 5));
-            
+
             if (mobLevel < 65)
                 cap -= (Util.Random(1, 5));
-            
+
             if (mobLevel > 70 && cap < 60)
-                cap = mobLevel-10;
-            
+                cap = mobLevel - 10;
+
             if (cap > 80) cap = 80;
 
             //randomize cap to be 80-105% of normal value
@@ -4801,7 +4802,7 @@ namespace DOL.GS
                     //then recalculate
                 }
             }
-            
+
             //then cap it down to cieling
             if (GetTotalUtility() > cap)
             {
@@ -4927,7 +4928,7 @@ namespace DOL.GS
 
             return highestLine;
         }
-        
+
         public int GetLowestUtilitySingleLine()
         {
             double lowestUti = GetSingleUtility(Bonus1Type, Bonus1);
@@ -4997,11 +4998,11 @@ namespace DOL.GS
 
         private bool IsValidUpscaleType(int BonusType)
         {
-            return BonusType != 0 
-                   && BonusType != 163 
-                   && BonusType != 164 
-                   && BonusType != 167 
-                   && BonusType != 168 
+            return BonusType != 0
+                   && BonusType != 163
+                   && BonusType != 164
+                   && BonusType != 167
+                   && BonusType != 168
                    && BonusType != 213;
         }
 
@@ -5105,7 +5106,7 @@ namespace DOL.GS
 
         private static double GetSingleUtility(int bonusType, int bonusValue)
         {
-            eProperty property = (eProperty) bonusType;
+            eProperty property = (eProperty)bonusType;
 
             if (property is eProperty.Undefined || bonusValue == 0)
                 return 0.0;
@@ -5222,29 +5223,29 @@ namespace DOL.GS
             //weighted so that early levels get many more weapons/armor
             if (level < 5)
             {
-                if (Util.Chance(45))
+                if (Util.Chance(35))
                     return eGenerateType.Weapon;
-                //else if (Util.Chance(15))
-                  //  return eGenerateType.Magical;
+                else if (Util.Chance(15))
+                  return eGenerateType.Magical;
                 else return eGenerateType.Armor;
             }
             else if (level < 10)
             {
                 if (Util.Chance(ArmorWeight)) { genTypes.Add(eGenerateType.Armor); }
-                //if (Util.Chance(ROG_MAGICAL_CHANCE)) { genTypes.Add(eGenerateType.Magical); }
+                if (Util.Chance(JewelryWeight)) { genTypes.Add(eGenerateType.Magical); }
                 if (Util.Chance(WeaponWeight)) { genTypes.Add(eGenerateType.Weapon); }
             }
             else
             {
                 if (Util.Chance(ArmorWeight + Util.Random(ArmorWeight))) { genTypes.Add(eGenerateType.Armor); }
                 if (Util.Chance(JewelryWeight)) { genTypes.Add(eGenerateType.Magical); }
-                if (Util.Chance(WeaponWeight + Util.Random(WeaponWeight)/2) ) { genTypes.Add(eGenerateType.Weapon); }
+                if (Util.Chance(WeaponWeight + Util.Random(WeaponWeight) / 2)) { genTypes.Add(eGenerateType.Weapon); }
             }
 
             //if none of the object types were added, default to armor
             if (genTypes.Count < 1)
             {
-                if(Util.Chance(50))
+                if (Util.Chance(50))
                     genTypes.Add(eGenerateType.Armor);
                 else
                     genTypes.Add(eGenerateType.Weapon);
@@ -8629,7 +8630,7 @@ namespace DOL.GS
                     {
                         validModels.Add(318);
                     }
-                    if(Level > 20)
+                    if (Level > 20)
                         validModels.Add(1030);
                     if (Level > 30)
                     {
@@ -8641,15 +8642,15 @@ namespace DOL.GS
 
                     if (Level > 50)
                         validModels.Add(660);
-                    
+
                     break;
                 default:
                     validModels.Add(2);
                     break;
             }
 
-            
-            if(Util.Chance(1) && Level > 40)
+
+            if (Util.Chance(1) && Level > 40)
             {
                 validModels.Clear();
                 validModels.Add(3662);
@@ -8695,7 +8696,7 @@ namespace DOL.GS
                     if (Level > 40)
                     {
                         validModels.Add(1010);
-                        validModels.Add(1011);                      
+                        validModels.Add(1011);
                     }
 
                     if (Level > 50)
@@ -8846,7 +8847,7 @@ namespace DOL.GS
 
                     if (Level > 50)
                     {
-                        validModels.Add(473);                        
+                        validModels.Add(473);
                     }
                     break;
                 case eRealm.Albion:
@@ -8981,7 +8982,7 @@ namespace DOL.GS
                     if (Level > 40)
                     {
                         validModels.Add(1031);
-                        validModels.Add(1034); 
+                        validModels.Add(1034);
                     }
                     if (Level > 50)
                         validModels.Add(1028);
@@ -9119,12 +9120,12 @@ namespace DOL.GS
                         validModels.Add(2661);
                     if (Level > 40)
                     {
-                        
+
                     }
                     if (Level > 50)
                     {
                         validModels.Add(2208);
-                        
+
                     }
                     break;
                 default:
@@ -9135,7 +9136,7 @@ namespace DOL.GS
             if (Util.Chance(1) && Level > 40)
             {
                 validModels.Clear();
-                
+
                 validModels.Add(3657);
             }
             /*
@@ -9287,7 +9288,7 @@ namespace DOL.GS
                                 validModels.Add(870);
                             if (Level > 30)
                                 validModels.Add(875);
-                            if (Level > 40 &&  Util.Chance(1))
+                            if (Level > 40 && Util.Chance(1))
                                 validModels.Add(3673);
                             if (Level > 50 && Util.Chance(1))
                             {
@@ -9455,7 +9456,7 @@ namespace DOL.GS
                     if (Level > 50)
                     {
                         validModels.Add(851);
-                        validModels.Add(852); 
+                        validModels.Add(852);
                     }
                     break;
                 default:
@@ -9499,7 +9500,7 @@ namespace DOL.GS
                             if (Level > 40)
                             {
                                 validModels.Add(2669);
-                                if(Util.Chance(1))
+                                if (Util.Chance(1))
                                     validModels.Add(3653);
                             }
                             if (Level > 50 && Util.Chance(1))
@@ -9570,7 +9571,7 @@ namespace DOL.GS
                                 {
                                     validModels.Add(3686);
                                     validModels.Add(3687);
-                                }                                
+                                }
                             }
                             if (Level > 50)
                             {
@@ -9581,7 +9582,7 @@ namespace DOL.GS
                                 {
                                     validModels.Add(3729);
                                     validModels.Add(3730);
-                                }                                
+                                }
                             }
                             break;
                         case eDamageType.Slash:
@@ -9603,7 +9604,7 @@ namespace DOL.GS
                                 {
                                     validModels.Add(3682);
                                     validModels.Add(3683);
-                                }                                
+                                }
                             }
                             if (Level > 50)
                             {
@@ -9643,7 +9644,7 @@ namespace DOL.GS
                     if (Level > 40)
                     {
                         validModels.Add(893);
-                        validModels.Add(894); 
+                        validModels.Add(894);
                     }
                     break;
                 default:
@@ -9685,7 +9686,7 @@ namespace DOL.GS
                         validModels.Add(932);
                         validModels.Add(926);
                         validModels.Add(927);
-                        if(Util.Chance(1))
+                        if (Util.Chance(1))
                             validModels.Add(3665);
                     }
                     if (Level > 50 && Util.Chance(1))
@@ -9731,7 +9732,7 @@ namespace DOL.GS
                         validModels.Add(881);
                         validModels.Add(1168);
                         validModels.Add(1167);
-                        validModels.Add(1170); 
+                        validModels.Add(1170);
                     }
                     break;
                 case eRealm.Hibernia:
@@ -9785,7 +9786,7 @@ namespace DOL.GS
                 validModels.Clear();
                 validModels.Add(3710);
             }
-            
+
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
@@ -9991,7 +9992,7 @@ namespace DOL.GS
                                 validModels.Add(1140);
                                 validModels.Add(1141);
                             }
-                            if(Level > 30)
+                            if (Level > 30)
                             {
                                 validModels.Add(1130);
                                 validModels.Add(1131);
@@ -10086,20 +10087,21 @@ namespace DOL.GS
             }
             if (Level > 30)
             {
-                if(realm == eRealm.Albion)
+                if (realm == eRealm.Albion)
                 {
                     validModels.Add(2976);
                     validModels.Add(2977);
                     validModels.Add(2978);
-                } else if (realm == eRealm.Hibernia)
+                }
+                else if (realm == eRealm.Hibernia)
                 {
                     validModels.Add(2979);
                     validModels.Add(2980);
                     validModels.Add(2981);
                 }
-               
+
             }
-            if(Level > 40)
+            if (Level > 40)
             {
                 validModels.Add(2114);
                 validModels.Add(2115);
@@ -10680,7 +10682,8 @@ namespace DOL.GS
         #endregion
 
         #region definitions
-        public enum eBonusType {
+        public enum eBonusType
+        {
             Stat,
             AdvancedStat,
             Resist,
@@ -10688,7 +10691,8 @@ namespace DOL.GS
             Focus,
         }
 
-        public enum eGenerateType {
+        public enum eGenerateType
+        {
             Weapon,
             Armor,
             Magical,
