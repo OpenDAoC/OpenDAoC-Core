@@ -14,6 +14,12 @@ namespace DOL.GS
 
 		public override bool Interact(GamePlayer player)
 		{
+			// If player is too far away interact should not work
+			if (GetDistanceTo(player) > WorldMgr.INTERACT_DISTANCE)
+            {
+                return false;
+            }
+
 			if (player.Client.Account.PrivLevel == 1 && !IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Interact.TooFarAway", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -24,15 +30,9 @@ namespace DOL.GS
 			if (!base.Interact(player))
 				return false;
 
-			// just give out speed without asking
+			// just give out speed without asking or saying anything
 			GameNPCHelper.CastSpellOnOwnerAndPets(this, player, SkillBase.GetSpellByID(GameHastener.SPEEDOFTHEREALMID), SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells), false);
 			player.Out.SendSpellEffectAnimation(this, player, SkillBase.GetSpellByID(935).ClientEffect, 0, false, 1);
-
-
-			SayTo(player, string.Format("{0} {1}. {2}",
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
-					player.CharacterClass.Name,
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.DefaultMovementOffer")));
 
 			/*if (player.CurrentRegion.IsCapitalCity)
 				SayTo(player, string.Format("{0} {1}. {2}",

@@ -40,6 +40,12 @@ namespace DOL.GS
 		#region Interact Messages
 		public override bool Interact(GamePlayer player)
 		{
+			// If player is too far away interact should not work
+			if (GetDistanceTo(player) > WorldMgr.INTERACT_DISTANCE)
+            {
+                return false;
+            }
+
 			if (!base.Interact(player))
 				return false; // Prevent interact
 
