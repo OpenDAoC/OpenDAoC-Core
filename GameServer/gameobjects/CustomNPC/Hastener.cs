@@ -28,7 +28,13 @@ namespace DOL.GS
 			GameNPCHelper.CastSpellOnOwnerAndPets(this, player, SkillBase.GetSpellByID(GameHastener.SPEEDOFTHEREALMID), SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells), false);
 			player.Out.SendSpellEffectAnimation(this, player, SkillBase.GetSpellByID(935).ClientEffect, 0, false, 1);
 
-			if (player.CurrentRegion.IsCapitalCity)
+
+			SayTo(player, string.Format("{0} {1}. {2}",
+					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
+					player.CharacterClass.Name,
+					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.DefaultMovementOffer")));
+
+			/*if (player.CurrentRegion.IsCapitalCity)
 				SayTo(player, string.Format("{0} {1}. {2}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
 					player.CharacterClass.Name,
@@ -43,7 +49,7 @@ namespace DOL.GS
 				SayTo(player, string.Format("{0} {1}. {2}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
 					player.CharacterClass.Name,
-					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.DefaultMovementOffer")));
+					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.DefaultMovementOffer")));*/
 			return true;
 		}
 

@@ -68,6 +68,10 @@ namespace DOL.GS.Spells
 			if (target is Keeps.GameKeepGuard)
 				return;
 
+			// Avoiding GameNPCs around the Hastener
+			if (target is GameNPC)
+				return;
+
 			// Graveen: archery speed shot
 			if ((Spell.Pulse != 0 || Spell.CastTime != 0) && target.InCombat)
 			{
