@@ -129,7 +129,7 @@ namespace DOL.GS
             }
         }
 
-        public bool MountRelic(GameRelic relic, bool returning)
+        public virtual bool MountRelic(GameRelic relic, bool returning)
         {
             if (MountedRelics.Count >= 3)
             {
@@ -184,7 +184,7 @@ namespace DOL.GS
             return true;
         }
 
-        public void RemoveRelic(GameRelic relic)
+        public virtual void RemoveRelic(GameRelic relic)
         {
             if (!MountedRelics.Remove(relic))
             {

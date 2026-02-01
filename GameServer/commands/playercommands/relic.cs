@@ -37,16 +37,16 @@ namespace DOL.GS.Commands
         /*          Relic status
          *
          * Albion Relics:
-         * Strength: OwnerRealm
-         * Power: OwnerRealm
+         * Strength: OwnerKeep
+         * Power: OwnerKeep
          *
          * Midgard Relics:
-         * Strength: OwnerRealm
-         * Power: OwnerRealm
+         * Strength: OwnerKeep
+         * Power: OwnerKeep
          *
          * Hibernia Relics:
-         * Strength: OwnerRealm
-         * Power: OwnerRealm
+         * Strength: OwnerKeep
+         * Power: OwnerKeep
          *
          * Use '/realm' for Realm Info.
          */
@@ -61,19 +61,19 @@ namespace DOL.GS.Commands
 
 
 
-            #region Reformat Relics  '[Type]: [OwnerRealm]'
+            #region Reformat Relics  '[Type]: [Padname]'
             foreach (GameRelic relic in RelicMgr.GetRelics())
             {
                 string relicLoc = string.Empty;
                 if (relic.Realm == eRealm.None)
                 {
-                    relicLoc = $" {relic.CurrentZone.Description}";
+                    relicLoc = $" ({relic.CurrentZone.Description})";
                 }
 
-                string realmName = GlobalConstants.RealmToName(relic.Realm);
+                GameRelicPad pad = RelicMgr.GetPadForRelic(relic);
                 string strengthTranslation = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength");
                 string powerTranslation = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power");
-                string timleft = " returns in " + RelicMgr.GetRelicReturnMinutesRemaining(relic) + "min";
+                string timleft = "returns in " + RelicMgr.GetRelicReturnMinutesRemaining(relic) + "min";
                 string baseString = "";
 
                 if (relic.Realm == eRealm.None)
@@ -82,7 +82,7 @@ namespace DOL.GS.Commands
                 }
                 else
                 {
-                    baseString = $"{realmName}";
+                    baseString = $"{pad.Name}";
                 }
 
 

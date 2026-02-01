@@ -5,6 +5,7 @@ using System.Threading;
 using DOL.Database;
 using DOL.Events;
 using DOL.Logging;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -25,16 +26,16 @@ namespace DOL.GS
         private const int RELIC_CHECK_INTERVAL = 121 * 60 * 1000;
 
         /// <summary>
-        /// Gibt die maximal erlaubte Trage-/Bodenzeit für ein Relikt zurück (aus ServerProperties).
+        /// Maximum Time until relic returns to last pad
         /// </summary>
         public static TimeSpan MaxRelicCarryTime
         {
-            // Geht davon aus, dass RELIC_RETURN_TIME in ServerProperties die Dauer in Minuten enthält.
             get { return TimeSpan.FromMinutes(ServerProperties.Properties.RELIC_RETURN_TIME); }
         }
 
         public static bool Init()
         {
+            TempleRelicPadsLoader.LoadTemplePads();
             lock (_relicPadsLock)
             {
                 foreach (GameRelic relic in _relicsMap.Values)
@@ -93,9 +94,13 @@ namespace DOL.GS
                     }
                     else
                         lostRelics.Add(relic);
+                        if (log.IsDebugEnabled)
+                            log.Debug($"{relic.Name} has been loaded is lost somewhere.");
                 }
 
-                foreach (GameRelic lostRelic in lostRelics)
+                // We dont want relics to return to last pad on server restart
+                // This is not even working, relics are invisible, so would need a fix
+                /*foreach (GameRelic lostRelic in lostRelics)
                 {
                     eRealm returnRealm = lostRelic.LastRealm;
 
@@ -110,22 +115,7 @@ namespace DOL.GS
                                 log.Debug($"Lost relic '{lostRelic.Name}' has returned to last pad '{pad.Name}'");
                         }
                     }
-                }
-
-                foreach (GameRelic lostRelic in lostRelics)
-                {
-                    if (lostRelic.CurrentRelicPad == null)
-                    {
-                        foreach (GameRelicPad pad in _relicPads)
-                        {
-                            if (pad.PadType == lostRelic.RelicType && lostRelic.RelicPadTakesOver(pad, true))
-                            {
-                                if (log.IsDebugEnabled)
-                                    log.Debug($"Lost relic '{lostRelic.Name}' auto assigned to pad '{pad.Name}'");
-                            }
-                        }
-                    }
-                }
+                }*/
 
                 _relicsArray = [.. _relicsMap.Values];
 
@@ -135,9 +125,8 @@ namespace DOL.GS
                     log.Debug($"{_relicsMap.Count} relic{(_relicsMap.Count > 1 ? "s were" : " was")} loaded.");
                 }
             }
-            
-            // Timer starten, nachdem Init abgeschlossen ist
-            StartRelicCheckTimer(); 
+
+            StartRelicCheckTimer();
 
             return true;
         }
@@ -243,7 +232,8 @@ namespace DOL.GS
             GameRelic[] snapshot = _relicsArray;
 
             // Ensure the player's realm possesses its original relic of the same type.
-            for (int i = 0; i < snapshot.Length; i++)
+            // Dont wanne use that
+            /*for (int i = 0; i < snapshot.Length; i++)
             {
                 GameRelic otherRelic = snapshot[i];
 
@@ -254,15 +244,15 @@ namespace DOL.GS
                 {
                     return true;
                 }
-            }
+            }*/
 
             return false;
         }
 
-        // --- 120-MINUTEN LOGIK START ---
+        // --- 120-MINUTEN LOGIC ---
 
         /// <summary>
-        /// Startet den Timer, der alle Relikte auf maximale Trage-/Bodenzeit überprüft.
+        /// Starts return timer
         /// </summary>
         private static void StartRelicCheckTimer()
         {
@@ -274,24 +264,20 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Überprüft, ob ein Relikt die maximale Trage-/Bodenzeit überschritten hat.
+        /// Check if relic should return to last pad
         /// </summary>
         private static void CheckForLostRelics(object state)
         {
             if (log.IsDebugEnabled)
                 log.Debug("Checking relics for exceeding max carry time.");
 
-            // Die Überprüfung der DB-Property findet hier statt, um den aktuellen Wert zu nutzen.
             TimeSpan maxTime = MaxRelicCarryTime;
 
-            // Iteration über die RelicsMap, da diese die aktiven GameRelic-Objekte enthält.
-            foreach (GameRelic relic in _relicsMap.Values) // KORRIGIERT: _relicsMap.Values für die Iteration
+            foreach (GameRelic relic in _relicsMap.Values)
             {
-                // lastTimePickedUp > DateTime.MinValue bedeutet: Das Relikt wurde einmal aufgenommen und ist nicht montiert.
                 if (relic.LastTimePickedUp > DateTime.MinValue)
                 {
-                    // KORRIGIERT: LastCaptureDate ersetzt durch LastTimePickedUp
-                    TimeSpan carryDuration = DateTime.Now.Subtract(relic.LastTimePickedUp); 
+                    TimeSpan carryDuration = DateTime.Now.Subtract(relic.LastTimePickedUp);
 
                     if (carryDuration > maxTime)
                     {
@@ -305,15 +291,13 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gibt das ursprüngliche RelicPad für ein gegebenes Reich und einen gegebenen Typ zurück.
+        /// Returns Homepad of relic
         /// </summary>
         public static GameRelicPad GetHomePad(eRealm realm, eRelicType relicType)
         {
-            // KORRIGIERT: _relicsLock ersetzt durch _relicPadsLock
             lock (_relicPadsLock)
             {
-                // KORRIGIERT: m_relicPads ersetzt durch _relicPads
-                foreach (GameRelicPad pad in _relicPads) 
+                foreach (GameRelicPad pad in _relicPads)
                 {
                     if (pad.Realm == realm && pad.PadType == relicType)
                     {
@@ -327,38 +311,51 @@ namespace DOL.GS
 
 
         /// <summary>
-        /// Berechnet die verbleibende Zeit bis zur automatischen Rückkehr des Relikts in vollen Minuten.
+        /// Calculates time left for relic return.
         /// </summary>
-        /// <param name="relic">Das zu prüfende Relikt.</param>
-        /// <returns>Die Anzahl der verbleibenden Minuten (int). Gibt 0 zurück, wenn die Zeit abgelaufen ist.</returns>
+        /// <param name="relic"></param>
+        /// <returns></returns>
         public static int GetRelicReturnMinutesRemaining(GameRelic relic)
         {
-            // 1. Prüfen, ob das Relikt überhaupt "unterwegs" ist (nicht montiert)
             if (relic.IsMounted || relic.LastTimePickedUp <= DateTime.MinValue)
             {
-                return -1; // -1 als Indikator, dass das Relikt montiert ist oder ungültigen Status hat.
+                return -1;
             }
 
-            // 2. Maximale Tragezeit aus der RelicMgr-Eigenschaft abrufen
             TimeSpan maxCarryTime = RelicMgr.MaxRelicCarryTime;
-
-            // 3. Vergangene Zeit seit der letzten Aufnahme berechnen
             TimeSpan timeElapsed = DateTime.Now.Subtract(relic.LastTimePickedUp);
-
-            // 4. Verbleibende Zeit berechnen
             TimeSpan timeRemaining = maxCarryTime.Subtract(timeElapsed);
 
-            // 5. Ergebnis in Minuten umwandeln und behandeln
             if (timeRemaining <= TimeSpan.Zero)
             {
-                return 0; // Zeit ist abgelaufen oder fast abgelaufen
+                return 0;
             }
             else
             {
-                // TotalMinutes gibt double zurück. Wir runden auf die nächste volle Minute auf (Ceiling), 
-                // um immer die korrekte, volle Minute anzuzeigen.
                 return (int)Math.Ceiling(timeRemaining.TotalMinutes);
             }
+        }
+
+        /// <summary>
+        /// Return Pad Name of relic
+        /// </summary>
+        public static GameRelicPad GetPadForRelic(GameRelic relic)
+        {
+            if (relic == null) return null;
+
+            lock (_relicPadsLock)
+            {
+                foreach (GameRelicPad pad in _relicPads)
+                {
+                    if (pad == null) continue;
+
+                    if (pad.MountedRelics != null && pad.MountedRelics.Contains(relic))
+                        return pad;
+                    if (relic.IsWithinRadius(pad, 200))
+                        return pad;
+                }
+            }
+            return null;
         }
 
         [ScriptLoadedEvent]

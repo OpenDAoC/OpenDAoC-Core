@@ -150,10 +150,6 @@ namespace DOL.GS
         }
 
 
-        /// <summary>
-        /// Berechnet die verbleibende Zeit bis zur automatischen Rückkehr des Relikts in vollen Minuten.
-        /// </summary>
-        /// <returns>Einen formatierten String der verbleibenden Minuten (z.B. "30 Minuten verbleibend") oder Status-Hinweis.</returns>
         public string GetRelicTimeSimple()
         {
             TimeSpan maxCarryTime = RelicMgr.MaxRelicCarryTime;
@@ -282,26 +278,14 @@ namespace DOL.GS
 
             if (IsMounted == false)
             {
-                // NEU: Nur Update(), um das Relikt an die Drop-Position zu setzen. 
-                // Der Timer für die Rückkehr wird nun ausschließlich über RelicMgr verwaltet.
-                
-                // Wir aktualisieren LastTimePickedUp, um den Timer fortzusetzen, 
-                // da es jetzt auf dem Boden liegt, aber weiterhin "unterwegs" ist.
-                // Wenn LastTimePickedUp > DateTime.MinValue ist, wird es vom RelicMgr überprüft.
-                
                 Update();
                 SaveIntoDatabase();
                 AddToWorld();
             }
         }
 
-        // --- ENTFERNT: ReturnRelicTick (Der 30-Minuten-Boden-Timer) ---
-        // ... (Methode entfernt) ...
-
         /// <summary>
-        /// Wird vom RelicMgr aufgerufen, wenn die maximal erlaubte Zeit überschritten ist.
-        /// Bringt das Relikt zu dem Pad zurück, von dem es gestohlen wurde (_returnRelicPad),
-        /// oder notfalls zu seinem Ursprungs-Pad (FindHomePad()). 
+        /// Returns relic to last pad, if time exceeded
         /// </summary>
         public void ReturnToSourcePad()
         {
@@ -323,9 +307,6 @@ namespace DOL.GS
             }
         }
         
-        /// <summary>
-        /// Hilfsmethode, um das Original-RelicPad zu finden.
-        /// </summary>
         private GameRelicPad FindHomePad()
         {
             return RelicMgr.GetHomePad(OriginalRealm, RelicType); 
@@ -361,13 +342,11 @@ namespace DOL.GS
         {
             Update();
             
-            // Überprüft weiterhin, ob das Relikt im Inventar ist (z.B. bei Disconnects oder Bugs)
             if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
             {
                 if (log.IsDebugEnabled)
                     log.Debug($"{Name} not found in carriers backpack, forcing player to lose relic.");
                 
-                // Verliert das Relikt, LastTimePickedUp bleibt aber gesetzt, da es nun auf dem Boden liegt und der 120-Minuten-Timer weiterläuft
                 PlayerLoosesRelic(true);
                 return 0;
             }
@@ -382,7 +361,6 @@ namespace DOL.GS
 
         protected virtual void SetHandlers(GamePlayer player, bool activate)
         {
-            // ... (unverändert) ...
             if (activate)
             {
                 GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new(PlayerAbsence));
@@ -413,12 +391,10 @@ namespace DOL.GS
                     return;
 
                 idArgs.GroundItem.RemoveFromWorld();
-                // Beim Fallenlassen soll es auf dem Boden erscheinen (false), aber LastTimePickedUp muss erhalten bleiben
                 PlayerLoosesRelic(false);
                 return;
             }
 
-            // Beim Dying, Quit etc. wird das Relikt aus dem Inventar entfernt (true)
             PlayerLoosesRelic(true); 
         }
 
@@ -427,10 +403,8 @@ namespace DOL.GS
             return player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null;
         }
         
-        // ... (GetRelicTemplate und MiniTemp bleiben unverändert)
         public static MiniTemp GetRelicTemplate(eRealm realm, eRelicType relicType)
         {
-            // ... (Unveränderter Code) ...
             MiniTemp template = new();
 
             switch (realm)

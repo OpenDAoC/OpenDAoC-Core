@@ -430,7 +430,7 @@ namespace DOL.GS.Keeps
 		/// <returns></returns>
 		public virtual int GetTowerCountByRealm(eRealm realm)
 		{
-			int index = 0;
+			int index = -5; // We dont wanne use all towers, like on live, example ailinne spire
 
 			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
@@ -501,20 +501,35 @@ namespace DOL.GS.Keeps
 				if (!m_frontierRegionsList.Contains(keep.Region))
 					continue;
 
-				// Redundant battleground check?
-				if (GetBattleground(keep.CurrentRegion.ID) != null || keep.Region is 250 or 251 or 252 or 253 or 165)
-					continue;
+				// Only count Keeps in NF region
+				if (keep.Region != 163)
+            		continue;
 
 				if (keep.Realm != realm || keep is not GameKeep || keep.IsPortalKeep)
 					continue;
 
+				// Those keeps should be ignored in bonus count
+				// Border keeps, Temples & Villages
+				// Villages are keeps, because player can teleport there via Warmap
 				if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("lamfotha", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase))
+					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("crair", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("magh", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("ligen", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("cain", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("godrborg", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("rensamark", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("svasud", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("vindsaul", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("catterick", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("dinas", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("sauvage", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("snowdonia", StringComparison.OrdinalIgnoreCase))
 				{
 					continue;
 				}

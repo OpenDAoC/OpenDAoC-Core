@@ -103,7 +103,7 @@ namespace DOL.GS.PacketHandler
 									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
 
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
-	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
+								pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
 								pak.WriteByte((byte)characters[j].Level);
 								pak.WriteByte((byte)characters[j].Class);
 								pak.WriteByte((byte)characters[j].Realm);
@@ -215,8 +215,8 @@ namespace DOL.GS.PacketHandler
 									pak.WriteByte(0x00);
 								else
 									pak.WriteByte(0x01); //0x01=char in ShroudedIsles zone, classic client can't "play"
-								//pak.WriteByte(0x00); // unk2
-	                            pak.WriteByte((byte)characters[j].Constitution);
+														 //pak.WriteByte(0x00); // unk2
+								pak.WriteByte((byte)characters[j].Constitution);
 								written = true;
 							}
 						if (written == false)
@@ -258,7 +258,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)playerToCreate.ObjectID);
 				pak.WriteShort(playerToCreate.Model);
 				pak.WriteShort((ushort)playerToCreate.Z);
-	            //Dinberg:Instances - zoneSkinID for object positioning clientside (as zones are hardcoded).
+				//Dinberg:Instances - zoneSkinID for object positioning clientside (as zones are hardcoded).
 				pak.WriteShort(playerZone.ZoneSkinID);
 				pak.WriteShort((ushort)playerRegion.GetXOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
@@ -284,9 +284,9 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerGuildName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerLastName(m_gameClient.Player, playerToCreate));
-	            //RR 12 / 13
-	            pak.WritePascalString(GameServer.ServerRules.GetPlayerPrefixName(m_gameClient.Player, playerToCreate));
-	            pak.WritePascalString(GameServer.ServerRules.GetPlayerTitle(m_gameClient.Player, playerToCreate)); // new in 1.74, NewTitle
+				//RR 12 / 13
+				pak.WritePascalString(GameServer.ServerRules.GetPlayerPrefixName(m_gameClient.Player, playerToCreate));
+				pak.WritePascalString(GameServer.ServerRules.GetPlayerTitle(m_gameClient.Player, playerToCreate)); // new in 1.74, NewTitle
 				SendTCP(pak);
 			}
 
@@ -314,7 +314,7 @@ namespace DOL.GS.PacketHandler
 
 				pak.WriteByte((byte)(flags));
 
-				pak.WriteByte(0x00);	//TODO Unknown (Instance ID: 0xB0-0xBA, 0xAA-0xAF)
+				pak.WriteByte(0x00);    //TODO Unknown (Instance ID: 0xB0-0xBA, 0xAA-0xAF)
 
 				if (zone.IsDungeon)
 				{
@@ -326,8 +326,8 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShort(0);
 					pak.WriteShort(0);
 				}
-	            //Dinberg - Changing to allow instances...
-	            pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
+				//Dinberg - Changing to allow instances...
+				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); // new in 1.74, same as in SendLoginGranted
 				pak.WriteByte(0x00); //TODO: unknown, new in 1.74
 				SendTCP(pak);
@@ -349,7 +349,7 @@ namespace DOL.GS.PacketHandler
 				if (zone == null)
 					return;
 				pak.WriteByte((byte)(0x40 | living.GroupIndex));
-                //Dinberg - ZoneSkinID for group members aswell.
+				//Dinberg - ZoneSkinID for group members aswell.
 				pak.WriteShort(zone.ZoneSkinID);
 				pak.WriteShort((ushort)(living.X - zone.XOffset));
 				pak.WriteShort((ushort)(living.Y - zone.YOffset));
@@ -367,7 +367,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
 				//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for
 				//clientside positions of objects.
-				if(m_gameClient.Player.CurrentZone != null)
+				if (m_gameClient.Player.CurrentZone != null)
 					pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
 				else
 					pak.WriteShort(0x00);
@@ -413,42 +413,21 @@ namespace DOL.GS.PacketHandler
 		public override void SendWarmapBonuses()
 		{
 			if (m_gameClient.Player == null) return;
-			int AlbTowers = 0;
-			int MidTowers = 0;
-			int HibTowers = 0;
-			int AlbKeeps = 0;
-			int MidKeeps = 0;
-			int HibKeeps = 0;
-			int OwnerDFTowers = 0;
-			eRealm OwnerDF = eRealm.None;
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
-			{
 
-				switch ((eRealm)keep.Realm)
-				{
-					case eRealm.Albion:
-						if (keep is GameKeep)
-							AlbKeeps++;
-						else
-							AlbTowers++;
-						break;
-					case eRealm.Midgard:
-						if (keep is GameKeep)
-							MidKeeps++;
-						else
-							MidTowers++;
-						break;
-					case eRealm.Hibernia:
-						if (keep is GameKeep)
-							HibKeeps++;
-						else
-							HibTowers++;
-						break;
-					default:
-						break;
-				}
-			}
-			if (AlbTowers > MidTowers && AlbTowers > HibTowers)
+			// Get keep count of realms
+			int AlbKeeps = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Albion);
+			int MidKeeps = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Midgard);
+			int HibKeeps = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Hibernia);
+
+			// Get Tower count of realms
+			int AlbTowers = GameServer.KeepManager.GetTowerCountByRealm(eRealm.Albion);
+			int MidTowers = GameServer.KeepManager.GetTowerCountByRealm(eRealm.Midgard);
+			int HibTowers = GameServer.KeepManager.GetTowerCountByRealm(eRealm.Hibernia);
+
+			int OwnerDFTowers = 0;
+			eRealm OwnerDF = eRealm.None; // Darkness Falss always open for all
+
+			/*if (AlbTowers > MidTowers && AlbTowers > HibTowers)
 			{
 				OwnerDF = eRealm.Albion;
 				OwnerDFTowers = AlbTowers;
@@ -462,12 +441,16 @@ namespace DOL.GS.PacketHandler
 			{
 				OwnerDF = eRealm.Hibernia;
 				OwnerDFTowers = HibTowers;
-			}
+			}*/
+
+
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.WarmapBonuses)))
 			{
+				eRealm playerRealm = m_gameClient.Player.Realm;
 				int RealmKeeps = 0;
 				int RealmTowers = 0;
-				switch ((eRealm)m_gameClient.Player.Realm)
+
+				switch (playerRealm)
 				{
 					case eRealm.Albion:
 						RealmKeeps = AlbKeeps;
@@ -481,14 +464,25 @@ namespace DOL.GS.PacketHandler
 						RealmKeeps = HibKeeps;
 						RealmTowers = HibTowers;
 						break;
-					default:
-						break;
 				}
+
+				// Byte 1: Count of Keeps
 				pak.WriteByte((byte)RealmKeeps);
-				pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Strength)));
+
+				// Byte 2: Relic status
+				int magicCount = RelicMgr.GetRelicCount(playerRealm, eRelicType.Magic);
+				int strengthCount = RelicMgr.GetRelicCount(playerRealm, eRelicType.Strength);
+				pak.WriteByte((byte)((magicCount << 4) | (strengthCount & 0x0F)));
+
+				// Byte 3: DF Owner
 				pak.WriteByte((byte)OwnerDF);
+
+				// Byte 4: Tower Count
 				pak.WriteByte((byte)RealmTowers);
+
+				// Byte 5: Towers of DF Owner, not displayed cause DF Owner is neutral
 				pak.WriteByte((byte)OwnerDFTowers);
+
 				SendTCP(pak);
 			}
 		}

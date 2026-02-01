@@ -1,101 +1,88 @@
-using DOL.Events;
-using DOL.Language;
 using System;
 using System.Reflection;
+using System.Collections.Generic;
+using DOL.GS;
 using DOL.Logging;
 
 namespace DOL.GS
 {
-    // NEU: Diese Hilfsklasse muss außerhalb der statischen Klasse definiert werden.
-    // "internal" ist der Standard und erlaubt den Zugriff innerhalb des GameServer-Projekts.
-    internal class TemplePadInfo // oder einfach: class TemplePadInfo
+    public class TempleRelicPadsLoader
     {
-        public int EmblemID { get; set; }
-        public ushort RegionID { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
-        public ushort Heading { get; set; }
-        public string TempleName { get; set; }
-    }
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static bool _initialized = false;
 
-    /// <summary>
-    /// Lädt die sechs New Frontiers Temple Relic Pads (ohne sichtbares Modell).
-    /// </summary>
-    public static class TempleRelicPadsLoader
-    {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        // HINWEIS: Ersetzen Sie die Platzhalter-Werte (RegionID, X, Y, Z) durch die ECHTEN NF-Koordinaten
-        private static readonly TemplePadInfo[] TemplePads = new TemplePadInfo[]
+        /// <summary>
+        /// Init NF Tempel-Pads. 
+        /// </summary>
+        public static bool LoadTemplePads()
         {
-            // ALBION
-            new TemplePadInfo { 
-                EmblemID = 1, TempleName = "Castle Excalibur",
-                RegionID = 163, X = 673846, Y = 589994, Z = 8748, Heading = 0 
-            },
-            new TemplePadInfo { 
-                EmblemID = 11, TempleName = "Castle Myrddin",
-                RegionID = 163, X = 578176, Y = 676596, Z = 8740, Heading = 0 
-            },
-            
-            // MIDGARD
-            new TemplePadInfo { 
-                EmblemID = 2, TempleName = "Mjollner Faste",
-                RegionID = 163, X = 610911, Y = 302488, Z = 8500, Heading = 0 
-            },
-            new TemplePadInfo { 
-                EmblemID = 12, TempleName = "Grallarhorn Faste",
-                RegionID = 163, X = 713091, Y = 403189, Z = 8788, Heading = 0 
-            },
+            if (_initialized) return true;
+            _initialized = true;
 
-            // HIBERNIA
-            new TemplePadInfo { 
-                EmblemID = 3, TempleName = "Dun Lamfhota",
-                RegionID = 163, X = 372735, Y = 590532, Z = 8740, Heading = 0 
-            },
-            new TemplePadInfo { 
-                EmblemID = 13, TempleName = "Dun Dagda",
-                RegionID = 163, X = 470210, Y = 677203, Z = 8116, Heading = 0 
-            },
-        };
-
-        [ScriptLoadedEvent]
-        private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
-        {
-            LoadTemplePads();
-        }
-
-        public static void LoadTemplePads()
-        {
             log.Info("Loading New Frontiers Temple Relic Pads...");
 
-            foreach (var info in TemplePads)
+            foreach (TemplePadInfo info in TemplePadsList)
             {
                 if (WorldMgr.GetRegion(info.RegionID) == null)
                 {
-                    log.Warn($"Region {info.RegionID} for {info.TempleName} not found. Skipping Pad load.");
+                    log.Error($"[Relic] Region {info.RegionID} für '{info.TempleName}' nicht geladen!");
                     continue;
                 }
 
-                GameTempleRelicPad pad = new GameTempleRelicPad
+                try
                 {
-                    Emblem = info.EmblemID, 
-                    Name = info.TempleName,
-                    X = info.X,
-                    Y = info.Y,
-                    Z = info.Z,
-                    CurrentRegionID = info.RegionID,
-                    Heading = info.Heading,
-                };
-                
-                // AddToWorld ruft RelicMgr.AddRelicPad(this) auf
-                if (pad.AddToWorld())
+                    GameTempleRelicPad pad = new GameTempleRelicPad();
+                    pad.Emblem = info.EmblemID;
+                    pad.Name = info.TempleName;
+                    pad.X = info.X;
+                    pad.Y = info.Y;
+                    pad.Z = info.Z;
+                    pad.CurrentRegionID = info.RegionID;
+                    pad.Heading = info.Heading;
+
+                    if (!pad.AddToWorld())
+                    {
+                        log.Error($"[Relic] AddToWorld fehlgeschlagen für: {info.TempleName}");
+                    }
+                }
+                catch (Exception ex)
                 {
-                    log.Debug($"Successfully loaded {pad.Name} (Realm: {GlobalConstants.RealmToName(pad.Realm)}, Type: {pad.PadType})");
+                    log.Error($"[Relic] Fehler beim Erstellen von {info.TempleName}:", ex);
                 }
             }
-            log.Info("Finished loading Temple Relic Pads.");
+            return true;
+        }
+
+        private static readonly List<TemplePadInfo> TemplePadsList = new List<TemplePadInfo>
+        {
+            new TemplePadInfo(1, 163, 673846, 589994, 8748, 0, "Castle Excalibur"),   // Alb Strength
+            new TemplePadInfo(11, 163, 578176, 676596, 8740, 0, "Castle Myrddin"),    // Alb Magic
+            new TemplePadInfo(2, 163, 610911, 302488, 8500, 0, "Mjollner Faste"),     // Mid Strength
+            new TemplePadInfo(12, 163, 713091, 403189, 8788, 0, "Grallarhorn Faste"), // Mid Magic
+            new TemplePadInfo(3, 163, 372735, 590532, 8740, 0, "Dun Lamfhota"),       // Hib Strength
+            new TemplePadInfo(13, 163, 470210, 677203, 8116, 0, "Dun Dagda")          // Hib Magic
+        };
+    }
+
+    public class TemplePadInfo
+    {
+        public int EmblemID { get; }
+        public ushort RegionID { get; }
+        public int X { get; }
+        public int Y { get; }
+        public int Z { get; }
+        public ushort Heading { get; }
+        public string TempleName { get; }
+
+        public TemplePadInfo(int emblem, ushort region, int x, int y, int z, ushort heading, string name)
+        {
+            EmblemID = emblem;
+            RegionID = region;
+            X = x;
+            Y = y;
+            Z = z;
+            Heading = heading;
+            TempleName = name;
         }
     }
 }
