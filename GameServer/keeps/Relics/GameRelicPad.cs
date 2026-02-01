@@ -15,6 +15,7 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const int PAD_AREA_RADIUS = 250;
+        private const int RELIC_CAPTURE_ANY = 10000; // Relic Reward in RPs, TODO: Different RPs for Temple and Keep relics
 
         private PadArea _area;
 
@@ -89,23 +90,23 @@ namespace DOL.GS
             switch (realm)
             {
                 case eRealm._FirstPlayerRealm:
-                {
-                    color = 16711680;
-                    avatarUrl = string.Empty;
-                    break;
-                }
+                    {
+                        color = 16711680;
+                        avatarUrl = string.Empty;
+                        break;
+                    }
                 case eRealm._LastPlayerRealm:
-                {
-                    color = 32768;
-                    avatarUrl = string.Empty;
-                    break;
-                }
+                    {
+                        color = 32768;
+                        avatarUrl = string.Empty;
+                        break;
+                    }
                 default:
-                {
-                    color = 255;
-                    avatarUrl = string.Empty;
-                    break;
-                }
+                    {
+                        color = 255;
+                        avatarUrl = string.Empty;
+                        break;
+                    }
             }
 
             if (DiscordClientManager.TryGetClient(WebhookType.RvR, out var client))
@@ -131,7 +132,7 @@ namespace DOL.GS
 
         public virtual bool MountRelic(GameRelic relic, bool returning)
         {
-            if (MountedRelics.Count >= 3)
+            if (MountedRelics.Count >= 1)
             {
                 if (log.IsErrorEnabled)
                     log.Error($"Pad {Name} is full (3 relics) {relic.Name}");
@@ -162,12 +163,16 @@ namespace DOL.GS
                 if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
                     BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
 
-                foreach (GamePlayer player in relic.CurrentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE * 5))
+                // Give RPs to all players in zone & in relic pickup list
+                foreach (GamePlayer p in relic.Participants)
                 {
-                    if (player.Realm == relic.CurrentCarrier.Realm)
-                        player.CapturedRelics++;
+                    if (p.CurrentZone == relic.CurrentCarrier.CurrentZone && p.IsAlive)
+                    {
+                        p.CapturedRelics++;
+                        p.GainRealmPoints(RELIC_CAPTURE_ANY);
+                    }
                 }
-
+                relic.Participants.Clear();
                 Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
             }
             else
@@ -259,10 +264,10 @@ namespace DOL.GS
                 const int Radius = 50;
 
                 double angle = baseRotation + angleIncrement * i++;
-                relic.X = (int) (X + Radius * Math.Cos(angle));
-                relic.Y = (int) (Y + Radius * Math.Sin(angle));
+                relic.X = (int)(X + Radius * Math.Cos(angle));
+                relic.Y = (int)(Y + Radius * Math.Sin(angle));
                 relic.Z = Z;
-                relic.Heading = (ushort) (2048 * angle / Math.PI + 3072);
+                relic.Heading = (ushort)(2048 * angle / Math.PI + 3072);
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -22,14 +23,13 @@ namespace DOL.GS
 
         public const string PLAYER_CARRY_RELIC_WEAK = "IAmCarryingARelic";
         private const int RELIC_EFFECT_INTERVAL = 4000;
-
+        protected HashSet<GamePlayer> m_participants = new HashSet<GamePlayer>();
+        public HashSet<GamePlayer> Participants => m_participants;
         private GameInventoryItem _item;
         private ECSGameTimer _currentCarrierTimer;
         private DbRelic _dbRelic;
-        
         private GameRelicPad _returnRelicPad;
-        public DateTime LastTimePickedUp { get; set; } = DateTime.MinValue; 
-        
+        public DateTime LastTimePickedUp { get; set; } = DateTime.MinValue;
         public eRelicType RelicType { get; private set; }
         public eRealm OriginalRealm { get; private set; }
         public eRealm LastRealm { get; private set; } = eRealm.None;
@@ -37,7 +37,7 @@ namespace DOL.GS
         public GamePlayer CurrentCarrier { get; private set; }
         public bool IsMounted => CurrentRelicPad != null;
         public static int ReturnRelicInterval => Properties.RELIC_RETURN_TIME * 1000;
-        
+
 
         public GameRelic() : base()
         {
@@ -106,8 +106,8 @@ namespace DOL.GS
             CurrentCarrier = player;
             player.TempProperties.SetProperty(PLAYER_CARRY_RELIC_WEAK, this);
             player.Out.SendUpdateMaxSpeed();
-            
-            LastTimePickedUp = DateTime.Now; 
+
+            LastTimePickedUp = DateTime.Now;
 
             if (IsMounted)
             {
@@ -123,6 +123,21 @@ namespace DOL.GS
             SetHandlers(player, true);
             StartPlayerTimer(player);
 
+            // If Relics gets picked up by new realm
+            if (this.LastRealm != player.Realm && this.LastRealm != eRealm.None)
+            {
+                m_participants.Clear();
+            }
+
+            // Give all players in same zone credit for drop
+            foreach (GamePlayer ply in ClientService.Instance.GetPlayersOfZone(player.CurrentZone))
+            {
+                if (ply.Realm == player.Realm)
+                {
+                    m_participants.Add(ply);
+                }
+            }
+            this.LastRealm = player.Realm;
             return true;
         }
 
@@ -133,9 +148,9 @@ namespace DOL.GS
 
             LastRealm = pad.Realm;
             CurrentRelicPad = pad;
-            
-            LastTimePickedUp = DateTime.MinValue; 
-            
+
+            LastTimePickedUp = DateTime.MinValue;
+
             PlayerLoosesRelic(true);
             SaveIntoDatabase();
             AddToWorld();
@@ -159,8 +174,8 @@ namespace DOL.GS
             {
                 return "0 Minuten verbleibend";
             }
-            int minutesRemaining = (int)Math.Ceiling(timeRemaining.TotalMinutes); 
-            
+            int minutesRemaining = (int)Math.Ceiling(timeRemaining.TotalMinutes);
+
             return minutesRemaining.ToString();
         }
 
@@ -168,18 +183,18 @@ namespace DOL.GS
         {
             InternalID = obj.ObjectId;
             _dbRelic = obj as DbRelic;
-            CurrentRegionID = (ushort) _dbRelic.Region;
+            CurrentRegionID = (ushort)_dbRelic.Region;
             X = _dbRelic.X;
             Y = _dbRelic.Y;
             Z = _dbRelic.Z;
-            Heading = (ushort) _dbRelic.Heading;
-            RelicType = (eRelicType) _dbRelic.relicType;
-            Realm = (eRealm) _dbRelic.Realm;
-            OriginalRealm = (eRealm) _dbRelic.OriginalRealm;
-            LastRealm = (eRealm) _dbRelic.LastRealm;
-            
-            LastTimePickedUp = _dbRelic.LastTimePickedUp; 
-            
+            Heading = (ushort)_dbRelic.Heading;
+            RelicType = (eRelicType)_dbRelic.relicType;
+            Realm = (eRealm)_dbRelic.Realm;
+            OriginalRealm = (eRealm)_dbRelic.OriginalRealm;
+            LastRealm = (eRealm)_dbRelic.LastRealm;
+
+            LastTimePickedUp = _dbRelic.LastTimePickedUp;
+
             Emblem = 0;
             Level = 99;
 
@@ -190,7 +205,7 @@ namespace DOL.GS
             DbItemTemplate itemTemplate = new()
             {
                 Name = Name,
-                Object_Type = (int) eObjectType.Magical,
+                Object_Type = (int)eObjectType.Magical,
                 Model = Model,
                 IsDropable = true,
                 IsPickable = false,
@@ -210,17 +225,17 @@ namespace DOL.GS
 
         public override void SaveIntoDatabase()
         {
-            _dbRelic.Realm = (int) Realm;
-            _dbRelic.OriginalRealm = (int) OriginalRealm;
-            _dbRelic.LastRealm = (int) LastRealm;
+            _dbRelic.Realm = (int)Realm;
+            _dbRelic.OriginalRealm = (int)OriginalRealm;
+            _dbRelic.LastRealm = (int)LastRealm;
             _dbRelic.Heading = Heading;
             _dbRelic.Region = CurrentRegionID;
-            _dbRelic.relicType = (int) RelicType;
+            _dbRelic.relicType = (int)RelicType;
             _dbRelic.X = X;
             _dbRelic.Y = Y;
             _dbRelic.Z = Z;
-            
-            _dbRelic.LastTimePickedUp = LastTimePickedUp; 
+
+            _dbRelic.LastTimePickedUp = LastTimePickedUp;
 
             if (InternalID == null)
             {
@@ -289,13 +304,13 @@ namespace DOL.GS
         /// </summary>
         public void ReturnToSourcePad()
         {
-            GameRelicPad targetPad = _returnRelicPad ?? FindHomePad(); 
-            
+            GameRelicPad targetPad = _returnRelicPad ?? FindHomePad();
+
             if (targetPad != null)
             {
                 if (CurrentCarrier != null)
                 {
-                    PlayerLoosesRelic(false); 
+                    PlayerLoosesRelic(false);
                 }
 
                 RelicPadTakesOver(targetPad, true);
@@ -306,10 +321,10 @@ namespace DOL.GS
                 log.Error($"Critical Error: Source or home pad for Relic {Name} not found for automatic return!");
             }
         }
-        
+
         private GameRelicPad FindHomePad()
         {
-            return RelicMgr.GetHomePad(OriginalRealm, RelicType); 
+            return RelicMgr.GetHomePad(OriginalRealm, RelicType);
         }
 
         protected virtual void StartPlayerTimer(GamePlayer player)
@@ -324,7 +339,7 @@ namespace DOL.GS
                     _currentCarrierTimer.Stop();
                     _currentCarrierTimer = null;
                 }
-                
+
                 _currentCarrierTimer = new(player, CarrierTimerTick);
                 _currentCarrierTimer.Start(RELIC_EFFECT_INTERVAL);
             }
@@ -341,17 +356,17 @@ namespace DOL.GS
         private int CarrierTimerTick(ECSGameTimer timer)
         {
             Update();
-            
+
             if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
             {
                 if (log.IsDebugEnabled)
                     log.Debug($"{Name} not found in carriers backpack, forcing player to lose relic.");
-                
+
                 PlayerLoosesRelic(true);
                 return 0;
             }
 
-            ushort effectID = (ushort) Util.Random(5811, 5815);
+            ushort effectID = (ushort)Util.Random(5811, 5815);
 
             foreach (GamePlayer player in CurrentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendSpellEffectAnimation(CurrentCarrier, CurrentCarrier, effectID, 0, false, 0x01);
@@ -395,14 +410,14 @@ namespace DOL.GS
                 return;
             }
 
-            PlayerLoosesRelic(true); 
+            PlayerLoosesRelic(true);
         }
 
         public static bool IsPlayerCarryingRelic(GamePlayer player)
         {
             return player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null;
         }
-        
+
         public static MiniTemp GetRelicTemplate(eRealm realm, eRelicType relicType)
         {
             MiniTemp template = new();
@@ -410,56 +425,56 @@ namespace DOL.GS
             switch (realm)
             {
                 case eRealm.Albion:
-                {
-                    if (relicType is eRelicType.Magic)
                     {
-                        template.Name = "Merlin's Staff";
-                        template.Model = 630;
-                    }
-                    else
-                    {
-                        template.Name = "Scabbard of Excalibur";
-                        template.Model = 631;
-                    }
+                        if (relicType is eRelicType.Magic)
+                        {
+                            template.Name = "Merlin's Staff";
+                            template.Model = 630;
+                        }
+                        else
+                        {
+                            template.Name = "Scabbard of Excalibur";
+                            template.Model = 631;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case eRealm.Midgard:
-                {
-                    if (relicType is eRelicType.Magic)
                     {
-                        template.Name = "Horn of Valhalla";
-                        template.Model = 635;
-                    }
-                    else
-                    {
-                        template.Name = "Thor's Hammer";
-                        template.Model = 634;
-                    }
+                        if (relicType is eRelicType.Magic)
+                        {
+                            template.Name = "Horn of Valhalla";
+                            template.Model = 635;
+                        }
+                        else
+                        {
+                            template.Name = "Thor's Hammer";
+                            template.Model = 634;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case eRealm.Hibernia:
-                {
-                    if (relicType is eRelicType.Magic)
                     {
-                        template.Name = "Cauldron of Dagda";
-                        template.Model = 632;
-                    }
-                    else
-                    {
-                        template.Name = "Lug's Spear of Lightning";
-                        template.Model = 633;
-                    }
+                        if (relicType is eRelicType.Magic)
+                        {
+                            template.Name = "Cauldron of Dagda";
+                            template.Model = 632;
+                        }
+                        else
+                        {
+                            template.Name = "Lug's Spear of Lightning";
+                            template.Model = 633;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 default:
-                {
-                    template.Name = "Unknown Relic";
-                    template.Model = 633;
-                    break;
-                }
+                    {
+                        template.Name = "Unknown Relic";
+                        template.Model = 633;
+                        break;
+                    }
             }
 
             return template;

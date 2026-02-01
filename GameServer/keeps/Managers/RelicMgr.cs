@@ -246,7 +246,7 @@ namespace DOL.GS
                 }
             }*/
 
-            return false;
+            return true; // Always true, cause players should always be able to pickup
         }
 
         // --- 120-MINUTEN LOGIC ---
