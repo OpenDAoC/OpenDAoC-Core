@@ -1587,8 +1587,8 @@ namespace DOL.GS
                 }
                 case eReleaseType.NewFrontiers:
                 {
-                    // `GetBorderKeepLocation` works with NF only.
-                    if (GameServer.KeepManager.GetBorderKeepLocation((byte) Realm * 2 - 1, out relX, out relY, out relZ, out relHeading))
+                    // `GetVillageLocation` works with NF only.
+                    if (GameServer.KeepManager.GetVillageLocation(Realm, out relX, out relY, out relZ, out relHeading))
                     {
                         relRegion = CurrentRegion.ID;
                         break;

@@ -214,48 +214,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 							case 4: //vind
 							case 5: //ligen
 							case 6: //cain
+							// Relic Towns (ID 10-15)
+							case 10: // catterick hamlet (alb)
+							case 11: // dinas emrys (alb)
+							case 12: // godrborg (mid)
+							case 13: // rensamark (mid)
+							case 14: //crair treflan (hib)
+							case 15: //magh tuireadh (hib)
 								{
 									GameServer.KeepManager.GetBorderKeepLocation((ushort)keepId, out x, out y, out z, out heading);
 									break;
 								}
 
-							// Relic Towns (ID 10-15)
-							case 10: // catterick hamlet (alb)
-								x = 678437;
-								y = 568999;
-								z = 8104;
-								heading = 1130;
-								break;
-							case 11: // dinas emrys (alb)
-								x = 566394;
-								y = 669741;
-								z = 8088;
-								heading = 4056;
-								break;
-							case 12: // godrborg (mid)
-								x = 597577;
-								y = 303911;
-								z = 8088;
-								heading = 49;
-								break;
-							case 13: // rensamark (mid)
-								x = 701001;
-								y = 418654;
-								z = 8088;
-								heading = 1921;
-								break;
-							case 14: //crair treflan (hib)
-								x = 374223;
-								y = 573036;
-								z = 8040;
-								heading = 1052;
-								break;
-							case 15: //magh tuireadh (hib)
-								x = 481218;
-								y = 667586;
-								z = 7879;
-								heading = 3727;
-								break;
+
 
 							// Standard Keeps (ID 50-106)
 							default:
@@ -280,7 +251,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 										}
 									}
 								}
-							break;
+								break;
 						}
 						if (x != 0)
 						{

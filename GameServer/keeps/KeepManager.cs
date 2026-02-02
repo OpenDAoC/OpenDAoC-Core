@@ -72,48 +72,48 @@ namespace DOL.GS.Keeps
 				Region keepRegion = WorldMgr.GetRegion(datakeep.Region);
 				if (keepRegion == null)
 					continue;
-				
-					AbstractGameKeep keep;
-					if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
-					{
-					 	keep = keepRegion.CreateGameKeepTower();
-					 }
-					 else
-					{
-					
-				// set SkinType to 99 for relic keeps
-				keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
-						
-					}
+
+				AbstractGameKeep keep;
+				if ((datakeep.KeepID >> 8) != 0 || ((datakeep.KeepID & 0xFF) > 150))
+				{
+					keep = keepRegion.CreateGameKeepTower();
+				}
+				else
+				{
+
+					// set SkinType to 99 for relic keeps
+					keep = datakeep.SkinType == 99 ? keepRegion.CreateRelicGameKeep() : keepRegion.CreateGameKeep();
+
+				}
 
 				keep.Load(datakeep);
 				RegisterKeep(datakeep.KeepID, keep);
 			}
 
-				// This adds owner keeps to towers / portal keeps
-				foreach (AbstractGameKeep keep in m_keepList.Values)
+			// This adds owner keeps to towers / portal keeps
+			foreach (AbstractGameKeep keep in m_keepList.Values)
+			{
+				GameKeepTower tower = keep as GameKeepTower;
+				if (tower != null)
 				{
-				 	GameKeepTower tower = keep as GameKeepTower;
-					if (tower != null)
-				 	{
-				 		int index = tower.KeepID & 0xFF;
-				 		GameKeep ownerKeep = GetKeepByID(index) as GameKeep;
-				 		if (ownerKeep != null)
-				 		{
-				 			ownerKeep.AddTower(tower);
-				 		}
-				 		tower.Keep = ownerKeep;
-				 		tower.OwnerKeepID = index;
-				
-				 		if (tower.OwnerKeepID < 10)
-				 		{
-				 			log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
-				 		}
-				 	}
-				 }
-				if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
-					log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
-				    
+					int index = tower.KeepID & 0xFF;
+					GameKeep ownerKeep = GetKeepByID(index) as GameKeep;
+					if (ownerKeep != null)
+					{
+						ownerKeep.AddTower(tower);
+					}
+					tower.Keep = ownerKeep;
+					tower.OwnerKeepID = index;
+
+					if (tower.OwnerKeepID < 10)
+					{
+						log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
+					}
+				}
+			}
+			if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
+				log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
+
 			// var keepcomponents = default(IList<DBKeepComponent>); Why was this done this way rather than being strictly typed?
 			IList<DbKeepComponent> keepcomponents = null;
 
@@ -174,7 +174,7 @@ namespace DOL.GS.Keeps
 
 		public virtual bool IsNewKeepComponent(int skin)
 		{
-			if (skin > 20) 
+			if (skin > 20)
 				return true;
 
 			return false;
@@ -253,14 +253,14 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-        public virtual void RegisterKeep(int keepID, AbstractGameKeep keep)
-        {
-            m_keepList.Add(keepID, keep);
-            log.Info("Registered Keep: " + keep.Name);
+		public virtual void RegisterKeep(int keepID, AbstractGameKeep keep)
+		{
+			m_keepList.Add(keepID, keep);
+			log.Info("Registered Keep: " + keep.Name);
 
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		/// get keep by ID
 		/// </summary>
 		/// <param name="id">id of keep</param>
@@ -268,15 +268,15 @@ namespace DOL.GS.Keeps
 		public virtual AbstractGameKeep GetKeepByID(int id)
 		{
 			AbstractGameKeep keep;
-			
+
 			// Verwenden Sie TryGetValue anstelle des Indexers [id]
 			if (m_keepList.TryGetValue(id, out keep))
 			{
 				return keep;
 			}
-			
+
 			// Wenn der Schlüssel nicht gefunden wird, geben Sie null zurück (keine Exception)
-			return null; 
+			return null;
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_frontierRegionsList.Contains(keep.CurrentRegion.ID) == false)
 					continue;
-				
+
 				if (((keep.KeepID & 0xFF) / 25 - 1) == map)
 				{
 					keepsByID.Add(keep.KeepID, keep);
@@ -314,10 +314,10 @@ namespace DOL.GS.Keeps
 					keepsByID.Add(keep.KeepID, keep);
 				}
 			}
-			
+
 			foreach (IGameKeep keep in keepsByID.Values)
 				myKeeps.Add(keep);
-			
+
 			return myKeeps;
 		}
 
@@ -448,7 +448,7 @@ namespace DOL.GS.Keeps
 		/// <returns></returns>
 		public virtual Dictionary<eRealm, int> GetTowerCountAllRealm()
 		{
-			Dictionary<eRealm, int> realmXTower = new Dictionary<eRealm,int>(3);
+			Dictionary<eRealm, int> realmXTower = new Dictionary<eRealm, int>(3);
 			realmXTower.Add(eRealm.Albion, 0);
 			realmXTower.Add(eRealm.Hibernia, 0);
 			realmXTower.Add(eRealm.Midgard, 0);
@@ -503,7 +503,7 @@ namespace DOL.GS.Keeps
 
 				// Only count Keeps in NF region
 				if (keep.Region != 163)
-            		continue;
+					continue;
 
 				if (keep.Realm != realm || keep is not GameKeep || keep.IsPortalKeep)
 					continue;
@@ -517,18 +517,18 @@ namespace DOL.GS.Keeps
 					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("crair", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("magh", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("ligen", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("cain", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("godrborg", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("rensamark", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("svasud", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("vindsaul", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("catterick", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("dinas", StringComparison.OrdinalIgnoreCase)||
-					keep.Name.Contains("sauvage", StringComparison.OrdinalIgnoreCase)||
+					keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("crair", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("magh", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("ligen", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("cain", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("godrborg", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("rensamark", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("svasud", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("vindsaul", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("catterick", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("dinas", StringComparison.OrdinalIgnoreCase) ||
+					keep.Name.Contains("sauvage", StringComparison.OrdinalIgnoreCase) ||
 					keep.Name.Contains("snowdonia", StringComparison.OrdinalIgnoreCase))
 				{
 					continue;
@@ -586,7 +586,7 @@ namespace DOL.GS.Keeps
 
 				return keep.Guild != target.Guild;
 			}
-			
+
 			return keep.Realm != target.Realm;
 		}
 
@@ -661,7 +661,7 @@ namespace DOL.GS.Keeps
 				return 2;
 			if (level > 1)
 				return 1;
-			
+
 			return 0;
 		}
 
@@ -675,53 +675,141 @@ namespace DOL.GS.Keeps
 			switch (keepid)
 			{
 				case 1: // Castle Sauvage.
-				{
-					x = 653811;
-					y = 616998;
-					z = 9560;
-					heading = 2040;
-					return true;
-				}
+					{
+						x = 653811;
+						y = 616998;
+						z = 9560;
+						heading = 2040;
+						return true;
+					}
 				case 2: // Snowdonia Fortress.
-				{
-					x = 616149;
-					y = 679042;
-					z = 9560;
-					heading = 1611;
-					return true;
-				}
+					{
+						x = 616149;
+						y = 679042;
+						z = 9560;
+						heading = 1611;
+						return true;
+					}
 				case 3: // Svasud Faste.
-				{
-					x = 651460;
-					y = 313758;
-					z = 9432;
-					heading = 1004;
-					return true;
-				}
+					{
+						x = 651460;
+						y = 313758;
+						z = 9432;
+						heading = 1004;
+						return true;
+					}
 				case 4: // Vindsaul Faste.
-				{
-					x = 715179;
-					y = 365101;
-					z = 9432;
-					heading = 314;
-					return true;
-				}
+					{
+						x = 715179;
+						y = 365101;
+						z = 9432;
+						heading = 314;
+						return true;
+					}
 				case 5: // Druim Ligen.
-				{
-					x = 396519;
-					y = 618017;
-					z = 9838;
-					heading = 2159;
-					return true;
-				}
+					{
+						x = 396519;
+						y = 618017;
+						z = 9838;
+						heading = 2159;
+						return true;
+					}
 				case 6: // Druim Cain.
-				{
-					x = 432841;
-					y = 680032;
-					z = 9747;
-					heading = 2585;
-					return true;
-				}
+					{
+						x = 432841;
+						y = 680032;
+						z = 9747;
+						heading = 2585;
+						return true;
+					}
+				// Relic Towns (ID 10-15)
+				case 10: // catterick hamlet (alb)
+					{
+						x = 678437;
+						y = 568999;
+						z = 8104;
+						heading = 1130;
+						return true;
+					}
+				case 11: // dinas emrys (alb)
+					{
+						x = 566394;
+						y = 669741;
+						z = 8088;
+						heading = 4056;
+						return true;
+					}
+				case 12: // godrborg (mid)
+					{
+						x = 597415;
+						y = 304597;
+						z = 8088;
+						heading = 218;
+						return true;
+					}
+				case 13: // rensamark (mid)
+					{
+						x = 701001;
+						y = 418654;
+						z = 8088;
+						heading = 1921;
+						return true;
+					}
+				case 14: //crair treflan (hib)
+					{
+						x = 374223;
+						y = 573036;
+						z = 8040;
+						heading = 1052;
+						return true;
+					}
+				case 15: //magh tuireadh (hib)
+					{
+						x = 481218;
+						y = 667586;
+						z = 7879;
+						heading = 3727;
+						return true;
+					}
+			}
+
+			return false;
+		}
+
+		// Used for release in New Frontiers
+		public virtual bool GetVillageLocation(eRealm Realm, out int x, out int y, out int z, out ushort heading)
+		{
+			x = 0;
+			y = 0;
+			z = 0;
+			heading = 0;
+
+			switch (Realm)
+			{
+				case eRealm.Albion: // Catterick Hamlet
+					{
+						x = 678437;
+						y = 568999;
+						z = 8104;
+						heading = 1130;
+						return true;
+					}
+				case eRealm.Midgard: // Godrborg
+					{
+						x = 597415;
+						y = 304597;
+						z = 8088;
+						heading = 218;
+						return true;
+					}
+				case eRealm.Hibernia: // Crair Treflan
+					{
+						x = 374223;
+						y = 573036;
+						z = 8040;
+						heading = 1052;
+						return true;
+					}
 			}
 
 			return false;
@@ -743,7 +831,7 @@ namespace DOL.GS.Keeps
 		{
 			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
-				if (m_frontierRegionsList.Contains(keep.Region) == false) 
+				if (m_frontierRegionsList.Contains(keep.Region) == false)
 					continue;
 
 				byte newLevel = keep.BaseLevel;
@@ -804,7 +892,7 @@ namespace DOL.GS.Keeps
 					player.MoveTo((ushort)t.RegionID, t.X, t.Y, t.Z, (ushort)t.Heading);
 			}
 		}
-		
+
 		public virtual AbstractGameKeep GetKeepByShortName(string shortname)
 		{
 			return GetKeepsShortName(shortname);
