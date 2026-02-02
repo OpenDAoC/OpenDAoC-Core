@@ -204,7 +204,11 @@ namespace DOL.GS
                 {
                     if (items[i] is GameRelic relic)
                     {
-                        return relic;
+                        // We only look for relics which are mounted on a temple
+                        if (relic.CurrentRelicPad is GameTempleRelicPad)
+                        {
+                            return relic;
+                        }
                     }
                 }
             }

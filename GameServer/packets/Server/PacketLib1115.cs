@@ -138,7 +138,7 @@ namespace DOL.GS.PacketHandler
 				int TowerCount = 0;
 				foreach (AbstractGameKeep keep in list)
 				{
-					// New Agramon tower are counted as keep
+					// New Agramon tower are counted as keep (Ellan Vannin)
 					if (keep is GameKeep || (keep.KeepID & 0xFF) > 150)
 						KeepCount++;
 					else
@@ -242,7 +242,9 @@ namespace DOL.GS.PacketHandler
 					}
 					else
 					{
-						if (GameServer.KeepManager.FrontierRegionsList.Contains(m_gameClient.Player.CurrentRegionID) && m_gameClient.Player.Realm == keep.Realm)
+						bool isEVObject = keep.KeepID >= 141 && keep.KeepID <= 146;
+						// Disable EV Keeps/Towers for teleport, never allow teleport there
+						if (!isEVObject && GameServer.KeepManager.FrontierRegionsList.Contains(m_gameClient.Player.CurrentRegionID) && m_gameClient.Player.Realm == keep.Realm)
 						{
 							GameKeep theKeep = keep as GameKeep;
 							if (theKeep != null)
@@ -282,9 +284,9 @@ namespace DOL.GS.PacketHandler
 								}
 								// Towns teleports are always available
 								if (keep.KeepID == town1.KeepID || keep.KeepID == town2.KeepID)
-									{
-										flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
-									}
+								{
+									flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+								}
 								
 								
 								// Teleport Flags for keeps inside our own realm
