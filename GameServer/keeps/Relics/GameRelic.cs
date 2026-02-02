@@ -28,11 +28,12 @@ namespace DOL.GS
         private GameInventoryItem _item;
         private ECSGameTimer _currentCarrierTimer;
         private DbRelic _dbRelic;
-        private GameRelicPad _returnRelicPad;
+        public GameRelicPad _returnRelicPad;
         public DateTime LastTimePickedUp { get; set; } = DateTime.MinValue;
         public eRelicType RelicType { get; private set; }
         public eRealm OriginalRealm { get; private set; }
         public eRealm LastRealm { get; private set; } = eRealm.None;
+        public eRealm FirstRealm { get; private set; } = eRealm.None; // Used to check who picked relic up first, who stealed
         public GameRelicPad CurrentRelicPad { get; private set; }
         public GamePlayer CurrentCarrier { get; private set; }
         public bool IsMounted => CurrentRelicPad != null;
@@ -114,6 +115,7 @@ namespace DOL.GS
                 CurrentRelicPad.RemoveRelic(this);
                 _returnRelicPad = CurrentRelicPad;
                 LastRealm = CurrentRelicPad.Realm;
+                FirstRealm = player.Realm;
                 CurrentRelicPad = null;
             }
 

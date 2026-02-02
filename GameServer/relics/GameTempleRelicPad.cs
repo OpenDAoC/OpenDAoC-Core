@@ -54,6 +54,7 @@ namespace DOL.GS
         {
             if (relic == null) return false;
 
+            // Only the specific relic can go on specific temple
             if (MountedRelics.Count >= 1 && !MountedRelics.Contains(relic))
             {
                 return false; 

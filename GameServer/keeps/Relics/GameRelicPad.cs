@@ -15,7 +15,11 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const int PAD_AREA_RADIUS = 250;
-        private const int RELIC_CAPTURE_ANY = 10000; // Relic Reward in RPs, TODO: Different RPs for Temple and Keep relics
+        private const int RELIC_CAPTURE_ANY = 7500; // RP Reward in Rps for ANY kind of pad
+        private const int RELIC_CAPTURE_Temple = 10000; // RP Reward in Rps if relic came for a temple
+        private const int RELIC_CAPTURE_STEAL = 5000; // RP Reward in Rps, TODO add 25% RP Buff for 30min
+        private const int RELIC_CAPTURE_DEFEND = 5000; // RP Reward in Rps, TODO add 50% RP Buff for 30min
+
 
         private PadArea _area;
 
@@ -162,14 +166,32 @@ namespace DOL.GS
 
                 if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
                     BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
-
                 // Give RPs to all players in zone & in relic pickup list
                 foreach (GamePlayer p in relic.Participants)
                 {
-                    if (p.CurrentZone == relic.CurrentCarrier.CurrentZone && p.IsAlive)
+                    if (p.CurrentZone == relic.CurrentCarrier.CurrentZone)
                     {
                         p.CapturedRelics++;
-                        p.GainRealmPoints(RELIC_CAPTURE_ANY);
+                        // Normal relic take (Keep)
+                        if (relic.LastRealm == relic.FirstRealm)
+                        {
+                            p.GainRealmPoints(RELIC_CAPTURE_ANY);
+                        }
+                        // Temple relic take
+                        else if (relic._returnRelicPad is GameTempleRelicPad)
+                        {
+                            p.GainRealmPoints(RELIC_CAPTURE_DEFEND);
+                        }
+                        // Other realm picked up relic, different realm mounted it
+                        else if (relic.LastRealm != relic.FirstRealm)
+                        {
+                            p.GainRealmPoints(RELIC_CAPTURE_STEAL);
+                        }
+                        // Relic brought back to same relic pad (Defend)
+                        else if (relic._returnRelicPad == this)
+                        {
+                            p.GainRealmPoints(RELIC_CAPTURE_DEFEND);
+                        }                        
                     }
                 }
                 relic.Participants.Clear();
