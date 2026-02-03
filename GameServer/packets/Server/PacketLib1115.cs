@@ -8,26 +8,26 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.PacketHandler
 {
-    [PacketLib(1115, GameClient.eClientVersion.Version1115)]
-    public class PacketLib1115 : PacketLib1114
-    {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+	[PacketLib(1115, GameClient.eClientVersion.Version1115)]
+	public class PacketLib1115 : PacketLib1114
+	{
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        /// <summary>
-        /// Constructs a new PacketLib for Client Version 1.115
-        /// </summary>
-        /// <param name="client">the gameclient this lib is associated with</param>
-        public PacketLib1115(GameClient client)
-            : base(client)
-        {
+		/// <summary>
+		/// Constructs a new PacketLib for Client Version 1.115
+		/// </summary>
+		/// <param name="client">the gameclient this lib is associated with</param>
+		public PacketLib1115(GameClient client)
+			: base(client)
+		{
 
-        }
+		}
 
-        /// <summary>
-        /// Reply on Server Opening to Client Encryption Request
-        /// Actually forces Encryption Off to work with Portal.
-        /// </summary>
-        public override void SendVersionAndCryptKey()
+		/// <summary>
+		/// Reply on Server Opening to Client Encryption Request
+		/// Actually forces Encryption Off to work with Portal.
+		/// </summary>
+		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CryptKey)))
@@ -214,15 +214,20 @@ namespace DOL.GS.PacketHandler
 							keepId += 5;
 					}*/
 
+					// Fix for ev keeps
+					// We have to do this, so when you click on ev towers/keeps, correct info gets displayed
+					if (keepId >= 151 && keepId <= 156) keepId -= 10;
+
 					int id = keepId & 0xFF;
-					int tower = keep.KeepID >> 8;
+					int tower = keepId >> 8;
 					int map = (id / 25) - 1;
 
 					int index = id - (map * 25 + 25);
 
 					// Special Agramon zone
-					if ((keep.KeepID & 0xFF) > 150)
-						index = keep.KeepID - 151;
+					// no clue whats that for
+					if ((keepId & 0xFF) > 140)
+						index = keepId - 141;
 
 					int flag = (byte)keep.Realm; // 3 bits
 					Guild guild = keep.Guild;
@@ -242,8 +247,8 @@ namespace DOL.GS.PacketHandler
 					}
 					else
 					{
-						bool isEVObject = keep.KeepID >= 141 && keep.KeepID <= 146;
 						// Disable EV Keeps/Towers for teleport, never allow teleport there
+						bool isEVObject = keep.KeepID >= 151 && keep.KeepID <= 156;
 						if (!isEVObject && GameServer.KeepManager.FrontierRegionsList.Contains(m_gameClient.Player.CurrentRegionID) && m_gameClient.Player.Realm == keep.Realm)
 						{
 							GameKeep theKeep = keep as GameKeep;
@@ -257,38 +262,38 @@ namespace DOL.GS.PacketHandler
 								AbstractGameKeep town2 = null;
 								switch (m_gameClient.Player.Realm)
 								{
-										case eRealm.Midgard:
-												supply1 = GameServer.KeepManager.GetKeepByID(79);   // Glenlock
-												supply2 = GameServer.KeepManager.GetKeepByID(75);   // Bledmeer
-												last1 = GameServer.KeepManager.GetKeepByID(80);   // Fensalir
-												last2 = GameServer.KeepManager.GetKeepByID(81);   // Arvakre
-												town1 = GameServer.KeepManager.GetKeepByID(12);   // Godrborg
-												town2 = GameServer.KeepManager.GetKeepByID(13);   // Rensamark
-												break;
-										case eRealm.Albion:
-												supply1 = GameServer.KeepManager.GetKeepByID(50);   // Benowyc
-												supply2 = GameServer.KeepManager.GetKeepByID(53);   // Boldiam
-												last1 = GameServer.KeepManager.GetKeepByID(56);   // Benowyc
-												last2 = GameServer.KeepManager.GetKeepByID(55);   // Boldiam
-												town1 = GameServer.KeepManager.GetKeepByID(10);   // Catterick Hamlet
-												town2 = GameServer.KeepManager.GetKeepByID(11);   // Dinas Emrys
-												break;
-										case eRealm.Hibernia:
-												supply1 = GameServer.KeepManager.GetKeepByID(103);   // nGed
-												supply2 = GameServer.KeepManager.GetKeepByID(100);   // Crauchon
-												last1 = GameServer.KeepManager.GetKeepByID(106);   // Ailinne
-												last2 = GameServer.KeepManager.GetKeepByID(105);   // Scataigh
-												town1 = GameServer.KeepManager.GetKeepByID(14);   // Crair Treflan
-												town2 = GameServer.KeepManager.GetKeepByID(15);   // Magh Tuireadh
-												break;
+									case eRealm.Midgard:
+										supply1 = GameServer.KeepManager.GetKeepByID(79);   // Glenlock
+										supply2 = GameServer.KeepManager.GetKeepByID(75);   // Bledmeer
+										last1 = GameServer.KeepManager.GetKeepByID(80);   // Fensalir
+										last2 = GameServer.KeepManager.GetKeepByID(81);   // Arvakre
+										town1 = GameServer.KeepManager.GetKeepByID(12);   // Godrborg
+										town2 = GameServer.KeepManager.GetKeepByID(13);   // Rensamark
+										break;
+									case eRealm.Albion:
+										supply1 = GameServer.KeepManager.GetKeepByID(50);   // Benowyc
+										supply2 = GameServer.KeepManager.GetKeepByID(53);   // Boldiam
+										last1 = GameServer.KeepManager.GetKeepByID(56);   // Benowyc
+										last2 = GameServer.KeepManager.GetKeepByID(55);   // Boldiam
+										town1 = GameServer.KeepManager.GetKeepByID(10);   // Catterick Hamlet
+										town2 = GameServer.KeepManager.GetKeepByID(11);   // Dinas Emrys
+										break;
+									case eRealm.Hibernia:
+										supply1 = GameServer.KeepManager.GetKeepByID(103);   // nGed
+										supply2 = GameServer.KeepManager.GetKeepByID(100);   // Crauchon
+										last1 = GameServer.KeepManager.GetKeepByID(106);   // Ailinne
+										last2 = GameServer.KeepManager.GetKeepByID(105);   // Scataigh
+										town1 = GameServer.KeepManager.GetKeepByID(14);   // Crair Treflan
+										town2 = GameServer.KeepManager.GetKeepByID(15);   // Magh Tuireadh
+										break;
 								}
 								// Towns teleports are always available
 								if (keep.KeepID == town1.KeepID || keep.KeepID == town2.KeepID)
 								{
 									flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
 								}
-								
-								
+
+
 								// Teleport Flags for keeps inside our own realm
 								// Summary: If we own middle keep (nged) and all towers from keep
 								if (m_gameClient.Player.Realm == keep.OriginalRealm && (keep as GameKeep).OwnsAllTowers == true)
@@ -304,7 +309,7 @@ namespace DOL.GS.PacketHandler
 											flag |= (byte)eRealmWarmapKeepFlags.Teleportable; // Can always teleport to last two keeps
 										}
 									}
-								} 
+								}
 								else if (m_gameClient.Player.Realm != keep.OriginalRealm && (keep as GameKeep).OwnsAllTowers == true && supply1.Realm == supply1.OriginalRealm && supply2.Realm == supply2.OriginalRealm && (last1.Realm == last1.OriginalRealm || last2.Realm == last2.OriginalRealm))
 								{
 									if (keep.Name == "Dun Crauchon" || keep.Name == "Dun Crimthain" || keep.Name == "Dun Bolg" || keep.Name == "Nottmoor Faste" || keep.Name == "Bledmeer Faste" || keep.Name == "Blendrake Faste" || keep.Name == "Caer Benowyc" || keep.Name == "Caer Erasleigh" || keep.Name == "Caer Berkstead")
