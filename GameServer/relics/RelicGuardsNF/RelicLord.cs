@@ -19,25 +19,6 @@ namespace DOL.GS
 
         public RelicLord() : base() { }
 
-        public override bool AddToWorld()
-        {
-            SetOwnBrain(new RelicLordBrain());
-            return base.AddToWorld();
-        }
-
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            if (IsReturningToSpawnPoint)
-            {
-                if (source is GamePlayer player)
-                {
-                    player.Out.SendMessage(Name + " is currenctly immune to damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                }
-                return; 
-            }
-
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-        }
 
         #region Spawn Logic
         [ScriptLoadedEvent]
@@ -46,14 +27,14 @@ namespace DOL.GS
             var spawnPoints = new[]
             {
                 // Albion
-                new { Name = "Lord", Guild = "Castle Excalibur", Model = (ushort)1008, Realm = eRealm.Albion, Region = (ushort)163, X = 673843, Y = 590553, Z = 8745, Heading = (ushort)2721, Equip = "relic_temple_lord_alb" },
-                new { Name = "Lord", Guild = "Castle Myrddin", Model = (ushort)1008, Realm = eRealm.Albion, Region = (ushort)163, X = 578172, Y = 677151, Z = 8737, Heading = (ushort)2721, Equip = "relic_temple_lord_alb" },
+                new { Name = "Lord Castle Excalibur", Guild = "", Model = (ushort)1008, Realm = eRealm.Albion, Region = (ushort)163, X = 673843, Y = 590553, Z = 8745, Heading = (ushort)2721, Equip = "relic_temple_lord_alb" },
+                new { Name = "Lord Castle Myrddin", Guild = "", Model = (ushort)1008, Realm = eRealm.Albion, Region = (ushort)163, X = 578172, Y = 677151, Z = 8737, Heading = (ushort)2721, Equip = "relic_temple_lord_alb" },
                 // Midgard
-                new { Name = "Jarl", Guild = "Grallarhorn Faste", Model = (ushort)137, Realm = eRealm.Midgard, Region = (ushort)163, X = 713090, Y = 403741, Z = 8785, Heading = (ushort)2721, Equip = "relic_temple_lord_mid" },
-                new { Name = "Jarl", Guild = "Mjollner Faste", Model = (ushort)137, Realm = eRealm.Midgard, Region = (ushort)163, X = 610908, Y = 303040, Z = 8497, Heading = (ushort)2721, Equip = "relic_temple_lord_mid" },
+                new { Name = "Jarl Grallarhorn Faste", Guild = "", Model = (ushort)137, Realm = eRealm.Midgard, Region = (ushort)163, X = 713090, Y = 403741, Z = 8785, Heading = (ushort)2721, Equip = "relic_temple_lord_mid" },
+                new { Name = "Jarl Mjollner Faste", Guild = "", Model = (ushort)137, Realm = eRealm.Midgard, Region = (ushort)163, X = 610908, Y = 303040, Z = 8497, Heading = (ushort)2721, Equip = "relic_temple_lord_mid" },
                 // Hibernia
-                new { Name = "Chieftain", Guild = "Dun Lamfhota", Model = (ushort)286, Realm = eRealm.Hibernia, Region = (ushort)163, X = 372731, Y = 591105, Z = 8737, Heading = (ushort)2721, Equip = "relic_temple_lord_hib" },
-                new { Name = "Chieftain", Guild = "Dun Dagda", Model = (ushort)286, Realm = eRealm.Hibernia, Region = (ushort)163, X = 470205, Y = 677754, Z = 8113, Heading = (ushort)2721, Equip = "relic_temple_lord_hib" }
+                new { Name = "Chieftain Dun Lamfhota", Guild = "", Model = (ushort)286, Realm = eRealm.Hibernia, Region = (ushort)163, X = 372731, Y = 591105, Z = 8737, Heading = (ushort)2721, Equip = "relic_temple_lord_hib" },
+                new { Name = "Chieftain Dun Dagda", Guild = "", Model = (ushort)286, Realm = eRealm.Hibernia, Region = (ushort)163, X = 470205, Y = 677754, Z = 8113, Heading = (ushort)2721, Equip = "relic_temple_lord_hib" }
             };
 
             foreach (var sp in spawnPoints)
@@ -81,6 +62,43 @@ namespace DOL.GS
 
                 lord.AddToWorld();
             }
+        }
+        public override bool AddToWorld()
+        {
+            SetOwnBrain(new RelicLordBrain());
+            return base.AddToWorld();
+        }
+        #endregion
+        #region Combat
+
+        /// <summary>
+		/// We have to make sure, Lord wont gets any damage during reset
+		/// </summary>
+		/// <param name="killer"></param>
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if (IsReturningToSpawnPoint)
+            {
+                if (source is GamePlayer player)
+                {
+                    player.Out.SendMessage(Name + " is currenctly immune to damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                }
+                return;
+            }
+
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
+
+        /// <summary>
+		/// When Lord dies, we do TempleSpam
+		/// </summary>
+		/// <param name="killer"></param>
+		public override void Die(GameObject killer)
+        {
+            int count = TempleRelicPadsLoader.GetEnemiesNearby(this);
+            TempleRelicPadsLoader.SendTempleMessage($"{Name} has been killed with {count} enemies in the area.");
+
+            base.Die(killer);
         }
         #endregion
     }

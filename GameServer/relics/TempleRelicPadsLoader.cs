@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using DOL.GS;
 using DOL.Logging;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -51,6 +52,37 @@ namespace DOL.GS
                 }
             }
             return true;
+        }
+
+        public static void SendTempleMessage(string message)
+        {
+            // Wir nutzen den ClientService, um alle Spieler zu erreichen
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers())
+            {
+                if (player != null && player.CurrentRegionID == 163)
+                {
+                    player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                }
+            }
+        }
+
+        public static int GetEnemiesNearby(GameObject lord)
+        {
+            ICollection<GamePlayer> players = lord.GetPlayersInRadius(2000);
+            int enemyNearby = 0;
+
+            foreach (GamePlayer player in players)
+            {
+                if (player.Realm == lord.Realm)
+                    continue;
+
+                if (!player.IsAlive)
+                    continue;
+
+                enemyNearby++;
+            }
+
+            return enemyNearby;
         }
 
         private static readonly List<TemplePadInfo> TemplePadsList = new List<TemplePadInfo>

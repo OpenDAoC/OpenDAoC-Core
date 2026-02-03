@@ -38,6 +38,7 @@ namespace DOL.GS
         public GameRelicPad CurrentRelicPad { get; private set; }
         public GamePlayer CurrentCarrier { get; private set; }
         public bool IsMounted => CurrentRelicPad != null;
+        public bool RelicLordAlive => WorldMgr.GetNPCsFromRegion(CurrentRelicPad.CurrentRegionID).Any(n => n is RelicLord lord && lord.Name.Contains(CurrentRelicPad.Name) && lord.IsAlive);
         public static int ReturnRelicInterval => Properties.RELIC_RETURN_TIME * 1000;
 
 
@@ -76,12 +77,21 @@ namespace DOL.GS
 
             if (IsMounted)
             {
-                // If "Lord" is dead we want same realm players to steal relic from attackers?
-                // Then we have to adjust this here, we should simply check if 
+                // We want that relic realm players are also to pick it up when relic lord is dead
                 if (player.Realm == Realm)
                 {
-                    player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return false;
+                    if (CurrentRelicPad is GameTempleRelicPad && RelicLordAlive)
+                    {
+                        player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return false;
+                    }
+                    // TODO Keep Lords
+                    //if (CurrentRelicPad is GameKeepRelicPad && KeepLordAlive)
+                    //{
+                    //    // The ... is still locked
+                    //    player.Out.SendMessage($"{GetName(0, true)} is still locked.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    //    return false;
+                    //}
                 }
                 // We dont use that
                 if (!RelicMgr.CanPickupRelicFromShrine(player, this))
@@ -91,15 +101,18 @@ namespace DOL.GS
                 }
                 // Check for lord status on Temples
                 // This message is for enemies on interact
-                if (CurrentRelicPad is GameTempleRelicPad)
+                if (CurrentRelicPad is GameTempleRelicPad && RelicLordAlive)
                 {
-                    if (WorldMgr.GetNPCsFromRegion(CurrentRelicPad.CurrentRegionID).Any(n => n is RelicLord lord && lord.GuildName == CurrentRelicPad.Name && lord.IsAlive))
-                    {
-                        // The ... is still locked
-                        player.Out.SendMessage($"{GetName(0, true)} is still locked.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return false;
-                    }
+                    // The ... is still locked
+                    player.Out.SendMessage($"{GetName(0, true)} is still locked.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
                 }
+                //if (CurrentRelicPad is GameKeepRelicPad && KeepLordAlive)
+                //{
+                //    // The ... is still locked
+                //    player.Out.SendMessage($"{GetName(0, true)} is still locked.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                //    return false;
+                //}
             }
             // We dont use that, server settings are 0
             if ((ePrivLevel)player.Client.Account.PrivLevel == ePrivLevel.Player)
@@ -176,25 +189,8 @@ namespace DOL.GS
         public override IList GetExamineMessages(GamePlayer player)
         {
             IList messages = base.GetExamineMessages(player);
-            // This has to be adjusted too
-            // If Relic lord is dead we should send its without owner or whatever
-            messages.Add(IsMounted ? $"It is owned by {(player.Realm == Realm ? "your realm" : GlobalConstants.RealmToName(Realm))}." : "It is without owner, take it!");
+            messages.Add(RelicLordAlive ? $"It is owned by {(player.Realm == Realm ? "your realm" : GlobalConstants.RealmToName(Realm))}." : "It is without owner, take it!");
             return messages;
-        }
-
-
-        public string GetRelicTimeSimple()
-        {
-            TimeSpan maxCarryTime = RelicMgr.MaxRelicCarryTime;
-            TimeSpan timeElapsed = DateTime.Now.Subtract(LastTimePickedUp);
-            TimeSpan timeRemaining = maxCarryTime.Subtract(timeElapsed);
-            if (timeRemaining <= TimeSpan.Zero)
-            {
-                return "0 Minuten verbleibend";
-            }
-            int minutesRemaining = (int)Math.Ceiling(timeRemaining.TotalMinutes);
-
-            return minutesRemaining.ToString();
         }
 
         public override void LoadFromDatabase(DataObject obj)
