@@ -9734,6 +9734,11 @@ namespace DOL.GS
                 floorObject.CurrentHouse.EmptyHookpoint(this, floorObject);
                 return;
             }
+            if (floorObject is GameRelic relic)
+            {
+                relic.Interact(this);
+                return;
+            }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return;

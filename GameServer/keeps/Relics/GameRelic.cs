@@ -7,6 +7,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Logging;
 using System.Threading;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -75,19 +76,32 @@ namespace DOL.GS
 
             if (IsMounted)
             {
+                // If "Lord" is dead we want same realm players to steal relic from attackers?
+                // Then we have to adjust this here, we should simply check if 
                 if (player.Realm == Realm)
                 {
                     player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
                 }
-
+                // We dont use that
                 if (!RelicMgr.CanPickupRelicFromShrine(player, this))
                 {
                     player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. You need to capture your realm's {Enum.GetName(RelicType)} relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
                 }
+                // Check for lord status on Temples
+                // This message is for enemies on interact
+                if (CurrentRelicPad is GameTempleRelicPad)
+                {
+                    if (WorldMgr.GetNPCsFromRegion(CurrentRelicPad.CurrentRegionID).Any(n => n is RelicLord lord && lord.GuildName == CurrentRelicPad.Name && lord.IsAlive))
+                    {
+                        // The ... is still locked
+                        player.Out.SendMessage($"{GetName(0, true)} is still locked.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return false;
+                    }
+                }
             }
-
+            // We dont use that, server settings are 0
             if ((ePrivLevel)player.Client.Account.PrivLevel == ePrivLevel.Player)
             {
                 if (IsMounted && CurrentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
@@ -162,6 +176,8 @@ namespace DOL.GS
         public override IList GetExamineMessages(GamePlayer player)
         {
             IList messages = base.GetExamineMessages(player);
+            // This has to be adjusted too
+            // If Relic lord is dead we should send its without owner or whatever
             messages.Add(IsMounted ? $"It is owned by {(player.Realm == Realm ? "your realm" : GlobalConstants.RealmToName(Realm))}." : "It is without owner, take it!");
             return messages;
         }
@@ -210,7 +226,7 @@ namespace DOL.GS
                 Object_Type = (int)eObjectType.Magical,
                 Model = Model,
                 IsDropable = true,
-                IsPickable = false,
+                IsPickable = true,
                 Level = 99,
                 Quality = 100,
                 Price = 0,
