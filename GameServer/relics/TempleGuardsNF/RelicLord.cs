@@ -39,7 +39,7 @@ namespace DOL.GS
 
             foreach (var sp in spawnPoints)
             {
-                string customID = $"RelicLord_{sp.Realm}_{sp.Guild.Replace(" ", "_")}";
+                string customID = $"RelicLord_{sp.Realm}_{sp.Name.Replace(" ", "_")}";
                 if (WorldMgr.GetNPCsFromRegion(sp.Region).Any(n => n.InternalID == customID))
                     continue;
 

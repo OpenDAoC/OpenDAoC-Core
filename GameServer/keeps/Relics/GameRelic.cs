@@ -139,11 +139,16 @@ namespace DOL.GS
 
             if (IsMounted)
             {
+                if (CurrentRelicPad is GameTempleRelicPad templePad)
+                {
+                    templePad.StopRelicBeam();
+                }
                 CurrentRelicPad.RemoveRelic(this);
                 _returnRelicPad = CurrentRelicPad;
                 LastRealm = CurrentRelicPad.Realm;
                 FirstRealm = player.Realm;
                 CurrentRelicPad = null;
+                
             }
 
             RemoveFromWorld();
