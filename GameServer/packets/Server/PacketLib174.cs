@@ -406,6 +406,8 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(boltTime);
 				pak.WriteByte((byte)(noSound ? 1 : 0));
 				pak.WriteByte(success);
+				// Using this to easily find out spell effects from something
+				//Console.WriteLine(spellid.ToString());
 				SendTCP(pak);
 			}
 		}
