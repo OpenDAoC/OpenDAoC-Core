@@ -3453,7 +3453,7 @@ namespace DOL.GS
 				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
 
 				if (duration > 0)
-					m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
+					m_disabledSkills[key] = new(GameLoop.GameLoopTime + duration, skill);
 				else
 					m_disabledSkills.Remove(key);
 			}
@@ -3466,17 +3466,19 @@ namespace DOL.GS
 		/// <param name="duration">duration of disable in milliseconds</param>
 		public virtual void DisableSkills(ICollection<Tuple<Skill, int>> skills)
 		{
+			if (skills.Count == 0)
+				return;
+
 			lock (_disabledSkillsLock)
 			{
 				foreach (Tuple<Skill, int> tuple in skills)
 				{
 					Skill skill = tuple.Item1;
 					int duration = tuple.Item2;
-					
 					KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
 
 					if (duration > 0)
-						m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
+						m_disabledSkills[key] = new(GameLoop.GameLoopTime + duration, skill);
 					else
 						m_disabledSkills.Remove(key);
 				}

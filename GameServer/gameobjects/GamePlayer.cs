@@ -6163,13 +6163,8 @@ namespace DOL.GS
         /// <param name="duration">duration of disable in milliseconds</param>
         public override void DisableSkill(Skill skill, int duration)
         {
-            if (this.Client.Account.PrivLevel > 1)
-                return;
-
             base.DisableSkill(skill, duration);
-            List<Tuple<Skill, int>> disables = new();
-            disables.Add(new Tuple<Skill, int>(skill, duration));
-            Out.SendDisableSkill(disables);
+            Out.SendDisableSkill([new(skill, duration)]);
         }
 
         /// <summary>
@@ -6179,7 +6174,7 @@ namespace DOL.GS
         /// <param name="duration">duration of disable in milliseconds</param>
         public override void DisableSkills(ICollection<Tuple<Skill, int>> skills)
         {
-            if (this.Client.Account.PrivLevel > 1)
+            if (skills.Count == 0)
                 return;
 
             base.DisableSkills(skills);

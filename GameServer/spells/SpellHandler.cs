@@ -588,24 +588,26 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_spell.RecastDelay > 0)
-			{
-				int left = m_caster.GetSkillDisabledDuration(m_spell);
+			// We must check the cooldown on both the ability and the spell.
 
-				if (left > 0)
-				{
-					if (m_caster is NecromancerPet && ((m_caster as NecromancerPet).Owner as GamePlayer).Client.Account.PrivLevel > (int)ePrivLevel.Player)
-					{
-						// Ignore Recast Timer
-					}
-					else
-					{
-						if (!quiet)
-							MessageToCaster("You must wait " + (left / 1000 + 1).ToString() + " seconds to use this spell!", eChatType.CT_System);
-						return false;
-					}
-				}
+			// The cooldown for abilities is already checked by CastingComponent, but abilities that spawn a spell and delegate their logic to a spell handler
+			// cause the processing of those spells to be delayed by one server tick, meaning the ability may not be disabled in time,
+			// for example when Volcanic Pillar is used twice during the same server tick.
+
+			// This processing delay should be eventually addressed, since it might be felt in game and causes code duplication.
+			// but allowing abilities to tick SpellHandler themselves is dangerous, and CastingComponent has no way of knowing if the ability spawned a spell.
+
+			// Side note: Typically, a spell spawned by an ability won't be disabled,
+			// since DisableSpellAndSpellsOfSameGroup relies on GetAllUsableSkills and GetAllUsableListSpells.
+
+			if (m_ability != null)
+			{
+				if (!Caster.castingComponent.CheckCooldown(m_ability.Ability))
+					return false;
 			}
+
+			if (!Caster.castingComponent.CheckCooldown(m_spell))
+				return false;
 
 			switch (Spell.Target)
 			{
@@ -1356,7 +1358,7 @@ namespace DOL.GS.Spells
 			}
 
 			if (m_ability != null)
-				m_caster.DisableSkill(m_ability.Ability, (m_spell.RecastDelay == 0 ? 3000 : m_spell.RecastDelay));
+				m_caster.DisableSkill(m_ability.Ability, m_spell.RecastDelay == 0 ? 3000 : m_spell.RecastDelay);
 
 			DisableSpellAndSpellsOfSameGroup();
 			int enduranceCost = CalculateEnduranceCost();
@@ -1376,35 +1378,37 @@ namespace DOL.GS.Spells
 			{
 				List<Tuple<Skill, int>> toDisable = [];
 
-				foreach ((Skill, Skill) skill in playerCaster.GetAllUsableSkills())
+				foreach (var skill in playerCaster.GetAllUsableSkills())
 				{
-					if (IsSameSpellOrOfSameGroup(skill.Item1 as Spell))
-						toDisable.Add(new Tuple<Skill, int>(skill.Item1, m_spell.RecastDelay));
+					if (IsSameSpellOrOfSameGroup(Spell, skill.Item1 as Spell))
+						toDisable.Add(new(skill.Item1, m_spell.RecastDelay));
 				}
 
-				foreach ((SpellLine, List<Skill>) spellLine in playerCaster.GetAllUsableListSpells())
+				foreach (var spellLine in playerCaster.GetAllUsableListSpells())
 				{
 					foreach (Skill skill in spellLine.Item2)
 					{
-						if (IsSameSpellOrOfSameGroup(skill as Spell))
-							toDisable.Add(new Tuple<Skill, int>(skill, m_spell.RecastDelay));
+						if (IsSameSpellOrOfSameGroup(Spell, skill as Spell))
+							toDisable.Add(new(skill, m_spell.RecastDelay));
 					}
 				}
 
+				// Spells that aren't returned by GetAllUsableSkills or GetAllUsableListSpells won't be disabled here.
+				// This affects some abilities creating spells on-the-fly and scripted spells.
 				m_caster.DisableSkills(toDisable);
 			}
 			else if (m_caster is GameNPC)
 				m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
 
-			bool IsSameSpellOrOfSameGroup(Spell otherSpell)
+			static bool IsSameSpellOrOfSameGroup(Spell spell, Spell otherSpell)
 			{
 				if (otherSpell == null)
 					return false;
 
-				if (otherSpell.ID == m_spell.ID)
+				if (otherSpell.ID == spell.ID)
 					return true;
 
-				if (otherSpell.SharedTimerGroup != 0 && (otherSpell.SharedTimerGroup == m_spell.SharedTimerGroup))
+				if (otherSpell.SharedTimerGroup != 0 && otherSpell.SharedTimerGroup == spell.SharedTimerGroup)
 					return true;
 
 				return false;
