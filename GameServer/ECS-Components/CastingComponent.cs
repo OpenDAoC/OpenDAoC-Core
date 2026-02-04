@@ -240,6 +240,37 @@ namespace DOL.GS
             _useAbilityRequestPool.Enqueue(request);
         }
 
+        public bool CheckCooldown(Spell spell)
+        {
+            return ProcessCooldown(Owner.GetSkillDisabledDuration(spell), "spell");
+        }
+
+        public bool CheckCooldown(Ability ability)
+        {
+            return ProcessCooldown(Owner.GetSkillDisabledDuration(ability), "ability");
+        }
+
+        private bool ProcessCooldown(int durationMs, string skillType)
+        {
+            if (durationMs <= 0)
+                return true;
+
+            int totalSeconds = durationMs / 1000 + 1;
+            string timeMsg;
+
+            if (totalSeconds >= 60)
+            {
+                int minutes = totalSeconds / 60;
+                int seconds = totalSeconds % 60;
+                timeMsg = $"{minutes} minutes {seconds} seconds";
+            }
+            else
+                timeMsg = $"{totalSeconds} seconds";
+
+            (Owner as GamePlayer)?.Out.SendMessage($"You must wait {timeMsg} to use this {skillType}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            return false;
+        }
+
         public class CastSpellRequest : StartSkillRequest
         {
             public Spell Spell { get; private set; }
@@ -271,7 +302,29 @@ namespace DOL.GS
 
             public override void StartSkill()
             {
-                SpellHandler newSpellHandler = CreateSpellHandler();
+                // Cancel pulsing spell if already active.
+                if (Spell.IsPulsing && CastingComponent.Owner.ActivePulseSpells.ContainsKey(Spell.SpellType))
+                {
+                    ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(CastingComponent.Owner, Spell);
+
+                    if (effect != null)
+                    {
+                        if (effect.End() && CastingComponent.Owner is GamePlayer player)
+                        {
+                            if (Spell.InstrumentRequirement == 0)
+                                player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                            else
+                                player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                        }
+
+                        return;
+                    }
+                }
+
+                SpellHandler newSpellHandler = ScriptMgr.CreateSpellHandler(CastingComponent.Owner, Spell, SpellLine) as SpellHandler;
+                newSpellHandler.Target = Target;
+                newSpellHandler.LosChecker = LosChecker;
+                newSpellHandler.Ability = SpellCastingAbilityHandler;
                 Spell newSpell = newSpellHandler.Spell;
 
                 SpellHandler currentSpellHandler = CastingComponent.SpellHandler;
@@ -289,9 +342,36 @@ namespace DOL.GS
                             return;
                         }
 
+                        // Handle songs.
                         if (newSpell.CastTime > 0 && currentSpell.InstrumentRequirement != 0)
                         {
-                            HandleSong(player);
+                            // Since flute mez is allowed to effectively stay in a casting state even after losing LoS for example, we allow the player to cast other songs here.
+                            // Otherwise the only way to cancel an out of LoS / range flute mez is to swap weapons.
+                            if (currentSpellHandler.CastState is eCastState.CastingRetry)
+                            {
+                                CastingComponent.InterruptCasting(false);
+
+                                if (newSpell.SpellType is eSpellType.Mesmerize && newSpell.InstrumentRequirement != 0)
+                                {
+                                    currentSpellHandler.MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
+                                    return;
+                                }
+
+                                // Not very elegant, but we need to do something with our new spell now that we've cancelled the flute mez.
+                                if (CastingComponent.SpellHandler == null)
+                                    StartSkill();
+
+                                return;
+                            }
+
+                            if (player != null)
+                            {
+                                if (newSpell.InstrumentRequirement != 0)
+                                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                                else
+                                    player.Out.SendMessage($"You must wait {(currentSpellHandler.CastStartTick + currentSpell.CastTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            }
+
                             return;
                         }
 
@@ -327,47 +407,6 @@ namespace DOL.GS
                         newSpellHandler.Tick();
                     }
                 }
-
-                SpellHandler CreateSpellHandler()
-                {
-                    SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(CastingComponent.Owner, Spell, SpellLine) as SpellHandler;
-                    spellHandler.Target = Target;
-                    spellHandler.LosChecker = LosChecker;
-                    spellHandler.Ability = SpellCastingAbilityHandler;
-                    return spellHandler;
-                }
-
-                void HandleSong(GamePlayer player)
-                {
-                    // Since flute mez is allowed to effectively stay in a casting state even after losing LoS for example, we allow the player to cast other songs here.
-                    // Otherwise the only way to cancel an out of LoS / range flute mez is to swap weapons.
-                    if (currentSpellHandler.CastState is eCastState.CastingRetry)
-                    {
-                        CastingComponent.InterruptCasting(false);
-
-                        if (newSpell.SpellType is eSpellType.Mesmerize && newSpell.InstrumentRequirement != 0)
-                        {
-                            currentSpellHandler.MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
-                            return;
-                        }
-
-                        // Not very elegant, but we need to do something with our new spell now that we've cancelled the flute mez.
-                        if (CastingComponent.SpellHandler == null)
-                            StartSkill();
-
-                        return;
-                    }
-
-                    if (player != null)
-                    {
-                        if (newSpell.InstrumentRequirement != 0)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                        else
-                            player.Out.SendMessage($"You must wait {(currentSpellHandler.CastStartTick + currentSpell.CastTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    }
-
-                    return;
-                }
             }
         }
 
@@ -391,7 +430,7 @@ namespace DOL.GS
             public override void StartSkill()
             {
                 // Only players are currently supported.
-                if (CastingComponent.Owner is not GamePlayer player)
+                if (CastingComponent.Owner is not GamePlayer player || !CastingComponent.CheckCooldown(Ability))
                     return;
 
                 IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(Ability.KeyName);
