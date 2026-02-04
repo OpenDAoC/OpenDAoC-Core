@@ -34,8 +34,6 @@ namespace DOL.GS
                     // continue loading, no need to stop server for one bad door!
                 }
             }
-            // HINWEIS: Hier sollte später der Aufruf RelicGateMgr.OnServerStart() erfolgen,
-            // falls dies nicht bereits in einer anderen Serverstart-Methode geschieht.
 
             return true;
         }
@@ -90,29 +88,30 @@ namespace DOL.GS
 
             if (requiredType != null)
             {
-                // Instanziierung des Typs RelicGate
                 mydoor = (GameDoorBase)Activator.CreateInstance(requiredType);
-                
-                // *******************************************************************
-                // FIX: ZUWEISUNG DES ERSTELLTEN RELICGATE OBJEKTS AN DEN MANAGER
-                // Dadurch wird RelicGateMgr.Door_Alb_Power (etc.) auf die Instanz gesetzt.
-                // *******************************************************************
                 if (mydoor is RelicGate relicGate)
                 {
                     RelicGateMgr.AssignRelicDoor(relicGate, door.InternalID);
                 }
             }
-            // ENDE NEUER TEIL
 
             // check if the door is a keep door (Nur, wenn mydoor noch nicht instanziiert wurde)
+            string[] villages = { "Crair Treflan", "Magh Tuireadh", "Catterick Hamlet", "Dinas Emrys", "Godrborg", "Rensamark" };
             if (mydoor == null)
             {
                 foreach (AbstractArea area in currentZone.GetAreasOfSpot(door.X, door.Y, door.Z))
                 {
-                    if (area is KeepArea)
+                    // Villages in NF have normal doors => we will do this better
+                    // We have more keeps, which are not really keeps (Cathal Valley portal keeps should be normal doors)
+                    // We should check if area is a real keep
+                    // We have keeps in NF & Battlegrounds
+                    if (!villages.Contains(area.Description))
                     {
-                        mydoor = new GameKeepDoor();
-                        break;
+                        if (area is KeepArea)
+                        {
+                            mydoor = new GameKeepDoor();
+                            break;
+                        }
                     }
                 }
             }
@@ -122,8 +121,6 @@ namespace DOL.GS
             {
                 mydoor = new GameDoor();
             }
-            
-            // Jetzt wird LoadFromDatabase NUR einmal aufgerufen
             mydoor.LoadFromDatabase(door);
 
             // add to the list of doors
