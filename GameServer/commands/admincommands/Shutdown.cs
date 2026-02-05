@@ -721,10 +721,10 @@ namespace DOL.GS.Commands
 					// Displays dialog with information
 					var shutdown = new List<string>();
 					
-					shutdown.Add(" ");
+					//shutdown.Add(" ");
 					// Message: "----- ATTENTION -----"
-					shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.Attention"));
-					shutdown.Add(" ");
+					//shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.Attention"));
+					//shutdown.Add(" ");
 					// A server reboot has been scheduled to occur at {0}. The server will then be temporarily unavailable.
 					shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Msg.ScheduledShutdown", date.ToString("HH:mm \"GMT\" zzz")));
 					shutdown.Add(" ");
@@ -732,7 +732,7 @@ namespace DOL.GS.Commands
 					shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Msg.PlanLogout"));
 				
 					// Send the above messages in a dialog
-					player.Out.SendCustomTextWindow("Server Reboot Scheduled", shutdown);
+					player.Out.SendCustomTextWindow("Attention", shutdown);
 				}
 
 				// Message: "ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}."

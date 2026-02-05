@@ -1,9 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * (Lizenzkommentar unverändert)
- *
- */
 using System;
 using System.Collections;
 using DOL.GS; 
@@ -23,7 +17,7 @@ namespace DOL.GS.Keeps
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         // ====================================================================
-        // 1. KONSTANTEN FÜR DIE RELIKTÜR-ZUWEISUNG (Bleiben INT)
+        // Relic Gate Ids
         // ====================================================================
         public const int DOOR_ALB_POWER_ID = 175014001; 
         public const int DOOR_ALB_STRENGTH_ID = 176233901;
@@ -41,7 +35,7 @@ namespace DOL.GS.Keeps
 
 
         // ====================================================================
-        // 2. KEEP-KETTEN DEFINITION 
+        // Keep chain
         // ====================================================================
         
         private static readonly Dictionary<RelicGate, List<int>> ALL_RELIC_CHAINS = new(); 
@@ -65,14 +59,14 @@ namespace DOL.GS.Keeps
         public static RelicGate Door_Hib_Strength = null;
 
         // ====================================================================
-        // 3. ZUWEISUNGSMETHODE
+        // Assigning doors to keep chains
         // ====================================================================
         
         public static void AssignRelicDoor(RelicGate door, int internalID)
         {
             if (door == null) return;
             
-            // Setzen der statischen Variablen
+
             if (internalID == DOOR_ALB_POWER_ID) Door_Alb_Power = door;
             else if (internalID == DOOR_ALB_STRENGTH_ID) Door_Alb_Strength = door;
             else if (internalID == DOOR_MID_POWER_ID) Door_Mid_Power = door;
@@ -80,7 +74,7 @@ namespace DOL.GS.Keeps
             else if (internalID == DOOR_HIB_POWER_ID) Door_Hib_Power = door;
             else if (internalID == DOOR_HIB_STRENGTH_ID) Door_Hib_Strength = door;
 
-            // Hinzufügen der Tür und Kette zum Dictionary
+
             if (internalID == DOOR_ALB_POWER_ID) ALL_RELIC_CHAINS[door] = ALB_POWER_CHAIN;
             else if (internalID == DOOR_ALB_STRENGTH_ID) ALL_RELIC_CHAINS[door] = ALB_STRENGTH_CHAIN;
             else if (internalID == DOOR_MID_POWER_ID) ALL_RELIC_CHAINS[door] = MID_POWER_CHAIN;
@@ -101,30 +95,15 @@ namespace DOL.GS.Keeps
             return null; 
         }
 
-        // ====================================================================
-        // 5. PRÜFUNG UND INITIALISIERUNG
-        // ====================================================================
-        
-        /// <summary>
-        /// Registriert alle notwendigen Event-Handler. Diese Methode muss beim
-        /// Serverstart aufgerufen werden (z.B. in GameServer.cs).
-        /// </summary>
+        // We have to check on server start
         public static void OnServerStart()
         {
-            // 1. KeepTaken Event, das während des Betriebs feuert.
             GameEventMgr.AddHandler(KeepEvent.KeepTaken, new DOLEventHandler(OnKeepChange));
-            
-            // 2. Initialisierungs-Event: Führt CheckKeeps() erst aus, 
-            // wenn ALLE Datenbankobjekte geladen wurden, um die NullReferenceException zu vermeiden.
             GameEventMgr.AddHandler(ScriptEvent.Loaded, new DOLEventHandler(OnLoaded)); 
             
             log.Info("RelicGateMgr: Initialization events registered.");
         }
 
-        /// <summary>
-        /// Wird nur einmal beim Serverstart aufgerufen, NACHDEM alle kritischen
-        /// Daten geladen wurden (vom ScriptEvent.Loaded).
-        /// </summary>
         public static void OnLoaded(DOLEvent e, object sender, EventArgs args)
         {
             CheckKeeps();
@@ -153,7 +132,6 @@ namespace DOL.GS.Keeps
             
             if (homeKeep == null)
             {
-                // Wenn HomeKeep fehlt, sollte die Tür offen sein, aber wir vermeiden unnötigen Logik-Aufruf
                 if (door.State != eDoorState.Open) 
                 {
                     door.OpenDoor();
@@ -203,13 +181,8 @@ namespace DOL.GS.Keeps
             CheckKeeps();
         }
 
-        // ====================================================================
-        // 6. WARMAP-STATUS FÜR DEN CLIENT (Flamme / Offene Tür)
-        // ====================================================================
-
         /// <summary>
-        /// Erstellt die 16-Bit-Flag-Maske für die Warmap, basierend auf dem aktuellen Zustand
-        /// der Reliktore (offen = brennt/offen auf Warmap).
+        /// Giving correct info for warmap, so temple flames are correct
         /// </summary>
         public static ushort GetRelicTempleWarmapFlags()
         {
@@ -253,10 +226,10 @@ namespace DOL.GS.Keeps
         // ====================================================================
 
         /// <summary>
-        /// Identifiziert die Tür und sendet eine globale zentrierte Nachricht über den Statuswechsel.
+        /// Sends ScreenCenter message if relic gates open
         /// </summary>
-        /// <param name="door">Das RelictGate-Objekt.</param>
-        /// <param name="isOpen">True, wenn die Tür geöffnet wurde; False, wenn sie geschlossen wurde.</param>
+        /// <param name="door"></param>
+        /// <param name="isOpen"></param>
         private static void SendRelicDoorStatusMessage(RelicGate door, bool isOpen)
         {
             if (door == null) return;
@@ -288,13 +261,8 @@ namespace DOL.GS.Keeps
                 log.Warn($"RelicGateMgr: Unbekannte Tür-ID {doorID} konnte nicht benachrichtigt werden.");
                 return;
             }
-
-            // Nachricht formatieren
             string message = $"{realmName} {relicType} relic door has been {action}!";
-            
-            // Senden der zentrierten Nachricht
             PlayerMgr.BroadcastRelicGateMessage(message, eRealm.None);
-            
             log.Info($"GLOBAL: Sent Relic Door status message: {message}");
         }
     }
