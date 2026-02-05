@@ -143,9 +143,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							bool found = false;
 
-							// ----------------------------------------------------
-							// 1. ZIEL-KEEP PRÜFUNG (Muss dem eigenen Realm gehören und alle Türme besitzen)
-							// ----------------------------------------------------
+							// Check keep
 							if (keep != null)
 							{
 								// if we are requesting to teleport to a keep we need to check that keeps requirements first
@@ -172,6 +170,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								foreach (GameStaticItem item in client.Player.GetItemsInRadius(WorldMgr.PORAL_DISTANCE))
 								{
+									// we add Frontiers Portal Stone, cause in ev we use normal gameobject
 									if (item is FrontiersPortalStone)
 									{
 										found = true;
@@ -189,12 +188,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 							// Check Keep & Tower status closest to the player
 							AbstractGameKeep source_keep = GameServer.KeepManager.GetClosestKeepToSpot(client.Player.CurrentRegionID, client.Player, 10000);
 
-							if (source_keep != null && source_keep is GameKeep sourceGameKeep)
+							// If player is in ev, we dont check for towers
+							if (client.Player.CurrentZone.ID != 163)
 							{
-								if (sourceGameKeep.OwnsAllTowers == false)
+								if (source_keep != null && source_keep is GameKeep sourceGameKeep)
 								{
-									client.Player.Out.SendMessage("You cannot teleport from here at the moment.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+									if (sourceGameKeep.OwnsAllTowers == false)
+									{
+										client.Player.Out.SendMessage("You cannot teleport from here at the moment.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+										return;
+									}
 								}
 							}
 
