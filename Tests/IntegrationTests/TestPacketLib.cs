@@ -344,20 +344,20 @@ namespace DOL.Tests
 		{
 			if (SendQuestOfferWindowDataMethod != null) SendQuestOfferWindowDataMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, DQRewardQ> SendQuestOfferWindowDataMethod { get; set; }
+		public Action<TestPacketLib, GameNPC, GamePlayer, DQRewardQ> SendQuestOfferWindowDQRewardQMethod { get; set; }
 		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DQRewardQ quest)
 		{
-			if (SendQuestOfferWindowDataMethod != null) SendQuestOfferWindowDataMethod(this, questNPC, player, quest);
+			if (SendQuestOfferWindowDQRewardQMethod != null) SendQuestOfferWindowDQRewardQMethod(this, questNPC, player, quest);
 		}
 		public Action<TestPacketLib, GameNPC, GamePlayer, DataQuest> SendQuestRewardWindowDataMethod { get; set; }
 		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
 		{
 			if (SendQuestRewardWindowDataMethod != null) SendQuestRewardWindowDataMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, DQRewardQ> SendQuestRewardWindowDataMethod { get; set; }
+		public Action<TestPacketLib, GameNPC, GamePlayer, DQRewardQ> SendQuestRewardWindowDQRewardQMethod { get; set; }
 		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DQRewardQ quest)
 		{
-			if (SendQuestRewardWindowDataMethod != null) SendQuestRewardWindowDataMethod(this, questNPC, player, quest);
+			if (SendQuestRewardWindowDQRewardQMethod != null) SendQuestRewardWindowDQRewardQMethod(this, questNPC, player, quest);
 		}
 		public Action<TestPacketLib, GameNPC, ushort, string> SendQuestSubscribeCommandMethod { get; set; }
 		public void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage)
