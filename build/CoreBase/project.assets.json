@@ -313,11 +313,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj",
+      "projectUniqueName": "/home/daoc/CoreBase/CoreBase.csproj",
       "projectName": "CoreBase",
-      "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj",
+      "projectPath": "/home/daoc/CoreBase/CoreBase.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/home/opendaoc/OpenDAoC-Core/CoreBase/../build/CoreBase//",
+      "outputPath": "/home/daoc/CoreBase/../build/CoreBase//",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -666,7 +666,7 @@
       "code": "NU1510",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "PackageReference System.Text.Encoding.CodePages wird nicht gekürzt. Erwägen Sie, dieses Paket aus Ihren Abhängigkeiten zu entfernen, da es wahrscheinlich nicht erforderlich ist.",
+      "message": "PackageReference System.Text.Encoding.CodePages will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
       "libraryId": "System.Text.Encoding.CodePages",
       "targetGraphs": [
         "net10.0"

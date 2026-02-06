@@ -526,11 +526,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/opendaoc/OpenDAoC-Core/CoreDatabase/CoreDatabase.csproj",
+      "projectUniqueName": "/home/daoc/CoreDatabase/CoreDatabase.csproj",
       "projectName": "CoreDatabase",
-      "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreDatabase/CoreDatabase.csproj",
+      "projectPath": "/home/daoc/CoreDatabase/CoreDatabase.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/home/opendaoc/OpenDAoC-Core/CoreDatabase/../build/CoreDatabase//",
+      "outputPath": "/home/daoc/CoreDatabase/../build/CoreDatabase//",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -545,8 +545,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj": {
-              "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj"
+            "/home/daoc/CoreBase/CoreBase.csproj": {
+              "projectPath": "/home/daoc/CoreBase/CoreBase.csproj"
             }
           }
         }

@@ -3400,11 +3400,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/opendaoc/OpenDAoC-Core/GameServer/GameServer.csproj",
+      "projectUniqueName": "/home/daoc/GameServer/GameServer.csproj",
       "projectName": "GameServer",
-      "projectPath": "/home/opendaoc/OpenDAoC-Core/GameServer/GameServer.csproj",
+      "projectPath": "/home/daoc/GameServer/GameServer.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/home/opendaoc/OpenDAoC-Core/GameServer/../build/GameServer//",
+      "outputPath": "/home/daoc/GameServer/../build/GameServer//",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -3419,11 +3419,11 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj": {
-              "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj"
+            "/home/daoc/CoreBase/CoreBase.csproj": {
+              "projectPath": "/home/daoc/CoreBase/CoreBase.csproj"
             },
-            "/home/opendaoc/OpenDAoC-Core/CoreDatabase/CoreDatabase.csproj": {
-              "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreDatabase/CoreDatabase.csproj"
+            "/home/daoc/CoreDatabase/CoreDatabase.csproj": {
+              "projectPath": "/home/daoc/CoreDatabase/CoreDatabase.csproj"
             }
           }
         }
@@ -3792,7 +3792,7 @@
       "code": "NU1510",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "PackageReference System.Net.Http wird nicht gekürzt. Erwägen Sie, dieses Paket aus Ihren Abhängigkeiten zu entfernen, da es wahrscheinlich nicht erforderlich ist.",
+      "message": "PackageReference System.Net.Http will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
       "libraryId": "System.Net.Http",
       "targetGraphs": [
         "net10.0"
@@ -3802,7 +3802,7 @@
       "code": "NU1510",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "PackageReference System.Text.RegularExpressions wird nicht gekürzt. Erwägen Sie, dieses Paket aus Ihren Abhängigkeiten zu entfernen, da es wahrscheinlich nicht erforderlich ist.",
+      "message": "PackageReference System.Text.RegularExpressions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
       "libraryId": "System.Text.RegularExpressions",
       "targetGraphs": [
         "net10.0"

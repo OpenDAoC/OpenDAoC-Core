@@ -3201,11 +3201,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/opendaoc/OpenDAoC-Core/CoreServer/CoreServer.csproj",
+      "projectUniqueName": "/home/daoc/CoreServer/CoreServer.csproj",
       "projectName": "CoreServer",
-      "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreServer/CoreServer.csproj",
+      "projectPath": "/home/daoc/CoreServer/CoreServer.csproj",
       "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/home/opendaoc/OpenDAoC-Core/CoreServer/../build/CoreServer//",
+      "outputPath": "/home/daoc/CoreServer/../build/CoreServer//",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/root/.nuget/NuGet/NuGet.Config"
@@ -3220,8 +3220,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/home/opendaoc/OpenDAoC-Core/GameServer/GameServer.csproj": {
-              "projectPath": "/home/opendaoc/OpenDAoC-Core/GameServer/GameServer.csproj"
+            "/home/daoc/GameServer/GameServer.csproj": {
+              "projectPath": "/home/daoc/GameServer/GameServer.csproj"
             }
           }
         }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj": {}
+    "/home/daoc/CoreBase/CoreBase.csproj": {}
   },
   "projects": {
-    "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj": {
+    "/home/daoc/CoreBase/CoreBase.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj",
+        "projectUniqueName": "/home/daoc/CoreBase/CoreBase.csproj",
         "projectName": "CoreBase",
-        "projectPath": "/home/opendaoc/OpenDAoC-Core/CoreBase/CoreBase.csproj",
+        "projectPath": "/home/daoc/CoreBase/CoreBase.csproj",
         "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/home/opendaoc/OpenDAoC-Core/CoreBase/../build/CoreBase//",
+        "outputPath": "/home/daoc/CoreBase/../build/CoreBase//",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
