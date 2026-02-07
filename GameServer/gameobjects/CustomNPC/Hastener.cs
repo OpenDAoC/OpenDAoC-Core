@@ -14,12 +14,6 @@ namespace DOL.GS
 
 		public override bool Interact(GamePlayer player)
 		{
-			// If player is too far away interact should not work
-			if (GetDistanceTo(player) > WorldMgr.INTERACT_DISTANCE)
-            {
-                return false;
-            }
-
 			if (player.Client.Account.PrivLevel == 1 && !IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Interact.TooFarAway", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);

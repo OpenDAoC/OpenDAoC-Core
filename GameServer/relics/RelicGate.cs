@@ -65,9 +65,9 @@ namespace DOL.GS.Keeps
 
 				//calculate x y
 				if (IsObjectInFront(player, 180))
-					point = this.GetPointFromHeading(this.Heading, -500);
+					point = this.GetPointFromHeading(this.Heading, -150);
 				else
-					point = this.GetPointFromHeading(this.Heading, 500);
+					point = this.GetPointFromHeading(this.Heading, 150);
 
 				//move player
 				player.MoveTo(CurrentRegionID, point.X, point.Y, player.Z, player.Heading);

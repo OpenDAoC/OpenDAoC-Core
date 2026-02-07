@@ -361,13 +361,16 @@ namespace DOL.GS
 
         public void CancelIncompatiblePulseEffects(ISpellHandler spellHandler)
         {
+            // We want player's to have multiple pulse effects
+            // Needs further testing, if any problems we have to add to PulseSpellGroupsIgnoringOtherPulseSpells
+            /*
             if (!PulseSpellGroupsIgnoringOtherPulseSpells.Contains(spellHandler.Spell.Group))
             {
                 IEnumerable<ECSPulseEffect> otherPulseEffects = GetPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
                 foreach (ECSPulseEffect otherPulseEffect in otherPulseEffects)
                     otherPulseEffect.End();
-            }
+            }*/
         }
 
         public virtual void RequestPlayerUpdate(EffectHelper.PlayerUpdate playerUpdate)
