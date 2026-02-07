@@ -52,6 +52,11 @@ namespace DOL.GS.Keeps
 			if (!base.Interact(player))
 				return false;
 
+			if (!this.IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
+			{
+				return false;
+			}
+
 			if (player.IsMezzed || player.IsStunned)
 			{
 				player.Out.SendMessage("You are mesmerized or stunned!", eChatType.CT_System, eChatLoc.CL_SystemWindow);

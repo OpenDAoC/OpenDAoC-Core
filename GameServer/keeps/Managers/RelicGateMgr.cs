@@ -17,7 +17,7 @@ namespace DOL.GS.Keeps
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         // ====================================================================
-        // Relic Gate Ids
+        // Real Relic Gates
         // ====================================================================
         public const int DOOR_ALB_POWER_ID = 175014001; 
         public const int DOOR_ALB_STRENGTH_ID = 176233901;
@@ -25,12 +25,25 @@ namespace DOL.GS.Keeps
         public const int DOOR_MID_STRENGTH_ID = 170128101;
         public const int DOOR_HIB_POWER_ID = 174061701;
         public const int DOOR_HIB_STRENGTH_ID = 173000301;
+        // ====================================================================
+        // Other Relic Gates (those at village, which never open)
+        // ====================================================================
+        public const int DOOR_ALB_POWER_ID_VILLAGE = 175013901; 
+        public const int DOOR_ALB_STRENGTH_ID_VILLAGE = 176233801;
+        public const int DOOR_MID_POWER_ID_VILLAGE = 169000301;
+        public const int DOOR_MID_STRENGTH_ID_VILLAGE = 170127801;
+        public const int DOOR_HIB_POWER_ID_VILLAGE = 174149601;
+        public const int DOOR_HIB_STRENGTH_ID_VILLAGE = 173000201;
 
         public static readonly int[] RELIC_GATE_INTERNAL_IDS = 
         {
             DOOR_ALB_POWER_ID, DOOR_ALB_STRENGTH_ID,
             DOOR_MID_POWER_ID, DOOR_MID_STRENGTH_ID,
-            DOOR_HIB_POWER_ID, DOOR_HIB_STRENGTH_ID
+            DOOR_HIB_POWER_ID, DOOR_HIB_STRENGTH_ID,
+
+            DOOR_ALB_POWER_ID_VILLAGE, DOOR_ALB_STRENGTH_ID_VILLAGE,
+            DOOR_MID_POWER_ID_VILLAGE, DOOR_MID_STRENGTH_ID_VILLAGE,
+            DOOR_HIB_POWER_ID_VILLAGE, DOOR_HIB_STRENGTH_ID_VILLAGE
         };
 
 
@@ -65,6 +78,17 @@ namespace DOL.GS.Keeps
         public static void AssignRelicDoor(RelicGate door, int internalID)
         {
             if (door == null) return;
+
+            if (internalID == DOOR_ALB_POWER_ID_VILLAGE || 
+            internalID == DOOR_ALB_STRENGTH_ID_VILLAGE || 
+            internalID == DOOR_MID_POWER_ID_VILLAGE || 
+            internalID == DOOR_MID_STRENGTH_ID_VILLAGE || 
+            internalID == DOOR_HIB_POWER_ID_VILLAGE || 
+            internalID == DOOR_HIB_STRENGTH_ID_VILLAGE)
+            {
+                door.CloseDoor();             
+                return;
+            }
             
 
             if (internalID == DOOR_ALB_POWER_ID) Door_Alb_Power = door;
