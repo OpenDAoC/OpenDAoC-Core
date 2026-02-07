@@ -381,6 +381,12 @@ namespace DOL.GS
                 delve.Add(Description);
                 delve.Add(" ");
             }
+            
+            if (LevelRequirement != null && LevelRequirement > 0)
+            {
+                delve.Add($"Required player level: {LevelRequirement}");
+                delve.Add(" ");
+            }
 
             if ((Object_Type >= (int)eObjectType.GenericWeapon) && (Object_Type <= (int)eObjectType._LastWeapon) ||
                 Object_Type == (int)eObjectType.Instrument)
@@ -870,14 +876,14 @@ namespace DOL.GS
                 {
                     totalUti += Bonus1 * .6667;
                 }
-                else if (Bonus1Type == 9
-                || Bonus1Type == 196
+                else if (Bonus1Type == 9 // Max Power Pool
+                || Bonus1Type == 196 // TOA Power Pool
                 || Bonus1Type == 190
                 || Bonus1Type == 199
                 || Bonus1Type == 193
-                || Bonus1Type == 211 // Neu hinzugefügt
-                || Bonus1Type == 202 // Neu hinzugefügt
-                || Bonus1Type == 209 // Neu hinzugefügt
+                || Bonus1Type == 211
+                || Bonus1Type == 202
+                || Bonus1Type == 209
                 || Bonus1Type == 254) /// Power Cap correct (UPDATED IDs)
                 {
                     totalUti += Bonus1 * 2;
