@@ -1011,7 +1011,7 @@ namespace DOL.GS
 			GameLoop.Exit();
 			GameEventMgr.Notify(ScriptEvent.Unloaded);
 			GameEventMgr.Notify(GameServerEvent.Stopped, this);
-			GameEventMgr.RemoveAllHandlers(true);
+			GameEventMgr.RemoveAllHandlers();
 			WorldMgr.Exit();
 			Scheduler?.Shutdown();
 			Scheduler = null;

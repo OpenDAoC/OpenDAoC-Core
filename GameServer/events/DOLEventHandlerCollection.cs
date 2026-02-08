@@ -8,8 +8,6 @@ namespace DOL.Events
 
     public sealed class DOLEventHandlerCollection
     {
-        private const int LOCK_TIMEOUT = 3000;
-
         private readonly Dictionary<DOLEvent, DOLEventHandlerChain> _chains = new();
         private readonly ReaderWriterLockSlim _lock = new(LockRecursionPolicy.SupportsRecursion);
 
@@ -17,8 +15,7 @@ namespace DOL.Events
 
         public void AddHandler(DOLEvent e, DOLEventHandler handler)
         {
-            if (!_lock.TryEnterWriteLock(LOCK_TIMEOUT))
-                return;
+            _lock.EnterWriteLock();
 
             try
             {
@@ -33,8 +30,7 @@ namespace DOL.Events
 
         public void AddHandlerUnique(DOLEvent e, DOLEventHandler handler)
         {
-            if (!_lock.TryEnterWriteLock(LOCK_TIMEOUT))
-                return;
+            _lock.EnterWriteLock();
 
             try
             {
@@ -49,8 +45,7 @@ namespace DOL.Events
 
         public void RemoveHandler(DOLEvent e, DOLEventHandler handler)
         {
-            if (!_lock.TryEnterWriteLock(LOCK_TIMEOUT))
-                return;
+            _lock.EnterWriteLock();
 
             try
             {
@@ -72,8 +67,7 @@ namespace DOL.Events
 
         public void RemoveHandlers(DOLEvent e)
         {
-            if (!_lock.TryEnterWriteLock(LOCK_TIMEOUT))
-                return;
+            _lock.EnterWriteLock();
 
             try
             {
@@ -87,8 +81,7 @@ namespace DOL.Events
 
         public void RemoveAllHandlers()
         {
-            if (!_lock.TryEnterWriteLock(LOCK_TIMEOUT))
-                return;
+            _lock.EnterWriteLock();
 
             try
             {
@@ -117,10 +110,8 @@ namespace DOL.Events
 
         public void Notify(DOLEvent e, object sender, EventArgs args)
         {
-            if (!_lock.TryEnterReadLock(LOCK_TIMEOUT))
-                return;
-
             DOLEventHandlerChain chain = null;
+            _lock.EnterReadLock();
 
             try
             {
