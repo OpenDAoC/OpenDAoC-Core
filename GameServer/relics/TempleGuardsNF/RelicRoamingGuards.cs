@@ -1,0 +1,1 @@
+// Roaming Guards around Temples

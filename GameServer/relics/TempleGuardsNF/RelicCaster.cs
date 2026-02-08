@@ -13,22 +13,72 @@ namespace DOL.GS
 {
     public class RelicCaster : GameNPC
     {
-        private static new readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
-        // Statisches Dictionary für die Zauber der Reiche
         private static readonly Dictionary<eRealm, Spell> _relicSpells = new Dictionary<eRealm, Spell>();
 
         protected const byte RelicCasterLevel = 65;
-        protected const int RelicCasterRespawnInterval = 900000; // 15 Minuten
+        protected const int RelicCasterRespawnInterval = 900000; // 15min
 
         static RelicCaster()
         {
             InitRelicSpells();
         }
 
-        public RelicCaster() : base() { }
+        public override bool AddToWorld()
+        {
+            switch (Realm)
+            {
+                case eRealm.Albion:
+                    Name = "Relic Wizard";
+                    Model = 61; // Avalonian
+                    break;
+                case eRealm.Midgard:
+                    Name = "Relic Runemaster";
+                    Model = 169; // Kobold
+                    break;
+                case eRealm.Hibernia:
+                    Name = "Relic Eldritch";
+                    Model = 334; // Elf
+                    break;
+            }
 
-        #region Spell Initialization
+            Level = RelicCasterLevel;
+            Flags = 0; // Remove Peace flag on new mob
+            RespawnInterval = RelicCasterRespawnInterval;
+
+            SetOwnBrain(new RelicCasterBrain());
+
+            SetupByRealm(Realm);
+
+            AddAbility(SkillBase.GetAbility(GS.Abilities.ConfusionImmunity));
+            AddAbility(SkillBase.GetAbility(GS.Abilities.CCImmunity));
+            AddAbility(SkillBase.GetAbility(GS.Abilities.RootImmunity));
+            AddAbility(SkillBase.GetAbility(GS.Abilities.MezzImmunity));
+            AddAbility(SkillBase.GetAbility(GS.Abilities.StunImmunity));
+
+            return base.AddToWorld();
+        }
+
+        private void SetupByRealm(eRealm realm)
+        {
+            switch (realm)
+            {
+                case eRealm.Albion:
+                    this.LoadEquipmentTemplateFromDatabase("relic_temple_caster_alb");
+                    break;
+                case eRealm.Midgard:
+                    this.LoadEquipmentTemplateFromDatabase("relic_temple_caster_mid");
+                    break;
+                case eRealm.Hibernia:
+                    this.LoadEquipmentTemplateFromDatabase("relic_temple_caster_hib");
+                    break;
+            }
+
+            if (_relicSpells.TryGetValue(Realm, out Spell spell))
+            {
+                Spells = new List<Spell> { spell };
+            }
+        }
+
         private static void InitRelicSpells()
         {
             // Wizard
@@ -74,105 +124,12 @@ namespace DOL.GS
             }, 0);
         }
 
-        public void SetRelicSpells()
-        {
-            if (_relicSpells.TryGetValue(Realm, out Spell spell))
-            {
-                Spells = new List<Spell> { spell };
-            }
-        }
-        #endregion
-
-        #region Spawn Logic
-        [GameServerStartedEvent]
-        public static void OnServerStarted(DOLEvent e, object sender, EventArgs args)
-        {
-            CreateCaster();
-            log.Info("[RelicCaster] System erfolgreich initialisiert.");
-        }
-        public static void CreateCaster()
-        {
-            var spawnPoints = new[]
-            {
-                // Albion (Castle Excalibur)
-                new { Name = "Relic Wizard", Model = new ushort[] { 61, 65 }, Realm = eRealm.Albion, Region = (ushort)163, X = 672934, Y = 590012, Z = 8738, Heading = (ushort)1344, Equip = "relic_temple_caster_alb" },
-                new { Name = "Relic Wizard", Model = new ushort[] { 61, 65 }, Realm = eRealm.Albion, Region = (ushort)163, X = 674760, Y = 590021, Z = 8738, Heading = (ushort)2730, Equip = "relic_temple_caster_alb" },
-                new { Name = "Relic Wizard", Model = new ushort[] { 61, 65 }, Realm = eRealm.Albion, Region = (ushort)163, X = 673846, Y = 591603, Z = 8738, Heading = (ushort)4095, Equip = "relic_temple_caster_alb" },
-                // Albion (Castle Myrddin)
-                new { Name = "Relic Wizard", Model = new ushort[] { 61, 65 }, Realm = eRealm.Albion, Region = (ushort)163, X = 579091, Y = 676623, Z = 8730, Heading = (ushort)2726, Equip = "relic_temple_caster_alb" },
-                new { Name = "Relic Wizard", Model = new ushort[] { 61, 65 }, Realm = eRealm.Albion, Region = (ushort)163, X = 578175, Y = 678208, Z = 8730, Heading = (ushort)4095, Equip = "relic_temple_caster_alb" },
-                new { Name = "Relic Wizard", Model = new ushort[] { 61, 65 }, Realm = eRealm.Albion, Region = (ushort)163, X = 577261, Y = 676622, Z = 8730, Heading = (ushort)1378, Equip = "relic_temple_caster_alb" },
-                // Midgard (Mjollner Faste)
-                new { Name = "Relic Runemaster", Model = new ushort[] { 169, 177 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 611826, Y = 302515, Z = 8490, Heading = (ushort)2728, Equip = "relic_temple_caster_mid" },
-                new { Name = "Relic Runemaster", Model = new ushort[] { 169, 177 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 610914, Y = 304094, Z = 8490, Heading = (ushort)6, Equip = "relic_temple_caster_mid" },
-                new { Name = "Relic Runemaster", Model = new ushort[] { 169, 177 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 610001, Y = 302513, Z = 8490, Heading = (ushort)1368, Equip = "relic_temple_caster_mid" },
-                // Midgard (Grallarhorn Faste)
-                new { Name = "Relic Runemaster", Model = new ushort[] { 169, 177 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 713095, Y = 404789, Z = 8778, Heading = (ushort)4093, Equip = "relic_temple_caster_mid" },
-                new { Name = "Relic Runemaster", Model = new ushort[] { 169, 177 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 712176, Y = 403220, Z = 8778, Heading = (ushort)1360, Equip = "relic_temple_caster_mid" },
-                new { Name = "Relic Runemaster", Model = new ushort[] { 169, 177 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 713997, Y = 403216, Z = 8778, Heading = (ushort)2733, Equip = "relic_temple_caster_mid" },
-                // Hibernia (Dun Lamfhota)
-                new { Name = "Relic Eldritch", Model = new ushort[] { 334, 342 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 372728, Y = 592154, Z = 8730, Heading = (ushort)4086, Equip = "relic_temple_caster_hib" },
-                new { Name = "Relic Eldritch", Model = new ushort[] { 334, 342 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 371830, Y = 590577, Z = 8730, Heading = (ushort)1360, Equip = "relic_temple_caster_hib" },
-                new { Name = "Relic Eldritch", Model = new ushort[] { 334, 342 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 373643, Y = 590576, Z = 8730, Heading = (ushort)2713, Equip = "relic_temple_caster_hib" },
-                // Hibernia (Dun Dagda)
-                new { Name = "Relic Eldritch", Model = new ushort[] { 334, 342 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 471126, Y = 677236, Z = 8106, Heading = (ushort)2719, Equip = "relic_temple_caster_hib" },
-                new { Name = "Relic Eldritch", Model = new ushort[] { 334, 342 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 470201, Y = 678817, Z = 8106, Heading = (ushort)4079, Equip = "relic_temple_caster_hib" },
-                new { Name = "Relic Eldritch", Model = new ushort[] { 334, 342 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 469298, Y = 677234, Z = 8106, Heading = (ushort)1364, Equip = "relic_temple_caster_hib" }
-            };
-
-            foreach (var sp in spawnPoints)
-            {
-                string customID = $"RelicCaster_{sp.Realm}_{sp.X}_{sp.Y}";
-                if (WorldMgr.GetNPCsFromRegion(sp.Region).Any(n => n.InternalID == customID))
-                    continue;
-                // randomly select given models
-                ushort randomModel = sp.Model[Util.Random(0, sp.Model.Length - 1)];
-
-                RelicCaster caster = new RelicCaster
-                {
-                    InternalID = customID,
-                    Name = sp.Name,
-                    Model = randomModel,
-                    Level = RelicCasterLevel,
-                    Realm = sp.Realm,
-                    X = sp.X,
-                    Y = sp.Y,
-                    Z = sp.Z,
-                    Heading = sp.Heading,
-                    CurrentRegionID = sp.Region,
-                    RespawnInterval = RelicCasterRespawnInterval
-                };
-
-                if (!string.IsNullOrEmpty(sp.Equip))
-                    caster.LoadEquipmentTemplateFromDatabase(sp.Equip);
-
-                caster.AddToWorld();
-            }
-        }
-
-        public override bool AddToWorld()
-        {
-            SetOwnBrain(new RelicCasterBrain());
-            SetRelicSpells();
-            // Caster Guards should not me mez, confuse, snare or stun
-            AddAbility(SkillBase.GetAbility(GS.Abilities.ConfusionImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.CCImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.RootImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.MezzImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.StunImmunity));
-            return base.AddToWorld();
-        }
-        #endregion
-
-        #region Combat
-
         public override void Die(GameObject killer)
         {
             int count = TempleRelicPadsLoader.GetEnemiesNearby(this);
             TempleRelicPadsLoader.SendTempleMessage($"{Name} has been killed with {count} enemies in the area.");
             base.Die(killer);
         }
-        #endregion
     }
 }
 
