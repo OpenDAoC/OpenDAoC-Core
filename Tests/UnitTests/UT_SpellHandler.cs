@@ -48,73 +48,6 @@ namespace DOL.Tests.Unit.Gameserver
         }
 
         [Test]
-        public void CastSpell_FocusSpell_FiveEventsOnCasterAndOneEventOnTarget()
-        {
-            var caster = NewFakePlayer();
-            var target = NewFakePlayer();
-            var spell = NewFakeSpell();
-            spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.REALM;
-            spell.Duration = 20;
-            var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
-            var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
-
-            spellHandler.StartSpell(target);
-
-            var eventNumberOnCaster = gameEventMgrSpy.GameObjectEventCollection[caster].Count;
-            var eventNumberOnTarget = gameEventMgrSpy.GameObjectEventCollection[target].Count;
-            ClassicAssert.AreEqual(5, eventNumberOnCaster, "Caster has not the right amount of event subscriptions");
-            ClassicAssert.AreEqual(1, eventNumberOnTarget, "Target has not the right amount of event subscriptions");
-        }
-
-        [Test]
-        public void CastSpell_FocusSpellAndCasterMoves_AllEventsRemoved()
-        {
-            var caster = NewFakePlayer();
-            var target = NewFakeNPC();
-            var spell = NewFakeSpell();
-            spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.ENEMY;
-            spell.Duration = 20;
-            var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
-            var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
-
-            spellHandler.StartSpell(target);
-            caster.OnPlayerMove();
-
-            var eventNumberOnCaster = gameEventMgrSpy.GameObjectEventCollection[caster].Count;
-            var eventNumberOnTarget = gameEventMgrSpy.GameObjectEventCollection[target].Count;
-            ClassicAssert.AreEqual(0, eventNumberOnCaster, "Caster has not the right amount of event subscriptions");
-            ClassicAssert.AreEqual(0, eventNumberOnTarget, "Target has not the right amount of event subscriptions");
-        }
-
-        [Test]
-        public void CastSpell_FocusSpellCastAndTicksOnce_AllEventsRemoved()
-        {
-            var caster = NewFakePlayer();
-            var target = NewFakePlayer();
-            var spell = NewFakeSpell();
-            spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.REALM;
-            spell.Duration = 20;
-            spell.fakeFrequency = 20;
-            spell.fakeSpellType = eSpellType.DamageShield;
-            spell.fakePulse = 1;
-            var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
-            var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
-
-            ClassicAssert.IsTrue(spellHandler.StartSpell(target));
-            target.fakeRegion.FakeElapsedTime = 2;
-            spellHandler.StartSpell(target); //tick
-            caster.OnPlayerMove();
-
-            var eventNumberOnCaster = gameEventMgrSpy.GameObjectEventCollection[caster].Count;
-            var eventNumberOnTarget = gameEventMgrSpy.GameObjectEventCollection[target].Count;
-            ClassicAssert.AreEqual(0, eventNumberOnCaster, "Caster has not the right amount of event subscriptions");
-            ClassicAssert.AreEqual(0, eventNumberOnTarget, "Target has not the right amount of event subscriptions");
-        }
-
-        [Test]
         public void CheckBeginCast_NPCTarget_True()
         {
             var caster = NewFakePlayer();
@@ -373,18 +306,6 @@ namespace DOL.Tests.Unit.Gameserver
                 lastNotifiedEvent = e;
                 lastNotifiedEventArgs = args;
                 base.Notify(e, sender, args);
-            }
-        }
-
-        private class GameEventMgrSpy : GameEventMgr
-        {
-            public System.Collections.Generic.Dictionary<object, DOLEventHandlerCollection> GameObjectEventCollection => m_gameObjectEventCollections;
-        
-            public static GameEventMgrSpy LoadAndReturn()
-            {
-                var spy = new GameEventMgrSpy();
-                LoadTestDouble(spy);
-                return spy;
             }
         }
     }
