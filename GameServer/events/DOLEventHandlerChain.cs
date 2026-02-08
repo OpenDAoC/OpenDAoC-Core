@@ -27,13 +27,11 @@ namespace DOL.Events
 
         public static DOLEventHandlerChain Subscribe(DOLEventHandlerChain chain, DOLEventHandler handler)
         {
-            ArgumentNullException.ThrowIfNull(chain);
             return chain == null ? new(handler) : chain.Subscribe(handler);
         }
 
         public static DOLEventHandlerChain SubscribeOnce(DOLEventHandlerChain chain, DOLEventHandler handler)
         {
-            ArgumentNullException.ThrowIfNull(chain);
             return chain == null ? new(handler) : chain.SubscribeOnce(handler);
         }
 
