@@ -1475,7 +1475,7 @@ namespace DOL.GS.Spells
 					if (target == null || target.IsAlive)
 						break;
 
-					if (!IsAllowedTarget(target))
+					if (!IsTargetAffectedBySpellType(target))
 						break;
 
 					list.Add(target);
@@ -1592,7 +1592,7 @@ namespace DOL.GS.Spells
 						if (target == null)
 							break;
 
-						if (!IsAllowedTarget(target))
+						if (!IsTargetAffectedBySpellType(target))
 							break;
 
 						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
@@ -1660,7 +1660,7 @@ namespace DOL.GS.Spells
 						if (target == null)
 							break;
 
-						if (!IsAllowedTarget(target))
+						if (!IsTargetAffectedBySpellType(target))
 							break;
 
 						if (GameServer.ServerRules.IsSameRealm(Caster, target, true))
@@ -1838,17 +1838,17 @@ namespace DOL.GS.Spells
 			}
 
 			return list;
+		}
 
-			bool IsAllowedTarget(GameLiving target)
+		private bool IsTargetAffectedBySpellType(GameLiving target)
+		{
+			if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage or eSpellType.SiegeArrow && !IsSummoningSpell)
 			{
-				if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage or eSpellType.SiegeArrow && !IsSummoningSpell)
-				{
-					MessageToCaster($"Your spell has no effect on the {target.Name}.", eChatType.CT_SpellResisted);
-					return false;
-				}
-
-				return true;
+				MessageToCaster($"Your spell has no effect on the {target.Name}.", eChatType.CT_SpellResisted);
+				return false;
 			}
+
+			return true;
 		}
 
 		public virtual void CastSubSpells(GameLiving target)
