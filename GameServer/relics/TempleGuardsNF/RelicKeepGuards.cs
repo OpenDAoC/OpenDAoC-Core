@@ -59,6 +59,25 @@ namespace DOL.GS
             TempleRelicPadsLoader.SendTempleMessage($"{Name} has been killed with {count} enemies in the area.");
             base.Die(killer);
         }
+
+        public static void UpdateRelicKeepGuards(AbstractGameKeep keep)
+        {
+            if (keep == null) return;
+            string guardName = "Relic Defender of " + keep.Name;
+            var guards = WorldMgr.GetNPCsByNameFromRegion(guardName, 163, keep.Realm);
+
+            foreach (GameNPC guard in guards)
+            {
+                if (guard is RelicKeepGuard relicGuard)
+                {
+                    string newGuildName = (keep.Guild != null) ? keep.Guild.Name : string.Empty;
+                    if (relicGuard.GuildName != newGuildName)
+                    {
+                        relicGuard.GuildName = newGuildName;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -66,65 +85,11 @@ namespace DOL.AI.Brain
 {
     public class RelicKeepGuardBrain : StandardMobBrain
     {
-        //protected const int MaxDistance = 2000;
-
         public RelicKeepGuardBrain() : base()
         {
             AggroLevel = 100;
             AggroRange = 1500;
             ThinkInterval = 1000;
         }
-
-        public override void Think()
-        {
-            base.Think();
-            GameNPC body = this.Body as GameNPC;
-            if (body == null || body.CurrentRegion == null)
-                return;
-
-            string prefix = "Relic Defender of ";
-            if (string.IsNullOrEmpty(body.Name) || !body.Name.StartsWith(prefix))
-                return;
-
-            string extractedKeepName = body.Name.Replace(prefix, "").Trim();
-
-            var keepManager = GameServer.KeepManager as DefaultKeepManager;
-            if (keepManager == null) return;
-
-            AbstractGameKeep targetKeep = null;
-            foreach (AbstractGameKeep keep in keepManager.Keeps.Values)
-            {
-                if (keep.Name.Equals(extractedKeepName, StringComparison.OrdinalIgnoreCase))
-                {
-                    targetKeep = keep;
-                    break;
-                }
-            }
-
-            if (targetKeep != null && targetKeep.Realm == body.Realm)
-            {
-                string newGuildName = (targetKeep.Guild != null) ? targetKeep.Guild.Name : string.Empty;
-
-                if (body.GuildName != newGuildName)
-                {
-                    body.GuildName = newGuildName;
-                }
-            }
-        }
-
-        /*private void ResetCaster()
-        {
-            Body.StopAttack();
-            ClearAggroList();
-            Body.Health = Body.MaxHealth;
-            Body.Mana = Body.MaxMana;
-            Body.ReturnToSpawnPoint(Body.MaxSpeed);
-        }
-
-        public override bool CanAggroTarget(GameLiving target)
-        {
-            if (Body == null || target == null) return false;
-            return GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
-        }*/
     }
 }

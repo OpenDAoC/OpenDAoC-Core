@@ -13,7 +13,7 @@ namespace DOL.GS
 {
     // New Frontiers Relic Temple Guards
     // You have to set the realm to the mob and reload the mob
-    public class RelicGuardsTest : GameNPC
+    public class RelicGuard : GameNPC
     {
         protected const byte RelicGuardsLevel = 65;
         protected const int RelicGuardsRespawnInterval = 900000; // 15min
@@ -45,7 +45,7 @@ namespace DOL.GS
             Flags = 0; // Remove Peace flag on new mob
             RespawnInterval = RelicGuardsRespawnInterval;
 
-            SetOwnBrain(new RelicGuardsTestBrain());
+            SetOwnBrain(new RelicGuardsBrain());
 
             SetupByRealm(Realm);
 
@@ -79,11 +79,11 @@ namespace DOL.GS
 
 namespace DOL.AI.Brain
 {
-    public class RelicGuardsTestBrain : StandardMobBrain
+    public class RelicGuardsBrain : StandardMobBrain
     {
         protected const int MaxDistance = 2000;
 
-        public RelicGuardsTestBrain() : base()
+        public RelicGuardsBrain() : base()
         {
             AggroLevel = 100;
             AggroRange = 1500;

@@ -690,6 +690,8 @@ namespace DOL.GS.Keeps
     		this.SaveIntoDatabase();
             LoadFromDatabase(DBKeep);
             // door.BroadcastDoorStatus();
+			// We send Update to Relic Guards
+			RelicKeepGuard.UpdateRelicKeepGuards(this);
             StartDeductionTimer();
             GameEventMgr.Notify(KeepEvent.KeepClaimed, this, new KeepEventArgs(this));
 		}
@@ -787,7 +789,7 @@ namespace DOL.GS.Keeps
 			{
 				banner.ChangeGuild();
 			}
-
+			RelicKeepGuard.UpdateRelicKeepGuards(this);
 			this.SaveIntoDatabase();
 		}
 		#endregion
@@ -1078,12 +1080,14 @@ namespace DOL.GS.Keeps
 				player.Out.SendKeepComponentUpdate(this, false);
 				player.Out.SendWarmapUpdate(GameServer.KeepManager.GetKeepsByRealmMap(player.WarMapPage)); // Update Warmap when tower/keep changes realm
 			}
+
 			//we reset all doors
 			foreach(GameKeepDoor door in Doors.Values)
 				door.Reset(realm);
 
 			//we make sure all players are not in the air
 			ResetPlayersOfKeep();
+			RelicKeepGuard.UpdateRelicKeepGuards(this);
 
 			//we reset the guards
 			foreach (GameKeepGuard guard in Guards.Values)
