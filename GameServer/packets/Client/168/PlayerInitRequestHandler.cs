@@ -146,8 +146,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (GameServer.KeepManager.IsEnemy(keep, player) || keep.InCombat)
                 {
-                    player.Out.SendMessage("This area isn't currently secure and you are being transported to a safer location.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    player.MoveToBind();
+                    int x, y, z;
+                    ushort heading;
+                    if (GameServer.KeepManager.GetVillageLocation((eRealm)player.Realm, out x, out y, out z, out heading) && player.CurrentRegionID == 163)
+                    {
+                        player.MoveTo(player.CurrentRegionID, x, y, z, heading);
+                    }
+                    else
+                    {
+                        // This will probably happen in battlegrounds
+                        player.MoveToBind();
+                    }
                 }
             }
 
@@ -165,7 +174,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         if (player.Level > k.BaseLevel)
                         {
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.LevelCap"), eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
-                            player.MoveTo((ushort) player.BindRegion, player.BindXpos, player.BindYpos, player.BindZpos, (ushort) player.BindHeading);
+                            player.MoveTo((ushort)player.BindRegion, player.BindXpos, player.BindYpos, player.BindZpos, (ushort)player.BindHeading);
                             break;
                         }
                     }
