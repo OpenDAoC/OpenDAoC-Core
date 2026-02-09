@@ -91,7 +91,7 @@ namespace DOL.GS
             new TemplePadInfo(11, 163, 578176, 676596, 8740, 0, "Castle Myrddin"),    // Alb Magic
             new TemplePadInfo(2, 163, 610911, 302488, 8500, 0, "Mjollner Faste"),     // Mid Strength
             new TemplePadInfo(12, 163, 713091, 403189, 8788, 0, "Grallarhorn Faste"), // Mid Magic
-            new TemplePadInfo(3, 163, 372735, 590532, 8740, 0, "Dun Lamfhota"),       // Hib Strength
+            new TemplePadInfo(3, 163, 372735, 590550, 8740, 0, "Dun Lamfhota"),       // Hib Strength
             new TemplePadInfo(13, 163, 470210, 677203, 8116, 0, "Dun Dagda")          // Hib Magic
         };
     }

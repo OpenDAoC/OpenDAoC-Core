@@ -50,10 +50,22 @@ namespace DOL.GS
                 return;
             }
 
-            // "Relic Defender of Dun da Behn" -> "relic_defender_of_dun_da_behn"
-            string customTemplate = this.Name.ToLower().Replace(" ", "_");
-            LoadEquipmentTemplateFromDatabase(customTemplate);
+            // 1. Namen bauen: "relic_defender_of_dun_da_behn"
+            string customTemplateID = this.Name.ToLower().Replace(" ", "_");
 
+            GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
+            if (template.LoadFromDatabase(customTemplateID))
+            {
+                this.Inventory = template;
+                this.EquipmentTemplateID = customTemplateID; // <--- SEHR WICHTIG FÜR DEN SAVE!
+            }
+            else
+            {
+                // Falls es in der DB nicht existiert: Fallback laden
+                LoadDefaultTemplate();
+            }
+
+            // Sicherheitscheck
             if (this.Inventory == null || this.Inventory.AllItems.Count == 0)
             {
                 LoadDefaultTemplate();
@@ -62,11 +74,20 @@ namespace DOL.GS
 
         private void LoadDefaultTemplate()
         {
+            // Auch hier nutzen wir jetzt die sichere "new"-Methode, 
+            // damit auch Standard-Wachen nicht verlinkt sind.
+            string defaultID = "";
             switch (Realm)
             {
-                case eRealm.Albion: LoadEquipmentTemplateFromDatabase("relic_temple_lord_alb"); break;
-                case eRealm.Midgard: LoadEquipmentTemplateFromDatabase("relic_temple_lord_mid"); break;
-                case eRealm.Hibernia: LoadEquipmentTemplateFromDatabase("relic_temple_lord_hib"); break;
+                case eRealm.Albion: defaultID = "relic_temple_lord_alb"; break;
+                case eRealm.Midgard: defaultID = "relic_temple_lord_mid"; break;
+                case eRealm.Hibernia: defaultID = "relic_temple_lord_hib"; break;
+            }
+
+            GameNpcInventoryTemplate defaultTemplate = new GameNpcInventoryTemplate();
+            if (defaultTemplate.LoadFromDatabase(defaultID))
+            {
+                this.Inventory = defaultTemplate;
             }
         }
 
@@ -82,6 +103,9 @@ namespace DOL.GS
             if (keep == null) return;
 
             string guardName = "Relic Defender of " + keep.Name;
+            Console.WriteLine($"Updating guards for {keep.Name} with template name: {guardName}");
+
+            // Wir suchen nur nach Wachen in der Region (OriginalRealm als Filter)
             var guards = WorldMgr.GetNPCsByNameFromRegion(guardName, 163, keep.OriginalRealm);
 
             foreach (GameNPC guard in guards)
@@ -89,23 +113,29 @@ namespace DOL.GS
                 if (guard is RelicKeepGuard relicGuard)
                 {
                     string newGuildName = (keep.Guild != null) ? keep.Guild.Name : string.Empty;
-                    relicGuard.GuildName = newGuildName;
                     int guildEmblem = (keep.Guild != null) ? keep.Guild.Emblem : 0;
+
+                    relicGuard.GuildName = newGuildName;
 
                     if (relicGuard.Inventory != null)
                     {
                         eInventorySlot[] emblemSlots = { eInventorySlot.LeftHandWeapon, eInventorySlot.Cloak };
-
                         foreach (eInventorySlot slot in emblemSlots)
                         {
                             DbInventoryItem item = relicGuard.Inventory.GetItem(slot);
-
-                            if (item != null)
+                            if (item != null && item.Emblem != guildEmblem)
                             {
                                 item.Emblem = guildEmblem;
                             }
                         }
                     }
+                    relicGuard.SaveIntoDatabase();
+                    relicGuard.BroadcastLivingEquipmentUpdate(); // Visible update for players
+                    if (relicGuard.Inventory is GameNpcInventoryTemplate template)
+                    {
+                        template.SaveIntoDatabase(relicGuard.EquipmentTemplateID);
+                    }
+                    
                 }
             }
         }
