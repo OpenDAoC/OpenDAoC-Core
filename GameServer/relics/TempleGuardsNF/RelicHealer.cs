@@ -9,7 +9,7 @@ using DOL.GS.Keeps;
 namespace DOL.GS
 {
     // New Frontiers Relic Temple Healer
-    // You have to set the realm to the mob and reload the mob
+    // NPC will also attack enemies if they are in range, but priority is to heal allies
     public class RelicHealer : GameNPC
     {
         private static readonly Dictionary<eRealm, Spell> _relicHeals = new Dictionary<eRealm, Spell>();
@@ -47,13 +47,7 @@ namespace DOL.GS
 
             SetOwnBrain(new RelicHealerBrain());
             SetupByRealm(Realm);
-
-            // Immunitäten eines Relikt-Wächters
             AddAbility(SkillBase.GetAbility(GS.Abilities.ConfusionImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.CCImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.RootImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.MezzImmunity));
-            AddAbility(SkillBase.GetAbility(GS.Abilities.StunImmunity));
 
             return base.AddToWorld();
         }
@@ -86,6 +80,7 @@ namespace DOL.GS
                 ClientEffect = effect,
                 Value = 200,
                 Range = 2000,
+                Radius = 250, // Small radius, players will get healed too
                 Target = "REALM",
                 Type = "Heal",
                 Uninterruptible = true
@@ -111,6 +106,7 @@ namespace DOL.AI.Brain
 {
     public class RelicHealerBrain : StandardMobBrain
     {
+        protected const int CheckHealRange = 1500; // In this range the npc checks for Heal targets
         public RelicHealerBrain() : base()
         {
             AggroLevel = 100;
@@ -143,12 +139,24 @@ namespace DOL.AI.Brain
             GameLiving target = null;
 
             // Check for NPCs in 1500 radius
-            foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+            foreach (GameNPC npc in Body.GetNPCsInRadius(CheckHealRange))
             {
                 if (npc.IsAlive && npc.HealthPercent < 80 && npc.Realm == Body.Realm)
                 {
                     target = npc;
                     break;
+                }
+            }
+            // Heal players if no NPCs need healing
+            if (target == null)
+            {
+                foreach (GamePlayer player in Body.GetPlayersInRadius(CheckHealRange))
+                {
+                    if (player.IsAlive && player.HealthPercent < 80 && player.Realm == Body.Realm)
+                    {
+                        target = player;
+                        break;
+                    }
                 }
             }
 

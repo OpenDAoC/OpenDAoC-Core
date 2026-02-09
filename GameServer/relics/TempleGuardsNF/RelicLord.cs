@@ -29,14 +29,14 @@ namespace DOL.GS
             var spawnPoints = new[]
             {
                 // Albion
-                new { Name = "Lord Castle Excalibur", Guild = "", Model = new ushort[] { 1008, 1020 }, Realm = eRealm.Albion, Region = (ushort)163, X = 673843, Y = 590553, Z = 8745, Heading = (ushort)2721, Equip = "relic_temple_lord_alb" },
+                new { Name = "Lord Castle Excalibur", Guild = "", Model = new ushort[] { 1008, 1020 }, Realm = eRealm.Albion, Region = (ushort)163, X = 673843, Y = 590553, Z = 8745, Heading = (ushort)4094, Equip = "relic_temple_lord_alb" },
                 new { Name = "Lord Castle Myrddin", Guild = "", Model = new ushort[] { 1008, 1020 }, Realm = eRealm.Albion, Region = (ushort)163, X = 578172, Y = 677151, Z = 8737, Heading = (ushort)2721, Equip = "relic_temple_lord_alb" },
                 // Midgard
-                new { Name = "Jarl Grallarhorn Faste", Guild = "", Model = new ushort[] { 137, 185, 145, 193 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 713090, Y = 403741, Z = 8785, Heading = (ushort)2721, Equip = "relic_temple_lord_mid" },
+                new { Name = "Jarl Grallarhorn Faste", Guild = "", Model = new ushort[] { 137, 185, 145, 193 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 713090, Y = 403741, Z = 8785, Heading = (ushort)1357, Equip = "relic_temple_lord_mid" },
                 new { Name = "Jarl Mjollner Faste", Guild = "", Model = new ushort[] { 137, 185, 145, 193 }, Realm = eRealm.Midgard, Region = (ushort)163, X = 610908, Y = 303040, Z = 8497, Heading = (ushort)2721, Equip = "relic_temple_lord_mid" },
                 // Hibernia
                 new { Name = "Chieftain Dun Lamfhota", Guild = "", Model = new ushort[] { 286, 294 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 372731, Y = 591105, Z = 8737, Heading = (ushort)2721, Equip = "relic_temple_lord_hib" },
-                new { Name = "Chieftain Dun Dagda", Guild = "", Model = new ushort[] { 286, 294 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 470205, Y = 677754, Z = 8113, Heading = (ushort)2721, Equip = "relic_temple_lord_hib" }
+                new { Name = "Chieftain Dun Dagda", Guild = "", Model = new ushort[] { 286, 294 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 470205, Y = 677754, Z = 8113, Heading = (ushort)1349, Equip = "relic_temple_lord_hib" }
             };
 
             foreach (var sp in spawnPoints)

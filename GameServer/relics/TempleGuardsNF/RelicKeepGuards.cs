@@ -13,8 +13,8 @@ namespace DOL.GS
     // Name must be Relic Defender of <Keep Name> for the brain to work
     public class RelicKeepGuard : GameNPC
     {
-        protected const byte RelicKeepGuardsLevel = 65;
-        protected const int RelicKeepGuardsRespawnInterval = 900000;
+        protected const byte RelicKeepGuardsLevel = 70;
+        protected const int RelicKeepGuardsRespawnInterval = 900000; // 15min
         public override bool AddToWorld()
         {
             ushort[] modelsAlb = { 14, 1008 };
@@ -39,6 +39,7 @@ namespace DOL.GS
 
             SetOwnBrain(new RelicKeepGuardBrain());
             SetupByKeepName();
+            AddAbility(SkillBase.GetAbility(GS.Abilities.ConfusionImmunity));
 
             return base.AddToWorld();
         }
