@@ -92,7 +92,8 @@ namespace DOL.GS
                 Radius = 1000,
                 Target = "ENEMY",
                 Type = "DirectDamage",
-                DamageType = (int)eDamageType.Heat
+                DamageType = (int)eDamageType.Heat,
+                Uninterruptible = true
             }, 0);
 
             // Runemaster
@@ -106,7 +107,8 @@ namespace DOL.GS
                 Radius = 1000,
                 Target = "ENEMY",
                 Type = "DirectDamage",
-                DamageType = (int)eDamageType.Energy
+                DamageType = (int)eDamageType.Energy,
+                Uninterruptible = true
             }, 0);
 
             // Eldritch
@@ -120,7 +122,8 @@ namespace DOL.GS
                 Radius = 1000,
                 Target = "ENEMY",
                 Type = "DirectDamage",
-                DamageType = (int)eDamageType.Cold
+                DamageType = (int)eDamageType.Cold,
+                Uninterruptible = true
             }, 0);
         }
 
@@ -167,12 +170,12 @@ namespace DOL.AI.Brain
             Body.Health = Body.MaxHealth;
             Body.Mana = Body.MaxMana;
             Body.ReturnToSpawnPoint(Body.MaxSpeed);
-        }
+        }*/
 
         public override bool CanAggroTarget(GameLiving target)
         {
             if (Body == null || target == null) return false;
             return GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
-        }*/
+        }
     }
 }

@@ -111,12 +111,12 @@ namespace DOL.AI.Brain
             Body.Health = Body.MaxHealth;
             Body.Mana = Body.MaxMana;
             Body.ReturnToSpawnPoint(Body.MaxSpeed);
-        }
+        }*/
 
         public override bool CanAggroTarget(GameLiving target)
         {
             if (Body == null || target == null) return false;
             return GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
-        }*/
+        }
     }
 }

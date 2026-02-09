@@ -50,32 +50,24 @@ namespace DOL.GS
                 return;
             }
 
-            // 1. Namen bauen: "relic_defender_of_dun_da_behn"
             string customTemplateID = this.Name.ToLower().Replace(" ", "_");
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             if (template.LoadFromDatabase(customTemplateID))
             {
                 this.Inventory = template;
-                this.EquipmentTemplateID = customTemplateID; // <--- SEHR WICHTIG FÜR DEN SAVE!
+                this.EquipmentTemplateID = customTemplateID;
             }
             else
             {
-                // Falls es in der DB nicht existiert: Fallback laden
                 LoadDefaultTemplate();
             }
 
-            // Sicherheitscheck
-            if (this.Inventory == null || this.Inventory.AllItems.Count == 0)
-            {
-                LoadDefaultTemplate();
-            }
+            InitializeActiveWeaponFromInventory();
         }
 
         private void LoadDefaultTemplate()
         {
-            // Auch hier nutzen wir jetzt die sichere "new"-Methode, 
-            // damit auch Standard-Wachen nicht verlinkt sind.
             string defaultID = "";
             switch (Realm)
             {
@@ -88,6 +80,7 @@ namespace DOL.GS
             if (defaultTemplate.LoadFromDatabase(defaultID))
             {
                 this.Inventory = defaultTemplate;
+                InitializeActiveWeaponFromInventory();
             }
         }
 
@@ -103,9 +96,7 @@ namespace DOL.GS
             if (keep == null) return;
 
             string guardName = "Relic Defender of " + keep.Name;
-            Console.WriteLine($"Updating guards for {keep.Name} with template name: {guardName}");
 
-            // Wir suchen nur nach Wachen in der Region (OriginalRealm als Filter)
             var guards = WorldMgr.GetNPCsByNameFromRegion(guardName, 163, keep.OriginalRealm);
 
             foreach (GameNPC guard in guards)
@@ -135,7 +126,7 @@ namespace DOL.GS
                     {
                         template.SaveIntoDatabase(relicGuard.EquipmentTemplateID);
                     }
-                    
+
                 }
             }
         }
@@ -151,6 +142,11 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 1500;
             ThinkInterval = 1000;
+        }
+        public override bool CanAggroTarget(GameLiving target)
+        {
+            if (Body == null || target == null) return false;
+            return GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
         }
     }
 }
