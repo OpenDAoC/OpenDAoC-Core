@@ -141,7 +141,10 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 AbstractGameKeep keep = GameServer.KeepManager.GetClosestKeepToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 
-                if (keep != null && GameServer.KeepManager.IsEnemy(keep, player))
+                if (keep == null)
+                    return;
+
+                if (GameServer.KeepManager.IsEnemy(keep, player) || keep.InCombat)
                 {
                     player.Out.SendMessage("This area isn't currently secure and you are being transported to a safer location.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     player.MoveToBind();
