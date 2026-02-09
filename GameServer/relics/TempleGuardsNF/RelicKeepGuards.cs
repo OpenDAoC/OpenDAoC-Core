@@ -38,14 +38,31 @@ namespace DOL.GS
             RespawnInterval = RelicKeepGuardsRespawnInterval;
 
             SetOwnBrain(new RelicKeepGuardBrain());
-            SetupByRealm(Realm);
+            SetupByKeepName();
 
             return base.AddToWorld();
         }
-
-        private void SetupByRealm(eRealm realm)
+        private void SetupByKeepName()
         {
-            switch (realm)
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                LoadDefaultTemplate();
+                return;
+            }
+
+            // "Relic Defender of Dun da Behn" -> "relic_defender_of_dun_da_behn"
+            string customTemplate = this.Name.ToLower().Replace(" ", "_");
+            LoadEquipmentTemplateFromDatabase(customTemplate);
+
+            if (this.Inventory == null || this.Inventory.AllItems.Count == 0)
+            {
+                LoadDefaultTemplate();
+            }
+        }
+
+        private void LoadDefaultTemplate()
+        {
+            switch (Realm)
             {
                 case eRealm.Albion: LoadEquipmentTemplateFromDatabase("relic_temple_lord_alb"); break;
                 case eRealm.Midgard: LoadEquipmentTemplateFromDatabase("relic_temple_lord_mid"); break;
@@ -63,17 +80,31 @@ namespace DOL.GS
         public static void UpdateRelicKeepGuards(AbstractGameKeep keep)
         {
             if (keep == null) return;
+
             string guardName = "Relic Defender of " + keep.Name;
-            var guards = WorldMgr.GetNPCsByNameFromRegion(guardName, 163, keep.Realm);
+            var guards = WorldMgr.GetNPCsByNameFromRegion(guardName, 163, keep.OriginalRealm);
 
             foreach (GameNPC guard in guards)
             {
                 if (guard is RelicKeepGuard relicGuard)
                 {
                     string newGuildName = (keep.Guild != null) ? keep.Guild.Name : string.Empty;
-                    if (relicGuard.GuildName != newGuildName)
+                    relicGuard.GuildName = newGuildName;
+                    int guildEmblem = (keep.Guild != null) ? keep.Guild.Emblem : 0;
+
+                    if (relicGuard.Inventory != null)
                     {
-                        relicGuard.GuildName = newGuildName;
+                        eInventorySlot[] emblemSlots = { eInventorySlot.LeftHandWeapon, eInventorySlot.Cloak };
+
+                        foreach (eInventorySlot slot in emblemSlots)
+                        {
+                            DbInventoryItem item = relicGuard.Inventory.GetItem(slot);
+
+                            if (item != null)
+                            {
+                                item.Emblem = guildEmblem;
+                            }
+                        }
                     }
                 }
             }
