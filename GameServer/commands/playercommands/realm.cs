@@ -57,73 +57,47 @@ namespace DOL.GS.Commands
 			string midKeeps = string.Empty;
 			string hibKeeps = string.Empty;
 			ICollection<AbstractGameKeep> keepList = GameServer.KeepManager.GetFrontierKeeps();
-			ICollection<AbstractGameKeep> albKeepList = GameServer.KeepManager.GetKeepsOfRegion(1);
-			ICollection<AbstractGameKeep> midKeepList = GameServer.KeepManager.GetKeepsOfRegion(100);
-			ICollection<AbstractGameKeep> hibKeepList = GameServer.KeepManager.GetKeepsOfRegion(200);
-
-			foreach (AbstractGameKeep keep in albKeepList)
-			{
-				if (keep.IsPortalKeep)
-					continue;
-
-				if (keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase))
-				{
-					continue;
-				}
-				
-				if (keep is GameKeep)
-					albKeeps += KeepStringBuilder(keep);
-			}
-
-			foreach (AbstractGameKeep keep in midKeepList)
-			{
-				if (keep.IsPortalKeep)
-					continue;
-
-				if (keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase))
-				{
-					continue;
-				}
-
-				if (keep is GameKeep)
-					midKeeps += KeepStringBuilder(keep);
-			}
 			
-			foreach (AbstractGameKeep keep in hibKeepList)
+			foreach (AbstractGameKeep keep in keepList)
 			{
-				if (keep.IsPortalKeep)
-					continue;
-
-				if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
-					keep.Name.Contains("lamfhota", StringComparison.OrdinalIgnoreCase))
-				{
-					continue;
-				}
-				
 				if (keep is GameKeep)
-					hibKeeps += KeepStringBuilder(keep);
+				{
+					if (keep.Name.Contains("dagda", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("lamfotha", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("grallarhorn", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("mjollner", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("myrddin", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("excalibur", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("portal", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("crair", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("magh", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("ligen", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("cain", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("godrborg", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("rensamark", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("svasud", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("vindsaul", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("catterick", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("dinas", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("sauvage", StringComparison.OrdinalIgnoreCase) ||
+						keep.Name.Contains("snowdonia", StringComparison.OrdinalIgnoreCase))
+					{
+						continue;
+					}
+					switch (keep.OriginalRealm)
+					{
+						case eRealm.Albion:
+							albKeeps += KeepStringBuilder(keep);
+							break;
+						case eRealm.Hibernia:
+							hibKeeps += KeepStringBuilder(keep);
+							break;
+						case eRealm.Midgard:
+							midKeeps += KeepStringBuilder(keep);
+							break;
+					}
+				}
 			}
-			
-			// foreach (AbstractGameKeep keep in keepList)
-			// {
-			// 	if (keep is GameKeep)
-			// 	{
-			// 		switch (keep.OriginalRealm)
-			// 		{
-			// 			case eRealm.Albion:
-			// 				albKeeps += KeepStringBuilder(keep);
-			// 				break;
-			// 			case eRealm.Hibernia:
-			// 				hibKeeps += KeepStringBuilder(keep);
-			// 				break;
-			// 			case eRealm.Midgard:
-			// 				midKeeps += KeepStringBuilder(keep);
-			// 				break;
-			// 		}
-			// 	}
-			// }
 			var realmInfo = new List<string>();
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.AlbKeeps") + ":");
 			realmInfo.Add(albKeeps);
