@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -75,7 +76,18 @@ namespace DOL.GS.Commands
 				#region Jump t region #
 				if (args.Length == 4 && args[1] == "to" && args[2] == "region")
 				{
-					client.Player.MoveTo(Convert.ToUInt16(args[3]), client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+					ushort regionId = Convert.ToUInt16(args[3]);
+					Region region = WorldMgr.GetRegion(regionId);
+
+					if (region == null)
+						return;
+
+					if (client.Player.MoveTo(regionId, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading))
+						return;
+
+					// If no zone found for current player loc, jump to random loc in region.
+					Zone zone = region.Zones[Util.Random(region.Zones.Count - 1)];
+					client.Player.MoveTo(regionId, Util.Random(zone.XOffset, zone.XOffset + zone.Width), Util.Random(zone.YOffset, zone.YOffset + zone.Width), 6000, client.Player.Heading);
 					return;
 				}
 				#endregion Jump t region #
