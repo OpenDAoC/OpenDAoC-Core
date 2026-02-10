@@ -594,6 +594,7 @@ Scripts.Players.Realm.HibKeeps:            Hibernia Outposts
 Scripts.Players.Realm.MidKeeps:            Midgard Outposts
 Scripts.Players.Realm.Title:            Realm Status
 Scripts.Players.Realm.UseRelicCommand:      Use '/relic' for Relic info
+Scripts.Players.Realm.UseBattlegroundsCommand:      Use '/battlegrounds' for battlegrounds info
 
 ## /release
 GamePlayer.Release.SurroundingChange:			Your surroundings suddenly change!

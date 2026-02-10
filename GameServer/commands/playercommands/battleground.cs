@@ -8,10 +8,10 @@ using DOL.Database;
 namespace DOL.GS.Commands
 {
     [CmdAttribute(
-        "&battleground",
+        "&battlegrounds",
         ePrivLevel.Player,
         "Info about battlegrounds",
-        "/battleground")]
+        "/battlegrounds")]
     public class BattlegroundCommand : ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
