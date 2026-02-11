@@ -1,5 +1,4 @@
 #include "DetourInterface.hpp"
-#include <algorithm>
 #include <cfloat>
 #include <cstdint>
 #include <cstdio>
@@ -109,47 +108,8 @@ DLLEXPORT bool FreeNavMeshQuery(dtNavMeshQuery *queryPtr)
 	return true;
 }
 
-static inline bool IsMidPointOnPath(float const* A, float const* B, float const* C)
-{
-	float vectAC[3];
-	dtVsub(vectAC, C, A);
-	dtVnormalize(vectAC);
-	float vectAB[3];
-	dtVsub(vectAB, B, A);
-	float cross[3];
-	dtVcross(cross, vectAB, vectAC);
-	float len = dtVlen(cross);
-	return len <= 1;
-}
-
-void PathOptimize(dtNavMeshQuery *query, int *pointCount, float *pointBuffer, dtPolyRef *refs)
-{
-	for (int i = 0; i < *pointCount - 2; ++i)
-	{
-		unsigned short flags[2];
-		query->getAttachedNavMesh()->getPolyFlags(refs[i + 0], flags + 0);
-		query->getAttachedNavMesh()->getPolyFlags(refs[i + 1], flags + 1);
-		if (flags[0] != flags[1]) // we can't merge 2 different points
-			continue;
-
-		// we take 3 points: first --- mid --- last and check if mid is on the line, in this case, we remove mid
-		float const *A = &(pointBuffer[(i + 0) * 3]);
-		float const *B = &(pointBuffer[(i + 1) * 3]); // mid, point to remove
-		float const *C = &(pointBuffer[(i + 2) * 3]);
-
-		if (IsMidPointOnPath(A, B, C))
-		{
-			std::copy(pointBuffer + (i + 2) * 3, pointBuffer + (*pointCount) * 3, pointBuffer + (i + 1) * 3);
-			std::copy(refs + i + 2, refs + *pointCount, refs + i + 1);
-			*pointCount -= 1;
-			--i; // we redo this loop
-		}
-	}
-}
-
 DLLEXPORT dtStatus PathStraight(dtNavMeshQuery *query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], dtStraightPathOptions pathOptions, int *pointCount, float *pointBuffer, dtPolyFlags *pointFlags)
 {
-	dtStatus status;
 	*pointCount = 0;
 
 	dtPolyRef startRef;
@@ -157,38 +117,78 @@ DLLEXPORT dtStatus PathStraight(dtNavMeshQuery *query, float start[], float end[
 	dtQueryFilter filter;
 	filter.setIncludeFlags(queryFilter[0]);
 	filter.setExcludeFlags(queryFilter[1]);
-	if (dtStatusSucceed(status = query->findNearestPoly(start, polyPickExt, &filter, &startRef, nullptr)) && dtStatusSucceed(status = query->findNearestPoly(end, polyPickExt, &filter, &endRef, nullptr)))
+
+	dtStatus status;
+
+	if (dtStatusSucceed(status = query->findNearestPoly(start, polyPickExt, &filter, &startRef, nullptr)) &&
+		dtStatusSucceed(status = query->findNearestPoly(end, polyPickExt, &filter, &endRef, nullptr)))
 	{
 		int npolys = 0;
 		dtPolyRef polys[MAX_POLY];
-		if (dtStatusSucceed(status = query->findPath(startRef, endRef, start, end, &filter, polys, &npolys, MAX_POLY)))
+		dtStatus pathStatus = query->findPath(startRef, endRef, start, end, &filter, polys, &npolys, MAX_POLY);
+
+		if (npolys <= 0)
+			return pathStatus;
+
+		if (dtStatusSucceed(pathStatus))
 		{
 			float epos[3];
-			epos[0] = end[0];
-			epos[1] = end[1];
-			epos[2] = end[2];
-			if ((polys[npolys + -1] == endRef) || dtStatusSucceed(status = query->closestPointOnPoly(polys[npolys + -1], end, epos, nullptr)))
+
+			// Partial if findPath said so, OR if the last polygon found is not the target endRef.
+			bool isPartialPath = (pathStatus & DT_PARTIAL_RESULT) != 0;
+			if (polys[npolys - 1] != endRef)
+				isPartialPath = true;
+
+			if (isPartialPath)
 			{
-				dtPolyRef straightPathPolys[MAX_POLY];
-				unsigned char straightPathFlags[MAX_POLY];
-				auto straightPathRefs = &straightPathPolys[0];
-				if (dtStatusSucceed(status = query->findStraightPath(start, epos, polys, npolys, pointBuffer, straightPathFlags, straightPathRefs, pointCount, MAX_POLY, pathOptions)) && (0 < *pointCount))
-				{
-					// Temporarily disabled since it's too aggressive.
-					// PathOptimize(query, pointCount, pointBuffer, straightPathRefs);
-					int pointIdx = 0;
-					while (*pointCount != pointIdx && pointIdx <= *pointCount)
-					{
-						auto ref = *straightPathRefs;
-						pointIdx = pointIdx + 1;
-						straightPathRefs = straightPathRefs + 1;
-						query->getAttachedNavMesh()->getPolyFlags(ref, (unsigned short *)pointFlags);
-						pointFlags = pointFlags + 1;
-					}
-				}
+				// If partial, we must clamp the end point to the last polygon we found.
+				dtStatus clampStatus = query->closestPointOnPoly(polys[npolys - 1], end, epos, nullptr);
+				if (dtStatusFailed(clampStatus))
+					return clampStatus;
+			}
+			else
+				dtVcopy(epos, end);
+
+			dtPolyRef straightPathPolys[MAX_POLY];
+			unsigned char straightPathFlags[MAX_POLY];
+			status = query->findStraightPath(start, epos, polys, npolys, pointBuffer, straightPathFlags, straightPathPolys, pointCount, MAX_POLY, pathOptions);
+
+			if (dtStatusSucceed(status) && (*pointCount > 0))
+			{
+				for (int i = 0; i < *pointCount; ++i)
+					query->getAttachedNavMesh()->getPolyFlags(straightPathPolys[i], (unsigned short*)&pointFlags[i]);
+
+				return isPartialPath ? (DT_SUCCESS | DT_PARTIAL_RESULT) : DT_SUCCESS;
 			}
 		}
+		else
+			status = pathStatus;
 	}
+
+	return status;
+}
+
+DLLEXPORT dtStatus MoveAlongSurface(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], float* outputVector)
+{
+	dtQueryFilter filter;
+	filter.setIncludeFlags(queryFilter[0]);
+	filter.setExcludeFlags(queryFilter[1]);
+
+	dtPolyRef startRef;
+	dtStatus status = query->findNearestPoly(start, polyPickExt, &filter, &startRef, nullptr);
+
+	if (dtStatusFailed(status))
+		return status;
+
+	float resultPos[3];
+	dtPolyRef visited[16];
+	int nvisited = 0;
+
+	status = query->moveAlongSurface(startRef, start, end, &filter, resultPos, visited, &nvisited, 16);
+
+	if (dtStatusSucceed(status))
+		dtVcopy(outputVector, resultPos);
+
 	return status;
 }
 
@@ -291,6 +291,32 @@ DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[
 	}
 
 	return DT_FAILURE;
+}
+
+DLLEXPORT dtStatus HasLineOfSight(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], bool *hasLos, float *outputVector)
+{
+	dtQueryFilter filter;
+	filter.setIncludeFlags(queryFilter[0]);
+	filter.setExcludeFlags(queryFilter[1]);
+
+	dtPolyRef startRef;
+	dtStatus status = query->findNearestPoly(start, polyPickExt, &filter, &startRef, nullptr);
+
+	if (dtStatusFailed(status))
+		return status;
+
+	dtRaycastHit raycastHit{};
+	status = query->raycast(startRef, start, end, &filter, 0, &raycastHit, 0);
+
+	if (dtStatusSucceed(status))
+	{
+		outputVector[0] = start[0] + (end[0] - start[0]) * raycastHit.t;
+		outputVector[1] = start[1] + (end[1] - start[1]) * raycastHit.t;
+		outputVector[2] = start[2] + (end[2] - start[2]) * raycastHit.t;
+		*hasLos = raycastHit.t > 1.0f - 1e-4f;
+	}
+
+	return status;
 }
 
 DLLEXPORT dtStatus GetPolyAt(dtNavMeshQuery *query, float *center, float *extents, unsigned short *queryFilter, dtPolyRef *polyRef, float *point)
