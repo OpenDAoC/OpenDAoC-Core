@@ -121,7 +121,7 @@ namespace DOL.GS.Keeps
 				keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsLessThan(20));
 			// We use 1 in properties, cause we want "new" keeps, we also select 11 cause we use it for ev towers
 			else if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
-				keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreaterThan(20).Or(DB.Column("Skin").IsEqualTo(11)));
+				keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreaterThan(20).Or(DB.Column("Skin").IsEqualTo(11).And(DB.Column("KeepID").IsIn(new int[] { 151, 152, 153 }))));
 
 			if (keepcomponents != null)
 			{
