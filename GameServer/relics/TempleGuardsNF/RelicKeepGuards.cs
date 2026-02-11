@@ -45,42 +45,15 @@ namespace DOL.GS
         }
         private void SetupByKeepName()
         {
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                LoadDefaultTemplate();
-                return;
-            }
-
             string customTemplateID = this.Name.ToLower().Replace(" ", "_");
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             if (template.LoadFromDatabase(customTemplateID))
             {
-                this.Inventory = template;
-                this.EquipmentTemplateID = customTemplateID;
-            }
-            else
-            {
-                LoadDefaultTemplate();
-            }
-
-            InitializeActiveWeaponFromInventory();
-        }
-
-        private void LoadDefaultTemplate()
-        {
-            string defaultID = "";
-            switch (Realm)
-            {
-                case eRealm.Albion: defaultID = "relic_temple_lord_alb"; break;
-                case eRealm.Midgard: defaultID = "relic_temple_lord_mid"; break;
-                case eRealm.Hibernia: defaultID = "relic_temple_lord_hib"; break;
-            }
-
-            GameNpcInventoryTemplate defaultTemplate = new GameNpcInventoryTemplate();
-            if (defaultTemplate.LoadFromDatabase(defaultID))
-            {
-                this.Inventory = defaultTemplate;
+                EquipmentTemplateID = customTemplateID;
+                Inventory = template;
+                SaveIntoDatabase();
+                BroadcastLivingEquipmentUpdate();
                 InitializeActiveWeaponFromInventory();
             }
         }
@@ -111,14 +84,15 @@ namespace DOL.GS
 
                     if (relicGuard.Inventory != null)
                     {
-                        eInventorySlot[] emblemSlots = { eInventorySlot.LeftHandWeapon, eInventorySlot.Cloak };
-                        foreach (eInventorySlot slot in emblemSlots)
+                        DbInventoryItem cloak = relicGuard.Inventory.GetItem(eInventorySlot.Cloak);
+                        if (cloak != null && cloak.Emblem != guildEmblem)
                         {
-                            DbInventoryItem item = relicGuard.Inventory.GetItem(slot);
-                            if (item != null && item.Emblem != guildEmblem)
-                            {
-                                item.Emblem = guildEmblem;
-                            }
+                            cloak.Emblem = guildEmblem;
+                        }
+                        DbInventoryItem leftHand = relicGuard.ActiveLeftWeapon;
+                        if (leftHand != null && leftHand.Emblem != guildEmblem)
+                        {
+                            leftHand.Emblem = guildEmblem;
                         }
                     }
                     relicGuard.SaveIntoDatabase();
