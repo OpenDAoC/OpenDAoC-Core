@@ -1,22 +1,21 @@
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Style combat speed debuff effect spell handler
-	/// </summary>
-	[SpellHandler(eSpellType.StyleCombatSpeedDebuff)]
-	public class StyleCombatSpeedDebuff : CombatSpeedDebuff
-	{
-		public override double CalculateSpellResistChance(GameLiving target)
-		{
-			return 0;
-		}
+    /// <summary>
+    /// Style combat speed debuff effect spell handler
+    /// </summary>
+    [SpellHandler(eSpellType.StyleCombatSpeedDebuff)]
+    public class StyleCombatSpeedDebuff : CombatSpeedDebuff
+    {
+        public StyleCombatSpeedDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		protected override int CalculateEffectDuration(GameLiving target)
-		{
-			return Spell.Duration;
-		}
+        public override double CalculateSpellResistChance(GameLiving target)
+        {
+            return 0;
+        }
 
-		// constructor
-		public StyleCombatSpeedDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+        protected override int CalculateEffectDuration(GameLiving target)
+        {
+            return Spell.Duration;
+        }
+    }
 }

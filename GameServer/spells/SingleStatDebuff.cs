@@ -44,6 +44,11 @@ namespace DOL.GS.Spells
 
             return Math.Min(100, chance);
         }
+
+        public override bool HasConflictingEffectWith(ISpellHandler compare)
+        {
+            return true;
+        }
     }
 
     [SpellHandler(eSpellType.StrengthDebuff)]
