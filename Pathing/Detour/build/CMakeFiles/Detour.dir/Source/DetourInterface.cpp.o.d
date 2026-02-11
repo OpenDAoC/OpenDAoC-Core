@@ -1,12 +1,13 @@
 CMakeFiles/Detour.dir/Source/DetourInterface.cpp.o: \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Source/DetourInterface.cpp \
+ /home/daoc/Pathing/Detour/Source/DetourInterface.cpp \
  /usr/include/stdc-predef.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourInterface.hpp \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourCommon.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourMath.h \
- /usr/include/c++/12/math.h /usr/include/c++/12/cmath \
- /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h \
+ /home/daoc/Pathing/Detour/Include/DetourInterface.hpp \
+ /home/daoc/Pathing/Detour/Include/DetourCommon.h \
+ /home/daoc/Pathing/Detour/Include/DetourMath.h \
+ /usr/include/c++/14/math.h /usr/include/c++/14/cmath \
+ /usr/include/c++/14/bits/requires_hosted.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/c++config.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/bits/timesize.h \
@@ -14,10 +15,11 @@ CMakeFiles/Detour.dir/Source/DetourInterface.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/long-double.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/cpu_defines.h \
- /usr/include/c++/12/pstl/pstl_config.h \
- /usr/include/c++/12/bits/cpp_type_traits.h \
- /usr/include/c++/12/ext/type_traits.h /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/cpu_defines.h \
+ /usr/include/c++/14/pstl/pstl_config.h \
+ /usr/include/c++/14/bits/cpp_type_traits.h \
+ /usr/include/c++/14/bits/version.h /usr/include/c++/14/ext/type_traits.h \
+ /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/x86_64-linux-gnu/bits/types.h \
  /usr/include/x86_64-linux-gnu/bits/typesizes.h \
@@ -29,12 +31,13 @@ CMakeFiles/Detour.dir/Source/DetourInterface.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
  /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-macros.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /usr/include/c++/12/bits/std_abs.h /usr/include/stdlib.h \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
+ /usr/include/c++/14/bits/std_abs.h /usr/include/stdlib.h \
+ /usr/lib/gcc/x86_64-linux-gnu/14/include/stddef.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
@@ -63,51 +66,45 @@ CMakeFiles/Detour.dir/Source/DetourInterface.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /usr/include/c++/12/bits/specfun.h \
- /usr/include/c++/12/bits/stl_algobase.h \
- /usr/include/c++/12/bits/functexcept.h \
- /usr/include/c++/12/bits/exception_defines.h \
- /usr/include/c++/12/ext/numeric_traits.h \
- /usr/include/c++/12/bits/stl_pair.h /usr/include/c++/12/type_traits \
- /usr/include/c++/12/bits/move.h /usr/include/c++/12/bits/utility.h \
- /usr/include/c++/12/bits/stl_iterator_base_types.h \
- /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
- /usr/include/c++/12/bits/concept_check.h \
- /usr/include/c++/12/debug/assertions.h \
- /usr/include/c++/12/bits/stl_iterator.h \
- /usr/include/c++/12/bits/ptr_traits.h /usr/include/c++/12/debug/debug.h \
- /usr/include/c++/12/bits/predefined_ops.h /usr/include/c++/12/limits \
- /usr/include/c++/12/tr1/gamma.tcc \
- /usr/include/c++/12/tr1/special_function_util.h \
- /usr/include/c++/12/tr1/bessel_function.tcc \
- /usr/include/c++/12/tr1/beta_function.tcc \
- /usr/include/c++/12/tr1/ell_integral.tcc \
- /usr/include/c++/12/tr1/exp_integral.tcc \
- /usr/include/c++/12/tr1/hypergeometric.tcc \
- /usr/include/c++/12/tr1/legendre_function.tcc \
- /usr/include/c++/12/tr1/modified_bessel_func.tcc \
- /usr/include/c++/12/tr1/poly_hermite.tcc \
- /usr/include/c++/12/tr1/poly_laguerre.tcc \
- /usr/include/c++/12/tr1/riemann_zeta.tcc \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourNavMesh.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourAlloc.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourStatus.h \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /usr/include/c++/14/bits/specfun.h \
+ /usr/include/c++/14/bits/stl_algobase.h \
+ /usr/include/c++/14/bits/functexcept.h \
+ /usr/include/c++/14/bits/exception_defines.h \
+ /usr/include/c++/14/ext/numeric_traits.h \
+ /usr/include/c++/14/bits/stl_pair.h /usr/include/c++/14/type_traits \
+ /usr/include/c++/14/bits/move.h /usr/include/c++/14/bits/utility.h \
+ /usr/include/c++/14/bits/stl_iterator_base_types.h \
+ /usr/include/c++/14/bits/stl_iterator_base_funcs.h \
+ /usr/include/c++/14/bits/concept_check.h \
+ /usr/include/c++/14/debug/assertions.h \
+ /usr/include/c++/14/bits/stl_iterator.h \
+ /usr/include/c++/14/bits/ptr_traits.h /usr/include/c++/14/debug/debug.h \
+ /usr/include/c++/14/bits/predefined_ops.h /usr/include/c++/14/bit \
+ /usr/include/c++/14/concepts /usr/include/c++/14/limits \
+ /usr/include/c++/14/tr1/gamma.tcc \
+ /usr/include/c++/14/tr1/special_function_util.h \
+ /usr/include/c++/14/tr1/bessel_function.tcc \
+ /usr/include/c++/14/tr1/beta_function.tcc \
+ /usr/include/c++/14/tr1/ell_integral.tcc \
+ /usr/include/c++/14/tr1/exp_integral.tcc \
+ /usr/include/c++/14/tr1/hypergeometric.tcc \
+ /usr/include/c++/14/tr1/legendre_function.tcc \
+ /usr/include/c++/14/tr1/modified_bessel_func.tcc \
+ /usr/include/c++/14/tr1/poly_hermite.tcc \
+ /usr/include/c++/14/tr1/poly_laguerre.tcc \
+ /usr/include/c++/14/tr1/riemann_zeta.tcc \
+ /home/daoc/Pathing/Detour/Include/DetourNavMesh.h \
+ /home/daoc/Pathing/Detour/Include/DetourAlloc.h \
+ /home/daoc/Pathing/Detour/Include/DetourStatus.h \
+ /usr/lib/gcc/x86_64-linux-gnu/14/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourNavMeshQuery.h \
- /usr/include/c++/12/algorithm /usr/include/c++/12/bits/stl_algo.h \
- /usr/include/c++/12/bits/algorithmfwd.h \
- /usr/include/c++/12/initializer_list /usr/include/c++/12/bits/stl_heap.h \
- /usr/include/c++/12/bits/stl_tempbuf.h \
- /usr/include/c++/12/bits/stl_construct.h /usr/include/c++/12/new \
- /usr/include/c++/12/bits/exception.h \
- /usr/include/c++/12/bits/uniform_int_dist.h /usr/include/c++/12/cstdlib \
- /usr/include/c++/12/pstl/glue_algorithm_defs.h \
- /usr/include/c++/12/pstl/execution_defs.h /usr/include/c++/12/cfloat \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/float.h \
- /usr/include/c++/12/cstdint /usr/include/c++/12/cstdio \
- /usr/include/stdio.h /usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
+ /home/daoc/Pathing/Detour/Include/DetourNavMeshQuery.h \
+ /usr/include/c++/14/cfloat \
+ /usr/lib/gcc/x86_64-linux-gnu/14/include/float.h \
+ /usr/include/c++/14/cstdint /usr/include/c++/14/cstdio \
+ /usr/include/stdio.h /usr/lib/gcc/x86_64-linux-gnu/14/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
@@ -116,62 +113,70 @@ CMakeFiles/Detour.dir/Source/DetourInterface.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/stdio.h /usr/include/c++/12/cstring \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h /usr/include/c++/14/cstring \
  /usr/include/string.h /usr/include/strings.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourAlloc.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourCommon.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourNavMesh.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourNavMeshQuery.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourStatus.h \
- /usr/include/c++/12/functional /usr/include/c++/12/bits/stl_function.h \
- /usr/include/c++/12/backward/binders.h /usr/include/c++/12/tuple \
- /usr/include/c++/12/bits/uses_allocator.h \
- /usr/include/c++/12/bits/invoke.h \
- /usr/include/c++/12/bits/functional_hash.h \
- /usr/include/c++/12/bits/hash_bytes.h /usr/include/c++/12/bits/refwrap.h \
- /usr/include/c++/12/bits/std_function.h /usr/include/c++/12/typeinfo \
- /usr/include/c++/12/unordered_map /usr/include/c++/12/bits/allocator.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/c++allocator.h \
- /usr/include/c++/12/bits/new_allocator.h \
- /usr/include/c++/12/bits/memoryfwd.h \
- /usr/include/c++/12/ext/alloc_traits.h \
- /usr/include/c++/12/bits/alloc_traits.h \
- /usr/include/c++/12/ext/aligned_buffer.h \
- /usr/include/c++/12/bits/hashtable.h \
- /usr/include/c++/12/bits/hashtable_policy.h \
- /usr/include/c++/12/bits/enable_special_members.h \
- /usr/include/c++/12/bits/node_handle.h \
- /usr/include/c++/12/bits/unordered_map.h \
- /usr/include/c++/12/bits/range_access.h \
- /usr/include/c++/12/bits/erase_if.h /usr/include/c++/12/vector \
- /usr/include/c++/12/bits/stl_uninitialized.h \
- /usr/include/c++/12/bits/stl_vector.h \
- /usr/include/c++/12/bits/stl_bvector.h \
- /usr/include/c++/12/bits/vector.tcc /usr/include/c++/12/array \
- /usr/include/c++/12/compare /usr/include/c++/12/random \
- /usr/include/c++/12/string /usr/include/c++/12/bits/stringfwd.h \
- /usr/include/c++/12/bits/char_traits.h \
- /usr/include/c++/12/bits/postypes.h /usr/include/c++/12/cwchar \
+ /home/daoc/Pathing/Detour/Include/DetourAlloc.h \
+ /home/daoc/Pathing/Detour/Include/DetourCommon.h \
+ /home/daoc/Pathing/Detour/Include/DetourNavMesh.h \
+ /home/daoc/Pathing/Detour/Include/DetourNavMeshQuery.h \
+ /home/daoc/Pathing/Detour/Include/DetourStatus.h \
+ /usr/include/c++/14/functional /usr/include/c++/14/bits/stl_function.h \
+ /usr/include/c++/14/backward/binders.h /usr/include/c++/14/tuple \
+ /usr/include/c++/14/bits/uses_allocator.h \
+ /usr/include/c++/14/bits/invoke.h \
+ /usr/include/c++/14/bits/functional_hash.h \
+ /usr/include/c++/14/bits/hash_bytes.h /usr/include/c++/14/bits/refwrap.h \
+ /usr/include/c++/14/bits/std_function.h /usr/include/c++/14/new \
+ /usr/include/c++/14/bits/exception.h /usr/include/c++/14/typeinfo \
+ /usr/include/c++/14/unordered_map /usr/include/c++/14/initializer_list \
+ /usr/include/c++/14/bits/unordered_map.h \
+ /usr/include/c++/14/bits/hashtable.h \
+ /usr/include/c++/14/bits/hashtable_policy.h \
+ /usr/include/c++/14/ext/aligned_buffer.h \
+ /usr/include/c++/14/ext/alloc_traits.h \
+ /usr/include/c++/14/bits/alloc_traits.h \
+ /usr/include/c++/14/bits/stl_construct.h \
+ /usr/include/c++/14/bits/memoryfwd.h \
+ /usr/include/c++/14/bits/allocator.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/c++allocator.h \
+ /usr/include/c++/14/bits/new_allocator.h \
+ /usr/include/c++/14/bits/enable_special_members.h \
+ /usr/include/c++/14/bits/node_handle.h \
+ /usr/include/c++/14/bits/range_access.h \
+ /usr/include/c++/14/bits/erase_if.h \
+ /usr/include/c++/14/bits/memory_resource.h /usr/include/c++/14/cstddef \
+ /usr/include/c++/14/bits/uses_allocator_args.h \
+ /usr/include/c++/14/vector /usr/include/c++/14/bits/stl_uninitialized.h \
+ /usr/include/c++/14/bits/stl_vector.h \
+ /usr/include/c++/14/bits/stl_bvector.h \
+ /usr/include/c++/14/bits/vector.tcc /usr/include/c++/14/array \
+ /usr/include/c++/14/compare /usr/include/c++/14/random \
+ /usr/include/c++/14/cstdlib /usr/include/c++/14/string \
+ /usr/include/c++/14/bits/stringfwd.h \
+ /usr/include/c++/14/bits/char_traits.h \
+ /usr/include/c++/14/bits/postypes.h /usr/include/c++/14/cwchar \
  /usr/include/wchar.h /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
- /usr/include/c++/12/bits/localefwd.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/c++locale.h \
- /usr/include/c++/12/clocale /usr/include/locale.h \
- /usr/include/x86_64-linux-gnu/bits/locale.h /usr/include/c++/12/iosfwd \
- /usr/include/c++/12/cctype /usr/include/ctype.h \
- /usr/include/c++/12/bits/ostream_insert.h \
- /usr/include/c++/12/bits/cxxabi_forced.h \
- /usr/include/c++/12/bits/basic_string.h /usr/include/c++/12/string_view \
- /usr/include/c++/12/bits/string_view.tcc \
- /usr/include/c++/12/ext/string_conversions.h /usr/include/c++/12/cerrno \
+ /usr/include/c++/14/bits/localefwd.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/c++locale.h \
+ /usr/include/c++/14/clocale /usr/include/locale.h \
+ /usr/include/x86_64-linux-gnu/bits/locale.h /usr/include/c++/14/iosfwd \
+ /usr/include/c++/14/cctype /usr/include/ctype.h \
+ /usr/include/c++/14/bits/ostream_insert.h \
+ /usr/include/c++/14/bits/cxxabi_forced.h \
+ /usr/include/c++/14/bits/basic_string.h /usr/include/c++/14/string_view \
+ /usr/include/c++/14/bits/string_view.tcc \
+ /usr/include/c++/14/ext/string_conversions.h /usr/include/c++/14/cerrno \
  /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
- /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/linux/errno.h /usr/lib/linux/uapi/x86/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
- /usr/include/c++/12/bits/charconv.h \
- /usr/include/c++/12/bits/basic_string.tcc \
- /usr/include/c++/12/bits/random.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/opt_random.h \
- /usr/include/c++/12/bits/random.tcc /usr/include/c++/12/numeric \
- /usr/include/c++/12/bits/stl_numeric.h /usr/include/c++/12/bit \
- /usr/include/c++/12/pstl/glue_numeric_defs.h
+ /usr/include/c++/14/bits/charconv.h \
+ /usr/include/c++/14/bits/basic_string.tcc \
+ /usr/include/c++/14/bits/random.h \
+ /usr/include/c++/14/bits/uniform_int_dist.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/opt_random.h \
+ /usr/include/c++/14/bits/random.tcc /usr/include/c++/14/numeric \
+ /usr/include/c++/14/bits/stl_numeric.h \
+ /usr/include/c++/14/pstl/glue_numeric_defs.h \
+ /usr/include/c++/14/pstl/execution_defs.h

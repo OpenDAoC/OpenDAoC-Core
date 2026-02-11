@@ -1,12 +1,12 @@
 CMakeFiles/Detour.dir/Source/DetourNode.cpp.o: \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Source/DetourNode.cpp \
+ /home/daoc/Pathing/Detour/Source/DetourNode.cpp \
  /usr/include/stdc-predef.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourNode.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourNavMesh.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourAlloc.h \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stddef.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourStatus.h \
- /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
+ /home/daoc/Pathing/Detour/Include/DetourNode.h \
+ /home/daoc/Pathing/Detour/Include/DetourNavMesh.h \
+ /home/daoc/Pathing/Detour/Include/DetourAlloc.h \
+ /usr/lib/gcc/x86_64-linux-gnu/14/include/stddef.h \
+ /home/daoc/Pathing/Detour/Include/DetourStatus.h \
+ /usr/lib/gcc/x86_64-linux-gnu/14/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -21,29 +21,32 @@ CMakeFiles/Detour.dir/Source/DetourNode.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourAlloc.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourAssert.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourCommon.h \
- /home/opendaoc/OpenDAoC-Core/Pathing/Detour/Include/DetourMath.h \
- /usr/include/c++/12/math.h /usr/include/c++/12/cmath \
- /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/cpu_defines.h \
- /usr/include/c++/12/pstl/pstl_config.h \
- /usr/include/c++/12/bits/cpp_type_traits.h \
- /usr/include/c++/12/ext/type_traits.h /usr/include/math.h \
- /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
+ /home/daoc/Pathing/Detour/Include/DetourAlloc.h \
+ /home/daoc/Pathing/Detour/Include/DetourAssert.h \
+ /home/daoc/Pathing/Detour/Include/DetourCommon.h \
+ /home/daoc/Pathing/Detour/Include/DetourMath.h \
+ /usr/include/c++/14/math.h /usr/include/c++/14/cmath \
+ /usr/include/c++/14/bits/requires_hosted.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/c++config.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/os_defines.h \
+ /usr/include/x86_64-linux-gnu/c++/14/bits/cpu_defines.h \
+ /usr/include/c++/14/pstl/pstl_config.h \
+ /usr/include/c++/14/bits/cpp_type_traits.h \
+ /usr/include/c++/14/bits/version.h /usr/include/c++/14/ext/type_traits.h \
+ /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
  /usr/include/x86_64-linux-gnu/bits/fp-fast.h \
+ /usr/include/x86_64-linux-gnu/bits/mathcalls-macros.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /usr/include/c++/12/bits/std_abs.h /usr/include/stdlib.h \
+ /usr/include/c++/14/bits/std_abs.h /usr/include/stdlib.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
@@ -71,30 +74,31 @@ CMakeFiles/Detour.dir/Source/DetourNode.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /usr/include/c++/12/bits/specfun.h \
- /usr/include/c++/12/bits/stl_algobase.h \
- /usr/include/c++/12/bits/functexcept.h \
- /usr/include/c++/12/bits/exception_defines.h \
- /usr/include/c++/12/ext/numeric_traits.h \
- /usr/include/c++/12/bits/stl_pair.h /usr/include/c++/12/type_traits \
- /usr/include/c++/12/bits/move.h /usr/include/c++/12/bits/utility.h \
- /usr/include/c++/12/bits/stl_iterator_base_types.h \
- /usr/include/c++/12/bits/stl_iterator_base_funcs.h \
- /usr/include/c++/12/bits/concept_check.h \
- /usr/include/c++/12/debug/assertions.h \
- /usr/include/c++/12/bits/stl_iterator.h \
- /usr/include/c++/12/bits/ptr_traits.h /usr/include/c++/12/debug/debug.h \
- /usr/include/c++/12/bits/predefined_ops.h /usr/include/c++/12/limits \
- /usr/include/c++/12/tr1/gamma.tcc \
- /usr/include/c++/12/tr1/special_function_util.h \
- /usr/include/c++/12/tr1/bessel_function.tcc \
- /usr/include/c++/12/tr1/beta_function.tcc \
- /usr/include/c++/12/tr1/ell_integral.tcc \
- /usr/include/c++/12/tr1/exp_integral.tcc \
- /usr/include/c++/12/tr1/hypergeometric.tcc \
- /usr/include/c++/12/tr1/legendre_function.tcc \
- /usr/include/c++/12/tr1/modified_bessel_func.tcc \
- /usr/include/c++/12/tr1/poly_hermite.tcc \
- /usr/include/c++/12/tr1/poly_laguerre.tcc \
- /usr/include/c++/12/tr1/riemann_zeta.tcc /usr/include/string.h \
+ /usr/include/c++/14/bits/specfun.h \
+ /usr/include/c++/14/bits/stl_algobase.h \
+ /usr/include/c++/14/bits/functexcept.h \
+ /usr/include/c++/14/bits/exception_defines.h \
+ /usr/include/c++/14/ext/numeric_traits.h \
+ /usr/include/c++/14/bits/stl_pair.h /usr/include/c++/14/type_traits \
+ /usr/include/c++/14/bits/move.h /usr/include/c++/14/bits/utility.h \
+ /usr/include/c++/14/bits/stl_iterator_base_types.h \
+ /usr/include/c++/14/bits/stl_iterator_base_funcs.h \
+ /usr/include/c++/14/bits/concept_check.h \
+ /usr/include/c++/14/debug/assertions.h \
+ /usr/include/c++/14/bits/stl_iterator.h \
+ /usr/include/c++/14/bits/ptr_traits.h /usr/include/c++/14/debug/debug.h \
+ /usr/include/c++/14/bits/predefined_ops.h /usr/include/c++/14/bit \
+ /usr/include/c++/14/concepts /usr/include/c++/14/limits \
+ /usr/include/c++/14/tr1/gamma.tcc \
+ /usr/include/c++/14/tr1/special_function_util.h \
+ /usr/include/c++/14/tr1/bessel_function.tcc \
+ /usr/include/c++/14/tr1/beta_function.tcc \
+ /usr/include/c++/14/tr1/ell_integral.tcc \
+ /usr/include/c++/14/tr1/exp_integral.tcc \
+ /usr/include/c++/14/tr1/hypergeometric.tcc \
+ /usr/include/c++/14/tr1/legendre_function.tcc \
+ /usr/include/c++/14/tr1/modified_bessel_func.tcc \
+ /usr/include/c++/14/tr1/poly_hermite.tcc \
+ /usr/include/c++/14/tr1/poly_laguerre.tcc \
+ /usr/include/c++/14/tr1/riemann_zeta.tcc /usr/include/string.h \
  /usr/include/strings.h

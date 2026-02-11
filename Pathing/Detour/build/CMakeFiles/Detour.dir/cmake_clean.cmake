@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  ".VERSION"
+  "CMakeFiles/Detour.dir/link.d"
   "CMakeFiles/Detour.dir/Source/DetourAlloc.cpp.o"
   "CMakeFiles/Detour.dir/Source/DetourAlloc.cpp.o.d"
   "CMakeFiles/Detour.dir/Source/DetourAssert.cpp.o"
