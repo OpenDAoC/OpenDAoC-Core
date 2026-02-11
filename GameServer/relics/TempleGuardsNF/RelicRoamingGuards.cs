@@ -21,13 +21,17 @@ namespace DOL.GS
         public static void OnServerStartup(DOLEvent e, object sender, EventArgs args)
         {
             //string[] midTowers = { "Fensalir Faste Watchtower", "Arvakr Faste Watchtower", "Hlidskialf Faste Watchtower", "Glenlock Faste Watchtower", "Nottmor Faste Watchtower", "Bledmeer Faste Watchtower", "Blendrake Faste Outpost", "Nottmor Faste Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, "patrol_lamfhota");
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, 2444, "patrol_lamfhota", midTowers);
             //string[] midTowers = { "Fensalir Faste Guardtower", "Arvakr Faste Guardtower", "Hlidskialf Faste Guardtower", "Glenlock Faste Guardtower", "Nottmor Faste Guardtower", "Bledmeer Faste Guardtower", "Hlidskialf Faste Outpost", "Glenlock Faste Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, "patrol_lamfhota");
-            string[] hibTowers = { "Dun Ailinne Watchtower", "Dun Scathaig Watchtower", "Dun da Behnn Watchtower", "Dun nGed Watchtower", "Dun Crimthain Watchtower", "Dun Crauchon Watchtower", "Dun Bolg Outpost", "Dun Crimthain Outpost" };
-            RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374452, 590104, 8571, "patrol_lamfhota", hibTowers);
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, 2444, "patrol_lamfhota", midTowers);
+            string[] hibTowers = { "Dun Ailinne Watchtower", "Dun Scathaig Watchtower", "Dun da Behnn Watchtower", "Dun nGed Watchtower", "Dun Crimthain Watchtower", "Dun Crauchon Guardtower", "Dun Bolg Outpost", "Dun Crimthain Outpost" };
+            RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374418, 590129, 8578, 3867, "patrol_lamfhota", hibTowers);
             //string[] hibTowers = { "Dun Ailinne Guardtower", "Dun Scathaig Guardtower", "Dun da Behnn Guardtower", "Dun nGed Guardtower", "Dun Crimthain Guardtower", "Dun Crauchon Guardtower", "Dun da Behnn Outpost", "Dun nGed Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374452, 590104, 8571, "patrol_lamfhota");
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374452, 590104, 8571, 2444, "patrol_dagda", hibTowers);
+            string[] albTowers = { "Caer Renaris Watchtower", "Caer Hurbury Watchtower", "Caer Sursbrooke Watchtower", "Caer Boldiam Watchtower", "Caer Berkstead Watchtower", "Caer Benowyc Guardtower", "Caer Erasleigh Outpost", "Caer Berkstead Outpost" };
+            RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 672170, 589589, 8609, 2444, "patrol_excalibur", albTowers);
+            //string[] albTowers = { "Caer Renaris Guardtower", "Caer Hurbury Guardtower", "Caer Sursbrooke Guardtower", "Caer Boldiam Guardtower", "Caer Berkstead Guardtower", "Caer Benowyc Guardtower", "Caer Sursbrooke Outpost", "Caer Boldiam Outpost" };
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 374452, 590104, 8571, 2444, "patrol_myrddin", albTowers);
         }
 
         public override bool AddToWorld()
@@ -78,7 +82,6 @@ namespace DOL.AI.Brain
             if (Body == null || !Body.IsAlive || _leader == null) return;
             if (Body.InCombat) { base.Think(); return; }
 
-            // 1. Zielposition berechnen (Relativ zum Leader)
             double headingRadiants = _leader.Heading * (Math.PI / 2048.0);
             double cosH = Math.Cos(headingRadiants);
             double sinH = Math.Sin(headingRadiants);
@@ -86,12 +89,10 @@ namespace DOL.AI.Brain
             int targetX = _leader.X + (int)(_offsetX * cosH - _offsetY * sinH);
             int targetY = _leader.Y + (int)(_offsetX * sinH + _offsetY * cosH);
 
-            // 2. Distanz berechnen
             long dx = Body.X - targetX;
             long dy = Body.Y - targetY;
             long distSq = dx * dx + dy * dy;
 
-            // 3. Bewegung
             if (distSq < 900)
             {
                 Body.TurnTo(_leader.Heading);
@@ -124,7 +125,7 @@ namespace DOL.GS
 {
     public static class RelicPatrolManager
     {
-        public static void SpawnPatrolGroup(eRealm realm, ushort region, int x, int y, int z, string pathID, string[] towerNames)
+        public static void SpawnPatrolGroup(eRealm realm, ushort region, int x, int y, int z, ushort h, string pathID, string[] towerNames)
         {
             // 1. Leader erstellen
             RelicPatrolGuard leader = new RelicPatrolGuard
@@ -135,6 +136,7 @@ namespace DOL.GS
                 X = x,
                 Y = y,
                 Z = z,
+                Heading = h,
                 IsLeader = true,
                 PathID = pathID
             };
