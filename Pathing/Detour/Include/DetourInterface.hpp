@@ -33,9 +33,11 @@ DLLEXPORT bool CreateNavMeshQuery(dtNavMesh* mesh, dtNavMeshQuery** const query)
 DLLEXPORT bool FreeNavMeshQuery(dtNavMeshQuery* query);
 
 DLLEXPORT dtStatus PathStraight(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], dtStraightPathOptions pathOptions, int* pointCount, float* pointBuffer, dtPolyFlags* pointFlags);
+DLLEXPORT dtStatus MoveAlongSurface(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], float* outputVector);
 DLLEXPORT dtStatus FindRandomPointAroundCircle(dtNavMeshQuery* query, float center[], float radius, float polyPickExt[], dtPolyFlags queryFilter[], float* outputVector);
 DLLEXPORT dtStatus FindClosestPoint(dtNavMeshQuery* query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], float* outputVector);
 DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery* query, float boxCenter[], float boxExtents[], float referencePos[], dtPolyFlags queryFilter[], float* outputVector);
+DLLEXPORT dtStatus HasLineOfSight(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], bool* hasLos, float* outputVector);
 DLLEXPORT dtStatus GetPolyAt(dtNavMeshQuery* query, float* center, float* extents, unsigned short* queryFilter, dtPolyRef* polyRef, float* point);
 DLLEXPORT dtStatus SetPolyFlags(dtNavMesh* navMesh, dtPolyRef ref, unsigned short flags);
 DLLEXPORT dtStatus QueryPolygons(dtNavMeshQuery* query, float* center, float* polyPickExtents, unsigned short* queryFilter, dtPolyRef* polys, int* polyCount, int maxPolys);

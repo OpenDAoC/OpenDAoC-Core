@@ -14,12 +14,17 @@ namespace DOL.GS
 
         public PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination)
         {
-            return new(EPathingError.NavmeshUnavailable, 0);
+            return new(PathingStatus.NavmeshUnavailable, 0);
+        }
+
+        public Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end)
+        {
+            return end;
         }
 
         public Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius)
         {
-            return null;
+            return position;
         }
 
         public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange)
@@ -27,7 +32,7 @@ namespace DOL.GS
             return position;
         }
 
-        public Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset, Vector3? referencePos)
+        public Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset)
         {
             return origin;
         }
@@ -40,6 +45,16 @@ namespace DOL.GS
         public Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth)
         {
             return position;
+        }
+
+        public bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target)
+        {
+            return true;
+        }
+
+        public Vector3? GetNearestPoly(Zone zone, Vector3 point)
+        {
+            return point;
         }
 
         public bool HasNavmesh(Zone zone)

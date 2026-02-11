@@ -11,7 +11,7 @@ namespace DOL.GS.Movement
 
         public PathVisualization() { }
 
-        public void Visualize(Queue<WrappedPathPoint> pathPoints, Region region)
+        public void Visualize(RingQueue<WrappedPathPoint> pathPoints, Region region)
         {
             if (pathPoints == null)
                 return;

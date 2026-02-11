@@ -161,12 +161,6 @@ namespace DOL.GS
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 ToVector2(this Vector3 value)
-        {
-            return new(value.X, value.Y);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool EqualsXY(this Vector3 a, Vector3 b)
         {
             return (a - b) * _xyMask == Vector3.Zero;

@@ -125,21 +125,21 @@ namespace DOL.GS
             }
 
             FinalizeTick();
+        }
 
-            void FinalizeTick()
+        private void FinalizeTick()
+        {
+            base.TickInternal();
+
+            if (_needsBroadcastUpdate)
             {
-                base.TickInternal();
-
-                if (_needsBroadcastUpdate)
-                {
-                    _needsBroadcastUpdate = false;
-                    OnPositionUpdate();
-                    ClientService.UpdateNpcForPlayers(Owner);
-                }
-
-                if (_movementState is MovementState.NONE)
-                    RemoveFromServiceObjectStore();
+                _needsBroadcastUpdate = false;
+                OnPositionUpdate();
+                ClientService.UpdateNpcForPlayers(Owner);
             }
+
+            if (_movementState is MovementState.NONE)
+                RemoveFromServiceObjectStore();
         }
 
         public void WalkTo(Vector3 destination, short speed)
@@ -298,7 +298,7 @@ namespace DOL.GS
             double angle = Util.RandomDouble() * Math.PI * 2;
             double targetX = Owner.SpawnPoint.X + maxRoamingRadius * Math.Cos(angle);
             double targetY = Owner.SpawnPoint.Y + maxRoamingRadius * Math.Sin(angle);
-            WalkTo(new Vector3((float) targetX, (float) targetY, Owner.SpawnPoint.Z), speed);
+            WalkTo(new((float) targetX, (float) targetY, Owner.SpawnPoint.Z), speed);
         }
 
         public void RestartCurrentMovement()
@@ -507,47 +507,101 @@ namespace DOL.GS
 
         private void PathToInternal(Vector3 destination, short speed)
         {
-            if (_pathCalculator == null)
+            Zone zone = Owner.CurrentZone;
+
+            if (!_pathCalculator.ShouldPath(zone, destination))
             {
-                UnsetFlag(MovementState.PATHING);
-                WalkToInternal(destination, speed);
+                FallbackToWalk(this, destination, speed);
                 return;
             }
 
-            if (!PathCalculator.ShouldPath(Owner, destination))
+            if (_pathCalculator.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? nextNode))
             {
-                UnsetFlag(MovementState.PATHING);
-                WalkToInternal(destination, speed);
+                // Continue pathing to the next node, even on partial paths.
+                _movementRequest.Set(MovementRequestType.Path, destination, speed);
+                SetFlag(MovementState.PATHING);
+                WalkToInternal(nextNode.Value, speed);
                 return;
             }
 
-            Vector3? nextNode = _pathCalculator.CalculateNextTarget(destination, out ENoPathReason noPathReason);
-
-            // Fall back to normal walking method if no path is found.
-            if (noPathReason is ENoPathReason.NoPath or ENoPathReason.End)
+            switch (_pathCalculator.PathingStatus)
             {
-                UnsetFlag(MovementState.PATHING);
-                WalkToInternal(destination, speed);
-                return;
+                case PathingStatus.PathFound:
+                case PathingStatus.PartialPathFound:
+                case PathingStatus.BufferTooSmall:
+                {
+                    // Finalize the path with a move along surface. This ensures that the NPC stays on the mesh.
+                    Vector3? safeDestination = PathingMgr.Instance.GetMoveAlongSurface(zone, _ownerPosition, destination);
+
+                    if (safeDestination.HasValue && !safeDestination.Value.IsInRange(_ownerPosition, 256f))
+                        FallbackToWalk(this, safeDestination.Value, speed);
+                    else
+                        PauseMovement(this, destination);
+
+                    break;
+                }
+                case PathingStatus.NoPathFound:
+                {
+                    // Allow pets to keep up with their owner if they jump down a ledge or bridge.
+                    // This is better than using `FallbackToWalk` and prevents pets from being pushed into walls.
+                    // This relies on `NoPathFound` to being returned in the first place, which may not happen if `PathToInternal` is called too late.
+                    if (Owner.Brain is IControlledBrain brain && FollowTarget != null && brain.Owner == FollowTarget)
+                    {
+                        const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
+                        const int MAX_FLOOR_SEARCH_DEPTH = 1024;
+                        const int MIN_TELEPORT_DISTANCE = 128;
+
+                        GamePlayer playerOwner = brain.GetPlayerOwner();
+
+                        if (Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
+                        {
+                            Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
+                            Vector3? floor = PathingMgr.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
+
+                            if (floor.HasValue && !Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
+                            {
+                                Owner.MoveInRegion(
+                                    playerOwner.CurrentRegionID,
+                                    (int) Math.Round(floor.Value.X),
+                                    (int) Math.Round(floor.Value.Y),
+                                    (int) Math.Round(floor.Value.Z),
+                                    playerOwner.Heading,
+                                    false);
+                            }
+                        }
+                    }
+
+                    // Consider making NPCs invincible and / or return to spawn point after a certain time.
+                    PauseMovement(this, destination);
+                    break;
+                }
+                case PathingStatus.NotSet:
+                case PathingStatus.NavmeshUnavailable:
+                {
+                    FallbackToWalk(this, destination, speed);
+                    break;
+                }
+                default:
+                {
+                    PauseMovement(this, destination);
+                    break;
+                }
             }
 
-            // Pause movement and turn toward the destination the path contains a closed door.
-            if (noPathReason is ENoPathReason.ClosedDoor)
+            static void FallbackToWalk(NpcMovementComponent component, Vector3 destination, short speed)
             {
-                TurnTo((int) destination.X, (int) destination.Y);
-                UnsetFlag(MovementState.PATHING);
-
-                if (IsMoving)
-                    UpdateMovement(0);
-
-                return;
+                component.UnsetFlag(MovementState.PATHING);
+                component.WalkToInternal(destination, speed);
             }
 
-            // Walk towards the next pathing node.
-            _movementRequest.Set(MovementRequestType.Path, destination, speed);
-            SetFlag(MovementState.PATHING);
-            WalkToInternal(nextNode.Value, speed);
-            return;
+            static void PauseMovement(NpcMovementComponent component, Vector3 destination)
+            {
+                component.TurnTo((int) destination.X, (int) destination.Y);
+                component.UnsetFlag(MovementState.PATHING);
+
+                if (component.IsMoving)
+                    component.UpdateMovement(0);
+            }
         }
 
         private int FollowTick()
@@ -583,9 +637,8 @@ namespace DOL.GS
 
             Vector3 relative = targetPos - _ownerPosition;
             float distanceSquared = relative.LengthSquared();
-            long maxFollowDistanceSquared = MaxFollowDistance * MaxFollowDistance;
 
-            if (distanceSquared > maxFollowDistanceSquared)
+            if (distanceSquared > MaxFollowDistance * MaxFollowDistance)
             {
                 StopFollowing();
                 return 0;
@@ -602,10 +655,10 @@ namespace DOL.GS
             }
 
             float distance = MathF.Sqrt(distanceSquared);
+            float scale = MinFollowDistance / distance;
 
-            Vector3 direction = Vector3.Normalize(relative);
-            Vector3 offset = direction * MinFollowDistance;
-            Vector3 destination = targetPos - offset;
+            Vector3 destination = targetPos - relative * scale;
+            destination.Z = targetPos.Z; // May move the NPC closer than intended, but improves movement overall.
 
             short speed;
 
@@ -632,7 +685,8 @@ namespace DOL.GS
 
             if (IsReturningToSpawnPoint)
             {
-                SetPositionToDestination();
+                _ownerPosition = _destination;
+                UpdateMovement(0);
                 CancelReturnToSpawnPoint();
                 TurnTo(Owner.SpawnHeading);
                 return;
@@ -656,9 +710,6 @@ namespace DOL.GS
             }
 
             if (IsMoving)
-                SetPositionToDestination();
-
-            void SetPositionToDestination()
             {
                 _ownerPosition = _destination;
                 UpdateMovement(0);
