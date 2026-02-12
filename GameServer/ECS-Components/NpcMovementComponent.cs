@@ -515,12 +515,12 @@ namespace DOL.GS
                 return;
             }
 
-            if (_pathCalculator.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? nextNode))
+            if (_pathCalculator.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? _nextNode))
             {
                 // Continue pathing to the next node, even on partial paths.
                 _movementRequest.Set(MovementRequestType.Path, destination, speed);
                 SetFlag(MovementState.PATHING);
-                WalkToInternal(nextNode.Value, speed);
+                WalkToInternal(_nextNode.Value, speed);
                 return;
             }
 
@@ -530,14 +530,15 @@ namespace DOL.GS
                 case PathingStatus.PartialPathFound:
                 case PathingStatus.BufferTooSmall:
                 {
-                    // Finalize the path with a move along surface. This ensures that the NPC stays on the mesh.
-                    Vector3? safeDestination = PathingMgr.Instance.GetMoveAlongSurface(zone, _ownerPosition, destination);
+                    // Finalize the path if we have direct LoS to the destination.
+                    // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
+                    if (PathingMgr.Instance.HasLineOfSight(zone, _ownerPosition, destination))
+                    {
+                        FallbackToWalk(this, destination, speed);
+                        break;
+                    }
 
-                    if (safeDestination.HasValue && !safeDestination.Value.IsInRange(_ownerPosition, 256f))
-                        FallbackToWalk(this, safeDestination.Value, speed);
-                    else
-                        PauseMovement(this, destination);
-
+                    PauseMovement(this, destination);
                     break;
                 }
                 case PathingStatus.NoPathFound:
@@ -545,7 +546,10 @@ namespace DOL.GS
                     // Allow pets to keep up with their owner if they jump down a ledge or bridge.
                     // This is better than using `FallbackToWalk` and prevents pets from being pushed into walls.
                     // This relies on `NoPathFound` to being returned in the first place, which may not happen if `PathToInternal` is called too late.
-                    if (Owner.Brain is IControlledBrain brain && FollowTarget != null && brain.Owner == FollowTarget)
+                    if (!Owner.InCombat &&
+                        Owner.Brain is IControlledBrain brain &&
+                        FollowTarget != null &&
+                        brain.Owner == FollowTarget)
                     {
                         const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
                         const int MAX_FLOOR_SEARCH_DEPTH = 1024;
@@ -560,13 +564,9 @@ namespace DOL.GS
 
                             if (floor.HasValue && !Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
                             {
-                                Owner.MoveInRegion(
-                                    playerOwner.CurrentRegionID,
-                                    (int) Math.Round(floor.Value.X),
-                                    (int) Math.Round(floor.Value.Y),
-                                    (int) Math.Round(floor.Value.Z),
-                                    playerOwner.Heading,
-                                    false);
+                                _ownerPosition = floor.Value;
+                                UpdateMovement(0);
+                                break;
                             }
                         }
                     }
@@ -677,7 +677,9 @@ namespace DOL.GS
             if (IsFlagSet(MovementState.PATHING))
             {
                 ProcessMovementRequest();
-                return;
+
+                if (IsFlagSet(MovementState.WALK_TO))
+                    return;
             }
 
             if (IsFlagSet(MovementState.FOLLOW))
