@@ -93,21 +93,44 @@ namespace DOL.AI.Brain
             long dy = Body.Y - targetY;
             long distSq = dx * dx + dy * dy;
 
-            if (distSq < 900)
+            // 1. Formation halten (Drehen nur im Stand)
+            // Wir erhöhen den Puffer minimal auf 1000, um Mikrobewegungen am Ziel zu vermeiden
+            if (distSq < 1000)
             {
-                Body.TurnTo(_leader.Heading);
+                if (Body.IsMoving) Body.StopMoving();
+                if (Math.Abs(Body.Heading - _leader.Heading) > 20) Body.TurnTo(_leader.Heading);
                 return;
             }
 
+            // 2. Ziel-Winkel für die Wache berechnen
             double angle = Math.Atan2(targetX - Body.X, targetY - Body.Y);
             ushort targetHeading = (ushort)((int)(angle * 2048.0 / Math.PI) & 0xFFF);
-            Body.TurnTo(targetHeading);
 
+            // 3. Laufrichtung setzen (Mit Toleranz gegen Zucken)
+            // Nur drehen, wenn die Abweichung > 5 Grad ist (ca. 60 Einheiten)
+            if (Math.Abs(Body.Heading - targetHeading) > 60)
+            {
+                Body.TurnTo(targetHeading);
+            }
+
+            // 4. Geschwindigkeit mit Dämpfungs-Zone
             short moveSpeed = _leader.MaxSpeed;
-            if (distSq > 40000) moveSpeed = (short)(moveSpeed * 1.25);
-            else if (distSq < 2500) moveSpeed = (short)(moveSpeed * 0.9);
 
-            if (!Body.IsMoving || distSq > 2500)
+            // AUFHOLEN: Wenn weiter als ~110 Units weg
+            if (distSq > 12100)
+            {
+                moveSpeed = (short)(moveSpeed * 1.25);
+            }
+            // ABBREMSEN: Wenn näher als ~55 Units dran
+            else if (distSq < 3025)
+            {
+                moveSpeed = (short)(moveSpeed * 0.85);
+            }
+            // ZONE DAZWISCHEN: Hier nutzt er 1.0x Speed (kein Zucken)
+
+            // 5. Marschieren
+            // Wir erhöhen die Schwelle für den Neubefehl etwas, um Pakete zu sparen
+            if (!Body.IsMoving || distSq > 1600)
             {
                 Body.WalkTo(new Point3D(targetX, targetY, _leader.Z), moveSpeed);
             }
@@ -144,9 +167,11 @@ namespace DOL.GS
 
             // Structure of roaming guards based on leader position
             int[,] offsets = {
-                { 0, -80 }, { -100, -150 }, { 100, -150 },
-                { -200, -220 }, { 200, -220 }, { -300, -290 },
-                { 300, -290 }, { -70, -270 }, { 70, -270 }
+                {    0, -100 },                  // 1. Wache: Direkt hinter dem Leader (Spitze)
+                { -80, -200 }, {  80, -200 },  // 2. & 3. Wache: Erstes Paar (leicht versetzt)
+                { -200, -300 }, {  200, -300 },  // 4. & 5. Wache: Zweites Paar
+                { -320, -400 }, {  320, -400 },  // 6. & 7. Wache: Drittes Paar
+                { -80, -350 }, {  80, -350 }   // 8. & 9. Wache: Viertes Paar (Ende des Vs)
             };
 
             for (int i = 0; i < offsets.GetLength(0); i++)
