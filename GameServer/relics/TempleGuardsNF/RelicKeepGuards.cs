@@ -52,10 +52,29 @@ namespace DOL.GS
             {
                 EquipmentTemplateID = customTemplateID;
                 Inventory = template;
-                SaveIntoDatabase();
-                BroadcastLivingEquipmentUpdate();
                 InitializeActiveWeaponFromInventory();
             }
+
+            if (!string.IsNullOrEmpty(GuildName))
+            {
+                Guild guild = GuildMgr.GetGuildByName(GuildName);
+
+                if (guild != null)
+                {
+                    DbInventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
+                    if (cloak != null && cloak.Emblem != guild.Emblem)
+                    {
+                        cloak.Emblem = guild.Emblem;
+                    }
+                    DbInventoryItem leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    if (leftHand != null && leftHand.Emblem != guild.Emblem)
+                    {
+                        leftHand.Emblem = guild.Emblem;
+                    }
+                }
+            }
+            SaveIntoDatabase();
+            BroadcastLivingEquipmentUpdate();
         }
 
         public override void Die(GameObject killer)
