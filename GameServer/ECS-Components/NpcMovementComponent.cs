@@ -677,7 +677,9 @@ namespace DOL.GS
             if (IsFlagSet(MovementState.PATHING))
             {
                 ProcessMovementRequest();
-                return;
+
+                if (IsFlagSet(MovementState.WALK_TO))
+                    return;
             }
 
             if (IsFlagSet(MovementState.FOLLOW))
