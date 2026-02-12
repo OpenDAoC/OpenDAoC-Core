@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -545,7 +546,10 @@ namespace DOL.GS
                     // Allow pets to keep up with their owner if they jump down a ledge or bridge.
                     // This is better than using `FallbackToWalk` and prevents pets from being pushed into walls.
                     // This relies on `NoPathFound` to being returned in the first place, which may not happen if `PathToInternal` is called too late.
-                    if (Owner.Brain is IControlledBrain brain && FollowTarget != null && brain.Owner == FollowTarget)
+                    if (!Owner.InCombat &&
+                        Owner.Brain is IControlledBrain brain &&
+                        FollowTarget != null &&
+                        brain.Owner == FollowTarget)
                     {
                         const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
                         const int MAX_FLOOR_SEARCH_DEPTH = 1024;
@@ -560,13 +564,9 @@ namespace DOL.GS
 
                             if (floor.HasValue && !Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
                             {
-                                Owner.MoveInRegion(
-                                    playerOwner.CurrentRegionID,
-                                    (int) Math.Round(floor.Value.X),
-                                    (int) Math.Round(floor.Value.Y),
-                                    (int) Math.Round(floor.Value.Z),
-                                    playerOwner.Heading,
-                                    false);
+                                _ownerPosition = floor.Value;
+                                UpdateMovement(0);
+                                break;
                             }
                         }
                     }
