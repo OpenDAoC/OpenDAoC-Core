@@ -533,7 +533,7 @@ namespace DOL.GS
                     // Finalize the path with a move along surface. This ensures that the NPC stays on the mesh.
                     Vector3? safeDestination = PathingMgr.Instance.GetMoveAlongSurface(zone, _ownerPosition, destination);
 
-                    if (safeDestination.HasValue && !safeDestination.Value.IsInRange(_ownerPosition, 256f))
+                    if (safeDestination.HasValue)
                         FallbackToWalk(this, safeDestination.Value, speed);
                     else
                         PauseMovement(this, destination);
