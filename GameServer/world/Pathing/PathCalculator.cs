@@ -15,6 +15,7 @@ namespace DOL.GS
         public const int MIN_TARGET_DIFF_REPLOT_DISTANCE = 64;
         public const int NODE_REACHED_DISTANCE = 16;
         public const int NODE_REACHED_DISTANCE_STRICT = 2;
+        public const int NODE_MAX_SKIP_DISTANCE = 80;
         public const int DOOR_SEARCH_DISTANCE = 64;
 
         public GameNPC Owner { get; }
@@ -144,9 +145,12 @@ namespace DOL.GS
 
                 for (int i = 1; i < count; i++)
                 {
-                    WrappedPathPoint candidate = _pathNodes.Peek(i);
+                    Vector3 candidatePosition = _pathNodes.Peek(i).Position;
 
-                    if (!PathingMgr.Instance.HasLineOfSight(zone, position, candidate.Position))
+                    if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
+                        break;
+
+                    if (!PathingMgr.Instance.HasLineOfSight(zone, position, candidatePosition))
                         break;
 
                     nodesToRemove = i;
