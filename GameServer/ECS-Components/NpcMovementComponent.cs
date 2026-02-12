@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -516,12 +515,12 @@ namespace DOL.GS
                 return;
             }
 
-            if (_pathCalculator.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? nextNode))
+            if (_pathCalculator.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? _nextNode))
             {
                 // Continue pathing to the next node, even on partial paths.
                 _movementRequest.Set(MovementRequestType.Path, destination, speed);
                 SetFlag(MovementState.PATHING);
-                WalkToInternal(nextNode.Value, speed);
+                WalkToInternal(_nextNode.Value, speed);
                 return;
             }
 
@@ -531,14 +530,15 @@ namespace DOL.GS
                 case PathingStatus.PartialPathFound:
                 case PathingStatus.BufferTooSmall:
                 {
-                    // Finalize the path with a move along surface. This ensures that the NPC stays on the mesh.
-                    Vector3? safeDestination = PathingMgr.Instance.GetMoveAlongSurface(zone, _ownerPosition, destination);
+                    // Finalize the path if we have direct LoS to the destination.
+                    // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
+                    if (PathingMgr.Instance.HasLineOfSight(zone, _ownerPosition, destination))
+                    {
+                        FallbackToWalk(this, destination, speed);
+                        break;
+                    }
 
-                    if (safeDestination.HasValue)
-                        FallbackToWalk(this, safeDestination.Value, speed);
-                    else
-                        PauseMovement(this, destination);
-
+                    PauseMovement(this, destination);
                     break;
                 }
                 case PathingStatus.NoPathFound:
