@@ -50,7 +50,7 @@ namespace DOL.GS.Behaviour.Actions
             if (npc.Brain is RoundsBrain)
             {
                 RoundsBrain brain = (RoundsBrain)npc.Brain;
-                npc.CurrentWaypoint = P;
+                npc.CurrentPathPoint = P;
                 brain.Start();
             }
             else

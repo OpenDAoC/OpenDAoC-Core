@@ -3,11 +3,11 @@ using System.Numerics;
 
 namespace DOL.GS
 {
-    public interface IPathingMgr
+    public interface IPathfindingMgr
     {
         bool Init();
         void Stop();
-        PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination);
+        PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination);
         Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end);
         Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius);
         Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange);
@@ -20,24 +20,24 @@ namespace DOL.GS
         bool IsAvailable { get; }
     }
 
-    public readonly struct PathingResult
+    public readonly struct PathfindingResult
     {
-        public PathingStatus Status { get; }
-        public int PointCount { get; }
+        public PathfindingStatus Status { get; }
+        public int NodeCount { get; }
 
-        public PathingResult(PathingStatus status, int pointCount)
+        public PathfindingResult(PathfindingStatus status, int nodeCount)
         {
             Status = status;
-            PointCount = pointCount;
+            NodeCount = nodeCount;
         }
     }
 
-    public readonly struct WrappedPathPoint : IEquatable<WrappedPathPoint>
+    public readonly struct WrappedPathfindingNode : IEquatable<WrappedPathfindingNode>
     {
         public Vector3 Position { get; }
         public EDtPolyFlags Flags { get; }
 
-        public WrappedPathPoint(Vector3 position, EDtPolyFlags flags)
+        public WrappedPathfindingNode(Vector3 position, EDtPolyFlags flags)
         {
             Position = position;
             Flags = flags;
@@ -48,14 +48,14 @@ namespace DOL.GS
             return $"({Position}, {Flags})";
         }
 
-        public bool Equals(WrappedPathPoint other)
+        public bool Equals(WrappedPathfindingNode other)
         {
             return Position.Equals(other.Position) && Flags == other.Flags;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is WrappedPathPoint other && Equals(other);
+            return obj is WrappedPathfindingNode other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -63,12 +63,12 @@ namespace DOL.GS
             return HashCode.Combine(Position, Flags);
         }
 
-        public static bool operator ==(WrappedPathPoint left, WrappedPathPoint right)
+        public static bool operator ==(WrappedPathfindingNode left, WrappedPathfindingNode right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(WrappedPathPoint left, WrappedPathPoint right)
+        public static bool operator !=(WrappedPathfindingNode left, WrappedPathfindingNode right)
         {
             return !(left == right);
         }
@@ -88,7 +88,7 @@ namespace DOL.GS
         ALL = 0xffff // All abilities.
     }
 
-    public enum PathingStatus
+    public enum PathfindingStatus
     {
         NotSet,
         NavmeshUnavailable,

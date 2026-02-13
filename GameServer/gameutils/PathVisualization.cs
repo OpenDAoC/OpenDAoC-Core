@@ -11,15 +11,15 @@ namespace DOL.GS.Movement
 
         public PathVisualization() { }
 
-        public void Visualize(RingQueue<WrappedPathPoint> pathPoints, Region region)
+        public void Visualize(RingQueue<WrappedPathfindingNode> nodes, Region region)
         {
-            if (pathPoints == null)
+            if (nodes == null)
                 return;
 
             Prepare();
 
-            foreach (WrappedPathPoint point in pathPoints)
-                _markers.Add(CreateMarker((int) point.Position.X, (int) point.Position.Y, (int) point.Position.Z, region, GetModel(point.Flags), 30));
+            foreach (WrappedPathfindingNode node in nodes)
+                _markers.Add(CreateMarker((int) node.Position.X, (int) node.Position.Y, (int) node.Position.Z, region, GetModel(node.Flags), 30));
 
             StartCleanupTimer(AUTOMATIC_CLEANUP_INTERVAL);
 

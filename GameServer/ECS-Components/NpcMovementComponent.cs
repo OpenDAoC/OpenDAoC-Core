@@ -21,10 +21,10 @@ namespace DOL.GS
         private long _nextFollowTick;
         private int _followTickInterval;
         private short _moveOnPathSpeed;
-        private long _stopAtWaypointUntil;
+        private long _stopAtPathPointUntil;
         private long _walkingToEstimatedArrivalTime;
         private readonly MovementRequest _movementRequest = new();
-        private readonly PathCalculator _pathCalculator;
+        private readonly Pathfinder _pathfinder;
         private ResetHeadingAction _resetHeadingAction;
         private Vector3 _destinationForClient;
         private long _positionForClientTick;
@@ -41,7 +41,7 @@ namespace DOL.GS
         public int MinFollowDistance { get; private set; }
         public int MaxFollowDistance { get; private set; }
         public string PathID { get; set; }
-        public PathPoint CurrentWaypoint { get; set; }
+        public PathPoint CurrentPathPoint { get; set; }
         public bool IsReturningToSpawnPoint { get; private set; }
         public int RoamingRange { get; set; }
         public long MovementStartTick { get; set; }
@@ -66,7 +66,7 @@ namespace DOL.GS
         public NpcMovementComponent(GameNPC owner) : base(owner)
         {
             Owner = owner;
-            _pathCalculator = new(owner);
+            _pathfinder = new(owner);
         }
 
         protected override void TickInternal()
@@ -115,12 +115,12 @@ namespace DOL.GS
                 }
             }
 
-            if (IsFlagSet(MovementState.AT_WAYPOINT))
+            if (IsFlagSet(MovementState.AT_PATH_POINT))
             {
-                if (GameServiceUtils.ShouldTick(_stopAtWaypointUntil))
+                if (GameServiceUtils.ShouldTick(_stopAtPathPointUntil))
                 {
-                    UnsetFlag(MovementState.AT_WAYPOINT);
-                    MoveToNextWaypoint();
+                    UnsetFlag(MovementState.AT_PATH_POINT);
+                    MoveToNextPathPoint();
                 }
             }
 
@@ -193,9 +193,9 @@ namespace DOL.GS
             StopMoving();
             _moveOnPathSpeed = speed;
 
-            // Move to the first waypoint if we don't have any.
-            // Otherwise and if we're not currently moving on path, move to the previous one (current waypoint if none).
-            if (CurrentWaypoint == null)
+            // Move to the first path point if we don't have any.
+            // Otherwise and if we're not currently moving on path, move to the previous one (current path point if none).
+            if (CurrentPathPoint == null)
             {
                 if (PathID == null)
                 {
@@ -205,9 +205,9 @@ namespace DOL.GS
                     return;
                 }
 
-                CurrentWaypoint = MovementMgr.LoadPath(PathID);
+                CurrentPathPoint = MovementMgr.LoadPath(PathID);
 
-                if (CurrentWaypoint == null)
+                if (CurrentPathPoint == null)
                 {
                     if (log.IsErrorEnabled)
                         log.Error($"Called {nameof(MoveOnPath)} but LoadPath returned null (PathID: {PathID}) (NPC: {Owner})");
@@ -216,31 +216,31 @@ namespace DOL.GS
                 }
 
                 SetFlag(MovementState.ON_PATH);
-                PathTo(new(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z), Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
+                PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed));
                 return;
             }
             else if (!IsFlagSet(MovementState.ON_PATH))
             {
                 SetFlag(MovementState.ON_PATH);
 
-                if (Owner.IsWithinRadius(CurrentWaypoint, 25))
+                if (Owner.IsWithinRadius(CurrentPathPoint, 25))
                 {
-                    MoveToNextWaypoint();
+                    MoveToNextPathPoint();
                     return;
                 }
 
-                if (CurrentWaypoint.Type == EPathType.Path_Reverse && CurrentWaypoint.FiredFlag)
+                if (CurrentPathPoint.Type == EPathType.Path_Reverse && CurrentPathPoint.FiredFlag)
                 {
-                    if (CurrentWaypoint.Next != null)
-                        CurrentWaypoint = CurrentWaypoint.Next;
+                    if (CurrentPathPoint.Next != null)
+                        CurrentPathPoint = CurrentPathPoint.Next;
                 }
-                else if (CurrentWaypoint.Prev != null)
-                    CurrentWaypoint = CurrentWaypoint.Prev;
+                else if (CurrentPathPoint.Prev != null)
+                    CurrentPathPoint = CurrentPathPoint.Prev;
 
-                PathTo(new(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z), Owner.MaxSpeed);
+                PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Owner.MaxSpeed);
             }
             else if (log.IsErrorEnabled)
-                log.Error($"Called {nameof(MoveOnPath)} but both CurrentWaypoint and ON_PATH are already set. (NPC: {Owner})");
+                log.Error($"Called {nameof(MoveOnPath)} but both {nameof(CurrentPathPoint)} and {nameof(MovementState.ON_PATH)} are already set. (NPC: {Owner})");
         }
 
         public void StopMovingOnPath()
@@ -253,7 +253,7 @@ namespace DOL.GS
             if (Owner is GameTaxi or GameTaxiBoat)
                 Owner.RemoveFromWorld();
 
-            // We don't reset CurrentWaypoint here to allow the path to be resumed. This must be done manually if needed (on NPC death for example).
+            // We don't reset CurrentPathPoint here to allow the path to be resumed. This must be done manually if needed (on NPC death for example).
         }
 
         public void ReturnToSpawnPoint()
@@ -284,9 +284,9 @@ namespace DOL.GS
 
             int maxRoamingRadius = Owner.RoamingRange;
 
-            if (Owner.CurrentZone.IsPathingEnabled)
+            if (Owner.CurrentZone.IsPathfindingEnabled)
             {
-                Vector3? target = PathingMgr.Instance.GetRandomPoint(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
+                Vector3? target = PathfindingMgr.Instance.GetRandomPoint(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
 
                 if (target.HasValue)
                     PathTo(target.Value, speed);
@@ -363,9 +363,9 @@ namespace DOL.GS
 
         public void TogglePathVisualization()
         {
-            // Toggle both visualization for `PathCalculator` (pathfinding) and `PathPoint` (patrols, horse routes).
+            // Toggle visualization for both `Pathfinder` (pathfinding) and `PathPoint` (patrols, horse routes).
 
-            _pathCalculator.ToggleVisualization();
+            _pathfinder.ToggleVisualization();
 
             if (_pathVisualization != null)
             {
@@ -376,8 +376,8 @@ namespace DOL.GS
 
             _pathVisualization = new();
 
-            if (CurrentWaypoint != null)
-                _pathVisualization.Visualize(MovementMgr.FindFirstPathPoint(CurrentWaypoint), Owner.CurrentRegion);
+            if (CurrentPathPoint != null)
+                _pathVisualization.Visualize(MovementMgr.FindFirstPathPoint(CurrentPathPoint), Owner.CurrentRegion);
         }
 
         public void ForceUpdatePosition()
@@ -509,30 +509,30 @@ namespace DOL.GS
         {
             Zone zone = Owner.CurrentZone;
 
-            if (!_pathCalculator.ShouldPath(zone, destination))
+            if (!_pathfinder.ShouldPath(zone, destination))
             {
                 FallbackToWalk(this, destination, speed);
                 return;
             }
 
-            if (_pathCalculator.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? _nextNode))
+            if (_pathfinder.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? _nextNode))
             {
-                // Continue pathing to the next node, even on partial paths.
+                // Continue to the next node, even on partial paths.
                 _movementRequest.Set(MovementRequestType.Path, destination, speed);
-                SetFlag(MovementState.PATHING);
+                SetFlag(MovementState.PATHFINDING);
                 WalkToInternal(_nextNode.Value, speed);
                 return;
             }
 
-            switch (_pathCalculator.PathingStatus)
+            switch (_pathfinder.PathfindingStatus)
             {
-                case PathingStatus.PathFound:
-                case PathingStatus.PartialPathFound:
-                case PathingStatus.BufferTooSmall:
+                case PathfindingStatus.PathFound:
+                case PathfindingStatus.PartialPathFound:
+                case PathfindingStatus.BufferTooSmall:
                 {
                     // Finalize the path if we have direct LoS to the destination.
                     // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
-                    if (PathingMgr.Instance.HasLineOfSight(zone, _ownerPosition, destination))
+                    if (PathfindingMgr.Instance.HasLineOfSight(zone, _ownerPosition, destination))
                     {
                         FallbackToWalk(this, destination, speed);
                         break;
@@ -541,7 +541,7 @@ namespace DOL.GS
                     PauseMovement(this, destination);
                     break;
                 }
-                case PathingStatus.NoPathFound:
+                case PathfindingStatus.NoPathFound:
                 {
                     // Allow pets to keep up with their owner if they jump down a ledge or bridge.
                     // This is better than using `FallbackToWalk` and prevents pets from being pushed into walls.
@@ -560,7 +560,7 @@ namespace DOL.GS
                         if (Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
                         {
                             Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
-                            Vector3? floor = PathingMgr.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
+                            Vector3? floor = PathfindingMgr.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
 
                             if (floor.HasValue && !Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
                             {
@@ -575,8 +575,8 @@ namespace DOL.GS
                     PauseMovement(this, destination);
                     break;
                 }
-                case PathingStatus.NotSet:
-                case PathingStatus.NavmeshUnavailable:
+                case PathfindingStatus.NotSet:
+                case PathfindingStatus.NavmeshUnavailable:
                 {
                     FallbackToWalk(this, destination, speed);
                     break;
@@ -590,14 +590,14 @@ namespace DOL.GS
 
             static void FallbackToWalk(NpcMovementComponent component, Vector3 destination, short speed)
             {
-                component.UnsetFlag(MovementState.PATHING);
+                component.UnsetFlag(MovementState.PATHFINDING);
                 component.WalkToInternal(destination, speed);
             }
 
             static void PauseMovement(NpcMovementComponent component, Vector3 destination)
             {
                 component.TurnTo((int) destination.X, (int) destination.Y);
-                component.UnsetFlag(MovementState.PATHING);
+                component.UnsetFlag(MovementState.PATHFINDING);
 
                 if (component.IsMoving)
                     component.UpdateMovement(0);
@@ -674,7 +674,7 @@ namespace DOL.GS
 
         private void OnArrival()
         {
-            if (IsFlagSet(MovementState.PATHING))
+            if (IsFlagSet(MovementState.PATHFINDING))
             {
                 ProcessMovementRequest();
 
@@ -696,16 +696,16 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.ON_PATH))
             {
-                if (CurrentWaypoint != null)
+                if (CurrentPathPoint != null)
                 {
-                    if (CurrentWaypoint.WaitTime == 0)
+                    if (CurrentPathPoint.WaitTime == 0)
                     {
-                        MoveToNextWaypoint();
+                        MoveToNextPathPoint();
                         return;
                     }
 
-                    SetFlag(MovementState.AT_WAYPOINT);
-                    _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
+                    SetFlag(MovementState.AT_PATH_POINT);
+                    _stopAtPathPointUntil = GameLoop.GameLoopTime + CurrentPathPoint.WaitTime * 100;
                 }
                 else
                     StopMovingOnPath();
@@ -718,43 +718,43 @@ namespace DOL.GS
             }
         }
 
-        private void MoveToNextWaypoint()
+        private void MoveToNextPathPoint()
         {
-            PathPoint oldPathPoint = CurrentWaypoint;
-            PathPoint nextPathPoint = CurrentWaypoint.Next;
+            PathPoint oldPathPoint = CurrentPathPoint;
+            PathPoint nextPathPoint = CurrentPathPoint.Next;
 
-            if ((CurrentWaypoint.Type is EPathType.Path_Reverse) && CurrentWaypoint.FiredFlag)
-                nextPathPoint = CurrentWaypoint.Prev;
+            if ((CurrentPathPoint.Type is EPathType.Path_Reverse) && CurrentPathPoint.FiredFlag)
+                nextPathPoint = CurrentPathPoint.Prev;
 
             if (nextPathPoint == null)
             {
-                switch (CurrentWaypoint.Type)
+                switch (CurrentPathPoint.Type)
                 {
                     case EPathType.Loop:
                     {
-                        CurrentWaypoint = MovementMgr.FindFirstPathPoint(CurrentWaypoint);
+                        CurrentPathPoint = MovementMgr.FindFirstPathPoint(CurrentPathPoint);
                         break;
                     }
                     case EPathType.Once:
                     {
-                        CurrentWaypoint = null;
+                        CurrentPathPoint = null;
                         PathID = null; // Unset the path ID, otherwise the brain will re-enter patrolling state and restart it.
                         break;
                     }
                     case EPathType.Path_Reverse:
                     {
-                        CurrentWaypoint = oldPathPoint.FiredFlag ? CurrentWaypoint.Next : CurrentWaypoint.Prev;
+                        CurrentPathPoint = oldPathPoint.FiredFlag ? CurrentPathPoint.Next : CurrentPathPoint.Prev;
                         break;
                     }
                 }
             }
             else
-                CurrentWaypoint = CurrentWaypoint.Type is EPathType.Path_Reverse && CurrentWaypoint.FiredFlag ? CurrentWaypoint.Prev : CurrentWaypoint.Next;
+                CurrentPathPoint = CurrentPathPoint.Type is EPathType.Path_Reverse && CurrentPathPoint.FiredFlag ? CurrentPathPoint.Prev : CurrentPathPoint.Next;
 
             oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
 
-            if (CurrentWaypoint != null)
-                PathTo(new(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z), Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
+            if (CurrentPathPoint != null)
+                PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed));
             else
                 StopMovingOnPath();
         }
@@ -911,8 +911,8 @@ namespace DOL.GS
             WALK_TO = 1 << 2,      // Is moving and has a destination.
             FOLLOW = 1 << 3,       // Is following an object.
             ON_PATH = 1 << 4,      // Is following a path / is patrolling.
-            AT_WAYPOINT = 1 << 5,  // Is waiting at a waypoint.
-            PATHING = 1 << 6,      // Is moving using PathCalculator.
+            AT_PATH_POINT = 1 << 5,// Is waiting at a path point.
+            PATHFINDING = 1 << 6,  // Is moving using PathCalculator.
             TURN_TO = 1 << 7       // Is facing a direction for a certain duration.
         }
     }

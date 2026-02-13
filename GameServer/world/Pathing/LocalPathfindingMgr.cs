@@ -11,7 +11,7 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
-    public partial class LocalPathingMgr : IPathingMgr
+    public partial class LocalPathfindingMgr : IPathfindingMgr
     {
         [Flags]
         private enum EDtStatus : uint
@@ -194,7 +194,7 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("PathingMgr did not find the Detour library", e);
+                    log.Error($"{nameof(LocalPathfindingMgr)} did not find the Detour library", e);
 
                 return false;
             }
@@ -206,14 +206,20 @@ namespace DOL.GS
         public static void LoadNavMesh(Zone zone)
         {
             ushort id = zone.ID;
-            string path = Path.GetFullPath(Path.Join("pathing", $"zone{id:D3}.nav"));
+            string path = Path.GetFullPath(Path.Join("navmesh", $"zone{id:D3}.nav"));
 
             if (!File.Exists(path))
             {
-                if (log.IsDebugEnabled)
-                    log.Debug($"Loading NavMesh failed for zone {id}! (File not found: {path})");
+                // Fall back to old "pathing" folder for backwards compatibility.
+                path = Path.GetFullPath(Path.Join("pathing", $"zone{id:D3}.nav"));
 
-                return;
+                if (!File.Exists(path))
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Loading NavMesh failed for zone {id}! (File not found: {path})");
+
+                    return;
+                }
             }
 
             nint meshPtr = IntPtr.Zero;
@@ -242,7 +248,7 @@ namespace DOL.GS
                 _navmeshPtrs[zone.ID] = meshPtr;
             }
 
-            zone.IsPathingEnabled = true;
+            zone.IsPathfindingEnabled = true;
         }
 
         public static void UnloadNavMesh(Zone zone)
@@ -250,7 +256,7 @@ namespace DOL.GS
             if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
                 return;
 
-            zone.IsPathingEnabled = false;
+            zone.IsPathfindingEnabled = false;
             FreeNavMesh(ptr);
             _navmeshPtrs.Remove(zone.ID);
         }
@@ -298,10 +304,10 @@ namespace DOL.GS
             return true;
         }
 
-        public PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination)
+        public PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
-                return new(PathingStatus.NoPathFound, 0);
+                return new(PathfindingStatus.NoPathFound, 0);
 
             Span<float> startFloats = stackalloc float[3];
             FillRecastFloats(start, startFloats);
@@ -322,16 +328,16 @@ namespace DOL.GS
                 EDtStatus status = PathStraight(query, startFloats, endFloats, _defaultHalfExtents, _defaultFilters, options, out int numNodes, buffer, flags);
 
                 if ((status & EDtStatus.DT_SUCCESS) == 0)
-                    return new(PathingStatus.NoPathFound, 0);
+                    return new(PathfindingStatus.NoPathFound, 0);
 
                 if (destination.Length < numNodes)
-                    return new(PathingStatus.BufferTooSmall, numNodes);
+                    return new(PathfindingStatus.BufferTooSmall, numNodes);
 
                 for (int i = 0; i < numNodes; i++)
                     destination[i] = new(new(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR), flags[i]);
 
-                PathingStatus pathingStatus = (status & EDtStatus.DT_PARTIAL_RESULT) != 0 ? PathingStatus.PartialPathFound : PathingStatus.PathFound;
-                return new(pathingStatus, numNodes);
+                PathfindingStatus pathfindingStatus = (status & EDtStatus.DT_PARTIAL_RESULT) != 0 ? PathfindingStatus.PartialPathFound : PathfindingStatus.PathFound;
+                return new(pathfindingStatus, numNodes);
             }
             finally
             {

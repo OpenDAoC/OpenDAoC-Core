@@ -221,7 +221,7 @@ namespace DOL.GS
 						mount.FixedSpeed = true;
 						mount.MaxSpeedBase = 1500;
 						mount.AddToWorld();
-						mount.CurrentWaypoint = path;
+						mount.CurrentPathPoint = path;
 						new MountHorseAction(player, mount).Start(400);
 						new HorseRideAction(mount).Start(4000);
 						return true;

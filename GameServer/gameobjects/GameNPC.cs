@@ -800,10 +800,10 @@ namespace DOL.GS
 			get => movementComponent.PathID;
 			set => movementComponent.PathID = value;
 		}
-		public PathPoint CurrentWaypoint
+		public PathPoint CurrentPathPoint
 		{
-			get => movementComponent.CurrentWaypoint;
-			set => movementComponent.CurrentWaypoint = value;
+			get => movementComponent.CurrentPathPoint;
+			set => movementComponent.CurrentPathPoint = value;
 		}
 		public bool IsReturningToSpawnPoint => movementComponent.IsReturningToSpawnPoint;
 		public int RoamingRange
@@ -2802,7 +2802,7 @@ namespace DOL.GS
 				ControlledNPC_Release();
 
 			StopMoving();
-			CurrentWaypoint = null;
+			CurrentPathPoint = null;
 
 			if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
 				killer = petBrain.GetPlayerOwner();

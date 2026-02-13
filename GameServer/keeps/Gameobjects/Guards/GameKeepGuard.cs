@@ -333,9 +333,9 @@ namespace DOL.GS.Keeps
 
 				foreach (GameKeepGuard guard in PatrolGroup.PatrolGuards)
 				{
-					if (guard.IsAlive && guard.CurrentWaypoint != null)
+					if (guard.IsAlive && guard.CurrentPathPoint != null)
 					{
-						CurrentWaypoint = guard.CurrentWaypoint;
+						CurrentPathPoint = guard.CurrentPathPoint;
 						m_changingPositions = true;
 						MoveTo(guard.CurrentRegionID, guard.X - Util.Random(200, 350), guard.Y - Util.Random(200, 350), guard.Z, guard.Heading);
 						m_changingPositions = false;
@@ -345,7 +345,7 @@ namespace DOL.GS.Keeps
 				}
 
 				if (!foundGuard)
-					CurrentWaypoint = PatrolGroup.PatrolPath;
+					CurrentPathPoint = PatrolGroup.PatrolPath;
 
 				MoveOnPath(Patrol.PATROL_SPEED);
 			}
