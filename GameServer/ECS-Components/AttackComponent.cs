@@ -1183,7 +1183,9 @@ namespace DOL.GS
                     // Apply style damage.
                     if (style != null && styleDamage > 0)
                     {
-                        styleDamage = Math.Min(styleDamage, styleDamageCap);
+                        if (styleDamageCap > -1)
+                            styleDamage = Math.Min(styleDamage, styleDamageCap);
+
                         damage += styleDamage;
                     }
 
