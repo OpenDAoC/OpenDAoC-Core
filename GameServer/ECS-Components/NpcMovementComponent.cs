@@ -48,7 +48,7 @@ namespace DOL.GS
         public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
         public bool FixedSpeed { get; set; }
         public override short MaxSpeed => FixedSpeed ? MaxSpeedBase : base.MaxSpeed;
-        public bool IsMovingOnPath => IsFlagSet(MovementState.ON_PATH);
+        public bool IsMovingOnPath => IsFlagSet(MovementState.OnPath);
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsDestinationValid { get; private set; }
         public bool IsAtDestination => !IsDestinationValid || (_destination - _ownerPosition).LengthSquared() < 1.0f;
@@ -74,7 +74,7 @@ namespace DOL.GS
             // Update the component's position first for correct calculations.
             UpdatePosition();
 
-            if (IsFlagSet(MovementState.TURN_TO))
+            if (IsFlagSet(MovementState.TurnTo))
             {
                 if (!Owner.IsAttacking)
                 {
@@ -82,18 +82,18 @@ namespace DOL.GS
                     return;
                 }
 
-                UnsetFlag(MovementState.TURN_TO);
+                UnsetFlag(MovementState.TurnTo);
                 _resetHeadingAction.Stop();
                 _resetHeadingAction = null;
             }
 
-            if (IsFlagSet(MovementState.REQUEST))
+            if (IsFlagSet(MovementState.Request))
             {
-                UnsetFlag(MovementState.REQUEST);
+                UnsetFlag(MovementState.Request);
                 ProcessMovementRequest();
             }
 
-            if (IsFlagSet(MovementState.FOLLOW))
+            if (IsFlagSet(MovementState.Follow))
             {
                 if (GameServiceUtils.ShouldTick(_nextFollowTick))
                 {
@@ -102,24 +102,24 @@ namespace DOL.GS
                     if (_followTickInterval != 0)
                         _nextFollowTick = GameLoop.GameLoopTime + _followTickInterval;
                     else
-                        UnsetFlag(MovementState.WALK_TO);
+                        UnsetFlag(MovementState.WalkTo);
                 }
             }
 
-            if (IsFlagSet(MovementState.WALK_TO))
+            if (IsFlagSet(MovementState.WalkTo))
             {
                 if (GameServiceUtils.ShouldTick(_walkingToEstimatedArrivalTime))
                 {
-                    UnsetFlag(MovementState.WALK_TO);
+                    UnsetFlag(MovementState.WalkTo);
                     OnArrival();
                 }
             }
 
-            if (IsFlagSet(MovementState.AT_PATH_POINT))
+            if (IsFlagSet(MovementState.AtPathPoint))
             {
                 if (GameServiceUtils.ShouldTick(_stopAtPathPointUntil))
                 {
-                    UnsetFlag(MovementState.AT_PATH_POINT);
+                    UnsetFlag(MovementState.AtPathPoint);
                     MoveToNextPathPoint();
                 }
             }
@@ -138,27 +138,27 @@ namespace DOL.GS
                 ClientService.UpdateNpcForPlayers(Owner);
             }
 
-            if (_movementState is MovementState.NONE)
+            if (_movementState is MovementState.None)
                 RemoveFromServiceObjectStore();
         }
 
         public void WalkTo(Vector3 destination, short speed)
         {
             _movementRequest.Set(MovementRequestType.Walk, destination, speed);
-            SetFlag(MovementState.REQUEST);
+            SetFlag(MovementState.Request);
             AddToServiceObjectStore();
         }
 
         public void PathTo(Vector3 destination, short speed)
         {
             _movementRequest.Set(MovementRequestType.Path, destination, speed);
-            SetFlag(MovementState.REQUEST);
+            SetFlag(MovementState.Request);
             AddToServiceObjectStore();
         }
 
         public void StopMoving()
         {
-            _movementState = MovementState.NONE;
+            _movementState = MovementState.None;
             StopFollowing();
             StopMovingOnPath();
             CancelReturnToSpawnPoint();
@@ -178,13 +178,13 @@ namespace DOL.GS
             FollowTarget = target;
             MinFollowDistance = minDistance;
             MaxFollowDistance = maxDistance;
-            SetFlag(MovementState.FOLLOW);
+            SetFlag(MovementState.Follow);
             AddToServiceObjectStore();
         }
 
         public void StopFollowing()
         {
-            UnsetFlag(MovementState.FOLLOW);
+            UnsetFlag(MovementState.Follow);
             FollowTarget = null;
         }
 
@@ -215,13 +215,13 @@ namespace DOL.GS
                     return;
                 }
 
-                SetFlag(MovementState.ON_PATH);
+                SetFlag(MovementState.OnPath);
                 PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed));
                 return;
             }
-            else if (!IsFlagSet(MovementState.ON_PATH))
+            else if (!IsFlagSet(MovementState.OnPath))
             {
-                SetFlag(MovementState.ON_PATH);
+                SetFlag(MovementState.OnPath);
 
                 if (Owner.IsWithinRadius(CurrentPathPoint, 25))
                 {
@@ -240,15 +240,15 @@ namespace DOL.GS
                 PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Owner.MaxSpeed);
             }
             else if (log.IsErrorEnabled)
-                log.Error($"Called {nameof(MoveOnPath)} but both {nameof(CurrentPathPoint)} and {nameof(MovementState.ON_PATH)} are already set. (NPC: {Owner})");
+                log.Error($"Called {nameof(MoveOnPath)} but both {nameof(CurrentPathPoint)} and {nameof(MovementState.OnPath)} are already set. (NPC: {Owner})");
         }
 
         public void StopMovingOnPath()
         {
-            if (!IsFlagSet(MovementState.ON_PATH))
+            if (!IsFlagSet(MovementState.OnPath))
                 return;
 
-            UnsetFlag(MovementState.ON_PATH);
+            UnsetFlag(MovementState.OnPath);
 
             if (Owner is GameTaxi or GameTaxiBoat)
                 Owner.RemoveFromWorld();
@@ -327,7 +327,7 @@ namespace DOL.GS
 
             if (duration > 0)
             {
-                SetFlag(MovementState.TURN_TO);
+                SetFlag(MovementState.TurnTo);
 
                 if (_resetHeadingAction == null)
                 {
@@ -501,7 +501,7 @@ namespace DOL.GS
 
             // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
-            SetFlag(MovementState.WALK_TO);
+            SetFlag(MovementState.WalkTo);
             _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
         }
 
@@ -519,7 +519,7 @@ namespace DOL.GS
             {
                 // Continue to the next node, even on partial paths.
                 _movementRequest.Set(MovementRequestType.Path, destination, speed);
-                SetFlag(MovementState.PATHFINDING);
+                SetFlag(MovementState.Pathfinding);
                 WalkToInternal(_nextNode.Value, speed);
                 return;
             }
@@ -590,14 +590,14 @@ namespace DOL.GS
 
             static void FallbackToWalk(NpcMovementComponent component, Vector3 destination, short speed)
             {
-                component.UnsetFlag(MovementState.PATHFINDING);
+                component.UnsetFlag(MovementState.Pathfinding);
                 component.WalkToInternal(destination, speed);
             }
 
             static void PauseMovement(NpcMovementComponent component, Vector3 destination)
             {
                 component.TurnTo((int) destination.X, (int) destination.Y);
-                component.UnsetFlag(MovementState.PATHFINDING);
+                component.UnsetFlag(MovementState.Pathfinding);
 
                 if (component.IsMoving)
                     component.UpdateMovement(0);
@@ -674,15 +674,15 @@ namespace DOL.GS
 
         private void OnArrival()
         {
-            if (IsFlagSet(MovementState.PATHFINDING))
+            if (IsFlagSet(MovementState.Pathfinding))
             {
                 ProcessMovementRequest();
 
-                if (IsFlagSet(MovementState.WALK_TO))
+                if (IsFlagSet(MovementState.WalkTo))
                     return;
             }
 
-            if (IsFlagSet(MovementState.FOLLOW))
+            if (IsFlagSet(MovementState.Follow))
                 return;
 
             if (IsReturningToSpawnPoint)
@@ -694,7 +694,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (IsFlagSet(MovementState.ON_PATH))
+            if (IsFlagSet(MovementState.OnPath))
             {
                 if (CurrentPathPoint != null)
                 {
@@ -704,7 +704,7 @@ namespace DOL.GS
                         return;
                     }
 
-                    SetFlag(MovementState.AT_PATH_POINT);
+                    SetFlag(MovementState.AtPathPoint);
                     _stopAtPathPointUntil = GameLoop.GameLoopTime + CurrentPathPoint.WaitTime * 100;
                 }
                 else
@@ -828,7 +828,7 @@ namespace DOL.GS
         {
             return new(Owner, this, () =>
             {
-                UnsetFlag(MovementState.TURN_TO);
+                UnsetFlag(MovementState.TurnTo);
                 _resetHeadingAction = null;
             });
         }
@@ -906,14 +906,14 @@ namespace DOL.GS
         [Flags]
         private enum MovementState
         {
-            NONE = 0,
-            REQUEST = 1 << 1,      // Was requested to move.
-            WALK_TO = 1 << 2,      // Is moving and has a destination.
-            FOLLOW = 1 << 3,       // Is following an object.
-            ON_PATH = 1 << 4,      // Is following a path / is patrolling.
-            AT_PATH_POINT = 1 << 5,// Is waiting at a path point.
-            PATHFINDING = 1 << 6,  // Is moving using PathCalculator.
-            TURN_TO = 1 << 7       // Is facing a direction for a certain duration.
+            None = 0,
+            Request = 1 << 1,     // Was requested to move.
+            WalkTo = 1 << 2,      // Is moving and has a destination.
+            Follow = 1 << 3,      // Is following an object.
+            OnPath = 1 << 4,      // Is following a path / is patrolling.
+            AtPathPoint = 1 << 5, // Is waiting at a path point.
+            Pathfinding = 1 << 6, // Is moving using Pathfinder.
+            TurnTo = 1 << 7       // Is facing a direction for a certain duration.
         }
     }
 }
