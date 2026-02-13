@@ -588,10 +588,10 @@ Scripts.Players.Range.NotVisible:			 (Target not visible)
 Scripts.Players.Range.Result:				Range to target: {0} units. {1}
 
 ## /realm
-Scripts.Players.Realm.AlbKeeps:            Albion Outposts
+Scripts.Players.Realm.AlbKeeps:            Albion
 Scripts.Players.Realm.DarknessFalls:      Darkness Falls
-Scripts.Players.Realm.HibKeeps:            Hibernia Outposts
-Scripts.Players.Realm.MidKeeps:            Midgard Outposts
+Scripts.Players.Realm.HibKeeps:            Hibernia
+Scripts.Players.Realm.MidKeeps:            Midgard
 Scripts.Players.Realm.Title:            Realm Status
 Scripts.Players.Realm.UseRelicCommand:      Use '/relic' for Relic info
 Scripts.Players.Realm.UseBattlegroundsCommand:      Use '/battlegrounds' for battlegrounds info

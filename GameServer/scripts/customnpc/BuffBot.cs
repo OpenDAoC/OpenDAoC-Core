@@ -54,6 +54,8 @@ namespace DOL.GS
             // Spellids and Effectids are based of DB entries
             // Spec AF same for all realms, only effect is different
             // TODO class changes depending of Spec AF
+
+            // SpellID, EffectGroup, Type, Value, Name, Icon, EffectID
             if (realm == eRealm.Midgard)
             {
                 // Midgard
@@ -91,8 +93,8 @@ namespace DOL.GS
             }
 
             // Buffs for all
-            // Waterbuff needs to be implemented
             BuffPlayer(player, CreateSpell(9, 809, eSpellType.CombatSpeedBuff, 12, "Combat Haste", 5054, 164), MerchSpecSpellLine);
+            BuffPlayer(player, CreateSpell(10, 810, eSpellType.WaterBreathing, 12, "Water Breathing", 8107, 8107), MerchSpecSpellLine);
         }
         #endregion
 
