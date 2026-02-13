@@ -9,6 +9,9 @@ using System.Timers;
 
 namespace DOL.GS
 {
+    // TODO: NPCs go in Idle after long time, and stop follow leader
+    // Healh, Styles etc. adjustments
+    // Level adjustments
     public class RelicPatrolGuard : GameNPC
     {
         public override short MaxSpeed => 150;
@@ -20,18 +23,32 @@ namespace DOL.GS
         [GameServerStartedEvent]
         public static void OnServerStartup(DOLEvent e, object sender, EventArgs args)
         {
-            //string[] midTowers = { "Fensalir Faste Watchtower", "Arvakr Faste Watchtower", "Hlidskialf Faste Watchtower", "Glenlock Faste Watchtower", "Nottmor Faste Watchtower", "Bledmeer Faste Watchtower", "Blendrake Faste Outpost", "Nottmor Faste Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, 2444, "patrol_lamfhota", midTowers);
-            //string[] midTowers = { "Fensalir Faste Guardtower", "Arvakr Faste Guardtower", "Hlidskialf Faste Guardtower", "Glenlock Faste Guardtower", "Nottmor Faste Guardtower", "Bledmeer Faste Guardtower", "Hlidskialf Faste Outpost", "Glenlock Faste Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, 2444, "patrol_lamfhota", midTowers);
-            string[] hibTowers = { "Dun Ailinne Watchtower", "Dun Scathaig Watchtower", "Dun da Behnn Watchtower", "Dun nGed Watchtower", "Dun Crimthain Watchtower", "Dun Crauchon Guardtower", "Dun Bolg Outpost", "Dun Crimthain Outpost" };
-            RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374418, 590129, 8578, 3867, "patrol_lamfhota", hibTowers);
-            //string[] hibTowers = { "Dun Ailinne Guardtower", "Dun Scathaig Guardtower", "Dun da Behnn Guardtower", "Dun nGed Guardtower", "Dun Crimthain Guardtower", "Dun Crauchon Guardtower", "Dun da Behnn Outpost", "Dun nGed Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374452, 590104, 8571, 2444, "patrol_dagda", hibTowers);
-            string[] albTowers = { "Caer Renaris Watchtower", "Caer Hurbury Watchtower", "Caer Sursbrooke Watchtower", "Caer Boldiam Watchtower", "Caer Berkstead Watchtower", "Caer Benowyc Guardtower", "Caer Erasleigh Outpost", "Caer Berkstead Outpost" };
-            RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 672170, 589589, 8609, 2444, "patrol_excalibur", albTowers);
-            //string[] albTowers = { "Caer Renaris Guardtower", "Caer Hurbury Guardtower", "Caer Sursbrooke Guardtower", "Caer Boldiam Guardtower", "Caer Berkstead Guardtower", "Caer Benowyc Guardtower", "Caer Sursbrooke Outpost", "Caer Boldiam Outpost" };
-            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 374452, 590104, 8571, 2444, "patrol_myrddin", albTowers);
+            //string[] albTowers1 = { "Caer Renaris Watchtower", "Caer Hurbury Watchtower", "Caer Sursbrooke Watchtower", "Caer Boldiam Watchtower", "Caer Berkstead Watchtower", "Caer Benowyc Spire", "Caer Erasleigh Outpost", "Caer Berkstead Outpost" };
+            //string[] albTowers2 = { "Caer Renaris Guardtower", "Caer Hurbury Guardtower", "Caer Sursbrooke Guardtower", "Caer Boldiam Guardtower", "Caer Berkstead Guardtower", "Caer Benowyc Watchtower", "Caer Sursbrooke Outpost", "Caer Boldiam Outpost" };
+            //string[] midTowers1 = { "Fensalir Faste Watchtower", "Arvakr Faste Watchtower", "Hlidskialf Faste Watchtower", "Glenlock Faste Watchtower", "Nottmor Faste Watchtower", "Bledmeer Faste Spire", "Blendrake Faste Outpost", "Nottmor Faste Outpost" };
+            //string[] midTowers2 = { "Fensalir Faste Guardtower", "Arvakr Faste Guardtower", "Hlidskialf Faste Guardtower", "Glenlock Faste Guardtower", "Nottmor Faste Guardtower", "Bledmeer Faste Guardtower", "Hlidskialf Faste Outpost", "Glenlock Faste Outpost" };
+            string[] hibTowers1 = { "Dun Ailinne Watchtower", "Dun Scathaig Watchtower", "Dun da Behnn Watchtower", "Dun nGed Watchtower", "Dun Crimthain Watchtower", "Dun Crauchon Spire", "Dun Bolg Outpost", "Dun Crimthain Outpost" };
+            string[] hibTowers2 = { "Dun Ailinne Guardtower", "Dun Scathaig Guardtower", "Dun da Behnn Guardtower", "Dun nGed Guardtower", "Dun Crimthain Guardtower", "Dun Crauchon Guardtower", "Dun da Behnn Outpost", "Dun nGed Outpost" };
+
+
+            
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, "patrol_mjollner", midTowers);
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, "patrol_mjollner_reverse", midTowers);
+
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, "patrol_grallarhorn", midTowers);
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Midgard, 163, 597415, 304597, 8088, "patrol_grallarhorn_reverse", midTowers);
+            
+            RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374418, 590129, 8578, "patrol_lamfhota", hibTowers1);
+            RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 371058, 590136, 8566, "patrol_lamfhota_reverse", hibTowers2);
+
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374452, 590104, 8571, "patrol_dagda", hibTowers);
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Hibernia, 163, 374452, 590104, 8571, "patrol_dagda_reverse", hibTowers);
+            
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 672170, 589589, 8609, "patrol_excalibur", albTowers);
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 672170, 589589, 8609, "patrol_excalibur_reverse", albTowers);
+
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 374452, 590104, 8571, "patrol_myrddin", albTowers);
+            //RelicPatrolManager.SpawnPatrolGroup(eRealm.Albion, 163, 374452, 590104, 8571, "patrol_myrddin_reverse", albTowers);
         }
 
         public override bool AddToWorld()
@@ -148,7 +165,7 @@ namespace DOL.GS
 {
     public static class RelicPatrolManager
     {
-        public static void SpawnPatrolGroup(eRealm realm, ushort region, int x, int y, int z, ushort h, string pathID, string[] towerNames)
+        public static void SpawnPatrolGroup(eRealm realm, ushort region, int x, int y, int z, string pathID, string[] towerNames)
         {
             // 1. Leader erstellen
             RelicPatrolGuard leader = new RelicPatrolGuard
@@ -159,7 +176,6 @@ namespace DOL.GS
                 X = x,
                 Y = y,
                 Z = z,
-                Heading = h,
                 IsLeader = true,
                 PathID = pathID
             };
@@ -186,9 +202,11 @@ namespace DOL.GS
                 // 2. Alle anderen sind RelicKeepGuards, sofern wir Turm-Namen haben
                 else if (towerNames != null && (i - 1) < towerNames.Length)
                 {
-                    follower = new RelicKeepGuard();
-                    // Index i-1, weil der erste Turm-Name (0) dem zweiten NPC (i=1) zugewiesen wird
-                    follower.Name = "Relic Defender of " + towerNames[i - 1];
+                    follower = new RelicKeepGuard
+                    {
+                        // Index i-1, weil der erste Turm-Name (0) dem zweiten NPC (i=1) zugewiesen wird
+                        Name = "Relic Defender of " + towerNames[i - 1]
+                    };
                 }
                 // 3. Fallback, falls mehr NPCs als Turm-Namen vorhanden sind
                 else

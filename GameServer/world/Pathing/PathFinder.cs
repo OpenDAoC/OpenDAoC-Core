@@ -8,7 +8,7 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
-    public sealed class PathCalculator
+    public sealed class Pathfinder
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -20,14 +20,14 @@ namespace DOL.GS
 
         public GameNPC Owner { get; }
         public bool ForceReplot { get; set; }
-        public PathingStatus PathingStatus { get; private set; }
+        public PathfindingStatus PathfindingStatus { get; private set; }
 
-        private RingQueue<WrappedPathPoint> _pathNodes = new();
-        private Dictionary<WrappedPathPoint, List<GameDoorBase>> _doorsOnPath = new();
+        private RingQueue<WrappedPathfindingNode> _pathNodes = new();
+        private Dictionary<WrappedPathfindingNode, List<GameDoorBase>> _doorsOnPath = new();
         private Vector3 _lastTarget = Vector3.Zero;
         private PathVisualization _pathVisualization;
 
-        public PathCalculator(GameNPC owner)
+        public Pathfinder(GameNPC owner)
         {
             ForceReplot = true;
             Owner = owner;
@@ -38,7 +38,7 @@ namespace DOL.GS
             _pathNodes.Clear();
             _doorsOnPath.Clear();
             _lastTarget = Vector3.Zero;
-            PathingStatus = PathingStatus.NotSet;
+            PathfindingStatus = PathfindingStatus.NotSet;
             ForceReplot = true;
         }
 
@@ -47,7 +47,7 @@ namespace DOL.GS
             if (Owner.Flags.HasFlag(GameNPC.eFlags.FLYING) || Owner is GameTaxi || Owner is GameTaxiBoat)
                 return false;
 
-            if (zone == null || !zone.IsPathingEnabled)
+            if (zone == null || !zone.IsPathfindingEnabled)
                 return false;
 
             // Target is in a different zone (TODO: implement this maybe? not sure if really required).
@@ -60,22 +60,22 @@ namespace DOL.GS
         private void ReplotPath(Zone zone, Vector3 position, Vector3 target)
         {
             const int MAX_PATH_NODES = 512;
-            WrappedPathPoint[] rentedPathBuffer = ArrayPool<WrappedPathPoint>.Shared.Rent(MAX_PATH_NODES);
+            WrappedPathfindingNode[] rentedNodeBuffer = ArrayPool<WrappedPathfindingNode>.Shared.Rent(MAX_PATH_NODES);
 
             try
             {
-                PathingResult pathingResult = PathingMgr.Instance.GetPathStraight(zone, position, target, rentedPathBuffer);
+                PathfindingResult pathfindingResult = PathfindingMgr.Instance.GetPathStraight(zone, position, target, rentedNodeBuffer);
 
                 _pathNodes.Clear();
                 _doorsOnPath.Clear();
 
-                if (pathingResult.Status is PathingStatus.BufferTooSmall)
+                if (pathfindingResult.Status is PathfindingStatus.BufferTooSmall)
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn($"Path buffer for {Owner} was too small. Needed {pathingResult.PointCount}, had {MAX_PATH_NODES}.");
+                        log.Warn($"Path buffer for {Owner} was too small. Needed {pathfindingResult.NodeCount}, had {MAX_PATH_NODES}.");
                 }
 
-                int nodeCount = Math.Min(pathingResult.PointCount, MAX_PATH_NODES);
+                int nodeCount = Math.Min(pathfindingResult.NodeCount, MAX_PATH_NODES);
 
                 if (nodeCount > 0)
                 {
@@ -83,37 +83,34 @@ namespace DOL.GS
                     // Skip the first node if it isn't a door.
                     for (int i = 0; i < nodeCount; i++)
                     {
-                        WrappedPathPoint pathPoint = rentedPathBuffer[i];
-                        bool isDoor = (pathPoint.Flags & EDtPolyFlags.DOOR) != 0;
+                        WrappedPathfindingNode node = rentedNodeBuffer[i];
+                        bool isDoor = (node.Flags & EDtPolyFlags.DOOR) != 0;
 
                         if (i == 0 && !isDoor)
                             continue;
 
-                        _pathNodes.Enqueue(pathPoint);
+                        _pathNodes.Enqueue(node);
 
                         if (!isDoor)
                             continue;
 
-                        Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z);
-                        _doorsOnPath[pathPoint] = new();
-                        Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[pathPoint]);
+                        Point3D point = new(node.Position.X, node.Position.Y, node.Position.Z);
+                        _doorsOnPath[node] = new();
+                        Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[node]);
                     }
                 }
 
                 _pathVisualization?.Visualize(_pathNodes, Owner.CurrentRegion);
                 _lastTarget = target;
-                PathingStatus = pathingResult.Status;
+                PathfindingStatus = pathfindingResult.Status;
                 ForceReplot = false;
             }
             finally
             {
-                ArrayPool<WrappedPathPoint>.Shared.Return(rentedPathBuffer);
+                ArrayPool<WrappedPathfindingNode>.Shared.Return(rentedNodeBuffer);
             }
         }
 
-        /// <summary>
-        /// Calculates the next point this NPC should walk to to reach the target
-        /// </summary>
         public bool TryGetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3? nextNode)
         {
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
@@ -123,9 +120,9 @@ namespace DOL.GS
             // Stop right there if the path contains a closed door that we're not allowed to open.
             // We don't want pets or guards to agglutinate on keep doors.
             // Ideally, we should check for an alternative path.
-            foreach (List<GameDoorBase> doorsAroundPathPoint in _doorsOnPath.Values)
+            foreach (List<GameDoorBase> doorsAroundNode in _doorsOnPath.Values)
             {
-                foreach (GameDoorBase door in doorsAroundPathPoint)
+                foreach (GameDoorBase door in doorsAroundNode)
                 {
                     if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
                     {
@@ -138,7 +135,7 @@ namespace DOL.GS
             // Dequeue the next node if we're close to it, and any subsequent node that might be close.
             // Prevent corner-cutting by raycasting to the next node before removing the current one.
             // Open any doors associated with the node as we reach it.
-            if (_pathNodes.TryPeek(0, out WrappedPathPoint current) && Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+            if (_pathNodes.TryPeek(0, out WrappedPathfindingNode current) && Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
             {
                 int nodesToRemove = 0;
                 int count = _pathNodes.Count;
@@ -150,7 +147,7 @@ namespace DOL.GS
                     if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
                         break;
 
-                    if (!PathingMgr.Instance.HasLineOfSight(zone, position, candidatePosition))
+                    if (!PathfindingMgr.Instance.HasLineOfSight(zone, position, candidatePosition))
                         break;
 
                     nodesToRemove = i;
@@ -172,7 +169,7 @@ namespace DOL.GS
 
                 for (int i = 0; i < nodesToRemove; i++)
                 {
-                    WrappedPathPoint node = _pathNodes.Dequeue();
+                    WrappedPathfindingNode node = _pathNodes.Dequeue();
 
                     if (_doorsOnPath.Remove(node, out List<GameDoorBase> doors))
                     {
@@ -209,7 +206,7 @@ namespace DOL.GS
 
         public override string ToString()
         {
-            return $"PathCalc[Target={_lastTarget}, Nodes={_pathNodes.Count}, NextNode={(_pathNodes.Count > 0 ? _pathNodes.Peek(0).ToString() : null)}]";
+            return $"{nameof(Pathfinder)}[Target={_lastTarget}, Nodes={_pathNodes.Count}, NextNode={(_pathNodes.Count > 0 ? _pathNodes.Peek(0).ToString() : null)}]";
         }
     }
 }

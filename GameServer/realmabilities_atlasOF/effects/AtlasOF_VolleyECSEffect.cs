@@ -173,7 +173,7 @@ namespace DOL.GS.Effects
                 if (!GameServer.ServerRules.IsAllowedToAttack(attacker, target, true))
                     return false;
 
-                if (Properties.VOLLEY_ROOF_CHECK && PathingMgr.Instance.GetRoofAbove(target.CurrentZone, new(target.X, target.Y, target.Z), ROOF_SEARCH_MAX_HEIGHT).HasValue)
+                if (Properties.VOLLEY_ROOF_CHECK && PathfindingMgr.Instance.GetRoofAbove(target.CurrentZone, new(target.X, target.Y, target.Z), ROOF_SEARCH_MAX_HEIGHT).HasValue)
                     return false;
 
                 return true;

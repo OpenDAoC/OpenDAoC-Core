@@ -119,7 +119,7 @@ namespace DOL.GS
 						boat.CurrentRegion = CurrentRegion;
                         boat.Heading = path.GetHeading( path.Next );
 						boat.AddToWorld();
-						boat.CurrentWaypoint = path;
+						boat.CurrentPathPoint = path;
 						//GameEventMgr.AddHandler(boat, GameNPCEvent.PathMoveEnds, new DOLEventHandler(OnHorseAtPathEnd));
 						//new MountHorseAction(player, boat).Start(400);
 						new HorseRideAction(boat).Start(10 * 1000);

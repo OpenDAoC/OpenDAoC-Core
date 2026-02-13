@@ -200,10 +200,10 @@ namespace DOL.GS.Commands
             short speed = Math.Min(((GameNPC)client.Player.TargetObject).MaxSpeedBase, path.MaxSpeed);
 
             // clear any current path
-            ((GameNPC)client.Player.TargetObject).CurrentWaypoint = null;
+            ((GameNPC)client.Player.TargetObject).CurrentPathPoint = null;
 
             // set the new path
-            ((GameNPC)client.Player.TargetObject).CurrentWaypoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            ((GameNPC)client.Player.TargetObject).CurrentPathPoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
 
             ((GameNPC)client.Player.TargetObject).MoveOnPath(speed);
 
@@ -221,7 +221,7 @@ namespace DOL.GS.Commands
 
             // clear any current path
             GameNPC npcTarget = (GameNPC) client.Player.TargetObject;
-            npcTarget.CurrentWaypoint = null;
+            npcTarget.CurrentPathPoint = null;
             npcTarget.ReturnToSpawnPoint(npcTarget.MaxSpeed);
 
             DisplayMessage(client, "{0} told to walk to spawn!", client.Player.TargetObject.Name);

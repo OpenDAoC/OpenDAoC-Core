@@ -221,8 +221,8 @@ namespace DOL.GS.Keeps
 
 			foreach (GameKeepGuard guard in PatrolGuards)
 			{
-				if (guard.CurrentWaypoint == null)
-					guard.CurrentWaypoint = PatrolPath;
+				if (guard.CurrentPathPoint == null)
+					guard.CurrentPathPoint = PatrolPath;
 
 				guard.MoveOnPath(PATROL_SPEED);
 			}

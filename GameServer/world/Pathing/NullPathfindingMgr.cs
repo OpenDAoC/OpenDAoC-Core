@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace DOL.GS
 {
-    public class NullPathingMgr : IPathingMgr
+    public class NullPathfindingMgr : IPathfindingMgr
     {
         public bool Init()
         {
@@ -12,9 +12,9 @@ namespace DOL.GS
 
         public void Stop() { }
 
-        public PathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathPoint> destination)
+        public PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination)
         {
-            return new(PathingStatus.NavmeshUnavailable, 0);
+            return new(PathfindingStatus.NavmeshUnavailable, 0);
         }
 
         public Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end)

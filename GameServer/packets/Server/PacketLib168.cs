@@ -809,10 +809,10 @@ namespace DOL.GS.PacketHandler
 
 				// `targetId` does three things:
 				// * Enables the NPC's attack state if > 0.
-				// * Client side, forces the NPC to face the object having this ID at all time, and walk towards if it has any speed (incompatible with pathing).
+				// * Client side, forces the NPC to face the object having this ID at all time, and walk towards if it has any speed (incompatible with pathfinding).
 				// * Prevents the NPC from overshooting the target, which for some reason seems to prevent smooth movement when the target is close (very janky).
 				// So if we simply pass the target's ID, things won't look good.
-				// We want to enable the attack state even if pathing is enabled and the npc is far away, and we want to have smooth movements at close range.
+				// We want to enable the attack state even if pathfinding is enabled and the npc is far away, and we want to have smooth movements at close range.
 				// We obviously also want the NPC to face it's target at all time, if possible.
 				// To achieve this, we pass the real object ID if the NPC isn't moving and is close enough to attack, otherwise we pass an unused object ID.
 				// 65535 should be safe, since regions can't hold that many objects by default.
