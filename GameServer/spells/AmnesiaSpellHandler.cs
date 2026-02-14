@@ -1,3 +1,4 @@
+using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -35,6 +36,14 @@ namespace DOL.GS.Spells
                 player.styleComponent.NextCombatStyle = null;
                 player.styleComponent.NextCombatBackupStyle = null;
             }
+            else if (target is GameNPC npc && npc.Brain is StandardMobBrain brain)
+            {
+                if (Util.Chance(Spell.AmnesiaChance) && npc.TargetObject is GameLiving living)
+                {
+                    brain.ClearAggroList();
+                    brain.ForceAddToAggroList(living); // Ensure we keep the current target even during confusion.
+                }
+            }
 
             // Amnesia only affects normal spells and not song activation (still affects pulses from songs though)
             if (target.CurrentSpellHandler?.Spell.InstrumentRequirement == 0)
@@ -44,7 +53,6 @@ namespace DOL.GS.Spells
 
             if (target is GamePlayer)
                 MessageToLiving(target, LanguageMgr.GetTranslation((target as GamePlayer).Client, "Amnesia.MessageToTarget"), eChatType.CT_Spell);
-
         }
 
         protected override void OnSpellNegated(GameLiving target, SpellNegatedReason reason)
