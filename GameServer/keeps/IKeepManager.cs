@@ -31,6 +31,7 @@ namespace DOL.GS.Keeps
 		bool Load();
 		bool IsNewKeepComponent(int skin);
 		void RegisterKeep(int keepID, AbstractGameKeep keep);
+		void UnregisterKeep(int keepID);
 		AbstractGameKeep GetKeepByID(int id);
 		AbstractGameKeep GetClosestKeepToSpot(ushort regionid, IPoint3D point3d, int radius);
 		ICollection<IGameKeep> GetKeepsByRealmMap(int map);

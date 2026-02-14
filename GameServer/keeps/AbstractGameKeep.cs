@@ -508,7 +508,7 @@ namespace DOL.GS.Keeps
 			}
 
 			RemoveFromDatabase();
-			GameServer.KeepManager.Keeps[KeepID] = null;
+			GameServer.KeepManager.UnregisterKeep(KeepID);
 		}
 
 		/// <summary>
