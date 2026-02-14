@@ -259,14 +259,14 @@ namespace DOL.GS.Keeps
             log.Info("Registered Keep: " + keep.Name);
         }
 
-        /// <summary>
+		/// <summary>
 		/// get keep by ID
 		/// </summary>
 		/// <param name="id">id of keep</param>
 		/// <returns> Game keep object with keepid = id</returns>
 		public virtual AbstractGameKeep GetKeepByID(int id)
 		{
-			return m_keepList[id] as AbstractGameKeep;
+			return m_keepList.TryGetValue(id, out AbstractGameKeep keep) ? keep : null;
 		}
 
 		/// <summary>
