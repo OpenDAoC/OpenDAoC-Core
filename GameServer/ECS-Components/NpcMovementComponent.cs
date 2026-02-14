@@ -486,20 +486,18 @@ namespace DOL.GS
 
             if (distanceToTarget > 25)
                 TurnTo((int) destination.X, (int) destination.Y);
-            else
+            else if (!IsFlagSet(MovementState.Pathfinding))
                 TurnTo(FollowTarget);
 
             int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
 
             if (ticksToArrive <= 0)
             {
-                if (CurrentSpeed > 0)
-                    UpdateMovement(0);
-
+                // Call `OnArrival` ourselves to save time.
+                OnArrival();
                 return;
             }
 
-            // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
             SetFlag(MovementState.WalkTo);
             _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
@@ -527,52 +525,43 @@ namespace DOL.GS
             switch (_pathfinder.PathfindingStatus)
             {
                 case PathfindingStatus.PathFound:
-                case PathfindingStatus.PartialPathFound:
-                case PathfindingStatus.BufferTooSmall:
                 {
                     // Finalize the path if we have direct LoS to the destination.
                     // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
                     if (PathfindingMgr.Instance.HasLineOfSight(zone, _ownerPosition, destination))
-                    {
                         FallbackToWalk(this, destination, speed);
-                        break;
-                    }
+                    else
+                        PauseMovement(this, destination);
 
-                    PauseMovement(this, destination);
+                    break;
+                }
+                case PathfindingStatus.PartialPathFound:
+                case PathfindingStatus.BufferTooSmall:
+                {
+                    // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
+                    // This helps against exploits and with NPCs on mesh islands.
+                    // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
+                    if (Owner.Brain is ControlledMobBrain)
+                        PauseMovement(this, destination);
+                    else
+                        JumpToClosestReachableNode(this, destination);
+
                     break;
                 }
                 case PathfindingStatus.NoPathFound:
                 {
+                    // NoPathFound happens when either the current position or the destination isn't on a mesh.
+
                     // Allow pets to keep up with their owner if they jump down a ledge or bridge.
-                    // This is better than using `FallbackToWalk` and prevents pets from being pushed into walls.
-                    // This relies on `NoPathFound` to being returned in the first place, which may not happen if `PathToInternal` is called too late.
-                    if (!Owner.InCombat &&
-                        Owner.Brain is IControlledBrain brain &&
-                        FollowTarget != null &&
-                        brain.Owner == FollowTarget)
-                    {
-                        const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
-                        const int MAX_FLOOR_SEARCH_DEPTH = 1024;
-                        const int MIN_TELEPORT_DISTANCE = 128;
+                    // This is better than using FallbackToWalk and prevents pets from being pushed into walls.
+                    // This relies on NoPathFound to be returned in the first place, which may not happen if PathToInternal is called too late.
+                    // Consider making non-pet NPCs invincible and / or return to spawn point after a certain time.
+                    // Avoid FallbackToWalk, since is  makes misplaced NPCs go through walls and floors, which affects the player experience.
+                    if (Owner.Brain is ControlledMobBrain petBrain && !Owner.InCombat && FollowTarget != null && petBrain.Owner == FollowTarget)
+                        TeleportPetToFloorBeneathOwner(this, petBrain);
+                    else
+                        PauseMovement(this, destination);
 
-                        GamePlayer playerOwner = brain.GetPlayerOwner();
-
-                        if (Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
-                        {
-                            Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
-                            Vector3? floor = PathfindingMgr.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
-
-                            if (floor.HasValue && !Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
-                            {
-                                _ownerPosition = floor.Value;
-                                UpdateMovement(0);
-                                break;
-                            }
-                        }
-                    }
-
-                    // Consider making NPCs invincible and / or return to spawn point after a certain time.
-                    PauseMovement(this, destination);
                     break;
                 }
                 case PathfindingStatus.NotSet:
@@ -592,6 +581,37 @@ namespace DOL.GS
             {
                 component.UnsetFlag(MovementState.Pathfinding);
                 component.WalkToInternal(destination, speed);
+            }
+
+            static void JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
+            {
+                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
+                    return;
+
+                component._ownerPosition = node.Value;
+                component._pathfinder.ForceReplot = true;
+                component.UpdateMovement(0);
+            }
+
+            static void TeleportPetToFloorBeneathOwner(NpcMovementComponent component, ControlledMobBrain petBrain)
+            {
+                const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
+                const int MAX_FLOOR_SEARCH_DEPTH = 1024;
+                const int MIN_TELEPORT_DISTANCE = 128;
+
+                GamePlayer playerOwner = petBrain.GetPlayerOwner();
+
+                if (!component.Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
+                    return;
+
+                Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
+                Vector3? floor = PathfindingMgr.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
+
+                if (floor.HasValue && !component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
+                {
+                    component._ownerPosition = floor.Value;
+                    component.UpdateMovement(0);
+                }
             }
 
             static void PauseMovement(NpcMovementComponent component, Vector3 destination)
