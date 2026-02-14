@@ -526,6 +526,8 @@ namespace DOL.GS.Spells
 
         public override AttackData CalculateDamageToTarget(GameLiving target)
         {
+            // A lot of things here is outdated and need to be rewritten.
+
             GamePlayer player = Caster as GamePlayer;
 
             if (player == null)
