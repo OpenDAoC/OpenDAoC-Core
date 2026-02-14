@@ -449,6 +449,7 @@ namespace DOL.AI.Brain
         {
             CanBaf = true; // Mobs that drop out of combat can BAF again.
             AggroList.Clear();
+            _tempAggroList = null;
 
             lock (_orderedAggroListLock)
             {
