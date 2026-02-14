@@ -321,7 +321,9 @@ namespace DOL.GS
 		public virtual double GetArmorAbsorb(eArmorSlot slot)
 		{
 			// Combine base and stats using multiplicative stacking for diminishing returns.
-			// This doesn't apply to `eProperty.ArmorAbsorption` (normally used as debuffs).
+			// This doesn't apply to eProperty.ArmorAbsorption (normally used as debuffs).
+			// This method doesn't handle eProperty.PhysicalAbsorption (handled by AttackComponent),
+			// and thus doesn't reflect the final absorb.
 			double absorb = 1 - (1 - GetBaseAbsorb()) * (1 - GetStatContributionToArmorAbsorb());
 			absorb *= 1 + GetModified(eProperty.ArmorAbsorption) * 0.01;
 			return Math.Clamp(absorb, 0, 1);

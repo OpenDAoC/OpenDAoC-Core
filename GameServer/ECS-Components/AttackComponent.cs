@@ -1122,7 +1122,7 @@ namespace DOL.GS
 
                     // The wiki applies resistance on the damage mod then eventually caps it at 3.
                     // We apply the resistances later, and calculate the cap differently. But it should be mathematically equivalent.
-                    double resistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
+                    double resistMod = CalculateTargetResistanceFactor(ad.Target, ad.DamageType, armor);
 
                     // Melee damage and style damage ToA bonuses are pretty weird.
                     // * They're both calculated from base damage.
@@ -1168,7 +1168,7 @@ namespace DOL.GS
                     damage = postResistDamage;
 
                     // Apply conversion.
-                    double conversionMod = CalculateTargetConversion(ad.Target);
+                    double conversionMod = CalculateTargetConversionFactor(ad.Target);
                     damage *= conversionMod;
                     styleDamage *= conversionMod;
 
@@ -1353,27 +1353,32 @@ namespace DOL.GS
             if (target is GamePlayer or GameTrainingDummy)
                 armorFactor += target.Level * PLAYER_EXTRA_AF_PER_LEVEL;
 
+            double absorbFactor = CalculateTargetAbsorbFactor(target, armorSlot);
+            absorb = 1 - absorbFactor;
+            return absorb >= 1 ? double.MaxValue : Math.Max(1, armorFactor / absorbFactor);
+        }
+
+        public static double CalculateTargetAbsorbFactor(GameLiving target, eArmorSlot armorSlot)
+        {
             double armorAbsorb = target.GetArmorAbsorb(armorSlot);
             // Badge of Valor check should go here.
             double physicalAbsorb = target.GetModified(eProperty.PhysicalAbsorption) * 0.01;
-            double absorbDivisor = (1 - armorAbsorb) * (1 - physicalAbsorb);
-            absorb = 1 - absorbDivisor;
-            return absorb >= 1 ? double.MaxValue : Math.Max(1, armorFactor / absorbDivisor);
+            return (1 - armorAbsorb) * (1 - physicalAbsorb);
         }
 
-        public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, DbInventoryItem armor)
+        public static double CalculateTargetResistanceFactor(GameLiving target, eDamageType damageType, DbInventoryItem armor)
         {
-            double damageModifier = 1.0;
-            damageModifier *= 1.0 - (target.GetResist(damageType) + SkillBase.GetArmorResist(armor, damageType)) * 0.01;
-            return damageModifier;
+            int targetResist = target.GetResist(damageType);
+            int armorResist = SkillBase.GetArmorResist(armor, damageType);
+            return 1 - (targetResist + armorResist) * 0.01;
         }
 
-        public static double CalculateTargetConversion(GameLiving target)
+        public static double CalculateTargetConversionFactor(GameLiving target)
         {
             if (target is not GamePlayer)
                 return 1.0;
 
-            double conversionMod = 1 - target.GetModified(eProperty.Conversion) / 100.0;
+            double conversionMod = 1 - target.GetModified(eProperty.Conversion) * 0.01;
             return Math.Min(1.0, conversionMod);
         }
 

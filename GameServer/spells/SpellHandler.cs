@@ -3013,7 +3013,7 @@ namespace DOL.GS.Spells
 			finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
 
 			// Apply conversion.
-			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target);
+			double conversionMod = AttackComponent.CalculateTargetConversionFactor(ad.Target);
 			finalDamage *= conversionMod;
 
 			// Apply damage cap.
