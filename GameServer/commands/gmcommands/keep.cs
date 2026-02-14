@@ -111,7 +111,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						if ((keepID >> 8) != 0 || GameServer.KeepManager.Keeps[keepID] != null)
+						if ((keepID >> 8) != 0 || GameServer.KeepManager.GetKeepByID(keepID) != null)
 						{
 							DisplayMessage(client, "KeepID must be unused and less than 256.");
 							return;

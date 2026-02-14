@@ -253,18 +253,33 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-        public virtual void RegisterKeep(int keepID, AbstractGameKeep keep)
-        {
-            m_keepList.Add(keepID, keep);
-            log.Info("Registered Keep: " + keep.Name);
-        }
+		public virtual void RegisterKeep(int keepID, AbstractGameKeep keep)
+		{
+			m_keepList.Add(keepID, keep);
 
-		/// <summary>
-		/// get keep by ID
-		/// </summary>
-		/// <param name="id">id of keep</param>
-		/// <returns> Game keep object with keepid = id</returns>
-		public virtual AbstractGameKeep GetKeepByID(int id)
+			if (log.IsDebugEnabled)
+				log.Debug($"Registered keep: {keep.Name}");
+		}
+
+		public virtual void UnregisterKeep(int keepID)
+		{
+			bool removed = m_keepList.Remove(keepID, out AbstractGameKeep keep);
+
+			if (log.IsDebugEnabled)
+			{
+				if (removed)
+					log.Debug($"Unregistered keep: {keep.Name}");
+				else
+					log.Debug($"Failed to unregister keep with ID {keepID}, not found in keep list.");
+			}
+		}
+
+        /// <summary>
+        /// get keep by ID
+        /// </summary>
+        /// <param name="id">id of keep</param>
+        /// <returns> Game keep object with keepid = id</returns>
+        public virtual AbstractGameKeep GetKeepByID(int id)
 		{
 			return m_keepList.TryGetValue(id, out AbstractGameKeep keep) ? keep : null;
 		}
