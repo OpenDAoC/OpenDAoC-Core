@@ -192,6 +192,21 @@ namespace DOL.GS
             return true;
         }
 
+        public bool TryGetClosestReachableNode(Zone zone, Vector3 position, Vector3 target, out Vector3? node)
+        {
+            if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
+                ReplotPath(zone, position, target);
+
+            if (_pathNodes.Count <= 0)
+            {
+                node = null;
+                return false;
+            }
+
+            node = _pathNodes.Peek(_pathNodes.Count - 1).Position;
+            return true;
+        }
+
         public void ToggleVisualization()
         {
             if (_pathVisualization != null)
