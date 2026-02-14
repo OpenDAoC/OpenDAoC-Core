@@ -425,7 +425,9 @@ namespace DOL.AI.Brain
 
         public bool UnsetTemporaryAggroList()
         {
-            if (_tempAggroList == null)
+            // Keep the current aggro list if the previous one is empty.
+            // This can happen when amnesia is used during confusion.
+            if (_tempAggroList == null || _tempAggroList.IsEmpty)
                 return false;
 
             AggroList = _tempAggroList;
