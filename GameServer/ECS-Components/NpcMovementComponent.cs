@@ -486,7 +486,7 @@ namespace DOL.GS
 
             if (distanceToTarget > 25)
                 TurnTo((int) destination.X, (int) destination.Y);
-            else
+            else if (!IsFlagSet(MovementState.Pathfinding))
                 TurnTo(FollowTarget);
 
             int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
