@@ -493,13 +493,11 @@ namespace DOL.GS
 
             if (ticksToArrive <= 0)
             {
-                if (CurrentSpeed > 0)
-                    UpdateMovement(0);
-
+                // Call `OnArrival` ourselves to save time.
+                OnArrival();
                 return;
             }
 
-            // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
             SetFlag(MovementState.WalkTo);
             _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
