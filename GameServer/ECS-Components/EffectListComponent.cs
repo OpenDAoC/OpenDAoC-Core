@@ -818,6 +818,10 @@ namespace DOL.GS
                 if (!effectA.SpellHandler.Spell.IsHelpful || !effectB.SpellHandler.Spell.IsHelpful)
                     return false;
 
+                // Overwrite buff bot buffs
+                if (effectA.SpellHandler.Caster is BuffBot || effectB.SpellHandler.Caster is BuffBot)
+                    return false;
+
                 return effectA.SpellHandler.Caster != effectB.SpellHandler.Caster ||
                     effectA.SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects ||
                     effectB.SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects;

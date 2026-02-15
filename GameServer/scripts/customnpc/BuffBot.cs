@@ -9,9 +9,8 @@ namespace DOL.GS
 {
     public class BuffBot : GameNPC
     {
-        #region Attributes & Config
         private Queue m_buffs = new Queue();
-        private const int BUFFS_SPELL_DURATION = 7200; 
+        private const int BUFFS_DURATION = 7200; // 2 Stunden
         private const bool BUFFS_PLAYER_PET = true;
 
         public BuffBot() : base()
@@ -27,111 +26,83 @@ namespace DOL.GS
             Level = 50;
             return base.AddToWorld();
         }
-        #endregion
 
-        #region Interact Logic
         public override bool Interact(GamePlayer player)
         {
             if (!base.Interact(player)) return false;
             if (GetDistanceTo(player) > WorldMgr.INTERACT_DISTANCE) return false;
 
             TurnTo(player, 2000);
-            if (player.Level != 1)
-            {
-                ExecuteFullBuffRoutine(player);
-                return true;
-            }
-            // Waterbuff needs to be implemented
+            ExecuteFullBuffRoutine(player);
             return true;
         }
 
         private void ExecuteFullBuffRoutine(GamePlayer player)
         {
+            if (player.Level < 1) return;
+
             bool isCaster = player.CharacterClass.ClassType == eClassType.ListCaster;
             eRealm realm = player.Realm;
 
+            // Target, SpellID, EffectGroup, eSpellType, BaseValue, Name, Icon, SpellLine, ScaleWithLevel (default: true)
+            if (!isCaster)
+                AddBuffToQueue(player, 1, 1, eSpellType.BaseArmorFactorBuff, 30, "Greater Armor", GetIconByRealm(realm, "AF"), MerchBaseSpellLine);
 
-            // Spellids and Effectids are based of DB entries
-            // Spec AF same for all realms, only effect is different
-            // TODO class changes depending of Spec AF
+            AddBuffToQueue(player, 2, 4, eSpellType.StrengthBuff, 32, "Greater Strength", GetIconByRealm(realm, "STR"), MerchBaseSpellLine);
+            AddBuffToQueue(player, 3, 202, eSpellType.DexterityBuff, 32, "Greater Dexterity", GetIconByRealm(realm, "DEX"), MerchBaseSpellLine);
+            AddBuffToQueue(player, 4, 201, eSpellType.ConstitutionBuff, 32, "Greater Constitution", GetIconByRealm(realm, "CON"), MerchBaseSpellLine);
 
-            // SpellID, EffectGroup, Type, Value, Name, Icon, EffectID
-            if (realm == eRealm.Midgard)
-            {
-                // Midgard
-                if (!isCaster) BuffPlayer(player, CreateSpell(1, 801, eSpellType.BaseArmorFactorBuff, 30, "Greater Armor", 1465, 3155), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(2, 802, eSpellType.StrengthBuff, 32, "Greater Strength", 3166, 3166), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(3, 804, eSpellType.DexterityBuff, 32, "Greater Dexterity", 3174, 3174), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(4, 803, eSpellType.ConstitutionBuff, 32, "Greater Constitution", 3185, 3185), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(5, 808, eSpellType.SpecArmorFactorBuff, 43, "Specialist Armor", 1504, 1701), MerchSpecSpellLine);
-                BuffPlayer(player, CreateSpell(6, 805, eSpellType.StrengthConstitutionBuff, 47, "Strength/Constitution", 3266, 3266), MerchSpecSpellLine);
-                BuffPlayer(player, CreateSpell(7, 806, eSpellType.DexterityQuicknessBuff, 47, "Dexterity/Quickness", 3276, 3276), MerchSpecSpellLine);
-                if (isCaster) BuffPlayer(player, CreateSpell(8, 807, eSpellType.AcuityBuff, 32, "Greater Acuity", 3282, 3282), MerchSpecSpellLine);
-            }
-            else if (realm == eRealm.Hibernia)
-            {
-                // Hibernia
-                if (!isCaster) BuffPlayer(player, CreateSpell(1, 801, eSpellType.BaseArmorFactorBuff, 30, "Greater Armor", 5017, 5017), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(2, 802, eSpellType.StrengthBuff, 32, "Greater Strength", 5005, 5005), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(3, 804, eSpellType.DexterityBuff, 32, "Greater Dexterity", 5024, 5024), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(4, 803, eSpellType.ConstitutionBuff, 32, "Greater Constitution", 5034, 5034), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(5, 808, eSpellType.SpecArmorFactorBuff, 43, "Specialist Armor", 1504, 1504), MerchSpecSpellLine);
-                BuffPlayer(player, CreateSpell(6, 805, eSpellType.StrengthConstitutionBuff, 47, "Strength/Constitution", 5065, 5065), MerchSpecSpellLine);
-                BuffPlayer(player, CreateSpell(7, 806, eSpellType.DexterityQuicknessBuff, 47, "Dexterity/Quickness", 5074, 5074), MerchSpecSpellLine);
-                if (isCaster) BuffPlayer(player, CreateSpell(8, 807, eSpellType.AcuityBuff, 32, "Greater Acuity", 5078, 5078), MerchSpecSpellLine);
-            }
-            else // Albion / Default
-            {
-                if (!isCaster) BuffPlayer(player, CreateSpell(1, 1461, eSpellType.BaseArmorFactorBuff, 30, "Greater Armor", 1465, 1465), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(2, 802, eSpellType.StrengthBuff, 32, "Greater Strength", 1455, 1455), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(3, 804, eSpellType.DexterityBuff, 32, "Greater Dexterity", 1474, 1474), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(4, 803, eSpellType.ConstitutionBuff, 32, "Greater Constitution", 1484, 1484), MerchBaseSpellLine);
-                BuffPlayer(player, CreateSpell(5, 808, eSpellType.SpecArmorFactorBuff, 43, "Specialist Armor", 1504, 1031), MerchSpecSpellLine);
-                BuffPlayer(player, CreateSpell(6, 805, eSpellType.StrengthConstitutionBuff, 47, "Strength/Constitution", 1515, 1515), MerchSpecSpellLine);
-                BuffPlayer(player, CreateSpell(7, 806, eSpellType.DexterityQuicknessBuff, 47, "Dexterity/Quickness", 1524, 1524), MerchSpecSpellLine);
-                if (isCaster) BuffPlayer(player, CreateSpell(7, 807, eSpellType.AcuityBuff, 32, "Greater Acuity", 1536, 1536), MerchSpecSpellLine);
-            }
+            // --- SPEC BUFFS ---
+            AddBuffToQueue(player, 5, 2, eSpellType.SpecArmorFactorBuff, 43, "Specialist Armor", 1504, MerchSpecSpellLine);
+            AddBuffToQueue(player, 6, 204, eSpellType.StrengthConstitutionBuff, 47, "Strength/Constitution", GetIconByRealm(realm, "STRCON"), MerchSpecSpellLine);
+            AddBuffToQueue(player, 7, 203, eSpellType.DexterityQuicknessBuff, 47, "Dexterity/Quickness", GetIconByRealm(realm, "DEXQUI"), MerchSpecSpellLine);
 
-            // Buffs for all
-            BuffPlayer(player, CreateSpell(9, 809, eSpellType.CombatSpeedBuff, 12, "Combat Haste", 5054, 164), MerchSpecSpellLine);
-            BuffPlayer(player, CreateSpell(10, 810, eSpellType.WaterBreathing, 12, "Water Breathing", 8107, 8107), MerchSpecSpellLine);
+            if (isCaster)
+                AddBuffToQueue(player, 8, 200, eSpellType.AcuityBuff, 32, "Greater Acuity", GetIconByRealm(realm, "ACU"), MerchSpecSpellLine);
+
+            // --- UTILITY ---
+            if (!isCaster)
+                AddBuffToQueue(player, 9, 100, eSpellType.CombatSpeedBuff, 12, "Combat Haste", 5054, MerchSpecSpellLine, false);
+
+            AddBuffToQueue(player, 10, 7510, eSpellType.WaterBreathing, 100, "Water Breathing", 8107, MerchSpecSpellLine, false);
+
+            // Start casting the queue
+            CastBuffs();
         }
-        #endregion
 
-        #region Buff Processing & Scaling Engine
-        public void BuffPlayer(GamePlayer player, Spell spell, SpellLine spellLine)
+        /// <summary>
+        /// Berechnet die Skalierung und fügt den Buff der Warteschlange hinzu.
+        /// </summary>
+        private void AddBuffToQueue(GamePlayer player, int id, int group, eSpellType type, int baseValue, string name, int icon, SpellLine line, bool scale = true)
         {
-            if (spell == null || spellLine == null) return;
-            if (m_buffs == null) m_buffs = new Queue();
+            double scaleFactor = scale ? (player.Level / 50.0) : 1.0;
+            int finalValue = (int)(baseValue * scaleFactor);
+            if (finalValue < 1) finalValue = 1;
 
-            double scaleFactor = (double)player.Level / 50.0;
-
-            DbSpell scaledDb = new DbSpell();
-            scaledDb.Name = spell.Name;
-            scaledDb.Icon = spell.Icon;
-            scaledDb.ClientEffect = spell.ClientEffect;
-            scaledDb.Type = spell.SpellType.ToString(); 
-            scaledDb.Duration = BUFFS_SPELL_DURATION;
-            scaledDb.CastTime = 0;
-            scaledDb.Target = "Realm";
-            scaledDb.Range = WorldMgr.VISIBILITY_DISTANCE;
-            scaledDb.EffectGroup = spell.EffectGroup;
-
-            if (spell.SpellType == eSpellType.CombatSpeedBuff)
-                scaledDb.Value = spell.Value;
-            else
+            DbSpell dbSpell = new DbSpell
             {
-                scaledDb.Value = (int)(spell.Value * scaleFactor);
-                if (scaledDb.Value < 1) scaledDb.Value = 1;
-            }
+                SpellID = 900000 + id,
+                Name = name,
+                Icon = icon,
+                ClientEffect = icon,
+                Value = finalValue,
+                Duration = (type == eSpellType.WaterBreathing) ? 1800 : BUFFS_DURATION,
+                Type = type.ToString(),
+                Target = "Realm",
+                EffectGroup = group,
+                CastTime = 0,
+                Range = WorldMgr.VISIBILITY_DISTANCE,
+                AllowAdd = false
+            };
 
-            Spell scaledSpell = new Spell(scaledDb, spell.Level);
-            m_buffs.Enqueue(new Container(scaledSpell, spellLine, player));
+            Spell spell = new Spell(dbSpell, player.Level);
+
+            m_buffs.Enqueue(new Container(spell, line, player));
 
             if (BUFFS_PLAYER_PET && player.ControlledBrain?.Body is GameLiving pet)
-                m_buffs.Enqueue(new Container(scaledSpell, spellLine, pet));
-
-            CastBuffs();
+            {
+                m_buffs.Enqueue(new Container(spell, line, pet));
+            }
         }
 
         private void CastBuffs()
@@ -139,51 +110,62 @@ namespace DOL.GS
             while (m_buffs.Count > 0)
             {
                 Container con = (Container)m_buffs.Dequeue();
-                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, con.Spell, con.SpellLine);
-                if (spellHandler != null) spellHandler.StartSpell(con.Target);
+                ISpellHandler handler = ScriptMgr.CreateSpellHandler(this, con.Spell, con.SpellLine);
+                if (handler != null)
+                {
+                    handler.StartSpell(con.Target);
+                }
             }
         }
-        #endregion
 
-        #region Spell Definitions
-        private static SpellLine m_MerchBaseSpellLine;
-        public static SpellLine MerchBaseSpellLine => m_MerchBaseSpellLine ?? (m_MerchBaseSpellLine = new SpellLine("MerchBaseSpellLine", "BuffBot", "unknown", true));
-
-        private static SpellLine m_MerchSpecSpellLine;
-        public static SpellLine MerchSpecSpellLine => m_MerchSpecSpellLine ?? (m_MerchSpecSpellLine = new SpellLine("MerchSpecSpellLine", "BuffBot", "unknown", false));
-
-        private static Spell CreateSpell(int id, int group, eSpellType type, int value, string name, int icon, int effect)
+        #region Helper: Icons & SpellLines
+        private int GetIconByRealm(eRealm realm, string type)
         {
-            DbSpell dbSpell = new DbSpell();
-            dbSpell.SpellID = id;
-            dbSpell.Name = name;
-            dbSpell.Icon = icon;
-            dbSpell.ClientEffect = effect;
-            dbSpell.Value = value;
-            dbSpell.Duration = BUFFS_SPELL_DURATION;
-            dbSpell.Type = type.ToString();
-            dbSpell.Target = "Realm";
-            dbSpell.EffectGroup = group;
-            dbSpell.CastTime = 0;
-            dbSpell.Range = WorldMgr.VISIBILITY_DISTANCE;
-            dbSpell.AllowAdd = false;
-            return new Spell(dbSpell, 50);
+            switch (realm)
+            {
+                case eRealm.Midgard:
+                    if (type == "AF") return 3155;
+                    if (type == "STR") return 3166;
+                    if (type == "DEX") return 3174;
+                    if (type == "CON") return 3185;
+                    if (type == "STRCON") return 3266;
+                    if (type == "DEXQUI") return 3276;
+                    if (type == "ACU") return 3282;
+                    break;
+                case eRealm.Hibernia:
+                    if (type == "AF") return 5017;
+                    if (type == "STR") return 5005;
+                    if (type == "DEX") return 5024;
+                    if (type == "CON") return 5034;
+                    if (type == "STRCON") return 5065;
+                    if (type == "DEXQUI") return 5074;
+                    if (type == "ACU") return 5078;
+                    break;
+                default: // Albion
+                    if (type == "AF") return 1465;
+                    if (type == "STR") return 1455;
+                    if (type == "DEX") return 1474;
+                    if (type == "CON") return 1484;
+                    if (type == "STRCON") return 1515;
+                    if (type == "DEXQUI") return 1524;
+                    if (type == "ACU") return 1536;
+                    break;
+            }
+            return 1;
         }
-        #endregion
 
-        #region Helper Class
+        private static SpellLine m_baseLine;
+        public static SpellLine MerchBaseSpellLine => m_baseLine ?? (m_baseLine = new SpellLine("MerchBase", "BuffBot Base", "unknown", true));
+
+        private static SpellLine m_specLine;
+        public static SpellLine MerchSpecSpellLine => m_specLine ?? (m_specLine = new SpellLine("MerchSpec", "BuffBot Spec", "unknown", false));
+
         public class Container
         {
-            public Spell Spell { get; set; }
-            public SpellLine SpellLine { get; set; }
-            public GameLiving Target { get; set; }
-
-            public Container(Spell spell, SpellLine spellLine, GameLiving target)
-            {
-                Spell = spell;
-                SpellLine = spellLine;
-                Target = target;
-            }
+            public Spell Spell { get; }
+            public SpellLine SpellLine { get; }
+            public GameLiving Target { get; }
+            public Container(Spell s, SpellLine l, GameLiving t) { Spell = s; SpellLine = l; Target = t; }
         }
         #endregion
     }
