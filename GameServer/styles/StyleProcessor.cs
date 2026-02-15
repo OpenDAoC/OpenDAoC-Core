@@ -344,7 +344,7 @@ namespace DOL.GS.Styles
 					// Stealth openers are unaffected by weapon speed.
 					// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
 					// AF isn't taken into account because we don't have a weaponskill to compare it to. This may be a problem.
-					styleDamage *= 1.0 - target.GetArmorAbsorb(attackData.ArmorHitLocation);
+					styleDamage *= AttackComponent.CalculateTargetAbsorbFactor(target, attackData.ArmorHitLocation);
 					styleDamageCap = -1; // Uncapped. Is there supposed to be one?
 				}
 				else
