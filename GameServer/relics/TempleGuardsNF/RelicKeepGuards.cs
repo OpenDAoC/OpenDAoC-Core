@@ -15,6 +15,7 @@ namespace DOL.GS
     {
         protected const byte RelicKeepGuardsLevel = 70;
         protected const int RelicKeepGuardsRespawnInterval = 900000; // 15min
+        public override bool IsVisibleToPlayers => true;
         public override bool AddToWorld()
         {
             ushort[] modelsAlb = { 14, 1008 };

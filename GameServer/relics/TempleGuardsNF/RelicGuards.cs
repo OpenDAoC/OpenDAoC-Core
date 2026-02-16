@@ -17,7 +17,7 @@ namespace DOL.GS
     {
         protected const byte RelicGuardsLevel = 65;
         protected const int RelicGuardsRespawnInterval = 900000; // 15min
-
+        public override bool IsVisibleToPlayers => true;
         public override bool AddToWorld()
         {
             ushort[] modelsAlb = { 14, 1008 }; // Briton & Half Ogre

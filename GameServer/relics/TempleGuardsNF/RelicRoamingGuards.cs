@@ -19,6 +19,7 @@ namespace DOL.GS
         public int FormationY { get; set; }
         public bool IsLeader { get; set; }
         public RelicPatrolGuard MyLeader { get; set; }
+        public override bool IsVisibleToPlayers => true;
 
         [GameServerStartedEvent]
         public static void OnServerStartup(DOLEvent e, object sender, EventArgs args)
