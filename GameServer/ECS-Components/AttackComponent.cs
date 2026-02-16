@@ -1780,6 +1780,8 @@ namespace DOL.GS
                 // where stealth openers appear to always penetrate and break the bladeturn.
                 // See https://uthgard.net/tracker/issue/4174/@/Bladeturn_destroyed_with_CS_styles for a couple of examples.
 
+                // Extra comments https://archives.jeuxonline.info/fils/153358.html
+
                 if (stealthStyle)
                     penetrate = true;
                 else if (ad.Attacker.Level > bladeturn.SpellHandler.Caster.Level && !Util.Chance(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
