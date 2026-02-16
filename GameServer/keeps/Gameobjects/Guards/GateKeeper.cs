@@ -53,7 +53,7 @@ namespace DOL.GS.Keeps
 
             if (player.Client.Account.PrivLevel == 1)
             {
-                if (IsCasting || player.Realm != this.Realm || !player.IsAlive || player.IsStunned || player.IsMezzed || !IsWithinRadius(player, 350))
+                if (IsCasting || player.Realm != this.Realm || player.IsIncapacitated || !IsWithinRadius(player, 350))
                     return false;
             }
             this.LoadDestinations();
@@ -81,7 +81,7 @@ namespace DOL.GS.Keeps
 
             if (player.Client.Account.PrivLevel == 1)
             {
-                if (player.Realm != this.Realm || !player.IsAlive || player.IsStunned || player.IsMezzed || !IsWithinRadius(player, 350))
+                if (player.Realm != this.Realm || player.IsIncapacitated || !IsWithinRadius(player, 350))
                     return false;
             }
 
@@ -245,7 +245,7 @@ namespace DOL.GS.Keeps
 
             if (player.Client.Account.PrivLevel == 1)
             {
-                if (IsCasting || player.Realm != this.Realm || !player.IsAlive || player.IsStunned || player.IsMezzed || !IsWithinRadius(player, 350))
+                if (IsCasting || player.Realm != this.Realm || player.IsIncapacitated || !IsWithinRadius(player, 350))
                     return false;
             }
 
@@ -274,7 +274,7 @@ namespace DOL.GS.Keeps
 
             if (player.Client.Account.PrivLevel == 1)
             {
-                if (player.Realm != this.Realm || !player.IsAlive || player.IsStunned || player.IsMezzed || !IsWithinRadius(player, 350))
+                if (player.Realm != this.Realm || player.IsIncapacitated || !IsWithinRadius(player, 350))
                     return false;
             }
 

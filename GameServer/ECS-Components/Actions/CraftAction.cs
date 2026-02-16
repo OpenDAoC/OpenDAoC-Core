@@ -32,7 +32,7 @@ namespace DOL.GS
 
         public void Tick()
         {
-            if (_owner.IsMezzed || _owner.IsStunned)
+            if (_owner.IsCrowdControlled)
             {
                 CleanupCraftAction();
                 return;

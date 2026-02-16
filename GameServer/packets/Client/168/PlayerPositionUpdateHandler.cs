@@ -83,7 +83,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 packet.Skip(1); // Health.
                 // two trailing bytes, no data, +2 more for 1.127+.
 
-                if ((client.Player.IsMezzed || client.Player.IsStunned) && !client.Player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
+                if (client.Player.IsCrowdControlled && !client.Player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
                     client.Player.CurrentSpeed = 0;
                 else
                     client.Player.CurrentSpeed = (short) speed;
@@ -240,7 +240,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if ((speedData & 0x200) != 0)
                     speed = -speed;
 
-                if ((client.Player.IsMezzed || client.Player.IsStunned) && !client.Player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
+                if (client.Player.IsCrowdControlled && !client.Player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
                     // Nidel: updating client.Player.CurrentSpeed instead of speed
                     client.Player.CurrentSpeed = 0;
                 else

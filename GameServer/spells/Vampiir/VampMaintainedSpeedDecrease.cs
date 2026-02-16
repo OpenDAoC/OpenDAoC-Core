@@ -45,10 +45,8 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			if (!Caster.IsAlive ||
+			if (Caster.IsIncapacitated ||
 				!m_originalTarget.IsAlive ||
-				Caster.IsMezzed ||
-				Caster.IsStunned ||
 				Caster.IsSitting ||
 				(Caster.TargetObject is GameLiving ? m_originalTarget != Caster.TargetObject as GameLiving : true))
 			{

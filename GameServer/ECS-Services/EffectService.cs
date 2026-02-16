@@ -145,9 +145,17 @@ namespace DOL.GS
             // Not every pulsing effect is a `ECSPulseEffect`. Snares and roots decreasing effect are also handled as pulsing spells for example.
             if (spellEffect is ECSPulseEffect pulseEffect)
             {
+                // This should be unreachable.
                 if (!caster.ActivePulseSpells.ContainsKey(spell.SpellType))
+                {
                     pulseEffect.End();
-                else
+                    return;
+                }
+
+                // Pulsing effects still tick normally but don't cast any spell if the caster is crowd controlled.
+                // They also don't buffer, meaning the CC expiring doesn't necessarily make the pulsing effect tick immediately.
+                // Accurate 1.65 behavior.
+                if (!caster.IsCrowdControlled)
                 {
                     if (spell.PulsePower > 0)
                     {
@@ -168,25 +176,25 @@ namespace DOL.GS
 
                     if (spell.IsHarmful && spell.SpellType is not eSpellType.SpeedDecrease)
                     {
-                        if (!pulseEffect.Owner.IsMezzed && !pulseEffect.Owner.IsStunned)
+                        if (!pulseEffect.Owner.IsCrowdControlled)
                             (spellHandler as SpellHandler).SendCastAnimation();
                     }
+                }
 
-                    foreach (var pair in pulseEffect.ChildEffects)
+                foreach (var pair in pulseEffect.ChildEffects)
+                {
+                    ECSGameSpellEffect childEffect = pair.Value;
+
+                    if (GameServiceUtils.ShouldTick(childEffect.ExpireTick))
                     {
-                        ECSGameSpellEffect childEffect = pair.Value;
+                        // Don't stop effects that were replaced.
+                        // `ChildEffects` isn't updated when this happens and still keeps a reference.
+                        // Primarily affects speed songs.
+                        if (childEffect.IsBeingReplaced)
+                            continue;
 
-                        if (GameServiceUtils.ShouldTick(childEffect.ExpireTick))
-                        {
-                            // Don't stop effects that were replaced.
-                            // `ChildEffects` isn't updated when this happens and still keeps a reference.
-                            // Primarily affects speed songs.
-                            if (childEffect.IsBeingReplaced)
-                                continue;
-
-                            childEffect.End();
-                            pulseEffect.ChildEffects.Remove(pair.Key);
-                        }
+                        childEffect.End();
+                        pulseEffect.ChildEffects.Remove(pair.Key);
                     }
                 }
             }

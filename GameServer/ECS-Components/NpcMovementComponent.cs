@@ -322,7 +322,7 @@ namespace DOL.GS
 
         public void TurnTo(ushort heading, int duration = 0)
         {
-            if (Owner.Heading == heading || Owner.IsStunned || Owner.IsMezzed || IsTurningDisabled)
+            if (Owner.Heading == heading || Owner.IsCrowdControlled || IsTurningDisabled)
                 return;
 
             if (duration > 0)

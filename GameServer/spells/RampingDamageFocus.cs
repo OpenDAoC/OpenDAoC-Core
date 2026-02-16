@@ -30,7 +30,7 @@ namespace DOL.GS.Spells
 		{
 			if (Caster.ObjectState != GameObject.eObjectState.Active)
 				return;
-			if (Caster.IsStunned || Caster.IsMezzed)
+			if (Caster.IsCrowdControlled)
 				return;
 
 			//(Caster as GamePlayer).Out.SendCheckLOS(Caster, m_spellTarget, CheckLOSPlayerToTarget);

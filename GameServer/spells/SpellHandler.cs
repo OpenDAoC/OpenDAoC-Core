@@ -211,7 +211,7 @@ namespace DOL.GS.Spells
 			if (Caster.ObjectState != GameObject.eObjectState.Active)
 				return;
 
-			if (Caster.IsStunned || Caster.IsMezzed)
+			if (Caster.IsCrowdControlled)
 				return;
 
 			if (m_spell.InstrumentRequirement != 0 && !CheckInstrument())

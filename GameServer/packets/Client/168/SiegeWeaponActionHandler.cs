@@ -23,7 +23,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.Out.SendMessage("You can't fire a siege weapon while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			if (!client.Player.IsAlive || client.Player.IsMezzed || client.Player.IsStunned)
+			if (!client.Player.IsIncapacitated)
 			{
 				client.Out.SendMessage("You can't control a siege weapon now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;

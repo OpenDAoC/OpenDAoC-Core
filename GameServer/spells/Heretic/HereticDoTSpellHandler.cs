@@ -55,12 +55,10 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectPulse(GameSpellEffect effect)
 		{
-			if ( !m_caster.IsAlive ||
+			if (m_caster.IsIncapacitated ||
 				!effect.Owner.IsAlive ||
 				m_caster.Mana < Spell.PulsePower ||
 				!m_caster.IsWithinRadius(effect.Owner, Spell.CalculateEffectiveRange(m_caster)) ||
-				m_caster.IsMezzed ||
-				m_caster.IsStunned ||
 				m_caster.TargetObject is not GameLiving ||
 				effect.Owner != (m_caster.TargetObject as GameLiving))
 			{

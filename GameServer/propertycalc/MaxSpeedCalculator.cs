@@ -26,7 +26,7 @@ namespace DOL.GS.PropertyCalc
 
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            if ((living.IsMezzed || living.IsStunned) && living.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            if (living.IsCrowdControlled && living.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
                 return 0;
 
             double speedIncrease = living.BuffBonusMultCategory1.Get((int)property);
@@ -111,32 +111,29 @@ namespace DOL.GS.PropertyCalc
 
                     if (owner != null && owner == brain.Body.FollowTarget)
                     {
-                        // A pet following its owner always moves at at least its own sprint speed, even in combat (this should probably ignore Severing the Tether).
-                        // This behavior has been confirmed on Uthgard for Necromancer and Cabalist pets.
-                        // When out of combat, we use the mount speed if any, or we increase the pet's base speed to match its owner's, multiplied by any speed increase.
-                        if (living.InCombat)
-                            speedIncrease *= SPRINT;
-                        else
+                        // Increase the pet's speed to match its owner's (using mount speed if applicable) when both are out of combat
+                        if (!living.InCombat && !owner.InCombat)
                         {
                             GamePlayer playerOwner = brain.GetPlayerOwner();
 
                             if (playerOwner != null)
                             {
-                                owner = playerOwner;
                                 GameNPC steed = playerOwner.Steed;
 
                                 if (steed != null)
-                                    return steed.MaxSpeed; // Bypasses low health speed reduction.
+                                    owner = steed;
                             }
 
-                            if (owner.MaxSpeedBase > maxSpeedBase)
-                                maxSpeedBase = owner.MaxSpeedBase;
-
-                            double ownerSpeedAdjust = (double) owner.MaxSpeed / owner.MaxSpeedBase;
-
-                            if (ownerSpeedAdjust > 1.0)
-                                speedIncrease *= ownerSpeedAdjust;
+                            // Only increase the pet's speed, never decrease it, so take the max of the two.
+                            // Overwrite whatever speed bonuses the pet has at this point.
+                            maxSpeedBase = Math.Max(maxSpeedBase, owner.MaxSpeedBase);
+                            speedIncrease = Math.Max(1, (double) owner.MaxSpeed / owner.MaxSpeedBase);
                         }
+
+                        // A pet following its owner moves at sprint speed (+30%),
+                        // even in combat (This behavior has been confirmed on Uthgard for Necromancer and Cabalist pets),
+                        // even if the catch up mechanic applies (to ensure it stays within the catch up radius).
+                        speedIncrease *= SPRINT;
                     }
                 }
 

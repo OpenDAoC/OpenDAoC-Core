@@ -103,7 +103,7 @@ namespace DOL.GS.RealmAbilities
 
 		protected virtual int EndCast(ECSGameTimer timer)
 		{
-			if (m_player.IsMezzed || m_player.IsStunned || m_player.IsSitting)
+			if (m_player.IsCrowdControlled || m_player.IsSitting)
 				return 0;
 			Statics.ThornweedFieldBase twf = new Statics.ThornweedFieldBase(m_dmgValue);
 			twf.CreateStatic(m_player, m_player.GroundTarget, m_duration, 5, 500);
