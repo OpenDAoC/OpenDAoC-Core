@@ -536,7 +536,7 @@ namespace DOL.GS
 			if (Owner == null)
 				return false;
 			Owner.Stealth(false);
-			if (!Owner.IsAlive || Owner.IsMezzed || Owner.IsStunned)
+			if (Owner.IsIncapacitated)
 			{
 				this.Owner.Out.SendMessage("You can't use this siegeweapon now!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 				return false;

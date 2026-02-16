@@ -220,7 +220,7 @@ namespace DOL.GS
 
         protected virtual bool CanCastSpell()
         {
-            return !Owner.IsStunned && !Owner.IsMezzed && !Owner.IsSilenced;
+            return !Owner.IsCrowdControlled && !Owner.IsSilenced;
         }
 
         public void ReturnToPool(CastSpellRequest request)

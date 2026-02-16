@@ -124,7 +124,7 @@ namespace DOL.GS.Spells
 					MessageToCaster("You cannot cast this on the dead!", eChatType.CT_SpellResisted);
 					return false;
 				}
-				if (caster.IsMezzed || caster.IsStunned || caster.IsSilenced)
+				if (caster.IsCrowdControlled || caster.IsSilenced)
 				{
 					MessageToCaster("You can't use that in your state.", eChatType.CT_System);
 					return false;

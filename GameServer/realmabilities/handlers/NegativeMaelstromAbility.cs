@@ -99,7 +99,7 @@ namespace DOL.GS.RealmAbilities
             // GameEventMgr.RemoveHandler(player, GamePlayerEvent.Moving, new DOLEventHandler(CastInterrupted));
             GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackFinished, new DOLEventHandler(CastInterrupted));
             GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(CastInterrupted));
-            if (player.IsMezzed || player.IsStunned || player.IsSitting)
+            if (player.IsCrowdControlled || player.IsSitting)
                 return 0;
             if (!castWasSuccess)
                 return 0;

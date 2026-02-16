@@ -176,7 +176,7 @@ namespace DOL.GS
 
                     if (spell.IsHarmful && spell.SpellType is not eSpellType.SpeedDecrease)
                     {
-                        if (!pulseEffect.Owner.IsMezzed && !pulseEffect.Owner.IsStunned)
+                        if (!pulseEffect.Owner.IsCrowdControlled)
                             (spellHandler as SpellHandler).SendCastAnimation();
                     }
                 }
