@@ -335,7 +335,7 @@ namespace DOL.GS
         private void SetDefaultArmor()
         {
             // Skip generic armor.
-            int armorIndex = Util.Random(eObjectType._LastArmor - eObjectType._FirstArmor + 1) + (int) eObjectType._FirstArmor;
+            int armorIndex = Util.Random((int) eObjectType.Cloth, (int) eObjectType._LastArmor);
             CreateArmorSetOfType((eObjectType) armorIndex);
         }
 
