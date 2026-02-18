@@ -261,15 +261,11 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsVisibleTo(GameObject checkObject)
 		{
-			if (checkObject == null ||
-				CurrentRegion != checkObject.CurrentRegion ||
-				InHouse != checkObject.InHouse ||
-				(InHouse && checkObject.InHouse && CurrentHouse != checkObject.CurrentHouse))
-			{
-				return false;
-			}
-
-			return true;
+			return checkObject != null &&
+				CurrentRegion == checkObject.CurrentRegion &&
+				InHouse == checkObject.InHouse &&
+				(!InHouse || !checkObject.InHouse || CurrentHouse == checkObject.CurrentHouse) &&
+				ObjectState is eObjectState.Active;
 		}
 
 		#endregion

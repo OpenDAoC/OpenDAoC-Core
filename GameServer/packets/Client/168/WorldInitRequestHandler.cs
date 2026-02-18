@@ -143,11 +143,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                                                 //GSMessages.SendDebugMode(client,client.Account.PrivLevel>1);
             player.UpdateEncumbrance(); // Update encumbrance on init.
 
-            // Don't unstealth GMs.
-            if (player.Client.Account.PrivLevel > 1)
-                player.GMStealthed = player.IsStealthed;
-            else
-                player.Stealth(false);
+            // Automatically stealth GM/Admin players.
+            player.Stealth((ePrivLevel) player.Client.Account.PrivLevel >= ePrivLevel.GM);
 
             player.Out.SendSetControlledHorse(player);
 
