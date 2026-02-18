@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.Commands;
 using DOL.GS.RealmAbilities;
+using System;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -13,15 +14,67 @@ namespace DOL.GS.PacketHandler.Client.v168
     {
         protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
-            // Old packet for old clients.
+            // Train Champion Skills
 
-            /*uint x = packet.ReadInt();
+            uint x = packet.ReadInt();
             uint y = packet.ReadInt();
             int idLine = packet.ReadByte();
             int unk = packet.ReadByte();
             int row = packet.ReadByte();
-            int skillIndex = packet.ReadByte();*/
-            return;
+            int skillIndex = packet.ReadByte();
+
+            // idline not null so this is a Champion level training window
+            if (idLine > 0)
+            {
+                if (row > 0 && skillIndex > 0)
+                {
+                    // Get Player CL Spec
+                    var clspec = client.Player.GetSpecList().Where(sp => sp is LiveChampionsSpecialization).Cast<LiveChampionsSpecialization>().FirstOrDefault();
+
+                    // check if the tree can be used
+                    List<Tuple<MiniLineSpecialization, List<Tuple<Skill, byte>>>> tree = null;
+                    if (clspec != null)
+                    {
+                        tree = clspec.GetTrainerTreeDisplay(client.Player, clspec.RetrieveTypeForIndex(idLine));
+                    }
+
+                    if (tree != null)
+                    {
+                        Tuple<byte, MiniLineSpecialization> skillstatus = clspec.GetSkillStatus(tree, row - 1, skillIndex - 1);
+
+                        if (skillstatus.Item1 == 1)
+                        {
+                            client.Out.SendMessage("You already have that ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+                        if (skillstatus.Item1 != 2)
+                        {
+                            client.Out.SendMessage("You do not meet the requirements for that ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+                        if (client.Player.ChampionSpecialtyPoints < 1)
+                        {
+                            client.Out.SendMessage("You do not have enough champion specialty points for that ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+
+                        skillstatus.Item2.Level++;
+                        client.Player.AddSpecialization(skillstatus.Item2);
+                        client.Player.RefreshSpecDependantSkills(false);
+                        client.Player.Out.SendUpdatePlayer();
+                        client.Player.Out.SendUpdatePoints();
+                        client.Player.Out.SendUpdatePlayerSkills(true);
+                        client.Player.UpdatePlayerStatus();
+                        client.Player.Out.SendChampionTrainerWindow(idLine);
+
+                        return;
+                    }
+                    else
+                    {
+                        client.Out.SendMessage("Could not find Champion Spec!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    }
+                }
+            }
         }
     }
 
@@ -76,7 +129,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (amounts.TryGetValue(skillCount, out uint level) && spec.Level < level)
                 {
-                    TrainCommandHandler.Train(client, spec, (int) level);
+                    TrainCommandHandler.Train(client, spec, (int)level);
                     trained = true;
                 }
 
@@ -103,11 +156,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 foreach (var pair in amounts)
                 {
-                    RealmAbility ra = raList.ElementAtOrDefault((int) pair.Key);
+                    RealmAbility ra = raList.ElementAtOrDefault((int)pair.Key);
 
                     if (ra != null)
                     {
-                        RealmAbility playerRA = (RealmAbility) client.Player.GetAbility(ra.KeyName);
+                        RealmAbility playerRA = (RealmAbility)client.Player.GetAbility(ra.KeyName);
 
                         if (playerRA != null && (playerRA.Level >= ra.MaxLevel || playerRA.Level >= pair.Value))
                             continue;
@@ -131,10 +184,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
 
                         if (playerRA != null)
-                            playerRA.Level = (int) pair.Value;
+                            playerRA.Level = (int)pair.Value;
                         else
                         {
-                            ra.Level = (int) pair.Value;
+                            ra.Level = (int)pair.Value;
                             client.Player.AddRealmAbility(ra, false);
                         }
 
