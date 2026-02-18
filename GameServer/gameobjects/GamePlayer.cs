@@ -116,9 +116,6 @@ namespace DOL.GS
         /// </summary>
         private ArrayList m_mlSteps = new ArrayList();
 
-        private bool m_gmStealthed = false;
-        public bool GMStealthed { get { return m_gmStealthed; } set { m_gmStealthed = value; } }
-
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
         /// </summary>

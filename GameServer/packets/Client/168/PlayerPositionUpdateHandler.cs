@@ -135,9 +135,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.Entered", description), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
                     client.Player.LastPositionUpdateZone = newZone;
-
-                    if (client.Player.GMStealthed)
-                        client.Player.Stealth(true);
                 }
 
                 client.Player.LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
@@ -321,9 +318,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.Entered", description), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
                     client.Player.LastPositionUpdateZone = newZone;
-
-                    if (client.Player.GMStealthed)
-                        client.Player.Stealth(true);
                 }
 
                 client.Player.LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
