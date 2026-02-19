@@ -57,7 +57,7 @@ Titles.CL.Level1:					        Seeker
 Titles.CL.Level2:					        Enforcer
 Titles.CL.Level3:					        Outrider
 Titles.CL.Level4:					        Lightbringer
-Titles.CL.Level5:					        King's Champion
+Titles.CL.Level5:					        King´s Champion
 Titles.CL.Level6:					        King´s Emissary
 Titles.CL.Level7:					        Patron of Minotaur
 Titles.CL.Level8:					        Visionary
