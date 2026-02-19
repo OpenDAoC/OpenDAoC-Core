@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net10.0": {
-      "discord-webhook-client/4.0.3": {
+      "discord-webhook-client/4.0.5": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "6.0.0",
@@ -17,22 +17,6 @@
         },
         "runtime": {
           "lib/net8.0/JNogueira.Discord.WebhookClient.dll": {}
-        }
-      },
-      "log4net/3.2.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Configuration.ConfigurationManager": "4.5.0"
-        },
-        "compile": {
-          "lib/netstandard2.0/log4net.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/log4net.dll": {
-            "related": ".pdb;.xml"
-          }
         }
       },
       "Microsoft.AspNet.WebApi.Client/6.0.0": {
@@ -52,10 +36,10 @@
           }
         }
       },
-      "Microsoft.AspNetCore.SpaServices.Extensions/10.0.0": {
+      "Microsoft.AspNetCore.SpaServices.Extensions/10.0.3": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.FileProviders.Physical": "10.0.0"
+          "Microsoft.Extensions.FileProviders.Physical": "10.0.3"
         },
         "compile": {
           "lib/net10.0/Microsoft.AspNetCore.SpaServices.Extensions.dll": {}
@@ -368,10 +352,10 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.FileProviders.Abstractions/10.0.0": {
+      "Microsoft.Extensions.FileProviders.Abstractions/10.0.3": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "10.0.0"
+          "Microsoft.Extensions.Primitives": "10.0.3"
         },
         "compile": {
           "lib/net10.0/Microsoft.Extensions.FileProviders.Abstractions.dll": {
@@ -387,12 +371,12 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.FileProviders.Physical/10.0.0": {
+      "Microsoft.Extensions.FileProviders.Physical/10.0.3": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.FileProviders.Abstractions": "10.0.0",
-          "Microsoft.Extensions.FileSystemGlobbing": "10.0.0",
-          "Microsoft.Extensions.Primitives": "10.0.0"
+          "Microsoft.Extensions.FileProviders.Abstractions": "10.0.3",
+          "Microsoft.Extensions.FileSystemGlobbing": "10.0.3",
+          "Microsoft.Extensions.Primitives": "10.0.3"
         },
         "compile": {
           "lib/net10.0/Microsoft.Extensions.FileProviders.Physical.dll": {
@@ -408,7 +392,7 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.FileSystemGlobbing/10.0.0": {
+      "Microsoft.Extensions.FileSystemGlobbing/10.0.3": {
         "type": "package",
         "compile": {
           "lib/net10.0/Microsoft.Extensions.FileSystemGlobbing.dll": {
@@ -580,7 +564,7 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.Primitives/10.0.0": {
+      "Microsoft.Extensions.Primitives/10.0.3": {
         "type": "package",
         "compile": {
           "lib/net10.0/Microsoft.Extensions.Primitives.dll": {
@@ -642,7 +626,7 @@
           }
         }
       },
-      "NLog/6.0.6": {
+      "NLog/6.1.0": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/NLog.dll": {
@@ -664,12 +648,12 @@
           "lib/netstandard2.0/notifique-me.dll": {}
         }
       },
-      "OpenTelemetry/1.14.0": {
+      "OpenTelemetry/1.15.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Diagnostics.Abstractions": "10.0.0",
           "Microsoft.Extensions.Logging.Configuration": "10.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.14.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.15.0"
         },
         "compile": {
           "lib/net10.0/OpenTelemetry.dll": {
@@ -682,7 +666,7 @@
           }
         }
       },
-      "OpenTelemetry.Api/1.14.0": {
+      "OpenTelemetry.Api/1.15.0": {
         "type": "package",
         "compile": {
           "lib/net10.0/OpenTelemetry.Api.dll": {
@@ -695,11 +679,11 @@
           }
         }
       },
-      "OpenTelemetry.Api.ProviderBuilderExtensions/1.14.0": {
+      "OpenTelemetry.Api.ProviderBuilderExtensions/1.15.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "OpenTelemetry.Api": "1.14.0"
+          "OpenTelemetry.Api": "1.15.0"
         },
         "compile": {
           "lib/net10.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll": {
@@ -712,10 +696,10 @@
           }
         }
       },
-      "OpenTelemetry.Exporter.Console/1.14.0": {
+      "OpenTelemetry.Exporter.Console/1.15.0": {
         "type": "package",
         "dependencies": {
-          "OpenTelemetry": "1.14.0"
+          "OpenTelemetry": "1.15.0"
         },
         "compile": {
           "lib/net10.0/OpenTelemetry.Exporter.Console.dll": {
@@ -728,10 +712,10 @@
           }
         }
       },
-      "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.14.0": {
+      "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.15.0": {
         "type": "package",
         "dependencies": {
-          "OpenTelemetry": "1.14.0"
+          "OpenTelemetry": "1.15.0"
         },
         "compile": {
           "lib/net10.0/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll": {
@@ -744,11 +728,11 @@
           }
         }
       },
-      "OpenTelemetry.Extensions.Hosting/1.14.0": {
+      "OpenTelemetry.Extensions.Hosting/1.15.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Hosting.Abstractions": "10.0.0",
-          "OpenTelemetry": "1.14.0"
+          "OpenTelemetry": "1.15.0"
         },
         "compile": {
           "lib/net10.0/OpenTelemetry.Extensions.Hosting.dll": {
@@ -761,10 +745,10 @@
           }
         }
       },
-      "OpenTelemetry.Instrumentation.Runtime/1.14.0": {
+      "OpenTelemetry.Instrumentation.Runtime/1.15.0": {
         "type": "package",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.14.0, 2.0.0)"
+          "OpenTelemetry.Api": "[1.15.0, 2.0.0)"
         },
         "compile": {
           "lib/net10.0/OpenTelemetry.Instrumentation.Runtime.dll": {
@@ -850,11 +834,11 @@
           }
         }
       },
-      "System.Configuration.ConfigurationManager/10.0.0": {
+      "System.Configuration.ConfigurationManager/10.0.3": {
         "type": "package",
         "dependencies": {
-          "System.Diagnostics.EventLog": "10.0.0",
-          "System.Security.Cryptography.ProtectedData": "10.0.0"
+          "System.Diagnostics.EventLog": "10.0.3",
+          "System.Security.Cryptography.ProtectedData": "10.0.3"
         },
         "compile": {
           "lib/net10.0/System.Configuration.ConfigurationManager.dll": {
@@ -876,7 +860,7 @@
           "Stub.System.Data.SQLite.Core.NetStandard": "[1.0.119]"
         }
       },
-      "System.Diagnostics.EventLog/10.0.0": {
+      "System.Diagnostics.EventLog/10.0.3": {
         "type": "package",
         "compile": {
           "lib/net10.0/System.Diagnostics.EventLog.dll": {
@@ -902,10 +886,10 @@
           }
         }
       },
-      "System.Diagnostics.PerformanceCounter/10.0.0": {
+      "System.Diagnostics.PerformanceCounter/10.0.3": {
         "type": "package",
         "dependencies": {
-          "System.Configuration.ConfigurationManager": "10.0.0"
+          "System.Configuration.ConfigurationManager": "10.0.3"
         },
         "compile": {
           "lib/net10.0/System.Diagnostics.PerformanceCounter.dll": {
@@ -927,7 +911,7 @@
           }
         }
       },
-      "System.Security.Cryptography.ProtectedData/10.0.0": {
+      "System.Security.Cryptography.ProtectedData/10.0.3": {
         "type": "package",
         "compile": {
           "lib/net10.0/System.Security.Cryptography.ProtectedData.dll": {
@@ -943,10 +927,10 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "System.ServiceProcess.ServiceController/10.0.0": {
+      "System.ServiceProcess.ServiceController/10.0.3": {
         "type": "package",
         "dependencies": {
-          "System.Diagnostics.EventLog": "10.0.0"
+          "System.Diagnostics.EventLog": "10.0.3"
         },
         "compile": {
           "lib/net10.0/System.ServiceProcess.ServiceController.dll": {
@@ -972,9 +956,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
-          "NLog": "6.0.6",
-          "SharpZipLib": "1.4.2",
-          "log4net": "3.2.0"
+          "NLog": "6.1.0",
+          "SharpZipLib": "1.4.2"
         },
         "compile": {
           "bin/placeholder/CoreBase.dll": {}
@@ -1004,16 +987,16 @@
         "dependencies": {
           "CoreBase": "1.0.0",
           "CoreDatabase": "1.0.0",
-          "Microsoft.AspNetCore.SpaServices.Extensions": "10.0.0",
+          "Microsoft.AspNetCore.SpaServices.Extensions": "10.0.3",
           "Microsoft.CodeAnalysis.CSharp": "5.0.0",
           "Microsoft.Diagnostics.Runtime": "3.1.512801",
           "Newtonsoft.Json": "13.0.4",
-          "OpenTelemetry.Exporter.Console": "1.14.0",
-          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.14.0",
-          "OpenTelemetry.Extensions.Hosting": "1.14.0",
-          "OpenTelemetry.Instrumentation.Runtime": "1.14.0",
-          "System.Diagnostics.PerformanceCounter": "10.0.0",
-          "discord-webhook-client": "4.0.3"
+          "OpenTelemetry.Exporter.Console": "1.15.0",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.15.0",
+          "OpenTelemetry.Extensions.Hosting": "1.15.0",
+          "OpenTelemetry.Instrumentation.Runtime": "1.15.0",
+          "System.Diagnostics.PerformanceCounter": "10.0.3",
+          "discord-webhook-client": "4.0.5"
         },
         "compile": {
           "bin/placeholder/GameServer.dll": {}
@@ -1025,35 +1008,16 @@
     }
   },
   "libraries": {
-    "discord-webhook-client/4.0.3": {
-      "sha512": "WsjppgRNHUAZeloFBhyp6sdRb6fltgpn7a7yNvOnIqmKU1Z0eEqj07nH5XV2hDUlNeugDt0jo1VKZYZqzvNwig==",
+    "discord-webhook-client/4.0.5": {
+      "sha512": "qzHM2nmqV8LetLQLsWeacP606GjtjJm9k1bmRvN5OOv8NxGfbKSvCh362I6e/OR0/w/FSxKarGBc9MM+uXb+pw==",
       "type": "package",
-      "path": "discord-webhook-client/4.0.3",
+      "path": "discord-webhook-client/4.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "discord-webhook-client.4.0.3.nupkg.sha512",
+        "discord-webhook-client.4.0.5.nupkg.sha512",
         "discord-webhook-client.nuspec",
         "lib/net8.0/JNogueira.Discord.WebhookClient.dll"
-      ]
-    },
-    "log4net/3.2.0": {
-      "sha512": "f/iwZ8ToR8FFK0xE0ym4IUSPakuvF/PnXomgMXJs7jxqOGqFn984xtA5IQXBhWXBu61a3yU0XiJCZ3ltENtPRg==",
-      "type": "package",
-      "path": "log4net/3.2.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/net462/log4net.dll",
-        "lib/net462/log4net.pdb",
-        "lib/net462/log4net.xml",
-        "lib/netstandard2.0/log4net.dll",
-        "lib/netstandard2.0/log4net.pdb",
-        "lib/netstandard2.0/log4net.xml",
-        "log4net.3.2.0.nupkg.sha512",
-        "log4net.nuspec",
-        "package-icon.png"
       ]
     },
     "Microsoft.AspNet.WebApi.Client/6.0.0": {
@@ -1075,17 +1039,17 @@
         "microsoft.aspnet.webapi.client.nuspec"
       ]
     },
-    "Microsoft.AspNetCore.SpaServices.Extensions/10.0.0": {
-      "sha512": "O2yqx75re5JUk+g2gTqVipaYwogOk3uqLy/q3BvmQd5D8swmEd6eiLQEiDfa2bK1vyYfd00Akn0HNlArKGytrA==",
+    "Microsoft.AspNetCore.SpaServices.Extensions/10.0.3": {
+      "sha512": "EpZVVaSbX8wjwJtfl13vas/fxnbm0mzkQCDukCWJ9P4WWpMwIezEYy+4w5qhQKmMguCuLPLUJljEfDHOexu2CQ==",
       "type": "package",
-      "path": "microsoft.aspnetcore.spaservices.extensions/10.0.0",
+      "path": "microsoft.aspnetcore.spaservices.extensions/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "THIRD-PARTY-NOTICES.TXT",
         "lib/net10.0/Microsoft.AspNetCore.SpaServices.Extensions.dll",
-        "microsoft.aspnetcore.spaservices.extensions.10.0.0.nupkg.sha512",
+        "microsoft.aspnetcore.spaservices.extensions.10.0.3.nupkg.sha512",
         "microsoft.aspnetcore.spaservices.extensions.nuspec"
       ]
     },
@@ -2186,10 +2150,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.FileProviders.Abstractions/10.0.0": {
-      "sha512": "/ppSdehKk3fuXjlqCDgSOtjRK/pSHU8eWgzSHfHdwVm5BP4Dgejehkw+PtxKG2j98qTDEHDst2Y99aNsmJldmw==",
+    "Microsoft.Extensions.FileProviders.Abstractions/10.0.3": {
+      "sha512": "4TD9AXDRsipTmaemwnjt/DM5Ri0de2JzHQhvZ4woBTjUtL4XrPNsMrOk5oiLJAx1gTrE6pOIhxv+lEde5F6CZA==",
       "type": "package",
-      "path": "microsoft.extensions.fileproviders.abstractions/10.0.0",
+      "path": "microsoft.extensions.fileproviders.abstractions/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2210,15 +2174,15 @@
         "lib/net9.0/Microsoft.Extensions.FileProviders.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.Extensions.FileProviders.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.FileProviders.Abstractions.xml",
-        "microsoft.extensions.fileproviders.abstractions.10.0.0.nupkg.sha512",
+        "microsoft.extensions.fileproviders.abstractions.10.0.3.nupkg.sha512",
         "microsoft.extensions.fileproviders.abstractions.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.FileProviders.Physical/10.0.0": {
-      "sha512": "UZUQ74lQMmvcprlG8w+XpxBbyRDQqfb7GAnccITw32hdkUBlmm9yNC4xl4aR9YjgV3ounZcub194sdmLSfBmPA==",
+    "Microsoft.Extensions.FileProviders.Physical/10.0.3": {
+      "sha512": "8qLl5LXtcj6Z8yPbHAA/a57fvvl9nUCdi59AJFuixcWM4wSuENZ8jjoRATOKs/I4vOi/bDe0d5LqGSSLE634eA==",
       "type": "package",
-      "path": "microsoft.extensions.fileproviders.physical/10.0.0",
+      "path": "microsoft.extensions.fileproviders.physical/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2239,15 +2203,15 @@
         "lib/net9.0/Microsoft.Extensions.FileProviders.Physical.xml",
         "lib/netstandard2.0/Microsoft.Extensions.FileProviders.Physical.dll",
         "lib/netstandard2.0/Microsoft.Extensions.FileProviders.Physical.xml",
-        "microsoft.extensions.fileproviders.physical.10.0.0.nupkg.sha512",
+        "microsoft.extensions.fileproviders.physical.10.0.3.nupkg.sha512",
         "microsoft.extensions.fileproviders.physical.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.FileSystemGlobbing/10.0.0": {
-      "sha512": "5hfVl/e+bx1px2UkN+1xXhd3hu7Ui6ENItBzckFaRDQXfr+SHT/7qrCDrlQekCF/PBtEu2vtk87U2+gDEF8EhQ==",
+    "Microsoft.Extensions.FileSystemGlobbing/10.0.3": {
+      "sha512": "oM7pl8uJz8WRPRlh4AGQS61aeV9GOfTu89yqTiRSYyyMuCNVkbNra9zEk7ApyJ/sZrUpbjOZCRHuitCEsTWghg==",
       "type": "package",
-      "path": "microsoft.extensions.filesystemglobbing/10.0.0",
+      "path": "microsoft.extensions.filesystemglobbing/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2268,7 +2232,7 @@
         "lib/net9.0/Microsoft.Extensions.FileSystemGlobbing.xml",
         "lib/netstandard2.0/Microsoft.Extensions.FileSystemGlobbing.dll",
         "lib/netstandard2.0/Microsoft.Extensions.FileSystemGlobbing.xml",
-        "microsoft.extensions.filesystemglobbing.10.0.0.nupkg.sha512",
+        "microsoft.extensions.filesystemglobbing.10.0.3.nupkg.sha512",
         "microsoft.extensions.filesystemglobbing.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -2538,10 +2502,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Primitives/10.0.0": {
-      "sha512": "inRnbpCS0nwO/RuoZIAqxQUuyjaknOOnCEZB55KSMMjRhl0RQDttSmLSGsUJN3RQ3ocf5NDLFd2mOQViHqMK5w==",
+    "Microsoft.Extensions.Primitives/10.0.3": {
+      "sha512": "GEcpTwo7sUoLGGNTqV1FZEuL+tTD9m81NX/mh099dqGNna07/UGZShKQNZRw4hv6nlliSUwYQgSYc7OR99Jufg==",
       "type": "package",
-      "path": "microsoft.extensions.primitives/10.0.0",
+      "path": "microsoft.extensions.primitives/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2562,7 +2526,7 @@
         "lib/net9.0/Microsoft.Extensions.Primitives.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.xml",
-        "microsoft.extensions.primitives.10.0.0.nupkg.sha512",
+        "microsoft.extensions.primitives.10.0.3.nupkg.sha512",
         "microsoft.extensions.primitives.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -2649,10 +2613,10 @@
         "newtonsoft.json.bson.nuspec"
       ]
     },
-    "NLog/6.0.6": {
-      "sha512": "eUd/LDIwPtufj5OxtzFYiwuoKpzaS87iqO9P9D05avLCk4jIoOlqMwRH0o/43LmzM+CmgVAdDrCOq/rOK0sDKw==",
+    "NLog/6.1.0": {
+      "sha512": "K4UdxS4fuJeCM0sm+JTXWoJgOtcXX7X5kvE94bR07UB8JOB6A2+ski7q1tf2qdv+N0H3gsoWtteScJCHa3+zpw==",
       "type": "package",
-      "path": "nlog/6.0.6",
+      "path": "nlog/6.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2667,7 +2631,7 @@
         "lib/netstandard2.0/NLog.xml",
         "lib/netstandard2.1/NLog.dll",
         "lib/netstandard2.1/NLog.xml",
-        "nlog.6.0.6.nupkg.sha512",
+        "nlog.6.1.0.nupkg.sha512",
         "nlog.nuspec"
       ]
     },
@@ -2683,10 +2647,10 @@
         "notifiqueme.nuspec"
       ]
     },
-    "OpenTelemetry/1.14.0": {
-      "sha512": "aiPBAr1+0dPDItH++MQQr5UgMf4xiybruzNlAoYYMYN3UUk+mGRcoKuZy4Z4rhhWUZIpK2Xhe7wUUXSTM32duQ==",
+    "OpenTelemetry/1.15.0": {
+      "sha512": "7mS/oZFF8S6xyqGQfMU1btp0nXJQUPWV535Vp/XMLYwRAUv36xQN+U4vufWBF1+z4HnRTOwuFHtUSGnHbyN6FQ==",
       "type": "package",
-      "path": "opentelemetry/1.14.0",
+      "path": "opentelemetry/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2712,14 +2676,14 @@
         "lib/netstandard2.1/OpenTelemetry.dll.sigstore.json",
         "lib/netstandard2.1/OpenTelemetry.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.1.14.0.nupkg.sha512",
+        "opentelemetry.1.15.0.nupkg.sha512",
         "opentelemetry.nuspec"
       ]
     },
-    "OpenTelemetry.Api/1.14.0": {
-      "sha512": "foHci6viUw1f3gUB8qzz3Rk02xZIWMo299X0rxK0MoOWok/3dUVru+KKdY7WIoSHwRGpxGKkmAz9jIk2RFNbsQ==",
+    "OpenTelemetry.Api/1.15.0": {
+      "sha512": "vk5OGdf6K9kQScCWo3bRjhDWCv6Pqw92IpX4dlARZ8B1WL7/2NGTDtCkkw42eQf7UdwyoHKzVvMH/PtL8d6z7w==",
       "type": "package",
-      "path": "opentelemetry.api/1.14.0",
+      "path": "opentelemetry.api/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2742,14 +2706,14 @@
         "lib/netstandard2.0/OpenTelemetry.Api.dll.sigstore.json",
         "lib/netstandard2.0/OpenTelemetry.Api.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.api.1.14.0.nupkg.sha512",
+        "opentelemetry.api.1.15.0.nupkg.sha512",
         "opentelemetry.api.nuspec"
       ]
     },
-    "OpenTelemetry.Api.ProviderBuilderExtensions/1.14.0": {
-      "sha512": "i/lxOM92v+zU5I0rGl5tXAGz6EJtxk2MvzZ0VN6F6L5pMqT6s6RCXnGWXg6fW+vtZJsllBlQaf/VLPTzgefJpg==",
+    "OpenTelemetry.Api.ProviderBuilderExtensions/1.15.0": {
+      "sha512": "OnuSUlRpGvowkOzGFQfy+KZFu0cITfKfh2IYJJiZskxVJiOuexwOOuvfDAgpJdmTzVWAHjYdz2shcHZaJ06UjQ==",
       "type": "package",
-      "path": "opentelemetry.api.providerbuilderextensions/1.14.0",
+      "path": "opentelemetry.api.providerbuilderextensions/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2772,14 +2736,14 @@
         "lib/netstandard2.0/OpenTelemetry.Api.ProviderBuilderExtensions.dll.sigstore.json",
         "lib/netstandard2.0/OpenTelemetry.Api.ProviderBuilderExtensions.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.api.providerbuilderextensions.1.14.0.nupkg.sha512",
+        "opentelemetry.api.providerbuilderextensions.1.15.0.nupkg.sha512",
         "opentelemetry.api.providerbuilderextensions.nuspec"
       ]
     },
-    "OpenTelemetry.Exporter.Console/1.14.0": {
-      "sha512": "u0ekKB603NBrll76bK/wkLTnD/bl+5QMrXZKOA6oW+H383E2z5gfaWSrwof94URuvTFrtWRQcLKH+hhPykfM2w==",
+    "OpenTelemetry.Exporter.Console/1.15.0": {
+      "sha512": "Jweov3Q70xmy5U8bwab8xd+xAuaFBI4695q/IpH4/dcAwKytyB+WhV5HufmKfXiKZhRbSEo8piG+i1ENEmdFXw==",
       "type": "package",
-      "path": "opentelemetry.exporter.console/1.14.0",
+      "path": "opentelemetry.exporter.console/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2802,14 +2766,14 @@
         "lib/netstandard2.0/OpenTelemetry.Exporter.Console.dll.sigstore.json",
         "lib/netstandard2.0/OpenTelemetry.Exporter.Console.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.exporter.console.1.14.0.nupkg.sha512",
+        "opentelemetry.exporter.console.1.15.0.nupkg.sha512",
         "opentelemetry.exporter.console.nuspec"
       ]
     },
-    "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.14.0": {
-      "sha512": "7ELExeje+T/KOywHuHwZBGQNtYlepUaYRFXWgoEaT1iKpFJVwOlE1Y2+uqHI2QQmah0Ue+XgRmDy924vWHfJ6Q==",
+    "OpenTelemetry.Exporter.OpenTelemetryProtocol/1.15.0": {
+      "sha512": "VH8ANc/js9IRvfYt0Q2UaAxNCOWm+IU+vWrtoH7pfx4oWPVdISUt+9uWfBCFMWZg5WzQip5dhslyDjeyZXXfSQ==",
       "type": "package",
-      "path": "opentelemetry.exporter.opentelemetryprotocol/1.14.0",
+      "path": "opentelemetry.exporter.opentelemetryprotocol/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2835,14 +2799,14 @@
         "lib/netstandard2.1/OpenTelemetry.Exporter.OpenTelemetryProtocol.dll.sigstore.json",
         "lib/netstandard2.1/OpenTelemetry.Exporter.OpenTelemetryProtocol.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.exporter.opentelemetryprotocol.1.14.0.nupkg.sha512",
+        "opentelemetry.exporter.opentelemetryprotocol.1.15.0.nupkg.sha512",
         "opentelemetry.exporter.opentelemetryprotocol.nuspec"
       ]
     },
-    "OpenTelemetry.Extensions.Hosting/1.14.0": {
-      "sha512": "ZAxkCIa3Q3YWZ1sGrolXfkhPqn2PFSz2Cel74em/fATZgY5ixlw6MQp2icmqKCz4C7M1W2G0b92K3rX8mOtFRg==",
+    "OpenTelemetry.Extensions.Hosting/1.15.0": {
+      "sha512": "RixjKyB1pbYGhWdvPto4KJs+exdQknJsnjUO9WszdLles5Vcd0EYzxPNJdwmLjYfP+Jfbr4B5nktM4ZgeHSWtg==",
       "type": "package",
-      "path": "opentelemetry.extensions.hosting/1.14.0",
+      "path": "opentelemetry.extensions.hosting/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2865,14 +2829,14 @@
         "lib/netstandard2.0/OpenTelemetry.Extensions.Hosting.dll.sigstore.json",
         "lib/netstandard2.0/OpenTelemetry.Extensions.Hosting.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.extensions.hosting.1.14.0.nupkg.sha512",
+        "opentelemetry.extensions.hosting.1.15.0.nupkg.sha512",
         "opentelemetry.extensions.hosting.nuspec"
       ]
     },
-    "OpenTelemetry.Instrumentation.Runtime/1.14.0": {
-      "sha512": "Z6o4JDOQaKv6bInAYZxuyxxfMKr6hFpwLnKEgQ+q+oBNA9Fm1sysjFCOzRzk7U0WD86LsRPXX+chv1vJIg7cfg==",
+    "OpenTelemetry.Instrumentation.Runtime/1.15.0": {
+      "sha512": "OOvpqR/j2Pb6+tWhHNODIbSJ53Or/MDtTiXEyrsWI02K2lLAgvBFcxUOrHggS/8015cYR3AdSaXv6NZrkz5yQA==",
       "type": "package",
-      "path": "opentelemetry.instrumentation.runtime/1.14.0",
+      "path": "opentelemetry.instrumentation.runtime/1.15.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2887,7 +2851,7 @@
         "lib/netstandard2.0/OpenTelemetry.Instrumentation.Runtime.dll",
         "lib/netstandard2.0/OpenTelemetry.Instrumentation.Runtime.xml",
         "opentelemetry-icon-color.png",
-        "opentelemetry.instrumentation.runtime.1.14.0.nupkg.sha512",
+        "opentelemetry.instrumentation.runtime.1.15.0.nupkg.sha512",
         "opentelemetry.instrumentation.runtime.nuspec"
       ]
     },
@@ -2988,10 +2952,10 @@
         "stub.system.data.sqlite.core.netstandard.nuspec"
       ]
     },
-    "System.Configuration.ConfigurationManager/10.0.0": {
-      "sha512": "0B+BzJ6pPMrRzJrVsttKf9MfDj6Syw9xoY+agcS9VssYQali1446+jTf5v1K94AMFUBxLXqDZlaTjO5edaI3jA==",
+    "System.Configuration.ConfigurationManager/10.0.3": {
+      "sha512": "69ZT/MYxQSxwdiiHRtI08noXiG5drj/bXDDZISmeWkNUtbIfYgmTiof16tCVOLTdmSQY7W7gwxkMliKdreWHGQ==",
       "type": "package",
-      "path": "system.configuration.configurationmanager/10.0.0",
+      "path": "system.configuration.configurationmanager/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3012,7 +2976,7 @@
         "lib/net9.0/System.Configuration.ConfigurationManager.xml",
         "lib/netstandard2.0/System.Configuration.ConfigurationManager.dll",
         "lib/netstandard2.0/System.Configuration.ConfigurationManager.xml",
-        "system.configuration.configurationmanager.10.0.0.nupkg.sha512",
+        "system.configuration.configurationmanager.10.0.3.nupkg.sha512",
         "system.configuration.configurationmanager.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -3028,10 +2992,10 @@
         "system.data.sqlite.core.nuspec"
       ]
     },
-    "System.Diagnostics.EventLog/10.0.0": {
-      "sha512": "uaFRda9NjtbJRkdx311eXlAA3n2em7223c1A8d1VWyl+4FL9vkG7y2lpPfBU9HYdj/9KgdRNdn1vFK8ZYCYT/A==",
+    "System.Diagnostics.EventLog/10.0.3": {
+      "sha512": "+bZnyzt0/vt4g3QSllhsRNGTpa09p7Juy5K8spcK73cOTOefu4+HoY89hZOgIOmzB5A4hqPyEDKnzra7KKnhZw==",
       "type": "package",
-      "path": "system.diagnostics.eventlog/10.0.0",
+      "path": "system.diagnostics.eventlog/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3061,15 +3025,15 @@
         "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.Messages.dll",
         "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.dll",
         "runtimes/win/lib/net9.0/System.Diagnostics.EventLog.xml",
-        "system.diagnostics.eventlog.10.0.0.nupkg.sha512",
+        "system.diagnostics.eventlog.10.0.3.nupkg.sha512",
         "system.diagnostics.eventlog.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.Diagnostics.PerformanceCounter/10.0.0": {
-      "sha512": "ZnhizmMstYa05UNuwiMew7EsGApEy6qBcvBBSxoUcaX8WvkE2pb+iQyRWyQZ8E0mq7PlPBjwVh4+6ie+B6oeZA==",
+    "System.Diagnostics.PerformanceCounter/10.0.3": {
+      "sha512": "pQHdkk3QNDYRsNzWVUIamlTiHb3/I50PxGXMRaEqiLmUe+FkInuMj92lCOhvTT6KbLlnMWGRgZq1rDaMJdQixw==",
       "type": "package",
-      "path": "system.diagnostics.performancecounter/10.0.0",
+      "path": "system.diagnostics.performancecounter/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3096,15 +3060,15 @@
         "runtimes/win/lib/net8.0/System.Diagnostics.PerformanceCounter.xml",
         "runtimes/win/lib/net9.0/System.Diagnostics.PerformanceCounter.dll",
         "runtimes/win/lib/net9.0/System.Diagnostics.PerformanceCounter.xml",
-        "system.diagnostics.performancecounter.10.0.0.nupkg.sha512",
+        "system.diagnostics.performancecounter.10.0.3.nupkg.sha512",
         "system.diagnostics.performancecounter.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.Security.Cryptography.ProtectedData/10.0.0": {
-      "sha512": "qy6C3gQRTrfhFfuiIYU1jNwWfFdJpBVo1BARW7jgMm1zTEm3LRzLLyOLJGaAuKE+nZCGkEP71y4rj9NWjqLGdQ==",
+    "System.Security.Cryptography.ProtectedData/10.0.3": {
+      "sha512": "JCKbH/CN5l0CSoJBILEvJmNQVp5vV+FY3q2ue4K9p4eDT4mFEv0bjTQCV+MD6Qk1b/qk9fWmZZKhG1TklbXw1Q==",
       "type": "package",
-      "path": "system.security.cryptography.protecteddata/10.0.0",
+      "path": "system.security.cryptography.protecteddata/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3131,15 +3095,15 @@
         "lib/xamarinmac20/_._",
         "lib/xamarintvos10/_._",
         "lib/xamarinwatchos10/_._",
-        "system.security.cryptography.protecteddata.10.0.0.nupkg.sha512",
+        "system.security.cryptography.protecteddata.10.0.3.nupkg.sha512",
         "system.security.cryptography.protecteddata.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.ServiceProcess.ServiceController/10.0.0": {
-      "sha512": "PaFmFQXX/qL1vl0CfdJUMPMYT8TOEHlcdEiOZtd4LV2rcaS/WDQM4bpECcbRM4BrD+DWkWd/jtb6iPOqAX9TWA==",
+    "System.ServiceProcess.ServiceController/10.0.3": {
+      "sha512": "lOvEbCrTMl4EB7Ckp1suhgcnUEwUs2qRWLYZvquKU33hpRLZfjTXBSHFWQiRshxqd7dA+Nj9Yiw8EbOwd3T/eQ==",
       "type": "package",
-      "path": "system.serviceprocess.servicecontroller/10.0.0",
+      "path": "system.serviceprocess.servicecontroller/10.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3166,7 +3130,7 @@
         "runtimes/win/lib/net8.0/System.ServiceProcess.ServiceController.xml",
         "runtimes/win/lib/net9.0/System.ServiceProcess.ServiceController.dll",
         "runtimes/win/lib/net9.0/System.ServiceProcess.ServiceController.xml",
-        "system.serviceprocess.servicecontroller.10.0.0.nupkg.sha512",
+        "system.serviceprocess.servicecontroller.10.0.3.nupkg.sha512",
         "system.serviceprocess.servicecontroller.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -3190,9 +3154,8 @@
   "projectFileDependencyGroups": {
     "net10.0": [
       "GameServer >= 1.0.0",
-      "Microsoft.AspNetCore.SpaServices.Extensions >= 10.0.0",
-      "System.ServiceProcess.ServiceController >= 10.0.0",
-      "log4net >= 3.2.0"
+      "Microsoft.AspNetCore.SpaServices.Extensions >= 10.0.3",
+      "System.ServiceProcess.ServiceController >= 10.0.3"
     ]
   },
   "packageFolders": {
@@ -3244,15 +3207,11 @@
         "dependencies": {
           "Microsoft.AspNetCore.SpaServices.Extensions": {
             "target": "Package",
-            "version": "[10.0.0, )"
+            "version": "[10.0.3, )"
           },
           "System.ServiceProcess.ServiceController": {
             "target": "Package",
-            "version": "[10.0.0, )"
-          },
-          "log4net": {
-            "target": "Package",
-            "version": "[3.2.0, )"
+            "version": "[10.0.3, )"
           }
         },
         "imports": [
