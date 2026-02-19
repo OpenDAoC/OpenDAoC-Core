@@ -35,9 +35,9 @@
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="NLog" Version="6.0.6" />
+        <PackageReference Include="NLog" Version="6.1.0" />
         <PackageReference Include="SharpZipLib" Version="1.4.2" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.3" />
     </ItemGroup>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
