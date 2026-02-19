@@ -685,7 +685,7 @@ namespace DOL.GS
             else
                 speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance) * 2.5);
 
-            PathToInternal(destination, Math.Max((short) 10, speed));
+            PathToInternal(destination, Math.Max((short) 20, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
 
