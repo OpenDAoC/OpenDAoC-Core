@@ -3,10 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DOL.Network;
 using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Network
+namespace DOL.Network.Tests
 {
     [TestFixture]
     public class UT_SessionIdAllocator

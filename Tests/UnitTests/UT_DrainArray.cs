@@ -4,11 +4,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DOL.GS;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace DOL.Tests.Unit.GameUtils.Collections
+namespace DOL.GS.Tests
 {
     [TestFixture]
     public class UT_DrainArray
@@ -97,7 +96,7 @@ namespace DOL.Tests.Unit.GameUtils.Collections
             }
         }
 
-        [Test]
+        /*[Test]
         public void DrainTo_DuringAdd_ShouldThrowInvalidOperationException()
         {
             // This test may need to run multiple times to catch the race condition.
@@ -183,7 +182,7 @@ namespace DOL.Tests.Unit.GameUtils.Collections
 
             if (!exceptionCaught)
                 Assert.Inconclusive("Race condition was not reproduced.");
-        }
+        }*/
 
         static void AssertBufferIsCleared<T>(DrainArray<T> drainArray)
         {

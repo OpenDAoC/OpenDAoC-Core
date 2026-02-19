@@ -47,6 +47,9 @@
         <DbUpdaterFiles Include="..\GameServerScripts\dbupdater\**\*.xml" />
         <TranslationFiles Include="..\GameServer\language\**\*.txt" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="IntegrationTests\" />
+    </ItemGroup>
     <Target Name="CopyFiles" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(ScriptFiles)" DestinationFiles="@(ScriptFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\scripts\%(RecursiveDir)%(Filename)%(Extension)')" />
         <Copy SourceFiles="@(DbUpdaterFiles)" DestinationFiles="@(DbUpdaterFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\scripts\dbupdater\%(RecursiveDir)%(Filename)%(Extension)')" />

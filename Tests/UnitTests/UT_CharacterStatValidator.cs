@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.GS;
 using NUnit.Framework;
 
-namespace DOL.Tests
+namespace DOL.GS.Tests
 {
     [TestFixture]
-    public class CharacterStatValidatorTests
+    public class UT_CharacterStatValidator
     {
         [Test]
         public void Validate_NullArguments_ThrowsArgumentNullException()
