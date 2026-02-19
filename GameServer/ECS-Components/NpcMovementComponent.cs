@@ -393,11 +393,8 @@ namespace DOL.GS
             if (_lastPositionUpdateTick == GameLoop.GameLoopTime)
                 return;
 
-            // We still update `_ownerPosition` if the NPC isn't moving in case it's not moving by itself (teleports, GM tool...)
-            // This ensures it always has a value.
             if (!IsMoving)
             {
-                _ownerPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
                 _lastPositionUpdateTick = GameLoop.GameLoopTime;
                 return;
             }
