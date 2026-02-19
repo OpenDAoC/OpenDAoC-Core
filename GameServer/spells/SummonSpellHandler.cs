@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -71,11 +72,34 @@ namespace DOL.GS.Spells
 
 		protected virtual void GetPetLocation(out int x, out int y, out int z, out ushort heading, out Region region)
 		{
-			Point2D point = Caster.GetPointFromHeading( Caster.Heading, 64 );
-			x = point.X;
-			y = point.Y;
-			z = Caster.Z;
-			heading = (ushort)((Caster.Heading + 2048) % 4096);
+			Point2D point = Caster.GetPointFromHeading(Caster.Heading, 64);
+			Zone zone = Caster.CurrentRegion.GetZone(point.X, point.Y);
+
+			if (zone.IsPathfindingEnabled)
+			{
+				Vector3? closestPoint = PathfindingMgr.Instance.GetClosestPoint(zone, new(point.X, point.Y, Caster.Z), 32f, 32f, 64f);
+
+				if (closestPoint.HasValue && PathfindingMgr.Instance.HasLineOfSight(zone, closestPoint.Value, new(Caster.X, Caster.Y, Caster.Z)))
+				{
+					x = (int) Math.Round(closestPoint.Value.X);
+					y = (int) Math.Round(closestPoint.Value.Y);
+					z = (int) Math.Round(closestPoint.Value.Z);
+				}
+				else
+				{
+					x = Caster.X;
+					y = Caster.Y;
+					z = Caster.Z;
+				}
+			}
+			else
+			{
+				x = point.X;
+				y = point.Y;
+				z = Caster.Z;
+			}
+
+			heading = (ushort) ((Caster.Heading + 2048) % 4096);
 			region = Caster.CurrentRegion;
 		}
 
