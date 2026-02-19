@@ -514,6 +514,9 @@ namespace DOL.GS
                 // Specs.
                 foreach (Specialization spec in specs)
                 {
+                    if (spec.HybridSpellList)
+                        hybridSpellLists.Add((spec, spec.GetLinesSpellsForLiving(player)));
+
                     if (!spec.Trainable)
                         continue;
 
@@ -521,9 +524,6 @@ namespace DOL.GS
                         UpdateAt(usableSkills, visited, index, spec, spec);
                     else
                         newSpecs.Add(new(spec, spec));
-
-                    if (spec.HybridSpellList)
-                        hybridSpellLists.Add((spec, spec.GetLinesSpellsForLiving(player)));
                 }
 
                 // Abilities.
