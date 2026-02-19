@@ -21,11 +21,6 @@ namespace DOL.GS.PacketHandler.Client.v168
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
-        /// Max Points to allow on player creation
-        /// </summary>
-        private const int MaxStartingBonusPoints = 30;
-
-        /// <summary>
         /// Client Operation Value.
         /// </summary>
         public enum eOperation: uint
@@ -588,16 +583,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                         if (charClass != null)
                         {
-                            bool valid = IsCustomPointsDistributionValid(character, stats, out var points);
+                            bool valid = CharacterStatValidator.Validate(character, stats, out int distributedPoints);
 
                             // Hacking attemp ?
-                            if (points > MaxStartingBonusPoints)
+                            if (distributedPoints > CharacterStatValidator.PointDistributionBudget)
                             {
                                 if ((ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
                                 {
                                     if (Properties.BAN_HACKERS)
                                     {
-                                        client.BanAccount($"Autoban Hack char update : Wrong allowed points:{points}");
+                                        client.BanAccount($"Autoban Hack char update : Wrong allowed points:{distributedPoints}");
                                     }
 
                                     client.Disconnect();
@@ -739,10 +734,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                             if (charClass != null)
                             {
-                                bool valid = IsCustomPointsDistributionValid(character, stats, out int points);
+                                bool valid = CharacterStatValidator.Validate(character, stats, out int distributedPoints);
 
                                 // Hacking attemp ?
-                                if (points > MaxStartingBonusPoints)
+                                if (distributedPoints > CharacterStatValidator.PointDistributionBudget)
                                 {
                                     if (log.IsInfoEnabled)
                                         log.InfoFormat("Stats above MaxStartingBonusPoints for {0}", character.Name);
@@ -751,11 +746,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                                     {
                                         if (Properties.BAN_HACKERS)
                                         {
-                                            client.BanAccount(string.Format("Autoban Hack char update : Wrong allowed points:{0}", points));
+                                            client.BanAccount($"Autoban Hack char update : Wrong allowed points:{distributedPoints}");
                                         }
 
                                         if (log.IsInfoEnabled)
-                                            log.InfoFormat("Disconnecting {0} because the stats  are above expected", character.Name);
+                                            log.InfoFormat("Disconnecting {0} because the stats are above expected", character.Name);
 
                                         client.Disconnect();
                                         return false;
@@ -918,64 +913,6 @@ namespace DOL.GS.PacketHandler.Client.v168
         }
 
         /// <summary>
-        /// Check if Custom Creation Points Distribution is Valid.
-        /// </summary>
-        /// <param name="character"></param>
-        /// <param name="stats"></param>
-        /// <param name="points"></param>
-        /// <returns></returns>
-        public static bool IsCustomPointsDistributionValid(DbCoreCharacter character, IDictionary<eStat, int> stats, out int points)
-        {
-            ICharacterClass charClass = ScriptMgr.FindCharacterClass(character.Class);
-
-            if (charClass != null)
-            {
-                points = 0;
-
-                // check if each stat is valid.
-                foreach (var stat in stats.Keys)
-                {
-                    int raceAmount = GlobalConstants.STARTING_STATS_DICT[(eRace)character.Race][stat];
-
-                    int classAmount = 0;
-
-                    for (int level = character.Level; level > 5; level--)
-                    {
-                        if (charClass.PrimaryStat != eStat.UNDEFINED && charClass.PrimaryStat == stat)
-                        {
-                            classAmount++;
-                        }
-
-                        if (charClass.SecondaryStat != eStat.UNDEFINED && charClass.SecondaryStat == stat && (level - 6) % 2 == 0)
-                        {
-                            classAmount++;
-                        }
-
-                        if (charClass.TertiaryStat != eStat.UNDEFINED && charClass.TertiaryStat == stat && (level - 6) % 3 == 0)
-                        {
-                            classAmount++;
-                        }
-                    }
-
-                    int above = stats[stat] - raceAmount - classAmount;
-
-                    // Miss Some points...
-                    if (above < 0)
-                        return false;
-
-                    points += above;
-                    points += Math.Max(0, above - 10); // two points used
-                    points += Math.Max(0, above - 15); // three points used
-                }
-
-                return points == MaxStartingBonusPoints;
-            }
-
-            points = -1;
-            return false;
-        }
-
-        /// <summary>
         /// Verify whether created character is valid
         /// </summary>
         /// <param name="ch">The character to check</param>
@@ -1008,27 +945,23 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                     valid = false;
                 }
-                
+
                 ICharacterClass charClass = ScriptMgr.FindCharacterClass(ch.Class);
 
-				if(!charClass.EligibleRaces.Exists(s => (int)s.ID == ch.Race))
-				{
-					if (log.IsWarnEnabled)
-						log.WarnFormat("Wrong race: {0}, class:{1} on character creation from Account: {2}", ch.Race, ch.Class, ch.AccountName);
-
-					valid = false;
-				}
-                
-				// int pointsUsed;
-				var stats = new Dictionary<eStat, int>{{eStat.STR, ch.Strength},{eStat.CON, ch.Constitution},{eStat.DEX, ch.Dexterity},{eStat.QUI, ch.Quickness},
-					{eStat.INT, ch.Intelligence},{eStat.PIE, ch.Piety},{eStat.EMP, ch.Empathy},{eStat.CHR, ch.Charisma},};
-    
-                valid &= IsCustomPointsDistributionValid(ch, stats, out var pointsUsed);
-
-                if (pointsUsed != MaxStartingBonusPoints)
+                if(!charClass.EligibleRaces.Exists(s => (int)s.ID == ch.Race))
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn($"Points used: {pointsUsed} on character creation from Account: {ch.AccountName}");
+                        log.WarnFormat("Wrong race: {0}, class:{1} on character creation from Account: {2}", ch.Race, ch.Class, ch.AccountName);
+
+                    valid = false;
+                }
+
+                valid &= CharacterStatValidator.Validate(ch, out int distributedPoints);
+
+                if (distributedPoints != CharacterStatValidator.PointDistributionBudget)
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Points used: {distributedPoints} on character creation from Account: {ch.AccountName}");
 
                     valid = false;
                 }

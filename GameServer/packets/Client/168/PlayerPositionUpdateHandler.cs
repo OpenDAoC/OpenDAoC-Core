@@ -535,120 +535,27 @@ namespace DOL.GS.PacketHandler.Client.v168
                     {
                         if (otherPlayer.Client.Version >= GameClient.eClientVersion.Version1127)
                         {
-                            outPak1127 ??= CreateOutPak1127();
+                            outPak1127 ??= CreateOutPak1127(client, player, stateFlags, steedSeatPosition, heading, actionFlags, healthByte);
                             otherPlayer.Out.SendUDP(outPak1127);
                         }
                         else if (otherPlayer.Client.Version >= GameClient.eClientVersion.Version1124)
                         {
-                            outPak1124 ??= CreateOutPak1124();
+                            outPak1124 ??= CreateOutPak1124(client, player, stateFlags, steedSeatPosition, heading, actionFlags, healthByte);
                             otherPlayer.Out.SendUDP(outPak1124);
                         }
                         else if (otherPlayer.Client.Version >= GameClient.eClientVersion.Version1112)
                         {
-                            outPak1112 ??= CreateOutPak1112();
+                            outPak1112 ??= CreateOutPak1112(client, player, steedSeatPosition, heading, actionFlags, healthByte);
                             otherPlayer.Out.SendUDP(outPak1112);
                         }
                         else
                         {
-                            outPak190 ??= CreateOutPak190();
+                            outPak190 ??= CreateOutPak190(client, player, steedSeatPosition, heading, actionFlags, healthByte);
                             otherPlayer.Out.SendUDP(outPak190);
                         }
                     }
                     else
                         otherPlayer.Out.SendObjectDelete(player); // Remove the stealthed player from view.
-                }
-
-                GSUDPPacketOut CreateOutPak1127()
-                {
-                    var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
-                    outPak.WriteFloatLowEndian(player.X);
-                    outPak.WriteFloatLowEndian(player.Y);
-                    outPak.WriteFloatLowEndian(player.Z);
-                    outPak.WriteFloatLowEndian(player.CurrentSpeed);
-                    outPak.WriteFloatLowEndian(player.FallSpeed);
-                    outPak.WriteShort(client.SessionID);
-                    outPak.WriteShort(player.ObjectID);
-                    outPak.WriteShort(player.CurrentZone.ID);
-                    outPak.WriteByte((byte) stateFlags);
-                    outPak.WriteByte(0);
-                    outPak.WriteShort(steedSeatPosition); // Fall damage flag coming in, steed seat position going out.
-                    outPak.WriteShort(heading);
-                    outPak.WriteByte((byte) actionFlags);
-                    outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
-                    outPak.WriteByte(0);
-                    outPak.WriteByte(healthByte);
-                    outPak.WriteByte(player.ManaPercent);
-                    outPak.WriteByte(player.EndurancePercent);
-                    outPak.WriteShort(0);
-                    return outPak;
-                }
-
-                GSUDPPacketOut CreateOutPak1124()
-                {
-                    var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
-                    outPak.WriteFloatLowEndian(player.X);
-                    outPak.WriteFloatLowEndian(player.Y);
-                    outPak.WriteFloatLowEndian(player.Z);
-                    outPak.WriteFloatLowEndian(player.CurrentSpeed);
-                    outPak.WriteFloatLowEndian(player.FallSpeed);
-                    outPak.WriteShort(client.SessionID);
-                    outPak.WriteShort(player.CurrentZone.ID);
-                    outPak.WriteByte((byte) stateFlags);
-                    outPak.WriteByte(0);
-                    outPak.WriteShort(steedSeatPosition); // Fall damage flag coming in, steed seat position going out.
-                    outPak.WriteShort(heading);
-                    outPak.WriteByte((byte) actionFlags);
-                    outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
-                    outPak.WriteByte(0);
-                    outPak.WriteByte(healthByte);
-                    outPak.WriteByte(player.ManaPercent);
-                    outPak.WriteByte(player.EndurancePercent);
-                    return outPak;
-                }
-
-                GSUDPPacketOut CreateOutPak1112()
-                {
-                    var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
-                    outPak.WriteShort(client.SessionID);
-                    outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
-                    outPak.WriteShort((ushort) player.Z);
-                    ushort xOffset = (ushort) (player.X - (player.CurrentZone?.XOffset ?? 0));
-                    outPak.WriteShort(xOffset);
-                    ushort yOffset = (ushort) (player.Y - (player.CurrentZone?.YOffset ?? 0));
-                    outPak.WriteShort(yOffset);
-                    outPak.WriteShort(player.CurrentZone.ID);
-                    outPak.WriteShort(heading);
-                    outPak.WriteShort(steedSeatPosition);
-                    outPak.WriteByte((byte) actionFlags);
-                    outPak.WriteByte(healthByte);
-                    outPak.WriteByte(player.ManaPercent);
-                    outPak.WriteByte(player.EndurancePercent);
-                    outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
-                    outPak.WriteByte(0);
-                    return outPak;
-                }
-
-                GSUDPPacketOut CreateOutPak190()
-                {
-                    var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
-                    outPak.WriteShort(client.SessionID);
-                    outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
-                    outPak.WriteShort((ushort) player.Z);
-                    ushort xOffset = (ushort) (player.X - (player.CurrentZone?.XOffset ?? 0));
-                    outPak.WriteShort(xOffset);
-                    ushort yOffset = (ushort) (player.Y - (player.CurrentZone?.YOffset ?? 0));
-                    outPak.WriteShort(yOffset);
-                    outPak.WriteShort(player.CurrentZone.ID);
-                    outPak.WriteShort(heading);
-                    outPak.WriteShort(steedSeatPosition);
-                    outPak.WriteByte((byte) actionFlags);
-                    outPak.WriteByte(healthByte);
-                    outPak.WriteByte(player.ManaPercent);
-                    outPak.WriteByte(player.EndurancePercent);
-                    outPak.FillString(player.CharacterClass.Name, 32);
-                    outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
-                    outPak.WriteByte(0);
-                    return outPak;
                 }
             }
 
@@ -874,6 +781,99 @@ namespace DOL.GS.PacketHandler.Client.v168
                 actionFlags &= ~ActionFlags.PET_IN_VIEW_IN__DIVING_OUT;
 
             return actionFlags;
+        }
+
+        private static GSUDPPacketOut CreateOutPak1127(GameClient client, GamePlayer player, StateFlags stateFlags, ushort steedSeatPosition, ushort heading, ActionFlags actionFlags, byte healthByte)
+        {
+            var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
+            outPak.WriteFloatLowEndian(player.X);
+            outPak.WriteFloatLowEndian(player.Y);
+            outPak.WriteFloatLowEndian(player.Z);
+            outPak.WriteFloatLowEndian(player.CurrentSpeed);
+            outPak.WriteFloatLowEndian(player.FallSpeed);
+            outPak.WriteShort(client.SessionID);
+            outPak.WriteShort(player.ObjectID);
+            outPak.WriteShort(player.CurrentZone.ID);
+            outPak.WriteByte((byte) stateFlags);
+            outPak.WriteByte(0);
+            outPak.WriteShort(steedSeatPosition); // Fall damage flag coming in, steed seat position going out.
+            outPak.WriteShort(heading);
+            outPak.WriteByte((byte) actionFlags);
+            outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
+            outPak.WriteByte(0);
+            outPak.WriteByte(healthByte);
+            outPak.WriteByte(player.ManaPercent);
+            outPak.WriteByte(player.EndurancePercent);
+            outPak.WriteShort(0);
+            return outPak;
+        }
+
+        private static GSUDPPacketOut CreateOutPak1124(GameClient client, GamePlayer player, StateFlags stateFlags, ushort steedSeatPosition, ushort heading, ActionFlags actionFlags, byte healthByte)
+        {
+            var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
+            outPak.WriteFloatLowEndian(player.X);
+            outPak.WriteFloatLowEndian(player.Y);
+            outPak.WriteFloatLowEndian(player.Z);
+            outPak.WriteFloatLowEndian(player.CurrentSpeed);
+            outPak.WriteFloatLowEndian(player.FallSpeed);
+            outPak.WriteShort(client.SessionID);
+            outPak.WriteShort(player.CurrentZone.ID);
+            outPak.WriteByte((byte) stateFlags);
+            outPak.WriteByte(0);
+            outPak.WriteShort(steedSeatPosition); // Fall damage flag coming in, steed seat position going out.
+            outPak.WriteShort(heading);
+            outPak.WriteByte((byte) actionFlags);
+            outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
+            outPak.WriteByte(0);
+            outPak.WriteByte(healthByte);
+            outPak.WriteByte(player.ManaPercent);
+            outPak.WriteByte(player.EndurancePercent);
+            return outPak;
+        }
+
+        private static GSUDPPacketOut CreateOutPak1112(GameClient client, GamePlayer player, ushort steedSeatPosition, ushort heading, ActionFlags actionFlags, byte healthByte)
+        {
+            var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
+            outPak.WriteShort(client.SessionID);
+            outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
+            outPak.WriteShort((ushort) player.Z);
+            ushort xOffset = (ushort) (player.X - (player.CurrentZone?.XOffset ?? 0));
+            outPak.WriteShort(xOffset);
+            ushort yOffset = (ushort) (player.Y - (player.CurrentZone?.YOffset ?? 0));
+            outPak.WriteShort(yOffset);
+            outPak.WriteShort(player.CurrentZone.ID);
+            outPak.WriteShort(heading);
+            outPak.WriteShort(steedSeatPosition);
+            outPak.WriteByte((byte) actionFlags);
+            outPak.WriteByte(healthByte);
+            outPak.WriteByte(player.ManaPercent);
+            outPak.WriteByte(player.EndurancePercent);
+            outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
+            outPak.WriteByte(0);
+            return outPak;
+        }
+
+        private static GSUDPPacketOut CreateOutPak190(GameClient client, GamePlayer player, ushort steedSeatPosition, ushort heading, ActionFlags actionFlags, byte healthByte)
+        {
+            var outPak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition));
+            outPak.WriteShort(client.SessionID);
+            outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
+            outPak.WriteShort((ushort) player.Z);
+            ushort xOffset = (ushort) (player.X - (player.CurrentZone?.XOffset ?? 0));
+            outPak.WriteShort(xOffset);
+            ushort yOffset = (ushort) (player.Y - (player.CurrentZone?.YOffset ?? 0));
+            outPak.WriteShort(yOffset);
+            outPak.WriteShort(player.CurrentZone.ID);
+            outPak.WriteShort(heading);
+            outPak.WriteShort(steedSeatPosition);
+            outPak.WriteByte((byte) actionFlags);
+            outPak.WriteByte(healthByte);
+            outPak.WriteByte(player.ManaPercent);
+            outPak.WriteByte(player.EndurancePercent);
+            outPak.FillString(player.CharacterClass.Name, 32);
+            outPak.WriteByte((byte) (player.RPFlag ? 1 : 0));
+            outPak.WriteByte(0);
+            return outPak;
         }
 
         [Flags]
