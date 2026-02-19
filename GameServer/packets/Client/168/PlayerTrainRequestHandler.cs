@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.Commands;
@@ -8,19 +9,67 @@ namespace DOL.GS.PacketHandler.Client.v168
     /// <summary>
     /// handles Train clicks from Trainer Window
     /// </summary>
-    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.TrainHandlerOld, "Handles Player Train", eClientStatus.PlayerInGame)]
-    public class PlayerTrainHandlerOld : PacketHandler
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.ChampionTrainHandler, "Handles Player Train", eClientStatus.PlayerInGame)]
+    public class PlayerChampionTrainHandler : PacketHandler
     {
         protected override void HandlePacketInternal(GameClient client, GSPacketIn packet)
         {
-            // Old packet for old clients.
+            // Train Champion Skills.
 
-            /*uint x = packet.ReadInt();
+            uint x = packet.ReadInt();
             uint y = packet.ReadInt();
             int idLine = packet.ReadByte();
             int unk = packet.ReadByte();
             int row = packet.ReadByte();
-            int skillIndex = packet.ReadByte();*/
+            int skillIndex = packet.ReadByte();
+
+            // idline not null so this is a Champion level training window.
+            if (idLine <= 0)
+                return;
+
+            if (row <= 0 || skillIndex <= 0)
+                return;
+
+            LiveChampionsSpecialization clSpec = client.Player.GetSpecList().Where(sp => sp is LiveChampionsSpecialization).Cast<LiveChampionsSpecialization>().FirstOrDefault();
+            List<Tuple<MiniLineSpecialization, List<Tuple<Skill, byte>>>> tree = null;
+
+            if (clSpec != null)
+                tree = clSpec.GetTrainerTreeDisplay(client.Player, clSpec.RetrieveTypeForIndex(idLine));
+
+            if (tree == null)
+            {
+                client.Out.SendMessage("Could not find Champion Spec!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
+            Tuple<byte, MiniLineSpecialization> skillStatus = clSpec.GetSkillStatus(tree, row - 1, skillIndex - 1);
+
+            if (skillStatus.Item1 == 1)
+            {
+                client.Out.SendMessage("You already have that ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
+            if (skillStatus.Item1 != 2)
+            {
+                client.Out.SendMessage("You do not meet the requirements for that ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
+            if (client.Player.ChampionSpecialtyPoints < 1)
+            {
+                client.Out.SendMessage("You do not have enough champion specialty points for that ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
+            skillStatus.Item2.Level++;
+            client.Player.AddSpecialization(skillStatus.Item2);
+            client.Player.RefreshSpecDependantSkills(false);
+            client.Player.Out.SendUpdatePlayer();
+            client.Player.Out.SendUpdatePoints();
+            client.Player.Out.SendUpdatePlayerSkills(true);
+            client.Player.UpdatePlayerStatus();
+            client.Player.Out.SendChampionTrainerWindow(idLine);
             return;
         }
     }
