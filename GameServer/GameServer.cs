@@ -377,7 +377,7 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Try to initialize the Pathfinding Manager
-				if (!InitComponent(PathfindingMgr.Init(), "Pathfinding Manager Initialization"))
+				if (!InitComponent(PathfindingProvider.Init(), "Pathfinding Manager Initialization"))
 					return false;
 
 				//---------------------------------------------------------------

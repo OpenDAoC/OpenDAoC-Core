@@ -11,7 +11,7 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
-    public partial class LocalPathfindingMgr : IPathfindingMgr
+    public sealed partial class LocalPathfindingMgr : PathfindingMgrBase
     {
         [Flags]
         private enum EDtStatus : uint
@@ -184,7 +184,7 @@ namespace DOL.GS
             out int outputPolyCount,
             int maxPolyCount);
 
-        public bool Init()
+        public override bool Init()
         {
             try
             {
@@ -261,7 +261,7 @@ namespace DOL.GS
             _navmeshPtrs.Remove(zone.ID);
         }
 
-        public void Stop()
+        public override void Stop()
         {
             foreach (nint ptr in _navmeshPtrs.Values)
                 FreeNavMesh(ptr);
@@ -304,7 +304,7 @@ namespace DOL.GS
             return true;
         }
 
-        public PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination)
+        public override PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return new(PathfindingStatus.NoPathFound, 0);
@@ -346,7 +346,7 @@ namespace DOL.GS
             }
         }
 
-        public Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end)
+        public override Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end)
         {
             // Confusing name, see Detour docs for what it does.
             // Should not be used for pathfinding, only for small adjustments to positions.
@@ -366,7 +366,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius)
+        public override Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
@@ -380,7 +380,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange)
+        public override Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
@@ -397,7 +397,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset)
+        public override Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset)
         {
             if (minOffset.X > maxOffset.X || minOffset.Y > maxOffset.Y || minOffset.Z > maxOffset.Z)
                 throw new ArgumentException($"{nameof(minOffset)} must be <= {nameof(maxOffset)} in all components");
@@ -424,7 +424,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ?  null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight)
+        public override Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight)
         {
             const float RADIUS = 3f;
 
@@ -435,7 +435,7 @@ namespace DOL.GS
             );
         }
 
-        public Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth)
+        public override Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth)
         {
             const float RADIUS = 3f;
 
@@ -446,7 +446,7 @@ namespace DOL.GS
             );
         }
 
-        public bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target)
+        public override bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return false;
@@ -462,7 +462,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) != 0 && hasLos;
         }
 
-        public Vector3? GetNearestPoly(Zone zone, Vector3 point)
+        public override Vector3? GetNearestPoly(Zone zone, Vector3 point)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
@@ -476,11 +476,11 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 || polyRef == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public bool HasNavmesh(Zone zone)
+        public override bool HasNavmesh(Zone zone)
         {
             return zone != null && _navmeshPtrs.ContainsKey(zone.ID);
         }
 
-        public bool IsAvailable => true;
+        public override bool IsAvailable => true;
     }
 }
