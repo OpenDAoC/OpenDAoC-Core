@@ -64,7 +64,7 @@ namespace DOL.GS
 
             try
             {
-                PathfindingResult pathfindingResult = PathfindingMgr.Instance.GetPathStraight(zone, position, target, rentedNodeBuffer);
+                PathfindingResult pathfindingResult = PathfindingProvider.Instance.GetPathStraight(zone, position, target, rentedNodeBuffer);
 
                 _pathNodes.Clear();
                 _doorsOnPath.Clear();
@@ -147,7 +147,7 @@ namespace DOL.GS
                     if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
                         break;
 
-                    if (!PathfindingMgr.Instance.HasLineOfSight(zone, position, candidatePosition))
+                    if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition))
                         break;
 
                     nodesToRemove = i;

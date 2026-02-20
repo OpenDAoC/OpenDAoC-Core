@@ -286,7 +286,7 @@ namespace DOL.GS
 
             if (Owner.CurrentZone.IsPathfindingEnabled)
             {
-                Vector3? target = PathfindingMgr.Instance.GetRandomPoint(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
+                Vector3? target = PathfindingProvider.Instance.GetRandomPoint(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
 
                 if (target.HasValue)
                     PathTo(target.Value, speed);
@@ -525,7 +525,7 @@ namespace DOL.GS
                 {
                     // Finalize the path if we have direct LoS to the destination.
                     // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
-                    if (PathfindingMgr.Instance.HasLineOfSight(zone, _ownerPosition, destination))
+                    if (PathfindingProvider.Instance.HasLineOfSight(zone, _ownerPosition, destination))
                         FallbackToWalk(this, destination, speed);
                     else
                         PauseMovement(this, destination);
@@ -602,7 +602,7 @@ namespace DOL.GS
                     return;
 
                 Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
-                Vector3? floor = PathfindingMgr.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
+                Vector3? floor = PathfindingProvider.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
 
                 if (floor.HasValue && !component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
                 {

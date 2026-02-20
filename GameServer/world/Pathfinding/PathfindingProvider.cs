@@ -1,13 +1,11 @@
 ﻿using System.Reflection;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// Wrapper for the currently active pathfinding mgr
-    /// </summary>
-    public static class PathfindingMgr
+    public static class PathfindingProvider
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public static readonly NullPathfindingMgr NullPathfindingMgr = new();
         public static readonly LocalPathfindingMgr LocalPathfindingMgr = new();
         public static IPathfindingMgr Instance { get; private set; } = NullPathfindingMgr;
@@ -15,7 +13,7 @@ namespace DOL.GS
         public static bool Init()
         {
             if (log.IsInfoEnabled)
-                log.Info($"Starting {nameof(PathfindingMgr)}");
+                log.Info($"Starting {nameof(PathfindingProvider)}");
 
             if (LocalPathfindingMgr.Init())
                 SetPathfindingMgr(LocalPathfindingMgr);
@@ -28,7 +26,7 @@ namespace DOL.GS
         public static void SetPathfindingMgr(IPathfindingMgr mgr)
         {
             if (log.IsInfoEnabled)
-                log.Info($"Setting {nameof(PathfindingMgr)} to {mgr}");
+                log.Info($"Setting {nameof(PathfindingProvider)} to {mgr}");
 
             Instance = mgr ?? NullPathfindingMgr;
         }
@@ -36,7 +34,7 @@ namespace DOL.GS
         public static void Stop()
         {
             if (log.IsInfoEnabled)
-                log.Info($"Stopping {nameof(PathfindingMgr)}");
+                log.Info($"Stopping {nameof(PathfindingProvider)}");
 
             LocalPathfindingMgr.Stop();
         }
