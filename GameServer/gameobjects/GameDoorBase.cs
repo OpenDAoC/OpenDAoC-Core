@@ -70,6 +70,8 @@ namespace DOL.GS
                         _state = value;
                     }
 
+                    _ = PathfindingProvider.Instance.UpdateDoorFlags(this);
+
                     foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         player.Out.SendDoorState(CurrentRegion, this);
                 }

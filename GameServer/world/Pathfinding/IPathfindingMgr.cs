@@ -7,8 +7,8 @@ namespace DOL.GS
     {
         bool Init();
         void Stop();
-        PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination);
-        Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end);
+        bool RegisterDoor(GameDoorBase door);
+        bool UpdateDoorFlags(GameDoorBase door);
         Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius);
         Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange);
         Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset);

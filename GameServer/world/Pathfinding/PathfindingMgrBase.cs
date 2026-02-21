@@ -12,6 +12,16 @@ namespace DOL.GS
 
         public virtual void Stop() { }
 
+        public virtual bool RegisterDoor(GameDoorBase door)
+        {
+            return true;
+        }
+
+        public virtual bool UpdateDoorFlags(GameDoorBase door)
+        {
+            return true;
+        }
+
         public virtual PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination)
         {
             return new(PathfindingStatus.NavmeshUnavailable, 0);

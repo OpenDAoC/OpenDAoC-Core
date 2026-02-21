@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.Keeps;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -12,7 +13,7 @@ namespace DOL.GS
 	/// </summary>
 	public sealed class DoorMgr
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static readonly Lock Lock = new();
 
@@ -109,6 +110,19 @@ namespace DOL.GS
 				{
 					if (door == existingDoor)
 						return;
+				}
+				else
+				{
+					// Track doors that can't be opened via interaction, so they can be treated as obstacles.
+					if (!door.CanBeOpenedViaInteraction && !PathfindingProvider.Instance.RegisterDoor(door) && log.IsErrorEnabled)
+					{
+						log.Error($"Failed to register door in pathfinding provider, possible navmesh/object location mismatch " +
+							$"(Id: {door.DoorId}) " +
+							$"(Name: {door.Name}) " +
+							$"(Loc: {door.X},{door.Y},{door.Z}) " +
+							$"(ZoneId: {door.CurrentZone?.ID}) " +
+							$"(RegionId: {door.CurrentRegionID})");
+					}
 				}
 
 				m_doors[door.DoorId] = door;
