@@ -490,11 +490,13 @@ namespace DOL.GS
 
             if (ticksToArrive <= 0)
             {
-                // Call `OnArrival` ourselves to save time.
-                OnArrival();
+                if (CurrentSpeed > 0)
+                    UpdateMovement(0);
+
                 return;
             }
 
+            // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
             SetFlag(MovementState.WalkTo);
             _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
@@ -582,11 +584,12 @@ namespace DOL.GS
 
             static void JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
             {
-                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
-                    return;
+                if (component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) && node.HasValue)
+                {
+                    component._ownerPosition = node.Value;
+                    component._pathfinder.ForceReplot = true;
+                }
 
-                component._ownerPosition = node.Value;
-                component._pathfinder.ForceReplot = true;
                 component.UpdateMovement(0);
             }
 
