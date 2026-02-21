@@ -16,7 +16,7 @@ namespace DOL.GS
 
         private static readonly Lock Lock = new();
 
-        private static Dictionary<int, List<GameDoorBase>> m_doors = new Dictionary<int, List<GameDoorBase>>();
+		private static Dictionary<int, GameDoorBase> m_doors = new();
 
         public const string WANT_TO_ADD_DOORS = "WantToAddDoors";
 
@@ -42,30 +42,27 @@ namespace DOL.GS
         {
             int count = 0;
 
-            try
-            {
-                lock (Lock)
-                {
-                    foreach (List<GameDoorBase> doorList in m_doors.Values)
-                    {
-                        foreach (GameDoorBase door in doorList)
-                        {
-                            if (door.DbDoor != null &&
-                                door is GameKeepDoor keepDoor &&
-                                keepDoor.IsAttackableDoor)
-                            {
-                                keepDoor.SaveIntoDatabase();
-                                count++;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error("Error saving keep doors.", e);
-            }
+			try
+			{
+				lock (Lock)
+				{
+					foreach (GameDoorBase door in m_doors.Values)
+					{
+						if (door.DbDoor != null &&
+							door is GameKeepDoor keepDoor &&
+							keepDoor.IsAttackableDoor)
+						{
+							keepDoor.SaveIntoDatabase();
+							count++;
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.Error("Error saving keep doors.", e);
+			}
 
             return count;
         }
@@ -132,32 +129,32 @@ namespace DOL.GS
             return true;
         }
 
-        public static void RegisterDoor(GameDoorBase door)
-        {
-            lock (Lock)
-            {
-                if (!m_doors.TryGetValue(door.DoorId, out List<GameDoorBase> doorsOfId))
-                {
-                    doorsOfId = [];
-                    m_doors.Add(door.DoorId, doorsOfId);
-                }
+		public static void RegisterDoor(GameDoorBase door)
+		{
+			lock (Lock)
+			{
+				if (m_doors.TryGetValue(door.DoorId, out GameDoorBase existingDoor))
+				{
+					if (door == existingDoor)
+						return;
+				}
 
-                doorsOfId.Add(door);
-            }
-        }
+				m_doors[door.DoorId] = door;
+			}
+		}
 
         public static void UnRegisterDoor(int doorID)
         {
             m_doors.Remove(doorID);
         }
 
-        /// <summary>
-        /// This function get the door object by door index
-        /// </summary>
-        /// <returns>return the door with the index</returns>
-        public static List<GameDoorBase> GetDoorByID(int id)
-        {
-            return m_doors.TryGetValue(id, out List<GameDoorBase> value) ? value : [];
-        }
-    }
+		/// <summary>
+		/// This function get the door object by door index
+		/// </summary>
+		/// <returns>return the door with the index</returns>
+		public static GameDoorBase GetDoorByID(int id)
+		{
+			return m_doors.TryGetValue(id, out GameDoorBase value) ? value : null;
+		}
+	}
 }

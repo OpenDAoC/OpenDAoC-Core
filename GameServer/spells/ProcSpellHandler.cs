@@ -24,6 +24,7 @@ namespace DOL.GS.Spells
         {
             _buffSpellLine = spellLine;
             _procSpell = SkillBase.GetSpellByID((int) spell.Value);
+            _procSpell.Level = spell.Level; // Inherit the buff's level.
 
             // Scale the proc here, since it cannot be scaled on NPC initialization.
             if (caster is GameNPC npc)

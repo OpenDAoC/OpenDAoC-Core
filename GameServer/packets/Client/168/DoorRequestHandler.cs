@@ -75,7 +75,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            GameDoorBase door = DoorMgr.GetDoorByID(doorId).FirstOrDefault();
+            GameDoorBase door = DoorMgr.GetDoorByID(doorId);
 
             if (door != null)
             {
@@ -137,42 +137,36 @@ namespace DOL.GS.PacketHandler.Client.v168
             void UseDoor()
             {
                 GamePlayer player = client.Player;
-                List<GameDoorBase> doorList = DoorMgr.GetDoorByID(doorId);
+                GameDoorBase doorList = DoorMgr.GetDoorByID(doorId);
 
-                if (doorList.Count > 0)
+                if (doorList != null)
                 {
                     bool success = false;
 
-                    foreach (GameDoorBase door in doorList)
+                    if (door is GameKeepDoor)
                     {
-                        if (success)
-                            break;
+                        GameKeepDoor keepDoor = door as GameKeepDoor;
 
-                        if (door is GameKeepDoor)
+                        if (keepDoor.Component.Keep is GameKeepTower && keepDoor.Component.Keep.KeepComponents.Count > 1)
+                            keepDoor.Interact(player);
+
+                        success = true;
+                    }
+                    else
+                    {
+                        if (player.IsWithinRadius(door, radius))
                         {
-                            GameKeepDoor keepDoor = door as GameKeepDoor;
-
-                            if (keepDoor.Component.Keep is GameKeepTower && keepDoor.Component.Keep.KeepComponents.Count > 1)
-                                keepDoor.Interact(player);
+                            if (doorState == 0x01)
+                                door.Open(player);
+                            else
+                                door.Close(player);
 
                             success = true;
-                        }
-                        else
-                        {
-                            if (player.IsWithinRadius(door, radius))
-                            {
-                                if (doorState == 0x01)
-                                    door.Open(player);
-                                else
-                                    door.Close(player);
-
-                                success = true;
-                            }
                         }
                     }
 
                     if (!success)
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", doorList[0].Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
                 else
                 {
@@ -195,7 +189,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (player.IsWithinRadius(door, radius))
                         door.Open(player);
                     else
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", doorList[0].Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
             }
         }
