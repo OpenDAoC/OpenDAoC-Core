@@ -689,8 +689,34 @@ namespace DOL.GS
             else
                 speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance) * 2.5);
 
+            // Snap the destination to the mesh with a generous search distance. Use the follow target's position as a fallback.
+            if (!TrySnapToMesh(ref destination))
+            {
+                destination = targetPos;
+                TrySnapToMesh(ref destination);
+            }
+
             PathToInternal(destination, Math.Max((short) 20, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
+        }
+
+        private bool TrySnapToMesh(ref Vector3 destination)
+        {
+            const float MAX_SNAP_DISTANCE = 128f;
+
+            EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+            Vector3? closestPoint = PathfindingProvider.Instance.GetClosestPoint(Owner.CurrentZone,
+                destination,
+                MAX_SNAP_DISTANCE,
+                MAX_SNAP_DISTANCE,
+                MAX_SNAP_DISTANCE,
+                filters);
+
+            if (!closestPoint.HasValue)
+                return false;
+
+            destination = closestPoint.Value;
+            return true;
         }
 
         private void OnArrival()
