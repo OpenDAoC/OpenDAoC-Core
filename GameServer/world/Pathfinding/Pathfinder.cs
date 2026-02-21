@@ -16,16 +16,20 @@ namespace DOL.GS
         public const int NODE_REACHED_DISTANCE = 16;
         public const int NODE_REACHED_DISTANCE_STRICT = 2;
         public const int NODE_MAX_SKIP_DISTANCE = 80;
-        public const int DOOR_SEARCH_DISTANCE = 64;
+        public const int DOOR_SEARCH_DISTANCE = 128;
 
         public GameNPC Owner { get; }
         public bool ForceReplot { get; set; }
         public PathfindingStatus PathfindingStatus { get; private set; }
 
-        private RingQueue<WrappedPathfindingNode> _pathNodes = new();
-        private Dictionary<WrappedPathfindingNode, List<GameDoorBase>> _doorsOnPath = new();
+        private PathBuffer _activePath = new();
+        private PathBuffer _calculationBuffer = new();
+
         private Vector3 _lastTarget = Vector3.Zero;
         private PathVisualization _pathVisualization;
+
+        public static EDtPolyFlags[] DefaultFilters => PathfindingProvider.Instance.DefaultFilters;
+        public static EDtPolyFlags[] BlockingDoorAvoidanceFilters => PathfindingProvider.Instance.BlockingDoorAvoidanceFilters;
 
         public Pathfinder(GameNPC owner)
         {
@@ -35,14 +39,14 @@ namespace DOL.GS
 
         public void Clear()
         {
-            _pathNodes.Clear();
-            _doorsOnPath.Clear();
+            _activePath.Clear();
+            _calculationBuffer.Clear();
             _lastTarget = Vector3.Zero;
             PathfindingStatus = PathfindingStatus.NotSet;
             ForceReplot = true;
         }
 
-        public bool ShouldPath(Zone zone,Vector3 target)
+        public bool ShouldPath(Zone zone, Vector3 target)
         {
             if (Owner.Flags.HasFlag(GameNPC.eFlags.FLYING) || Owner is GameTaxi || Owner is GameTaxiBoat)
                 return false;
@@ -57,17 +61,16 @@ namespace DOL.GS
             return true;
         }
 
-        private void ReplotPath(Zone zone, Vector3 position, Vector3 target)
+        private PathfindingStatus CalculatePath(PathBuffer pathBuffer, Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters)
         {
             const int MAX_PATH_NODES = 512;
             WrappedPathfindingNode[] rentedNodeBuffer = ArrayPool<WrappedPathfindingNode>.Shared.Rent(MAX_PATH_NODES);
 
             try
             {
-                PathfindingResult pathfindingResult = PathfindingProvider.Instance.GetPathStraight(zone, position, target, rentedNodeBuffer);
+                PathfindingResult pathfindingResult = PathfindingProvider.Instance.GetPathStraight(zone, position, target, filters, rentedNodeBuffer);
 
-                _pathNodes.Clear();
-                _doorsOnPath.Clear();
+                pathBuffer.Clear();
 
                 if (pathfindingResult.Status is PathfindingStatus.BufferTooSmall)
                 {
@@ -84,26 +87,23 @@ namespace DOL.GS
                     for (int i = 0; i < nodeCount; i++)
                     {
                         WrappedPathfindingNode node = rentedNodeBuffer[i];
-                        bool isDoor = (node.Flags & EDtPolyFlags.DOOR) != 0;
+                        bool isDoor = (node.Flags & EDtPolyFlags.AnyDoor) != 0;
 
                         if (i == 0 && !isDoor)
                             continue;
 
-                        _pathNodes.Enqueue(node);
+                        pathBuffer.Nodes.Enqueue(node);
 
                         if (!isDoor)
                             continue;
 
                         Point3D point = new(node.Position.X, node.Position.Y, node.Position.Z);
-                        _doorsOnPath[node] = new();
-                        Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[node]);
+                        pathBuffer.Doors[node] = new();
+                        Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, pathBuffer.Doors[node]);
                     }
                 }
 
-                _pathVisualization?.Visualize(_pathNodes, Owner.CurrentRegion);
-                _lastTarget = target;
-                PathfindingStatus = pathfindingResult.Status;
-                ForceReplot = false;
+                return pathfindingResult.Status;
             }
             finally
             {
@@ -115,95 +115,140 @@ namespace DOL.GS
         {
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
-                ReplotPath(zone, position, target);
-
-            // Stop right there if the path contains a closed door that we're not allowed to open.
-            // We don't want pets or guards to agglutinate on keep doors.
-            // Ideally, we should check for an alternative path.
-            foreach (List<GameDoorBase> doorsAroundNode in _doorsOnPath.Values)
             {
-                foreach (GameDoorBase door in doorsAroundNode)
-                {
-                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
-                    {
-                        nextNode = null;
-                        return false;
-                    }
-                }
+                PathfindingStatus status = CalculatePath(_activePath, zone, position, target, DefaultFilters);
+                UpdatePathState(status, target);
             }
 
-            // Dequeue the next node if we're close to it, and any subsequent node that might be close.
-            // Prevent corner-cutting by raycasting to the next node before removing the current one.
-            // Open any doors associated with the node as we reach it.
-            if (_pathNodes.TryPeek(0, out WrappedPathfindingNode current) && Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
-            {
-                int nodesToRemove = 0;
-                int count = _pathNodes.Count;
-
-                for (int i = 1; i < count; i++)
-                {
-                    Vector3 candidatePosition = _pathNodes.Peek(i).Position;
-
-                    if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
-                        break;
-
-                    if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition))
-                        break;
-
-                    nodesToRemove = i;
-                }
-
-                // If we don't have LoS to any subsequent node, only remove the current one if we're really close, or if we're moving away from it.
-                if (nodesToRemove == 0)
-                {
-                    if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE_STRICT))
-                        nodesToRemove = 1;
-                    else if (Owner.movementComponent.IsMoving)
-                    {
-                        float dot = Vector3.Dot(current.Position - position, Vector3.Normalize(Owner.movementComponent.Velocity));
-
-                        if (dot < 0f)
-                            nodesToRemove = 1;
-                    }
-                }
-
-                for (int i = 0; i < nodesToRemove; i++)
-                {
-                    WrappedPathfindingNode node = _pathNodes.Dequeue();
-
-                    if (_doorsOnPath.Remove(node, out List<GameDoorBase> doors))
-                    {
-                        foreach (GameDoorBase door in doors)
-                        {
-                            if (door.CanBeOpenedViaInteraction && door.State is not eDoorState.Open)
-                                door.Open();
-                        }
-                    }
-                }
-            }
-
-            if (_pathNodes.Count == 0)
+            // Check if any doors on the path have become closed and can't be opened via interaction.
+            // If so, replot with door avoidance filters.
+            if (PathContainClosedUnopenableDoor(_activePath.Doors) && !TryApplyAlternativePath(zone, position, target))
             {
                 nextNode = null;
                 return false;
             }
 
-            nextNode = _pathNodes.Peek(0).Position;
+            // Dequeue the next node if we're close to it, and any subsequent node that might be close.
+            // Prevent corner-cutting by raycasting to the next node before removing the current one.
+            // Open any doors associated with the node as we reach it.
+            ManagePathProgress(zone, position);
+
+            if (_activePath.Nodes.Count == 0)
+            {
+                nextNode = null;
+                return false;
+            }
+
+            nextNode = _activePath.Nodes.Peek(0).Position;
             return true;
+        }
+
+        private static bool PathContainClosedUnopenableDoor(Dictionary<WrappedPathfindingNode, List<GameDoorBase>> doorsOnPath)
+        {
+            foreach (List<GameDoorBase> doorsAroundNode in doorsOnPath.Values)
+            {
+                foreach (GameDoorBase door in doorsAroundNode)
+                {
+                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool TryApplyAlternativePath(Zone zone, Vector3 position, Vector3 target)
+        {
+            PathfindingStatus altStatus = CalculatePath(_calculationBuffer, zone, position, target, BlockingDoorAvoidanceFilters);
+
+            // Stop here if the alternative path isn't complete.
+            // This prevents NPCs from trying to get closer to their target by walking to the other side of a keep.
+            // Basically, if the primary path contains an impassable doors, take the alternative path unless it isn't complete.
+            if (altStatus is PathfindingStatus.PathFound)
+            {
+                (_activePath, _calculationBuffer) = (_calculationBuffer, _activePath);
+                UpdatePathState(altStatus, target);
+                return true;
+            }
+
+            PathfindingStatus = PathfindingStatus.NoPathFound;
+            return false;
+        }
+
+        private void UpdatePathState(PathfindingStatus status, Vector3 target)
+        {
+            PathfindingStatus = status;
+            _lastTarget = target;
+            ForceReplot = false;
+            _pathVisualization?.Visualize(_activePath.Nodes, Owner.CurrentRegion);
+        }
+
+        private void ManagePathProgress(Zone zone, Vector3 position)
+        {
+            if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current) || !Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+                return;
+
+            int nodesToRemove = 0;
+            int count = _activePath.Nodes.Count;
+
+            for (int i = 1; i < count; i++)
+            {
+                Vector3 candidatePosition = _activePath.Nodes.Peek(i).Position;
+
+                if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
+                    break;
+
+                if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition, DefaultFilters))
+                    break;
+
+                nodesToRemove = i;
+            }
+
+            // If we don't have LoS to any subsequent node, only remove the current one if we're really close, or if we're moving away from it.
+            if (nodesToRemove == 0)
+            {
+                if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE_STRICT))
+                    nodesToRemove = 1;
+                else if (Owner.movementComponent.IsMoving)
+                {
+                    float dot = Vector3.Dot(current.Position - position, Vector3.Normalize(Owner.movementComponent.Velocity));
+
+                    if (dot < 0f)
+                        nodesToRemove = 1;
+                }
+            }
+
+            for (int i = 0; i < nodesToRemove; i++)
+            {
+                WrappedPathfindingNode node = _activePath.Nodes.Dequeue();
+
+                if (_activePath.Doors.Remove(node, out List<GameDoorBase> doors))
+                {
+                    foreach (GameDoorBase door in doors)
+                    {
+                        if (door.CanBeOpenedViaInteraction && door.State is not eDoorState.Open)
+                            door.Open();
+                    }
+                }
+            }
         }
 
         public bool TryGetClosestReachableNode(Zone zone, Vector3 position, Vector3 target, out Vector3? node)
         {
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
-                ReplotPath(zone, position, target);
+            {
+                CalculatePath(_activePath, zone, position, target, DefaultFilters);
+                _lastTarget = target;
+                ForceReplot = false;
+            }
 
-            if (_pathNodes.Count <= 0)
+            if (_activePath.Nodes.Count <= 0)
             {
                 node = null;
                 return false;
             }
 
-            node = _pathNodes.Peek(_pathNodes.Count - 1).Position;
+            node = _activePath.Nodes.Peek(_activePath.Nodes.Count - 1).Position;
             return true;
         }
 
@@ -221,7 +266,21 @@ namespace DOL.GS
 
         public override string ToString()
         {
-            return $"{nameof(Pathfinder)}[Target={_lastTarget}, Nodes={_pathNodes.Count}, NextNode={(_pathNodes.Count > 0 ? _pathNodes.Peek(0).ToString() : null)}]";
+            return $"{nameof(Pathfinder)}[Target={_lastTarget}, " +
+                $"Nodes={_activePath.Nodes.Count}, " +
+                $"NextNode={(_activePath.Nodes.Count > 0 ? _activePath.Nodes.Peek(0).ToString() : null)}]";
+        }
+
+        private class PathBuffer
+        {
+            public RingQueue<WrappedPathfindingNode> Nodes { get; } = new();
+            public Dictionary<WrappedPathfindingNode, List<GameDoorBase>> Doors { get; } = new();
+
+            public void Clear()
+            {
+                Nodes.Clear();
+                Doors.Clear();
+            }
         }
     }
 }

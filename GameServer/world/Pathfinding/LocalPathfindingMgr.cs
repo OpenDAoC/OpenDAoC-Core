@@ -13,41 +13,14 @@ namespace DOL.GS
 {
     public sealed partial class LocalPathfindingMgr : PathfindingMgrBase
     {
-        [Flags]
-        private enum EDtStatus : uint
-        {
-            // High level status.
-            DT_FAILURE = 1u << 31,          // Operation failed.
-            DT_SUCCESS = 1u << 30,          // Operation succeed.
-            DT_IN_PROGRESS = 1u << 29,      // Operation still in progress.
-
-            // Detail information for status.
-            DT_STATUS_DETAIL_MASK = 0x0FFFFFFF,
-            DT_WRONG_MAGIC = 1 << 0,        // Input data is not recognized.
-            DT_WRONG_VERSION = 1 << 1,      // Input data is in wrong version.
-            DT_OUT_OF_MEMORY = 1 << 2,      // Operation ran out of memory.
-            DT_INVALID_PARAM = 1 << 3,      // An input parameter was invalid.
-            DT_BUFFER_TOO_SMALL = 1 << 4,   // Result buffer for the query was too small to store all results.
-            DT_OUT_OF_NODES = 1 << 5,       // Query ran out of nodes during search.
-            DT_PARTIAL_RESULT = 1 << 6,     // Query did not reach the end location, returning best guess.
-            DT_ALREADY_OCCUPIED = 1 << 7    // A tile has already been assigned to the given x,y coordinate.
-        }
-
-        public enum EDtStraightPathOptions : uint
-        {
-            DT_STRAIGHTPATH_NO_CROSSINGS = 0x00,   // Do not add extra vertices on polygon edge crossings.
-            DT_STRAIGHTPATH_AREA_CROSSINGS = 0x01, // Add a vertex at every polygon edge crossing where area changes.
-            DT_STRAIGHTPATH_ALL_CROSSINGS = 0x02,  // Add a vertex at every polygon edge crossing.
-        }
-
         private class NavMeshQuery : IDisposable
         {
-            IntPtr _query;
+            private IntPtr _query;
 
             public NavMeshQuery(IntPtr navMesh)
             {
-                if (!CreateNavMeshQuery(navMesh, ref this._query))
-                    throw new Exception("can't create NavMeshQuery");
+                if (!CreateNavMeshQuery(navMesh, ref _query))
+                    throw new Exception($"Can't create {nameof(NavMeshQuery)}");
             }
 
             public void Dispose()
@@ -62,16 +35,20 @@ namespace DOL.GS
             }
         }
 
-        public const float CONVERSION_FACTOR = 1.0f / 32f;
         private const int MAX_POLY = 256;
-        private const float INV_FACTOR = 1f / CONVERSION_FACTOR;
 
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private static Dictionary<ushort, IntPtr> _navmeshPtrs = [];
+
+        private static readonly Dictionary<ushort, IntPtr> _navmeshPtrs = new();
         private static readonly Lock _navmeshPtrsLock = new();
-        private static readonly float[] _defaultHalfExtents = GetRecastFloats(new(32f, 32f, 64f)); // 1f, 2f, 1f in recast space.
-        private static readonly EDtPolyFlags[] _defaultFilters = [EDtPolyFlags.ALL ^ EDtPolyFlags.DISABLED, 0];
+
+        private static readonly Dictionary<GameDoorBase, ulong[]> _doorPolyRefs = new();
+        private static readonly Lock _doorPolyRefsLock = new();
+
         private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
+
+        private static readonly float[] _defaultHalfExtents = GetRecastFloats(new(32f, 32f, 64f)); // 1f, 2f, 1f in recast space.
+        private static readonly EDtPolyFlags[] _doorMask = [EDtPolyFlags.Door, 0];
 
         [LibraryImport("lib/Detour", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(System.Runtime.InteropServices.Marshalling.AnsiStringMarshaller))]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
@@ -158,6 +135,15 @@ namespace DOL.GS
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus UpdateFlags(
+            IntPtr meshPtr,
+            ReadOnlySpan<ulong> polyRefs,
+            int polyCount,
+            EDtPolyFlags flagsToRemove,
+            EDtPolyFlags flagsToAdd);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus GetPolyAt(
             IntPtr queryPtr,
             ReadOnlySpan<float> center,
@@ -168,14 +154,7 @@ namespace DOL.GS
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus SetPolyFlags(
-            IntPtr meshPtr,
-            ulong polyRef,
-            EDtPolyFlags flags);
-
-        [LibraryImport("lib/Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus QueryPolygons(
+        private static partial EDtStatus GetPolysInBox(
             IntPtr queryPtr,
             ReadOnlySpan<float> center,
             ReadOnlySpan<float> polyPickExt,
@@ -269,27 +248,67 @@ namespace DOL.GS
             _navmeshPtrs.Clear();
         }
 
-        private static void FillRecastFloats(Vector3 value, Span<float> destination)
+        public override bool RegisterDoor(GameDoorBase door)
         {
-            destination[0] = value.X * CONVERSION_FACTOR;
-            destination[1] = value.Z * CONVERSION_FACTOR;
-            destination[2] = value.Y * CONVERSION_FACTOR;
+            const int MAX_DOOR_POLYS = 12;
+
+            Zone zone = door.CurrentZone;
+
+            if (zone == null)
+                return false;
+
+            ulong[] polyRefs = GetNearestPolys(zone, new(door.X, door.Y, door.Z), _doorMask, MAX_DOOR_POLYS);
+
+            if (polyRefs.Length == 0)
+                return false;
+
+            lock (_doorPolyRefsLock)
+            {
+                _doorPolyRefs.Add(door, polyRefs);
+            }
+
+            UpdateDoorFlags(zone, door);
+            return true;
         }
 
-        private static float[] GetRecastFloats(Vector3 source)
+        public override bool UpdateDoorFlags(GameDoorBase door)
         {
-            float[] recastFloats =
-            [
-                source[0] * CONVERSION_FACTOR,
-                source[2] * CONVERSION_FACTOR,
-                source[1] * CONVERSION_FACTOR,
-            ];
-            return recastFloats;
+            Zone zone = door.CurrentZone;
+
+            return zone != null && UpdateDoorFlags(zone, door);
+        }
+
+        private static bool UpdateDoorFlags(Zone zone, GameDoorBase door)
+        {
+            ulong[] polyRef;
+
+            lock (_doorPolyRefsLock)
+            {
+                if (!_doorPolyRefs.TryGetValue(door, out polyRef))
+                    return false;
+            }
+
+            return TryGetMeshPtr(zone, out nint meshPtr) && UpdateDoorFlags(meshPtr, polyRef, door);
+        }
+
+        private static bool UpdateDoorFlags(nint meshPtr, ulong[] polyRefs, GameDoorBase door)
+        {
+            bool isBlockingDoor = door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction;
+            EDtPolyFlags flagsToRemove = isBlockingDoor ? EDtPolyFlags.Door : EDtPolyFlags.BlockingDoor;
+            EDtPolyFlags flagsToAdd = isBlockingDoor ? EDtPolyFlags.BlockingDoor : EDtPolyFlags.Door;
+            EDtStatus status = UpdateFlags(meshPtr, polyRefs, polyRefs.Length, flagsToRemove, flagsToAdd);
+
+            return (status & EDtStatus.DT_SUCCESS) != 0;
+        }
+
+        private static bool TryGetMeshPtr(Zone zone, out nint ptr)
+        {
+            return _navmeshPtrs.TryGetValue(zone.ID, out ptr);
         }
 
         private static bool TryGetQuery(Zone zone, out NavMeshQuery query)
         {
-            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
+            if (!TryGetMeshPtr(zone, out nint ptr))
             {
                 query = null;
                 return false;
@@ -304,7 +323,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, Span<WrappedPathfindingNode> destination)
+        public override PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> destination)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return new(PathfindingStatus.NoPathFound, 0);
@@ -325,7 +344,7 @@ namespace DOL.GS
                 Span<float> buffer = rentedBuffer.AsSpan(0, MAX_POLY * 3);
                 Span<EDtPolyFlags> flags = rentedFlags.AsSpan(0, MAX_POLY);
 
-                EDtStatus status = PathStraight(query, startFloats, endFloats, _defaultHalfExtents, _defaultFilters, options, out int numNodes, buffer, flags);
+                EDtStatus status = PathStraight(query, startFloats, endFloats, _defaultHalfExtents, filters, options, out int numNodes, buffer, flags);
 
                 if ((status & EDtStatus.DT_SUCCESS) == 0)
                     return new(PathfindingStatus.NoPathFound, 0);
@@ -346,7 +365,7 @@ namespace DOL.GS
             }
         }
 
-        public override Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end)
+        public override Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters)
         {
             // Confusing name, see Detour docs for what it does.
             // Should not be used for pathfinding, only for small adjustments to positions.
@@ -361,12 +380,12 @@ namespace DOL.GS
             FillRecastFloats(end, endFloats);
 
             Span<float> outVec = stackalloc float[3];
-            EDtStatus status = MoveAlongSurface(query, startFloats, endFloats, _defaultHalfExtents, _defaultFilters, outVec);
+            EDtStatus status = MoveAlongSurface(query, startFloats, endFloats, _defaultHalfExtents, filters, outVec);
 
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public override Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius)
+        public override Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius, EDtPolyFlags[] filters)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
@@ -375,12 +394,12 @@ namespace DOL.GS
             FillRecastFloats(position, center);
 
             Span<float> outVec = stackalloc float[3];
-            EDtStatus status = FindRandomPointAroundCircle(query, center, radius * CONVERSION_FACTOR, _defaultHalfExtents, _defaultFilters, outVec);
+            EDtStatus status = FindRandomPointAroundCircle(query, center, radius * CONVERSION_FACTOR, _defaultHalfExtents, filters, outVec);
 
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public override Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange)
+        public override Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange, EDtPolyFlags[] filters)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
@@ -392,12 +411,12 @@ namespace DOL.GS
             FillRecastFloats(new(xRange, yRange, zRange), polyPickEx);
 
             Span<float> outVec = stackalloc float[3];
-            EDtStatus status = FindClosestPoint(query, center, polyPickEx, _defaultFilters, outVec);
+            EDtStatus status = FindClosestPoint(query, center, polyPickEx, filters, outVec);
 
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public override Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset)
+        public override Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset, EDtPolyFlags[] filters)
         {
             if (minOffset.X > maxOffset.X || minOffset.Y > maxOffset.Y || minOffset.Z > maxOffset.Z)
                 throw new ArgumentException($"{nameof(minOffset)} must be <= {nameof(maxOffset)} in all components");
@@ -419,34 +438,36 @@ namespace DOL.GS
             FillRecastFloats(origin, refPosArr);
 
             Span<float> outVec = stackalloc float[3];
-            EDtStatus status = FindClosestPointInBox(query, centerArr, extentsArr, refPosArr, _defaultFilters, outVec);
+            EDtStatus status = FindClosestPointInBox(query, centerArr, extentsArr, refPosArr, filters, outVec);
 
             return (status & EDtStatus.DT_SUCCESS) == 0 ?  null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public override Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight)
+        public override Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight, EDtPolyFlags[] filters)
         {
             const float RADIUS = 3f;
 
             return GetClosestPointInBounds(
                 zone, position,
                 new(-RADIUS, -RADIUS, 20f), // Slightly above current position to avoid getting the current floor.
-                new(RADIUS, RADIUS, maxHeight)
+                new(RADIUS, RADIUS, maxHeight),
+                filters
             );
         }
 
-        public override Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth)
+        public override Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth, EDtPolyFlags[] filters)
         {
             const float RADIUS = 3f;
 
             return GetClosestPointInBounds(
                 zone, position,
                 new(-RADIUS, -RADIUS, -maxDepth),
-                new(RADIUS, RADIUS, 20f) // Slightly above current position to allow getting the current floor.
+                new(RADIUS, RADIUS, 20f), // Slightly above current position to allow getting the current floor.
+                filters
             );
         }
 
-        public override bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target)
+        public override bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return false;
@@ -458,22 +479,47 @@ namespace DOL.GS
             FillRecastFloats(target, endFloats);
 
             Span<float> outVec = stackalloc float[3];
-            EDtStatus status = HasLineOfSight(query, startFloats, endFloats, _defaultHalfExtents, _defaultFilters, out bool hasLos, outVec);
+            EDtStatus status = HasLineOfSight(query, startFloats, endFloats, _defaultHalfExtents, filters, out bool hasLos, outVec);
             return (status & EDtStatus.DT_SUCCESS) != 0 && hasLos;
         }
 
-        public override Vector3? GetNearestPoly(Zone zone, Vector3 point)
+        private static Vector3? GetNearestPoly(Zone zone, Vector3 point, EDtPolyFlags[] filters, out ulong polyRef)
         {
+            polyRef = 0;
+
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
 
-            Span<float> pointFloats = stackalloc float[3];
-            FillRecastFloats(point, pointFloats);
+            Span<float> center = stackalloc float[3];
+            FillRecastFloats(point, center);
 
             Span<float> outVec = stackalloc float[3];
-            EDtStatus status = GetPolyAt(query, pointFloats, _defaultHalfExtents, _defaultFilters, out ulong polyRef, outVec);
+            EDtStatus status = GetPolyAt(query, center, _defaultHalfExtents, filters, out polyRef, outVec);
 
             return (status & EDtStatus.DT_SUCCESS) == 0 || polyRef == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
+        }
+
+        private static ulong[] GetNearestPolys(Zone zone, Vector3 point, EDtPolyFlags[] filters, int maxPolyCount)
+        {
+            if (!TryGetQuery(zone, out NavMeshQuery query))
+                return [];
+
+            Span<float> center = stackalloc float[3];
+            FillRecastFloats(point, center);
+
+            Span<float> extents = stackalloc float[3];
+            FillRecastFloats(new(64f, 64f, 128f), extents);
+
+            Span<ulong> polyRefs = stackalloc ulong[maxPolyCount];
+            EDtStatus status = GetPolysInBox(query, center, extents, filters, polyRefs, out int outputPolyCount, maxPolyCount);
+
+            if ((status & EDtStatus.DT_BUFFER_TOO_SMALL) != 0)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"{nameof(GetNearestPolys)} found more than {maxPolyCount} polygons near point {point} in zone {zone.ID}");
+            }
+
+            return (status & EDtStatus.DT_SUCCESS) == 0 || outputPolyCount == 0 ? [] : polyRefs[..outputPolyCount].ToArray();
         }
 
         public override bool HasNavmesh(Zone zone)

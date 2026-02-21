@@ -10,6 +10,7 @@
 #include <DetourStatus.h>
 #include <functional>
 #include <random>
+#include <vector>
 
 // RAII helper
 struct RAII
@@ -132,31 +133,31 @@ DLLEXPORT dtStatus PathStraight(dtNavMeshQuery *query, float start[], float end[
 
 		if (dtStatusSucceed(pathStatus))
 		{
-			float epos[3];
-
 			// Partial if findPath said so, OR if the last polygon found is not the target endRef.
 			bool isPartialPath = (pathStatus & DT_PARTIAL_RESULT) != 0;
 			if (polys[npolys - 1] != endRef)
 				isPartialPath = true;
 
-			if (isPartialPath)
-			{
-				// If partial, we must clamp the end point to the last polygon we found.
-				dtStatus clampStatus = query->closestPointOnPoly(polys[npolys - 1], end, epos, nullptr);
-				if (dtStatusFailed(clampStatus))
-					return clampStatus;
-			}
-			else
-				dtVcopy(epos, end);
-
 			dtPolyRef straightPathPolys[MAX_POLY];
 			unsigned char straightPathFlags[MAX_POLY];
-			status = query->findStraightPath(start, epos, polys, npolys, pointBuffer, straightPathFlags, straightPathPolys, pointCount, MAX_POLY, pathOptions);
+			status = query->findStraightPath(start, end, polys, npolys, pointBuffer, straightPathFlags, straightPathPolys, pointCount, MAX_POLY, pathOptions);
 
 			if (dtStatusSucceed(status) && (*pointCount > 0))
 			{
 				for (int i = 0; i < *pointCount; ++i)
-					query->getAttachedNavMesh()->getPolyFlags(straightPathPolys[i], (unsigned short*)&pointFlags[i]);
+				{
+					dtPolyRef ref = straightPathPolys[i];
+
+					// Fall back to closest known corridor poly if ref is null.
+					if (ref == 0)
+						ref = (i == 0) ? polys[0] : (i >= npolys ? polys[npolys - 1] : polys[i]);
+
+					unsigned short flags = 0;
+					if (ref != 0)
+						query->getAttachedNavMesh()->getPolyFlags(ref, &flags);
+
+					pointFlags[i] = (dtPolyFlags) flags;
+				}
 
 				return isPartialPath ? (DT_SUCCESS | DT_PARTIAL_RESULT) : DT_SUCCESS;
 			}
@@ -229,15 +230,20 @@ DLLEXPORT dtStatus FindClosestPoint(dtNavMeshQuery *query, float center[], float
 
 DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[], float boxExtents[], float referencePos[], dtPolyFlags queryFilter[], float *outputVector)
 {
+	const int MAX_POLYS = 32; // This limit can easily be reached, but this function shouldn't be used for large boxes.
+
 	dtQueryFilter filter;
 	filter.setIncludeFlags(queryFilter[0]);
 	filter.setExcludeFlags(queryFilter[1]);
 
-	dtPolyRef polys[32];
+	dtPolyRef polys[MAX_POLYS];
 	int polyCount = 0;
 
 	// Find all polygons overlapping the box.
-	dtStatus status = query->queryPolygons(boxCenter, boxExtents, &filter, polys, &polyCount, 32);
+	dtStatus status = query->queryPolygons(boxCenter, boxExtents, &filter, polys, &polyCount, MAX_POLYS);
+
+	// Preserve detail flags from the query status.
+	dtStatus detailFlags = status & DT_STATUS_DETAIL_MASK;
 
 	if (dtStatusSucceed(status) && polyCount > 0)
 	{
@@ -287,10 +293,10 @@ DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[
 		}
 
 		if (found)
-			return DT_SUCCESS;
+			return DT_SUCCESS | detailFlags;
 	}
 
-	return DT_FAILURE;
+	return DT_FAILURE | detailFlags;
 }
 
 DLLEXPORT dtStatus HasLineOfSight(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], bool *hasLos, float *outputVector)
@@ -319,23 +325,55 @@ DLLEXPORT dtStatus HasLineOfSight(dtNavMeshQuery* query, float start[], float en
 	return status;
 }
 
-DLLEXPORT dtStatus GetPolyAt(dtNavMeshQuery *query, float *center, float *extents, unsigned short *queryFilter, dtPolyRef *polyRef, float *point)
+DLLEXPORT dtStatus UpdateFlags(dtNavMesh* navMesh, dtPolyRef polyRefs[], int polyCount,  unsigned short flagsToRemove, unsigned short flagsToAdd)
+{
+	if (polyCount <= 0)
+		return DT_SUCCESS;
+
+	dtStatus status;
+	std::vector<unsigned short> originalFlags;
+	originalFlags.reserve(polyCount);
+
+	for (int i = 0; i < polyCount; ++i)
+	{
+		unsigned short flags;
+		status = navMesh->getPolyFlags(polyRefs[i], &flags);
+
+		if (dtStatusFailed(status))
+			return status;
+
+		originalFlags.push_back(flags);
+	}
+
+	for (int i = 0; i < polyCount; ++i)
+	{
+		status = navMesh->setPolyFlags(polyRefs[i], (originalFlags[i] & ~flagsToRemove) | flagsToAdd);
+
+		if (dtStatusFailed(status))
+		{
+			// Best-effort rollback.
+			for (int j = 0; j < i; ++j)
+				navMesh->setPolyFlags(polyRefs[j], originalFlags[j]);
+
+			return status;
+		}
+	}
+
+	return status;
+}
+
+DLLEXPORT dtStatus GetPolyAt(dtNavMeshQuery *query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], dtPolyRef polyRef[], float *point)
 {
 	dtQueryFilter filter;
 	filter.setIncludeFlags(queryFilter[0]);
 	filter.setExcludeFlags(queryFilter[1]);
-	return query->findNearestPoly(center, extents, &filter, polyRef, point);
+	return query->findNearestPoly(center, polyPickExt, &filter, polyRef, point);
 }
 
-DLLEXPORT dtStatus SetPolyFlags(dtNavMesh *navMesh, dtPolyRef ref, unsigned short flags)
-{
-	return navMesh->setPolyFlags(ref, flags);
-}
-
-DLLEXPORT dtStatus QueryPolygons(dtNavMeshQuery *query, float *center, float *polyPickExtents, unsigned short *queryFilter, dtPolyRef *polys, int *polyCount, int maxPolys)
+DLLEXPORT dtStatus GetPolysInBox(dtNavMeshQuery *query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], dtPolyRef polyRefs[], int *polyCount, int maxPolys)
 {
 	dtQueryFilter filter;
 	filter.setIncludeFlags(queryFilter[0]);
 	filter.setExcludeFlags(queryFilter[1]);
-	return query->queryPolygons(center, polyPickExtents, &filter, polys, polyCount, maxPolys);
+	return query->queryPolygons(center, polyPickExt, &filter, polyRefs, polyCount, maxPolys);
 }

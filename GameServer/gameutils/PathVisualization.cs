@@ -25,16 +25,16 @@ namespace DOL.GS.Movement
 
             static EMarkerModel GetModel(EDtPolyFlags flags)
             {
-                if ((flags & EDtPolyFlags.SWIM) != 0)
+                if ((flags & EDtPolyFlags.Swim) != 0)
                     return EMarkerModel.Blue;
 
-                if ((flags & EDtPolyFlags.DOOR) != 0)
+                if ((flags & EDtPolyFlags.AnyDoor) != 0)
                     return EMarkerModel.Red;
 
-                if ((flags & EDtPolyFlags.WALK) != 0)
-                    return EMarkerModel.Yellow;
+                if ((flags & EDtPolyFlags.Walk) != 0)
+                    return EMarkerModel.Green;
 
-                return EMarkerModel.Green;
+                return EMarkerModel.Yellow;
             }
         }
 
