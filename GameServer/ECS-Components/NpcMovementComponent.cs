@@ -582,11 +582,12 @@ namespace DOL.GS
 
             static void JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
             {
-                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
-                    return;
+                if (component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) && node.HasValue)
+                {
+                    component._ownerPosition = node.Value;
+                    component._pathfinder.ForceReplot = true;
+                }
 
-                component._ownerPosition = node.Value;
-                component._pathfinder.ForceReplot = true;
                 component.UpdateMovement(0);
             }
 
