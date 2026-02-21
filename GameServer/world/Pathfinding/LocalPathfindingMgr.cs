@@ -158,6 +158,15 @@ namespace DOL.GS
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus UpdateFlags(
+            IntPtr meshPtr,
+            ReadOnlySpan<ulong> polyRefs,
+            int polyCount,
+            EDtPolyFlags flagsToRemove,
+            EDtPolyFlags flagsToAdd);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus GetPolyAt(
             IntPtr queryPtr,
             ReadOnlySpan<float> center,
@@ -168,14 +177,7 @@ namespace DOL.GS
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus SetPolyFlags(
-            IntPtr meshPtr,
-            ulong polyRef,
-            EDtPolyFlags flags);
-
-        [LibraryImport("lib/Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus QueryPolygons(
+        private static partial EDtStatus GetPolysInBox(
             IntPtr queryPtr,
             ReadOnlySpan<float> center,
             ReadOnlySpan<float> polyPickExt,
