@@ -16,7 +16,7 @@ namespace DOL.GS
         public const int NODE_REACHED_DISTANCE = 16;
         public const int NODE_REACHED_DISTANCE_STRICT = 2;
         public const int NODE_MAX_SKIP_DISTANCE = 80;
-        public const int DOOR_SEARCH_DISTANCE = 64;
+        public const int DOOR_SEARCH_DISTANCE = 128;
 
         public GameNPC Owner { get; }
         public bool ForceReplot { get; set; }
@@ -46,7 +46,7 @@ namespace DOL.GS
             ForceReplot = true;
         }
 
-        public bool ShouldPath(Zone zone,Vector3 target)
+        public bool ShouldPath(Zone zone, Vector3 target)
         {
             if (Owner.Flags.HasFlag(GameNPC.eFlags.FLYING) || Owner is GameTaxi || Owner is GameTaxiBoat)
                 return false;
