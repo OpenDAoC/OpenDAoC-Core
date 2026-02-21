@@ -133,31 +133,31 @@ DLLEXPORT dtStatus PathStraight(dtNavMeshQuery *query, float start[], float end[
 
 		if (dtStatusSucceed(pathStatus))
 		{
-			float epos[3];
-
 			// Partial if findPath said so, OR if the last polygon found is not the target endRef.
 			bool isPartialPath = (pathStatus & DT_PARTIAL_RESULT) != 0;
 			if (polys[npolys - 1] != endRef)
 				isPartialPath = true;
 
-			if (isPartialPath)
-			{
-				// If partial, we must clamp the end point to the last polygon we found.
-				dtStatus clampStatus = query->closestPointOnPoly(polys[npolys - 1], end, epos, nullptr);
-				if (dtStatusFailed(clampStatus))
-					return clampStatus;
-			}
-			else
-				dtVcopy(epos, end);
-
 			dtPolyRef straightPathPolys[MAX_POLY];
 			unsigned char straightPathFlags[MAX_POLY];
-			status = query->findStraightPath(start, epos, polys, npolys, pointBuffer, straightPathFlags, straightPathPolys, pointCount, MAX_POLY, pathOptions);
+			status = query->findStraightPath(start, end, polys, npolys, pointBuffer, straightPathFlags, straightPathPolys, pointCount, MAX_POLY, pathOptions);
 
 			if (dtStatusSucceed(status) && (*pointCount > 0))
 			{
 				for (int i = 0; i < *pointCount; ++i)
-					query->getAttachedNavMesh()->getPolyFlags(straightPathPolys[i], (unsigned short*)&pointFlags[i]);
+				{
+					dtPolyRef ref = straightPathPolys[i];
+
+					// Fall back to closest known corridor poly if ref is null.
+					if (ref == 0)
+						ref = (i == 0) ? polys[0] : (i >= npolys ? polys[npolys - 1] : polys[i]);
+
+					unsigned short flags = 0;
+					if (ref != 0)
+						query->getAttachedNavMesh()->getPolyFlags(ref, &flags);
+
+					pointFlags[i] = (dtPolyFlags) flags;
+				}
 
 				return isPartialPath ? (DT_SUCCESS | DT_PARTIAL_RESULT) : DT_SUCCESS;
 			}
