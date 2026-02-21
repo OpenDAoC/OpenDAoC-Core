@@ -77,9 +77,10 @@ namespace DOL.GS.Spells
 
 			if (zone.IsPathfindingEnabled)
 			{
-				Vector3? closestPoint = PathfindingProvider.Instance.GetClosestPoint(zone, new(point.X, point.Y, Caster.Z), 32f, 32f, 64f);
+				EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+				Vector3? closestPoint = PathfindingProvider.Instance.GetClosestPoint(zone, new(point.X, point.Y, Caster.Z), 32f, 32f, 64f, filters);
 
-				if (closestPoint.HasValue && PathfindingProvider.Instance.HasLineOfSight(zone, closestPoint.Value, new(Caster.X, Caster.Y, Caster.Z)))
+				if (closestPoint.HasValue && PathfindingProvider.Instance.HasLineOfSight(zone, closestPoint.Value, new(Caster.X, Caster.Y, Caster.Z), filters))
 				{
 					x = (int) Math.Round(closestPoint.Value.X);
 					y = (int) Math.Round(closestPoint.Value.Y);

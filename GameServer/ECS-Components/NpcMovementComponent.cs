@@ -286,7 +286,8 @@ namespace DOL.GS
 
             if (Owner.CurrentZone.IsPathfindingEnabled)
             {
-                Vector3? target = PathfindingProvider.Instance.GetRandomPoint(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
+                EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+                Vector3? target = PathfindingProvider.Instance.GetRandomPoint(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius, filters);
 
                 if (target.HasValue)
                     PathTo(target.Value, speed);
@@ -525,9 +526,11 @@ namespace DOL.GS
             {
                 case PathfindingStatus.PathFound:
                 {
+                    EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+
                     // Finalize the path if we have direct LoS to the destination.
                     // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
-                    if (PathfindingProvider.Instance.HasLineOfSight(zone, _ownerPosition, destination))
+                    if (PathfindingProvider.Instance.HasLineOfSight(zone, _ownerPosition, destination, filters))
                         FallbackToWalk(this, destination, speed);
                     else
                         PauseMovement(this, destination);
@@ -553,9 +556,6 @@ namespace DOL.GS
 
                     // Allow pets to keep up with their owner if they jump down a ledge or bridge.
                     // This is better than using FallbackToWalk and prevents pets from being pushed into walls.
-                    // This relies on NoPathFound to be returned in the first place, which may not happen if PathToInternal is called too late.
-                    // Consider making non-pet NPCs invincible and / or return to spawn point after a certain time.
-                    // Avoid FallbackToWalk, since is  makes misplaced NPCs go through walls and floors, which affects the player experience.
                     if (Owner.Brain is ControlledMobBrain petBrain && !Owner.InCombat && FollowTarget != null && petBrain.Owner == FollowTarget)
                         TeleportPetToFloorBeneathOwner(this, petBrain);
                     else
@@ -605,7 +605,8 @@ namespace DOL.GS
                     return;
 
                 Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
-                Vector3? floor = PathfindingProvider.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH);
+                EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+                Vector3? floor = PathfindingProvider.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH, filters);
 
                 if (floor.HasValue && !component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
                 {

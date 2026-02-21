@@ -64,7 +64,8 @@ namespace DOL.GS
 
             try
             {
-                PathfindingResult pathfindingResult = PathfindingProvider.Instance.GetPathStraight(zone, position, target, rentedNodeBuffer);
+                EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+                PathfindingResult pathfindingResult = PathfindingProvider.Instance.GetPathStraight(zone, position, target, filters, rentedNodeBuffer);
 
                 _pathNodes.Clear();
                 _doorsOnPath.Clear();
@@ -84,7 +85,7 @@ namespace DOL.GS
                     for (int i = 0; i < nodeCount; i++)
                     {
                         WrappedPathfindingNode node = rentedNodeBuffer[i];
-                        bool isDoor = (node.Flags & EDtPolyFlags.DOOR) != 0;
+                        bool isDoor = (node.Flags & EDtPolyFlags.AnyDoor) != 0;
 
                         if (i == 0 && !isDoor)
                             continue;
@@ -147,7 +148,9 @@ namespace DOL.GS
                     if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
                         break;
 
-                    if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition))
+                    EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+
+                    if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition, filters))
                         break;
 
                     nodesToRemove = i;
