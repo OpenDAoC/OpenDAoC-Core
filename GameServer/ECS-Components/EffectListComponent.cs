@@ -471,6 +471,7 @@ namespace DOL.GS
                 try
                 {
                     bool start = effect.FinalizeState(result);
+
                     component._pendingEffects.Enqueue(new(effect, static (effect, start) =>
                     {
                         try
@@ -478,8 +479,8 @@ namespace DOL.GS
                             if (start)
                                 effect.OnStartEffect();
 
-                            effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
                             ServiceObjectStore.Add(effect);
+                            effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                             // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
                             if (effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
@@ -856,6 +857,12 @@ namespace DOL.GS
                 {
                     bool stop = effect.FinalizeState(result);
 
+                    // Keep disabled effects in the store.
+                    // Remove other effects immediately instead of waiting for _pendingEffects to be processed.
+                    // This prevents them from ticking after being requested to stop.
+                    if (!effect.IsDisabled)
+                        ServiceObjectStore.Remove(effect);
+
                     component._pendingEffects.Enqueue(new(effect, static (effect, stop) =>
                     {
                         try
@@ -864,10 +871,6 @@ namespace DOL.GS
                                 effect.OnStopEffect();
 
                             effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
-
-                            // Keep disabled effects in the store.
-                            if (!effect.IsDisabled)
-                                ServiceObjectStore.Remove(effect);
                         }
                         catch (Exception e)
                         {
