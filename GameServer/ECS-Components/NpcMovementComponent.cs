@@ -542,24 +542,19 @@ namespace DOL.GS
                 }
                 case PathfindingStatus.PartialPathFound:
                 case PathfindingStatus.BufferTooSmall:
+                case PathfindingStatus.NoPathFound: // Happens when either the current position or the destination isn't on a mesh.
                 {
                     // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
-                    // This helps against exploits and with NPCs on mesh islands.
                     // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
-                    if (Owner.Brain is ControlledMobBrain)
-                        PauseMovement(this, destination);
-                    else
+                    // This helps against exploits and misplaced NPCs.
+
+                    // Pets following their owner are teleported at their feet if both are out of combat.
+                    // This allows them to keep up if they jump down a ledge or bridge.
+                    // This can theoretically be exploited by players in combat, but it requires both the pet and the owner to leave combat.
+
+                    if (Owner.Brain is not ControlledMobBrain petBrain)
                         JumpToClosestReachableNode(this, destination);
-
-                    break;
-                }
-                case PathfindingStatus.NoPathFound:
-                {
-                    // NoPathFound happens when either the current position or the destination isn't on a mesh.
-
-                    // Allow pets to keep up with their owner if they jump down a ledge or bridge.
-                    // This is better than using FallbackToWalk and prevents pets from being pushed into walls.
-                    if (Owner.Brain is ControlledMobBrain petBrain && !Owner.InCombat && FollowTarget != null && petBrain.Owner == FollowTarget)
+                    else if (!Owner.InCombat && !petBrain.Owner.InCombat && FollowTarget != null && petBrain.Owner == FollowTarget)
                         TeleportPetToFloorBeneathOwner(this, petBrain);
                     else
                         PauseMovement(this, destination);
