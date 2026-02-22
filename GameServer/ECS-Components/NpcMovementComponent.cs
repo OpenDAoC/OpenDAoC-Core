@@ -553,12 +553,17 @@ namespace DOL.GS
                     // This can theoretically be exploited by players in combat, but it requires both the pet and the owner to leave combat.
 
                     if (Owner.Brain is not ControlledMobBrain petBrain)
-                        JumpToClosestReachableNode(this, destination);
+                    {
+                        if (JumpToClosestReachableNode(this, destination))
+                            break;
+                    }
                     else if (!Owner.InCombat && !petBrain.Owner.InCombat && FollowTarget != null && petBrain.Owner == FollowTarget)
-                        TeleportPetToFloorBeneathOwner(this, petBrain);
-                    else
-                        PauseMovement(this, destination);
+                    {
+                        if (TeleportPetToFloorBeneathOwner(this, petBrain))
+                            break;
+                    }
 
+                    PauseMovement(this, destination);
                     break;
                 }
                 case PathfindingStatus.NotSet:
@@ -580,15 +585,18 @@ namespace DOL.GS
                 component.WalkToInternal(destination, speed);
             }
 
-            static void JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
+            static bool JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
             {
-                if (component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) && node.HasValue)
-                    component._ownerPosition = node.Value;
+                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
+                    return false;
 
+                component._ownerPosition = node.Value;
                 component.UpdateMovement(0);
+                component._pathfinder.ForceReplot = true;
+                return true;
             }
 
-            static void TeleportPetToFloorBeneathOwner(NpcMovementComponent component, ControlledMobBrain petBrain)
+            static bool TeleportPetToFloorBeneathOwner(NpcMovementComponent component, ControlledMobBrain petBrain)
             {
                 const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
                 const int MAX_FLOOR_SEARCH_DEPTH = 1024;
@@ -597,17 +605,19 @@ namespace DOL.GS
                 GamePlayer playerOwner = petBrain.GetPlayerOwner();
 
                 if (!component.Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
-                    return;
+                    return false;
 
                 Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
                 EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
                 Vector3? floor = PathfindingProvider.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH, filters);
 
-                if (floor.HasValue && !component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
-                {
-                    component._ownerPosition = floor.Value;
-                    component.UpdateMovement(0);
-                }
+                if (!floor.HasValue || component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
+                    return false;
+
+                component._ownerPosition = floor.Value;
+                component.UpdateMovement(0);
+                component._pathfinder.ForceReplot = true;
+                return true;
             }
 
             static void PauseMovement(NpcMovementComponent component, Vector3 destination)
