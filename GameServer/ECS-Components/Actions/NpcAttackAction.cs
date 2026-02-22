@@ -217,8 +217,6 @@ namespace DOL.GS
                 OnOutOfRangeOrNoLosRangedAttack();
                 return;
             }
-
-            _npcOwner.TurnTo(_losCheckTarget);
         }
 
         private void SwitchToMeleeAndTick()

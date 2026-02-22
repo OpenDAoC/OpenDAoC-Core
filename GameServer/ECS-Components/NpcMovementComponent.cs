@@ -439,7 +439,7 @@ namespace DOL.GS
         {
             MovementStartTick = GameLoop.GameLoopTime;
 
-            if (!IsMoving || distanceToTarget < 1)
+            if (!IsMoving || distanceToTarget <= 0)
             {
                 _velocity = Vector3.Zero;
                 HorizontalVelocityForClient = 0.0;
@@ -491,6 +491,8 @@ namespace DOL.GS
 
             if (ticksToArrive <= 0)
             {
+                _ownerPosition = destination;
+
                 if (CurrentSpeed > 0)
                     UpdateMovement(0);
 
@@ -524,6 +526,20 @@ namespace DOL.GS
 
             switch (_pathfinder.PathfindingStatus)
             {
+                case PathfindingStatus.PathFound:
+                {
+                    EDtPolyFlags[] filters = PathfindingProvider.Instance.BlockingDoorAvoidanceFilters;
+
+                    // Finalize the path if we have direct LoS to the destination.
+                    // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
+                    // Use the most restrictive filters for now, since we don't know which ones were used.
+                    if (PathfindingProvider.Instance.HasLineOfSight(zone, _ownerPosition, destination, filters))
+                        FallbackToWalk(this, destination, speed);
+                    else
+                        PauseMovement(this, destination);
+
+                    break;
+                }
                 case PathfindingStatus.PartialPathFound:
                 case PathfindingStatus.BufferTooSmall:
                 {
@@ -556,7 +572,6 @@ namespace DOL.GS
                     FallbackToWalk(this, destination, speed);
                     break;
                 }
-                case PathfindingStatus.PathFound:
                 default:
                 {
                     PauseMovement(this, destination);
@@ -573,10 +588,7 @@ namespace DOL.GS
             static void JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
             {
                 if (component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) && node.HasValue)
-                {
                     component._ownerPosition = node.Value;
-                    component._pathfinder.ForceReplot = true;
-                }
 
                 component.UpdateMovement(0);
             }
@@ -653,7 +665,8 @@ namespace DOL.GS
                 return 0;
             }
 
-            if (distanceSquared <= MinFollowDistance * MinFollowDistance)
+            // The way position is updated ensures that we never move past the destination, so we need to take potential small inaccuracies into account.
+            if (distanceSquared <= (MinFollowDistance + 1) * (MinFollowDistance + 1))
             {
                 TurnTo(FollowTarget);
 
@@ -808,23 +821,21 @@ namespace DOL.GS
                 return;
             }
 
+            float magic;
+            float ratio;
+
             if (wasMoving)
                 _positionForClient = _ownerPosition;
             else
             {
-                float magic = (float) (CurrentSpeed * 0.15);
-                float ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
+                magic = (float) (CurrentSpeed * 0.15);
+                ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
                 _positionForClient = Vector3.Lerp(_destination, _ownerPosition, ratio);
             }
 
-            if (distanceToTarget < 1)
-                _destinationForClient = _ownerPosition;
-            else
-            {
-                float magic = (float) Math.Max(15, CurrentSpeed * 0.1);
-                float ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
-                _destinationForClient = Vector3.Lerp(_ownerPosition, _destination, ratio);
-            }
+            magic = (float) Math.Max(15, CurrentSpeed * 0.1);
+            ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
+            _destinationForClient = Vector3.Lerp(_ownerPosition, _destination, ratio);
         }
 
         private void UpdateMovement(short speed)
@@ -849,7 +860,7 @@ namespace DOL.GS
             Owner.Y = (int) Math.Round(_ownerPosition.Y);
             Owner.Z = (int) Math.Round(_ownerPosition.Z);
 
-            IsDestinationValid = distanceToTarget >= 1;
+            IsDestinationValid = distanceToTarget >= 0;
             _destination = destination;
             _needsBroadcastUpdate = true;
 
