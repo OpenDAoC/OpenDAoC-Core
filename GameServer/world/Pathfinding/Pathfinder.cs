@@ -98,7 +98,7 @@ namespace DOL.GS
                             continue;
 
                         Point3D point = new(node.Position.X, node.Position.Y, node.Position.Z);
-                        pathBuffer.Doors[node] = new();
+                        pathBuffer.Doors[node] = new(1);
                         Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, pathBuffer.Doors[node]);
                     }
                 }
