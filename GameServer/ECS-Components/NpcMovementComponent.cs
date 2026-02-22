@@ -524,6 +524,20 @@ namespace DOL.GS
 
             switch (_pathfinder.PathfindingStatus)
             {
+                case PathfindingStatus.PathFound:
+                {
+                    EDtPolyFlags[] filters = PathfindingProvider.Instance.BlockingDoorAvoidanceFilters;
+
+                    // Finalize the path if we have direct LoS to the destination.
+                    // This ensures that the NPC stays on the mesh, assuming it's on it to begin with.
+                    // Use the most restrictive filters for now, since we don't know which ones were used.
+                    if (PathfindingProvider.Instance.HasLineOfSight(zone, _ownerPosition, destination, filters))
+                        FallbackToWalk(this, destination, speed);
+                    else
+                        PauseMovement(this, destination);
+
+                    break;
+                }
                 case PathfindingStatus.PartialPathFound:
                 case PathfindingStatus.BufferTooSmall:
                 {
@@ -556,7 +570,6 @@ namespace DOL.GS
                     FallbackToWalk(this, destination, speed);
                     break;
                 }
-                case PathfindingStatus.PathFound:
                 default:
                 {
                     PauseMovement(this, destination);
