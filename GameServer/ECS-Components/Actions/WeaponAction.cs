@@ -127,12 +127,6 @@ namespace DOL.GS
                     spellHandler?.StartSpell(livingTarget);
                 }
             }
-
-            // Mobs' heading isn't updated after they start attacking, so we update it after they swing.
-            if (_owner is GameNPC npcOwner)
-                npcOwner.TurnTo(mainHandAttackData.Target);
-
-            return;
         }
 
         public void ShowAttackAnimation(AttackData ad, DbInventoryItem weapon)
