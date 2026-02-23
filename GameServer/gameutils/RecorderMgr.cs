@@ -130,7 +130,7 @@ namespace DOL.GS
 
             public RecorderSpecialization(string keyname, string displayname, ushort icon) : base(keyname, displayname, icon)
             {
-                m_line = new SpellLine(RecorderLineKey, RecorderLineKey, RecorderLineKey, true);
+                m_line = new SpellLine(RecorderLineKey, RecorderLineKey, RecorderLineKey, false);
             }
 
             public override bool Trainable => false;
