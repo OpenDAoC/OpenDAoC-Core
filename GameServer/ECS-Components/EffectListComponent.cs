@@ -712,8 +712,10 @@ namespace DOL.GS
                         ISpellHandler existingSpellHandler = existingEffect.SpellHandler;
                         Spell existingSpell = existingSpellHandler.Spell;
 
-                        // 'Damage' represents the absorption% per hit.
-                        if (newSpell.Value * AblativeArmorSpellHandler.ValidateSpellDamage((int) newSpell.Damage) <= existingEffect.RemainingValue * AblativeArmorSpellHandler.ValidateSpellDamage((int) existingSpell.Damage))
+                        // Damage represents the absorption% per hit. This check means 50@100% == 100@50% for example.
+                        // RemainingValue is already modified by effectiveness.
+                        if (newSpell.Value * effect.Effectiveness * AblativeArmorSpellHandler.ValidateSpellDamage((int) newSpell.Damage) <=
+                            existingEffect.RemainingValue * AblativeArmorSpellHandler.ValidateSpellDamage((int) existingSpell.Damage))
                             continue;
 
                         existingEffect.End();
