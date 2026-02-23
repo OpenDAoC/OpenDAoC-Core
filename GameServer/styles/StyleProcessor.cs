@@ -136,6 +136,13 @@ namespace DOL.GS.Styles
 			if (living is not GamePlayer player)
 				return;
 
+			// We stop attack when we are recording & record the style
+			if (RecorderMgr.IsPlayerRecording(player))
+			{
+				RecorderMgr.RecordAction(player, style);
+				return;
+			}
+
 			if (!player.IsAlive)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.CantCombatMode"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);

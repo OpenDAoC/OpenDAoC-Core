@@ -6,6 +6,7 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
+using DOL.GS.Styles;
 using Newtonsoft.Json;
 using DOL.Logging;
 
@@ -67,6 +68,11 @@ namespace DOL.GS
                                     Spell s = SkillBase.GetSpellByID(action.ID);
                                     if (s != null) dynamictooltip += $"Spell: {s.Name}\n";
                                 }
+                                else if (action.Type == "Style")
+                                {
+                                    Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
+                                    if (style != null) dynamictooltip += $"Style: {style.Name}\n";
+                                }
                                 else if (action.Type == "Command")
                                 {
                                     dynamictooltip += $"Cmd: {action.ID}\n";
@@ -93,6 +99,7 @@ namespace DOL.GS
                         Type = eSpellType.RecorderAction.ToString(), 
                         Description = dynamictooltip,
                         TooltipId = (ushort)tooltipId,
+                        Power = 0,
                     };
 
                     player.SpellMacros.Add(new RecorderSpell(db, uniqueLevel, entry));
@@ -182,6 +189,21 @@ namespace DOL.GS
                 {
                     actions.Add(new RecorderAction { Type = "Spell", ID = spell.ID });
                     player.Out.SendMessage($"[REC] Added: {spell.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                }
+            }
+        }
+
+        public static void RecordAction(GamePlayer player, Style style)
+        {
+            if (style == null || !IsPlayerRecording(player)) 
+                return;
+            
+            lock (_activeRecordings)
+            {
+                if (_activeRecordings.TryGetValue(player, out var actions))
+                {
+                    actions.Add(new RecorderAction { Type = "Style", ID = style.ID });
+                    player.Out.SendMessage($"[REC] Style added: {style.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }

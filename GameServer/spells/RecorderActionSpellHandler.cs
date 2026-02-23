@@ -7,6 +7,7 @@ using DOL.Database;
 using Newtonsoft.Json;
 using DOL.Logging;
 using System.Reflection;
+using DOL.GS.Styles;
 
 namespace DOL.GS.Spells
 {
@@ -25,7 +26,6 @@ namespace DOL.GS.Spells
         {
             if (!(Caster is GamePlayer player))
                 return false;
-
             // 1. Standard Execution Path
             // Check if the spell object passed by the core is already our RecorderSpell type.
             if (this.Spell is RecorderMgr.RecorderSpell mySpell)
@@ -43,17 +43,19 @@ namespace DOL.GS.Spells
             if (fallbackSpell != null)
             {
                 ExecuteMacro(player, fallbackSpell.RecordData);
+                return true;
             }
             else
             {
-                // Log the failure for server administration instead of flooding player chat
-                if (log.IsWarnEnabled)
-                    log.Warn($"[Recorder] Player {player.Name} tried to execute Macro ID {requestedId}, but it was not found in their SpellMacros list.");
-                
                 player.Out.SendMessage("An error occurred while trying to execute the macro.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
             }
 
-            return true;
+            return false;
+        }
+
+        public override int CalculateEnduranceCost()
+        {
+            return 0;
         }
 
         /// <summary>
@@ -74,13 +76,22 @@ namespace DOL.GS.Spells
 
                 foreach (var action in actions)
                 {
+                    // Spell Handling
                     if (action.Type == "Spell")
                     {
                         Spell s = SkillBase.GetSpellByID(action.ID);
                         if (s != null)
                         {
-                            // Trigger the spell casting component
                             player.castingComponent.RequestCastSpell(s, recorderLine);
+                        }
+                    }
+                    // Style Handling
+                    else if (action.Type == "Style")
+                    {
+                        Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
+                        if (style != null)
+                        {
+                            StyleProcessor.TryToUseStyle(player, style);
                         }
                     }
                 }
