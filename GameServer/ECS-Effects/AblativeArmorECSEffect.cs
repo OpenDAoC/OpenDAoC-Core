@@ -6,7 +6,7 @@
 
         public AblativeArmorECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
-            RemainingValue = (int) SpellHandler.Spell.Value;
+            RemainingValue = (int) (SpellHandler.Spell.Value * Effectiveness);
         }
 
         public override void OnStartEffect()
