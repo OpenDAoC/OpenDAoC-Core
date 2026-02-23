@@ -20,6 +20,7 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> _tooltipRequestTimes = new();
+        public int LastMacroToolTipID = 1;
         private readonly Lock _disconnectLock = new();
 
         public DbAccount Account
