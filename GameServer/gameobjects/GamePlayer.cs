@@ -6160,6 +6160,9 @@ namespace DOL.GS
         /// <param name="duration">duration of disable in milliseconds</param>
         public override void DisableSkill(Skill skill, int duration)
         {
+            if ((ePrivLevel) Client.Account.PrivLevel >= ePrivLevel.GM)
+                return;
+
             base.DisableSkill(skill, duration);
             Out.SendDisableSkill([new(skill, duration)]);
         }
@@ -6171,6 +6174,9 @@ namespace DOL.GS
         /// <param name="duration">duration of disable in milliseconds</param>
         public override void DisableSkills(ICollection<Tuple<Skill, int>> skills)
         {
+            if ((ePrivLevel) Client.Account.PrivLevel >= ePrivLevel.GM)
+                return;
+
             if (skills.Count == 0)
                 return;
 
