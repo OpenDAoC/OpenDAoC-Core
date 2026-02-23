@@ -23,7 +23,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <summary>
         /// Client Operation Value.
         /// </summary>
-        public enum eOperation: uint
+        public enum eOperation : uint
         {
             Delete = 0x12345678,
             Create = 0x23456789,
@@ -152,7 +152,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     }
                 }
 
-                switch ((eOperation) pakdata.Operation)
+                switch ((eOperation)pakdata.Operation)
                 {
                     case eOperation.Delete:
                         if (string.IsNullOrEmpty(pakdata.CharName))
@@ -298,8 +298,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                     {
                         CharacterSlot -= (Realm - 1) * 10; // calc to get character slot into same format used in database.
                     }
-                    
-                    byte startRaceGender1 = (byte)packet.ReadByte();                    
+
+                    byte startRaceGender1 = (byte)packet.ReadByte();
                     Race = startRaceGender1 & 0x1F;
                     Gender = ((startRaceGender1 >> 7) & 0x01);
                     //SIStartLocation = ((startRaceGender1 >> 7) != 0);
@@ -308,7 +308,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (client.Version == GameClient.eClientVersion.Version1125)
                     {
                         Region = packet.ReadByte();
-                        packet.Skip(5);                       
+                        packet.Skip(5);
                     }
 
                     Strength = packet.ReadByte();
@@ -321,7 +321,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     Charisma = packet.ReadByte();
 
                     packet.Skip(43);
-                    
+
                     NewConstitution = packet.ReadByte();
                     // trailing 0x00
                     return;
@@ -450,8 +450,8 @@ namespace DOL.GS.PacketHandler.Client.v168
             List<string> disabledClasses = Util.SplitCSV(Properties.DISABLED_CLASSES);
             var occurences =
                 (from j in disabledClasses
-                    where j == ch.Class.ToString()
-                    select j)
+                 where j == ch.Class.ToString()
+                 select j)
                 .Count();
 
             if (occurences > 0 && (ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
@@ -466,8 +466,8 @@ namespace DOL.GS.PacketHandler.Client.v168
             List<string> disabledRaces = Util.SplitCSV(Properties.DISABLED_RACES);
             occurences =
                 (from j in disabledRaces
-                    where j == ch.Race.ToString()
-                    select j)
+                 where j == ch.Race.ToString()
+                 select j)
                 .Count();
 
             if (occurences > 0 && (ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
@@ -899,6 +899,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             GameServer.Database.AddObject(backupCharacter);
             GameServer.Database.DeleteObject(character);
+            
+            // Delete Player's recorder macros
+            var dbEntries = GameServer.Database.SelectAllObjects<DBCharacterRecorder>()
+            .Where(r => r.CharacterID == character.ObjectId)
+            .ToList();
+
+            foreach (var entry in dbEntries)
+            {
+                GameServer.Database.DeleteObject(entry);
+            }
 
             // Do we really have to do this?
             client.Account.Characters = null;
@@ -948,7 +958,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 ICharacterClass charClass = ScriptMgr.FindCharacterClass(ch.Class);
 
-                if(!charClass.EligibleRaces.Exists(s => (int)s.ID == ch.Race))
+                if (!charClass.EligibleRaces.Exists(s => (int)s.ID == ch.Race))
                 {
                     if (log.IsWarnEnabled)
                         log.WarnFormat("Wrong race: {0}, class:{1} on character creation from Account: {2}", ch.Race, ch.Class, ch.AccountName);
