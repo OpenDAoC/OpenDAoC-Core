@@ -115,11 +115,11 @@ namespace DOL.GS
         /// Array that stores ML step completition
         /// </summary>
         private ArrayList m_mlSteps = new ArrayList();
-        private List<Spell> m_recorderSpells = new List<Spell>();
-        public List<Spell> RecorderSpells
-        {
-            get { return m_recorderSpells; }
-            set { m_recorderSpells = value; }
+        protected List<Spell> m_spellMacros = new List<Spell>();
+        public List<Spell> SpellMacros 
+        { 
+            get => m_spellMacros; 
+            set => m_spellMacros = value; 
         }
 
         /// <summary>

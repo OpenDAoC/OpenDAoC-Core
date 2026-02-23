@@ -1288,7 +1288,8 @@ namespace DOL.GS.Spells
 			// Messages
 			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0)
 			{
-				if (Spell.SpellType is not eSpellType.PveResurrectionIllness and not eSpellType.RvrResurrectionIllness)
+				// This prevents the message you cast <recordername>... same for sickness
+				if (Spell.SpellType is not eSpellType.PveResurrectionIllness and not eSpellType.RvrResurrectionIllness and not eSpellType.RecorderAction)
 				{
 					GameLiving toExclude = null;
 
