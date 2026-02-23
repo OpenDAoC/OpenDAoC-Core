@@ -2556,7 +2556,7 @@ namespace DOL.GS
 		{
 			int maxMana = MaxMana;
 
-			if (IsVampiirOrMauler())
+			if (IsVampiirOrMauler(this))
 			{
 				double onePercMana = Math.Ceiling(maxMana * 0.01);
 
@@ -2579,9 +2579,9 @@ namespace DOL.GS
 
 			return GetPowerRegenerationInterval();
 
-			bool IsVampiirOrMauler()
+			static bool IsVampiirOrMauler(GameLiving living)
 			{
-				if (this is not GamePlayer player)
+				if (living is not GamePlayer player)
 					return false;
 
 				eCharacterClass characterClass = (eCharacterClass) player.CharacterClass.ID;
