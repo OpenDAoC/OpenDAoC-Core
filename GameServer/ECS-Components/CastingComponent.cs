@@ -302,6 +302,13 @@ namespace DOL.GS
 
             public override void StartSkill()
             {
+                // We stop casting when we are recording & record the cast
+                if (CastingComponent.Owner is GamePlayer recPlayer && RecorderMgr.IsPlayerRecording(recPlayer))
+                {
+                    RecorderMgr.RecordAction(recPlayer, Spell);
+                    return;
+                }
+
                 // Cancel pulsing spell if already active.
                 if (Spell.IsPulsing && CastingComponent.Owner.ActivePulseSpells.ContainsKey(Spell.SpellType))
                 {

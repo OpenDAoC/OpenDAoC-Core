@@ -61,6 +61,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
 
             player.Out.SendPlayerInitFinished(0);
+            RecorderMgr.RefreshPlayerRecorders(player); // Load Recorder macros
             player.TargetObject = null;
             player.StartHealthRegeneration();
             player.StartPowerRegeneration();

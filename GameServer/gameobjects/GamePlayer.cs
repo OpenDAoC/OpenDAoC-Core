@@ -115,6 +115,7 @@ namespace DOL.GS
         /// Array that stores ML step completition
         /// </summary>
         private ArrayList m_mlSteps = new ArrayList();
+        public List<Spell> RecorderSpells = new List<Spell>();
 
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
@@ -713,6 +714,11 @@ namespace DOL.GS
         {
             get { return DBCharacter != null ? DBCharacter.LastLevelUp : DateTime.MinValue; }
             set { if (DBCharacter != null) DBCharacter.LastLevelUp = value; }
+        }
+
+        public void LoadRecorderData()
+        {
+            RecorderMgr.RefreshPlayerRecorders(this);
         }
         #endregion
 
@@ -10095,6 +10101,7 @@ namespace DOL.GS
             HandleMasterLevels(await masterLevelsTask);
             HandleStats(); // Should be done after loading gear, abilities, buffs.
             HandleTitles(); // Should be done after loading crafting skills.
+            LoadRecorderData();
 
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
