@@ -676,5 +676,42 @@ namespace DOL.GS
         }
 
         #endregion
+
+        public bool IsUnderwater(int x, int y, int z)
+        {
+            // Special land areas below the waterlevel in NF
+            if (ZoneRegion.ID == 163)
+            {
+                // Mount Collory
+                if ((y > 664000) && (y < 670000) && (x > 479000) && (x < 488000)) return false;
+                if ((y > 656000) && (y < 664000) && (x > 472000) && (x < 488000)) return false;
+                if ((y > 624000) && (y < 654000) && (x > 468500) && (x < 488000)) return false;
+                if ((y > 659000) && (y < 683000) && (x > 431000) && (x < 466000)) return false;
+                if ((y > 646000) && (y < 659001) && (x > 431000) && (x < 460000)) return false;
+                if ((y > 624000) && (y < 646001) && (x > 431000) && (x < 455000)) return false;
+                if ((y > 671000) && (y < 683000) && (x > 431000) && (x < 471000)) return false;
+                // Breifine
+                if ((y > 558000) && (y < 618000) && (x > 456000) && (x < 479000)) return false;
+                // Cruachan Gorge
+                if ((y > 586000) && (y < 618000) && (x > 360000) && (x < 424000)) return false;
+                if ((y > 563000) && (y < 578000) && (x > 360000) && (x < 424000)) return false;
+                // Emain Macha
+                if ((y > 505000) && (y < 555000) && (x > 428000) && (x < 444000)) return false;
+                // Hadrian's Wall
+                if ((y > 500000) && (y < 553000) && (x > 603000) && (x < 620000)) return false;
+                // Snowdonia
+                if ((y > 633000) && (y < 678000) && (x > 592000) && (x < 617000)) return false;
+                if ((y > 662000) && (y < 678000) && (x > 581000) && (x < 617000)) return false;
+                // Sauvage Forrest
+                if ((y > 584000) && (y < 615000) && (x > 626000) && (x < 681000)) return false;
+                // Uppland
+                if ((y > 297000) && (y < 353000) && (x > 610000) && (x < 652000)) return false;
+                // Yggdra
+                if ((y > 408000) && (y < 421000) && (x > 671000) && (x < 693000)) return false;
+                if ((y > 364000) && (y < 394000) && (x > 674000) && (x < 716000)) return false;
+            }
+
+            return z < Waterlevel;
+        }
     }
 }

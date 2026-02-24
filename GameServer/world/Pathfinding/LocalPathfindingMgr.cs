@@ -467,6 +467,23 @@ namespace DOL.GS
             );
         }
 
+        public override bool TrySnapToMesh(Zone zone, ref Vector3 position, float range)
+        {
+            Vector3? closestPoint = PathfindingProvider.Instance.GetClosestPoint(
+                zone,
+                position,
+                range,
+                range,
+                range,
+                PathfindingProvider.Instance.DefaultFilters);
+
+            if (!closestPoint.HasValue)
+                return false;
+
+            position = closestPoint.Value;
+            return true;
+        }
+
         public override bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))

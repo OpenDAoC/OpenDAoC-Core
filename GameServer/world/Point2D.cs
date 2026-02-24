@@ -157,12 +157,6 @@ namespace DOL.GS
 			return (int) Math.Sqrt(dx * dx + dy * dy);
 		}
 
-		public virtual void Clear()
-		{
-			X = 0;
-			Y = 0;
-		}
-
 		#endregion
 
 		/// <summary>
@@ -198,11 +192,6 @@ namespace DOL.GS
 			int dy = Y - point.Y;
 			dist += (long) dy * dy;
 			return dist <= rSquared;
-		}
-
-		public bool IsSamePosition(Point2D point)
-		{
-			return X == point.X && Y == point.Y;
 		}
 	}
 }

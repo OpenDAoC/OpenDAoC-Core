@@ -299,7 +299,7 @@ namespace DOL.GS.Spells
 			if ((effect.Owner is GamePlayer))
 			{
 				GamePlayer casterPlayer = effect.Owner as GamePlayer;
-				if (casterPlayer.GroundTarget != null && casterPlayer.GroundTargetInView)
+				if (casterPlayer.GroundTarget.IsValid && casterPlayer.GroundTargetInView)
 				{
 					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.Moving, new DOLEventHandler(PlayerMoves));
 					GameEventMgr.AddHandler(warder, GameLivingEvent.Dying, new DOLEventHandler(BattleWarderDie));
@@ -366,7 +366,7 @@ namespace DOL.GS.Spells
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
 			if (!base.CheckBeginCast(selectedTarget)) return false;
-			if (!(m_caster.GroundTarget != null && m_caster.GroundTargetInView))
+			if (!(m_caster.GroundTarget.IsValid && m_caster.GroundTargetInView))
 			{
 				MessageToCaster("Your area target is out of range.  Set a closer ground position.", eChatType.CT_SpellResisted);
 				return false;
@@ -690,25 +690,21 @@ namespace DOL.GS.Spells
 			z = Caster.Z;
 			if (Spell.Target == eSpellTarget.AREA)
 			{
-				if (Caster.GroundTargetInView && Caster.GroundTarget != null)
+				if (!Caster.GroundTarget.IsValid)
 				{
-					x = Caster.GroundTarget.X;
-					y = Caster.GroundTarget.Y;
-					z = Caster.GroundTarget.Z;
+					MessageToCaster("You must set a groundtarget!", eChatType.CT_SpellResisted);
+					return false;
 				}
-				else
+
+				if (!Caster.GroundTargetInView)
 				{
-					if (Caster.GroundTarget == null)
-					{
-						MessageToCaster("You must set a groundtarget!", eChatType.CT_SpellResisted);
-						return false;
-					}
-					else
-					{
-						MessageToCaster("Your area target is not in view.", eChatType.CT_SpellResisted);
-						return false;
-					}
+					MessageToCaster("Your area target is not in view.", eChatType.CT_SpellResisted);
+					return false;
 				}
+
+				x = Caster.GroundTarget.X;
+				y = Caster.GroundTarget.Y;
+				z = Caster.GroundTarget.Z;
 			}
 			return true;
 		}

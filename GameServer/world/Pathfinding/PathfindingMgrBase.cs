@@ -60,6 +60,11 @@ namespace DOL.GS
             return position;
         }
 
+        public virtual bool TrySnapToMesh(Zone zone, ref Vector3 position, float range)
+        {
+            return true;
+        }
+
         public virtual bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters)
         {
             return true;

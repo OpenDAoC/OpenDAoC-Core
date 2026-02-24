@@ -55,12 +55,6 @@ namespace DOL.GS
 			set => m_z = value;
 		}
 
-		public override void Clear()
-		{
-			base.Clear();
-			Z = 0;
-		}
-
 		#endregion
 
 		/// <summary>
@@ -172,11 +166,6 @@ namespace DOL.GS
 				return Vector2.DistanceSquared(new Vector2(X, Y), point.AsVector2()) <= radius * radius;
 
 			return Vector3.DistanceSquared(new Vector3(X, Y, Z), point) <= radius * radius;
-		}
-
-		public bool IsSamePosition(Point3D point)
-		{
-			return X == point.X && Y == point.Y && Z == point.Z;
 		}
 	}
 

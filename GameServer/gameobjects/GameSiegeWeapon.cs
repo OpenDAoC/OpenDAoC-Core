@@ -315,7 +315,7 @@ namespace DOL.GS
 		{
 			if (!CanUse()) return;
 			if (!EnableToMove) return;
-			if (Owner == null || Owner.GroundTarget == null) return;
+			if (Owner == null || !Owner.GroundTarget.IsValid) return;
             if ( !this.IsWithinRadius( Owner.GroundTarget, 1000 ) )
 			{
 				Owner.Out.SendMessage("Ground target is too far away to move to!", eChatType.CT_System,
@@ -394,7 +394,7 @@ namespace DOL.GS
 			}
 			if (TargetObject != null)
 				SetGroundTarget(TargetObject.X, TargetObject.Y, TargetObject.Z);
-			if (GroundTarget == null)
+			if (!GroundTarget.IsValid)
 				return;
 
 			//Range Checks
@@ -516,7 +516,7 @@ namespace DOL.GS
         /// <returns></returns>
         public int GetActionDelay(SiegeTimer.eAction action)
 		{
-			if (action == SiegeTimer.eAction.Fire && GroundTarget != null)
+			if (action == SiegeTimer.eAction.Fire && GroundTarget.IsValid)
                 return (int)( ActionDelay[(int)action] + this.GetDistanceTo( GroundTarget ) );
 			
 			int delay = ActionDelay[(int)action];

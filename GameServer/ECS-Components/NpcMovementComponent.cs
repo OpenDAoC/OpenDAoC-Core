@@ -704,25 +704,14 @@ namespace DOL.GS
 
             PathToInternal(destination, Math.Max((short) 20, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
+
         }
 
-        private bool TrySnapToMesh(ref Vector3 destination)
+        public bool TrySnapToMesh(ref Vector3 destination)
         {
             const float MAX_SNAP_DISTANCE = 128f;
-
-            EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
-            Vector3? closestPoint = PathfindingProvider.Instance.GetClosestPoint(Owner.CurrentZone,
-                destination,
-                MAX_SNAP_DISTANCE,
-                MAX_SNAP_DISTANCE,
-                MAX_SNAP_DISTANCE,
-                filters);
-
-            if (!closestPoint.HasValue)
-                return false;
-
-            destination = closestPoint.Value;
-            return true;
+            Zone zone = Owner.CurrentRegion.GetZone((int) destination.X, (int) destination.Y);
+            return PathfindingProvider.Instance.TrySnapToMesh(zone, ref destination, MAX_SNAP_DISTANCE);
         }
 
         private void OnArrival()

@@ -2732,7 +2732,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the Living's Coordinate inside the current Region
 		/// </summary>
-		protected Point3D m_groundTarget;
+		public GroundTarget GroundTarget { get; } = new();
 
 		/// <summary>
 		/// Gets or sets the target of this living
@@ -2744,23 +2744,22 @@ namespace DOL.GS
 			get { return false; }
 			set { }
 		}
-		/// <summary>
-		/// Gets the Living's ground-target Coordinate inside the current Region
-		/// </summary>
-		public virtual Point3D GroundTarget
+
+		public void SetGroundTarget(int x, int y, int z)
 		{
-			get { return m_groundTarget; }
+			if (!CanSetGroundTarget())
+				return;
+
+			GroundTarget.Set(x, y, z);
+			OnGroundTargetSet();
 		}
 
-		/// <summary>
-		/// Sets the Living's ground-target Coordinates inside the current Region
-		/// </summary>
-		public virtual void SetGroundTarget(int groundX, int groundY, int groundZ)
+		protected virtual bool CanSetGroundTarget()
 		{
-			m_groundTarget.X = groundX;
-			m_groundTarget.Y = groundY;
-			m_groundTarget.Z = groundZ;
+			return true;
 		}
+
+		protected virtual void OnGroundTargetSet() { }
 
 		/// <summary>
 		/// Gets or Sets the current level of the Object
@@ -3808,7 +3807,6 @@ namespace DOL.GS
 			movementComponent = MovementComponent.Create(this);
 
 			m_guildName = string.Empty;
-			m_groundTarget = new Point3D(0, 0, 0);
 
 			//Set all combat properties
 			m_activeWeaponSlot = eActiveWeaponSlot.Standard;

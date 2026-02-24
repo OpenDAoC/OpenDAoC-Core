@@ -2985,13 +2985,27 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public void SendChangeGroundTarget(Point3D newTarget)
+		public void SendChangeGroundTarget(int x, int y, int z)
 		{
+			if (x < 0)
+				throw new ArgumentOutOfRangeException(nameof(x), x, "Coordinate must be positive.");
+
+			if (y < 0)
+				throw new ArgumentOutOfRangeException(nameof(y), y, "Coordinate must be positive.");
+
+			if (z < 0)
+				throw new ArgumentOutOfRangeException(nameof(z), z, "Coordinate must be positive.");
+
+			// 1.127.
+			// If the position is too far away, the client will print "You attempt a GroundAssist, but the target is out of Range!".
+			// If it's in range, it will print "Your ground target has been set with GroundAssist."
+			// This means this shouldn't be used to force the ground target except when /groundassist is used.
+
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ChangeGroundTarget)))
 			{
-				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.X));
-				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.Y));
-				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.Z));
+				pak.WriteInt((uint) x);
+				pak.WriteInt((uint) y);
+				pak.WriteInt((uint) z);
 				SendTCP(pak);
 			}
 		}
@@ -3488,22 +3502,24 @@ namespace DOL.GS.PacketHandler
 				return;
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
 			{
-				pak.WriteInt((uint) siegeWeapon.ObjectID);
+				bool isGroundTargetValid = siegeWeapon.GroundTarget.IsValid;
+
+				pak.WriteInt(siegeWeapon.ObjectID);
 				pak.WriteInt(
 					(uint)
 					(siegeWeapon.TargetObject == null
-					 ? (siegeWeapon.GroundTarget == null ? 0 : siegeWeapon.GroundTarget.X)
-					 : siegeWeapon.TargetObject.X));
+						? (!isGroundTargetValid ? 0 : siegeWeapon.GroundTarget.X)
+						: siegeWeapon.TargetObject.X));
 				pak.WriteInt(
 					(uint)
 					(siegeWeapon.TargetObject == null
-					 ? (siegeWeapon.GroundTarget == null ? 0 : siegeWeapon.GroundTarget.Y)
-					 : siegeWeapon.TargetObject.Y));
+						? (!isGroundTargetValid ? 0 : siegeWeapon.GroundTarget.Y)
+						: siegeWeapon.TargetObject.Y));
 				pak.WriteInt(
 					(uint)
 					(siegeWeapon.TargetObject == null
-					 ? (siegeWeapon.GroundTarget == null ? 0 : siegeWeapon.GroundTarget.Z)
-					 : siegeWeapon.TargetObject.Z));
+						? (!isGroundTargetValid ? 0 : siegeWeapon.GroundTarget.Z)
+						: siegeWeapon.TargetObject.Z));
 				pak.WriteInt((uint) (siegeWeapon.TargetObject == null ? 0 : siegeWeapon.TargetObject.ObjectID));
 				pak.WriteShort(siegeWeapon.Effect);
 				pak.WriteShort((ushort) (siegeWeapon.SiegeWeaponTimer.TimeUntilElapsed/100));

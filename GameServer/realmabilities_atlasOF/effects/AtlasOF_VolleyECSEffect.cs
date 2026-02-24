@@ -145,13 +145,13 @@ namespace DOL.GS.Effects
         {
             List<GameLiving> potentialTargets = GameLoop.GetListForTick<GameLiving>();
 
-            foreach (GamePlayer playerTarget in WorldMgr.GetPlayersCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget.X, OwnerPlayer.GroundTarget.Y, OwnerPlayer.GroundTarget.Z, EFFECT_RADIUS))
+            foreach (GamePlayer playerTarget in WorldMgr.GetPlayersCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget, EFFECT_RADIUS))
             {
                 if (IsValidTarget(OwnerPlayer, playerTarget))
                     potentialTargets.Add(playerTarget);
             }
 
-            foreach (GameNPC npcTarget in WorldMgr.GetNPCsCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget.X, OwnerPlayer.GroundTarget.Y, OwnerPlayer.GroundTarget.Z, EFFECT_RADIUS))
+            foreach (GameNPC npcTarget in WorldMgr.GetNPCsCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget, EFFECT_RADIUS))
             {
                 if (npcTarget is GameSiegeWeapon)
                     continue;
@@ -224,7 +224,7 @@ namespace DOL.GS.Effects
                 return;
             }
 
-            if (player.GroundTarget == null)
+            if (!player.GroundTarget.IsValid)
             {
                 player.Out.SendMessage("You must have a ground target to use Volley!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return;
