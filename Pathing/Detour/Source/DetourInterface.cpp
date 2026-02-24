@@ -193,29 +193,6 @@ DLLEXPORT dtStatus MoveAlongSurface(dtNavMeshQuery* query, float start[], float 
 	return status;
 }
 
-thread_local std::mt19937 rngMt = std::mt19937(std::random_device{}());
-thread_local std::uniform_real_distribution<float> rng(0.0f, 1.0f);
-
-float frand()
-{
-	return rng(rngMt);
-}
-
-DLLEXPORT dtStatus FindRandomPointAroundCircle(dtNavMeshQuery *query, float center[], float radius, float polyPickExt[], dtPolyFlags queryFilter[], float *outputVector)
-{
-	dtQueryFilter filter;
-	filter.setIncludeFlags(queryFilter[0]);
-	filter.setExcludeFlags(queryFilter[1]);
-	dtPolyRef centerRef;
-	auto status = query->findNearestPoly(center, polyPickExt, &filter, &centerRef, nullptr);
-	if (dtStatusSucceed(status))
-	{
-		dtPolyRef outRef;
-		status = query->findRandomPointAroundCircle(centerRef, center, radius, &filter, frand, &outRef, outputVector);
-	}
-	return status;
-}
-
 DLLEXPORT dtStatus FindClosestPoint(dtNavMeshQuery *query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], float *outputVector)
 {
 	dtQueryFilter filter;
