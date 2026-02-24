@@ -16,6 +16,7 @@ namespace DOL.GS
         Vector3? GetClosestPointInBounds(Zone zone, Vector3 origin, Vector3 minOffset, Vector3 maxOffset, EDtPolyFlags[] filters);
         Vector3? GetRoofAbove(Zone zone, Vector3 position, float maxHeight, EDtPolyFlags[] filters);
         Vector3? GetFloorBeneath(Zone zone, Vector3 position, float maxDepth, EDtPolyFlags[] filters);
+        bool TrySnapToMesh(Zone zone, ref Vector3 position, float range);
         bool HasLineOfSight(Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters);
         bool HasNavmesh(Zone zone);
         bool IsAvailable { get; }
