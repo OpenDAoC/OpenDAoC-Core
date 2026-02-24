@@ -173,11 +173,6 @@ namespace DOL.GS
 
 			return Vector3.DistanceSquared(new Vector3(X, Y, Z), point) <= radius * radius;
 		}
-
-		public bool IsSamePosition(Point3D point)
-		{
-			return X == point.X && Y == point.Y && Z == point.Z;
-		}
 	}
 
 	public class Point3DFloat

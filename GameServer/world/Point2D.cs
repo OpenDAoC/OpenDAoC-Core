@@ -199,10 +199,5 @@ namespace DOL.GS
 			dist += (long) dy * dy;
 			return dist <= rSquared;
 		}
-
-		public bool IsSamePosition(Point2D point)
-		{
-			return X == point.X && Y == point.Y;
-		}
 	}
 }
