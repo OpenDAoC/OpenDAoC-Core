@@ -18,12 +18,11 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (!player.GroundTargetInView)
                 player.Out.SendMessage("Your ground target is not visible!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-            // ???
-            // if (player.SiegeWeapon != null && player.SiegeWeapon.Owner == player)
-            // {
-            //     player.SiegeWeapon.Move();
-            //     return 0;
-            // }
+            if (player.SiegeWeapon != null && player.SiegeWeapon.Owner == player)
+            {
+                player.SiegeWeapon.Move();
+                return;
+            }
 
             if (player.Steed != null && player.Steed.MAX_PASSENGERS >= 1 && player.Steed.OwnerID == player.InternalID)
             {
