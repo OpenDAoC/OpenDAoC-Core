@@ -55,12 +55,6 @@ namespace DOL.GS
 			set => m_z = value;
 		}
 
-		public override void Clear()
-		{
-			base.Clear();
-			Z = 0;
-		}
-
 		#endregion
 
 		/// <summary>

@@ -157,12 +157,6 @@ namespace DOL.GS
 			return (int) Math.Sqrt(dx * dx + dy * dy);
 		}
 
-		public virtual void Clear()
-		{
-			X = 0;
-			Y = 0;
-		}
-
 		#endregion
 
 		/// <summary>
