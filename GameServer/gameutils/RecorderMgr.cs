@@ -81,7 +81,11 @@ namespace DOL.GS
                                 }
                                 else if (action.Type == "Command")
                                 {
-                                    dynamictooltip += $"Cmd: {action.ID}\n";
+                                    // command text is stored in Value field; ensure it begins with '/'
+                                    string cmd = action.Value ?? string.Empty;
+                                    if (cmd.Length > 0 && cmd[0] == '&')
+                                        cmd = "/" + cmd[1..];
+                                    dynamictooltip += $"Cmd: {cmd}\n";
                                 }
                             }
                         }
@@ -224,6 +228,24 @@ namespace DOL.GS
                 {
                     actions.Add(new RecorderAction { Type = "Ability", ID = ability.ID });
                     player.Out.SendMessage($"[REC] Ability added: {ability.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Record a player‑entered command while recording is active.
+        /// </summary>
+        public static void RecordAction(GamePlayer player, string command)
+        {
+            if (string.IsNullOrEmpty(command) || !IsPlayerRecording(player))
+                return;
+
+            lock (_activeRecordings)
+            {
+                if (_activeRecordings.TryGetValue(player, out var actions))
+                {
+                    actions.Add(new RecorderAction { Type = "Command", ID = 0, Value = command });
+                    player.Out.SendMessage($"[REC] Command added: {command}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }

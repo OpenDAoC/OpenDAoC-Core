@@ -105,6 +105,14 @@ namespace DOL.GS.Spells
                             player.castingComponent.RequestUseAbility(abil);
                         }
                     }
+                    else if (action.Type == "Command")
+                    {
+                        // replay the exact command line that was entered
+                        if (!string.IsNullOrEmpty(action.Value))
+                        {
+                            ScriptMgr.HandleCommand(player.Client, action.Value);
+                        }
+                    }
                 }
             }
             catch (Exception ex)

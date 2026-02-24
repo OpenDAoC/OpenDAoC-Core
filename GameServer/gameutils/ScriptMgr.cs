@@ -256,6 +256,13 @@ namespace DOL.GS
         {
             try
             {
+                // record a command if the player is currently recording macros & stop command
+                if (client?.Player != null && RecorderMgr.IsPlayerRecording(client.Player) && !cmdLine.StartsWith("&recorder", StringComparison.OrdinalIgnoreCase))
+                {
+                    RecorderMgr.RecordAction(client.Player, cmdLine);
+                    return true;
+                }
+
                 string[] pars = ParseCmdLine(cmdLine);
                 GameCommand myCommand = GuessCommand(pars[0], (ePrivLevel) client.Account.PrivLevel);
 
