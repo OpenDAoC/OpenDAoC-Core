@@ -255,6 +255,16 @@ namespace DOL.GS
             lock (_activeRecordings)
             {
                 if (!_activeRecordings.TryGetValue(player, out var actions) || actions.Count == 0) return;
+
+                // make sure the name is unique for this player
+                var whereCheck = DB.Column("CharacterID").IsEqualTo(player.InternalID)
+                                 .And(DB.Column("Name").IsEqualTo(name));
+                var existing = GameServer.Database.SelectObject<DBCharacterRecorder>(whereCheck);
+                if (existing != null)
+                {
+                    player.Out.SendMessage($"A recorder named '{name}' already exists.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+                    return;
+                }
                 
                 // We set first spell icon as recorder icon
                 int autoIconId = RecorderBaseIcon;
@@ -280,6 +290,37 @@ namespace DOL.GS
                 // Update Players list
                 RefreshPlayerRecorders(player);
                 player.Out.SendMessage($"Recorder '{name}' saved.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a recorder entry belonging to the specified player.
+        /// </summary>
+        /// <param name="player">Owning player.</param>
+        /// <param name="name">Name of the recorder to remove.</param>
+        /// <returns><c>true</c> if an entry was removed; <c>false</c> otherwise.</returns>
+        public static bool DeleteRecording(GamePlayer player, string name)
+        {
+            if (player == null || string.IsNullOrEmpty(name))
+                return false;
+
+            try
+            {
+                var where = DB.Column("CharacterID").IsEqualTo(player.InternalID)
+                               .And(DB.Column("Name").IsEqualTo(name));
+                var entry = GameServer.Database.SelectObject<DBCharacterRecorder>(where);
+
+                if (entry == null)
+                    return false;
+
+                GameServer.Database.DeleteObject(entry);
+                RefreshPlayerRecorders(player);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"[RECORDER] error deleting '{name}' for {player.Name}: {ex}");
+                return false;
             }
         }
         #endregion

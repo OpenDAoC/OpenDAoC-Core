@@ -2920,7 +2920,7 @@ namespace DOL.GS
 
                 m_specialization.Add(skill.KeyName, skill);
 
-                if (notify)
+                if (notify && skill.KeyName != RecorderMgr.RecorderLineKey)
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpecialisation.YouLearn", skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
@@ -2942,7 +2942,8 @@ namespace DOL.GS
                 m_specialization.Remove(specKeyName);
             }
 
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            if (specKeyName != RecorderMgr.RecorderLineKey)
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             return true;
         }
