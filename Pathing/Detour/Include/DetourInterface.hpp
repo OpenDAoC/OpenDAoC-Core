@@ -34,6 +34,6 @@ DLLEXPORT dtStatus MoveAlongSurface(dtNavMeshQuery* query, float start[], float 
 DLLEXPORT dtStatus FindClosestPoint(dtNavMeshQuery* query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], float* outputVector);
 DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery* query, float boxCenter[], float boxExtents[], float referencePos[], dtPolyFlags queryFilter[], float* outputVector);
 DLLEXPORT dtStatus HasLineOfSight(dtNavMeshQuery* query, float start[], float end[], float polyPickExt[], dtPolyFlags queryFilter[], bool* hasLos, float* outputVector);
-DLLEXPORT dtStatus UpdateDoorFlags(dtNavMesh* navMesh, dtPolyRef polyRefs[], int polyCount, unsigned short flagsToRemove, unsigned short flagsToAdd);
+DLLEXPORT dtStatus UpdateFlags(dtNavMesh* navMesh, dtPolyRef polyRefs[], int polyCount, unsigned short flagsToRemove, unsigned short flagsToAdd);
 DLLEXPORT dtStatus GetPolyAt(dtNavMeshQuery *query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], dtPolyRef polyRef[], float *point);
 DLLEXPORT dtStatus GetPolysInBox(dtNavMeshQuery *query, float center[], float polyPickExt[], dtPolyFlags queryFilter[], dtPolyRef polyRefs[], int *polyCount, int maxPolys);

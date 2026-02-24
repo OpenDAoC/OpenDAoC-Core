@@ -302,7 +302,7 @@ DLLEXPORT dtStatus HasLineOfSight(dtNavMeshQuery* query, float start[], float en
 	return status;
 }
 
-DLLEXPORT dtStatus UpdateFlags(dtNavMesh* navMesh, dtPolyRef polyRefs[], int polyCount,  unsigned short flagsToRemove, unsigned short flagsToAdd)
+DLLEXPORT dtStatus UpdateFlags(dtNavMesh* navMesh, dtPolyRef polyRefs[], int polyCount, unsigned short flagsToRemove, unsigned short flagsToAdd)
 {
 	if (polyCount <= 0)
 		return DT_SUCCESS;
