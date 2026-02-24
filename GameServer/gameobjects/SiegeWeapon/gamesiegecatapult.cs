@@ -96,7 +96,7 @@ namespace DOL.GS
 		{
 			ArrayList list = new ArrayList(20);
 
-			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort) AttackRadius))
+			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(CurrentRegionID, GroundTarget, (ushort) AttackRadius))
 			{
 				if (Owner != null && GameServer.ServerRules.IsAllowedToAttack(Owner, player, true))
 				{
@@ -120,7 +120,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(CurrentRegionID, GroundTarget.X, GroundTarget.Y, GroundTarget.Z, (ushort) AttackRadius))
+			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(CurrentRegionID, GroundTarget, (ushort) AttackRadius))
 			{
 				if (Owner != null &&GameServer.ServerRules.IsAllowedToAttack(Owner, npc, true))
 				{

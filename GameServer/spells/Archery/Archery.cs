@@ -195,7 +195,7 @@ namespace DOL.GS.Spells
 				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
 				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 
-				foreach (GameLiving npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
+				foreach (GameLiving npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget, (ushort)Spell.Radius))
 				{
 					if (npc.Realm == 0 || Caster.Realm == 0)
 					{

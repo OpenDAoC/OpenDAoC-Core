@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
                 {
                     if (spell.Radius > 0)
                     {
-                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(caster.CurrentRegionID, caster.GroundTarget.X, caster.GroundTarget.Y, caster.GroundTarget.Z, (ushort) spell.Radius))
+                        foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(caster.CurrentRegionID, caster.GroundTarget, (ushort) spell.Radius))
                         {
                             if (GameServer.ServerRules.IsAllowedToAttack(caster, player, true))
                                 list.Add(player);
