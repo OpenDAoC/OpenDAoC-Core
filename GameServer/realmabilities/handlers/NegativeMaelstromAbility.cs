@@ -25,11 +25,18 @@ namespace DOL.GS.RealmAbilities
 				return;
 			}
 
-            if ( caster.GroundTarget == null || !caster.IsWithinRadius( caster.GroundTarget, 1500 ) )
+            if (!caster.GroundTarget.IsValid)
             {
-				caster.Out.SendMessage("You groundtarget is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
+                caster.Out.SendMessage("You must set a ground target to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow );
+                return;
             }
+
+            if (!caster.IsWithinRadius(caster.GroundTarget, 1500))
+            {
+                caster.Out.SendMessage("Your ground target is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
             if (caster.TempProperties.GetProperty<bool>(IS_CASTING))
             {
                 caster.Out.SendMessage("You are already casting an ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

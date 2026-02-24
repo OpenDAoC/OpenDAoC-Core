@@ -44,7 +44,7 @@ namespace DOL.GS.Commands
 			// 	return;
 			// }
 			//
-			// if (target.GroundTarget == null || (target.GroundTarget.X == 0 && target.GroundTarget.Y == 0 && target.GroundTarget.Z == 0))
+			// if (!target.GroundTarget.IsValid)
 			// {
 			// 	client.Out.SendMessage(target.Name + " doesn't currently have a ground target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			// 	return;

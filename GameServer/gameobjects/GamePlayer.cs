@@ -173,17 +173,12 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Holds the ground target visibility flag
-        /// </summary>
-        protected bool m_groundtargetInView;
-
-        /// <summary>
         /// Gets or sets the GroundTargetObject's visibility
         /// </summary>
         public override bool GroundTargetInView
         {
-            get { return m_groundtargetInView; }
-            set { m_groundtargetInView = value; }
+            get => GroundTarget.InView;
+            set => GroundTarget.InView = value;
         }
 
         protected int m_OutOfClassROGPercent = 0;
@@ -8766,9 +8761,9 @@ namespace DOL.GS
             return true;
         }
 
-        protected override void OnGroundTargetSet(int x, int y, int z)
+        protected override void OnGroundTargetSet()
         {
-            SiegeWeapon?.SetGroundTarget(x, y, z);
+            SiegeWeapon?.SetGroundTarget(GroundTarget.X, GroundTarget.Y, GroundTarget.Z);
         }
 
         /// <summary>

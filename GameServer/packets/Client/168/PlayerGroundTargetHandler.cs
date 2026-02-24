@@ -27,10 +27,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 player.SetGroundTarget(groundX, groundY, groundZ);
             }
             else
-            {
-                player.GroundTargetInView = false;
-                player.SetGroundTarget(0, 0, 0);
-            }
+                player.GroundTarget.Unset();
 
             if (!player.GroundTargetInView)
                 player.Out.SendMessage("Your ground target is not visible!", eChatType.CT_System, eChatLoc.CL_SystemWindow);

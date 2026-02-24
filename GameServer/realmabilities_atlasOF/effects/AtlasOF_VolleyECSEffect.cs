@@ -224,7 +224,7 @@ namespace DOL.GS.Effects
                 return;
             }
 
-            if (player.GroundTarget == null)
+            if (!player.GroundTarget.IsValid)
             {
                 player.Out.SendMessage("You must have a ground target to use Volley!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return;

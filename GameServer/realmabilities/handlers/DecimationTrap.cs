@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -57,7 +57,7 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			if (living.GroundTarget == null)
+			if (!living.GroundTarget.IsValid)
 				return;
 			if (!living.IsWithinRadius( living.GroundTarget, 1500 ))
 				return;

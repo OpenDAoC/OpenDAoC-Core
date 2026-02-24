@@ -604,22 +604,24 @@ namespace DOL.GS.PacketHandler
 			byte[] siegeID = new byte[siegeWeapon.ObjectID]; // test
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
 			{
-				pak.WriteInt((uint)siegeWeapon.ObjectID);
+				bool isGroundTargetValid = siegeWeapon.GroundTarget.IsValid;
+
+				pak.WriteInt(siegeWeapon.ObjectID);
 				pak.WriteInt(
 					(uint)
 					(siegeWeapon.TargetObject == null
-					 ? (siegeWeapon.GroundTarget == null ? 0 : siegeWeapon.GroundTarget.X)
-					 : siegeWeapon.TargetObject.X));
+						? (!isGroundTargetValid ? 0 : siegeWeapon.GroundTarget.X)
+						: siegeWeapon.TargetObject.X));
 				pak.WriteInt(
 					(uint)
 					(siegeWeapon.TargetObject == null
-					 ? (siegeWeapon.GroundTarget == null ? 0 : siegeWeapon.GroundTarget.Y)
-					 : siegeWeapon.TargetObject.Y));
+						? (!isGroundTargetValid ? 0 : siegeWeapon.GroundTarget.Y)
+						: siegeWeapon.TargetObject.Y));
 				pak.WriteInt(
 					(uint)
 					(siegeWeapon.TargetObject == null
-					 ? (siegeWeapon.GroundTarget == null ? 0 : siegeWeapon.GroundTarget.Z)
-					 : siegeWeapon.TargetObject.Z));
+						? (!isGroundTargetValid ? 0 : siegeWeapon.GroundTarget.Z)
+						: siegeWeapon.TargetObject.Z));
 				pak.WriteInt((uint)(siegeWeapon.TargetObject == null ? 0 : siegeWeapon.TargetObject.ObjectID));
 				pak.WriteShort(siegeWeapon.Effect);
 				pak.WriteShort((ushort)(siegeWeapon.SiegeWeaponTimer.TimeUntilElapsed));

@@ -62,13 +62,18 @@ namespace DOL.GS
 			}
 			
 			Point3D newGroundTarget = null;
-			newGroundTarget = Owner.TargetObject != null ? Owner.TargetObject : Owner.GroundTarget;
+
+			if (Owner.TargetObject != null)
+				newGroundTarget = TargetObject;
+			else if (Owner.GroundTarget.IsValid)
+				newGroundTarget = Owner.GroundTarget;
+
 			if (newGroundTarget == null)
 			{
 				Owner.Out.SendMessage("You must have a target!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 				return;
-			} 
-			
+			}
+
 			//Range Checks
 			if (MinAttackRange != -1 && this.GetDistanceTo(newGroundTarget) < MinAttackRange)
 			{
@@ -145,7 +150,7 @@ namespace DOL.GS
 			//todo remove ammo + spell in db and uncomment
 			//m_spellHandler.StartSpell(player);
 			base.DoDamage();//anim mut be called after damage
-			if (GroundTarget == null) return;
+			if (!GroundTarget.IsValid) return;
 			IList targets = SelectTargets();
 
 			foreach (GameLiving living in targets)

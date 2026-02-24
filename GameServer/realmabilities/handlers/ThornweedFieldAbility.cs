@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.Events;
 using DOL.Database;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -30,12 +24,13 @@ namespace DOL.GS.RealmAbilities
 				return;
 			}
 
-			if (caster.GroundTarget == null )
-            {
-                caster.Out.SendMessage( "You must set a ground target to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow );
-                return;
-            }
-            else if(!caster.IsWithinRadius( caster.GroundTarget, 1500 ))
+			if (!caster.GroundTarget.IsValid)
+			{
+				caster.Out.SendMessage("You must set a ground target to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow );
+				return;
+			}
+
+			if (!caster.IsWithinRadius( caster.GroundTarget, 1500))
 			{
 				caster.Out.SendMessage("Your ground target is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
