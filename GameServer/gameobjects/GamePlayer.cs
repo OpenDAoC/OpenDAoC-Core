@@ -8768,7 +8768,6 @@ namespace DOL.GS
 
         protected override void OnGroundTargetSet(int x, int y, int z)
         {
-            Out.SendMessage($"You ground-target {x},{y},{z}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             SiegeWeapon?.SetGroundTarget(x, y, z);
         }
 
