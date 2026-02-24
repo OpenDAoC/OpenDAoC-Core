@@ -183,7 +183,7 @@ namespace DOL.GS
         public static void StartRecording(GamePlayer player)
         {
             lock (_activeRecordings) _activeRecordings[player] = new List<RecorderAction>();
-            player.Out.SendMessage("Recording started...", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+            player.Out.SendMessage("Recording started.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
         // This gets called from CastingComponent/Style..../Ability...
@@ -198,7 +198,8 @@ namespace DOL.GS
                 if (_activeRecordings.TryGetValue(player, out var actions))
                 {
                     actions.Add(new RecorderAction { Type = "Spell", ID = spell.ID });
-                    player.Out.SendMessage($"[REC] Added: {spell.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    int pos = actions.Count; // new action position
+                    player.Out.SendMessage($"{pos}. Spell '{spell.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }
@@ -213,7 +214,8 @@ namespace DOL.GS
                 if (_activeRecordings.TryGetValue(player, out var actions))
                 {
                     actions.Add(new RecorderAction { Type = "Style", ID = style.ID });
-                    player.Out.SendMessage($"[REC] Style added: {style.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    int pos = actions.Count;
+                    player.Out.SendMessage($"{pos}. Style '{style.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }
@@ -227,7 +229,8 @@ namespace DOL.GS
                 if (_activeRecordings.TryGetValue(player, out var actions))
                 {
                     actions.Add(new RecorderAction { Type = "Ability", ID = ability.ID });
-                    player.Out.SendMessage($"[REC] Ability added: {ability.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    int pos = actions.Count;
+                    player.Out.SendMessage($"{pos}. Ability '{ability.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }
@@ -245,7 +248,8 @@ namespace DOL.GS
                 if (_activeRecordings.TryGetValue(player, out var actions))
                 {
                     actions.Add(new RecorderAction { Type = "Command", ID = 0, Value = command });
-                    player.Out.SendMessage($"[REC] Command added: {command}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    int pos = actions.Count;
+                    player.Out.SendMessage($"{pos}. Command '{command}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }
@@ -262,12 +266,13 @@ namespace DOL.GS
                 var existing = GameServer.Database.SelectObject<DBCharacterRecorder>(whereCheck);
                 if (existing != null)
                 {
-                    player.Out.SendMessage($"A recorder named '{name}' already exists.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage($"A recorder named '{name}' already exists.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                     return;
                 }
                 
                 // We set first spell icon as recorder icon
                 int autoIconId = RecorderBaseIcon;
+                // Why we do this ?
                 var firstAction = actions.FirstOrDefault(a => a.Type == "Spell");
                 if (firstAction != null)
                 {
@@ -289,7 +294,7 @@ namespace DOL.GS
                 
                 // Update Players list
                 RefreshPlayerRecorders(player);
-                player.Out.SendMessage($"Recorder '{name}' saved.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"Recorder '{name}' saved.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
             }
         }
 
@@ -323,7 +328,67 @@ namespace DOL.GS
                 return false;
             }
         }
+
+        /// <summary>
+        /// Renames an existing recorder, ensuring the new name does not clash.
+        /// </summary>
+        public static bool RenameRecording(GamePlayer player, string oldName, string newName)
+        {
+            if (player == null || string.IsNullOrEmpty(oldName) || string.IsNullOrEmpty(newName))
+                return false;
+
+            if (oldName.Equals(newName, StringComparison.OrdinalIgnoreCase))
+                return false; // nothing to do
+
+            try
+            {
+                var whereOld = DB.Column("CharacterID").IsEqualTo(player.InternalID)
+                                 .And(DB.Column("Name").IsEqualTo(oldName));
+                var entry = GameServer.Database.SelectObject<DBCharacterRecorder>(whereOld);
+                if (entry == null)
+                    return false;
+
+                var whereNew = DB.Column("CharacterID").IsEqualTo(player.InternalID)
+                                 .And(DB.Column("Name").IsEqualTo(newName));
+                if (GameServer.Database.SelectObject<DBCharacterRecorder>(whereNew) != null)
+                    return false; // target already exists
+
+                entry.Name = newName;
+                // mark object dirty so SaveObject updates it (SelectObject may return non-dirty)
+                entry.Dirty = true;
+                GameServer.Database.SaveObject(entry);
+                RefreshPlayerRecorders(player);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"[RECORDER] error renaming '{oldName}' to '{newName}' for {player.Name}: {ex}");
+                return false;
+            }
+        }
         #endregion
+
+        /// <summary>
+        /// Aborts the current in‑memory recording for a player without saving.
+        /// </summary>
+        /// <param name="player">Owning player.</param>
+        /// <returns><c>true</c> if a recording was active and removed; otherwise <c>false</c>.</returns>
+        public static bool CancelRecording(GamePlayer player)
+        {
+            if (player == null) return false;
+
+            lock (_activeRecordings)
+            {
+                if (_activeRecordings.ContainsKey(player))
+                {
+                    _activeRecordings.Remove(player);
+                    player.Out.SendMessage("Recording cancelled.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
 

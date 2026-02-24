@@ -1,36 +1,106 @@
+using System;
 using DOL.GS.PacketHandler;
 using DOL.GS.Commands;
-using System.Linq;
 
 namespace DOL.GS
 {
-    [CmdAttribute("&recorder", ePrivLevel.Player, "Recorder Steuerung", "/recorder start", "/recorder stop <name>")]
+    /// <summary>
+    /// Implements the <c>/recorder</c> command for players.  This handler
+    /// primarily forwards requests to <see cref="RecorderMgr"/> and
+    /// displays usage information when invoked incorrectly.
+    /// </summary>
+    [CmdAttribute("&recorder", ePrivLevel.Player, "Recorder commands", "/recorder help")]
     public class RecorderCommandHandler : ICommandHandler
     {
+        // All valid usage lines visible to the player when requesting help.
+        private static readonly string[] UsageMessages =
+        {
+            // Eden like, just an example what could be implemented for now
+            "Recorder Usage",
+            "/recorder start : Start recording the next spells/styles/abilities/commands",
+            "/recorder save <name> : Save previously recorded actions as <name>",
+            //"/recorder sendkey <key> : Send specific key to the game client (ie: F, Space, etc)",
+            "/recorder cancel : Cancel current recording",
+            //"/recorder icon <name> [icon_id] : Apply your next casted spell icon to record <name>, or a direct input [icon_id] (check /charplan to find spell icon IDs)",
+            //"/recorder list : List all recorded actions",
+            "/recorder delete <name> : Remove record <name>",
+            "/recorder rename <name> <newname> : Rename record <name> to <newname>",
+            //"/recorder param <parameter_name> <parameter_value> : Store text parameters to replace in commands; e.g. /recorder param assistname Rtha will replace '%assistname' by 'Rtha' in /assist %assistname",
+            //"/recorder param list : List all your text parameters",
+            //"/recorder param delete <name> : Remove text parameter <name>",
+            //"/recorder import <character_name> <record_name> [dualspec: 1 or 2]",
+            //"/recorder info <name> : Display record information",
+            //"/recorder discard <name> <index> : Remove a specific action",
+            //"/recorder insert <name> <index> : Insert an action at the chosen position",
+            //"/recorder append <name> : Shortcut to insert at the end",
+            "/recorder help : Displays recorder usage"
+        };
+
+        /// <inheritdoc />
         public void OnCommand(GameClient client, string[] args)
         {
-            if (client.Player == null || args.Length < 2) 
+            if (client?.Player == null)
+                return;
+
+            if (args.Length < 2 || args[1].Equals("help", StringComparison.OrdinalIgnoreCase))
             {
-                client.Player?.Out.SendMessage("Benutzung: /recorder start ODER /recorder stop <name>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                SendUsage(client);
                 return;
             }
 
-            string action = args[1].ToLower();
+            var action = args[1].ToLowerInvariant();
 
-            if (action == "start") 
+            switch (action)
             {
-                RecorderMgr.StartRecording(client.Player);
+                case "start":
+                    RecorderMgr.StartRecording(client.Player);
+                    break;
+
+                case "cancel":
+                    if (!RecorderMgr.CancelRecording(client.Player))
+                        client.Player.Out.SendMessage("No active recording to cancel.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    break;
+
+                case "delete" when args.Length >= 3:
+                    {
+                        var name = args[2];
+                        if (RecorderMgr.DeleteRecording(client.Player, name))
+                            client.Player.Out.SendMessage($"Recorder '{name}' deleted.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        else
+                            client.Player.Out.SendMessage($"Recorder '{name}' not found.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    }
+                    break;
+
+                case "rename" when args.Length >= 4:
+                    {
+                        var oldName = args[2];
+                        var newName = args[3];
+                        if (RecorderMgr.RenameRecording(client.Player, oldName, newName))
+                            client.Player.Out.SendMessage($"Recorder '{oldName}' renamed to '{newName}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        else
+                            client.Player.Out.SendMessage($"Rename failed: either the original recorder was not found or the new name is already in use.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    }
+                    break;
+                case "save" when args.Length >= 3:                    
+                    RecorderMgr.StopAndSaveRecording(client.Player, args[2]);
+                    break;
+
+                default:
+                    SendUsage(client);
+                    break;
             }
-            // Wir unterstützen 'stop' und 'save', falls du dich umgewöhnen musst
-            else if ((action == "stop" || action == "save") && args.Length >= 3) 
+        }
+
+        /// <summary>
+        /// Sends all lines from <see cref="UsageMessages"/> to the player.
+        /// </summary>
+        private static void SendUsage(GameClient client)
+        {
+            foreach (var msg in UsageMessages)
             {
-                // Das Icon wird jetzt automatisch im RecorderMgr ermittelt
-                RecorderMgr.StopAndSaveRecording(client.Player, args[2]);
-            }
-            else 
-            {
-                client.Player.Out.SendMessage("Benutzung: /recorder start ODER /recorder stop <name>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
     }
 }
+
