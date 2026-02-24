@@ -55,7 +55,7 @@ namespace DOL.GS
                 foreach (var entry in dbEntries)
                 {
                     // Design the tooltip
-                    string dynamictooltip = "Recorded Actions:\n";
+                    string dynamictooltip = "[Recorder]\n";
                     try
                     {
                         var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
@@ -72,6 +72,12 @@ namespace DOL.GS
                                 {
                                     Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
                                     if (style != null) dynamictooltip += $"Style: {style.Name}\n";
+                                }
+                                else if (action.Type == "Ability")
+                                {
+                                    // normally the action ID is the ability's external ID
+                                    Ability abil = SkillBase.GetAbility(action.ID) ?? SkillBase.GetAbilityByInternalID(action.ID);
+                                    if (abil != null) dynamictooltip += $"Ability: {abil.Name}\n";
                                 }
                                 else if (action.Type == "Command")
                                 {
@@ -204,6 +210,20 @@ namespace DOL.GS
                 {
                     actions.Add(new RecorderAction { Type = "Style", ID = style.ID });
                     player.Out.SendMessage($"[REC] Style added: {style.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                }
+            }
+        }
+
+        public static void RecordAction(GamePlayer player, Ability ability)
+        {
+            if (ability == null || !IsPlayerRecording(player)) return;
+
+            lock (_activeRecordings)
+            {
+                if (_activeRecordings.TryGetValue(player, out var actions))
+                {
+                    actions.Add(new RecorderAction { Type = "Ability", ID = ability.ID });
+                    player.Out.SendMessage($"[REC] Ability added: {ability.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
             }
         }

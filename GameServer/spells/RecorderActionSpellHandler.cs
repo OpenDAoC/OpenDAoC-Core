@@ -94,6 +94,17 @@ namespace DOL.GS.Spells
                             StyleProcessor.TryToUseStyle(player, style);
                         }
                     }
+                    else if (action.Type == "Ability")
+                    {
+                        // prefer the normal ability ID first (this is what we recorded),
+                        // fall back to internal-ID lookup only if needed
+                        Ability abil = SkillBase.GetAbility(action.ID)
+                                    ?? SkillBase.GetAbilityByInternalID(action.ID);
+                        if (abil != null)
+                        {
+                            player.castingComponent.RequestUseAbility(abil);
+                        }
+                    }
                 }
             }
             catch (Exception ex)

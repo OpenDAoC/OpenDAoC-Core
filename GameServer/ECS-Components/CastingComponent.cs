@@ -436,6 +436,14 @@ namespace DOL.GS
 
             public override void StartSkill()
             {
+                // stop ability when we are recording & record the ability
+                if (CastingComponent.Owner is GamePlayer recPlayer &&
+                    RecorderMgr.IsPlayerRecording(recPlayer))
+                {
+                    RecorderMgr.RecordAction(recPlayer, Ability);
+                    return;
+                }
+                
                 // Only players are currently supported.
                 if (CastingComponent.Owner is not GamePlayer player || !CastingComponent.CheckCooldown(Ability))
                     return;
