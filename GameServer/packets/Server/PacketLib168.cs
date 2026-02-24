@@ -2971,13 +2971,27 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public void SendChangeGroundTarget(Point3D newTarget)
+		public void SendChangeGroundTarget(int x, int y, int z)
 		{
+			if (x < 0)
+				throw new ArgumentOutOfRangeException(nameof(x), x, "Coordinate must be positive.");
+
+			if (y < 0)
+				throw new ArgumentOutOfRangeException(nameof(y), y, "Coordinate must be positive.");
+
+			if (z < 0)
+				throw new ArgumentOutOfRangeException(nameof(z), z, "Coordinate must be positive.");
+
+			// 1.127.
+			// If the position is too far away, the client will print "You attempt a GroundAssist, but the target is out of Range!".
+			// If it's in range, it will print "Your ground target has been set with GroundAssist."
+			// This means this shouldn't be used to force the ground target except when /groundassist is used.
+
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ChangeGroundTarget)))
 			{
-				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.X));
-				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.Y));
-				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.Z));
+				pak.WriteInt((uint) x);
+				pak.WriteInt((uint) y);
+				pak.WriteInt((uint) z);
 				SendTCP(pak);
 			}
 		}

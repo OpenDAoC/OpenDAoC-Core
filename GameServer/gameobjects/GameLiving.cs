@@ -2752,15 +2752,23 @@ namespace DOL.GS
 			get { return m_groundTarget; }
 		}
 
-		/// <summary>
-		/// Sets the Living's ground-target Coordinates inside the current Region
-		/// </summary>
-		public virtual void SetGroundTarget(int groundX, int groundY, int groundZ)
+		public void SetGroundTarget(int x, int y, int z)
 		{
-			m_groundTarget.X = groundX;
-			m_groundTarget.Y = groundY;
-			m_groundTarget.Z = groundZ;
+			if (!CanSetGroundTarget())
+				return;
+
+			m_groundTarget.X = x;
+			m_groundTarget.Y = y;
+			m_groundTarget.Z = z;
+			OnGroundTargetSet(x, y, z);
 		}
+
+		protected virtual bool CanSetGroundTarget()
+		{
+			return true;
+		}
+
+		protected virtual void OnGroundTargetSet(int x, int y, int z) { }
 
 		/// <summary>
 		/// Gets or Sets the current level of the Object

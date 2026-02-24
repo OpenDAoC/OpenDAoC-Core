@@ -8753,25 +8753,23 @@ namespace DOL.GS
             UpdatePlayerStatus();
         }
 
-        /// <summary>
-        /// Sets the Living's ground-target Coordinates inside the current Region
-        /// </summary>
-        public override void SetGroundTarget(int groundX, int groundY, int groundZ)
+        protected override bool CanSetGroundTarget()
         {
-            ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//volley check for gt
+            ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+
             if (volley != null)
             {
                 Out.SendMessage("You can't change ground target under volley effect!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
+                return false;
             }
-            else
-            {
-                base.SetGroundTarget(groundX, groundY, groundZ);
 
-                Out.SendMessage(String.Format("You ground-target {0},{1},{2}", groundX, groundY, groundZ), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                if (SiegeWeapon != null)
-                    SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
-            }
+            return true;
+        }
+
+        protected override void OnGroundTargetSet(int x, int y, int z)
+        {
+            Out.SendMessage($"You ground-target {x},{y},{z}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            SiegeWeapon?.SetGroundTarget(x, y, z);
         }
 
         /// <summary>
