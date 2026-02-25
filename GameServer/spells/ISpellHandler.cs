@@ -183,15 +183,4 @@ namespace DOL.GS.Spells
 		bool CheckBeginCast(GameLiving selectedTarget);
 		bool CheckConcentrationCost(bool quiet);
 	}
-
-	/// <summary>
-	/// Callback when spell handler has done its cast work
-	/// </summary>
-	public delegate void CastingCompleteCallback(ISpellHandler handler);
-
-	/// <summary>
-	/// Callback when spell handler is completely done and duration spell expired
-	/// or concentration spell was canceled
-	/// </summary>
-	public delegate void SpellEndsCallback(ISpellHandler handler);
 }
