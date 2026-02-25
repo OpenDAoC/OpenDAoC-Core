@@ -571,7 +571,8 @@ namespace DOL.GS.Spells
 
 				if (interruptRemainingDuration > 0)
 				{
-					interruptRemainingDuration /= 1000 + 1;
+					interruptRemainingDuration /= 1000;
+					interruptRemainingDuration++;
 
 					if (playerCaster != null)
 					{
