@@ -13,6 +13,9 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
+    // This class manages the recording, storage, and execution of player‑defined macros (called "recorders").
+    // It provides methods to start/stop recordings, save them to the database, and refresh
+    // It's used to record multiple spells/abilities/styles/commands in sequence, and replay them via a single macro button.
     public class RecorderMgr
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
