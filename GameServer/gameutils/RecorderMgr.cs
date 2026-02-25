@@ -91,9 +91,11 @@ namespace DOL.GS
                             }
                         }
                     }
-                    catch { dynamictooltip = "Recorded Macro (Data Error)"; }
-
-
+                    catch (Exception ex) 
+                    { 
+                        dynamictooltip = "Recorded Macro (Data Error)";
+                        log.Error($"[RECORDER] Error parsing actions for {entry.Name}: {ex}");
+                    }
 
                     int uniqueID = 100000 + player.SpellMacros.Count;
                     int uniqueLevel = player.SpellMacros.Count + 1;

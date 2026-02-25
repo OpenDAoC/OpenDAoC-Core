@@ -28,7 +28,7 @@ namespace DOL.GS
             //"/recorder param <parameter_name> <parameter_value> : Store text parameters to replace in commands; e.g. /recorder param assistname Rtha will replace '%assistname' by 'Rtha' in /assist %assistname",
             //"/recorder param list : List all your text parameters",
             //"/recorder param delete <name> : Remove text parameter <name>",
-            "/recorder import <character_name> <record_name> [dualspec: 1 or 2]",
+            "/recorder import <character_name> <record_name>", // [dualspec: 1 or 2]
             //"/recorder info <name> : Display record information",
             //"/recorder discard <name> <index> : Remove a specific action",
             //"/recorder insert <name> <index> : Insert an action at the chosen position",
