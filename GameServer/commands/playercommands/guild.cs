@@ -628,8 +628,11 @@ namespace DOL.GS.Commands
 					}
 					case "buybanner":
 					{
-						client.Out.SendMessage("Guild banners are not enabled on this server.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
+						if (!Properties.GUILD_BANNERS_ENABLED)
+						{
+							client.Out.SendMessage("Guild banners are not enabled on this server.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
 
 						if (client.Player.Guild.GuildLevel < 7)
 						{
@@ -682,8 +685,11 @@ namespace DOL.GS.Commands
 					}
 					case "summon":
 					{
-						client.Out.SendMessage("Guild banners are not enabled on this server.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
+						if (!Properties.GUILD_BANNERS_ENABLED)
+						{
+							client.Out.SendMessage("Guild banners are not enabled on this server.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
 
 						if (client.Player.Guild == null)
 						{

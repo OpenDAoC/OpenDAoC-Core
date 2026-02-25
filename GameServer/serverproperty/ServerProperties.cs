@@ -2225,6 +2225,12 @@ namespace DOL.GS.ServerProperties
 
 		#region GUILDS / ALLIANCES
 		/// <summary>
+		/// Enable or disable guild banners (buybanner / summon commands)
+		/// </summary>
+		[ServerProperty("guild", "guild_banners_enabled", "Enable guild banners (buybanner and summon commands). Set to true to allow players to buy and summon guild banners.", false)]
+		public static bool GUILD_BANNERS_ENABLED;
+
+		/// <summary>
 		/// The max number of guilds in an alliance
 		/// </summary>
 		[ServerProperty("guild", "alliance_max", "Max Guilds In Alliance - Edit this to change the maximum number of guilds in an alliance -1 = unlimited, 0=disable alliances", -1)]

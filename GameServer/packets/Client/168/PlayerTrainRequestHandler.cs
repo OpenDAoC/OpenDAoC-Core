@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.Commands;
 using DOL.GS.RealmAbilities;
-using System;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
