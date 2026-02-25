@@ -40,8 +40,6 @@ namespace DOL.GS.Effects
 			base.Start(living);
 			if (m_owner is GamePlayer)
 				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			m_owner.TempProperties.RemoveProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
-            
 		}
 
         /// <summary>

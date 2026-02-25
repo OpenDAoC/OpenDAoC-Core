@@ -122,11 +122,6 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected AttackData m_lastAttackData = null;
 
-		/// <summary>
-		/// The property key for the interrupt timeout
-		/// </summary>
-		public const string INTERRUPT_TIMEOUT_PROPERTY = "CAST_INTERRUPT_TIMEOUT";
-
 		private long _lastDuringCastLosCheckTime;
 
 		/// <summary>

@@ -241,29 +241,7 @@ namespace DOL.GS.Spells
 			#endregion
 			return (int)(Caster.MaxEndurance * (Spell.Power * .01));
 		}
-		
-		public override bool CasterIsAttacked(GameLiving attacker)
-		{
-			if (Spell.Uninterruptible)
-				return false;
 
-			if (IsInCastingPhase)
-			{
-				double chance = 65;
-				chance = Math.Max(1, chance);
-				chance = Math.Min(99, chance);
-				if (attacker is GamePlayer) chance = 100;
-				if (Util.Chance((int)chance))
-				{
-					Caster.TempProperties.SetProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
-					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", eChatType.CT_SpellResisted);
-					InterruptCasting(false);
-					return true;
-				}
-			}
-			return true;
-		}
-		
 		public override IList<string> DelveInfo
 		{
 			get
