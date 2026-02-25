@@ -2473,7 +2473,13 @@ namespace DOL.GS.Commands
 
             target.Out.SendUpdatePlayer();
             target.Out.SendUpdatePlayerSkills(true);
+            //target.Out.SendUpdatePlayerSkills(true);
             target.Out.SendUpdatePoints();
+
+            // Re-add RecorderSpecialization (wiped by RemoveAllSpecs above) and push
+            // the updated spellbook to the client. RefreshPlayerRecorders calls
+            // SendUpdatePlayerSkills internally.
+            RecorderMgr.RefreshPlayerRecorders(target);
         }
 	}
 }
