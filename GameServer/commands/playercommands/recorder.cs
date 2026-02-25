@@ -1,6 +1,7 @@
 using System;
 using DOL.GS.PacketHandler;
 using DOL.GS.Commands;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -41,6 +42,12 @@ namespace DOL.GS
         {
             if (client?.Player == null)
                 return;
+
+            if (!Properties.RECORDER_ENABLED)
+            {
+                client.Player.Out.SendMessage("The Recorder system is currently disabled.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
 
             if (args.Length < 2 || args[1].Equals("help", StringComparison.OrdinalIgnoreCase))
             {

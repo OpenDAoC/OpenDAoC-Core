@@ -5,6 +5,7 @@ using System.Linq;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using Newtonsoft.Json;
@@ -25,6 +26,11 @@ namespace DOL.GS
         #region Initialization
         public static bool Init()
         {
+            if (!Properties.RECORDER_ENABLED)
+            {
+                log.Info("[RECORDER] System disabled via server property 'recorder_enabled'.");
+                return false;
+            }
             GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, OnPlayerLogin);
             log.Debug("[RECORDER] System fully initialized.");
             return true;
