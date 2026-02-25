@@ -1067,18 +1067,16 @@ namespace DOL.GS.Spells
 						}
 						else
 						{
+							_calculatedCastTime = CalculateCastingTime();
+							_castEndTick = _castStartTick + _calculatedCastTime;
+
 							SendSpellMessages();
-							SendCastAnimation();
+							SendCastAnimation((ushort) (_calculatedCastTime * 0.01));
 							CastState = eCastState.Casting;
 						}
 					}
 					else
-					{
-						if (Caster.IsBeingInterrupted)
-							CastState = eCastState.Interrupted;
-						else
-							CastState = eCastState.Cleanup;
-					}
+						CastState = Caster.IsBeingInterrupted ? eCastState.Interrupted : eCastState.Cleanup;
 
 					break;
 				}
@@ -1264,23 +1262,9 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Sends the cast animation
 		/// </summary>
-		public virtual void SendCastAnimation()
-		{
-			if (Spell.CastTime == 0)
-				SendCastAnimation(0);
-			else
-				SendCastAnimation((ushort)(CalculateCastingTime() / 100));
-		}
-
-		/// <summary>
-		/// Sends the cast animation
-		/// </summary>
 		/// <param name="castTime">The cast time</param>
 		public virtual void SendCastAnimation(ushort castTime)
 		{
-			_calculatedCastTime = castTime * 100;
-			_castEndTick = _castStartTick + _calculatedCastTime;
-
 			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player == null)

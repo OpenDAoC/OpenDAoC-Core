@@ -192,7 +192,7 @@ namespace DOL.GS
                     if (spell.IsHarmful && spell.SpellType is not eSpellType.SpeedDecrease)
                     {
                         if (!pulseEffect.Owner.IsCrowdControlled)
-                            (spellHandler as SpellHandler).SendCastAnimation();
+                            (spellHandler as SpellHandler).SendCastAnimation(0);
                     }
                 }
 
