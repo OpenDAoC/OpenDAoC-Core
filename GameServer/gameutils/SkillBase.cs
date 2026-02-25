@@ -2206,24 +2206,19 @@ namespace DOL.GS
 		public static Ability GetAbilityByInternalID(int internalID)
 		{
 			m_syncLockUpdates.EnterReadLock();
+			string ability = null;
 			try
 			{
-				// find the first ability whose InternalID matches, if any
-				var pair = m_abilityIndex
-					.Where(it => it.Value != null && it.Value.InternalID == internalID)
-					.FirstOrDefault();
-
-				if (pair.Value != null)
-				{
-					return GetAbility(pair.Key, 1);
-				}
+				ability = m_abilityIndex.Where(it => it.Value.InternalID == internalID).FirstOrDefault().Value.KeyName;
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			// fallback: try the special INTERNALID: lookup (this may also return null)
+			if (!string.IsNullOrEmpty(ability))
+				return GetAbility(ability, 1);
+
 			return GetAbility($"INTERNALID:{internalID}", 1);
 		}
 
