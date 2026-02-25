@@ -7,7 +7,7 @@
           "type": "process",
           "args": [
               "build",
-              "${workspaceFolder}/Net5/DOLdotnetLinux.sln",
+              "${workspaceFolder}/DOLLinux.sln",
               "/property:GenerateFullPaths=true",
               "/consoleloggerparameters:NoSummary"
           ],
@@ -19,7 +19,7 @@
           "type": "process",
           "args": [
               "publish",
-              "${workspaceFolder}/Net5/DOLdotnetLinux.sln",
+              "${workspaceFolder}/DOLLinux.sln",
               "/property:GenerateFullPaths=true",
               "/consoleloggerparameters:NoSummary"
           ],

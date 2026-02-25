@@ -8,11 +8,11 @@
       "name": ".NET Core Launch (console)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/Net5/Debug/DOLServer.dll",
+      //"preLaunchTask": "build",
+      "program": "${workspaceFolder}/Debug/CoreServer.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/Net5",
-      "console": "internalConsole",
+      "cwd": "${workspaceFolder}/Debug",
+      "console": "integratedTerminal",
       "stopAtEntry": false
     },
     {
