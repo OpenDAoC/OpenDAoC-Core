@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using DOL.Database;
-using DOL.Events;
 using DOL.GS;
 using DOL.AI.Brain;
-using DOL.Logging;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -18,26 +10,28 @@ namespace DOL.GS
         protected const byte RelicGuardsLevel = 65;
         protected const int RelicGuardsRespawnInterval = 900000; // 15min
         public override bool IsVisibleToPlayers => true;
+
+        private static readonly ushort[] _modelsAlb = { 14, 1008 }; // Briton & Half Ogre
+        private static readonly ushort[] _modelsMid = { 137, 153 }; // Norse & Troll
+        private static readonly ushort[] _modelsHib = { 318, 286 }; // Lurikeen & Firbolg
+
         public override bool AddToWorld()
         {
-            ushort[] modelsAlb = { 14, 1008 }; // Briton & Half Ogre
-            ushort[] modelsMid = { 137, 153 }; // Norse & Troll
-            ushort[] modelsHib = { 318, 286 }; // Lurikeen & Firbolg
             switch (Realm)
             {
                 case eRealm.Albion:
                     Name = "Armsman";
-                    Model = modelsAlb[Util.Random(0, modelsAlb.Length - 1)];
+                    Model = _modelsAlb[Util.Random(0, _modelsAlb.Length - 1)];
                     break;
-            
+
                 case eRealm.Midgard:
                     Name = "Huscarl";
-                    Model = modelsMid[Util.Random(0, modelsMid.Length - 1)];
+                    Model = _modelsMid[Util.Random(0, _modelsMid.Length - 1)];
                     break;
-                    
+
                 case eRealm.Hibernia:
                     Name = "Guardian";
-                    Model = modelsHib[Util.Random(0, modelsHib.Length - 1)];
+                    Model = _modelsHib[Util.Random(0, _modelsHib.Length - 1)];
                     break;
             }
 

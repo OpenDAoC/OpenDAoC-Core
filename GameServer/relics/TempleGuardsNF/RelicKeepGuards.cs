@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
 using DOL.GS;
 using DOL.AI.Brain;
@@ -16,22 +13,23 @@ namespace DOL.GS
         protected const byte RelicKeepGuardsLevel = 70;
         protected const int RelicKeepGuardsRespawnInterval = 900000; // 15min
         public override bool IsVisibleToPlayers => true;
+
+        private static readonly ushort[] _modelsAlb = { 14, 1008 };
+        private static readonly ushort[] _modelsMid = { 137, 153 };
+        private static readonly ushort[] _modelsHib = { 318, 286 };
+
         public override bool AddToWorld()
         {
-            ushort[] modelsAlb = { 14, 1008 };
-            ushort[] modelsMid = { 137, 153 };
-            ushort[] modelsHib = { 318, 286 };
-
             switch (Realm)
             {
                 case eRealm.Albion:
-                    Model = modelsAlb[Util.Random(0, modelsAlb.Length - 1)];
+                    Model = _modelsAlb[Util.Random(0, _modelsAlb.Length - 1)];
                     break;
                 case eRealm.Midgard:
-                    Model = modelsMid[Util.Random(0, modelsMid.Length - 1)];
+                    Model = _modelsMid[Util.Random(0, _modelsMid.Length - 1)];
                     break;
                 case eRealm.Hibernia:
-                    Model = modelsHib[Util.Random(0, modelsHib.Length - 1)];
+                    Model = _modelsHib[Util.Random(0, _modelsHib.Length - 1)];
                     break;
             }
             Level = RelicKeepGuardsLevel;
@@ -46,7 +44,7 @@ namespace DOL.GS
         }
         private void SetupByKeepName()
         {
-            string customTemplateID = this.Name.ToLower().Replace(" ", "_");
+            string customTemplateID = Name.ToLower().Replace(" ", "_");
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             if (template.LoadFromDatabase(customTemplateID))
@@ -66,12 +64,16 @@ namespace DOL.GS
                     if (cloak != null && cloak.Emblem != guild.Emblem)
                     {
                         cloak.Emblem = guild.Emblem;
+                        cloak.Dirty = true;
                     }
                     DbInventoryItem leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                     if (leftHand != null && leftHand.Emblem != guild.Emblem)
                     {
                         leftHand.Emblem = guild.Emblem;
+                        leftHand.Dirty = true;
                     }
+                    if (Inventory is GameNpcInventoryTemplate tpl)
+                        tpl.SaveIntoDatabase(EquipmentTemplateID);
                 }
             }
             SaveIntoDatabase();
@@ -108,11 +110,13 @@ namespace DOL.GS
                         if (cloak != null && cloak.Emblem != guildEmblem)
                         {
                             cloak.Emblem = guildEmblem;
+                            cloak.Dirty = true;
                         }
-                        DbInventoryItem leftHand = relicGuard.ActiveLeftWeapon;
+                        DbInventoryItem leftHand = relicGuard.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                         if (leftHand != null && leftHand.Emblem != guildEmblem)
                         {
                             leftHand.Emblem = guildEmblem;
+                            leftHand.Dirty = true;
                         }
                     }
                     relicGuard.SaveIntoDatabase();

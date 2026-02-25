@@ -10,7 +10,7 @@ namespace DOL.GS
     public class TempleRelicPadsLoader
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private static bool _initialized = false;
+        private static volatile bool _initialized = false;
 
         /// <summary>
         /// Init NF Tempel-Pads. 
@@ -85,7 +85,7 @@ namespace DOL.GS
             return enemyNearby;
         }
 
-        private static readonly List<TemplePadInfo> TemplePadsList = new List<TemplePadInfo>
+        private static readonly TemplePadInfo[] TemplePadsList =
         {
             new TemplePadInfo(1, 163, 673846, 589994, 8748, 0, "Castle Excalibur"),   // Alb Strength
             new TemplePadInfo(11, 163, 578176, 676596, 8740, 0, "Castle Myrddin"),    // Alb Magic

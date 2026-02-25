@@ -1,19 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS;
 using DOL.AI.Brain;
-using DOL.Logging;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
     public class RelicCaster : GameNPC
     {
         private static readonly Dictionary<eRealm, Spell> _relicSpells = new Dictionary<eRealm, Spell>();
+        // Pre-built per-realm spell lists — avoids allocating a new List on every respawn.
+        private static readonly Dictionary<eRealm, List<Spell>> _relicSpellLists = new Dictionary<eRealm, List<Spell>>();
 
         protected const byte RelicCasterLevel = 65;
         protected const int RelicCasterRespawnInterval = 900000; // 15min
@@ -62,27 +58,18 @@ namespace DOL.GS
         {
             switch (realm)
             {
-                case eRealm.Albion:
-                    this.LoadEquipmentTemplateFromDatabase("relic_temple_caster_alb");
-                    break;
-                case eRealm.Midgard:
-                    this.LoadEquipmentTemplateFromDatabase("relic_temple_caster_mid");
-                    break;
-                case eRealm.Hibernia:
-                    this.LoadEquipmentTemplateFromDatabase("relic_temple_caster_hib");
-                    break;
+                case eRealm.Albion:   LoadEquipmentTemplateFromDatabase("relic_temple_caster_alb"); break;
+                case eRealm.Midgard:  LoadEquipmentTemplateFromDatabase("relic_temple_caster_mid"); break;
+                case eRealm.Hibernia: LoadEquipmentTemplateFromDatabase("relic_temple_caster_hib"); break;
             }
 
-            if (_relicSpells.TryGetValue(Realm, out Spell spell))
-            {
-                Spells = new List<Spell> { spell };
-            }
+            if (_relicSpellLists.TryGetValue(Realm, out var spellList))
+                Spells = spellList;
         }
 
         private static void InitRelicSpells()
         {
-            // Wizard
-            _relicSpells[eRealm.Albion] = new Spell(new DbSpell
+            _relicSpells[eRealm.Albion]   = new Spell(new DbSpell
             {
                 Name = "Relic Flames",
                 CastTime = 3,
@@ -97,7 +84,7 @@ namespace DOL.GS
             }, 0);
 
             // Runemaster
-            _relicSpells[eRealm.Midgard] = new Spell(new DbSpell
+            _relicSpells[eRealm.Midgard]  = new Spell(new DbSpell
             {
                 Name = "Relic Spears",
                 CastTime = 2,
@@ -125,6 +112,10 @@ namespace DOL.GS
                 DamageType = (int)eDamageType.Cold,
                 Uninterruptible = true
             }, 0);
+
+            // Build the reusable per-realm spell lists once at type initialisation.
+            foreach (var kv in _relicSpells)
+                _relicSpellLists[kv.Key] = new List<Spell> { kv.Value };
         }
 
         public override void Die(GameObject killer)

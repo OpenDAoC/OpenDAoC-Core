@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
-using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
@@ -54,14 +52,12 @@ namespace DOL.GS
 
         private void SetupByRealm(eRealm realm)
         {
-            string template = "relic_temple_healer_";
             switch (realm)
             {
-                case eRealm.Albion: template += "alb"; break;
-                case eRealm.Midgard: template += "mid"; break;
-                case eRealm.Hibernia: template += "hib"; break;
+                case eRealm.Albion:   LoadEquipmentTemplateFromDatabase("relic_temple_healer_alb"); break;
+                case eRealm.Midgard:  LoadEquipmentTemplateFromDatabase("relic_temple_healer_mid"); break;
+                case eRealm.Hibernia: LoadEquipmentTemplateFromDatabase("relic_temple_healer_hib"); break;
             }
-            this.LoadEquipmentTemplateFromDatabase(template);
         }
 
         private static void InitRelicHeals()
@@ -106,7 +102,12 @@ namespace DOL.AI.Brain
 {
     public class RelicHealerBrain : StandardMobBrain
     {
-        protected const int CheckHealRange = 1500; // In this range the npc checks for Heal targets
+        protected const int CheckHealRange = 1500; // In this range the npc checks for heal targets
+
+        // Cached once after the healer's static dictionary is populated — avoids a
+        // dictionary lookup every think cycle.
+        private Spell _cachedHealSpell;
+
         public RelicHealerBrain() : base()
         {
             AggroLevel = 100;
@@ -134,8 +135,9 @@ namespace DOL.AI.Brain
 
         private bool CheckAreaForRelicHeals()
         {
-            RelicHealer healer = Body as RelicHealer;
-            if (healer == null) return false;
+            if (Body is not RelicHealer healer) return false;
+            _cachedHealSpell ??= healer.GetRelicHeal();
+            if (_cachedHealSpell == null) return false;
             GameLiving target = null;
 
             // Check for NPCs in 1500 radius
@@ -163,7 +165,7 @@ namespace DOL.AI.Brain
             if (target != null)
             {
                 healer.TargetObject = target;
-                return healer.CastSpell(healer.GetRelicHeal(), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+                return healer.CastSpell(_cachedHealSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
 
             return false;

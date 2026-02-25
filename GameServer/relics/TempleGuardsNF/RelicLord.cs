@@ -1,7 +1,6 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.AI.Brain;
@@ -15,11 +14,11 @@ namespace DOL.GS
         private static new readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         protected const byte LordLevel = 65;
-        protected const int LordRespawnInterval = 900000; // 15 Minuten
+        protected const int LordRespawnInterval = 900000; // 15 minutes
         protected const int LordMaxHealth = 100000; // Hitpoints from the lord
         public override int MaxHealth { get { return LordMaxHealth; } }
 
-        public RelicLord() : base() { }
+        public RelicLord() { }
 
 
         #region Spawn Logic
@@ -39,10 +38,19 @@ namespace DOL.GS
                 new { Name = "Chieftain Dun Dagda", Guild = "", Model = new ushort[] { 286, 294 }, Realm = eRealm.Hibernia, Region = (ushort)163, X = 470205, Y = 677754, Z = 8113, Heading = (ushort)1349, Equip = "relic_temple_lord_hib" }
             };
 
+            // Build a set of already-spawned IDs in one pass so we don't re-enumerate
+            // the entire region NPC list for each of the 6 spawn points.
+            var existingNpcIds = new HashSet<string>();
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(163))
+            {
+                if (npc.InternalID != null)
+                    existingNpcIds.Add(npc.InternalID);
+            }
+
             foreach (var sp in spawnPoints)
             {
                 string customID = $"RelicLord_{sp.Realm}_{sp.Name.Replace(" ", "_")}";
-                if (WorldMgr.GetNPCsFromRegion(sp.Region).Any(n => n.InternalID == customID))
+                if (existingNpcIds.Contains(customID))
                     continue;
                 ushort randomModel = sp.Model[Util.Random(0, sp.Model.Length - 1)];
 
@@ -84,7 +92,7 @@ namespace DOL.GS
             {
                 if (source is GamePlayer player)
                 {
-                    player.Out.SendMessage(Name + " is currenctly immune to damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage(Name + " is currently immune to damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
                 return;
             }

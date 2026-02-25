@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using DOL.Database;
 using DOL.GS;
 using DOL.AI.Brain;
 using DOL.Events;
-using DOL.GS.Keeps;
-using System.Timers;
 
 namespace DOL.GS
 {
@@ -15,10 +11,7 @@ namespace DOL.GS
     public class RelicPatrolGuard : GameNPC
     {
         public override short MaxSpeed => 150;
-        public int FormationX { get; set; }
-        public int FormationY { get; set; }
         public bool IsLeader { get; set; }
-        public RelicPatrolGuard MyLeader { get; set; }
         public override bool IsVisibleToPlayers => true;
 
         [GameServerStartedEvent]
@@ -62,7 +55,8 @@ namespace DOL.GS
                     case eRealm.Midgard: Name = "Relic Patrouiller"; Model = 137; break;
                     case eRealm.Hibernia: Name = "Relic Sentinel"; Model = 318; break;
                 }
-                this.LoadEquipmentTemplateFromDatabase("relic_patrol_" + Realm.ToString().ToLower().Substring(0, 3));
+                string realmSuffix = Realm switch { eRealm.Albion => "alb", eRealm.Midgard => "mid", _ => "hib" };
+                LoadEquipmentTemplateFromDatabase("relic_patrol_" + realmSuffix);
             }
             else
             {
@@ -80,10 +74,15 @@ namespace DOL.AI.Brain
 {
     public class RelicPatrolBrain : StandardMobBrain
     {
-        // Diese Variablen speichern wir IM Brain, damit JEDER NPC (auch KeepGuards) sie nutzen kann
-        private GameNPC _leader;
-        private int _offsetX;
-        private int _offsetY;
+        private readonly GameNPC _leader;
+        private readonly int _offsetX;
+        private readonly int _offsetY;
+        // Cached trigonometry — recalculated only when the leader's heading actually changes.
+        private ushort _lastLeaderHeading = ushort.MaxValue;
+        private double _cosH;
+        private double _sinH;
+        // Reused walk-target — avoids allocating a new Point3D every 200 ms per follower.
+        private readonly Point3D _walkTarget = new Point3D(0, 0, 0);
 
         public RelicPatrolBrain(GameNPC leader, int x, int y) : base()
         {
@@ -97,22 +96,28 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (Body == null || !Body.IsAlive || _leader == null) return;
+            if (Body == null || !Body.IsAlive || _leader == null || !_leader.IsAlive) return;
             if (Body.InCombat) { base.Think(); return; }
 
-            double headingRadiants = _leader.Heading * (Math.PI / 2048.0);
-            double cosH = Math.Cos(headingRadiants);
-            double sinH = Math.Sin(headingRadiants);
+            // Recompute trig only when the leader actually turns — avoids redundant
+            // Math.Cos/Math.Sin calls every tick for every follower in the patrol group.
+            if (_leader.Heading != _lastLeaderHeading)
+            {
+                _lastLeaderHeading = _leader.Heading;
+                double rad = _leader.Heading * (Math.PI / 2048.0);
+                _cosH = Math.Cos(rad);
+                _sinH = Math.Sin(rad);
+            }
 
-            int targetX = _leader.X + (int)(_offsetX * cosH - _offsetY * sinH);
-            int targetY = _leader.Y + (int)(_offsetX * sinH + _offsetY * cosH);
+            int targetX = _leader.X + (int)(_offsetX * _cosH - _offsetY * _sinH);
+            int targetY = _leader.Y + (int)(_offsetX * _sinH + _offsetY * _cosH);
 
             long dx = Body.X - targetX;
             long dy = Body.Y - targetY;
             long distSq = dx * dx + dy * dy;
 
-            // 1. Formation halten (Drehen nur im Stand)
-            // Wir erhöhen den Puffer minimal auf 1000, um Mikrobewegungen am Ziel zu vermeiden
+            // 1. Hold formation: stop micro-movement when close enough.
+            // Buffer of 1000 units prevents jitter at the destination.
             if (distSq < 1000)
             {
                 if (Body.IsMoving) Body.StopMoving();
@@ -120,37 +125,38 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            // 2. Ziel-Winkel für die Wache berechnen
+            // 2. Calculate the target heading for this guard.
             double angle = Math.Atan2(targetX - Body.X, targetY - Body.Y);
             ushort targetHeading = (ushort)((int)(angle * 2048.0 / Math.PI) & 0xFFF);
 
-            // 3. Laufrichtung setzen (Mit Toleranz gegen Zucken)
-            // Nur drehen, wenn die Abweichung > 5 Grad ist (ca. 60 Einheiten)
+            // 3. Turn only when deviation exceeds ~5 degrees (~60 units) to prevent jitter.
             if (Math.Abs(Body.Heading - targetHeading) > 60)
             {
                 Body.TurnTo(targetHeading);
             }
 
-            // 4. Geschwindigkeit mit Dämpfungs-Zone
+            // 4. Speed with damping zones.
             short moveSpeed = _leader.MaxSpeed;
 
-            // AUFHOLEN: Wenn weiter als ~110 Units weg
+            // Catch-up: more than ~110 units away.
             if (distSq > 12100)
             {
                 moveSpeed = (short)(moveSpeed * 1.25);
             }
-            // ABBREMSEN: Wenn näher als ~55 Units dran
+            // Slow down: closer than ~55 units.
             else if (distSq < 3025)
             {
                 moveSpeed = (short)(moveSpeed * 0.85);
             }
-            // ZONE DAZWISCHEN: Hier nutzt er 1.0x Speed (kein Zucken)
 
-            // 5. Marschieren
-            // Wir erhöhen die Schwelle für den Neubefehl etwas, um Pakete zu sparen
+            // 5. March — reuse the cached walk target to avoid per-tick allocation.
+            // Only issue a new WalkTo when not already moving or when significantly off-target.
             if (!Body.IsMoving || distSq > 1600)
             {
-                Body.WalkTo(new Point3D(targetX, targetY, _leader.Z), moveSpeed);
+                _walkTarget.X = targetX;
+                _walkTarget.Y = targetY;
+                _walkTarget.Z = _leader.Z;
+                Body.WalkTo(_walkTarget, moveSpeed);
             }
         }
 
@@ -166,9 +172,19 @@ namespace DOL.GS
 {
     public static class RelicPatrolManager
     {
+        // Static formation offsets — allocated once, shared across all patrol groups.
+        private static readonly int[,] _formationOffsets =
+        {
+            {    0, -100 }, // 1st guard: directly behind the leader (tip)
+            {  -80, -200 }, {   80, -200 }, // 2nd & 3rd: first pair
+            { -200, -300 }, {  200, -300 }, // 4th & 5th: second pair
+            { -320, -400 }, {  320, -400 }, // 6th & 7th: third pair
+            {  -80, -350 }, {   80, -350 }, // 8th & 9th: fourth pair (end of V)
+        };
+
         public static void SpawnPatrolGroup(eRealm realm, ushort region, int x, int y, int z, string pathID, string[] towerNames)
         {
-            // 1. Leader erstellen
+            // 1. Create the invisible path-following leader.
             RelicPatrolGuard leader = new RelicPatrolGuard
             {
                 Realm = realm,
@@ -182,50 +198,38 @@ namespace DOL.GS
             };
             leader.AddToWorld();
 
-            // Structure of roaming guards based on leader position
-            int[,] offsets = {
-                {    0, -100 },                  // 1. Wache: Direkt hinter dem Leader (Spitze)
-                { -80, -200 }, {  80, -200 },  // 2. & 3. Wache: Erstes Paar (leicht versetzt)
-                { -200, -300 }, {  200, -300 },  // 4. & 5. Wache: Zweites Paar
-                { -320, -400 }, {  320, -400 },  // 6. & 7. Wache: Drittes Paar
-                { -80, -350 }, {  80, -350 }   // 8. & 9. Wache: Viertes Paar (Ende des Vs)
-            };
-
-            for (int i = 0; i < offsets.GetLength(0); i++)
+            // Formation setup based on leader position.
+            for (int i = 0; i < _formationOffsets.GetLength(0); i++)
             {
                 GameNPC follower;
 
-                // First Guard is normal RelicGuard
+                // First follower is a plain RelicGuard.
                 if (i == 0)
                 {
                     follower = new RelicGuard();
                 }
-                // 2. Alle anderen sind RelicKeepGuards, sofern wir Turm-Namen haben
+                // Remaining slots map to named keep guards if tower names were supplied.
                 else if (towerNames != null && (i - 1) < towerNames.Length)
                 {
                     follower = new RelicKeepGuard
                     {
-                        // Index i-1, weil der erste Turm-Name (0) dem zweiten NPC (i=1) zugewiesen wird
                         Name = "Relic Defender of " + towerNames[i - 1]
                     };
                 }
-                // 3. Fallback, falls mehr NPCs als Turm-Namen vorhanden sind
+                // Fallback when more NPCs than tower names are provided.
                 else
                 {
                     follower = new RelicPatrolGuard();
                 }
 
-                // Standard-Zuweisungen
                 follower.Realm = realm;
                 follower.CurrentRegionID = region;
-                follower.X = x + offsets[i, 0];
-                follower.Y = y + offsets[i, 1];
+                follower.X = x + _formationOffsets[i, 0];
+                follower.Y = y + _formationOffsets[i, 1];
                 follower.Z = z;
 
                 follower.AddToWorld();
-
-                // Formation erzwingen
-                follower.SetOwnBrain(new RelicPatrolBrain(leader, offsets[i, 0], offsets[i, 1]));
+                follower.SetOwnBrain(new RelicPatrolBrain(leader, _formationOffsets[i, 0], _formationOffsets[i, 1]));
             }
         }
     }
