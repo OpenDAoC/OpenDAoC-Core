@@ -2,13 +2,14 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using DOL.Logging;
 
 namespace DOL.GS
@@ -19,12 +20,18 @@ namespace DOL.GS
     public class RecorderMgr
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly Dictionary<GamePlayer, List<RecorderAction>> _activeRecordings = new();
-        // track pending icon assignments when next spell is cast
-        private static readonly Dictionary<GamePlayer, string> _pendingIconChange = new();
         public const string RecorderLineKey = "Recorder";
         public const string RecorderDisplayName = "Recorder"; // Name which is displayed ingame
-        public const int RecorderBaseIcon = 11130; // Animist DD Icon as default
+        public const int RecorderBaseIcon = 11130;      // Animist DD Icon as default
+
+        // Base offset added to SpellID so recorder macro IDs never clash with real spell IDs.
+        private const int SpellIdBase = 100_000;
+
+        // Maximum number of actions shown inline when listing recorders via /recorder list.
+        private const int ListPreviewActionCount = 3;
+
+        // Cached string form of the spell type — avoids a ToString() allocation per entry build.
+        private static readonly string RecorderSpellTypeString = eSpellType.RecorderAction.ToString();
 
         #region Initialization
         public static bool Init()
@@ -34,115 +41,143 @@ namespace DOL.GS
                 log.Info("[RECORDER] System disabled via server property 'recorder_enabled'.");
                 return false;
             }
-            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, OnPlayerLogin);
             log.Debug("[RECORDER] System fully initialized.");
             return true;
-        }
-
-        // This gets called, when player logs in
-        private static void OnPlayerLogin(DOLEvent e, object sender, EventArgs args)
-        {
-            if (sender is GamePlayer player) RefreshPlayerRecorders(player);
         }
         #endregion
 
         #region Core Logic
-        // Refresh player's spellbook, adding recorders
-        // This gets called on login & when any changes are made to recorders
+        /// <summary>
+        /// Re-fetches this player's recorder DB entries synchronously and rebuilds the
+        /// spellbook. Called mid-session whenever a recorder is added, removed, or modified
+        /// via a player command. Uses a targeted <see cref="DOLDB{T}.SelectObjects"/> query
+        /// so only the owning player's rows are touched.
+        /// For the initial character login load, DB access is avoided entirely: the rows are
+        /// fetched asynchronously in <c>GamePlayer.LoadFromDatabaseAsync</c> and handed
+        /// directly to <see cref="BuildPlayerRecorders"/>.
+        /// </summary>
         public static void RefreshPlayerRecorders(GamePlayer player)
         {
             if (player?.Client == null) return;
 
-            try
-            {
-                var dbEntries = GameServer.Database.SelectAllObjects<DBCharacterRecorder>()
-                    .Where(r => r.CharacterID == player.InternalID)
-                    .OrderBy(r => r.ID)
-                    .ToList();
+            var dbEntries = DOLDB<DBCharacterRecorder>.SelectObjects(
+                DB.Column("CharacterID").IsEqualTo(player.InternalID));
+            BuildPlayerRecorders(player, dbEntries);
+        }
 
-                player.SpellMacros.Clear();
+        /// <summary>
+        /// Builds the player's recorder spell macros from the supplied DB rows and pushes
+        /// the updated spellbook to the client. Called both from the async login path
+        /// (rows already loaded by <c>GamePlayer.LoadFromDatabaseAsync</c>) and from
+        /// <see cref="RefreshPlayerRecorders"/> during mid-session updates.
+        /// </summary>
+        public static void BuildPlayerRecorders(GamePlayer player, IList<DBCharacterRecorder> dbEntries)
+        {
+            if (player?.Client == null) return;
 
-                foreach (var entry in dbEntries)
+            // Lock on a dedicated per-player Lock instance (the new System.Threading.Lock
+            // class). This avoids any global contention between different players while
+            // also using the Lock class's built-in adaptive spin-wait — as requested.
+            lock (player.RecorderLock)
+                try
                 {
-                    // Design the tooltip
-                    string dynamictooltip = "[Recorder]\n";
-                    try
+                    // Sort by auto-increment ID to preserve the order the macros were saved in.
+                    var ordered = dbEntries.OrderBy(r => r.ID);
+
+                    player.SpellMacros.Clear();
+
+                    // Reuse one StringBuilder across all entries to avoid per-entry heap allocations.
+                    var tooltipBuilder = new StringBuilder();
+
+                    foreach (var entry in ordered)
                     {
-                        var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
-                        if (actions != null)
+                        // Parse JSON once — used for both tooltip and the cached Actions list in RecorderSpell.
+                        List<RecorderAction> parsedActions = null;
+                        tooltipBuilder.Clear().Append("[Recorder]\n");
+                        try
                         {
-                            foreach (var action in actions)
+                            parsedActions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
+                            if (parsedActions != null)
                             {
-                                if (action.Type == "Spell")
+                                foreach (var action in parsedActions)
                                 {
-                                    Spell s = SkillBase.GetSpellByID(action.ID);
-                                    if (s != null) dynamictooltip += $"Spell: {s.Name}\n";
-                                }
-                                else if (action.Type == "Style")
-                                {
-                                    Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
-                                    if (style != null) dynamictooltip += $"Style: {style.Name}\n";
-                                }
-                                else if (action.Type == "Ability")
-                                {
-                                    // normally the action ID is the ability's external ID
-                                    Ability abil = SkillBase.GetAbility(action.ID) ?? SkillBase.GetAbilityByInternalID(action.ID);
-                                    if (abil != null) dynamictooltip += $"Ability: {abil.Name}\n";
-                                }
-                                else if (action.Type == "Command")
-                                {
-                                    // command text is stored in Value field; ensure it begins with '/'
-                                    string cmd = action.Value ?? string.Empty;
-                                    if (cmd.Length > 0 && cmd[0] == '&')
-                                        cmd = "/" + cmd[1..];
-                                    dynamictooltip += $"Cmd: {cmd}\n";
+                                    switch (action.Type)
+                                    {
+                                        case RecorderActionType.Spell:
+                                            {
+                                                Spell s = SkillBase.GetSpellByID(action.ID);
+                                                if (s != null) tooltipBuilder.Append("Spell: ").AppendLine(s.Name);
+                                                break;
+                                            }
+                                        case RecorderActionType.Style:
+                                            {
+                                                Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
+                                                if (style != null) tooltipBuilder.Append("Style: ").AppendLine(style.Name);
+                                                break;
+                                            }
+                                        case RecorderActionType.Ability:
+                                            {
+                                                // The action ID is the ability's external ID.
+                                                Ability abil = SkillBase.GetAbility(action.ID) ?? SkillBase.GetAbilityByInternalID(action.ID);
+                                                if (abil != null) tooltipBuilder.Append("Ability: ").AppendLine(abil.Name);
+                                                break;
+                                            }
+                                        case RecorderActionType.Command:
+                                            {
+                                                // Command text is stored in Value; normalise leading '&' to '/'.
+                                                string cmd = action.Value ?? string.Empty;
+                                                if (cmd.Length > 0 && cmd[0] == '&')
+                                                    cmd = "/" + cmd[1..];
+                                                tooltipBuilder.Append("Cmd: ").AppendLine(cmd);
+                                                break;
+                                            }
+                                    }
                                 }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            parsedActions = null;
+                            tooltipBuilder.Clear().Append("Recorded Macro (Data Error)");
+                            log.Error($"[RECORDER] Error parsing actions for {entry.Name}: {ex}");
+                        }
+
+                        int uniqueID = SpellIdBase + player.SpellMacros.Count;
+                        int uniqueLevel = player.SpellMacros.Count + 1;
+                        int tooltipId = player.Client.LastMacroToolTipID++;
+
+                        DbSpell db = new DbSpell
+                        {
+                            Name = entry.Name,
+                            Icon = (ushort)entry.IconID,
+                            ClientEffect = (ushort)entry.IconID,
+                            SpellID = uniqueID,
+                            Target = "Self",
+                            CastTime = 0,
+                            Type = RecorderSpellTypeString,
+                            Description = tooltipBuilder.ToString(),
+                            TooltipId = (ushort)tooltipId,
+                            Power = 0,
+                        };
+
+                        player.SpellMacros.Add(new RecorderSpell(db, uniqueLevel, entry, parsedActions));
                     }
-                    catch (Exception ex) 
-                    { 
-                        dynamictooltip = "Recorded Macro (Data Error)";
-                        log.Error($"[RECORDER] Error parsing actions for {entry.Name}: {ex}");
-                    }
 
-                    int uniqueID = 100000 + player.SpellMacros.Count;
-                    int uniqueLevel = player.SpellMacros.Count + 1;
-                    int tooltipId = player.Client.LastMacroToolTipID++;
-
-                    DbSpell db = new DbSpell
-                    {
-                        Name = entry.Name,
-                        Icon = (ushort)entry.IconID,
-                        ClientEffect = (ushort)entry.IconID,
-                        SpellID = uniqueID,
-                        Target = "Self",
-                        CastTime = 0,
-                        Type = eSpellType.RecorderAction.ToString(),
-                        Description = dynamictooltip,
-                        TooltipId = (ushort)tooltipId,
-                        Power = 0,
-                    };
-
-                    player.SpellMacros.Add(new RecorderSpell(db, uniqueLevel, entry));
-                }
-
-                // Cleanup & refresh later on
-                player.RemoveSpecialization(RecorderLineKey);
-
-                if (player.SpellMacros.Count > 0)
-                {
-                    // Add Spec to player
+                    // Add the specialization once if not already present - never remove it,
+                    // because GetSpellLinesForLiving always returns the line (even when empty)
+                    // so the client receives a 0-spell packet that clears the slot.
+                    // AddSpecialization is a no-op if the key already exists.
                     player.AddSpecialization(new RecorderSpecialization(RecorderLineKey, RecorderDisplayName, 1));
-                }
 
-                // Update player
-                player.Out.SendUpdatePlayerSkills(true);
-            }
-            catch (Exception ex)
-            {
-                log.Error($"[RECORDER REFRESH ERROR] {ex}");
-            }
+                    // SendUpdatePlayerSkills internally calls GetAllUsableListSpells(true) and
+                    // SendNonHybridSpellLines, which together push the updated (possibly empty)
+                    // Recorder line to the client so the slot is properly cleared.
+                    player.Out.SendUpdatePlayerSkills(true);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"[RECORDER REFRESH ERROR] {ex}");
+                }
         }
         #endregion
 
@@ -150,16 +185,26 @@ namespace DOL.GS
         public class RecorderSpell : Spell
         {
             public DBCharacterRecorder RecordData { get; }
-            public RecorderSpell(DbSpell db, int level, DBCharacterRecorder data) : base(db, level) => RecordData = data;
+            /// <summary>Pre-parsed actions list cached at spellbook build time — avoids re-parsing JSON on every cast.</summary>
+            public List<RecorderAction> Actions { get; }
+            public RecorderSpell(DbSpell db, int level, DBCharacterRecorder data, List<RecorderAction> actions)
+                : base(db, level)
+            {
+                RecordData = data;
+                Actions = actions;
+            }
         }
 
         public class RecorderSpecialization : Specialization
         {
-            private SpellLine m_line = null;
+            private readonly SpellLine m_line;
+            // Cache the single-element list so GetSpellLinesForLiving never allocates.
+            private readonly List<SpellLine> m_lineList;
 
             public RecorderSpecialization(string keyname, string displayname, ushort icon) : base(keyname, displayname, icon)
             {
                 m_line = new SpellLine(RecorderLineKey, RecorderLineKey, RecorderLineKey, false);
+                m_lineList = new List<SpellLine> { m_line };
             }
 
             public override bool Trainable => false;
@@ -167,20 +212,20 @@ namespace DOL.GS
             public override IDictionary<SpellLine, List<Skill>> GetLinesSpellsForLiving(GameLiving living)
             {
                 Dictionary<SpellLine, List<Skill>> dict = new();
-                if (living is GamePlayer player)
+                if (living is GamePlayer player && player.SpellMacros?.Count > 0)
                 {
-                    if (player.SpellMacros != null && player.SpellMacros.Count > 0)
-                    {
-                        List<Skill> skills = player.SpellMacros.Select(s => s as Skill).ToList();
-                        dict.Add(m_line, skills);
-                    }
+                    // RecorderSpell extends Spell which extends Skill — no cast overhead needed.
+                    dict.Add(m_line, new List<Skill>(player.SpellMacros));
                 }
                 return dict;
             }
 
             public override List<SpellLine> GetSpellLinesForLiving(GameLiving living)
             {
-                return new List<SpellLine>() { m_line };
+                // Always return the line even when empty. When SpellMacros is empty the
+                // client receives a 0-spell packet for this slot, which clears any previous
+                // content. Without this the client keeps the old ghost entry in the spellbook.
+                return m_lineList;
             }
         }
         #endregion
@@ -188,17 +233,18 @@ namespace DOL.GS
         #region Recording Logic
         public static bool IsPlayerRecording(GamePlayer player)
         {
-            lock (_activeRecordings) return _activeRecordings.ContainsKey(player);
+            return player?.RecorderActions != null;
         }
         public static bool HasPendingIcon(GamePlayer player)
         {
-            lock (_pendingIconChange) return _pendingIconChange.ContainsKey(player);
+            return player != null && !string.IsNullOrEmpty(player.PendingRecorderIconName);
         }
 
         // This gets called from /recorder start command
         public static void StartRecording(GamePlayer player)
         {
-            lock (_activeRecordings) _activeRecordings[player] = new List<RecorderAction>();
+            if (player == null) return;
+            player.RecorderActions = new List<RecorderAction>();
             player.Out.SendMessage("Recording started.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
@@ -206,27 +252,22 @@ namespace DOL.GS
         public static void RecordAction(GamePlayer player, Spell spell)
         {
             // Optionally handle pending icon change before recording action
-            if (player != null && spell != null)
+            if (player != null && spell != null && HasPendingIcon(player))
             {
-                lock (_pendingIconChange)
+                var recorderName = player.PendingRecorderIconName;
+                // assign icon to that recorder
+                var where = DB.Column("CharacterID").IsEqualTo(player.InternalID)
+                               .And(DB.Column("Name").IsEqualTo(recorderName));
+                var entry = GameServer.Database.SelectObject<DBCharacterRecorder>(where);
+                if (entry != null)
                 {
-                    if (_pendingIconChange.TryGetValue(player, out var recorderName))
-                    {
-                        // assign icon to that recorder
-                        var where = DB.Column("CharacterID").IsEqualTo(player.InternalID)
-                                       .And(DB.Column("Name").IsEqualTo(recorderName));
-                        var entry = GameServer.Database.SelectObject<DBCharacterRecorder>(where);
-                        if (entry != null)
-                        {
-                            entry.IconID = spell.Icon;
-                            entry.Dirty = true;
-                            GameServer.Database.SaveObject(entry);
-                            RefreshPlayerRecorders(player);
-                            player.Out.SendMessage($"Recorder '{recorderName}' icon set from next spell ({spell.Name}).", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                        }
-                        _pendingIconChange.Remove(player);
-                    }
+                    entry.IconID = spell.Icon;
+                    entry.Dirty = true;
+                    GameServer.Database.SaveObject(entry);
+                    RefreshPlayerRecorders(player);
+                    player.Out.SendMessage($"Recorder '{recorderName}' icon set from next spell ({spell.Name}).", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 }
+                player.PendingRecorderIconName = null;
             }
 
             // Disable recording recorders
@@ -234,15 +275,9 @@ namespace DOL.GS
                 return;
 
             // Record spells/styles/...
-            lock (_activeRecordings)
-            {
-                if (_activeRecordings.TryGetValue(player, out var actions))
-                {
-                    actions.Add(new RecorderAction { Type = "Spell", ID = spell.ID });
-                    int pos = actions.Count; // new action position
-                    player.Out.SendMessage($"{pos}. Spell '{spell.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                }
-            }
+            player.RecorderActions.Add(new RecorderAction { Type = RecorderActionType.Spell, ID = spell.ID });
+            int pos = player.RecorderActions.Count;
+            player.Out.SendMessage($"{pos}. Spell '{spell.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
         public static void RecordAction(GamePlayer player, Style style)
@@ -250,30 +285,18 @@ namespace DOL.GS
             if (style == null || !IsPlayerRecording(player))
                 return;
 
-            lock (_activeRecordings)
-            {
-                if (_activeRecordings.TryGetValue(player, out var actions))
-                {
-                    actions.Add(new RecorderAction { Type = "Style", ID = style.ID });
-                    int pos = actions.Count;
-                    player.Out.SendMessage($"{pos}. Style '{style.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                }
-            }
+            player.RecorderActions.Add(new RecorderAction { Type = RecorderActionType.Style, ID = style.ID });
+            int pos = player.RecorderActions.Count;
+            player.Out.SendMessage($"{pos}. Style '{style.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
         public static void RecordAction(GamePlayer player, Ability ability)
         {
             if (ability == null || !IsPlayerRecording(player)) return;
 
-            lock (_activeRecordings)
-            {
-                if (_activeRecordings.TryGetValue(player, out var actions))
-                {
-                    actions.Add(new RecorderAction { Type = "Ability", ID = ability.ID });
-                    int pos = actions.Count;
-                    player.Out.SendMessage($"{pos}. Ability '{ability.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                }
-            }
+            player.RecorderActions.Add(new RecorderAction { Type = RecorderActionType.Ability, ID = ability.ID });
+            int pos = player.RecorderActions.Count;
+            player.Out.SendMessage($"{pos}. Ability '{ability.Name}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
         /// <summary>
@@ -284,59 +307,51 @@ namespace DOL.GS
             if (string.IsNullOrEmpty(command) || !IsPlayerRecording(player))
                 return;
 
-            lock (_activeRecordings)
-            {
-                if (_activeRecordings.TryGetValue(player, out var actions))
-                {
-                    actions.Add(new RecorderAction { Type = "Command", ID = 0, Value = command });
-                    int pos = actions.Count;
-                    player.Out.SendMessage($"{pos}. Command '{command}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                }
-            }
+            player.RecorderActions.Add(new RecorderAction { Type = RecorderActionType.Command, ID = 0, Value = command });
+            int pos = player.RecorderActions.Count;
+            player.Out.SendMessage($"{pos}. Command '{command}' added", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
         public static void StopAndSaveRecording(GamePlayer player, string name)
         {
-            lock (_activeRecordings)
+            if (player?.RecorderActions == null || player.RecorderActions.Count == 0)
+                return;
+
+            // make sure the name is unique for this player
+            var whereCheck = DB.Column("CharacterID").IsEqualTo(player.InternalID)
+                             .And(DB.Column("Name").IsEqualTo(name));
+            var existing = GameServer.Database.SelectObject<DBCharacterRecorder>(whereCheck);
+            if (existing != null)
             {
-                if (!_activeRecordings.TryGetValue(player, out var actions) || actions.Count == 0) return;
-
-                // make sure the name is unique for this player
-                var whereCheck = DB.Column("CharacterID").IsEqualTo(player.InternalID)
-                                 .And(DB.Column("Name").IsEqualTo(name));
-                var existing = GameServer.Database.SelectObject<DBCharacterRecorder>(whereCheck);
-                if (existing != null)
-                {
-                    player.Out.SendMessage($"A recorder named '{name}' already exists.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                    return;
-                }
-
-                // We set first spell icon as recorder icon
-                int autoIconId = RecorderBaseIcon;
-                // Why we do this ?
-                var firstAction = actions.FirstOrDefault(a => a.Type == "Spell");
-                if (firstAction != null)
-                {
-                    Spell s = SkillBase.GetSpellByID(firstAction.ID);
-                    if (s != null)
-                        autoIconId = s.Icon;
-                }
-
-                DBCharacterRecorder dbEntry = new()
-                {
-                    CharacterID = player.InternalID,
-                    Name = name,
-                    IconID = autoIconId,
-                    ActionsJson = JsonConvert.SerializeObject(actions)
-                };
-
-                GameServer.Database.AddObject(dbEntry);
-                _activeRecordings.Remove(player);
-
-                // Update Players list
-                RefreshPlayerRecorders(player);
-                player.Out.SendMessage($"Recorder '{name}' saved.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"A recorder named '{name}' already exists.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
             }
+
+            // Auto-select the icon from the first recorded spell so the button looks
+            // recognisable without the player having to run /recorder icon manually.
+            int autoIconId = RecorderBaseIcon;
+            var firstAction = player.RecorderActions.FirstOrDefault(a => a.Type == RecorderActionType.Spell);
+            if (firstAction != null)
+            {
+                Spell s = SkillBase.GetSpellByID(firstAction.ID);
+                if (s != null)
+                    autoIconId = s.Icon;
+            }
+
+            DBCharacterRecorder dbEntry = new()
+            {
+                CharacterID = player.InternalID,
+                Name = name,
+                IconID = autoIconId,
+                ActionsJson = JsonConvert.SerializeObject(player.RecorderActions)
+            };
+
+            GameServer.Database.AddObject(dbEntry);
+            player.RecorderActions = null;
+
+            // Update Players list
+            RefreshPlayerRecorders(player);
+            player.Out.SendMessage($"Recorder '{name}' saved.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
 
         /// <summary>
@@ -433,10 +448,7 @@ namespace DOL.GS
             }
 
             // queue pending change
-            lock (_pendingIconChange)
-            {
-                _pendingIconChange[player] = name;
-            }
+            player.PendingRecorderIconName = name;
             return true;
         }
         #endregion
@@ -450,14 +462,11 @@ namespace DOL.GS
         {
             if (player == null) return false;
 
-            lock (_activeRecordings)
+            if (player.RecorderActions != null)
             {
-                if (_activeRecordings.ContainsKey(player))
-                {
-                    _activeRecordings.Remove(player);
-                    player.Out.SendMessage("Recording cancelled.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                    return true;
-                }
+                player.RecorderActions = null;
+                player.Out.SendMessage("Recording cancelled.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return true;
             }
 
             return false;
@@ -468,39 +477,34 @@ namespace DOL.GS
         // Currently we only allow import from same account
         public static void ImportRecorder(GamePlayer targetPlayer, string sourceCharName, string sourceRecorderName)
         {
-            // 1. Find recorder with matching name
-            var sourceRecorder = GameServer.Database.SelectObject<DBCharacterRecorder>(
-                DB.Column("Name").IsEqualTo(sourceRecorderName)
-            );
-            if (sourceRecorder == null)
-            {
-                targetPlayer.Out.SendMessage($"This player has no recorders.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            // 2. Get the source character
-            var sourceChar = GameServer.Database.FindObjectByKey<DbCoreCharacter>(sourceRecorder.CharacterID);
+            // 1. Find the source character by name first — avoids the previous bug where
+            //    a Name-only lookup could match a recorder from a different character.
+            var sourceChar = GameServer.Database.SelectObject<DbCoreCharacter>(
+                DB.Column("Name").IsEqualTo(sourceCharName));
             if (sourceChar == null)
             {
-                targetPlayer.Out.SendMessage($"This player has no recorders.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                targetPlayer.Out.SendMessage($"Character '{sourceCharName}' not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            // 3. Check same account
+            // 2. Check same account before touching any recorder data
             if (!string.Equals(sourceChar.AccountName, targetPlayer.Client.Account.Name, StringComparison.OrdinalIgnoreCase))
             {
                 targetPlayer.Out.SendMessage("You can only import recorders from characters on your own account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            // 4. Verify character name matches
-            if (!string.Equals(sourceChar.Name, sourceCharName, StringComparison.OrdinalIgnoreCase))
+            // 3. Find the recorder scoped to that specific character
+            var sourceRecorder = GameServer.Database.SelectObject<DBCharacterRecorder>(
+                DB.Column("CharacterID").IsEqualTo(sourceChar.ObjectId)
+                .And(DB.Column("Name").IsEqualTo(sourceRecorderName)));
+            if (sourceRecorder == null)
             {
-                targetPlayer.Out.SendMessage($"Recorder '{sourceRecorderName}' does not belong to character '{sourceCharName}'.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                targetPlayer.Out.SendMessage($"Character '{sourceCharName}' has no recorder named '{sourceRecorderName}'.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            // 5. Check for name collision on target
+            // 4. Check for name collision on target
             var existing = GameServer.Database.SelectObject<DBCharacterRecorder>(
                 DB.Column("CharacterID").IsEqualTo(targetPlayer.InternalID)
                 .And(DB.Column("Name").IsEqualTo(sourceRecorder.Name))
@@ -511,7 +515,7 @@ namespace DOL.GS
                 return;
             }
 
-            // 6. Copy and insert
+            // 5. Copy and insert
             var newRecorder = new DBCharacterRecorder
             {
                 CharacterID = targetPlayer.InternalID,
@@ -536,8 +540,8 @@ namespace DOL.GS
             try
             {
                 // Get all characters for this account
-                var chars = GameServer.Database.SelectAllObjects<DbCoreCharacter>()
-                    .Where(c => c.AccountName == player.Client.Account.Name)
+                var chars = GameServer.Database.SelectObjects<DbCoreCharacter>(
+                    DB.Column("AccountName").IsEqualTo(player.Client.Account.Name))
                     .OrderBy(c => c.Name)
                     .ToList();
 
@@ -550,45 +554,48 @@ namespace DOL.GS
                 var lines = new List<string>();
                 bool hasAnyRecorders = false;
 
+                // Fetch all chars for this account, then all their recorder rows in one
+                // batched query using IsIn rather than N individual selects.
+                var charIds = chars.Select(c => c.ObjectId).ToList();
+                var allRecorders = GameServer.Database.SelectObjects<DBCharacterRecorder>(
+                    DB.Column("CharacterID").IsIn(charIds))
+                    .GroupBy(r => r.CharacterID)
+                    .ToDictionary(g => g.Key, g => g.OrderBy(r => r.Name).ToList());
+
                 foreach (var character in chars)
                 {
-                    var recorders = GameServer.Database.SelectAllObjects<DBCharacterRecorder>()
-                        .Where(r => r.CharacterID == character.ObjectId)
-                        .OrderBy(r => r.Name)
-                        .ToList();
+                    if (!allRecorders.TryGetValue(character.ObjectId, out var recorders) || recorders.Count == 0)
+                        continue;
 
-                    if (recorders.Count > 0)
+                    hasAnyRecorders = true;
+                    string className = ((eCharacterClass)character.Class).ToString();
+                    lines.Add($"{character.Name}  ({className}):");
+
+                    foreach (var recorder in recorders)
                     {
-                        hasAnyRecorders = true;
-                        string className = ((eCharacterClass)character.Class).ToString();
-                        lines.Add($"{character.Name}  ({className}):");
+                        lines.Add($"{recorder.Name}");
 
-                        foreach (var recorder in recorders)
+                        // Show the actions inside this recorder
+                        try
                         {
-                            lines.Add($"{recorder.Name}");
-
-                            // Show the actions inside this recorder
-                            try
+                            var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(recorder.ActionsJson);
+                            if (actions != null && actions.Count > 0)
                             {
-                                var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(recorder.ActionsJson);
-                                if (actions != null && actions.Count > 0)
+                                for (int i = 0; i < Math.Min(actions.Count, ListPreviewActionCount); i++)
                                 {
-                                    for (int i = 0; i < Math.Min(actions.Count, 3); i++) // Show first 3 actions
-                                    {
-                                        var action = actions[i];
-                                        string actionDesc = GetActionDescription(action, character.Class);
-                                        lines.Add($"- {actionDesc}");
-                                    }
-                                    if (actions.Count > 3)
-                                        lines.Add($"... and {actions.Count - 3} more actions");
-                                    
-                                    lines.Add(""); // empty line after each recorder
+                                    var action = actions[i];
+                                    string actionDesc = GetActionDescription(action, character.Class);
+                                    lines.Add($"- {actionDesc}");
                                 }
+                                if (actions.Count > ListPreviewActionCount)
+                                    lines.Add($"... and {actions.Count - ListPreviewActionCount} more actions");
+
+                                lines.Add(""); // empty line after each recorder
                             }
-                            catch { }
                         }
-                        lines.Add(""); // second empty line for next character
+                        catch { }
                     }
+                    lines.Add(""); // empty line after each character
                 }
 
                 if (!hasAnyRecorders)
@@ -608,47 +615,57 @@ namespace DOL.GS
 
         private static string GetActionDescription(RecorderAction action, int? classId = null)
         {
-            switch (action.Type)
+            return action.Type switch
             {
-                case "Spell":
-                    {
-                        Spell spell = SkillBase.GetSpellByID(action.ID);
-                        if (spell != null)
-                            return $"Spell: {spell.Name}";
-                        return $"Spell (ID: {action.ID})";
-                    }
-                case "Style":
-                    {
-                        // If we have a class ID, try to look up the style by name
-                        if (classId.HasValue)
-                        {
-                            Style style = SkillBase.GetStyleByID(action.ID, classId.Value);
-                            if (style != null)
-                                return $"Style: {style.Name}";
-                        }
-                        return $"Style (ID: {action.ID})";
-                    }
-                case "Ability":
-                    {
-                        Ability ability = SkillBase.GetAbility(action.ID) ?? SkillBase.GetAbilityByInternalID(action.ID);
-                        if (ability != null)
-                            return $"Ability: {ability.Name}";
-                        return $"Ability (ID: {action.ID})";
-                    }
-                case "Command":
-                    return $"Command: {action.Value}";
-                default:
-                    return "Unknown action";
-            }
+                RecorderActionType.Spell =>
+                    SkillBase.GetSpellByID(action.ID) is { } spell
+                        ? $"Spell: {spell.Name}"
+                        : $"Spell (ID: {action.ID})",
+
+                RecorderActionType.Style =>
+                    classId.HasValue && SkillBase.GetStyleByID(action.ID, classId.Value) is { } style
+                        ? $"Style: {style.Name}"
+                        : $"Style (ID: {action.ID})",
+
+                RecorderActionType.Ability =>
+                    (SkillBase.GetAbility(action.ID) ?? SkillBase.GetAbilityByInternalID(action.ID)) is { } abil
+                        ? $"Ability: {abil.Name}"
+                        : $"Ability (ID: {action.ID})",
+
+                RecorderActionType.Command => $"Command: {action.Value}",
+
+                _ => "Unknown action",
+            };
         }
     }
 
 
+    /// <summary>
+    /// Categorises a single step in a recorded macro sequence.
+    /// The enum is serialised as its string name so existing database rows remain compatible.
+    /// </summary>
+    public enum RecorderActionType
+    {
+        Unknown = 0,
+        Spell,
+        Style,
+        Ability,
+        Command,
+    }
+
     [Serializable]
     public class RecorderAction
     {
-        public string Type { get; set; }
+        /// <summary>
+        /// The kind of action. Stored as a string in JSON for readability and DB forward-compatibility.
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RecorderActionType Type { get; set; }
+
+        /// <summary>Skill / spell / style / ability ID, or 0 for commands.</summary>
         public int ID { get; set; }
+
+        /// <summary>Raw command text for <see cref="RecorderActionType.Command"/> actions; unused otherwise.</summary>
         public string Value { get; set; }
     }
 }

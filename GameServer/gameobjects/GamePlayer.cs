@@ -123,6 +123,33 @@ namespace DOL.GS
         }
 
         /// <summary>
+        /// Dedicated lock for <see cref="RecorderMgr.BuildPlayerRecorders"/>.
+        /// Using the new Lock class instead of a plain object provides built-in
+        /// spin-wait logic before yielding the thread, reducing context switches.
+        /// </summary>
+        public readonly Lock RecorderLock = new();
+
+        /// <summary>
+        /// Current active recorder actions for this player (used during recording sessions)
+        /// </summary>
+        private List<RecorderAction> m_recorderActions = null;
+        public List<RecorderAction> RecorderActions 
+        { 
+            get => m_recorderActions; 
+            set => m_recorderActions = value; 
+        }
+
+        /// <summary>
+        /// Pending recorder name for icon assignment from next spell cast
+        /// </summary>
+        private string m_pendingRecorderIconName = null;
+        public string PendingRecorderIconName 
+        { 
+            get => m_pendingRecorderIconName; 
+            set => m_pendingRecorderIconName = value; 
+        }
+
+        /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
         /// </summary>
         public override bool CanTradeAnyItem { get { return Client.Account.PrivLevel > (int)ePrivLevel.Player; } }
@@ -716,10 +743,6 @@ namespace DOL.GS
             set { if (DBCharacter != null) DBCharacter.LastLevelUp = value; }
         }
 
-        public void LoadRecorderData()
-        {
-            RecorderMgr.RefreshPlayerRecorders(this);
-        }
         #endregion
 
         #endregion
@@ -10098,6 +10121,7 @@ namespace DOL.GS
             var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
             var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
             var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var recorderTask = DOLDB<DBCharacterRecorder>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(InternalID));
 
             SetCharacterClass(DBCharacter.Class);
             HandleWorldPosition();
@@ -10113,7 +10137,7 @@ namespace DOL.GS
             HandleMasterLevels(await masterLevelsTask);
             HandleStats(); // Should be done after loading gear, abilities, buffs.
             HandleTitles(); // Should be done after loading crafting skills.
-            LoadRecorderData();
+            HandleRecorders(await recorderTask);
 
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
@@ -10624,6 +10648,14 @@ namespace DOL.GS
                     m_titles.Add(title);
 
                 m_currentTitle = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType) ?? PlayerTitleMgr.ClearTitle;
+            }
+
+            // Captures 'this' — no need to pass a GamePlayer parameter.
+            // Called after ConfigureAwait(false) in DOLDB.SelectObjectsAsync, so JSON
+            // parsing inside BuildPlayerRecorders runs on the thread pool, not the game loop.
+            void HandleRecorders(IList<DBCharacterRecorder> dbEntries)
+            {
+                RecorderMgr.BuildPlayerRecorders(this, dbEntries);
             }
         }
 

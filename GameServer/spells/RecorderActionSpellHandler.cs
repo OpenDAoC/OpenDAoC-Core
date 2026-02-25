@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.PacketHandler;
 using DOL.GS;
-using DOL.Database;
 using Newtonsoft.Json;
 using DOL.Logging;
 using System.Reflection;
@@ -30,7 +29,7 @@ namespace DOL.GS.Spells
             // Check if the spell object passed by the core is already our RecorderSpell type.
             if (this.Spell is RecorderMgr.RecorderSpell mySpell)
             {
-                ExecuteMacro(player, mySpell.RecordData);
+                ExecuteMacro(player, mySpell);
                 return true;
             }
 
@@ -42,7 +41,7 @@ namespace DOL.GS.Spells
 
             if (fallbackSpell != null)
             {
-                ExecuteMacro(player, fallbackSpell.RecordData);
+                ExecuteMacro(player, fallbackSpell);
                 return true;
             }
             else
@@ -59,58 +58,68 @@ namespace DOL.GS.Spells
         }
 
         /// <summary>
-        /// Deserializes and executes the actions stored within the DB entry.
+        /// Executes the actions stored within the DB entry.
+        /// Uses the pre-parsed <see cref="RecorderMgr.RecorderSpell.Actions"/> list cached at
+        /// spellbook build time to avoid JSON deserialization on every macro execution.
+        /// Falls back to parsing <c>ActionsJson</c> directly if the cache is unavailable.
         /// </summary>
-        private void ExecuteMacro(GamePlayer player, DBCharacterRecorder dbEntry)
+        private void ExecuteMacro(GamePlayer player, RecorderMgr.RecorderSpell recorderSpell)
         {
-            if (dbEntry == null || string.IsNullOrEmpty(dbEntry.ActionsJson))
+            // Prefer the cached list; fall back to raw JSON only as a safety net.
+            List<RecorderAction> actions = recorderSpell.Actions;
+            if (actions == null)
+            {
+                if (string.IsNullOrEmpty(recorderSpell.RecordData?.ActionsJson))
+                    return;
+                try { actions = JsonConvert.DeserializeObject<List<RecorderAction>>(recorderSpell.RecordData.ActionsJson); }
+                catch (Exception ex)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"[RECORDER] Error parsing actions for {player.Name}: {ex.Message}", ex);
+                    return;
+                }
+            }
+
+            if (actions == null || actions.Count == 0)
                 return;
 
             try
             {
-                var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(dbEntry.ActionsJson);
-                if (actions == null || actions.Count == 0)
-                    return;
-
                 SpellLine recorderLine = SkillBase.GetSpellLine(RecorderMgr.RecorderLineKey);
 
                 foreach (var action in actions)
                 {
-                    // Spell Handling
-                    if (action.Type == "Spell")
+                    switch (action.Type)
                     {
-                        Spell s = SkillBase.GetSpellByID(action.ID);
-                        if (s != null)
+                        case RecorderActionType.Spell:
                         {
-                            player.castingComponent.RequestCastSpell(s, recorderLine);
+                            Spell s = SkillBase.GetSpellByID(action.ID);
+                            if (s != null)
+                                player.castingComponent.RequestCastSpell(s, recorderLine);
+                            break;
                         }
-                    }
-                    // Style Handling
-                    else if (action.Type == "Style")
-                    {
-                        Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
-                        if (style != null)
+                        case RecorderActionType.Style:
                         {
-                            StyleProcessor.TryToUseStyle(player, style);
+                            Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
+                            if (style != null)
+                                StyleProcessor.TryToUseStyle(player, style);
+                            break;
                         }
-                    }
-                    else if (action.Type == "Ability")
-                    {
-                        // prefer the normal ability ID first (this is what we recorded),
-                        // fall back to internal-ID lookup only if needed
-                        Ability abil = SkillBase.GetAbility(action.ID)
-                                    ?? SkillBase.GetAbilityByInternalID(action.ID);
-                        if (abil != null)
+                        case RecorderActionType.Ability:
                         {
-                            player.castingComponent.RequestUseAbility(abil);
+                            // Prefer the normal ability ID first (this is what we recorded),
+                            // fall back to internal-ID lookup only if needed.
+                            Ability abil = SkillBase.GetAbility(action.ID)
+                                        ?? SkillBase.GetAbilityByInternalID(action.ID);
+                            if (abil != null)
+                                player.castingComponent.RequestUseAbility(abil);
+                            break;
                         }
-                    }
-                    else if (action.Type == "Command")
-                    {
-                        // replay the exact command line that was entered
-                        if (!string.IsNullOrEmpty(action.Value))
+                        case RecorderActionType.Command:
                         {
-                            ScriptMgr.HandleCommand(player.Client, action.Value);
+                            if (!string.IsNullOrEmpty(action.Value))
+                                ScriptMgr.HandleCommand(player.Client, action.Value);
+                            break;
                         }
                     }
                 }
@@ -118,7 +127,7 @@ namespace DOL.GS.Spells
             catch (Exception ex)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Error executing Recorder Macro for {player.Name}: {ex.Message}", ex);
+                    log.Error($"[RECORDER] Error executing macro for {player.Name}: {ex.Message}", ex);
             }
         }
     }
