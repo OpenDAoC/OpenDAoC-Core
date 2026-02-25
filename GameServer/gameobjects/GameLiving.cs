@@ -734,7 +734,7 @@ namespace DOL.GS
 		public long InterruptTime { get; private set; }
 		public long SelfInterruptTime { get; private set; }
 		public long InterruptRemainingDuration => Math.Max(0, Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime);
-		public virtual int SelfInterruptDurationOnMeleeAttack => 3000;
+		public virtual bool SelfInterruptsOnMeleeAttack => true;
 		public virtual bool IsBeingInterrupted => IsBeingInterruptedByOther || IsBeingSelfInterrupted;
 		public bool IsBeingInterruptedByOther => InterruptTime > GameLoop.GameLoopTime;
 		public bool IsBeingSelfInterrupted => SelfInterruptTime > GameLoop.GameLoopTime;

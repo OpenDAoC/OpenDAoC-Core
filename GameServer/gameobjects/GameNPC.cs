@@ -2901,8 +2901,6 @@ namespace DOL.GS
 			return interrupted;
 		}
 
-		public override int SelfInterruptDurationOnMeleeAttack => AttackSpeed(ActiveWeapon);
-
 		/// <summary>
 		/// The time to wait before each mob respawn
 		/// </summary>

@@ -1123,8 +1123,8 @@ namespace DOL.GS
             ad.Target.StartInterruptTimer(interval, ad.AttackType, ad.Attacker);
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
-            if (ad.IsMeleeAttack)
-                owner.StartInterruptTimer(owner.SelfInterruptDurationOnMeleeAttack, ad.AttackType, ad.Attacker);
+            if (ad.IsMeleeAttack && ad.Attacker.SelfInterruptsOnMeleeAttack)
+                owner.StartInterruptTimer(interval, ad.AttackType, ad.Attacker);
 
             // Handles CC breaks, ablatives...
             owner.OnAttackEnemy(ad);
