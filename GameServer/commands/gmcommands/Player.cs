@@ -2472,8 +2472,6 @@ namespace DOL.GS.Commands
             target.OnLevelUp(0);
 
             target.Out.SendUpdatePlayer();
-            target.Out.SendUpdatePlayerSkills(true);
-            //target.Out.SendUpdatePlayerSkills(true);
             target.Out.SendUpdatePoints();
 
             // Re-add RecorderSpecialization (wiped by RemoveAllSpecs above) and push

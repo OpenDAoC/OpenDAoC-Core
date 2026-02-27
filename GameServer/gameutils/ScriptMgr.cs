@@ -259,19 +259,6 @@ namespace DOL.GS
                 // If the player is recording (or in pending-insert mode), intercept all commands except /recorder itself.
                 // We resolve via GuessCommand (handles abbreviations + aliases) and compare by reference to the canonical
                 // recorder GameCommand so that /rec, /recor, /recorder and any future alias all pass through correctly.
-                if (client?.Player != null && (RecorderMgr.IsPlayerRecording(client.Player) || RecorderMgr.HasPendingInsert(client.Player)))
-                {
-                    string[] tokens = ParseCmdLine(cmdLine);
-                    GameCommand recorderCmd = GetCommand("&recorder");
-                    // Use max privilege so the recorder command is always resolvable regardless of the player's account level.
-                    GameCommand resolved = tokens.Length > 0 ? GuessCommand(tokens[0], ePrivLevel.Admin) : null;
-
-                    if (!ReferenceEquals(resolved, recorderCmd))
-                    {
-                        RecorderMgr.RecordAction(client.Player, cmdLine);
-                        return true;
-                    }
-                }
 
                 string[] pars = ParseCmdLine(cmdLine);
                 GameCommand myCommand = GuessCommand(pars[0], (ePrivLevel) client.Account.PrivLevel);
@@ -281,6 +268,20 @@ namespace DOL.GS
 
                 if (client.Account.PrivLevel < myCommand.m_lvl && !SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
                     return false;
+
+                // Only record player-level commands — never record GM/admin commands.
+                // Checked here (after GuessCommand) so we know the command's privilege level.
+                if (client?.Player != null && myCommand.m_lvl == ePrivLevel.Player &&
+                    (RecorderMgr.IsPlayerRecording(client.Player) || RecorderMgr.HasPendingInsert(client.Player)))
+                {
+                    GameCommand recorderCmd = GetCommand("&recorder");
+
+                    if (!ReferenceEquals(myCommand, recorderCmd))
+                    {
+                        RecorderMgr.RecordAction(client.Player, cmdLine);
+                        return true;
+                    }
+                }
 
                 ExecuteCommand(client, myCommand, pars);
             }

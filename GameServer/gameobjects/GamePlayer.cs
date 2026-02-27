@@ -123,31 +123,14 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Dedicated lock for <see cref="RecorderMgr.BuildPlayerRecorders"/>.
-        /// Using the new Lock class instead of a plain object provides built-in
-        /// spin-wait logic before yielding the thread, reducing context switches.
-        /// </summary>
-        public readonly Lock RecorderLock = new();
-
-        /// <summary>
         /// Current active recorder actions for this player (used during recording sessions)
         /// </summary>
-        private List<RecorderAction> m_recorderActions = null;
-        public List<RecorderAction> RecorderActions 
-        { 
-            get => m_recorderActions; 
-            set => m_recorderActions = value; 
-        }
+        public List<RecorderAction> RecorderActions { get; set; }
 
         /// <summary>
         /// Pending recorder name for icon assignment from next spell cast
         /// </summary>
-        private string m_pendingRecorderIconName = null;
-        public string PendingRecorderIconName 
-        { 
-            get => m_pendingRecorderIconName; 
-            set => m_pendingRecorderIconName = value; 
-        }
+        public string PendingRecorderIconName { get; set; }
 
         /// <summary>
         /// When set, the next recorded action will be inserted into this recorder at
@@ -155,6 +138,8 @@ namespace DOL.GS
         /// </summary>
         public string PendingInsertRecorderName { get; set; }
         public int PendingInsertRecorderIndex { get; set; }
+        /// <summary>Auto-incrementing counter for assigning unique tooltip IDs to recorder macro spells.</summary>
+        public int LastMacroToolTipID { get; set; } = 1;
 
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?

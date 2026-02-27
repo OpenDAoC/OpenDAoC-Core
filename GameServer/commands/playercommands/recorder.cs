@@ -15,6 +15,45 @@ namespace DOL.GS
     public class RecorderCommandHandler : ICommandHandler
     {
         // Short usage shown when the player types /recorder with no arguments or an unknown sub-command.
+        private static readonly IList<string> HelpLines = new List<string>
+        {
+            "The Recorder lets you save a sequence of spells, styles, abilities and",
+            "commands as a macro. The macro appears in your spellbook and can be",
+            "placed on a quickbar button like any spell.",
+            "",
+            "--- Recording ---",
+            "/recorder start",
+            "  Begin a new recording session.",
+            "/recorder save <name>",
+            "  Save the recorded actions under the given name.",
+            "/recorder cancel",
+            "  Discard the current recording without saving.",
+            "",
+            "--- Managing recorders ---",
+            "/recorder delete <name>",
+            "  Permanently delete a recorder.",
+            "/recorder rename <name> <newname>",
+            "  Rename an existing recorder.",
+            "/recorder icon <name>",
+            "  Set the icon to your next cast spell.",
+            "/recorder icon <name> <icon_id>",
+            "  Set the icon to a specific icon ID.",
+            "",
+            "--- Editing actions ---",
+            "/recorder insert <name> <index>",
+            "  Insert your next action at the given position.",
+            "/recorder append <name>",
+            "  Insert your next action at the end.",
+            "/recorder discard <name> <index>",
+            "  Remove the action at the given position.",
+            "",
+            "--- Other ---",
+            "/recorder list",
+            "  Show all recorders on your account.",
+            "/recorder import <character> <name>",
+            "  Copy a recorder from another character on your account.",
+        };
+
         private static readonly string[] UsageMessages =
         {
             // Eden like, just an example what could be implemented for now
@@ -47,7 +86,7 @@ namespace DOL.GS
             if (client?.Player == null)
                 return;
 
-            if (!Properties.RECORDER_ENABLED)
+            if (!Properties.ENABLE_RECORDER)
             {
                 client.Player.Out.SendMessage("The Recorder system is disabled.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
@@ -190,46 +229,7 @@ namespace DOL.GS
         /// </summary>
         private static void SendHelpWindow(GameClient client)
         {
-            var lines = new List<string>
-            {
-                "The Recorder lets you save a sequence of spells, styles, abilities and",
-                "commands as a macro. The macro appears in your spellbook and can be",
-                "placed on a quickbar button like any spell.",
-                "",
-                "--- Recording ---",
-                "/recorder start",
-                "  Begin a new recording session.",
-                "/recorder save <name>",
-                "  Save the recorded actions under the given name.",
-                "/recorder cancel",
-                "  Discard the current recording without saving.",
-                "",
-                "--- Managing recorders ---",
-                "/recorder delete <name>",
-                "  Permanently delete a recorder.",
-                "/recorder rename <name> <newname>",
-                "  Rename an existing recorder.",
-                "/recorder icon <name>",
-                "  Set the icon to your next cast spell.",
-                "/recorder icon <name> <icon_id>",
-                "  Set the icon to a specific icon ID.",
-                "",
-                "--- Editing actions ---",
-                "/recorder insert <name> <index>",
-                "  Insert your next action at the given position.",
-                "/recorder append <name>",
-                "  Insert your next action at the end.",
-                "/recorder discard <name> <index>",
-                "  Remove the action at the given position.",
-                "",
-                "--- Other ---",
-                "/recorder list",
-                "  Show all recorders on your account.",
-                "/recorder import <character> <name>",
-                "  Copy a recorder from another character on your account.",
-            };
-
-            client.Player.Out.SendCustomTextWindow("Recorder Help", lines);
+            client.Player.Out.SendCustomTextWindow("Recorder Help", HelpLines);
         }
     }
 }
