@@ -6,6 +6,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS.Spells
 {
@@ -556,8 +557,8 @@ namespace DOL.GS.Spells
 
 			// Add byNefa 04.02.2011 13:35
 			// Check if Necro try to use ML9 Convoker at own Pet
-			if  (m_player != null && m_player.CharacterClass.ID == (int)eCharacterClass.Necromancer)
-			{ // Caster is a Necro
+			if  (m_player != null && m_player.CharacterClass is ClassDisciple)
+			{
 				NecromancerPet necroPet = target as NecromancerPet;
 				if (necroPet == null || necroPet.Owner == m_player)
 				{ // Caster is a Nekro and his Target is his Own Pet

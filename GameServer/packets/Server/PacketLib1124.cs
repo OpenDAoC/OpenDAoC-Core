@@ -6,6 +6,7 @@ using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
+using DOL.GS.PlayerClass;
 using DOL.GS.Quests;
 using DOL.Language;
 
@@ -813,7 +814,7 @@ namespace DOL.GS.PacketHandler
 
 				byte i = 0;
 				var effects = living.effectListComponent.GetEffects();
-				if (living is GamePlayer necro && (eCharacterClass) necro.CharacterClass.ID is eCharacterClass.Necromancer && necro.HasShadeModel)
+				if (living is GamePlayer necro && necro.CharacterClass is ClassDisciple && necro.HasShadeModel)
 					effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetEffects().Where(e => e.TriggersImmunity));
 				foreach (var effect in effects)
 				{

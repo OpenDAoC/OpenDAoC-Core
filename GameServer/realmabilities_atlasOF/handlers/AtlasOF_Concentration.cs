@@ -1,43 +1,55 @@
 using System;
 using System.Collections.Generic;
 using DOL.Database;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_Concentration : ConcentrationAbility
-	{
-		public AtlasOF_Concentration(DbAbility dba, int level) : base(dba, level) { }
+    {
+        public AtlasOF_Concentration(DbAbility dba, int level) : base(dba, level) { }
 
-        public override int MaxLevel { get { return 1; } }
-        public override int GetReUseDelay(int level) { return 900; } // 15 min
-        public override int CostForUpgrade(int level) { return 10; }
-        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 3; }
+        public override int MaxLevel => 1;
+
+        public override int GetReUseDelay(int level)
+        {
+            return 900;
+        }
+
+        public override int CostForUpgrade(int level)
+        {
+            return 10;
+        }
+
+        public override bool CheckRequirement(GamePlayer player)
+        {
+            return AtlasRAHelpers.GetAugAcuityLevel(player) >= 3;
+        }
 
         public override void Execute(GameLiving living)
         {
-            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+            if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
+                return;
 
-            GamePlayer player = living as GamePlayer;
-            if (player != null)
+            if (living is GamePlayer player)
             {
-                if(player.CharacterClass.ID == (int)eCharacterClass.Necromancer)
+                if (player.CharacterClass is ClassDisciple)
                 {
-                    
                     Skill FacilitatePainworking = null;
                     ICollection<Skill> disabledSkills = player.GetAllDisabledSkills();
-                    foreach(Skill skill in disabledSkills)
+
+                    foreach (Skill skill in disabledSkills)
                     {
-                        if(skill.Name == "Facilitate Painworking")
+                        if (skill.Name == "Facilitate Painworking")
                         {
                             FacilitatePainworking = skill;
                             break;
-                        }   
+                        }
                     }
 
                     if (FacilitatePainworking == null)
                         return;
 
-                    
                     // Is FacilitatePainWorking cooldown actually active?
                     if (player.GetSkillDisabledDuration(FacilitatePainworking) > 0)
                     {
@@ -45,10 +57,8 @@ namespace DOL.GS.RealmAbilities
                         DisableSkill(living);
 
                         // Force the icon in the client to re-enable by updating its disabled time to 0
-                        var disables = new List<Tuple<Skill, int>>();
-                        disables.Add(new Tuple<Skill, int>(FacilitatePainworking, 0));
+                        List<Tuple<Skill, int>> disables = [new(FacilitatePainworking, 0)];
                         player.Out.SendDisableSkill(disables);
-
                         SendCasterSpellEffectAndCastMessage(living, 7006, true);
                     }
                     else
@@ -72,10 +82,8 @@ namespace DOL.GS.RealmAbilities
                         DisableSkill(living);
 
                         // Force the icon in the client to re-enable by updating its disabled time to 1ms
-                        var disables = new List<Tuple<Skill, int>>();
-                        disables.Add(new Tuple<Skill, int>(player.GetAbility(Abilities.Quickcast), 1));
+                        List<Tuple<Skill, int>> disables = [new(player.GetAbility(Abilities.Quickcast), 1)];
                         player.Out.SendDisableSkill(disables);
-
                         SendCasterSpellEffectAndCastMessage(living, 7006, true);
                     }
                     else

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
@@ -79,7 +80,7 @@ namespace DOL.GS.RealmAbilities
 
             EffectListComponent effectListComponent = null;
 
-            if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Necromancer)
+            if (player.CharacterClass is ClassDisciple)
             {
                 if (player.ControlledBrain?.Body is NecromancerPet necroPet)
                     effectListComponent = necroPet.effectListComponent;

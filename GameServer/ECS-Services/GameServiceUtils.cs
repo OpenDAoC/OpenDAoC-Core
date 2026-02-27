@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using DOL.GS.PlayerClass;
 using DOL.Logging;
 
 namespace DOL.GS
@@ -76,7 +77,7 @@ namespace DOL.GS
 
             player.Client.ClientState = GameClient.eClientState.CharScreen;
 
-            if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Necromancer && player.HasShadeModel)
+            if (player.CharacterClass is ClassDisciple && player.HasShadeModel)
                 player.Shade(false);
 
             player.Out.SendPlayerQuit(false);
