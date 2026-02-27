@@ -110,7 +110,7 @@ namespace DOL.GS
 
                     int uniqueID = SpellIdBase + player.SpellMacros.Count;
                     int uniqueLevel = player.SpellMacros.Count + 1;
-                    int tooltipId = player.LastMacroToolTipID++;
+                    int tooltipId = player.Client.LastMacroToolTipID++;
 
                     DbSpell db = new DbSpell
                     {
