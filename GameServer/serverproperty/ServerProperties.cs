@@ -2538,6 +2538,16 @@ namespace DOL.GS.ServerProperties
 
 		#endregion
 
+		#region RECORDER
+
+		/// <summary>
+		/// Enable or disable the Recorder macro system server-wide.
+		/// </summary>
+		[ServerProperty("recorder", "recorder_enabled", "Enable or disable the Recorder macro system (players can record and replay action sequences).", true)]
+		public static bool RECORDER_ENABLED;
+
+		#endregion
+
 		public static IDictionary<string, object> AllCurrentProperties { get; private set; }
 
 		/// <summary>
