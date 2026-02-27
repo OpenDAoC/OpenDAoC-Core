@@ -271,7 +271,7 @@ namespace DOL.GS
 
                 // Only record player-level commands — never record GM/admin commands.
                 // Checked here (after GuessCommand) so we know the command's privilege level.
-                if (client?.Player != null && myCommand.m_lvl == ePrivLevel.Player &&
+                if (client?.Player != null && myCommand.m_lvl == (uint)ePrivLevel.Player &&
                     (RecorderMgr.IsPlayerRecording(client.Player) || RecorderMgr.HasPendingInsert(client.Player)))
                 {
                     GameCommand recorderCmd = GetCommand("&recorder");

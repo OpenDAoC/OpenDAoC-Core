@@ -36,8 +36,6 @@ namespace DOL.GS
             "  Rename an existing recorder.",
             "/recorder icon <name>",
             "  Set the icon to your next cast spell.",
-            "/recorder icon <name> <icon_id>",
-            "  Set the icon to a specific icon ID.",
             "",
             "--- Editing actions ---",
             "/recorder insert <name> <index>",
@@ -62,7 +60,7 @@ namespace DOL.GS
             "/recorder save <name> : Save previously recorded actions as <name>",
             //"/recorder sendkey <key> : Send specific key to the game client (ie: F, Space, etc)",         // This needs client adjustments
             "/recorder cancel : Cancel current recording",
-            "/recorder icon <name> <icon_id> : Apply your next casted spell icon to record <name>, or a direct input <icon_id>",
+            "/recorder icon <name> : Apply your next casted spell icon to recorder <name>",
             "/recorder list : List all recorded actions",   // Sends a window to the player, with all characters from the account and displays all recorders with max 3 actions of a recorder
             "/recorder delete <name> : Remove record <name>",
             "/recorder rename <name> <newname> : Rename record <name> to <newname>",
@@ -131,6 +129,11 @@ namespace DOL.GS
                     {
                         var oldName = args[2];
                         var newName = args[3];
+                        if (newName.Length > RecorderMgr.MaxRecorderNameLength)
+                        {
+                            client.Player.Out.SendMessage($"Recorder name is too long (max {RecorderMgr.MaxRecorderNameLength} characters).", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            break;
+                        }
                         if (RecorderMgr.RenameRecording(client.Player, oldName, newName))
                             client.Player.Out.SendMessage($"Recorder '{oldName}' renamed to '{newName}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                         else
@@ -141,29 +144,10 @@ namespace DOL.GS
                 case "icon" when args.Length >= 3:
                     {
                         var name = args[2];
-                        int? iconId = null;
-                        if (args.Length >= 4)
-                        {
-                            if (int.TryParse(args[3], out var parsed))
-                                iconId = parsed;
-                            else
-                            {
-                                client.Player.Out.SendMessage($"'{args[3]}' is not a valid icon ID.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                                break;
-                            }
-                        }
-
-                        if (RecorderMgr.SetRecorderIcon(client.Player, name, iconId))
-                        {
-                            if (iconId.HasValue)
-                                client.Player.Out.SendMessage($"[{name}] Icon updated to {iconId}.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                            else
-                                client.Player.Out.SendMessage($"Your next spell will set the icon for [{name}].", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                        }
+                        if (RecorderMgr.SetRecorderIcon(client.Player, name))
+                            client.Player.Out.SendMessage($"Your next spell will set the icon for [{name}].", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                         else
-                        {
                             client.Player.Out.SendMessage($"Unknown recorder '{name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                        }
                     }
                     break;
                 case "save" when args.Length >= 3:
@@ -206,7 +190,7 @@ namespace DOL.GS
                     break;
 
                 case "list":
-                    RecorderMgr.ListAccountRecorders(client.Player);
+                    RecorderMgr.ListRecorders(client.Player);
                     break;
 
                 default:

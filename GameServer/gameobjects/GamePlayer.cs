@@ -138,6 +138,25 @@ namespace DOL.GS
         /// </summary>
         public string PendingInsertRecorderName { get; set; }
         public int PendingInsertRecorderIndex { get; set; }
+        
+        /// <summary>Auto-incrementing counter for assigning unique tooltip IDs to recorder macro spells.</summary>
+        public int LastMacroToolTipID { get; set; } = 1;
+
+        /// <summary>
+        /// In-memory cache of this player's recorder DB rows, loaded once at login and
+        /// kept up-to-date by <see cref="DOL.GS.RecorderMgr"/> on every create/delete/update.
+        /// This is the same list instance stored in <see cref="AccountRecordersByCharId"/> under this
+        /// character's ID — so Add/Remove on this list is automatically reflected there.
+        /// Never query the DB for these — mutate this list instead.
+        /// </summary>
+        public List<DBCharacterRecorder> RecorderDbEntries { get; set; } = new List<DBCharacterRecorder>();
+
+        /// <summary>
+        /// All recorder rows for every character on this player's account, keyed by CharacterID.
+        /// Loaded once at login via a single async IsIn query. Used by /recorder list to display
+        /// all characters' recorders without any mid-session DB reads.
+        /// </summary>
+        public Dictionary<string, List<DBCharacterRecorder>> AccountRecordersByCharId { get; set; } = new();
 
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
@@ -10136,7 +10155,10 @@ namespace DOL.GS
             var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
             var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
             var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
-            var recorderTask = DOLDB<DBCharacterRecorder>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(InternalID));
+            // Load recorder rows for all characters on this account in one batched query so that
+            // /recorder list can display every character without any further DB access.
+            var accountCharIds = Client.Account.Characters.Select(c => c.ObjectId).ToList();
+            var recorderTask = DOLDB<DBCharacterRecorder>.SelectObjectsAsync(DB.Column("CharacterID").IsIn(accountCharIds));
 
             SetCharacterClass(DBCharacter.Class);
             HandleWorldPosition();
@@ -10668,9 +10690,23 @@ namespace DOL.GS
             // Captures 'this' — no need to pass a GamePlayer parameter.
             // Called after ConfigureAwait(false) in DOLDB.SelectObjectsAsync, so JSON
             // parsing inside BuildPlayerRecorders runs on the thread pool, not the game loop.
-            void HandleRecorders(IList<DBCharacterRecorder> dbEntries)
+            void HandleRecorders(IList<DBCharacterRecorder> allAccountEntries)
             {
-                RecorderMgr.BuildPlayerRecorders(this, dbEntries);
+                // Group by character so /recorder list can show all chars without any DB read.
+                AccountRecordersByCharId = allAccountEntries
+                    .GroupBy(e => e.CharacterID)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                // RecorderDbEntries is the same List instance stored in the dict, so Add/Remove
+                // on RecorderDbEntries is automatically reflected in AccountRecordersByCharId.
+                if (!AccountRecordersByCharId.TryGetValue(InternalID, out var myEntries))
+                {
+                    myEntries = new List<DBCharacterRecorder>();
+                    AccountRecordersByCharId[InternalID] = myEntries;
+                }
+
+                RecorderDbEntries = myEntries;
+                RecorderMgr.BuildPlayerRecorders(this, RecorderDbEntries);
             }
         }
 

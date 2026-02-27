@@ -20,7 +20,6 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> _tooltipRequestTimes = new();
-        public int LastMacroToolTipID = 1;
         private readonly Lock _disconnectLock = new();
 
         public DbAccount Account
@@ -96,7 +95,6 @@ namespace DOL.GS
         public string MinorRev { get; set; } = string.Empty;
         public byte MajorBuild { get; set; } = 0;
         public byte MinorBuild { get; set; } = 0;
-        public int LastMacroToolTipID { get; set; } = 1;
 
         public GameClient(Socket socket) : base(socket) { }
 

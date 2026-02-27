@@ -84,8 +84,6 @@ namespace DOL.GS.Spells
 
             try
             {
-                SpellLine recorderLine = SkillBase.GetSpellLine(RecorderMgr.RecorderLineKey);
-
                 foreach (var action in actions)
                 {
                     switch (action.Type)
@@ -93,25 +91,50 @@ namespace DOL.GS.Spells
                         case RecorderActionType.Spell:
                         {
                             Spell s = SkillBase.GetSpellByID(action.ID);
-                            if (s != null)
-                                player.castingComponent.RequestCastSpell(s, recorderLine);
+                            if (s == null) break;
+
+                            // Validate: find the spell in one of the player's current spell lines.
+                            // This mirrors normal casting — a respec or class change may have removed it.
+                            SpellLine foundLine = null;
+                            foreach (SpellLine line in player.GetSpellLines())
+                            {
+                                if (line.KeyName == RecorderMgr.RecorderLineKey) continue;
+                                if (SkillBase.GetSpellList(line.KeyName).Any(ls => ls.ID == s.ID))
+                                {
+                                    foundLine = line;
+                                    break;
+                                }
+                            }
+
+                            if (foundLine != null)
+                                player.castingComponent.RequestCastSpell(s, foundLine);
+                            else
+                                player.Out.SendMessage($"You no longer have access to '{s.Name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         case RecorderActionType.Style:
                         {
                             Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
-                            if (style != null)
+                            if (style == null) break;
+
+                            // Validate: the player must still have the required spec at the required level.
+                            if (player.GetModifiedSpecLevel(style.Spec) >= style.SpecLevelRequirement)
                                 StyleProcessor.TryToUseStyle(player, style);
+                            else
+                                player.Out.SendMessage($"You no longer have access to style '{style.Name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         case RecorderActionType.Ability:
                         {
-                            // Prefer the normal ability ID first (this is what we recorded),
-                            // fall back to internal-ID lookup only if needed.
                             Ability abil = SkillBase.GetAbility(action.ID)
                                         ?? SkillBase.GetAbilityByInternalID(action.ID);
-                            if (abil != null)
+                            if (abil == null) break;
+
+                            // Validate: the player must still have this ability trained.
+                            if (player.HasAbility(abil.KeyName))
                                 player.castingComponent.RequestUseAbility(abil);
+                            else
+                                player.Out.SendMessage($"You no longer have access to ability '{abil.Name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         case RecorderActionType.Command:
