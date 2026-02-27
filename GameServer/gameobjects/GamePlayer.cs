@@ -139,7 +139,7 @@ namespace DOL.GS
         public string PendingInsertRecorderName { get; set; }
         public int PendingInsertRecorderIndex { get; set; }
         /// <summary>Auto-incrementing counter for assigning unique tooltip IDs to recorder macro spells.</summary>
-        public int LastMacroToolTipID { get; set; } = 1;
+        //public int LastMacroToolTipID { get; set; } = 1;
 
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
