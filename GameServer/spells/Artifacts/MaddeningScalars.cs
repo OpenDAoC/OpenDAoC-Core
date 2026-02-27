@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
   			if(effect.Owner is GamePlayer)
             {
 	            GamePlayer player = effect.Owner as GamePlayer;
-  				if(player.CharacterClass is ClassDisciple)
+  				if(player.CharacterClass is not ClassDisciple)
                     player.Model = player.CreationModel;
     			player.Out.SendUpdatePlayer();
     		}	
