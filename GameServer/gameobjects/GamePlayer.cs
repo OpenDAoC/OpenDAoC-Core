@@ -115,11 +115,51 @@ namespace DOL.GS
         /// Array that stores ML step completition
         /// </summary>
         private ArrayList m_mlSteps = new ArrayList();
+        protected List<Spell> m_spellMacros = new List<Spell>();
+        public List<Spell> SpellMacros 
+        { 
+            get => m_spellMacros; 
+            set => m_spellMacros = value; 
+        }
+
+        /// <summary>
+        /// Dedicated lock for <see cref="RecorderMgr.BuildPlayerRecorders"/>.
+        /// Using the new Lock class instead of a plain object provides built-in
+        /// spin-wait logic before yielding the thread, reducing context switches.
+        /// </summary>
+        public readonly Lock RecorderLock = new();
+
+        /// <summary>
+        /// Current active recorder actions for this player (used during recording sessions)
+        /// </summary>
+        private List<RecorderAction> m_recorderActions = null;
+        public List<RecorderAction> RecorderActions 
+        { 
+            get => m_recorderActions; 
+            set => m_recorderActions = value; 
+        }
+
+        /// <summary>
+        /// Pending recorder name for icon assignment from next spell cast
+        /// </summary>
+        private string m_pendingRecorderIconName = null;
+        public string PendingRecorderIconName 
+        { 
+            get => m_pendingRecorderIconName; 
+            set => m_pendingRecorderIconName = value; 
+        }
+
+        /// <summary>
+        /// When set, the next recorded action will be inserted into this recorder at
+        /// <see cref="PendingInsertRecorderIndex"/> instead of appending to a recording session.
+        /// </summary>
+        public string PendingInsertRecorderName { get; set; }
+        public int PendingInsertRecorderIndex { get; set; }
 
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
         /// </summary>
-        public override bool CanTradeAnyItem { get { return Client.Account.PrivLevel > (int)ePrivLevel.Player; }}
+        public override bool CanTradeAnyItem { get { return Client.Account.PrivLevel > (int)ePrivLevel.Player; } }
 
         /// <summary>
         /// Gets or sets the targetObject's visibility
@@ -2904,7 +2944,7 @@ namespace DOL.GS
 
                 m_specialization.Add(skill.KeyName, skill);
 
-                if (notify)
+                if (notify && skill.KeyName != RecorderMgr.RecorderLineKey)
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpecialisation.YouLearn", skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
@@ -2926,7 +2966,8 @@ namespace DOL.GS
                 m_specialization.Remove(specKeyName);
             }
 
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            if (specKeyName != RecorderMgr.RecorderLineKey)
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             return true;
         }
@@ -7096,6 +7137,13 @@ namespace DOL.GS
         /// <param name="type">1 == use1, 2 == use2</param>
         protected virtual void UseItemCharge(DbInventoryItem useItem, int type)
         {
+            // Intercept for the recorder: capture the charge-use intent before any processing.
+            if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+            {
+                RecorderMgr.RecordAction(this, useItem, type);
+                return;
+            }
+
             int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MAX_LEVEL, useItem.Level);
 
             if (requiredLevel > Level)
@@ -10004,6 +10052,7 @@ namespace DOL.GS
             var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
             var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
             var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var recorderTask = DOLDB<DBCharacterRecorder>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(InternalID));
 
             SetCharacterClass(DBCharacter.Class);
             HandleWorldPosition();
@@ -10019,6 +10068,7 @@ namespace DOL.GS
             HandleMasterLevels(await masterLevelsTask);
             HandleStats(); // Should be done after loading gear, abilities, buffs.
             HandleTitles(); // Should be done after loading crafting skills.
+            HandleRecorders(await recorderTask);
 
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
@@ -10504,6 +10554,14 @@ namespace DOL.GS
                     m_titles.Add(title);
 
                 m_currentTitle = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType) ?? PlayerTitleMgr.ClearTitle;
+            }
+
+            // Captures 'this' — no need to pass a GamePlayer parameter.
+            // Called after ConfigureAwait(false) in DOLDB.SelectObjectsAsync, so JSON
+            // parsing inside BuildPlayerRecorders runs on the thread pool, not the game loop.
+            void HandleRecorders(IList<DBCharacterRecorder> dbEntries)
+            {
+                RecorderMgr.BuildPlayerRecorders(this, dbEntries);
             }
         }
 

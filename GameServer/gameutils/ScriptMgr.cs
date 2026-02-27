@@ -256,6 +256,23 @@ namespace DOL.GS
         {
             try
             {
+                // If the player is recording (or in pending-insert mode), intercept all commands except /recorder itself.
+                // We resolve via GuessCommand (handles abbreviations + aliases) and compare by reference to the canonical
+                // recorder GameCommand so that /rec, /recor, /recorder and any future alias all pass through correctly.
+                if (client?.Player != null && (RecorderMgr.IsPlayerRecording(client.Player) || RecorderMgr.HasPendingInsert(client.Player)))
+                {
+                    string[] tokens = ParseCmdLine(cmdLine);
+                    GameCommand recorderCmd = GetCommand("&recorder");
+                    // Use max privilege so the recorder command is always resolvable regardless of the player's account level.
+                    GameCommand resolved = tokens.Length > 0 ? GuessCommand(tokens[0], ePrivLevel.Admin) : null;
+
+                    if (!ReferenceEquals(resolved, recorderCmd))
+                    {
+                        RecorderMgr.RecordAction(client.Player, cmdLine);
+                        return true;
+                    }
+                }
+
                 string[] pars = ParseCmdLine(cmdLine);
                 GameCommand myCommand = GuessCommand(pars[0], (ePrivLevel) client.Account.PrivLevel);
 
