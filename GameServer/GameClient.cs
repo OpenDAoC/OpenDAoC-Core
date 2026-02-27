@@ -95,6 +95,7 @@ namespace DOL.GS
         public string MinorRev { get; set; } = string.Empty;
         public byte MajorBuild { get; set; } = 0;
         public byte MinorBuild { get; set; } = 0;
+        public int LastMacroToolTipID { get; set; } = 1;
 
         public GameClient(Socket socket) : base(socket) { }
 
