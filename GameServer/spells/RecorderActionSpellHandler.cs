@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
 
         public override bool StartSpell(GameLiving target)
         {
-            if (!(Caster is GamePlayer player))
+            if (Caster is not GamePlayer player)
                 return false;
             // 1. Standard Execution Path
             // Check if the spell object passed by the core is already our RecorderSpell type.
@@ -74,8 +74,7 @@ namespace DOL.GS.Spells
                 try { actions = JsonConvert.DeserializeObject<List<RecorderAction>>(recorderSpell.RecordData.ActionsJson); }
                 catch (Exception ex)
                 {
-                    if (log.IsErrorEnabled)
-                        log.Error($"[RECORDER] Error parsing actions for {player.Name}: {ex.Message}", ex);
+                    log.Error($"[RECORDER] Error parsing actions for {player.Name}: {ex.Message}", ex);
                     return;
                 }
             }
@@ -121,13 +120,31 @@ namespace DOL.GS.Spells
                                 ScriptMgr.HandleCommand(player.Client, action.Value);
                             break;
                         }
+                        case RecorderActionType.ItemCharge:
+                        {
+                            // Value is stored as "{type}:{itemName}". Parse the type from before
+                            // the colon; fall back to primary charge (1) if parsing fails.
+                            int chargeType = 1;
+                            if (!string.IsNullOrEmpty(action.Value))
+                            {
+                                int sep = action.Value.IndexOf(':');
+                                int.TryParse(sep >= 0 ? action.Value[..sep] : action.Value, out chargeType);
+                                if (chargeType < 1) chargeType = 1;
+                            }
+                            player.UseSlot(action.ID, chargeType);
+                            break;
+                        }
+                        case RecorderActionType.WeaponSwitch:
+                        {
+                            player.UseSlot(action.ID, 0);
+                            break;
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                if (log.IsErrorEnabled)
-                    log.Error($"[RECORDER] Error executing macro for {player.Name}: {ex.Message}", ex);
+                log.Error($"[RECORDER] Error executing macro for {player.Name}: {ex.Message}", ex);
             }
         }
     }

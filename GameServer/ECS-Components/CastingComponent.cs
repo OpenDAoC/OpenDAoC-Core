@@ -303,7 +303,7 @@ namespace DOL.GS
             public override void StartSkill()
             {
                 // We stop casting when we are recording & record the cast / or safe the icon
-                if (CastingComponent.Owner is GamePlayer recPlayer && (RecorderMgr.IsPlayerRecording(recPlayer) || RecorderMgr.HasPendingIcon(recPlayer)))
+                if (CastingComponent.Owner is GamePlayer recPlayer && (RecorderMgr.IsPlayerRecording(recPlayer) || RecorderMgr.HasPendingIcon(recPlayer) || RecorderMgr.HasPendingInsert(recPlayer)))
                 {
                     RecorderMgr.RecordAction(recPlayer, Spell);
                     return;
@@ -438,7 +438,7 @@ namespace DOL.GS
             {
                 // stop ability when we are recording & record the ability
                 if (CastingComponent.Owner is GamePlayer recPlayer &&
-                    RecorderMgr.IsPlayerRecording(recPlayer))
+                    (RecorderMgr.IsPlayerRecording(recPlayer) || RecorderMgr.HasPendingInsert(recPlayer)))
                 {
                     RecorderMgr.RecordAction(recPlayer, Ability);
                     return;

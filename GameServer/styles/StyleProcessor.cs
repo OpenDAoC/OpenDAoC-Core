@@ -137,7 +137,7 @@ namespace DOL.GS.Styles
 				return;
 
 			// We stop attack when we are recording & record the style
-			if (RecorderMgr.IsPlayerRecording(player))
+			if (RecorderMgr.IsPlayerRecording(player) || RecorderMgr.HasPendingInsert(player))
 			{
 				RecorderMgr.RecordAction(player, style);
 				return;

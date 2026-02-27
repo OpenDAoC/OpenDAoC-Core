@@ -256,11 +256,21 @@ namespace DOL.GS
         {
             try
             {
-                // record a command if the player is currently recording macros & stop command
-                if (client?.Player != null && RecorderMgr.IsPlayerRecording(client.Player) && !cmdLine.StartsWith("&recorder", StringComparison.OrdinalIgnoreCase))
+                // If the player is recording (or in pending-insert mode), intercept all commands except /recorder itself.
+                // We resolve via GuessCommand (handles abbreviations + aliases) and compare by reference to the canonical
+                // recorder GameCommand so that /rec, /recor, /recorder and any future alias all pass through correctly.
+                if (client?.Player != null && (RecorderMgr.IsPlayerRecording(client.Player) || RecorderMgr.HasPendingInsert(client.Player)))
                 {
-                    RecorderMgr.RecordAction(client.Player, cmdLine);
-                    return true;
+                    string[] tokens = ParseCmdLine(cmdLine);
+                    GameCommand recorderCmd = GetCommand("&recorder");
+                    // Use max privilege so the recorder command is always resolvable regardless of the player's account level.
+                    GameCommand resolved = tokens.Length > 0 ? GuessCommand(tokens[0], ePrivLevel.Admin) : null;
+
+                    if (!ReferenceEquals(resolved, recorderCmd))
+                    {
+                        RecorderMgr.RecordAction(client.Player, cmdLine);
+                        return true;
+                    }
                 }
 
                 string[] pars = ParseCmdLine(cmdLine);

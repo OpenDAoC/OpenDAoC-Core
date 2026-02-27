@@ -150,6 +150,13 @@ namespace DOL.GS
         }
 
         /// <summary>
+        /// When set, the next recorded action will be inserted into this recorder at
+        /// <see cref="PendingInsertRecorderIndex"/> instead of appending to a recording session.
+        /// </summary>
+        public string PendingInsertRecorderName { get; set; }
+        public int PendingInsertRecorderIndex { get; set; }
+
+        /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
         /// </summary>
         public override bool CanTradeAnyItem { get { return Client.Account.PrivLevel > (int)ePrivLevel.Player; } }
@@ -6729,6 +6736,12 @@ namespace DOL.GS
                             if (type != 0 || ActiveWeaponSlot == eActiveWeaponSlot.Standard)
                                 break;
 
+                            if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+                            {
+                                RecorderMgr.RecordAction(this, slot, useItem?.GetName(0, false) ?? "weapon");
+                                return;
+                            }
+
                             SwitchWeapon(eActiveWeaponSlot.Standard);
                             Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
                             return;
@@ -6737,6 +6750,12 @@ namespace DOL.GS
                         {
                             if (type != 0 || ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
                                 break;
+
+                            if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+                            {
+                                RecorderMgr.RecordAction(this, slot, useItem?.GetName(0, false) ?? "weapon");
+                                return;
+                            }
 
                             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
                             Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
@@ -6749,6 +6768,12 @@ namespace DOL.GS
 
                             if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                             {
+                                if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+                                {
+                                    RecorderMgr.RecordAction(this, slot, useItem?.GetName(0, false) ?? "ranged weapon");
+                                    return;
+                                }
+
                                 SwitchWeapon(eActiveWeaponSlot.Distance);
 
                                 if (useItem.Object_Type == (int)eObjectType.Instrument)
@@ -7143,6 +7168,13 @@ namespace DOL.GS
         /// <param name="type">1 == use1, 2 == use2</param>
         protected virtual void UseItemCharge(DbInventoryItem useItem, int type)
         {
+            // Intercept for the recorder: capture the charge-use intent before any processing.
+            if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+            {
+                RecorderMgr.RecordAction(this, useItem, type);
+                return;
+            }
+
             int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MAX_LEVEL, useItem.Level);
 
             if (requiredLevel > Level)
