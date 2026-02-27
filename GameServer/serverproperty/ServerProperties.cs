@@ -2542,6 +2542,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
 		public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
 
+		[ServerProperty("controls_automation", "enable_recorder", "Enable or disable the Recorder macro system (players can record and replay action sequences).", false)]
+		public static bool ENABLE_RECORDER;
+
 		#endregion
 
 		#region RECORDER

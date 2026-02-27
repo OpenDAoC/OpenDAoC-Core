@@ -36,9 +36,9 @@ namespace DOL.GS
         #region Initialization
         public static bool Init()
         {
-            if (!Properties.RECORDER_ENABLED)
+            if (!Properties.ENABLE_RECORDER)
             {
-                log.Info("[RECORDER] System disabled via server property 'recorder_enabled'.");
+                log.Info("[RECORDER] System disabled via server property 'enable_recorder'.");
                 return false;
             }
             log.Debug("[RECORDER] System fully initialized.");
@@ -75,79 +75,75 @@ namespace DOL.GS
         {
             if (player?.Client == null) return;
 
-            // Lock on a dedicated per-player Lock instance (the new System.Threading.Lock
-            // class). This avoids any global contention between different players while
-            // also using the Lock class's built-in adaptive spin-wait — as requested.
-            lock (player.RecorderLock)
-                try
+            try
+            {
+                // Sort by auto-increment ID to preserve the order the macros were saved in.
+                var ordered = dbEntries.OrderBy(r => r.ID);
+
+                player.SpellMacros.Clear();
+
+                // Reuse one StringBuilder across all entries to avoid per-entry heap allocations.
+                var tooltipBuilder = new StringBuilder();
+
+                foreach (var entry in ordered)
                 {
-                    // Sort by auto-increment ID to preserve the order the macros were saved in.
-                    var ordered = dbEntries.OrderBy(r => r.ID);
-
-                    player.SpellMacros.Clear();
-
-                    // Reuse one StringBuilder across all entries to avoid per-entry heap allocations.
-                    var tooltipBuilder = new StringBuilder();
-
-                    foreach (var entry in ordered)
+                    // Parse JSON once — used for both tooltip and the cached Actions list in RecorderSpell.
+                    List<RecorderAction> parsedActions = null;
+                    tooltipBuilder.Clear().Append("[Recorder]\n");
+                    try
                     {
-                        // Parse JSON once — used for both tooltip and the cached Actions list in RecorderSpell.
-                        List<RecorderAction> parsedActions = null;
-                        tooltipBuilder.Clear().Append("[Recorder]\n");
-                        try
+                        parsedActions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
+                        if (parsedActions != null)
                         {
-                            parsedActions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
-                            if (parsedActions != null)
-                            {
-                                // GetActionDescription covers all action types in one place —
-                                // avoids duplicating formatting logic here.
-                                foreach (var action in parsedActions)
-                                    tooltipBuilder.AppendLine(GetActionDescription(action, player.CharacterClass.ID));
-                            }
+                            // GetActionDescription covers all action types in one place —
+                            // avoids duplicating formatting logic here.
+                            foreach (var action in parsedActions)
+                                tooltipBuilder.AppendLine(GetActionDescription(action, player.CharacterClass.ID));
                         }
-                        catch (Exception ex)
-                        {
-                            parsedActions = null;
-                            tooltipBuilder.Clear().Append("Recorded Macro (Data Error)");
-                            log.Error($"[RECORDER] Error parsing actions for {entry.Name}: {ex}");
-                        }
-
-                        int uniqueID = SpellIdBase + player.SpellMacros.Count;
-                        int uniqueLevel = player.SpellMacros.Count + 1;
-                        int tooltipId = player.Client.LastMacroToolTipID++;
-
-                        DbSpell db = new DbSpell
-                        {
-                            Name = entry.Name,
-                            Icon = (ushort)entry.IconID,
-                            ClientEffect = (ushort)entry.IconID,
-                            SpellID = uniqueID,
-                            Target = "Self",
-                            CastTime = 0,
-                            Type = RecorderSpellTypeString,
-                            Description = tooltipBuilder.ToString(),
-                            TooltipId = (ushort)tooltipId,
-                            Power = 0,
-                        };
-
-                        player.SpellMacros.Add(new RecorderSpell(db, uniqueLevel, entry, parsedActions));
+                    }
+                    catch (Exception ex)
+                    {
+                        parsedActions = null;
+                        tooltipBuilder.Clear().Append("Recorded Macro (Data Error)");
+                        log.Error($"[RECORDER] Error parsing actions for {entry.Name}: {ex}");
                     }
 
-                    // Add the specialization once if not already present - never remove it,
-                    // because GetSpellLinesForLiving always returns the line (even when empty)
-                    // so the client receives a 0-spell packet that clears the slot.
-                    // AddSpecialization is a no-op if the key already exists.
-                    player.AddSpecialization(new RecorderSpecialization(RecorderLineKey, RecorderDisplayName, 1));
+                    int uniqueID = SpellIdBase + player.SpellMacros.Count;
+                    int uniqueLevel = player.SpellMacros.Count + 1;
+                    int tooltipId = player.LastMacroToolTipID++;
 
-                    // SendUpdatePlayerSkills internally calls GetAllUsableListSpells(true) and
-                    // SendNonHybridSpellLines, which together push the updated (possibly empty)
-                    // Recorder line to the client so the slot is properly cleared.
-                    player.Out.SendUpdatePlayerSkills(true);
+                    DbSpell db = new DbSpell
+                    {
+                        Name = entry.Name,
+                        Icon = (ushort)entry.IconID,
+                        ClientEffect = (ushort)entry.IconID,
+                        SpellID = uniqueID,
+                        Target = "Self",
+                        CastTime = 0,
+                        Type = RecorderSpellTypeString,
+                        Description = tooltipBuilder.ToString(),
+                        TooltipId = (ushort)tooltipId,
+                        Power = 0,
+                    };
+
+                    player.SpellMacros.Add(new RecorderSpell(db, uniqueLevel, entry, parsedActions));
                 }
-                catch (Exception ex)
-                {
-                    log.Error($"[RECORDER REFRESH ERROR] {ex}");
-                }
+
+                // Add the specialization once if not already present - never remove it,
+                // because GetSpellLinesForLiving always returns the line (even when empty)
+                // so the client receives a 0-spell packet that clears the slot.
+                // AddSpecialization is a no-op if the key already exists.
+                player.AddSpecialization(new RecorderSpecialization(RecorderLineKey, RecorderDisplayName, 1));
+
+                // SendUpdatePlayerSkills internally calls GetAllUsableListSpells(true) and
+                // SendNonHybridSpellLines, which together push the updated (possibly empty)
+                // Recorder line to the client so the slot is properly cleared.
+                player.Out.SendUpdatePlayerSkills(true);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"[RECORDER REFRESH ERROR] {ex}");
+            }
         }
         #endregion
 
