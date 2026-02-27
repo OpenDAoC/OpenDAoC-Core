@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS;
-using System.Collections.Generic;
+using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS
 {
@@ -242,8 +243,8 @@ namespace DOL.AI.Brain
 			{
 				foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
 				{
-					if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && player.CharacterClass.ID != (int)eCharacterClass.Necromancer)
-						{
+					if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && player.CharacterClass is not ClassDisciple)
+					{
 						if (!Enemys_To_Debuff.Contains(player))
 							Enemys_To_Debuff.Add(player);
 					}

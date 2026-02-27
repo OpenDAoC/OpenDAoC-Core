@@ -1,10 +1,10 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using System;
-using DOL.GS;
-using DOL.Database;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.AI.Brain;
+using DOL.GS;
+using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS
 {
@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
 
 				if (nearbyPoint != null)
 				{
-					if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+					if (player.CharacterClass is ClassDisciple && player.ControlledBrain != null)
 					{
 						if (player.ControlledBrain.Body != null)
 						{
@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
 				}
 				else 
 				{
-					if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+					if (player.CharacterClass is ClassDisciple && player.ControlledBrain != null)
 					{
 						if (player.ControlledBrain.Body != null && DD_Enemys.Contains(player.ControlledBrain.Body))
 						{
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 
 			if (player != null && player.Client.Account.PrivLevel != 1)
 			{
-				if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+				if (player.CharacterClass is ClassDisciple && player.ControlledBrain != null)
 				{
 					if (player.ControlledBrain.Body != null)
 					{
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			if (player?.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.ControlledBrain != null)
+			if (player?.CharacterClass is ClassDisciple && player.ControlledBrain != null)
 			{
 				NecromancerPet pet = (NecromancerPet) player.ControlledBrain.Body;
 				if (pet is {IsAlive: false} && DD_Enemys.Contains(pet))

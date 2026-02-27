@@ -1,11 +1,14 @@
 using System;
 using DOL.GS.Effects;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS.Spells
 {
     [SpellHandler(eSpellType.StarsProc)]
     public class StarsProc : SpellHandler
     {
+        public StarsProc(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
             return base.CheckBeginCast(selectedTarget);
@@ -72,13 +75,13 @@ namespace DOL.GS.Spells
                 return 0;
             }
         }
-
-        public StarsProc(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
     }
 
     [SpellHandler(eSpellType.StarsProc2)]
     public class StarsProc2 : SpellHandler
     {
+        public StarsProc2(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
         public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
@@ -86,7 +89,7 @@ namespace DOL.GS.Spells
 
         public override void OnEffectStart(GameSpellEffect effect)
         {
-            base.OnEffectStart(effect);            
+            base.OnEffectStart(effect);
             effect.Owner.DebuffCategory[eProperty.Dexterity] += (int)m_spell.Value;
             effect.Owner.DebuffCategory[eProperty.Strength] += (int)m_spell.Value;
             effect.Owner.DebuffCategory[eProperty.Constitution] += (int)m_spell.Value;
@@ -101,12 +104,15 @@ namespace DOL.GS.Spells
             
             if(effect.Owner is GamePlayer)
             {
-                GamePlayer player = effect.Owner as GamePlayer;  
-                if(m_spell.LifeDrainReturn>0) if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer) player.Model=(ushort)m_spell.LifeDrainReturn;
+                GamePlayer player = effect.Owner as GamePlayer;
+
+                if (m_spell.LifeDrainReturn > 0 && player.CharacterClass is not ClassDisciple)
+                    player.Model = (ushort) m_spell.LifeDrainReturn;
+
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
                 player.UpdatePlayerStatus();
-                player.Out.SendUpdatePlayer();             	
+                player.Out.SendUpdatePlayer();
             }
         }
 
@@ -126,8 +132,11 @@ namespace DOL.GS.Spells
 
             if(effect.Owner is GamePlayer)
             {
-                GamePlayer player = effect.Owner as GamePlayer;  
-                if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer) player.Model = player.CreationModel;
+                GamePlayer player = effect.Owner as GamePlayer;
+
+                if (player.CharacterClass is not ClassDisciple)
+                    player.Model = player.CreationModel;
+
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
                 player.UpdatePlayerStatus();
@@ -140,6 +149,7 @@ namespace DOL.GS.Spells
         public override void ApplyEffectOnTarget(GameLiving target)
         {
             base.ApplyEffectOnTarget(target);
+
             if (target.Realm == 0 || Caster.Realm == 0)
             {
                 target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
@@ -151,7 +161,5 @@ namespace DOL.GS.Spells
                 Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
             }
         }
-
-        public StarsProc2(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 }

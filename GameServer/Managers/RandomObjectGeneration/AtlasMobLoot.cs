@@ -1,7 +1,6 @@
-﻿using DOL.AI.Brain;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using DOL.AI.Brain;
 using DOL.Database;
 
 namespace DOL.GS {

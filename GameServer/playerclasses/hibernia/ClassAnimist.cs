@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 namespace DOL.GS.PlayerClass
 {
 	[CharacterClass((int)eCharacterClass.Animist, "Animist", "Forester")]
-	public class ClassAnimist : CharacterClassAnimist
+	public class ClassAnimist : ClassForester
 	{
 		public ClassAnimist()
 			: base()

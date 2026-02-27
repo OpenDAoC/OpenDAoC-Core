@@ -862,7 +862,7 @@ namespace DOL.GS
 
             private void Quit()
             {
-                if ((eCharacterClass)_owner.CharacterClass.ID is eCharacterClass.Necromancer && _owner.HasShadeModel)
+                if (_owner.CharacterClass is ClassDisciple && _owner.HasShadeModel)
                     _owner.Shade(false);
 
                 _owner.Out.SendPlayerQuit(false);
@@ -12170,7 +12170,7 @@ namespace DOL.GS
                 // Aredhel: Bit fishy, necro in caster from could use
                 // Traitor's Dagger... FIXME!
 
-                if (CharacterClass.ID == (int)eCharacterClass.Necromancer)
+                if (CharacterClass is ClassDisciple)
                     return 822;
 
                 switch (Race)
