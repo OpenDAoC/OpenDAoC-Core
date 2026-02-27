@@ -18,7 +18,7 @@ namespace DOL.Database
         [DataElement(AllowDbNull = false)] public string ActionsJson { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public DateTime LastTimeRowUpdated
+        new public DateTime LastTimeRowUpdated
         {
             get => m_lasttimerowupdated;
             set => m_lasttimerowupdated = value;
