@@ -170,8 +170,8 @@ namespace DOL.GS
 
         public virtual bool IsBetterThan(ECSGameEffect effect)
         {
-            return SpellHandler.Spell.Value * Effectiveness > effect.SpellHandler.Spell.Value * effect.Effectiveness ||
-                SpellHandler.Spell.Damage * Effectiveness > effect.SpellHandler.Spell.Damage * effect.Effectiveness;
+            return SpellHandler.Spell.Value * Effectiveness >= effect.SpellHandler.Spell.Value * effect.Effectiveness ||
+                SpellHandler.Spell.Damage * Effectiveness >= effect.SpellHandler.Spell.Damage * effect.Effectiveness;
         }
 
         public virtual bool IsConcentrationEffect() { return false; }
