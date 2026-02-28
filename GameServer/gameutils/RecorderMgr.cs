@@ -303,7 +303,7 @@ namespace DOL.GS
             // Check action limit before allowing append
             if (Properties.RECORDER_MAX_ACTIONS > 0 && count >= Properties.RECORDER_MAX_ACTIONS)
             {
-                player.Out.SendMessage($"[{name}] has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -349,7 +349,7 @@ namespace DOL.GS
             // Check action limit before allowing insert
             if (Properties.RECORDER_MAX_ACTIONS > 0 && actions.Count >= Properties.RECORDER_MAX_ACTIONS)
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -401,7 +401,7 @@ namespace DOL.GS
                 // Check action limit before inserting
                 if (actions.Count >= Properties.RECORDER_MAX_ACTIONS)
                 {
-                    player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                     return true;
                 }
                 
@@ -467,7 +467,7 @@ namespace DOL.GS
             // Check action limit before adding
             if (!CanAddAction(player))
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -492,7 +492,7 @@ namespace DOL.GS
             // Check action limit before adding
             if (!CanAddAction(player))
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -516,7 +516,7 @@ namespace DOL.GS
             // Check action limit before adding
             if (!CanAddAction(player))
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -543,7 +543,7 @@ namespace DOL.GS
             // Check action limit before adding
             if (!CanAddAction(player))
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -578,7 +578,7 @@ namespace DOL.GS
             // Check action limit before adding
             if (!CanAddAction(player))
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -621,7 +621,7 @@ namespace DOL.GS
             // Check action limit before adding
             if (!CanAddAction(player))
             {
-                player.Out.SendMessage($"The recorder has reached the maximum number of actions of {Properties.RECORDER_MAX_ACTIONS}!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"The recorder has reached the maximum number of {Properties.RECORDER_MAX_ACTIONS} actions!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
