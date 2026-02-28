@@ -43,7 +43,7 @@ namespace DOL.GS
         #region Async Import Throttling
         // Lock-free tracking using ConcurrentDictionary. Prevents concurrent imports per player
         // and throttles rapid successive imports. All operations are atomic/non-blocking.
-        private static readonly ConcurrentDictionary<int, DateTime> _lastImportTime = new();
+        private static readonly ConcurrentDictionary<string, DateTime> _lastImportTime = new();
         #endregion
 
         #region Initialization
@@ -845,7 +845,7 @@ namespace DOL.GS
             if (targetPlayer?.Client == null || string.IsNullOrEmpty(sourceCharName) || string.IsNullOrEmpty(sourceRecorderName))
                 return;
 
-            int playerId = targetPlayer.InternalID;
+            string playerId = targetPlayer.InternalID;
 
             // Check throttling: prevent spam imports from same player
             if (_lastImportTime.TryGetValue(playerId, out var lastTime))
