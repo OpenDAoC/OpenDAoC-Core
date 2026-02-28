@@ -17,33 +17,34 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
-    // This class manages the recording, storage, and execution of player‑defined macros (called "recorders").
-    // It provides methods to start/stop recordings, save them to the database, and refresh
-    // It's used to record multiple spells/abilities/styles/commands in sequence, and replay them via a single macro button.
+    /// <summary>
+    /// Manages the recording, storage, and execution of player-defined macros called "recorders".
+    /// Provides methods to start/stop recordings, save them to the database, execute them as spells,
+    /// and manage the recorder spellbook. Recorders let players record multiple spells, abilities, 
+    /// styles, and commands in sequence and replay them via a single macro button on their quickbar.
+    /// </summary>
     public class RecorderMgr
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+        #region Constants
         public const string RecorderLineKey = "Recorder";
-        public const string RecorderDisplayName = "Recorder"; // Name which is displayed ingame
-        public const int RecorderBaseIcon = 11130;      // Animist DD Icon as default
+        public const string RecorderDisplayName = "Recorder";
+        public const int RecorderBaseIcon = 11130;      // Default icon: Animist DD
 
-        // Base offset added to SpellID so recorder macro IDs never clash with real spell IDs.
-        private const int SpellIdBase = 100_000;
+        private const int SpellIdBase = 100_000;        // Base offset for macro spell IDs
+        private const int ListPreviewActionCount = 3;   // Max actions shown in /recorder list
+        private const int ImportThrottleMilliseconds = 3000; // Min time between imports per player
 
-        // Maximum number of actions shown inline when listing recorders via /recorder list.
-        private const int ListPreviewActionCount = 3;
-
-        // Limits are configured via server properties (recorder_max_actions / recorder_max_per_player / recorder_max_name_length).
-
-        // Async import throttling: Lock-free tracking using ConcurrentDictionary.
-        // Prevents concurrent imports per player and throttles rapid successive imports.
-        // No synchronous locks on game thread — all operations are atomic/non-blocking.
-        private static readonly ConcurrentDictionary<int, Task> _ongoingImports = new();
-        private static readonly ConcurrentDictionary<int, DateTime> _lastImportTime = new();
-        private const int ImportThrottleMilliseconds = 3000; // Minimum 3 seconds between imports
-
-        // Cached string form of the spell type — avoids a ToString() allocation per entry build.
+        // Cached string for spell type to avoid ToString() allocation per build
         private static readonly string RecorderSpellTypeString = eSpellType.RecorderAction.ToString();
+        #endregion
+
+        #region Async Import Throttling
+        // Lock-free tracking using ConcurrentDictionary. Prevents concurrent imports per player
+        // and throttles rapid successive imports. All operations are atomic/non-blocking.
+        private static readonly ConcurrentDictionary<int, DateTime> _lastImportTime = new();
+        #endregion
 
         #region Initialization
         public static bool Init()
@@ -104,7 +105,7 @@ namespace DOL.GS
                             // GetActionDescription covers all action types in one place —
                             // avoids duplicating formatting logic here.
                             foreach (var action in parsedActions)
-                                tooltipBuilder.AppendLine(GetActionDescription(action, player.CharacterClass.ID));
+                                tooltipBuilder.Append(GetActionDescription(action, player.CharacterClass.ID)).Append("\n");
                         }
                     }
                     catch (Exception ex)
@@ -214,6 +215,39 @@ namespace DOL.GS
         public static bool HasPendingInsert(GamePlayer player)
         {
             return player != null && !string.IsNullOrEmpty(player.PendingInsertRecorderName);
+        }
+
+        /// <summary>
+        /// Checks if adding an action would exceed the max action limit for a recorder.
+        /// </summary>
+        /// <returns><c>true</c> if the action can be added; <c>false</c> if limit exceeded.</returns>
+        private static bool CanAddAction(GamePlayer player, string recorderName = null)
+        {
+            if (Properties.RECORDER_MAX_ACTIONS <= 0)
+                return true; // No limit configured
+
+            // Check current recording session limit
+            if (!string.IsNullOrEmpty(recorderName))
+            {
+                // For insert mode — check the target recorder's action count
+                var entry = player.RecorderDbEntries?.FirstOrDefault(e => e.Name.Equals(recorderName, StringComparison.OrdinalIgnoreCase));
+                if (entry != null)
+                {
+                    try
+                    {
+                        var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
+                        if (actions != null && actions.Count >= Properties.RECORDER_MAX_ACTIONS)
+                            return false;
+                    }
+                    catch { return false; }
+                }
+            }
+            else if (player.RecorderActions != null && player.RecorderActions.Count >= Properties.RECORDER_MAX_ACTIONS)
+            {
+                return false; // Current session recording is at limit
+            }
+
+            return true;
         }
 
         // This gets called from /recorder start command
@@ -342,6 +376,14 @@ namespace DOL.GS
                 }
 
                 int insertAt = Math.Clamp(index - 1, 0, actions.Count);
+                
+                // Check action limit before inserting
+                if (actions.Count >= Properties.RECORDER_MAX_ACTIONS)
+                {
+                    player.Out.SendMessage($"[{name}] Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    return true;
+                }
+                
                 actions.Insert(insertAt, action);
 
                 entry.ActionsJson = JsonConvert.SerializeObject(actions);
@@ -401,6 +443,13 @@ namespace DOL.GS
             if (!IsPlayerRecording(player))
                 return;
 
+            // Check action limit before adding
+            if (!CanAddAction(player))
+            {
+                player.Out.SendMessage($"Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+
             // Record spells/styles/...
             player.RecorderActions.Add(action);
             int pos = player.RecorderActions.Count;
@@ -419,6 +468,13 @@ namespace DOL.GS
             if (!IsPlayerRecording(player))
                 return;
 
+            // Check action limit before adding
+            if (!CanAddAction(player))
+            {
+                player.Out.SendMessage($"Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+
             player.RecorderActions.Add(action);
             int pos = player.RecorderActions.Count;
             player.Out.SendMessage($"[{pos}] Style: {style.Name}", eChatType.CT_System, eChatLoc.CL_ChatWindow);
@@ -435,6 +491,13 @@ namespace DOL.GS
 
             if (!IsPlayerRecording(player))
                 return;
+
+            // Check action limit before adding
+            if (!CanAddAction(player))
+            {
+                player.Out.SendMessage($"Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
 
             player.RecorderActions.Add(action);
             int pos = player.RecorderActions.Count;
@@ -455,6 +518,13 @@ namespace DOL.GS
 
             if (!IsPlayerRecording(player))
                 return;
+
+            // Check action limit before adding
+            if (!CanAddAction(player))
+            {
+                player.Out.SendMessage($"Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
 
             player.RecorderActions.Add(action);
             int pos = player.RecorderActions.Count;
@@ -483,6 +553,13 @@ namespace DOL.GS
 
             if (!IsPlayerRecording(player))
                 return;
+
+            // Check action limit before adding
+            if (!CanAddAction(player))
+            {
+                player.Out.SendMessage($"Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
 
             player.RecorderActions.Add(action);
             int pos = player.RecorderActions.Count;
@@ -519,6 +596,13 @@ namespace DOL.GS
 
             if (!IsPlayerRecording(player))
                 return;
+
+            // Check action limit before adding
+            if (!CanAddAction(player))
+            {
+                player.Out.SendMessage($"Recorder is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
 
             player.RecorderActions.Add(action);
             int pos = player.RecorderActions.Count;
@@ -756,70 +840,78 @@ namespace DOL.GS
         }
 
 
-        // This needs testing
-        // Currently we only allow import from same account
-        public static void ImportRecorder(GamePlayer targetPlayer, string sourceCharName, string sourceRecorderName)
+        public static void ImportRecorderAsync(GamePlayer targetPlayer, string sourceCharName, string sourceRecorderName)
         {
             if (targetPlayer?.Client == null || string.IsNullOrEmpty(sourceCharName) || string.IsNullOrEmpty(sourceRecorderName))
                 return;
 
             int playerId = targetPlayer.InternalID;
 
-            // Lock-free design using ConcurrentDictionary (atomic ops, no game loop blocking)
-            // Check if an import is already in progress for this player
-            if (_ongoingImports.TryGetValue(playerId, out var ongoingTask) && !ongoingTask.IsCompleted)
+            // Check throttling: prevent spam imports from same player
+            if (_lastImportTime.TryGetValue(playerId, out var lastTime))
             {
-                targetPlayer.Out.SendMessage("An import is already in progress. Please wait for it to finish.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-
-            // 1. Find the source character by name first — avoids the previous bug where
-            //    a Name-only lookup could match a recorder from a different character.
-            var sourceChar = GameServer.Database.SelectObject<DbCoreCharacter>(
-                DB.Column("Name").IsEqualTo(sourceCharName));
-            if (sourceChar == null)
-            {
-                targetPlayer.Out.SendMessage($"Character '{sourceCharName}' not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
+                if ((DateTime.UtcNow - lastTime).TotalMilliseconds < ImportThrottleMilliseconds)
+                {
+                    targetPlayer.Out.SendMessage("Import is on cooldown. Please wait a moment before trying again.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
             }
 
-            // 2. Check same account before touching any recorder data
-            if (!string.Equals(sourceChar.AccountName, targetPlayer.Client.Account.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                targetPlayer.Out.SendMessage("Import failed. You can only import from your own account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
+            // Update throttle timestamp
+            _lastImportTime.AddOrUpdate(playerId, DateTime.UtcNow, (_, __) => DateTime.UtcNow);
 
-            // 3. Find the recorder scoped to that specific character
-            var sourceRecorder = GameServer.Database.SelectObject<DBCharacterRecorder>(
-                DB.Column("CharacterID").IsEqualTo(sourceChar.ObjectId)
-                .And(DB.Column("Name").IsEqualTo(sourceRecorderName)));
-            if (sourceRecorder == null)
+            try
             {
-                targetPlayer.Out.SendMessage($"'{sourceCharName}' has no recorder named '{sourceRecorderName}'.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
+                // Import uses only in-memory data — no database queries allowed on the game loop.
+                // All account character names and recorder data are already loaded at login.
 
-            // 4. Check for name collision on target
-            var existing = GameServer.Database.SelectObject<DBCharacterRecorder>(
-                DB.Column("CharacterID").IsEqualTo(targetPlayer.InternalID)
-                .And(DB.Column("Name").IsEqualTo(sourceRecorder.Name))
-            );
-            if (existing != null)
-            {
-                targetPlayer.Out.SendMessage($"A recorder named '{sourceRecorder.Name}' already exists. Rename or delete it first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
+                // 1. Find source character by name — use cached character names
+                string sourceCharId = null;
+                if (targetPlayer.AccountCharacterNames != null)
+                {
+                    var kvp = targetPlayer.AccountCharacterNames.FirstOrDefault(
+                        c => c.Value.Equals(sourceCharName, StringComparison.OrdinalIgnoreCase));
+                    sourceCharId = kvp.Value != null ? kvp.Key : null;
+                }
 
-            // 5. Copy and insert
-            var newRecorder = new DBCharacterRecorder
-            {
-                CharacterID = targetPlayer.InternalID,
-                Name = sourceRecorder.Name,
-                IconID = sourceRecorder.IconID,
-                ActionsJson = sourceRecorder.ActionsJson
-            };
-            GameServer.Database.AddObject(newRecorder);
-            RefreshPlayerRecorders(targetPlayer);
+                if (sourceCharId == null)
+                {
+                    targetPlayer.Out.SendMessage($"Character '{sourceCharName}' not found on your account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                // 2. Find the recorder scoped to that specific source character — use cached recorders
+                if (!targetPlayer.AccountRecordersByCharId.TryGetValue(sourceCharId, out var sourceCharRecorders) || sourceCharRecorders == null)
+                {
+                    targetPlayer.Out.SendMessage($"'{sourceCharName}' has no recorders.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                var sourceRecorder = sourceCharRecorders.FirstOrDefault(r => r.Name.Equals(sourceRecorderName, StringComparison.OrdinalIgnoreCase));
+                if (sourceRecorder == null)
+                {
+                    targetPlayer.Out.SendMessage($"'{sourceCharName}' has no recorder named '{sourceRecorderName}'.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                // 3. Check for name collision on target — use cached target recorders
+                if (targetPlayer.RecorderDbEntries != null && 
+                    targetPlayer.RecorderDbEntries.Any(e => e.Name.Equals(sourceRecorder.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    targetPlayer.Out.SendMessage($"A recorder named '{sourceRecorder.Name}' already exists. Rename or delete it first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                // 4. Copy and insert
+                var newRecorder = new DBCharacterRecorder
+                {
+                    CharacterID = targetPlayer.InternalID,
+                    Name = sourceRecorder.Name,
+                    IconID = sourceRecorder.IconID,
+                    ActionsJson = sourceRecorder.ActionsJson
+                };
+                GameServer.Database.AddObject(newRecorder);
+                RefreshPlayerRecorders(targetPlayer);
 
                 targetPlayer.Out.SendMessage($"Recorder '{sourceRecorder.Name}' imported from {sourceCharName}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
@@ -832,6 +924,8 @@ namespace DOL.GS
 
         /// <summary>
         /// Lists all recorders from all characters on the player's account.
+        /// Uses the in-memory <see cref="GamePlayer.AccountRecordersByCharId"/> and 
+        /// <see cref="GamePlayer.AccountCharacterNames"/> caches loaded at login.
         /// </summary>
         public static void ListAccountRecorders(GamePlayer player)
         {
@@ -840,72 +934,76 @@ namespace DOL.GS
 
             try
             {
-                // Get all characters for this account
-                var chars = GameServer.Database.SelectObjects<DbCoreCharacter>(
-                    DB.Column("AccountName").IsEqualTo(player.Client.Account.Name))
-                    .OrderBy(c => c.Name)
-                    .ToList();
-
-                if (chars.Count == 0)
+                // All account recorders are already loaded in RAM at login via AccountRecordersByCharId.
+                // No DB query needed — just display what's cached.
+                if (player.AccountRecordersByCharId == null || player.AccountRecordersByCharId.Count == 0)
                 {
-                    player.Out.SendMessage("No characters found on your account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("No recorders found on any of your characters.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 var lines = new List<string>();
                 bool hasAnyRecorders = false;
 
-                // Fetch all chars for this account, then all their recorder rows in one
-                // batched query using IsIn rather than N individual selects.
-                var charIds = chars.Select(c => c.ObjectId).ToList();
-                var allRecorders = GameServer.Database.SelectObjects<DBCharacterRecorder>(
-                    DB.Column("CharacterID").IsIn(charIds))
-                    .GroupBy(r => r.CharacterID)
-                    .ToDictionary(g => g.Key, g => g.OrderBy(r => r.Name).ToList());
-
-                foreach (var character in chars)
+                // Iterate through cached recorders and display with character names from cache.
+                foreach (var kvp in player.AccountRecordersByCharId)
                 {
-                    if (!allRecorders.TryGetValue(character.ObjectId, out var recorders) || recorders.Count == 0)
+                    var charId = kvp.Key;
+                    var recorders = kvp.Value;
+                    
+                    if (recorders == null || recorders.Count == 0)
                         continue;
 
-                hasAny = true;
-                string className = ((eCharacterClass)character.Class).ToString();
-                lines.Add($"{character.Name}  ({className}):");
+                    hasAnyRecorders = true;
 
-                foreach (var entry in entries.OrderBy(e => e.Name))
-                {
-                    lines.Add(entry.Name);
+                    // Look up character name from cache; fall back to ID if not found.
+                    string charName = player.AccountCharacterNames != null && player.AccountCharacterNames.TryGetValue(charId, out var name)
+                        ? name
+                        : $"Character {charId}";
 
-                    try
+                    lines.Add($"{charName}:");
+
+                    foreach (var entry in recorders.OrderBy(e => e.Name))
                     {
-                        var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
-                        if (actions != null && actions.Count > 0)
+                        lines.Add(entry.Name);
+
+                        try
                         {
-                            for (int i = 0; i < Math.Min(actions.Count, ListPreviewActionCount); i++)
-                                lines.Add($"- {GetActionDescription(actions[i], character.Class)}");
+                            var actions = JsonConvert.DeserializeObject<List<RecorderAction>>(entry.ActionsJson);
+                            if (actions != null && actions.Count > 0)
+                            {
+                                for (int i = 0; i < Math.Min(actions.Count, ListPreviewActionCount); i++)
+                                    // Note: classId is not available from cached data; pass null for generic descriptions
+                                    lines.Add($"- {GetActionDescription(actions[i], null)}");
 
-                            if (actions.Count > ListPreviewActionCount)
-                                lines.Add($"... and {actions.Count - ListPreviewActionCount} more actions");
+                                if (actions.Count > ListPreviewActionCount)
+                                    lines.Add($"... and {actions.Count - ListPreviewActionCount} more actions");
 
-                            lines.Add("");
+                                lines.Add("");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Warn($"[RECORDER] could not parse actions for '{entry.Name}': {ex.Message}");
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        log.Warn($"[RECORDER] could not parse actions for '{entry.Name}' on '{character.Name}': {ex.Message}");
-                    }
+
+                    lines.Add("");
                 }
 
-                lines.Add("");
-            }
+                if (!hasAnyRecorders)
+                {
+                    player.Out.SendMessage("No recorders found on any of your characters.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
 
-            if (!hasAny)
+                player.Out.SendCustomTextWindow("Your Recorders", lines);
+            }
+            catch (Exception ex)
             {
-                player.Out.SendMessage("No recorders found on any of your characters.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
+                log.Error($"[RECORDER] Error listing recorders for {player.Name}: {ex.Message}", ex);
+                player.Out.SendMessage("An error occurred while listing recorders.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
-
-            player.Out.SendCustomTextWindow("Your Recorders", lines);
         }
 
         private static string GetActionDescription(RecorderAction action, int? classId = null)

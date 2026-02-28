@@ -274,7 +274,8 @@ namespace DOL.GS
                 if (client?.Player != null && myCommand.m_lvl == (uint)ePrivLevel.Player &&
                     (RecorderMgr.IsPlayerRecording(client.Player) || RecorderMgr.HasPendingInsert(client.Player)))
                 {
-                    GameCommand recorderCmd = GetCommand("&recorder");
+                    // Use GuessCommand for safety — get recorder command through normal privilege-aware resolution
+                    GameCommand recorderCmd = GuessCommand("&recorder", ePrivLevel.Player);
 
                     if (!ReferenceEquals(myCommand, recorderCmd))
                     {

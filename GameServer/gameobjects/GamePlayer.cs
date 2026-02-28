@@ -159,6 +159,13 @@ namespace DOL.GS
         public Dictionary<string, List<DBCharacterRecorder>> AccountRecordersByCharId { get; set; } = new();
 
         /// <summary>
+        /// Character name mappings for account characters, keyed by CharacterID.
+        /// Populated at login from <see cref="GameClient.Account.Characters"/> to support
+        /// displaying character names in /recorder list without database queries.
+        /// </summary>
+        public Dictionary<string, string> AccountCharacterNames { get; set; } = new();
+
+        /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
         /// </summary>
         public override bool CanTradeAnyItem { get { return Client.Account.PrivLevel > (int)ePrivLevel.Player; } }
@@ -10696,6 +10703,12 @@ namespace DOL.GS
                 AccountRecordersByCharId = allAccountEntries
                     .GroupBy(e => e.CharacterID)
                     .ToDictionary(g => g.Key, g => g.ToList());
+
+                // Cache character names by CharacterID for display in /recorder list.
+                // Character info comes from Client.Account.Characters loaded at login.
+                AccountCharacterNames = Client?.Account?.Characters?
+                    .ToDictionary(c => c.ObjectId.ToString(), c => c.Name)
+                    ?? new Dictionary<string, string>();
 
                 // RecorderDbEntries is the same List instance stored in the dict, so Add/Remove
                 // on RecorderDbEntries is automatically reflected in AccountRecordersByCharId.

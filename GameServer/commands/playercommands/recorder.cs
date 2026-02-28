@@ -14,7 +14,10 @@ namespace DOL.GS
     [CmdAttribute("&recorder", ePrivLevel.Player, "Recorder commands", "/recorder help")]
     public class RecorderCommandHandler : ICommandHandler
     {
-        // Short usage shown when the player types /recorder with no arguments or an unknown sub-command.
+        /// <summary>
+        /// Detailed help text shown when player types /recorder help.
+        /// Organized by category: Recording, Managing, Editing, Other.
+        /// </summary>
         private static readonly IList<string> HelpLines = new List<string>
         {
             "The Recorder lets you save a sequence of spells, styles, abilities and",
@@ -52,30 +55,25 @@ namespace DOL.GS
             "  Copy a recorder from another character on your account.",
         };
 
+        /// <summary>
+        /// Quick usage reference shown inline when player types /recorder with no args or unknown command.
+        /// Differs from HelpLines which is for the detailed help window.
+        /// </summary>
         private static readonly string[] UsageMessages =
         {
-            // Eden like, just an example what could be implemented for now
             "Recorder Usage",
             "/recorder start : Start recording the next spells/styles/abilities/commands",
             "/recorder save <name> : Save previously recorded actions as <name>",
-            //"/recorder sendkey <key> : Send specific key to the game client (ie: F, Space, etc)",         // This needs client adjustments
             "/recorder cancel : Cancel current recording",
             "/recorder icon <name> : Apply your next casted spell icon to recorder <name>",
-            "/recorder list : List all recorded actions",   // Sends a window to the player, with all characters from the account and displays all recorders with max 3 actions of a recorder
-            "/recorder delete <name> : Remove record <name>",
-            "/recorder rename <name> <newname> : Rename record <name> to <newname>",
-
-            // Need to check what param is really doing and if needed
-            //"/recorder param <parameter_name> <parameter_value> : Store text parameters to replace in commands; e.g. /recorder param assistname Rtha will replace '%assistname' by 'Rtha' in /assist %assistname",
-            //"/recorder param list : List all your text parameters",
-            //"/recorder param delete <name> : Remove text parameter <name>",
-            
-            "/recorder import <character_name> <record_name>", // [dualspec: 1 or 2]
-            //"/recorder info <name> : Display record information", // For what should we use this, if you right click you already get all info
+            "/recorder list : List all recorded actions on your account",
+            "/recorder delete <name> : Remove recorder <name>",
+            "/recorder rename <name> <newname> : Rename recorder <name> to <newname>",
+            "/recorder import <character_name> <record_name> : Copy a recorder from another character",
             "/recorder discard <name> <index> : Remove a specific action",
             "/recorder insert <name> <index> : Insert an action at the chosen position",
             "/recorder append <name> : Shortcut to insert at the end",
-            "/recorder help : How to use the recorder" // Explanation window, how to use recorder
+            "/recorder help : Show the full comprehensive help guide"
         };
 
         /// <inheritdoc />
@@ -191,7 +189,7 @@ namespace DOL.GS
                     break;
 
                 case "list":
-                    RecorderMgr.ListRecorders(client.Player);
+                    RecorderMgr.ListAccountRecorders(client.Player);
                     break;
 
                 default:

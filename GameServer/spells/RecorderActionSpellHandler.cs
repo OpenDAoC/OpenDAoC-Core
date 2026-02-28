@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.PacketHandler;
-using DOL.GS;
-using Newtonsoft.Json;
-using DOL.Logging;
 using System.Reflection;
+using DOL.GS;
+using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
+using DOL.Logging;
+using Newtonsoft.Json;
 
 namespace DOL.GS.Spells
 {
@@ -151,7 +151,8 @@ namespace DOL.GS.Spells
                             if (!string.IsNullOrEmpty(action.Value))
                             {
                                 int sep = action.Value.IndexOf(':');
-                                int.TryParse(sep >= 0 ? action.Value[..sep] : action.Value, out chargeType);
+                                if (sep >= 0)
+                                    int.TryParse(action.Value[..sep], out chargeType);
                                 if (chargeType < 1) chargeType = 1;
                             }
                             player.UseSlot(action.ID, chargeType);
