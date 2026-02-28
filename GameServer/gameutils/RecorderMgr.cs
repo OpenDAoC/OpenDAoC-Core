@@ -261,6 +261,13 @@ namespace DOL.GS
                 return;
             }
 
+            // Check per-player recorder limit
+            if (Properties.RECORDER_MAX_PER_PLAYER > 0 && player.RecorderDbEntries?.Count >= Properties.RECORDER_MAX_PER_PLAYER)
+            {
+                player.Out.SendMessage($"You have reached the maximum number of recorders ({Properties.RECORDER_MAX_PER_PLAYER}). Delete one before creating a new one.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+
             player.RecorderActions = new List<RecorderAction>();
             player.Out.SendMessage("Recording started. Use /recorder save <name> when done.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
         }
@@ -290,6 +297,13 @@ namespace DOL.GS
             {
                 log.Error($"[RECORDER] corrupt action data in '{name}': {ex}");
                 player.Out.SendMessage($"[{name}] Action data is corrupt. Contact a GM.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+
+            // Check action limit before allowing append
+            if (Properties.RECORDER_MAX_ACTIONS > 0 && count >= Properties.RECORDER_MAX_ACTIONS)
+            {
+                player.Out.SendMessage($"[{name}] is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed. Delete an action before appending.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -329,6 +343,13 @@ namespace DOL.GS
             if (index < 1 || index > actions.Count + 1)
             {
                 player.Out.SendMessage($"Invalid index. {name} has {actions.Count} action(s). Valid positions are 1 to {actions.Count + 1}.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+
+            // Check action limit before allowing insert
+            if (Properties.RECORDER_MAX_ACTIONS > 0 && actions.Count >= Properties.RECORDER_MAX_ACTIONS)
+            {
+                player.Out.SendMessage($"[{name}] is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed. Delete an action before inserting.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -627,6 +648,14 @@ namespace DOL.GS
                 return;
             }
 
+            // Check per-player recorder limit
+            if (Properties.RECORDER_MAX_PER_PLAYER > 0 && player.RecorderDbEntries?.Count >= Properties.RECORDER_MAX_PER_PLAYER)
+            {
+                player.Out.SendMessage($"You have reached the maximum number of recorders ({Properties.RECORDER_MAX_PER_PLAYER}). Delete one before saving a new one.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.RecorderActions = null;
+                return;
+            }
+
             // Auto-select the icon from the first recorded spell so the button looks
             // recognisable without the player having to run /recorder icon manually.
             int autoIconId = RecorderBaseIcon;
@@ -899,6 +928,13 @@ namespace DOL.GS
                     targetPlayer.RecorderDbEntries.Any(e => e.Name.Equals(sourceRecorder.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     targetPlayer.Out.SendMessage($"A recorder named '{sourceRecorder.Name}' already exists. Rename or delete it first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                // 3b. Check per-player recorder limit
+                if (Properties.RECORDER_MAX_PER_PLAYER > 0 && targetPlayer.RecorderDbEntries?.Count >= Properties.RECORDER_MAX_PER_PLAYER)
+                {
+                    targetPlayer.Out.SendMessage($"You have reached the maximum number of recorders ({Properties.RECORDER_MAX_PER_PLAYER}). Delete one before importing a new one.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
