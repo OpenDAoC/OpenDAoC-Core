@@ -303,7 +303,7 @@ namespace DOL.GS
             // Check action limit before allowing append
             if (Properties.RECORDER_MAX_ACTIONS > 0 && count >= Properties.RECORDER_MAX_ACTIONS)
             {
-                player.Out.SendMessage($"[{name}] is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed. Delete an action before appending.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"[{name}] has reached the maximum number of actions.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -349,7 +349,7 @@ namespace DOL.GS
             // Check action limit before allowing insert
             if (Properties.RECORDER_MAX_ACTIONS > 0 && actions.Count >= Properties.RECORDER_MAX_ACTIONS)
             {
-                player.Out.SendMessage($"[{name}] is full. Maximum {Properties.RECORDER_MAX_ACTIONS} actions allowed. Delete an action before inserting.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage($"[{name}] has reached the maximum number of actions.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
 
