@@ -68,7 +68,7 @@ namespace DOL.GS
 
         public bool Start()
         {
-            if (!CanStart)
+            if (!CanStart || !Owner.IsAlive)
                 return false;
 
             lock (_stateLock)
