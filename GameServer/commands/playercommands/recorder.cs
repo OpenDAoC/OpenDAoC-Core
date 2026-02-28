@@ -129,9 +129,9 @@ namespace DOL.GS
                     {
                         var oldName = args[2];
                         var newName = args[3];
-                        if (newName.Length > RecorderMgr.MaxRecorderNameLength)
+                        if (newName.Length > Properties.RECORDER_MAX_NAME_LENGTH)
                         {
-                            client.Player.Out.SendMessage($"Recorder name is too long (max {RecorderMgr.MaxRecorderNameLength} characters).", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            client.Player.Out.SendMessage($"Recorder name is too long (max {Properties.RECORDER_MAX_NAME_LENGTH} characters).", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         if (RecorderMgr.RenameRecording(client.Player, oldName, newName))
@@ -157,7 +157,8 @@ namespace DOL.GS
                     {
                         string sourceCharName = args[2];
                         string sourceRecorderName = args[3];
-                        RecorderMgr.ImportRecorder(client.Player, sourceCharName, sourceRecorderName);
+                        RecorderMgr.ImportRecorderAsync(client.Player, sourceCharName, sourceRecorderName);
+                        client.Player.Out.SendMessage("Import request processing. This may take a moment...", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                     }
                     break;
 

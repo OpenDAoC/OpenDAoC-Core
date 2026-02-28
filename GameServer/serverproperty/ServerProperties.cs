@@ -2545,6 +2545,15 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("controls_automation", "enable_recorder", "Enable or disable the Recorder macro system (players can record and replay action sequences).", false)]
 		public static bool ENABLE_RECORDER;
 
+		[ServerProperty("controls_automation", "recorder_max_actions", "Maximum number of actions a single recorder macro may hold.", 14)]
+		public static int RECORDER_MAX_ACTIONS;
+
+		[ServerProperty("controls_automation", "recorder_max_per_player", "Maximum number of recorder macros a single character may own.", 20)]
+		public static int RECORDER_MAX_PER_PLAYER;
+
+		[ServerProperty("controls_automation", "recorder_max_name_length", "Maximum character length of a recorder macro name.", 24)]
+		public static int RECORDER_MAX_NAME_LENGTH;
+
 		#endregion
 
 		public static IDictionary<string, object> AllCurrentProperties { get; private set; }
