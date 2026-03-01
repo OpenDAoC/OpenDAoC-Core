@@ -174,7 +174,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                     player.Out.SendDebugMessage($"Door {doorId} not found in door list, opening via GM door hack.");
 
-                    door = new()
+                    GameDoor dummyDoor = new()
                     {
                         DoorId = doorId,
                         X = player.X,
@@ -184,7 +184,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         CurrentRegion = player.CurrentRegion
                     };
 
-                    door.Open(player);
+                    dummyDoor.Open(player);
                 }
             }
         }
