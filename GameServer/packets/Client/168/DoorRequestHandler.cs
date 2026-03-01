@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
@@ -137,9 +135,9 @@ namespace DOL.GS.PacketHandler.Client.v168
             void UseDoor()
             {
                 GamePlayer player = client.Player;
-                GameDoorBase doorList = DoorMgr.GetDoorByID(doorId);
+                GameDoorBase door = DoorMgr.GetDoorByID(doorId);
 
-                if (doorList != null)
+                if (door != null)
                 {
                     bool success = false;
 
@@ -176,7 +174,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                     player.Out.SendDebugMessage($"Door {doorId} not found in door list, opening via GM door hack.");
 
-                    GameDoor door = new()
+                    door = new()
                     {
                         DoorId = doorId,
                         X = player.X,
@@ -186,10 +184,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         CurrentRegion = player.CurrentRegion
                     };
 
-                    if (player.IsWithinRadius(door, radius))
-                        door.Open(player);
-                    else
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    door.Open(player);
                 }
             }
         }

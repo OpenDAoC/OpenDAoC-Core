@@ -11,18 +11,18 @@ namespace DOL.GS.Commands
 		ePrivLevel.GM,
 		"GMCommands.door.Description",
 		"'/door show' toggle enable/disable add dialog when targeting doors",
-		"GMCommands.door.Add",
-		"GMCommands.door.Update",
-		"GMCommands.door.Delete",
-		"GMCommands.door.Name",
-		"GMCommands.door.Level",
-		"GMCommands.door.Realm",
-		"GMCommands.door.Guild",
+		"GMCommands.Door.Add",
+		"GMCommands.Door.Update",
+		"GMCommands.Door.Delete",
+		"GMCommands.Door.Name",
+		"GMCommands.Door.Level",
+		"GMCommands.Door.Realm",
+		"GMCommands.Door.Guild",
 		"'/door sound <soundid>'",
-		"GMCommands.door.Info",
-		"GMCommands.door.Heal",
-		"GMCommands.door.Locked",
-		"GMCommands.door.Unlocked")]
+		"GMCommands.Door.Info",
+		"GMCommands.Door.Heal",
+		"GMCommands.Door.Locked",
+		"GMCommands.Door.Unlocked")]
 	public class NewDoorCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		private int DoorID;
