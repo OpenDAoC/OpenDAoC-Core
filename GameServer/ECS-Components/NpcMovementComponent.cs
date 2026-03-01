@@ -678,6 +678,7 @@ namespace DOL.GS
                 if (IsMoving)
                     UpdateMovement(0);
 
+                UnsetFlag(MovementState.Pathfinding); // Ensures OnArrival doesn't try to reach remaining nodes.
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
@@ -704,7 +705,6 @@ namespace DOL.GS
 
             PathToInternal(destination, Math.Max((short) 20, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
-
         }
 
         public bool TrySnapToMesh(ref Vector3 destination)
