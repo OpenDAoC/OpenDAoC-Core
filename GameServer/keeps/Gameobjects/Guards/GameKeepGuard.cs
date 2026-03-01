@@ -337,7 +337,7 @@ namespace DOL.GS.Keeps
 					{
 						CurrentPathPoint = guard.CurrentPathPoint;
 						m_changingPositions = true;
-						MoveTo(guard.CurrentRegionID, guard.X - Util.Random(200, 350), guard.Y - Util.Random(200, 350), guard.Z, guard.Heading);
+						MoveTo(guard.CurrentRegionID, guard.X, guard.Y, guard.Z, guard.Heading);
 						m_changingPositions = false;
 						foundGuard = true;
 						break;
