@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Reflection;
 using DOL.GS.Movement;
 using DOL.Logging;
+using static DOL.GS.GameNPC;
 
 namespace DOL.GS
 {
@@ -48,10 +49,10 @@ namespace DOL.GS
 
         public bool ShouldPath(Zone zone, Vector3 target)
         {
-            if (Owner.Flags.HasFlag(GameNPC.eFlags.FLYING) || Owner is GameTaxi || Owner is GameTaxiBoat)
+            if (zone == null || !zone.IsPathfindingEnabled)
                 return false;
 
-            if (zone == null || !zone.IsPathfindingEnabled)
+            if ((Owner.Flags & (eFlags.FLYING | eFlags.SWIMMING)) != 0 || Owner is GameTaxi || Owner is GameTaxiBoat)
                 return false;
 
             // Target is in a different zone (TODO: implement this maybe? not sure if really required).
