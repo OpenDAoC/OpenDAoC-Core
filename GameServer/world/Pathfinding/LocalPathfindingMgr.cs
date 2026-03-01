@@ -399,6 +399,20 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
+        public override Vector3? GetClosestPoint(Zone zone, Vector3 position, EDtPolyFlags[] filters)
+        {
+            if (!TryGetQuery(zone, out NavMeshQuery query))
+                return null;
+
+            Span<float> center = stackalloc float[3];
+            FillRecastFloats(position, center);
+
+            Span<float> outVec = stackalloc float[3];
+            EDtStatus status = FindClosestPoint(query, center, _defaultHalfExtents, filters, outVec);
+
+            return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
+        }
+
         public override Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange, EDtPolyFlags[] filters)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
