@@ -129,7 +129,7 @@ namespace DOL.GS
 			}
 		}
 
-		public static void UnRegisterDoor(int doorID)
+		public static void UnregisterDoor(int doorID)
 		{
 			m_doors.Remove(doorID);
 		}

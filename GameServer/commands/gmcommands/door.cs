@@ -9,7 +9,7 @@ namespace DOL.GS.Commands
 	[Cmd(
 		"&door",
 		ePrivLevel.GM,
-		"GMCommands.door.Description",
+		"GMCommands.Door.Description",
 		"'/door show' toggle enable/disable add dialog when targeting doors",
 		"GMCommands.Door.Add",
 		"GMCommands.Door.Update",
@@ -162,10 +162,9 @@ namespace DOL.GS.Commands
 					door.Heading = targetDoor.Heading;
 					door.Health = 2545;
 					GameServer.Database.AddObject(door);
-					(targetDoor).AddToWorld();
-					client.Player.Out.SendMessage("Added door ID:" + DoorID + "to the database", eChatType.CT_Important,
-					                              eChatLoc.CL_SystemWindow);
-					//DoorMgr.Init( );
+					targetDoor.AddToWorld();
+					DoorMgr.RegisterDoor(targetDoor);
+					client.Player.Out.SendMessage("Added door ID:" + DoorID + "to the database", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -193,9 +192,9 @@ namespace DOL.GS.Commands
 					door.Z = client.Player.Z;
 					door.Heading = client.Player.Heading;
 					GameServer.Database.AddObject(door);
-					(targetDoor).AddToWorld();
-					client.Player.Out.SendMessage("Added door " + DoorID + " to the database", eChatType.CT_Important,
-					                              eChatLoc.CL_SystemWindow);
+					targetDoor.AddToWorld();
+					DoorMgr.RegisterDoor(targetDoor);
+					client.Player.Out.SendMessage("Added door " + DoorID + " to the database", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -203,21 +202,19 @@ namespace DOL.GS.Commands
 
 		private void delete(GameClient client, GameDoor targetDoor)
 		{
-			var DOOR = DOLDB<DbDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(DoorID));
+			var dbDoor = DOLDB<DbDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(DoorID));
 
-			if (DOOR != null)
+			if (dbDoor != null)
 			{
-				GameServer.Database.DeleteObject(DOOR);
+				GameServer.Database.DeleteObject(dbDoor);
 				client.Out.SendMessage("Door removed", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
 			}
-			if (DOOR == null)
-			{
-				client.Out.SendMessage("This door doesn't exist in the database", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-		}
+			else
+				client.Out.SendMessage("This door didn't exist in the database", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
+			DoorMgr.UnregisterDoor(DoorID);
+			targetDoor.RemoveFromWorld();
+		}
 
 		private void name(GameClient client, GameDoor targetDoor, string[] args)
 		{
