@@ -310,6 +310,7 @@ namespace DOL.GS.Commands
             return npc == null ||
                 npc.Flags.HasFlag(eFlags.FLYING) ||
                 npc is GameConsignmentMerchant ||
+                npc.InHouse ||
                 npc.RespawnInterval == 0;
         }
 
