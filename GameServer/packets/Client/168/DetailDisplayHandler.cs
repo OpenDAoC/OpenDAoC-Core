@@ -444,7 +444,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							WriteUsableClasses(objectInfo, item, client);
 							WriteMagicalBonuses(objectInfo, item, client, false);
-							WriteClassicShieldInfos(objectInfo, item, client);
+							WriteClassicShieldInfos(objectInfo, GameInventoryItem.Create(item), client);
 						}
 
 						if ((item.Item_Type != (int)eInventorySlot.Horse && item.Object_Type == (int)eObjectType.Magical)
@@ -616,7 +616,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
-                        WriteClassicWeaponInfos(objectInfo, invItem, client);
+                        WriteClassicWeaponInfos(objectInfo, GameInventoryItem.Create(invItem), client);
 						}
 
 						if (invItem.Object_Type >= (int)eObjectType.Cloth && invItem.Object_Type <= (int)eObjectType.Scale)
@@ -1228,7 +1228,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			output.Add(" ");
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicWeaponInfos.EffDamage"));
 
-			if (itemDps != 0)
+			if (effectiveDps != 0)
 				output.Add($"- {effectiveDps:0.0} DPS");
 		}
 
@@ -1236,6 +1236,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			WriteUsableClasses(output, item.Template, client);
 		}
+
 		public void WriteUsableClasses(IList<string> output, DbItemTemplate item, GameClient client)
 		{
 			if (string.IsNullOrEmpty(item.AllowedClasses))
@@ -1260,35 +1261,37 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		public void WriteClassicShieldInfos(IList<string> output, DbInventoryItem item, GameClient client)
 		{
-			WriteClassicShieldInfos(output, item.Template, client);
-		}
-		public void WriteClassicShieldInfos(IList<string> output, DbItemTemplate item, GameClient client)
-		{
-			double itemDPS = item.DPS_AF / 10.0;
-			double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * client.Player.Level);
-			double itemSPD = item.SPD_ABS / 10.0;
+			double itemDps = item.DPS_AF * 0.1;
+			double clampedDps = Math.Min(itemDps, client.Player.GetWeaponDpsCap());
+			double itemSpd = item.SPD_ABS * 0.1;
+			double effectiveDps = clampedDps * item.Quality * 0.01 * item.ConditionPercent * 0.01;
 
 			output.Add(" ");
 			output.Add(" ");
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.DamageMod"));
-			if (itemDPS != 0)
+
+			if (itemDps != 0)
 			{
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.BaseDPS", itemDPS.ToString("0.0")));
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.ClampDPS", clampedDPS.ToString("0.0")));
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.BaseDPS", itemDps.ToString("0.0")));
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.ClampDPS", clampedDps.ToString("0.0")));
 			}
+
 			if (item.SPD_ABS >= 0)
 			{
-				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.SPD", itemSPD.ToString("0.0")));
+				output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.SPD", itemSpd.ToString("0.0")));
 			}
 
 			output.Add(" ");
 
 			switch (item.Type_Damage)
 			{
-					case 1: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Small")); break;
-					case 2: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Medium")); break;
-					case 3: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Large")); break;
+				case 1: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Small")); break;
+				case 2: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Medium")); break;
+				case 3: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Large")); break;
 			}
+
+			if (effectiveDps != 0)
+				output.Add($"- {effectiveDps:0.0} DPS");
 		}
 
 		/// <summary>
