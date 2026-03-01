@@ -50,6 +50,53 @@ namespace DOL.GS
         public long NextWorldUpdate { get; set; }
         public Lock AwardLock { get; private set; } = new(); // Used by `AbstractServerRules` exclusively.
 
+        #region Recorder System
+
+        /// <summary>
+        /// Current active recorder actions for this player (used during recording sessions)
+        /// </summary>
+        public List<RecorderAction> RecorderActions { get; set; }
+
+        /// <summary>
+        /// Pending recorder name for icon assignment from next spell cast
+        /// </summary>
+        public string PendingRecorderIconName { get; set; }
+
+        /// <summary>
+        /// When set, the next recorded action will be inserted into this recorder at
+        /// <see cref="PendingInsertRecorderIndex"/> instead of appending to a recording session.
+        /// </summary>
+        public string PendingInsertRecorderName { get; set; }
+        public int PendingInsertRecorderIndex { get; set; }
+        
+        /// <summary>Auto-incrementing counter for assigning unique tooltip IDs to recorder macro spells.</summary>
+        public int LastMacroToolTipID { get; set; } = 1;
+
+        /// <summary>
+        /// In-memory cache of this player's recorder DB rows, loaded once at login and
+        /// kept up-to-date by <see cref="DOL.GS.RecorderMgr"/> on every create/delete/update.
+        /// This is the same list instance stored in <see cref="AccountRecordersByCharId"/> under this
+        /// character's ID — so Add/Remove on this list is automatically reflected there.
+        /// Never query the DB for these — mutate this list instead.
+        /// </summary>
+        public List<DBCharacterRecorder> RecorderDbEntries { get; set; } = new List<DBCharacterRecorder>();
+
+        /// <summary>
+        /// All recorder rows for every character on this player's account, keyed by CharacterID.
+        /// Loaded once at login via a single async IsIn query. Used by /recorder list to display
+        /// all characters' recorders without any mid-session DB reads.
+        /// </summary>
+        public Dictionary<string, List<DBCharacterRecorder>> AccountRecordersByCharId { get; set; } = new();
+
+        /// <summary>
+        /// Character name mappings for account characters, keyed by CharacterID.
+        /// Populated at login from <see cref="GameClient.Account.Characters"/> to support
+        /// displaying character names in /recorder list without database queries.
+        /// </summary>
+        public Dictionary<string, string> AccountCharacterNames { get; set; } = new();
+
+        #endregion
+
         #region Client/Character/VariousFlags
 
         /// <summary>
@@ -115,6 +162,13 @@ namespace DOL.GS
         /// Array that stores ML step completition
         /// </summary>
         private ArrayList m_mlSteps = new ArrayList();
+
+        protected List<Spell> m_spellMacros = new List<Spell>();
+        public List<Spell> SpellMacros 
+        { 
+            get => m_spellMacros; 
+            set => m_spellMacros = value; 
+        }
 
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
@@ -2904,7 +2958,7 @@ namespace DOL.GS
 
                 m_specialization.Add(skill.KeyName, skill);
 
-                if (notify)
+                if (notify && skill.KeyName != RecorderMgr.RecorderLineKey)
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpecialisation.YouLearn", skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
@@ -2926,7 +2980,8 @@ namespace DOL.GS
                 m_specialization.Remove(specKeyName);
             }
 
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            if (specKeyName != RecorderMgr.RecorderLineKey)
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.RemoveSpecialization.YouLose", playerSpec.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             return true;
         }
@@ -6686,6 +6741,12 @@ namespace DOL.GS
                         if (type != 0 || ActiveWeaponSlot == eActiveWeaponSlot.Standard)
                             break;
 
+                        if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+                        {
+                            RecorderMgr.RecordAction(this, slot, useItem?.GetName(0, false) ?? "weapon");
+                            return;
+                        }
+
                         SwitchWeapon(eActiveWeaponSlot.Standard);
                         Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
                         return;
@@ -6694,6 +6755,12 @@ namespace DOL.GS
                     {
                         if (type != 0 || ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
                             break;
+
+                        if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+                        {
+                            RecorderMgr.RecordAction(this, slot, useItem?.GetName(0, false) ?? "weapon");
+                            return;
+                        }
 
                         SwitchWeapon(eActiveWeaponSlot.TwoHanded);
                         Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
@@ -6706,6 +6773,13 @@ namespace DOL.GS
 
                         if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                         {
+                            
+                            if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+                            {
+                                RecorderMgr.RecordAction(this, slot, useItem?.GetName(0, false) ?? "ranged weapon");
+                                return;
+                            }
+
                             SwitchWeapon(eActiveWeaponSlot.Distance);
 
                             if(useItem.Object_Type == (int) eObjectType.Instrument)
@@ -7096,6 +7170,13 @@ namespace DOL.GS
         /// <param name="type">1 == use1, 2 == use2</param>
         protected virtual void UseItemCharge(DbInventoryItem useItem, int type)
         {
+            // Intercept for the recorder: capture the charge-use intent before any processing.
+            if (RecorderMgr.IsPlayerRecording(this) || RecorderMgr.HasPendingInsert(this))
+            {
+                RecorderMgr.RecordAction(this, useItem, type);
+                return;
+            }
+
             int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MAX_LEVEL, useItem.Level);
 
             if (requiredLevel > Level)
@@ -10004,6 +10085,10 @@ namespace DOL.GS
             var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
             var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
             var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            // Load recorder rows for all characters on this account in one batched query so that
+            // /recorder list can display every character without any further DB access.
+            var accountCharIds = Client.Account.Characters.Select(c => c.ObjectId).ToList();
+            var recorderTask = DOLDB<DBCharacterRecorder>.SelectObjectsAsync(DB.Column("CharacterID").IsIn(accountCharIds));
 
             SetCharacterClass(DBCharacter.Class);
             HandleWorldPosition();
@@ -10019,6 +10104,7 @@ namespace DOL.GS
             HandleMasterLevels(await masterLevelsTask);
             HandleStats(); // Should be done after loading gear, abilities, buffs.
             HandleTitles(); // Should be done after loading crafting skills.
+            HandleRecorders(await recorderTask);
 
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
@@ -10504,6 +10590,34 @@ namespace DOL.GS
                     m_titles.Add(title);
 
                 m_currentTitle = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType) ?? PlayerTitleMgr.ClearTitle;
+            }
+
+            // Captures 'this' — no need to pass a GamePlayer parameter.
+            // Called after ConfigureAwait(false) in DOLDB.SelectObjectsAsync, so JSON
+            // parsing inside BuildPlayerRecorders runs on the thread pool, not the game loop.
+            void HandleRecorders(IList<DBCharacterRecorder> allAccountEntries)
+            {
+                // Group by character so /recorder list can show all chars without any DB read.
+                AccountRecordersByCharId = allAccountEntries
+                    .GroupBy(e => e.CharacterID)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                // Cache character names by CharacterID for display in /recorder list.
+                // Character info comes from Client.Account.Characters loaded at login.
+                AccountCharacterNames = Client?.Account?.Characters?
+                    .ToDictionary(c => c.ObjectId.ToString(), c => c.Name)
+                    ?? new Dictionary<string, string>();
+
+                // RecorderDbEntries is the same List instance stored in the dict, so Add/Remove
+                // on RecorderDbEntries is automatically reflected in AccountRecordersByCharId.
+                if (!AccountRecordersByCharId.TryGetValue(InternalID, out var myEntries))
+                {
+                    myEntries = new List<DBCharacterRecorder>();
+                    AccountRecordersByCharId[InternalID] = myEntries;
+                }
+
+                RecorderDbEntries = myEntries;
+                RecorderMgr.BuildPlayerRecorders(this, RecorderDbEntries);
             }
         }
 
