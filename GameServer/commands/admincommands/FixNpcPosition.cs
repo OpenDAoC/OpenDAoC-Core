@@ -308,7 +308,7 @@ namespace DOL.GS.Commands
         private static bool ShouldNpcBeExcluded(GameNPC npc)
         {
             return npc == null ||
-                npc.Flags.HasFlag(eFlags.FLYING) ||
+                (npc.Flags & (eFlags.FLYING | eFlags.SWIMMING)) != 0 ||
                 npc is GameConsignmentMerchant ||
                 npc.InHouse ||
                 npc.RespawnInterval == 0;
