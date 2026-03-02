@@ -162,7 +162,7 @@ namespace DOL.GS.Commands
 					door.Heading = targetDoor.Heading;
 					door.Health = 2545;
 					GameServer.Database.AddObject(door);
-					targetDoor.AddToWorld();
+					targetDoor.LoadFromDatabase(door);
 					DoorMgr.RegisterDoor(targetDoor);
 					client.Player.Out.SendMessage("Added door ID:" + DoorID + "to the database", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					return;
@@ -192,7 +192,7 @@ namespace DOL.GS.Commands
 					door.Z = client.Player.Z;
 					door.Heading = client.Player.Heading;
 					GameServer.Database.AddObject(door);
-					targetDoor.AddToWorld();
+					targetDoor.LoadFromDatabase(door);
 					DoorMgr.RegisterDoor(targetDoor);
 					client.Player.Out.SendMessage("Added door " + DoorID + " to the database", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					return;
