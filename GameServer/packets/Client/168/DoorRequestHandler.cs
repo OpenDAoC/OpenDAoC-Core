@@ -69,16 +69,17 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
             }
 
-            if (client.Player.TargetObject is GameDoor && !client.Player.IsWithinRadius(client.Player.TargetObject, radius))
-            {
-                client.Player.Out.SendMessage("You are too far to open this door", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
             GameDoorBase door = DoorMgr.GetDoorByID(doorId);
 
             if (door != null)
             {
+                // Don't use TargetObject. DoorRequest is sent before PlayerTarget.
+                if (!client.Player.IsWithinRadius(door, radius))
+                {
+                    client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
                 if (doorType is 7 or 9)
                 {
                     UseDoor();
@@ -141,16 +142,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (door != null)
                 {
-                    bool success = false;
-
                     if (door is GameKeepDoor)
                     {
                         GameKeepDoor keepDoor = door as GameKeepDoor;
 
                         if (keepDoor.Component.Keep is GameKeepTower && keepDoor.Component.Keep.KeepComponents.Count > 1)
                             keepDoor.Interact(player);
-
-                        success = true;
                     }
                     else
                     {
@@ -160,13 +157,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 door.Open(player);
                             else
                                 door.Close(player);
-
-                            success = true;
                         }
                     }
-
-                    if (!success)
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
                 else
                 {
