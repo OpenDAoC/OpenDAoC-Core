@@ -14,7 +14,7 @@ namespace DOL.GS
 
         public override bool IsBetterThan(ECSGameEffect effect)
         {
-            return effect is BleedECSEffect otherBleedEffect && _nextTickDamage > otherBleedEffect._nextTickDamage;
+            return effect is BleedECSEffect otherBleedEffect && _nextTickDamage >= otherBleedEffect._nextTickDamage;
         }
 
         public override void OnEffectPulse()

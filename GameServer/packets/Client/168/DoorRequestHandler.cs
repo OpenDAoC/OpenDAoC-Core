@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
@@ -21,7 +19,9 @@ namespace DOL.GS.PacketHandler.Client.v168
             HandlerDoorId = doorId;
             byte doorState = (byte) packet.ReadByte();
             int doorType = doorId / 100000000;
-            int radius = Properties.WORLD_PICKUP_DISTANCE * 2;
+
+            // Interaction distance for border keep doors needs to be higher than 512.
+            int radius = Properties.WORLD_PICKUP_DISTANCE * (GameDoor.IsBorderKeepDoor(doorId) ? 3 : 2);
             int zoneDoor = doorId / 1000000;
             string debugText = string.Empty;
 
@@ -69,16 +69,17 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
             }
 
-            if (client.Player.TargetObject is GameDoor && !client.Player.IsWithinRadius(client.Player.TargetObject, radius))
-            {
-                client.Player.Out.SendMessage("You are too far to open this door", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
             GameDoorBase door = DoorMgr.GetDoorByID(doorId);
 
             if (door != null)
             {
+                // Don't use TargetObject. DoorRequest is sent before PlayerTarget.
+                if (!client.Player.IsWithinRadius(door, radius))
+                {
+                    client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
                 if (doorType is 7 or 9)
                 {
                     UseDoor();
@@ -137,20 +138,16 @@ namespace DOL.GS.PacketHandler.Client.v168
             void UseDoor()
             {
                 GamePlayer player = client.Player;
-                GameDoorBase doorList = DoorMgr.GetDoorByID(doorId);
+                GameDoorBase door = DoorMgr.GetDoorByID(doorId);
 
-                if (doorList != null)
+                if (door != null)
                 {
-                    bool success = false;
-
                     if (door is GameKeepDoor)
                     {
                         GameKeepDoor keepDoor = door as GameKeepDoor;
 
                         if (keepDoor.Component.Keep is GameKeepTower && keepDoor.Component.Keep.KeepComponents.Count > 1)
                             keepDoor.Interact(player);
-
-                        success = true;
                     }
                     else
                     {
@@ -160,13 +157,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 door.Open(player);
                             else
                                 door.Close(player);
-
-                            success = true;
                         }
                     }
-
-                    if (!success)
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
                 else
                 {
@@ -176,7 +168,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                     player.Out.SendDebugMessage($"Door {doorId} not found in door list, opening via GM door hack.");
 
-                    GameDoor door = new()
+                    GameDoor dummyDoor = new()
                     {
                         DoorId = doorId,
                         X = player.X,
@@ -186,10 +178,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         CurrentRegion = player.CurrentRegion
                     };
 
-                    if (player.IsWithinRadius(door, radius))
-                        door.Open(player);
-                    else
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", door.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    dummyDoor.Open(player);
                 }
             }
         }

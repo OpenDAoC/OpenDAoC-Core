@@ -401,7 +401,7 @@ namespace DOL.GS
             {
                 WriteUsableClasses(delve, player.Client);
                 WriteMagicalBonuses(delve, player.Client, false);
-                DelveShieldStats(delve, player.Client);
+                DelveShieldStats(delve, player);
             }
 
             if (Object_Type == (int)eObjectType.Magical || Object_Type == (int)eObjectType.AlchemyTincture || Object_Type == (int)eObjectType.SpellcraftGem)
@@ -1544,32 +1544,35 @@ namespace DOL.GS
         }
 
 
-        protected virtual void DelveShieldStats(List<string> output, GameClient client)
+        protected virtual void DelveShieldStats(List<string> output, GamePlayer player)
         {
             double itemDPS = DPS_AF / 10.0;
-            double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * client.Player.Level);
+            double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * player.Level);
+            if (player.RealmLevel > 39)
+                clampedDPS += 0.3;
             double itemSPD = SPD_ABS / 10.0;
+            double effectiveDPS = clampedDPS * Quality * 0.01 * ConditionPercent * 0.01; // Not shown for some reason.
 
             output.Add(" ");
             output.Add(" ");
-            output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.DamageMod"));
+            output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.DamageMod"));
             if (itemDPS != 0)
             {
-                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.BaseDPS", itemDPS.ToString("0.0")));
-                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.ClampDPS", clampedDPS.ToString("0.0")));
+                output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.BaseDPS", itemDPS.ToString("0.0")));
+                output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.ClampDPS", clampedDPS.ToString("0.0")));
             }
             if (SPD_ABS >= 0)
             {
-                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.SPD", itemSPD.ToString("0.0")));
+                output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.SPD", itemSPD.ToString("0.0")));
             }
 
             output.Add(" ");
 
             switch (Type_Damage)
             {
-                case 1: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Small")); break;
-                case 2: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Medium")); break;
-                case 3: output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Large")); break;
+                case 1: output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Small")); break;
+                case 2: output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Medium")); break;
+                case 3: output.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicShieldInfos.Large")); break;
             }
         }
 

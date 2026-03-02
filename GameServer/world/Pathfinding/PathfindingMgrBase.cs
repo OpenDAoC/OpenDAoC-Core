@@ -40,6 +40,11 @@ namespace DOL.GS
             return position;
         }
 
+        public virtual Vector3? GetClosestPoint(Zone zone, Vector3 position, EDtPolyFlags[] filters)
+        {
+            return position;
+        }
+
         public virtual Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange, float yRange, float zRange, EDtPolyFlags[] filters)
         {
             return position;
