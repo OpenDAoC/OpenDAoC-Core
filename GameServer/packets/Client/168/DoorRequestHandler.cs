@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
@@ -9,16 +8,6 @@ namespace DOL.GS.PacketHandler.Client.v168
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.DoorRequest, "Door Interact Request Handler", eClientStatus.PlayerInGame)]
     public class DoorRequestHandler : PacketHandler
     {
-        // Most of these doors are fine with an interaction distance of 512, but it's extremely tight for Albion's double doors.
-        private static HashSet<int> _borderKeepDoorIds =
-        [
-            11020501, 11020502,
-            12000101, 12000102,
-            102093501, 102093502,
-            111161301, 111161302,
-            206016801, 206016802,
-            207156901, 207156902
-        ];
         public static int HandlerDoorId { get; private set; }
 
         /// <summary>
@@ -30,7 +19,9 @@ namespace DOL.GS.PacketHandler.Client.v168
             HandlerDoorId = doorId;
             byte doorState = (byte) packet.ReadByte();
             int doorType = doorId / 100000000;
-            int radius = Properties.WORLD_PICKUP_DISTANCE * (_borderKeepDoorIds.Contains(doorId) ? 3 : 2);
+
+            // Interaction distance for border keep doors needs to be higher than 512.
+            int radius = Properties.WORLD_PICKUP_DISTANCE * (GameDoor.IsBorderKeepDoor(doorId) ? 3 : 2);
             int zoneDoor = doorId / 1000000;
             string debugText = string.Empty;
 
