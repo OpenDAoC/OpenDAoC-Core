@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -37,7 +36,19 @@ namespace DOL.GS.Spells
             // If the core provides a generic Spell object, we attempt to find the matching 
             // macro in the player's custom spell list via the ID.
             int requestedId = this.Spell.ID;
-            var fallbackSpell = player.SpellMacros?.FirstOrDefault(s => s.ID == requestedId) as RecorderMgr.RecorderSpell;
+            RecorderMgr.RecorderSpell fallbackSpell = null;
+
+            if (player.SpellMacros != null)
+            {
+                foreach (Spell s in player.SpellMacros)
+                {
+                    if (s is RecorderMgr.RecorderSpell rs && rs.ID == requestedId)
+                    {
+                        fallbackSpell = rs;
+                        break;
+                    }
+                }
+            }
 
             if (fallbackSpell != null)
             {
@@ -82,6 +93,14 @@ namespace DOL.GS.Spells
             if (actions == null || actions.Count == 0)
                 return;
 
+            // Both cached lists are the single source of truth for what the player can currently use.
+            // GetAllUsableListSpells covers non-hybrid spell lines (e.g. Wizard, Cleric).
+            // GetAllUsableSkills covers hybrid spell lines (e.g. Druid, Bard), styles, and abilities.
+            // Both are automatically updated on level-up and respec — if a spell was recorded at
+            // level 50 but the player is now level 1, it simply won't appear in either list.
+            var usableListSpells = player.GetAllUsableListSpells();
+            var usableSkills = player.GetAllUsableSkills();
+
             try
             {
                 foreach (var action in actions)
@@ -90,51 +109,83 @@ namespace DOL.GS.Spells
                     {
                         case RecorderActionType.Spell:
                         {
-                            Spell s = SkillBase.GetSpellByID(action.ID);
-                            if (s == null) break;
-
-                            // Validate: find the spell in one of the player's current spell lines.
-                            // This mirrors normal casting — a respec or class change may have removed it.
+                            Spell foundSpell = null;
                             SpellLine foundLine = null;
-                            foreach (SpellLine line in player.GetSpellLines())
+
+                            // 1. Non-hybrid spell lines (e.g. Wizard, Cleric).
+                            foreach (var (line, skills) in usableListSpells)
                             {
                                 if (line.KeyName == RecorderMgr.RecorderLineKey) continue;
-                                if (SkillBase.GetSpellList(line.KeyName).Any(ls => ls.ID == s.ID))
+
+                                foreach (Skill skill in skills)
                                 {
-                                    foundLine = line;
-                                    break;
+                                    if (skill is Spell s && s.ID == action.ID)
+                                    {
+                                        foundSpell = s;
+                                        foundLine = line;
+                                        break;
+                                    }
+                                }
+
+                                if (foundSpell != null) break;
+                            }
+
+                            // 2. Hybrid spell lines (e.g. Druid, Bard) — stored as (Spell, SpellLine) in usableSkills.
+                            if (foundSpell == null)
+                            {
+                                foreach (var (skill, parent) in usableSkills)
+                                {
+                                    if (skill is Spell s && s.ID == action.ID && parent is SpellLine sl)
+                                    {
+                                        foundSpell = s;
+                                        foundLine = sl;
+                                        break;
+                                    }
                                 }
                             }
 
-                            if (foundLine != null)
-                                player.castingComponent.RequestCastSpell(s, foundLine);
+                            if (foundSpell != null)
+                                player.CastSpell(foundSpell, foundLine);
                             else
-                                player.Out.SendMessage($"You no longer have access to '{s.Name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                                player.Out.SendMessage($"You no longer have access to that spell.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         case RecorderActionType.Style:
                         {
-                            Style style = SkillBase.GetStyleByID(action.ID, player.CharacterClass.ID);
-                            if (style == null) break;
+                            Style foundStyle = null;
 
-                            // Validate: the player must still have the required spec at the required level.
-                            if (player.GetModifiedSpecLevel(style.Spec) >= style.SpecLevelRequirement)
-                                StyleProcessor.TryToUseStyle(player, style);
+                            foreach (var (skill, _) in usableSkills)
+                            {
+                                if (skill is Style style && style.ID == action.ID)
+                                {
+                                    foundStyle = style;
+                                    break;
+                                }
+                            }
+
+                            if (foundStyle != null)
+                                player.styleComponent.ExecuteWeaponStyle(foundStyle);
                             else
-                                player.Out.SendMessage($"You no longer have access to style '{style.Name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                                player.Out.SendMessage($"You no longer have access to that style.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         case RecorderActionType.Ability:
                         {
-                            Ability abil = SkillBase.GetAbility(action.ID)
-                                        ?? SkillBase.GetAbilityByInternalID(action.ID);
-                            if (abil == null) break;
+                            Ability foundAbility = null;
 
-                            // Validate: the player must still have this ability trained.
-                            if (player.HasAbility(abil.KeyName))
-                                player.castingComponent.RequestUseAbility(abil);
+                            foreach (var (skill, _) in usableSkills)
+                            {
+                                if (skill is Ability ability && ability.ID == action.ID)
+                                {
+                                    foundAbility = ability;
+                                    break;
+                                }
+                            }
+
+                            if (foundAbility != null)
+                                player.castingComponent.RequestUseAbility(foundAbility);
                             else
-                                player.Out.SendMessage($"You no longer have access to ability '{abil.Name}'.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                                player.Out.SendMessage($"You no longer have access to that ability.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
                         }
                         case RecorderActionType.Command:
