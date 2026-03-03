@@ -1189,43 +1189,13 @@ namespace DOL.GS
         /// </summary>
         protected override void UpdateChangedSlots()
         {
-            bool statsUpdated = false;
-            bool appearanceUpdated = false;
-
             lock (Lock)
             {
-                foreach (eInventorySlot updatedSlot in m_changedSlots)
-                {
-                    // Update appearance if one of changed slots is visible.
-                    if (!appearanceUpdated)
-                    {
-                        foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
-                        {
-                            if (updatedSlot != visibleSlot)
-                                continue;
-
-                            appearanceUpdated = true;
-                            break;
-                        }
-                    }
-
-                    // Update stats if equipped item has changed.
-                    if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing && updatedSlot >= eInventorySlot.RightHandWeapon)
-                        statsUpdated = true;
-                }
-
                 m_player.Out.SendInventorySlotsUpdate(m_changedSlots);
             }
 
             UpdateInventoryWeight();
             m_player.UpdateEncumbrance();
-
-            if (appearanceUpdated)
-                m_player.UpdateEquipmentAppearance();
-
-            if (statsUpdated)
-                m_player.Out.SendUpdateWeaponAndArmorStats();
-
             base.UpdateChangedSlots();
         }
 
