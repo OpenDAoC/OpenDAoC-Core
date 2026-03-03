@@ -5007,7 +5007,7 @@ namespace DOL.GS
 
             if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
             {
-                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect) EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+                AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
                 volley?.OnPlayerSwitchedWeapon();
             }
 
@@ -5031,59 +5031,60 @@ namespace DOL.GS
                 }
             }
 
-            DbInventoryItem[] oldActiveSlots = new DbInventoryItem[4];
-            DbInventoryItem[] newActiveSlots = new DbInventoryItem[4];
-            DbInventoryItem rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-            DbInventoryItem leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            DbInventoryItem twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-            DbInventoryItem distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+            DbInventoryItem rightHandItem = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+            DbInventoryItem leftHandItem = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem twoHandItem = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+            DbInventoryItem distanceItem = Inventory.GetItem(eInventorySlot.DistanceWeapon);
 
-            // save old active weapons
-            // simple active slot logic:
-            // 0=right hand, 1=left hand, 2=two-hand, 3=range, F=none
-            switch (VisibleActiveWeaponSlots & 0x0F)
-            {
-                case 0: oldActiveSlots[0] = rightHandSlot; break;
-                case 2: oldActiveSlots[2] = twoHandSlot; break;
-                case 3: oldActiveSlots[3] = distanceSlot; break;
-            }
-
-            if ((VisibleActiveWeaponSlots & 0xF0) == 0x10)
-                oldActiveSlots[1] = leftHandSlot;
+            int mask = VisibleActiveWeaponSlots;
+            bool wasRightActive = (mask & 0x0F) == 0;
+            bool wasLeftActive  = (mask & 0xF0) == 0x10;
+            bool wasTwoHandActive = (mask & 0x0F) == 2;
+            bool wasDistanceActive = (mask & 0x0F) == 3;
 
             base.SwitchWeapon(slot);
 
-            // save new active slots
-            switch (VisibleActiveWeaponSlots & 0x0F)
+            mask = VisibleActiveWeaponSlots;
+            bool isRightActive = (mask & 0x0F) == 0;
+            bool isLeftActive  = (mask & 0xF0) == 0x10;
+            bool isTwoHandActive = (mask & 0x0F) == 2;
+            bool isDistanceActive = (mask & 0x0F) == 3;
+
+            if (rightHandItem != null)
             {
-                case 0: newActiveSlots[0] = rightHandSlot; break;
-                case 2: newActiveSlots[2] = twoHandSlot; break;
-                case 3: newActiveSlots[3] = distanceSlot; break;
+                if (wasRightActive && !isRightActive)
+                    OnItemUnequipped(rightHandItem, (eInventorySlot) rightHandItem.SlotPosition);
+                else if (!wasRightActive && isRightActive)
+                    OnItemEquipped(rightHandItem, (eInventorySlot) rightHandItem.SlotPosition);
             }
 
-            if ((VisibleActiveWeaponSlots & 0xF0) == 0x10)
-                newActiveSlots[1] = leftHandSlot;
-
-            // unequip changed items
-            for (int i = 0; i < 4; i++)
+            if (leftHandItem != null)
             {
-                if (oldActiveSlots[i] != null && newActiveSlots[i] == null)
-                    OnItemUnequipped(oldActiveSlots[i], (eInventorySlot) oldActiveSlots[i].SlotPosition);
+                if (wasLeftActive && !isLeftActive)
+                    OnItemUnequipped(leftHandItem, (eInventorySlot) leftHandItem.SlotPosition);
+                else if (!wasLeftActive && isLeftActive)
+                    OnItemEquipped(leftHandItem, (eInventorySlot) leftHandItem.SlotPosition);
             }
 
-            // equip new active items
-            for (int i = 0; i < 4; i++)
+            if (twoHandItem != null)
             {
-                if (newActiveSlots[i] != null && oldActiveSlots[i] == null)
-                    OnItemEquipped(newActiveSlots[i], (eInventorySlot) newActiveSlots[i].SlotPosition);
+                if (wasTwoHandActive && !isTwoHandActive)
+                    OnItemUnequipped(twoHandItem, (eInventorySlot) twoHandItem.SlotPosition);
+                else if (!wasTwoHandActive && isTwoHandActive)
+                    OnItemEquipped(twoHandItem, (eInventorySlot )twoHandItem.SlotPosition);
             }
 
-            if (ObjectState == eObjectState.Active)
+            if (distanceItem != null)
             {
-                //Send new wield info, no items updated
+                if (wasDistanceActive && !isDistanceActive)
+                    OnItemUnequipped(distanceItem, (eInventorySlot) distanceItem.SlotPosition);
+                else if (!wasDistanceActive && isDistanceActive)
+                    OnItemEquipped(distanceItem, (eInventorySlot) distanceItem.SlotPosition);
+            }
+
+            if (ObjectState is eObjectState.Active)
+            {
                 Out.SendInventorySlotsUpdate(null);
-                // Update active weapon appearence (has to be done with all
-                // equipment in the packet else player is naked)
                 UpdateEquipmentAppearance();
             }
         }
@@ -9213,7 +9214,7 @@ namespace DOL.GS
                 Owner.Out.SendUpdateWeaponAndArmorStats();
                 Owner.Out.SendUpdateMaxSpeed();
                 Owner.Out.SendUpdatePlayerSkills(false);
-                Owner.UpdateEncumbrance();
+                Owner.UpdateEncumbrance(); // Currently also sent by GamePlayerInventory.UpdateChangedSlots, but too early.
                 Owner.UpdatePlayerStatus();
 
                 if (!IsAlive)
