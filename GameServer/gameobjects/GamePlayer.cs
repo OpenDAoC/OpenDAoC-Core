@@ -8932,10 +8932,8 @@ namespace DOL.GS
                 return;
             }
 
-            if (!item.IsMagical)
-                return;
-
-            Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Magic", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+            if (item.IsMagical)
+                Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Magic", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
             if (item.Bonus1 != 0)
             {
@@ -9095,9 +9093,6 @@ namespace DOL.GS
             // Cancel any self buffs that are unequipped.
             if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.Where(x => x.SpellID == item.SpellID).Count() <= 1)
                 CancelChargeBuff(item.SpellID);
-
-            if (!item.IsMagical)
-                return;
 
             if (item.Bonus1 != 0)
             {
