@@ -72,7 +72,7 @@ namespace DOL.GS.Commands
 
         public static void CheckAndBroadcast(GamePlayer target, string message, eChatType chatType, eChatLoc chatLoc)
         {
-            if (_activeObserver.Count == 0)
+            if (_activeObserver.Count == 0 || target == null)
                 return;
 
             List<GamePlayer> observers = null;
