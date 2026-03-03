@@ -51,11 +51,11 @@ Scripts.Player.Guild.DepositTooMuch:		Vous n'avez pas assez d'argent pour le fai
 Scripts.Player.Guild.DuesOff:				La cotisation de guilde n'est actuellement pas fonctionnelle.	
 Scripts.Player.Guild.DuesOn:				La cotisation de guilde est de  {0} pourcent.	
 Scripts.Player.Guild.EmailSet:				L'e-mail de guilde est maintenant fixé : {0}.	
-Scripts.Player.Guild.EmblemAlready:			Votre guilde a déjà un emblème mais vous pouvez le changer pour 100 pièces d'or. Vous devez choisir l'EmblemNPC de nouveau pour effectuer cette procédure.
-Scripts.Player.Guild.EmblemNeedGold:			Vous devez avoir 200 piéces d'or pour changer de nouveau votre emblème de guilde.	
+Scripts.Player.Guild.EmblemAlready:			Votre guilde a déjà un emblème mais vous pouvez le changer pour {0}. Vous devez choisir l'EmblemNPC de nouveau pour effectuer cette procédure.
+Scripts.Player.Guild.EmblemNeedGold:			Vous devez avoir {0} pour changer de nouveau votre emblème de guilde.	
 Scripts.Player.Guild.EmblemNeedNPC:			Vous devez sélectionner l'EmblemNPC.	
 Scripts.Player.Guild.EmblemNPCNotSelected:		Vous devez sélectionner l'EmblemNPC.	
-Scripts.Player.Guild.EmblemRedo:			Vous voulez refaire votre emblème pour 100 pièces d'or ?	
+Scripts.Player.Guild.EmblemRedo:			Vous voulez refaire votre emblème pour {0} ?	
 Scripts.Player.Guild.FormNoGroup:			Vous devez être dans un groupe pour former une guilde.	
 Scripts.Player.Guild.FormNoMembers:			Vous avez besoin de {0} membres dans votre groupe pour créer une guilde.	
 Scripts.Player.Guild.GuildCreated:			La guilde {0} vient d'être créée avec {1} comme chef.	

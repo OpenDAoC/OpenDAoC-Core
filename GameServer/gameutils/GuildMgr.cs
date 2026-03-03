@@ -13,7 +13,7 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public const long COST_RE_EMBLEM = 1000000; // 200 gold.
+        public const long COST_RE_EMBLEM = 2000000; // 200 gold.
 
         private static readonly Lock _lock = new();
         private static readonly Dictionary<string, Guild> _nameToGuilds = new();

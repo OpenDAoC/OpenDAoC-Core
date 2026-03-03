@@ -453,11 +453,11 @@ Scripts.Player.Guild.DuesOn:				Guild dues are currently set at {0}%.
 Scripts.Player.Guild.DuesOnCapped:			Guild dues cannot be higher than {0}%.
 Scripts.Player.Guild.DuesOnForced:			Guild dues are forced to {0}% by the server.
 Scripts.Player.Guild.EmailSet:				You have set the guild email to {0}.	
-Scripts.Player.Guild.EmblemAlready:			Your guild already has an emblem but you may change it for a hefty fee of 100 gold. You must select the EmblemNPC again for this procedure to happen.	
-Scripts.Player.Guild.EmblemNeedGold:			You must have 200 gold to re emblem your guild.	
+Scripts.Player.Guild.EmblemAlready:			Your guild already has an emblem but you may change it for a hefty fee of {0}. You must select the EmblemNPC again for this procedure to happen.	
+Scripts.Player.Guild.EmblemNeedGold:			You must have {0} to re emblem your guild.	
 Scripts.Player.Guild.EmblemNeedNPC:			You must be near a valid emblemeer.	
 Scripts.Player.Guild.EmblemNPCNotSelected:		You must be near a valid emblemeer.	
-Scripts.Player.Guild.EmblemRedo:			Would you like to re-emblem your guild for 100 gold?	
+Scripts.Player.Guild.EmblemRedo:			Would you like to re-emblem your guild for {0}?	
 Scripts.Player.Guild.FormNoGroup:			You must be in a group to form a guild.	
 Scripts.Player.Guild.FormNoMembers:			You need {0} members in your group to form a guild.	
 Scripts.Player.Guild.GuildCreated:			The guild {0} has been formed. {1} is the leader.	

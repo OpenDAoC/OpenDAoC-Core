@@ -1566,10 +1566,10 @@ namespace DOL.GS.Commands
 						{
 							if (client.Player.TargetObject is not EmblemNPC)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemAlready"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemAlready", Money.GetString(GuildMgr.COST_RE_EMBLEM)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							client.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemRedo"), new CustomDialogResponse(EmblemChange));
+							client.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemRedo", Money.GetString(GuildMgr.COST_RE_EMBLEM)), new CustomDialogResponse(EmblemChange));
 							return;
 						}
 						if (client.Player.TargetObject is not EmblemNPC)
@@ -2444,7 +2444,7 @@ namespace DOL.GS.Commands
 			}
 			if (player.GetCurrentMoney() < GuildMgr.COST_RE_EMBLEM) //200 gold to re-emblem
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.EmblemNeedGold"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.EmblemNeedGold", Money.GetString(GuildMgr.COST_RE_EMBLEM)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 			player.Out.SendEmblemDialogue();
