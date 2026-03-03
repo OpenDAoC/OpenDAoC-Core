@@ -2114,8 +2114,6 @@ namespace DOL.GS
 				}
 			}
 
-			Brain.Stop();
-			StopFollowing();
 			TempProperties.RemoveProperty(CHARMED_TICK_PROP);
 			base.Delete();
 		}
