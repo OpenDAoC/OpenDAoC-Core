@@ -2243,7 +2243,7 @@ namespace DOL.GS
 			string ability = null;
 			try
 			{
-				ability = m_abilityIndex.FirstOrDefault(it => it.Value.AbilityID == databaseID).Value.KeyName;
+				ability = m_abilityIndex.FirstOrDefault(it => it.Value.AbilityID == databaseID).Value?.KeyName;
 			}
 			finally
 			{
