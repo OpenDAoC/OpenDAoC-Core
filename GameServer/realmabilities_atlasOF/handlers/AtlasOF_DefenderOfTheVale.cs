@@ -75,7 +75,7 @@ namespace DOL.GS.RealmAbilities
                 {
                     foreach (var living in target.Group.GetMembersInTheGroup())
                     {
-                        if (target.GetDistance(new Point2D(living.X, living.Y))  > m_spell.Radius) 
+                        if (target.IsWithinRadius(living, m_spell.Radius))
                             targets.Add(living);
                     }
                 }
