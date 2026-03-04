@@ -896,6 +896,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (client.CanSendTooltip(24, objectId))
 					{
 						var spell = SkillBase.GetSpellByTooltipID(objectId);
+
+						if (spell == null)
+						{
+							// Workaround for dynamically created spell that couldn't be retrieved from SkillBase.
+							// Either because AddScriptedSpell wasn't called, or the spell was missing values to be handled by it.
+							// This is the case for most (if not all) spells spawned by RAs.
+							// The only way to retrieve the spell is by iterating the player's effect list.
+
+							// To further complicate things, those spells don't define InternalID, but Icon.
+							// This means that we have to compare objectId against ECSGameSpellEffect.Icon first,
+							// but then reply to the client with the correct value and update Spell.InternalId
+
+							// Note: DbSpell.TooltipId becomes Spell.InternalId when created.
+
+							foreach (ECSGameSpellEffect spellEffect in client.Player.effectListComponent.GetSpellEffects())
+							{
+								if (spellEffect.Icon == objectId)
+								{
+									spell = spellEffect.SpellHandler.Spell;
+									spell.InternalID = objectId;
+									client.Out.SendDelveInfo(DelveSpell(client, spell));
+									break;
+								}
+							}
+						}
+
 						client.Out.SendDelveInfo(DelveSpell(client, spell));
 					}
 					break;
@@ -2025,6 +2051,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <returns></returns>
         public static string DelveRealmAbility(GameClient client, int id)
         {
+			
 			Skill ra = client.Player.GetAllUsableSkills().Where(e => e.Item1.InternalID == id && e.Item1 is Ability).Select(e => e.Item1).FirstOrDefault();
 			
 			if (ra == null)
