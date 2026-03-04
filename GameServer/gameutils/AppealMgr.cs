@@ -158,7 +158,7 @@ namespace DOL.GS.Appeal
             if (!_initialized)
                 return null;
 
-            return _appealCache.Values.Where((appeal) => appeal.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            return _appealCache.Values.FirstOrDefault((appeal) => appeal.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
         }
 
         public static List<DbAppeal> GetAppeals(bool includeOffline)
@@ -321,16 +321,17 @@ namespace DOL.GS.Appeal
             player.Out.SendMessage($"[Appeals]: {LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Appeal.YouHavePendingAppeal")}", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
         }
 
-        private static void NotifyStaffMembers()
+        private static void NotifyStaffMembers(List<DbAppeal> onlineAppeals)
         {
-            List<DbAppeal> appeals = GetAppeals(false);
+            // Calculate offline count from cache (no additional iteration needed)
+            int offlineCount = _appealCache.Count - onlineAppeals.Count;
 
             int low = 0;
             int med = 0;
             int high = 0;
             int crit = 0;
 
-            foreach (DbAppeal appeal in appeals)
+            foreach (DbAppeal appeal in onlineAppeals)
             {
                 switch ((Severity) appeal.Severity)
                 {
@@ -357,18 +358,32 @@ namespace DOL.GS.Appeal
                 }
             }
 
-            // Send notifications.
-            string countMessage = appeals.Count == 1 
-                ? $"There is {appeals.Count} appeal in the queue."
-                : $"There are {appeals.Count} appeals in the queue.";
-            string detailMessage = $"Crit:{crit}, High:{high}, Med:{med}, Low:{low}. [use /gmappeal]";
-            MessageToAllStaff(countMessage);
-            MessageToAllStaff(detailMessage);
+            // Send notifications if we have appeals
+            if (onlineAppeals.Count > 0)
+            {
+                string onlineMessage = onlineAppeals.Count == 1 
+                    ? $"There is {onlineAppeals.Count} appeal in queue from online players."
+                    : $"There are {onlineAppeals.Count} appeals in queue from online players.";
+                MessageToAllStaff(onlineMessage);
+            }
+            if (offlineCount > 0)
+            {
+                string offlineMessage = offlineCount == 1
+                    ? $"There is {offlineCount} appeal in queue from offline players."
+                    : $"There are {offlineCount} appeals in queue from offline players.";
+                MessageToAllStaff(offlineMessage);
+            }
+            // Only send detail if there are any appeals (online or offline)
+            if (onlineAppeals.Count > 0 || offlineCount > 0)
+            {
+                string detailMessage = $"Crit:{crit}, High:{high}, Med:{med}, Low:{low} [use /gmappeal]";
+                MessageToAllStaff(detailMessage);
+            }
         }
 
         public class NotifyTimer : ECSGameTimerWrapperBase
         {
-            private const int INTERVAL = 60000; // 10 minutes.
+            private const int INTERVAL = 120000; // 2 minutes.
 
             public NotifyTimer() : base(null)
             {
@@ -377,10 +392,15 @@ namespace DOL.GS.Appeal
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                if (!_initialized || Count == 0)
+                if (!_initialized)
                     return INTERVAL;
 
-                NotifyStaffMembers();
+                // Only notify if there are appeals from online players
+                List<DbAppeal> onlineAppeals = GetAppeals(false);
+                if (onlineAppeals.Count == 0)
+                    return INTERVAL;
+
+                NotifyStaffMembers(onlineAppeals);
                 return INTERVAL;
             }
         }

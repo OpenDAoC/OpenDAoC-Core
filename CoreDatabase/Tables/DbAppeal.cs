@@ -10,6 +10,7 @@ namespace DOL.Database
     {
         private string m_name;
         private string m_account;
+        private string m_originalCharacterName;
         private int m_severity;
         private string m_status;
         private string m_timestamp;
@@ -27,6 +28,7 @@ namespace DOL.Database
         {
             m_name = string.Empty;
             m_account = string.Empty;
+            m_originalCharacterName = string.Empty;
             m_severity = 0;
             m_status = string.Empty;
             m_timestamp = string.Empty;
@@ -37,6 +39,7 @@ namespace DOL.Database
         {
             m_name = name;
             m_account = account;
+            m_originalCharacterName = name;
             m_severity = severity;
             m_status = status;
             m_timestamp = timestamp;
@@ -62,6 +65,17 @@ namespace DOL.Database
             set
             {
                 m_account = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public string OriginalCharacterName
+        {
+            get { return m_originalCharacterName; }
+            set
+            {
+                m_originalCharacterName = value;
                 Dirty = true;
             }
         }
