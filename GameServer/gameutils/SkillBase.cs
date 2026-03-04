@@ -2195,7 +2195,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static Ability GetClassRR5Ability(int charclass)
 		{
-			return GetClassRealmAbilities(charclass).Where(ab => ab is RR5RealmAbility).FirstOrDefault();
+			return GetClassRealmAbilities(charclass).FirstOrDefault(ab => ab is RR5RealmAbility);
 		}
 
 		/// <summary>
@@ -2209,7 +2209,7 @@ namespace DOL.GS
 			string ability = null;
 			try
 			{
-				ability = m_abilityIndex.Where(it => it.Value.InternalID == internalID).FirstOrDefault().Value.KeyName;
+				ability = m_abilityIndex.FirstOrDefault(it => it.Value.InternalID == internalID).Value?.KeyName;
 			}
 			finally
 			{
@@ -2243,7 +2243,7 @@ namespace DOL.GS
 			string ability = null;
 			try
 			{
-				ability = m_abilityIndex.Where(it => it.Value.AbilityID == databaseID).FirstOrDefault().Value.KeyName;
+				ability = m_abilityIndex.FirstOrDefault(it => it.Value.AbilityID == databaseID).Value.KeyName;
 			}
 			finally
 			{
