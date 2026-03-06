@@ -1842,7 +1842,7 @@ namespace DOL.GS.Spells
 
 		private bool IsTargetAffectedBySpellType(GameLiving target)
 		{
-			if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage or eSpellType.SiegeArrow && !IsSummoningSpell)
+			if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage and not eSpellType.SiegeArrow && !IsSummoningSpell)
 			{
 				MessageToCaster($"Your spell has no effect on the {target.Name}.", eChatType.CT_SpellResisted);
 				return false;
