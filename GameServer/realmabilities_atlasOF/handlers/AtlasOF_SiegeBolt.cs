@@ -82,8 +82,6 @@ namespace DOL.GS.RealmAbilities
             if (m_spell != null)
                 m_caster.CastSpell(m_spell, m_spellline, this);
 
-            DisableSkill(m_caster);
-
             // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().
         }
