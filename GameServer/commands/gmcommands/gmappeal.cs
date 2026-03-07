@@ -132,13 +132,13 @@ namespace DOL.GS.Commands
                             //Let's view it.
                             List<string> msg = new()
                             {
-                                $"[Original Character]: {appeal.OriginalCharacterName}, [Current Character]: {appeal.Name}, [Status]: {appeal.Status}, [Priority]: {appeal.SeverityToName}, [Issue]: {appeal.Text}, [Time]: {appeal.Timestamp}.\n",
+                                $"[Name]: {appeal.Name}, [Current]: {appeal.CurrentCharacterName}, [Status]: {appeal.Status}, [Priority]: {appeal.SeverityToName}, [Issue]: {appeal.Text}, [Time]: {appeal.Timestamp}.\n",
                                 "To assist them with the appeal use /gmappeal assist <player name>.\n",
                                 "To jump yourself to the player use /gmappeal jumpto.\n",
                                 "For a full list of possible commands, use /gmappeal (with no arguments)"
                             };
 
-                            client.Out.SendCustomTextWindow("Viewing " + appeal.OriginalCharacterName + "'s Appeal", msg);
+                            client.Out.SendCustomTextWindow("Viewing " + appeal.CurrentCharacterName + "'s Appeal", msg);
                             return;
                         }
 
@@ -255,7 +255,7 @@ namespace DOL.GS.Commands
                             {
                                 if (a.Severity == (int)AppealMgr.Severity.Critical)
                                 {
-                                    msg.Add("[Original]: " + a.OriginalCharacterName + ", [Current]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + " [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
+                                    msg.Add($"[Name]: {a.Name}, [Current]: {a.CurrentCharacterName}, [Status]: {a.Status}, [Priority]: {a.SeverityToName} [Issue]: {a.Text}, [Time]: {a.Timestamp}.\n");
                                 }
                             }
                         }
@@ -266,7 +266,7 @@ namespace DOL.GS.Commands
                             {
                                 if (a.Severity == (int)AppealMgr.Severity.High)
                                 {
-                                    msg.Add("[Original]: " + a.OriginalCharacterName + ", [Current]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
+                                    msg.Add($"[Name]: {a.Name}, [Current]: {a.CurrentCharacterName}, [Status]: {a.Status}, [Priority]: {a.SeverityToName}, [Issue]: {a.Text}, [Time]: {a.Timestamp}.\n");
                                 }
                             }
                         }
@@ -277,7 +277,7 @@ namespace DOL.GS.Commands
                             {
                                 if (a.Severity == (int)AppealMgr.Severity.Medium)
                                 {
-                                    msg.Add("[Original]: " + a.OriginalCharacterName + ", [Current]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
+                                    msg.Add($"[Name]: {a.Name}, [Current]: {a.CurrentCharacterName}, [Status]: {a.Status}, [Priority]: {a.SeverityToName}, [Issue]: {a.Text}, [Time]: {a.Timestamp}.\n");
                                 }
                             }
                         }
@@ -288,7 +288,7 @@ namespace DOL.GS.Commands
                             {
                                 if (a.Severity == (int)AppealMgr.Severity.Low)
                                 {
-                                    msg.Add("[Original]: " + a.OriginalCharacterName + ", [Current]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
+                                    msg.Add($"[Name]: {a.Name}, [Current]: {a.CurrentCharacterName}, [Status]: {a.Status}, [Priority]: {a.SeverityToName}, [Issue]: {a.Text}, [Time]: {a.Timestamp}.\n");
                                 }
                             }
                         }

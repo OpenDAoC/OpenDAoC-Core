@@ -20,7 +20,7 @@ namespace DOL.GS.Appeal
 
         // Thread-safe cache using account names as keys
         private static readonly ConcurrentDictionary<string, DbAppeal> _appealCache = new();
-        private static readonly Lock  _cacheLock = new();
+        private static readonly Lock _cacheLock = new();
         private static NotifyTimer _notifyTimer;
 
         // Collections for tracking changes.
@@ -147,40 +147,56 @@ namespace DOL.GS.Appeal
             if (!_initialized)
                 return null;
 
-            _appealCache.TryGetValue(accountName, out DbAppeal appeal);
-            return appeal;
+            lock (_cacheLock)
+            {
+                _appealCache.TryGetValue(accountName, out DbAppeal appeal);
+                return appeal;
+            }
         }
 
         public static DbAppeal GetAppealByPlayerName(string playerName)
         {
-            // Prefer `GetAppealByAccountName`.
+            // Prefer `GetAppealByAccountName`, the cache is keyed by account name.
 
             if (!_initialized)
                 return null;
 
-            return _appealCache.Values.FirstOrDefault((appeal) => appeal.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+            lock (_cacheLock)
+            {
+                return _appealCache.Values.FirstOrDefault(appeal => appeal.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+            }
         }
 
         public static List<DbAppeal> GetAppeals(bool includeOffline)
         {
-            if (!_initialized)
-                return new();
-
-            if (includeOffline)
-                return _appealCache.Values.ToList();
 
             List<DbAppeal> result = new();
-            List<GamePlayer> onlinePlayers = ClientService.Instance.GetPlayers();
-
-            foreach (GamePlayer player in onlinePlayers)
-            {
-                DbAppeal appeal = GetAppeal(player.Client.Account);
-
-                if (appeal != null)
-                    result.Add(appeal);
-            }
-
+            GetAppeals(includeOffline, result);
             return result;
+        }
+
+        public static void GetAppeals(bool includeOffline, List<DbAppeal> list)
+        {
+            ArgumentNullException.ThrowIfNull(list);
+
+            if (!_initialized)
+                return;
+
+            list.Clear();
+
+            lock (_cacheLock)
+            {
+                if (includeOffline)
+                    list.AddRange(_appealCache.Values);
+                else
+                {
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayers())
+                    {
+                        if (_appealCache.TryGetValue(player.Client.Account.Name, out DbAppeal appeal))
+                            list.Add(appeal);
+                    }
+                }
+            }
         }
 
         public static void CreateAppeal(GamePlayer player, int severity, string status, string text)
@@ -208,8 +224,8 @@ namespace DOL.GS.Appeal
 
             lock (_cacheLock)
             {
-                _appealCache.TryAdd(player.Client.Account.Name, appeal);
-                _appealsToSave.Add(appeal);
+                if (_appealCache.TryAdd(player.Client.Account.Name, appeal))
+                    _appealsToSave.Add(appeal);
             }
 
             player.Out.SendMessage($"[Appeals]: {LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Appeal.AppealSubmitted")}", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
@@ -242,9 +258,11 @@ namespace DOL.GS.Appeal
 
             lock (_cacheLock)
             {
-                _appealCache.TryRemove(player.Client.Account.Name, out _);
-                _appealsToDelete.Add(appeal);
-                _appealsToSave.Remove(appeal);
+                if (_appealCache.TryRemove(player.Client.Account.Name, out _))
+                {
+                    _appealsToDelete.Add(appeal);
+                    _appealsToSave.Remove(appeal);
+                }
             }
 
             MessageToAllStaff($"[Appeals]: Staff member {staffName} has just closed {player.Name}'s appeal.");
@@ -259,9 +277,11 @@ namespace DOL.GS.Appeal
 
             lock (_cacheLock)
             {
-                _appealCache.TryRemove(appeal.Account, out _);
-                _appealsToDelete.Add(appeal);
-                _appealsToSave.Remove(appeal);
+                if (_appealCache.TryRemove(appeal.Account, out _))
+                {
+                    _appealsToDelete.Add(appeal);
+                    _appealsToSave.Remove(appeal);
+                }
             }
 
             MessageToAllStaff($"[Appeals]: Staff member {staffName} has just closed {appeal.Name}'s (offline) appeal.");
@@ -274,9 +294,11 @@ namespace DOL.GS.Appeal
 
             lock (_cacheLock)
             {
-                _appealCache.TryRemove(player.Client.Account.Name, out _);
-                _appealsToDelete.Add(appeal);
-                _appealsToSave.Remove(appeal); // Remove from save queue if it was there
+                if (_appealCache.TryRemove(player.Client.Account.Name, out _))
+                {
+                    _appealsToDelete.Add(appeal);
+                    _appealsToSave.Remove(appeal);
+                }
             }
 
             MessageToAllStaff($"[Appeals]: {player.Name} has canceled their appeal.");
@@ -305,7 +327,6 @@ namespace DOL.GS.Appeal
             if ((ePrivLevel) player.Client.Account.PrivLevel > ePrivLevel.Player && Count > 0)
                 player.Out.SendMessage($"[Appeals]: There are {Count} appeals in the queue.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 
-            // Check if there is an existing appeal belonging to this player.
             DbAppeal appeal = GetAppealByAccountName(player.Client.Account.Name);
 
             if (appeal == null)
@@ -314,22 +335,13 @@ namespace DOL.GS.Appeal
                 return;
             }
 
-            // We don't allow players to have more than one appeal per account. Update the name for convenience.
-            if (appeal.Name != player.Name)
-                appeal.Name = player.Name;
-
+            appeal.CurrentCharacterName = player.Name;
             player.Out.SendMessage($"[Appeals]: {LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Appeal.YouHavePendingAppeal")}", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
         }
 
         private static void NotifyStaffMembers(List<DbAppeal> onlineAppeals)
         {
-            // Calculate offline count from cache (no additional iteration needed)
-            int offlineCount = _appealCache.Count - onlineAppeals.Count;
-
-            int low = 0;
-            int med = 0;
-            int high = 0;
-            int crit = 0;
+            int low = 0, med = 0, high = 0, crit = 0;
 
             foreach (DbAppeal appeal in onlineAppeals)
             {
@@ -358,32 +370,16 @@ namespace DOL.GS.Appeal
                 }
             }
 
-            // Send notifications if we have appeals
-            if (onlineAppeals.Count > 0)
-            {
-                string onlineMessage = onlineAppeals.Count == 1 
-                    ? $"There is {onlineAppeals.Count} appeal in queue from online players."
-                    : $"There are {onlineAppeals.Count} appeals in queue from online players.";
-                MessageToAllStaff(onlineMessage);
-            }
-            if (offlineCount > 0)
-            {
-                string offlineMessage = offlineCount == 1
-                    ? $"There is {offlineCount} appeal in queue from offline players."
-                    : $"There are {offlineCount} appeals in queue from offline players.";
-                MessageToAllStaff(offlineMessage);
-            }
-            // Only send detail if there are any appeals (online or offline)
-            if (onlineAppeals.Count > 0 || offlineCount > 0)
-            {
-                string detailMessage = $"Crit:{crit}, High:{high}, Med:{med}, Low:{low} [use /gmappeal]";
-                MessageToAllStaff(detailMessage);
-            }
+            int offlineCount = Math.Max(0, _appealCache.Count - onlineAppeals.Count);
+            string offlineMsg = offlineCount > 0 ? $", {offlineCount} Offline" : string.Empty;
+            string detailMsg = $"Appeals Pending: {onlineAppeals.Count} Online (Crit:{crit}, High:{high}, Med:{med}, Low:{low}){offlineMsg} [use /gmappeal]";
+            MessageToAllStaff(detailMsg);
         }
 
-        public class NotifyTimer : ECSGameTimerWrapperBase
+        private class NotifyTimer : ECSGameTimerWrapperBase
         {
             private const int INTERVAL = 120000; // 2 minutes.
+            private readonly List<DbAppeal> _appeals = new();
 
             public NotifyTimer() : base(null)
             {
@@ -395,12 +391,12 @@ namespace DOL.GS.Appeal
                 if (!_initialized)
                     return INTERVAL;
 
-                // Only notify if there are appeals from online players
-                List<DbAppeal> onlineAppeals = GetAppeals(false);
-                if (onlineAppeals.Count == 0)
-                    return INTERVAL;
+                GetAppeals(false, _appeals);
 
-                NotifyStaffMembers(onlineAppeals);
+                // Only notify if there are appeals from online players.
+                if (_appeals.Count > 0)
+                    NotifyStaffMembers(_appeals);
+
                 return INTERVAL;
             }
         }
