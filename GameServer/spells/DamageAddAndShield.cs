@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageShield)]
     public class DamageShieldSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
-        public override string ShortDescription => $"{TargetPronounCapitalized} melee attackers receive {FormatDamage}.";
+        public override string ShortDescription => $"{TargetPronounCapitalized} melee attackers receive {FormatDamage()}.";
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
