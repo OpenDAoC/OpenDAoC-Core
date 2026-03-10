@@ -29,7 +29,7 @@ namespace DOL.GS
             if (Interlocked.CompareExchange(ref _running, true, false))
                 return false;
 
-            TickDuration = 1000 / Properties.GAME_LOOP_TICK_RATE;
+            TickDuration = 1000.0 / Properties.GAME_LOOP_TICK_RATE;
 
             _gameLoopThread = new(new ThreadStart(Run))
             {
