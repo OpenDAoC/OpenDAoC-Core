@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
                 {eCharmType.HumanoidAnimalInsect, "humanoid, animal or insect"},
                 {eCharmType.HumanoidAnimalInsectMagical, "humanoid, animal, insect or magical"},
                 {eCharmType.HumanoidAnimalInsectMagicalUndead, "humanoid, animal, insect, magical or undead"},
-                {eCharmType.All, "monster"}
+                {eCharmType.All, string.Empty}
             }.ToFrozenDictionary();
 
         public override string ShortDescription
@@ -35,7 +35,7 @@ namespace DOL.GS.Spells
             get
             {
                 charmTypeToTextMap.TryGetValue((eCharmType) Spell.AmnesiaChance, out string charmableSpecies);
-                string description = $"Attempt to bring the target {charmableSpecies} under the caster's control.";
+                string description = $"Attempt to bring the target {charmableSpecies} monster under the caster's control.";
 
                 if (Spell.Pulse == 0)
                     description += $" Affects monsters up to {(Spell.Damage == 100 ? string.Empty : Spell.Damage + "% of ")}your level.";
