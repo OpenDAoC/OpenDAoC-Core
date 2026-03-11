@@ -35,10 +35,10 @@ namespace DOL.GS.Spells
             get
             {
                 charmTypeToTextMap.TryGetValue((eCharmType) Spell.AmnesiaChance, out string charmableSpecies);
-                string description = $"Attempt to bring the target {charmableSpecies} monster under the caster's control.";
+                string description = $"Attempt to bring the target{(string.IsNullOrEmpty(charmableSpecies) ? string.Empty : " " + charmableSpecies)} monster under the caster's control.";
 
                 if (Spell.Pulse == 0)
-                    description += $" Affects monsters up to {(Spell.Damage == 100 ? string.Empty : Spell.Damage + "% of")} of your level, to a maximum of level 15.";
+                    description += $" Affects monsters up to {(Spell.Damage == 100 ? string.Empty : Spell.Damage + "% of ")}your level.";
 
                 return description;
             }
