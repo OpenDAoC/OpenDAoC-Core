@@ -25,7 +25,6 @@ namespace DOL.GS
 
         protected void OnHardCCStart()
         {
-            Owner.attackComponent.StopAttack();
             Owner.StopCurrentSpellcast();
             Owner.DisableTurning(true);
 
