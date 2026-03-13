@@ -38,7 +38,7 @@ namespace DOL.GS.Spells
                 string description = $"Attempt to bring the target {charmableSpecies}monster under the caster's control.";
 
                 if (Spell.Pulse == 0)
-                    description += $" Affects monsters up to {(Spell.Damage == 100 ? string.Empty : Spell.Damage + "% of ")}your level, to a maximum of level {Spell.Level}.";
+                    description += $" Affects monsters up to {(Spell.Damage == 100 ? string.Empty : Spell.Damage + "% of ")}your level, to a maximum of level {Spell.Value}.";
 
                 return description;
             }
