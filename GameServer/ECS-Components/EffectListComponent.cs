@@ -859,12 +859,6 @@ namespace DOL.GS
                 {
                     bool stop = effect.FinalizeState(result);
 
-                    // Keep disabled effects in the store.
-                    // Remove other effects immediately instead of waiting for _pendingEffects to be processed.
-                    // This prevents them from ticking after being requested to stop.
-                    if (!effect.IsDisabled)
-                        ServiceObjectStore.Remove(effect);
-
                     component._pendingEffects.Enqueue(new(effect, static (effect, stop) =>
                     {
                         try
@@ -873,6 +867,10 @@ namespace DOL.GS
                                 effect.OnStopEffect();
 
                             effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
+
+                            // Keep disabled effects in the store.
+                            if (!effect.IsDisabled)
+                                ServiceObjectStore.Remove(effect);
                         }
                         catch (Exception e)
                         {
