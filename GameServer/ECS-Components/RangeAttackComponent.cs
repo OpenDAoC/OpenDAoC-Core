@@ -119,13 +119,9 @@ namespace DOL.GS
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     else if (!IsAmmoCompatible)
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    else if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, (GameLiving)target, false))
+                    else if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, (GameLiving) target, false))
                     {
-                        if (target is GameLiving living &&
-                            RangedAttackType == eRangedAttackType.Critical &&
-                            (living.CurrentSpeed > 90 || // Walk speed == 85, hope that's what they mean.
-                            (living.attackComponent.AttackState && living.InCombat) || // Maybe not 100% correct.
-                            EffectListService.GetEffectOnTarget(living, eEffect.Mez) != null))
+                        if (target is GameLiving living && RangedAttackType is eRangedAttackType.Critical)
                         {
                             /*
                              * http://rothwellhome.org/guides/archery.htm
@@ -147,9 +143,16 @@ namespace DOL.GS
                              * delays) than against fast piercing/thrusting weapon wielders.
                              */
 
-                            // TODO: More checks?
-                            playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantCritical"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            RangedAttackType = eRangedAttackType.Normal;
+                            AttackData lastAttackData = living.attackComponent.attackAction.LastAttackData;
+                            bool isSwinging = lastAttackData != null &&
+                                lastAttackData.IsMeleeAttack &&
+                                lastAttackData.StartTime + lastAttackData.Interval > GameLoop.GameLoopTime;
+
+                            if (isSwinging || living.CurrentSpeed > 90 || living.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+                            {
+                                playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantCritical"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                RangedAttackType = eRangedAttackType.Normal;
+                            }
                         }
 
                         return eCheckRangeAttackStateResult.Fire;

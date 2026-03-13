@@ -7,6 +7,7 @@ namespace DOL.GS
 {
     public class AttackData
     {
+        public long StartTime = GameLoop.GameLoopTime;
         public GameLiving Attacker { get; set; }
         public GameLiving Target { get; set; }
         public GameLiving OriginalTarget { get; set; } // Non-null if the attack was redirected to a different target.
@@ -35,6 +36,7 @@ namespace DOL.GS
         public bool IsSpellResisted { get; set; }
         public int Modifier { get; set; } // Resisted damage.
         public int AnimationId { get; set; }
+
         // Temporary property set by `AttackComponent.BroadcastAttackMessageToOtherPlayers`.
         // Used by pets in `GameNPC.OnAttackedByEnemy` for convenience.
         public string BroadcastMessage { get; set; }
