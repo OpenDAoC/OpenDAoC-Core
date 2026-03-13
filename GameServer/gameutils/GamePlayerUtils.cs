@@ -200,7 +200,7 @@ namespace DOL.GS
         public static ICollection<string> GetBonusesInfo(this GamePlayer player)
         {
             var info = new List<string>();
-            
+
             /*
             <Begin Info: Bonuses (snapshot)>
             Resistances
@@ -234,18 +234,29 @@ namespace DOL.GS
             <End Info>
              */
 
-            //AbilityBonus[(int)((eProperty)updateResists[i])]
             info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Resist"));
-            info.Add(string.Format(" {2}:   {0:+0;-0}%/\t{1:+0;-0}%", player.GetModified(eProperty.Resist_Crush) - player.AbilityBonus[eProperty.Resist_Crush], player.AbilityBonus[eProperty.Resist_Crush], SkillBase.GetPropertyName(eProperty.Resist_Crush)));
-            info.Add(string.Format(" {2}:    {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Slash) - player.AbilityBonus[eProperty.Resist_Slash], player.AbilityBonus[eProperty.Resist_Slash], SkillBase.GetPropertyName(eProperty.Resist_Slash)));
-            info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Thrust) - player.AbilityBonus[eProperty.Resist_Thrust], player.AbilityBonus[eProperty.Resist_Thrust], SkillBase.GetPropertyName(eProperty.Resist_Thrust)));
-            info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Heat) - player.AbilityBonus[eProperty.Resist_Heat], player.AbilityBonus[eProperty.Resist_Heat], SkillBase.GetPropertyName(eProperty.Resist_Heat)));
-            info.Add(string.Format(" {2}:      {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Cold) - player.AbilityBonus[eProperty.Resist_Cold], player.AbilityBonus[eProperty.Resist_Cold], SkillBase.GetPropertyName(eProperty.Resist_Cold)));
-            info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Matter) - player.AbilityBonus[eProperty.Resist_Matter], player.AbilityBonus[eProperty.Resist_Matter], SkillBase.GetPropertyName(eProperty.Resist_Matter)));
-            info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Body) - player.AbilityBonus[eProperty.Resist_Body], player.AbilityBonus[eProperty.Resist_Body], SkillBase.GetPropertyName(eProperty.Resist_Body)));
-            info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Spirit) - player.AbilityBonus[eProperty.Resist_Spirit], player.AbilityBonus[eProperty.Resist_Spirit], SkillBase.GetPropertyName(eProperty.Resist_Spirit)));
-            info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Energy) - player.AbilityBonus[eProperty.Resist_Energy], player.AbilityBonus[eProperty.Resist_Energy], SkillBase.GetPropertyName(eProperty.Resist_Energy)));
-            info.Add(string.Format(" {2}: {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Natural) - player.AbilityBonus[eProperty.Resist_Natural], player.AbilityBonus[eProperty.Resist_Natural], SkillBase.GetPropertyName(eProperty.Resist_Natural)));
+
+            eProperty[] resistProperties =
+            [
+                eProperty.Resist_Crush,
+                eProperty.Resist_Slash,
+                eProperty.Resist_Thrust,
+                eProperty.Resist_Heat,
+                eProperty.Resist_Cold,
+                eProperty.Resist_Matter,
+                eProperty.Resist_Body,
+                eProperty.Resist_Spirit,
+                eProperty.Resist_Energy,
+                // eProperty.Resist_Natural
+            ];
+
+            foreach (eProperty prop in resistProperties)
+            {
+                int nonAbilityBonus = player.GetModifiedFromItems(prop) + player.GetModifiedFromBuffs(prop) + SkillBase.GetRaceResist(player.Race, (eResist) prop);
+                int abilityBonus = player.AbilityBonus[prop];
+                string name = SkillBase.GetPropertyName(prop);
+                info.Add($" {name}: {nonAbilityBonus:+0;-0}%/{abilityBonus:+0;-0}%");
+            }
 
             info.Add(" ");
             info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Special"));
