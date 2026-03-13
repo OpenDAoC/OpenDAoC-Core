@@ -9,17 +9,15 @@ namespace DOL.GS
     public static class GameServiceUtils
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private static double HalfTickDuration => GameLoop.TickDuration / 2;
 
         public static bool ShouldTick(long tickTime)
         {
             // This method checks if the current game loop time is within the range of the tick time.
-            // It allows for a half-tick rate tolerance to ensure that ticks are processed the closest to the intended time.
             // If this is a recurring tick, the tick time will need to be updated by the service that uses it. There are two ways to do this:
             // 1. Increment the tick time by the tick interval (prevents drifting).
             // 2. Set the tick time to the current game loop time then add the tick interval (prevents issues if tick time isn't initialized properly).
             // For most services, drifting is inconsequential, so the second option is preferred.
-            return tickTime - GameLoop.GameLoopTime - HalfTickDuration <= 0;
+            return tickTime - GameLoop.GameLoopTime <= 0;
         }
 
         public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IServiceObject
