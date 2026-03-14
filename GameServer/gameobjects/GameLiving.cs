@@ -1832,9 +1832,9 @@ namespace DOL.GS
 
 			static bool ShouldBeCancelled(AttackData attackData, ECSGameSpellEffect effect)
 			{
-				// Cancel most movement speed buffs if the attack did any damage.
-				// Otherwise, only cancel non-pulsing ones.
-				return attackData.Damage > 0 || !effect.SpellHandler.Spell.IsPulsing;
+				// Cancel movement speed buffs if the attack did any damage or is a taunt spell.
+				// Non-pulsing movement speed buffs are always canceled.
+				return attackData.Damage > 0 || !effect.SpellHandler.Spell.IsPulsing || attackData.SpellHandler?.Spell.SpellType is eSpellType.Taunt;
 			}
 		}
 
