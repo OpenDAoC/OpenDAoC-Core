@@ -30,6 +30,7 @@ namespace DOL.GS
 
         // When the current melee attack round is scheduled to end.
         public long AttackRoundEndTime { get; private set; }
+        public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
 
         public AttackData LastAttackData { get; set; }
         protected AttackComponent AttackComponent => _owner.attackComponent;

@@ -143,7 +143,7 @@ namespace DOL.GS
                              * delays) than against fast piercing/thrusting weapon wielders.
                              */
 
-                            if (!GameServiceUtils.ShouldTick(living.attackComponent.attackAction.AttackRoundEndTime) ||
+                            if (!living.attackComponent.attackAction.IsAttackRoundFinished ||
                                 living.CurrentSpeed > 90 ||
                                 living.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
                             {
