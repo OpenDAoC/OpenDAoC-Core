@@ -1534,7 +1534,7 @@ namespace DOL.GS.Spells
 					if (Spell.Radius == 0)
 						return list;
 
-					// Buffs affect every pet around the targetted pet (same owner).
+					// Buffs affect every pet around the targeted pet (same owner).
 					if (pet != null)
 					{
 						foreach (GameNPC npcInRadius in pet.GetNPCsInRadius(modifiedRadius))

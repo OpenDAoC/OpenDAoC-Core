@@ -2718,7 +2718,6 @@ namespace DOL.GS.PacketHandler
 			// Get through all disabled skills
 			foreach (Tuple<Skill, int> disabled in skills)
 			{
-
 				// Check if spell
 				byte lsIndex = 0;
 				foreach (var ls in listspells)
@@ -2727,7 +2726,7 @@ namespace DOL.GS.PacketHandler
 
 					if (index > -1)
 					{
-						disabledSpells.Add(new Tuple<byte, byte, ushort>(lsIndex, (byte)index, (ushort)(disabled.Item2 > 0 ? disabled.Item2 / 1000 + 1 : 0) ));
+						disabledSpells.Add(new(lsIndex, (byte) index, (ushort) (disabled.Item2 > 0 ? disabled.Item2 / 1000 : 0)));
 						break;
 					}
 
@@ -2737,7 +2736,7 @@ namespace DOL.GS.PacketHandler
 				int skIndex = listskills.FindIndex(skt => disabled.Item1.SkillType == skt.Item1.SkillType && disabled.Item1.ID == skt.Item1.ID) - specCount;
 
 				if (skIndex > -1)
-					disabledSkills.Add(new Tuple<ushort, ushort>((ushort)skIndex, (ushort)(disabled.Item2 > 0 ? disabled.Item2 / 1000 + 1 : 0) ));
+					disabledSkills.Add(new((ushort) skIndex, (ushort) (disabled.Item2 > 0 ? disabled.Item2 / 1000 : 0)));
 			}
 
 			if (disabledSkills.Count > 0)

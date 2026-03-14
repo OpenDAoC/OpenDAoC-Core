@@ -242,19 +242,37 @@ namespace DOL.GS
 
         public bool CheckCooldown(Spell spell)
         {
-            return ProcessCooldown(Owner.GetSkillDisabledDuration(spell), "spell");
+            int cooldown = Owner.GetSkillDisabledDuration(spell);
+
+            if (cooldown <= 0)
+                return true;
+
+            // Live behavior as of 1.127:
+            // Client side cooldown: "You must wait ... to recast this type of spell." (spell resisted, system window).
+            // The duration is sent by SendDisableSkill. A X seconds cooldown will show exactly X on the first couple of recast attempts (probably rounded to the nearest).
+            // More importantly, it ends about a second too early, at which point the server side cooldown takes relay.
+            // This can causes mismatches during server lags, but this is how it's supposed to work (I suspect it helps against latency a bit).
+            // Server side cooldown: "You must wait ... to recast this type of spell!" (spell resisted, system window).
+            (Owner as GamePlayer)?.Out.SendMessage($"You must wait {FormatCooldown(cooldown)} to recast this type of spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+            return false;
         }
 
         public bool CheckCooldown(Ability ability)
         {
-            return ProcessCooldown(Owner.GetSkillDisabledDuration(ability), "ability");
-        }
+            int cooldown = Owner.GetSkillDisabledDuration(ability);
 
-        private bool ProcessCooldown(int durationMs, string skillType)
-        {
-            if (durationMs <= 0)
+            if (cooldown <= 0)
                 return true;
 
+            // Live behavior as of 1.127:
+            // No client side cooldown.
+            // Server side cooldown: "You must wait ... to use this ability." (system, system window).
+            (Owner as GamePlayer)?.Out.SendMessage($"You must wait {FormatCooldown(cooldown)} to use this ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            return false;
+        }
+
+        private static string FormatCooldown(int durationMs)
+        {
             int totalSeconds = durationMs / 1000 + 1;
             string timeMsg;
 
@@ -267,8 +285,7 @@ namespace DOL.GS
             else
                 timeMsg = $"{totalSeconds} seconds";
 
-            (Owner as GamePlayer)?.Out.SendMessage($"You must wait {timeMsg} to use this {skillType}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            return false;
+            return timeMsg;
         }
 
         public class CastSpellRequest : StartSkillRequest
