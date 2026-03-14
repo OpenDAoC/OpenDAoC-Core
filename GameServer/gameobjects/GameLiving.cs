@@ -953,7 +953,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual double TryEvade(AttackData ad, AttackData lastAD)
+		public virtual double TryEvade(AttackData ad, AttackData lastAD, int attackerCount)
 		{
 			// 1. A: It isn't possible to give a simple answer. The formula includes such elements
 			// as your level, your target's level, your level of evade, your QUI, your DEX, your
@@ -990,6 +990,15 @@ namespace DOL.GS
 				// Kelgor's Claw 15% evade.
 				if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
 					evadeChance += 15 * 0.01;
+
+				// Evade chance is reduced by the number of attackers.
+				// The reduction amount is believed to be relatively small compared to parry.
+				// We use the same formula, but each additional attacker beyond the first contributes 1/3.
+				if (attackerCount > 0)
+				{
+					double effectiveAttackers = 1 + (attackerCount - 1) / 3.0;
+					evadeChance /= effectiveAttackers;
+				}
 
 				// Reduce chance by attacker's defense penetration.
 				evadeChance *= 1 - ad.DefensePenetration;
@@ -1076,7 +1085,7 @@ namespace DOL.GS
 				{
 					parryChance *= 0.001;
 
-					// Parry chance is divided by the number of attackers.
+					// Parry chance is reduced by the number of attackers.
 					// The penalty was reduced in 1.87.
 					if (attackerCount > 0)
 						parryChance /= attackerCount;

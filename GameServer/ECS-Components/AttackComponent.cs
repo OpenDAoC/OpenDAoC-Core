@@ -1656,7 +1656,18 @@ namespace DOL.GS
                 if (lastAttackData != null && lastAttackData.AttackResult is not eAttackResult.HitStyle)
                     lastAttackData = null;
 
-                double evadeChance = owner.TryEvade(ad, lastAttackData);
+                // For evade and parry chance reduction.
+                // This includes enemies attacking from both the front and the back, which was confirmed to be correct for parry and evade on live (Jan 2026) when fighting NPCs.
+                int attackerCount = AttackerTracker.MeleeCount;
+
+                // https://web.archive.org/web/20040113134640/http://www.camelotherald.com/more/664.shtml.
+                // https://www.darkageofcamelot.com/2020/10/23/friday-grab-bag-10232020/
+                // The following statement was not confirmed:
+                /* In RvR combat...
+                 * Multiple attackers do not penalize a target’s chance to parry OR evade so long as the attackers are in the frontal arc for parry and standard evades.
+                 * The caveat to this with evade is that dual-wield attackers will halve their chance to be evaded (not the chance for other attackers).*/
+
+                double evadeChance = owner.TryEvade(ad, lastAttackData, attackerCount);
                 ad.EvadeChance = evadeChance * 100;
                 double evadeRoll = owner.GetPseudoDouble(RandomDeckEvent.Evade);
 
@@ -1674,7 +1685,7 @@ namespace DOL.GS
 
                 if (ad.IsMeleeAttack)
                 {
-                    double parryChance = owner.TryParry(ad, lastAttackData, AttackerTracker.MeleeCount);
+                    double parryChance = owner.TryParry(ad, lastAttackData, attackerCount);
                     ad.ParryChance = parryChance * 100;
                     double parryRoll = owner.GetPseudoDouble(RandomDeckEvent.Parry);
 
