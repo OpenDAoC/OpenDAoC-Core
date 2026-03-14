@@ -143,12 +143,9 @@ namespace DOL.GS
                              * delays) than against fast piercing/thrusting weapon wielders.
                              */
 
-                            AttackData lastAttackData = living.attackComponent.attackAction.LastAttackData;
-                            bool isSwinging = lastAttackData != null &&
-                                lastAttackData.IsMeleeAttack &&
-                                lastAttackData.StartTime + lastAttackData.Interval > GameLoop.GameLoopTime;
-
-                            if (isSwinging || living.CurrentSpeed > 90 || living.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+                            if (!GameServiceUtils.ShouldTick(living.attackComponent.attackAction.AttackRoundEndTime) ||
+                                living.CurrentSpeed > 90 ||
+                                living.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
                             {
                                 playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantCritical"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 RangedAttackType = eRangedAttackType.Normal;
