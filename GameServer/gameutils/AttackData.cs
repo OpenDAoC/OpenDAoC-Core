@@ -7,7 +7,6 @@ namespace DOL.GS
 {
     public class AttackData
     {
-        public long StartTime = GameLoop.GameLoopTime;
         public GameLiving Attacker { get; set; }
         public GameLiving Target { get; set; }
         public GameLiving OriginalTarget { get; set; } // Non-null if the attack was redirected to a different target.
