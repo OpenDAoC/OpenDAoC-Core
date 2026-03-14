@@ -216,14 +216,6 @@ namespace DOL.GS.Commands
 					info.Add("LastCombatPVP: " + target.LastCombatTickPvP);
 					info.Add("AttackAction: " + target.attackComponent.attackAction);
 					info.Add("WeaponAction: " + target.attackComponent.weaponAction);
-
-					if (target.InCombat || target.attackComponent.AttackState)
-					{
-						info.Add("RegionTick: " + GameLoop.GameLoopTime);
-						info.Add("AttackAction NextTick " + target.attackComponent.attackAction.NextTick);
-						info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.NextTick - GameLoop.GameLoopTime));
-					}
-
 					info.Add("");
 
 					if (target.TargetObject != null)

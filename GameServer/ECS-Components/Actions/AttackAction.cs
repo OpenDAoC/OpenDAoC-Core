@@ -24,10 +24,14 @@ namespace DOL.GS
         private long _nextRangedTick;
         private bool _firstTick = true;
 
-        // Set to current time when a round doesn't result in an attack. Used to prevent combat log spam and kept until reset in AttackComponent.SendAttackingCombatMessages().
+        // Set to current time when a round doesn't result in an attack.
+        // Used to prevent combat log spam and kept until reset by AttackComponent.SendAttackingCombatMessages.
         public long RoundWithNoAttackTime { get; set; }
+
+        // When the current melee attack round is scheduled to end.
+        public long AttackRoundEndTime { get; private set; }
+
         public AttackData LastAttackData { get; set; }
-        public long NextTick => _owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance ? _nextMeleeTick : _nextRangedTick;
         protected AttackComponent AttackComponent => _owner.attackComponent;
         protected StyleComponent StyleComponent => _owner.styleComponent;
 
@@ -360,7 +364,7 @@ namespace DOL.GS
 
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
             if (_ticksToTarget > 0)
-                new ECSGameTimer(_owner, new ECSGameTimer.ECSTimerCallback(AttackComponent.weaponAction.Execute), _ticksToTarget);
+                _ = new ECSGameTimer(_owner, AttackComponent.weaponAction.Execute, _ticksToTarget);
             else
                 AttackComponent.weaponAction.Execute();
         }
@@ -396,6 +400,7 @@ namespace DOL.GS
             }
 
             _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
+            AttackRoundEndTime = _nextMeleeTick + _interval;
             return true;
         }
 
