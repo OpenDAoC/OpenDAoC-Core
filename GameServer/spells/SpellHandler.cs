@@ -621,6 +621,15 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
+					if (!m_caster.IsWithinRadius(Target, Spell.CalculateEffectiveRange(m_caster)))
+					{
+						if (Caster is GamePlayer && !quiet)
+							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
+						return false;
+					}
+
 					break;
 				}
 				case eSpellTarget.AREA:
