@@ -110,7 +110,7 @@ namespace DOL.GS
             }
         }
 
-        public override void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
+        public override void ExecuteForEach<T>(IReadOnlyList<T> items, int toExclusive, Action<T> action)
         {
             try
             {
@@ -119,26 +119,8 @@ namespace DOL.GS
                 if (count <= 0)
                     return;
 
-                _workContext = ExecutionContext.Capture();
                 _workProcessor = WorkProcessorCache<T>.Instance.Set(items, action);
-                _workState.RemainingWork = count;
-                _workState.CompletedWorkerCount = 0;
-
-                // If the count is less than the degree of parallelism, only signal the required number of workers.
-                // The caller thread will also be used, so in this case we need to subtract one from the amount of workers to start.
-                int workersToStart = count < _degreeOfParallelism ? count - 1 : _workerCount;
-
-                for (int i = 0; i < workersToStart; i++)
-                    _workReady[i].Set();
-
-                ProcessWorkActions();
-                Interlocked.Increment(ref _workState.CompletedWorkerCount);
-
-                // Spin very tightly until all the workers have completed their work.
-                // We could adjust the spin wait time if we get here early, but this is hard to predict.
-                // However we really don't want to yield the CPU here, as this could delay the return by a lot.
-                while (Volatile.Read(ref _workState.CompletedWorkerCount) < workersToStart + 1)
-                    Thread.SpinWait(1);
+                ExecuteForEachInternal(count);
             }
             catch (Exception e)
             {
@@ -151,6 +133,52 @@ namespace DOL.GS
             {
                 (_workProcessor as WorkProcessor<T>)?.Clear();
             }
+        }
+
+        public override void ExecuteForEachSharded<T>(IReadOnlyList<IReadOnlyList<T>> shards, int[] shardStartIndices, int totalCount, Action<T> action)
+        {
+            try
+            {
+                if (totalCount <= 0)
+                    return;
+
+                _workProcessor = ShardedWorkProcessorCache<T>.Instance.Set(shards, shardStartIndices, totalCount, action);
+                ExecuteForEachInternal(totalCount);
+            }
+            catch (Exception e)
+            {
+                if (log.IsFatalEnabled)
+                    log.Fatal($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
+
+                GameServer.Instance.Stop();
+            }
+            finally
+            {
+                (_workProcessor as ShardedWorkProcessor<T>)?.Clear();
+            }
+        }
+
+        private void ExecuteForEachInternal(int count)
+        {
+            _workContext = ExecutionContext.Capture();
+            _workState.RemainingWork = count;
+            _workState.CompletedWorkerCount = 0;
+
+            // If the count is less than the degree of parallelism, only signal the required number of workers.
+            // The caller thread will also be used, so in this case we need to subtract one from the amount of workers to start.
+            int workersToStart = count < _degreeOfParallelism ? count - 1 : _workerCount;
+
+            for (int i = 0; i < workersToStart; i++)
+                _workReady[i].Set();
+
+            ProcessWorkActions();
+            Interlocked.Increment(ref _workState.CompletedWorkerCount);
+
+            // Spin very tightly until all the workers have completed their work.
+            // We could adjust the spin wait time if we get here early, but this is hard to predict.
+            // However we really don't want to yield the CPU here, as this could delay the return by a lot.
+            while (Volatile.Read(ref _workState.CompletedWorkerCount) < workersToStart + 1)
+                Thread.SpinWait(1);
         }
 
         public override void Dispose()
@@ -173,7 +201,7 @@ namespace DOL.GS
 
         protected override void InitWorker(object obj)
         {
-            (int Id, bool Restart) = ((int, bool)) obj;
+            (int Id, _) = ((int, bool)) obj;
             _workers[Id] = Thread.CurrentThread;
             _workerCycle[Id] = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
             base.InitWorker(obj);
@@ -267,9 +295,7 @@ namespace DOL.GS
                 if (start < 0)
                     start = 0;
 
-                for (int i = start; i < end; i++)
-                    _workProcessor.Process(i);
-
+                _workProcessor.Process(start, end);
                 remainingWork = start - 1;
             }
         }
@@ -279,35 +305,110 @@ namespace DOL.GS
             public static readonly WorkProcessor<T> Instance = new();
         }
 
+        private static class ShardedWorkProcessorCache<T>
+        {
+            public static readonly ShardedWorkProcessor<T> Instance = new();
+        }
+
         private sealed class WorkProcessor<T> : WorkProcessor
         {
-            private List<T> _items;
+            private IReadOnlyList<T> _items;
             private Action<T> _action;
 
             public WorkProcessor() { }
 
-            public WorkProcessor<T> Set(List<T> items, Action<T> action)
+            public WorkProcessor<T> Set(IReadOnlyList<T> items, Action<T> action)
             {
                 _items = items;
                 _action = action;
                 return this;
             }
 
-            public override void Process(int index)
+            public override void Process(int start, int end)
             {
-                _action(_items[index]);
+                for (int i = start; i < end; i++)
+                    _action(_items[i]);
             }
 
             public void Clear()
             {
-                _items = default;
+                _items = null;
+                _action = null;
+            }
+        }
+
+        private sealed class ShardedWorkProcessor<T> : WorkProcessor
+        {
+            private IReadOnlyList<IReadOnlyList<T>> _shards;
+            private int[] _shardStartIndices; 
+            private int _totalCount;
+            private Action<T> _action;
+
+            public ShardedWorkProcessor<T> Set(
+                IReadOnlyList<IReadOnlyList<T>> shards,
+                int[] shardStartIndices,
+                int totalCount,
+                Action<T> action)
+            {
+                _shards = shards;
+                _shardStartIndices = shardStartIndices;
+                _totalCount = totalCount;
+                _action = action;
+                return this;
+            }
+
+            public override void Process(int start, int end)
+            {
+                int currentShardIdx = _shardStartIndices.Length - 1;
+
+                while (currentShardIdx > 0 && start < _shardStartIndices[currentShardIdx])
+                    currentShardIdx--;
+
+                int itemsLeft = end - start;
+                int localIdx = start - _shardStartIndices[currentShardIdx];
+
+                while (itemsLeft > 0)
+                {
+                    int shardValidCount;
+
+                    // Derive the exact number of valid items in this shard using the boundaries.
+                    if (currentShardIdx < _shardStartIndices.Length - 1)
+                        shardValidCount = _shardStartIndices[currentShardIdx + 1] - _shardStartIndices[currentShardIdx];
+                    else
+                        shardValidCount = _totalCount - _shardStartIndices[currentShardIdx];
+
+                    int availableInShard = shardValidCount - localIdx;
+                    int itemsToProcess = Math.Min(itemsLeft, availableInShard);
+
+                    if (itemsToProcess <= 0)
+                    {
+                        currentShardIdx++;
+                        localIdx = 0;
+                        continue;
+                    }
+
+                    IReadOnlyList<T> currentShard = _shards[currentShardIdx];
+
+                    for (int i = 0; i < itemsToProcess; i++)
+                        _action(currentShard[localIdx + i]);
+
+                    itemsLeft -= itemsToProcess;
+                    currentShardIdx++;
+                    localIdx = 0;
+                }
+            }
+
+            public void Clear()
+            {
+                _shards = null;
+                _shardStartIndices = null;
                 _action = null;
             }
         }
 
         private abstract class WorkProcessor
         {
-            public abstract void Process(int index);
+            public abstract void Process(int start, int end);
         }
     }
 }
