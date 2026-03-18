@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using DOL.Logging;
@@ -12,7 +11,7 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private List<AttackComponent> _list;
+        private ServiceObjectView<AttackComponent> _view;
 
         public static AttackService Instance { get; }
 
@@ -24,24 +23,23 @@ namespace DOL.GS
         public override void Tick()
         {
             ProcessPostedActionsParallel();
-            int lastValidIndex;
 
             try
             {
-                _list = ServiceObjectStore.UpdateAndGetAll<AttackComponent>(ServiceObjectType.AttackComponent, out lastValidIndex);
+                _view = ServiceObjectStore.UpdateAndGetView<AttackComponent>(ServiceObjectType.AttackComponent);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetView)} failed. Skipping this tick.", e);
 
                 return;
             }
 
-            GameLoop.ExecuteForEach(_list, lastValidIndex + 1, TickInternal);
+            _view.ExecuteForEach(TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);
         }
 
         private static void TickInternal(AttackComponent attackComponent)

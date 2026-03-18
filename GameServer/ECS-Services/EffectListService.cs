@@ -13,8 +13,7 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private List<EffectListComponent> _list;
-        private int _lastValidIndex;
+        private ServiceObjectView<EffectListComponent> _view;
 
         public static EffectListService Instance { get; }
 
@@ -29,21 +28,20 @@ namespace DOL.GS
 
             try
             {
-                _list = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out _lastValidIndex);
+                _view = ServiceObjectStore.UpdateAndGetView<EffectListComponent>(ServiceObjectType.EffectListComponent);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetView)} failed. Skipping this tick.", e);
 
-                _lastValidIndex = -1;
                 return;
             }
 
-            GameLoop.ExecuteForEach(_list, _lastValidIndex + 1, BeginTickInternal);
+            _view.ExecuteForEach(BeginTickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);
         }
 
         private static void BeginTickInternal(EffectListComponent effectListComponent)
@@ -68,7 +66,7 @@ namespace DOL.GS
 
         public override void EndTick()
         {
-            GameLoop.ExecuteForEach(_list, _lastValidIndex + 1, EndTickInternal);
+            _view.ExecuteForEach(EndTickInternal);
         }
 
         private static void EndTickInternal(EffectListComponent effectListComponent)

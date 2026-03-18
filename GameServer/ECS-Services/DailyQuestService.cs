@@ -53,26 +53,25 @@ namespace DOL.GS
                     GameServer.Database.AddObject(newTime);
                 }
 
-                List<GameClient> clients;
-                int lastValidIndex;
+                ServiceObjectView<GameClient> view;
 
                 try
                 {
-                    clients = ServiceObjectStore.UpdateAndGetAll<GameClient>(ServiceObjectType.Client, out lastValidIndex);
+                    view = ServiceObjectStore.UpdateAndGetView<GameClient>(ServiceObjectType.Client);
                 }
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+                        log.Error($"{nameof(ServiceObjectStore.UpdateAndGetView)} failed. Skipping this tick.", e);
 
                     return;
                 }
 
                 _lastDailyRollover = DateTime.Now;
 
-                for (int i = 0; i < lastValidIndex + 1; i++)
+                for (int i = 0; i < view.TotalValidCount; i++)
                 {
-                    GameClient client = clients[i];
+                    GameClient client = view.Items[i];
                     client.Player?.RemoveFinishedQuests(x => x is Quests.DailyQuest);
                 }
 

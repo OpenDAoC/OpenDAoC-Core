@@ -11,7 +11,7 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private List<SubZoneObject> _list;
+        private ServiceObjectView<SubZoneObject> _view;
 
         public static ZoneService Instance { get; }
 
@@ -23,24 +23,23 @@ namespace DOL.GS
         public override void Tick()
         {
             ProcessPostedActionsParallel();
-            int lastValidIndex;
 
             try
             {
-                _list = ServiceObjectStore.UpdateAndGetAll<SubZoneObject>(ServiceObjectType.SubZoneObject, out lastValidIndex);
+                _view = ServiceObjectStore.UpdateAndGetView<SubZoneObject>(ServiceObjectType.SubZoneObject);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetView)} failed. Skipping this tick.", e);
 
                 return;
             }
 
-            GameLoop.ExecuteForEach(_list, lastValidIndex + 1, TickInternal);
+            _view.ExecuteForEach(TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);
         }
 
         private static void TickInternal(SubZoneObject subZoneObject)
