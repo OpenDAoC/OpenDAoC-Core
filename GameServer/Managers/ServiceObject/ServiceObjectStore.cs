@@ -38,7 +38,7 @@ namespace DOL.GS
             new Dictionary<ServiceObjectType, IServiceObjectArray>()
             {
                 { ServiceObjectType.Client, new ServiceObjectArray<GameClient>(Properties.MAX_PLAYERS) },
-                { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(Properties.MAX_ENTITIES) },
+                { ServiceObjectType.Brain, new ShardedServiceObjectArray<ABrain>(Properties.MAX_ENTITIES) },
                 { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
                 { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
                 { ServiceObjectType.Effect, new ServiceObjectArray<ECSGameEffect>(10000) },
