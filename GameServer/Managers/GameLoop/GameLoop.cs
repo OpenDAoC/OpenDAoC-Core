@@ -20,6 +20,7 @@ namespace DOL.GS
         private static bool _running;
         private static List<TickStep> _tickSequence;
 
+        public static int DegreeOfParallelism { get; } = Environment.ProcessorCount;
         public static double TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
         public static string ActiveService { get; set; }
@@ -77,10 +78,10 @@ namespace DOL.GS
 
         private static void Run()
         {
-            if (Environment.ProcessorCount == 1)
+            if (DegreeOfParallelism == 1)
                 _threadPool = new GameLoopThreadPoolSingleThreaded();
             else
-                _threadPool = new GameLoopThreadPoolMultiThreaded(Environment.ProcessorCount);
+                _threadPool = new GameLoopThreadPoolMultiThreaded(DegreeOfParallelism);
 
             _threadPool.Init(); // Must be done from the game loop thread.
             BuildTickSequence();
