@@ -8,15 +8,20 @@ namespace DOL.AI
     /// <summary>
     /// This class is the base of all artificial intelligence in game objects
     /// </summary>
-    public abstract class ABrain : IServiceObject
+    public abstract class ABrain : IShardedServiceObject
     {
         public FSM FSM { get; set; }
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Brain);
         public virtual GameNPC Body { get; set; }
         public virtual int ThinkInterval { get; set; } = 2500;
+        public long NextThinkTick { get; private set; }
         public bool IsActive => Body != null && Body.IsAlive && Body.ObjectState is GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
-        public long NextThinkTick { get; set; }
         protected virtual int ThinkOffsetOnStart => Util.Random(750, 3000);
+
+        // IServiceObject implementation.
+        private readonly ShardedServiceObjectId _serviceObjectId = new(ServiceObjectType.Brain);
+        public ServiceObjectId ServiceObjectId => _serviceObjectId;
+        SchedulableServiceObjectId ISchedulableServiceObject.ServiceObjectId => _serviceObjectId;
+        ShardedServiceObjectId IShardedServiceObject.ServiceObjectId => _serviceObjectId;
 
         /// <summary>
         /// Returns the string representation of the ABrain
@@ -32,21 +37,21 @@ namespace DOL.AI
                 .ToString();
         }
 
+        public bool Schedule(long nextThinkTick)
+        {
+            NextThinkTick = nextThinkTick;
+            return ServiceObjectStore.Schedule(this, NextThinkTick);
+        }
+
         /// <summary>
         /// Starts the brain thinking
         /// </summary>
         /// <returns>true if started</returns>
         public virtual bool Start()
         {
-            if (ServiceObjectStore.Add(this))
-            {
-                // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
-                // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
-                NextThinkTick = GameLoop.GameLoopTime + ThinkOffsetOnStart;
-                return true;
-            }
-
-            return false;
+            // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
+            // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
+            return Schedule(GameLoop.GameLoopTime + ThinkOffsetOnStart);
         }
 
         /// <summary>
@@ -55,7 +60,7 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
-            if (ServiceObjectId.PeekAction() is ServiceObjectId.PendingAction.Remove)
+            if (_serviceObjectId.PeekAction() is ServiceObjectId.PendingAction.Remove)
                 return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.

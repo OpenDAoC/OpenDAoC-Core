@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
 using DOL.GS;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 
 namespace DOL.AI.Brain
 {
     public class StandardMobState : FSMState
     {
-        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         protected StandardMobBrain _brain = null;
 
@@ -59,7 +60,7 @@ namespace DOL.AI.Brain
         public override void Enter()
         {
             _brain.Body.StopMoving();
-            _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
+            _brain.Schedule(GameLoop.GameLoopTime); // Don't stay in IDLE for a full think cycle.
             base.Enter();
         }
 
@@ -78,7 +79,7 @@ namespace DOL.AI.Brain
                 _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
 
             if (_brain.FSM.GetCurrentState() != this)
-                _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
+                _brain.Schedule(GameLoop.GameLoopTime); // Don't stay in IDLE for a full think cycle.
             else
                 base.Think();
         }
