@@ -66,7 +66,7 @@ namespace DOL.GS
         }
     }
 
-    public class ECSGameTimer : IServiceObject
+    public class ECSGameTimer : IShardedServiceObject
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
@@ -77,8 +77,12 @@ namespace DOL.GS
         public long NextTick { get; protected set; }
         public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Timer);
-        private PropertyCollection _properties;
+
+        // IServiceObject implementation.
+        private readonly ShardedServiceObjectId _serviceObjectId = new(ServiceObjectType.Timer);
+        public ServiceObjectId ServiceObjectId => _serviceObjectId;
+        SchedulableServiceObjectId ISchedulableServiceObject.ServiceObjectId => _serviceObjectId;
+        ShardedServiceObjectId IShardedServiceObject.ServiceObjectId => _serviceObjectId;
 
         public ECSGameTimer(GameObject timerOwner)
         {
@@ -110,7 +114,7 @@ namespace DOL.GS
             Interval = interval;
             NextTick = GameLoop.GameLoopTime + interval;
 
-            if (ServiceObjectStore.Add(this))
+            if (ServiceObjectStore.Schedule(this, NextTick))
                 IsAlive = true;
         }
 
@@ -132,21 +136,22 @@ namespace DOL.GS
             }
 
             NextTick += Interval;
+            ServiceObjectStore.Schedule(this, NextTick);
         }
 
         public PropertyCollection Properties
         {
             get
             {
-                if (_properties == null)
+                if (field == null)
                 {
                     lock (this)
                     {
-                        _properties ??= new();
+                        field ??= new();
                     }
                 }
 
-                return _properties;
+                return field;
             }
         }
     }

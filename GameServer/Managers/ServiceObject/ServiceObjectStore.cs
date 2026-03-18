@@ -47,7 +47,7 @@ namespace DOL.GS
                 { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },
                 { ServiceObjectType.SubZoneObject, new ServiceObjectArray<SubZoneObject>(Properties.MAX_ENTITIES) },
                 { ServiceObjectType.LivingBeingKilled, new ServiceObjectArray<LivingBeingKilled>(200) },
-                { ServiceObjectType.Timer, new ServiceObjectArray<ECSGameTimer>(500) }
+                { ServiceObjectType.Timer, new ShardedServiceObjectArray<ECSGameTimer>(500) }
             }.ToFrozenDictionary();
 
         public static bool Add<T>(T serviceObject) where T : class, IServiceObject
