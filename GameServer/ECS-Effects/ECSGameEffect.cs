@@ -8,7 +8,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public abstract class ECSGameEffect : IServiceObject, IPooledList<ECSGameEffect>
+    public abstract class ECSGameEffect : IShardedServiceObject, IPooledList<ECSGameEffect>
     {
         private State _state;
         private TransitionalState _transitionalState;
@@ -34,7 +34,6 @@ namespace DOL.GS
         public bool TriggersImmunity { get; set; }
         public int ImmunityDuration { get; protected set; } = 60000;
         public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Effect);
 
         // State properties.
         public bool IsActive => _state is State.Active;
@@ -54,6 +53,12 @@ namespace DOL.GS
         public bool CanBeEnabled => IsDisabled && CanChangeState;
         public bool CanBeEnded => (IsActive || IsDisabled) && CanChangeState;
 
+        // IServiceObject implementation.
+        private readonly ShardedServiceObjectId _serviceObjectId = new(ServiceObjectType.Effect);
+        public ServiceObjectId ServiceObjectId => _serviceObjectId;
+        SchedulableServiceObjectId ISchedulableServiceObject.ServiceObjectId => _serviceObjectId;
+        ShardedServiceObjectId IShardedServiceObject.ServiceObjectId => _serviceObjectId;
+
         public ECSGameEffect(in ECSGameEffectInitParams initParams)
         {
             Owner = initParams.Target;
@@ -64,6 +69,11 @@ namespace DOL.GS
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             SpellHandler = initParams.SpellHandler;
+        }
+
+        public virtual long GetNextTick()
+        {
+            return ExpireTick;
         }
 
         public bool Start()

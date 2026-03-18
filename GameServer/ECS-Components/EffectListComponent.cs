@@ -479,7 +479,9 @@ namespace DOL.GS
                             if (start)
                                 effect.OnStartEffect();
 
-                            ServiceObjectStore.Add(effect);
+                            if (effect.Duration > 0)
+                                ServiceObjectStore.Schedule(effect, effect.GetNextTick());
+
                             effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                             // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
@@ -670,7 +672,10 @@ namespace DOL.GS
                     {
                         ServiceObjectStore.Remove(existingEffect);
                         existingEffect.IsBeingReplaced = true; // Will be checked by the parent pulse effect so that it doesn't call `Stop` on it.
-                        ServiceObjectStore.Add(effect);
+
+                        if (effect.Duration > 0)
+                            ServiceObjectStore.Schedule(effect, effect.GetNextTick());
+
                         existingEffects[i] = effect;
                         result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
                     }
