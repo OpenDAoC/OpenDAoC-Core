@@ -55,7 +55,7 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
-            if (ServiceObjectId.IsPendingRemoval)
+            if (ServiceObjectId.PeekAction() is ServiceObjectId.PendingAction.Remove)
                 return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.

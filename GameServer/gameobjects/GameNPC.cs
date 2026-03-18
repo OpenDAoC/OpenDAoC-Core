@@ -1938,7 +1938,7 @@ namespace DOL.GS
 		{
 			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
 
-			if (Brain != null && !Brain.ServiceObjectId.IsSet)
+			if (Brain != null && !Brain.ServiceObjectId.IsActive)
 				Brain.Start();
 		}
 

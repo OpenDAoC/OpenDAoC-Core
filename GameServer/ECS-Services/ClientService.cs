@@ -19,9 +19,8 @@ namespace DOL.GS
         private const int HARD_TIMEOUT = 150000;
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
-        private List<GameClient> _clients = new();
+        private ServiceObjectView<GameClient> _view;
         private SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
-        private int _lastValidIndex = -1;
         private int _clientCount;
         private GameClient[] _clientsBySessionId = new GameClient[ushort.MaxValue];
         private Trie<GamePlayer> _playerNameTrie = new();
@@ -44,27 +43,26 @@ namespace DOL.GS
 
                 try
                 {
-                    _clients = ServiceObjectStore.UpdateAndGetAll<GameClient>(ServiceObjectType.Client, out _lastValidIndex);
+                    _view = ServiceObjectStore.UpdateAndGetView<GameClient>(ServiceObjectType.Client);
                 }
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+                        log.Error($"{nameof(ServiceObjectStore.UpdateAndGetView)} failed. Skipping this tick.", e);
 
-                    _lastValidIndex = -1;
                     return;
                 }
             }
 
-            GameLoop.ExecuteForEach(_clients, _lastValidIndex + 1, BeginTickInternal);
+            _view.ExecuteForEach(BeginTickInternal);
         }
 
         public override void EndTick()
         {
-            GameLoop.ExecuteForEach(_clients, _lastValidIndex + 1, EndTickInternal);
+            _view.ExecuteForEach(EndTickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _clients.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);
         }
 
         private static void BeginTickInternal(GameClient client)
@@ -193,9 +191,6 @@ namespace DOL.GS
                 ServiceObjectId serviceObjectId = client.ServiceObjectId;
                 log.Warn($"{nameof(OnClientConnect)} was called but the client couldn't be added to the entity manager." +
                     $"(Client: {client})" +
-                    $"(IsIdSet: {serviceObjectId.IsSet})" +
-                    $"(IsPendingAddition: {serviceObjectId.IsPendingAddition})" +
-                    $"(IsPendingRemoval: {serviceObjectId.IsPendingAddition})" +
                     $"\n{Environment.StackTrace}");
             }
         }
@@ -216,9 +211,6 @@ namespace DOL.GS
                 ServiceObjectId serviceObjectId = client.ServiceObjectId;
                 log.Warn($"{nameof(OnClientDisconnect)} was called but the client couldn't be removed from the entity manager." +
                          $"(Client: {client})" +
-                         $"(IsIdSet: {serviceObjectId.IsSet})" +
-                         $"(IsPendingAddition: {serviceObjectId.IsPendingAddition})" +
-                         $"(IsPendingRemoval: {serviceObjectId.IsPendingAddition})" +
                          $"\n{Environment.StackTrace}");
             }
         }
@@ -244,9 +236,9 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i <= _lastValidIndex; i++)
+                for (int i = 0; i < _view.TotalValidCount; i++)
                 {
-                    GameClient client = _clients[i];
+                    GameClient client = _view.Items[i];
 
                     if (client == null || !client.IsPlaying)
                         continue;
@@ -287,9 +279,9 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i <= _lastValidIndex; i++)
+                for (int i = 0; i < _view.TotalValidCount; i++)
                 {
-                    GameClient client = _clients[i];
+                    GameClient client = _view.Items[i];
 
                     if (!client.IsPlaying)
                         continue;
@@ -323,9 +315,9 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i <= _lastValidIndex; i++)
+                for (int i = 0; i < _view.TotalValidCount; i++)
                 {
-                    GameClient client = _clients[i];
+                    GameClient client = _view.Items[i];
 
                     // Most code assumes clients have an account for privilege checks.
                     if (client.Account == null)
@@ -357,9 +349,9 @@ namespace DOL.GS
             {
                 _lock.EnterReadLock();
 
-                for (int i = 0; i <= _lastValidIndex; i++)
+                for (int i = 0; i < _view.TotalValidCount; i++)
                 {
-                    GameClient client = _clients[i];
+                    GameClient client = _view.Items[i];
 
                     // Most code assumes clients have an account for privilege checks.
                     if (client.Account == null)

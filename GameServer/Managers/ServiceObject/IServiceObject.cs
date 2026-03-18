@@ -1,8 +1,17 @@
 ﻿namespace DOL.GS
 {
-    // Interface to be implemented by classes that are to be handled by `ServiceObjectStore`.
     public interface IServiceObject
     {
-        public ServiceObjectId ServiceObjectId { get; }
+        ServiceObjectId ServiceObjectId { get; }
+    }
+
+    public interface ISchedulableServiceObject : IServiceObject
+    {
+        new SchedulableServiceObjectId ServiceObjectId { get; }
+    }
+
+    public interface IShardedServiceObject : ISchedulableServiceObject
+    {
+        new ShardedServiceObjectId ServiceObjectId { get; }
     }
 }

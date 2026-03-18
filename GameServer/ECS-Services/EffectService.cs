@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.PacketHandler;
@@ -14,8 +13,7 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private List<ECSGameEffect> _list;
-        private int _lastValidIndex;
+        private ServiceObjectView<ECSGameEffect> _view;
 
         public static EffectService Instance { get; }
 
@@ -30,21 +28,20 @@ namespace DOL.GS
 
             try
             {
-                _list = ServiceObjectStore.UpdateAndGetAll<ECSGameEffect>(ServiceObjectType.Effect, out _lastValidIndex);
+                _view = ServiceObjectStore.UpdateAndGetView<ECSGameEffect>(ServiceObjectType.Effect);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetView)} failed. Skipping this tick.", e);
 
-                _lastValidIndex = -1;
                 return;
             }
 
-            GameLoop.ExecuteForEach(_list, _lastValidIndex + 1, TickInternal);
+            _view.ExecuteForEach(TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);
         }
 
         private static void TickInternal(ECSGameEffect effect)
