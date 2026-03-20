@@ -180,8 +180,19 @@ namespace DOL.GS
 
         public virtual bool IsBetterThan(ECSGameEffect effect)
         {
-            return SpellHandler.Spell.Value * Effectiveness >= effect.SpellHandler.Spell.Value * effect.Effectiveness &&
-                SpellHandler.Spell.Damage * Effectiveness >= effect.SpellHandler.Spell.Damage * effect.Effectiveness;
+            // Compare spell values first if non 0. This handles DD+snare and DD+debuff spells correctly.
+            // This wouldn't handle ablative effects correctly, but those are pre-handled by EffectListComponent.
+
+            double thisSpellValue = SpellHandler.Spell.Value;
+            double otherSpellValue = effect.SpellHandler.Spell.Value;
+
+            if (thisSpellValue > 0 && otherSpellValue > 0)
+                return thisSpellValue * Effectiveness >= otherSpellValue* effect.Effectiveness;
+
+            double thisSpellDamage = SpellHandler.Spell.Damage;
+            double otherSpellDamage = effect.SpellHandler.Spell.Damage;
+
+            return thisSpellDamage * Effectiveness >= otherSpellDamage * effect.Effectiveness;
         }
 
         public virtual bool IsConcentrationEffect() { return false; }
