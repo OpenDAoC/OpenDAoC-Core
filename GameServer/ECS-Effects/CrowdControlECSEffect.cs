@@ -42,7 +42,7 @@ namespace DOL.GS
 
             // Re-schedule the next think so that the NPC can resume its attack immediately for example.
             if (Owner is GameNPC npc && npc.Brain is ABrain brain)
-                brain.Schedule(GameLoop.GameLoopTime);
+                brain.NextThinkTick = GameLoop.GameLoopTime;
 
             if (SpellHandler.Caster.Realm == 0 || Owner.Realm == 0)
                 Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;

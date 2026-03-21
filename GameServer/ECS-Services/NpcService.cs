@@ -53,6 +53,8 @@ namespace DOL.GS
                 if (!GameServiceUtils.ShouldTick(brain.NextThinkTick))
                     return;
 
+                GameNPC npc = brain.Body;
+
                 if (!brain.IsActive)
                 {
                     brain.Stop();
@@ -64,10 +66,7 @@ namespace DOL.GS
                 long stopTick = MonotonicTime.NowMs;
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                {
-                    GameNPC npc = brain.Body;
                     log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
-                }
             }
             catch (Exception e)
             {
