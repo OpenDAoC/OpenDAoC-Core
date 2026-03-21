@@ -44,11 +44,6 @@ namespace DOL.GS
                 NextTick = StartTick;
         }
 
-        public override long GetNextTick()
-        {
-            return NextTick > 0 && (IsAllowedToPulse || IsConcentrationEffect()) ? NextTick : base.GetNextTick();
-        }
-
         public override bool IsConcentrationEffect()
         {
             return SpellHandler.Spell.IsConcentration;

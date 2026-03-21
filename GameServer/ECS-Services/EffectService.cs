@@ -70,9 +70,6 @@ namespace DOL.GS
                 TickAbilityEffect(abilityEffect);
             else if (effect is ECSGameSpellEffect spellEffect)
                 TickSpellEffect(spellEffect);
-
-            if (effect.Duration > 0 && !effect.IsEnded)
-                ServiceObjectStore.Schedule(effect, effect.GetNextTick());
         }
 
         static void TickAbilityEffect(ECSGameAbilityEffect abilityEffect)
