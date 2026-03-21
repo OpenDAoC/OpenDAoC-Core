@@ -68,8 +68,6 @@ namespace DOL.GS
                     GameNPC npc = brain.Body;
                     log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
                 }
-
-                brain.Schedule(GameLoop.GameLoopTime + brain.ThinkInterval);
             }
             catch (Exception e)
             {
