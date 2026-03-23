@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
 				 return;
 			 }*/
 
-			if (player.TempProperties.GetProperty<bool>("Charging") || player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
+			if (player.TempProperties.GetProperty<bool>("Charging"))
 			{
 				player.Out.SendMessage("You already have an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
