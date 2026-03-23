@@ -16,8 +16,8 @@ namespace DOL.GS
             InitThreadStatics();
         }
 
-        public abstract void ExecuteForEach<T>(IReadOnlyList<T> items, int toExclusive, Action<T> action);
-        public abstract void ExecuteForEachSharded<T>(IReadOnlyList<IReadOnlyList<T>> shards, int[] shardStartIndices, int totalCount, Action<T> action);
+        public abstract void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action);
+        public abstract void ExecuteForEachSharded<T>(List<T>[] shards, int[] shardStartIndices, int totalCount, Action<T> action);
         public abstract void Dispose();
 
         public T GetObjectForTick<T>() where T : IPooledObject<T>, new()

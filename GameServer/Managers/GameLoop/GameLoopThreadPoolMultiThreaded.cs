@@ -110,7 +110,7 @@ namespace DOL.GS
             }
         }
 
-        public override void ExecuteForEach<T>(IReadOnlyList<T> items, int toExclusive, Action<T> action)
+        public override void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace DOL.GS
             }
         }
 
-        public override void ExecuteForEachSharded<T>(IReadOnlyList<IReadOnlyList<T>> shards, int[] shardStartIndices, int totalCount, Action<T> action)
+        public override void ExecuteForEachSharded<T>(List<T>[] shards, int[] shardStartIndices, int totalCount, Action<T> action)
         {
             try
             {
@@ -312,12 +312,12 @@ namespace DOL.GS
 
         private sealed class WorkProcessor<T> : WorkProcessor
         {
-            private IReadOnlyList<T> _items;
+            private List<T> _items;
             private Action<T> _action;
 
             public WorkProcessor() { }
 
-            public WorkProcessor<T> Set(IReadOnlyList<T> items, Action<T> action)
+            public WorkProcessor<T> Set(List<T> items, Action<T> action)
             {
                 _items = items;
                 _action = action;
@@ -339,13 +339,13 @@ namespace DOL.GS
 
         private sealed class ShardedWorkProcessor<T> : WorkProcessor
         {
-            private IReadOnlyList<IReadOnlyList<T>> _shards;
-            private int[] _shardStartIndices; 
+            private List<T>[] _shards;
+            private int[] _shardStartIndices;
             private int _totalCount;
             private Action<T> _action;
 
             public ShardedWorkProcessor<T> Set(
-                IReadOnlyList<IReadOnlyList<T>> shards,
+                List<T>[] shards,
                 int[] shardStartIndices,
                 int totalCount,
                 Action<T> action)
@@ -387,7 +387,7 @@ namespace DOL.GS
                         continue;
                     }
 
-                    IReadOnlyList<T> currentShard = _shards[currentShardIdx];
+                    List<T> currentShard = _shards[currentShardIdx];
 
                     for (int i = 0; i < itemsToProcess; i++)
                         _action(currentShard[localIdx + i]);

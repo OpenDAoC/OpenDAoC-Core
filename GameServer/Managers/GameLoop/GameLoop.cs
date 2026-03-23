@@ -61,12 +61,12 @@ namespace DOL.GS
             return _tickPacer.Stats.GetAverageTicks();
         }
 
-        public static void ExecuteForEach<T>(IReadOnlyList<T> items, int toExclusive, Action<T> action)
+        public static void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
             _threadPool.ExecuteForEach(items, toExclusive, action);
         }
 
-        public static void ExecuteForEachSharded<T>(IReadOnlyList<IReadOnlyList<T>> shards, int[] shardStartIndices, int totalCount, Action<T> action)
+        public static void ExecuteForEachSharded<T>(List<T>[] shards, int[] shardStartIndices, int totalCount, Action<T> action)
         {
             _threadPool.ExecuteForEachSharded(shards, shardStartIndices, totalCount, action);
         }

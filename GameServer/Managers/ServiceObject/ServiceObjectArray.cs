@@ -16,7 +16,7 @@ namespace DOL.GS
         public override bool IsSharded => false;
         public override List<T> Items { get; }
         public override int LastValidIndex => _lastValidIndex;
-        public override IReadOnlyList<IReadOnlyList<T>> Shards => null;
+        public override List<T>[] Shards => null;
         public override int[] ShardStartIndices => null;
         public override int TotalValidCount => LastValidIndex + 1;
 

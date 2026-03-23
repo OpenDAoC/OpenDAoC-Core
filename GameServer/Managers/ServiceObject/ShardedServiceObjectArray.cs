@@ -6,7 +6,7 @@ namespace DOL.GS
     public class ShardedServiceObjectArray<T> : ServiceObjectArrayBase<T>
         where T : class, IShardedServiceObject
     {
-        private readonly SchedulableServiceObjectArray<T>[] _shards;
+        private readonly List<SchedulableServiceObjectArray<T>> _shards;
         private readonly List<T>[] _shardsView;
         private readonly int[] _shardStartIndices;
         private int _roundRobinCounter;
@@ -15,21 +15,21 @@ namespace DOL.GS
         public override bool IsSharded => true;
         public override List<T> Items => null;
         public override int LastValidIndex => TotalValidCount - 1;
-        public override IReadOnlyList<IReadOnlyList<T>> Shards => _shardsView;
+        public override List<T>[] Shards => _shardsView;
         public override int[] ShardStartIndices => _shardStartIndices;
         public override int TotalValidCount => _totalValidCount;
 
         public ShardedServiceObjectArray(int initialCapacity)
         {
             int shardCount = GameLoop.DegreeOfParallelism;
-            _shards = new SchedulableServiceObjectArray<T>[shardCount];
+            _shards = new(shardCount);
             _shardsView = new List<T>[shardCount];
 
             int capacityPerShard = initialCapacity / shardCount;
 
             for (int i = 0; i < shardCount; i++)
             {
-                _shards[i] = new(capacityPerShard);
+                _shards.Add(new(capacityPerShard));
                 _shardsView[i] = _shards[i].Items;
             }
 
@@ -41,7 +41,7 @@ namespace DOL.GS
             ShardedServiceObjectId id = item.ServiceObjectId;
 
             if (id.ShardIndex == -1)
-                id.ShardIndex = (int) ((uint) Interlocked.Increment(ref _roundRobinCounter) % _shards.Length);
+                id.ShardIndex = (int) ((uint) Interlocked.Increment(ref _roundRobinCounter) % _shards.Count);
 
             return _shards[id.ShardIndex];
         }
@@ -66,11 +66,11 @@ namespace DOL.GS
 
         public override void Update(long now)
         {
-            GameLoop.ExecuteForEach(_shards, _shards.Length, static shard => shard.Update(GameLoop.GameLoopTime));
+            GameLoop.ExecuteForEach(_shards, _shards.Count, static shard => shard.Update(GameLoop.GameLoopTime));
 
             int currentTotal = 0;
 
-            for (int i = 0; i < Shards.Count; i++)
+            for (int i = 0; i < Shards.Length; i++)
             {
                 _shardStartIndices[i] = currentTotal;
                 currentTotal += _shards[i].LastValidIndex + 1;

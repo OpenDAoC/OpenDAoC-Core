@@ -10,11 +10,11 @@ namespace DOL.GS
         public abstract bool IsSharded { get; }
 
         // Flat array API.
-        public abstract IReadOnlyList<T> Items { get; }
+        public abstract List<T> Items { get; }
         public abstract int LastValidIndex { get; }
 
         // Sharded array API.
-        public abstract IReadOnlyList<IReadOnlyList<T>> Shards { get; }
+        public abstract List<T>[] Shards { get; }
         public abstract int[] ShardStartIndices { get; }
         public abstract int TotalValidCount { get; }
 
@@ -28,11 +28,11 @@ namespace DOL.GS
     {
         public readonly bool IsSharded;
         public readonly int TotalValidCount;
-        public readonly IReadOnlyList<T> Items;
-        public readonly IReadOnlyList<IReadOnlyList<T>> Shards;
+        public readonly List<T> Items;
+        public readonly List<T>[] Shards;
         public readonly int[] ShardStartIndices;
 
-        public ServiceObjectView(IReadOnlyList<T> items, int totalValidCount)
+        public ServiceObjectView(List<T> items, int totalValidCount)
         {
             IsSharded = false;
             Items = items;
@@ -41,7 +41,7 @@ namespace DOL.GS
             ShardStartIndices = null;
         }
 
-        public ServiceObjectView(IReadOnlyList<IReadOnlyList<T>> shards, int[] shardStartIndices, int totalValidCount)
+        public ServiceObjectView(List<T>[] shards, int[] shardStartIndices, int totalValidCount)
         {
             IsSharded = true;
             Shards = shards;
