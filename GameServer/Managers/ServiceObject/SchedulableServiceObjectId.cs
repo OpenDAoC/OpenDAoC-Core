@@ -5,14 +5,14 @@
         public const int SLEEPING_ID = -2;
 
         public bool IsSleeping => Value == SLEEPING_ID;
-        public long ExpectedWakeTick { get; set; } = -1;
+        public long SleepToken { get; private set; } = 0;
 
         public SchedulableServiceObjectId(ServiceObjectType type) : base(type) { }
 
-        public override void Unset()
+        public override void MoveTo(int index)
         {
-            base.Unset();
-            ExpectedWakeTick = -1;
+            SleepToken++;
+            base.MoveTo(index);
         }
     }
 }

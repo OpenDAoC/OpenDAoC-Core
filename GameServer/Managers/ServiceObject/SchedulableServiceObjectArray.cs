@@ -6,7 +6,7 @@ namespace DOL.GS
     public class SchedulableServiceObjectArray<T> : ServiceObjectArray<T>
         where T : class, ISchedulableServiceObject
     {
-        private readonly DrainArray<T> _itemsToSchedule = new();
+        private readonly DrainArray<ScheduleRequest> _itemsToSchedule = new();
 
         // Hierarchical timing wheel for O(1) suspended item scheduling.
         // Items sleeping longer than WHEEL_SIZE are parked in _farFuture.
@@ -17,16 +17,17 @@ namespace DOL.GS
         private const int WHEEL_BITS = 16;
         private const int WHEEL_SIZE = 1 << WHEEL_BITS;
         private const int WHEEL_MASK = WHEEL_SIZE - 1;
+        private const int SKIP_SCHEDULE_THRESHOLD_TICK = 30;
 
-        private readonly List<T>[] _sleepWheel;
-        private readonly Stack<List<T>> _listPool = new();
-        private readonly PriorityQueue<T, long> _farFuture = new();
+        private readonly List<SleepTicket>[] _sleepWheel;
+        private readonly Stack<List<SleepTicket>> _listPool = new();
+        private readonly PriorityQueue<SleepTicket, long> _farFuture = new();
         private long _lastProcessedWheelTick = -1;
         private long _currentUpdateTick;
 
         public SchedulableServiceObjectArray(int capacity) : base(capacity)
         {
-            _sleepWheel = new List<T>[WHEEL_SIZE];
+            _sleepWheel = new List<SleepTicket>[WHEEL_SIZE];
 
             for (int i = 0; i < WHEEL_SIZE; i++)
                 _sleepWheel[i] = new();
@@ -34,11 +35,27 @@ namespace DOL.GS
 
         public override void Schedule(T item, long wakeUpTimeMs)
         {
+            long now = GameLoop.GameLoopTime;
             SchedulableServiceObjectId id = item.ServiceObjectId;
-            long currentTick = GameLoop.GameLoopTime / WHEEL_RESOLUTION_MS;
+
+            // Bypass the wheel entirely if wakeUpTimeMs is close.
+            if (wakeUpTimeMs - now <= SKIP_SCHEDULE_THRESHOLD_TICK * GameLoop.TickDuration)
+            {
+                if (id.IsRunning)
+                {
+                    id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule);
+                    return;
+                }
+
+                if (id.TrySetAction(ServiceObjectId.PendingAction.Add))
+                    Add(item);
+
+                return;
+            }
+
+            long currentTick = now / WHEEL_RESOLUTION_MS;
             long targetTick = Math.Max(currentTick, wakeUpTimeMs / WHEEL_RESOLUTION_MS);
-            id.ExpectedWakeTick = targetTick;
-            _itemsToSchedule.Add(item);
+            _itemsToSchedule.Add(new(item, targetTick));
         }
 
         protected override void ProcessItemsToRemove(long now)
@@ -52,35 +69,31 @@ namespace DOL.GS
             WakeUpItems();
 
             if (_itemsToSchedule.Any)
-                _itemsToSchedule.DrainTo(static (item, ctx) => ctx.ScheduleInternal(item), this);
+                _itemsToSchedule.DrainTo(static (req, ctx) => ctx.ScheduleInternal(req), this);
 
             base.ProcessItemsToAdd(now);
         }
 
-        protected override void AddToList(T item)
+        private void ScheduleInternal(ScheduleRequest request)
         {
-            // Invalidate any sleep ticket. Handles both early manual re-adds and wake-ups.
-            item.ServiceObjectId.ExpectedWakeTick = -1;
-            base.AddToList(item);
-        }
-
-        private void ScheduleInternal(T item)
-        {
+            T item = request.Item;
             SchedulableServiceObjectId id = item.ServiceObjectId;
+            long targetTick = request.TargetTick;
 
-            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule))
+            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule) ||
+                targetTick < _lastProcessedWheelTick)
+            {
                 return;
-
-            long targetTick = Math.Max(id.ExpectedWakeTick, _lastProcessedWheelTick);
-
-            if (targetTick - _lastProcessedWheelTick >= WHEEL_SIZE)
-                _farFuture.Enqueue(item, targetTick);
-            else
-                _sleepWheel[(int) (targetTick & WHEEL_MASK)].Add(item);
+            }
 
             RemoveFromList(id);
-            id.ExpectedWakeTick = targetTick;
             id.MoveTo(SchedulableServiceObjectId.SLEEPING_ID);
+            SleepTicket ticket = new(item, id.SleepToken);
+
+            if (targetTick - _lastProcessedWheelTick >= WHEEL_SIZE)
+                _farFuture.Enqueue(ticket, targetTick);
+            else
+                _sleepWheel[(int) (targetTick & WHEEL_MASK)].Add(ticket);
         }
 
         private void WakeUpItems()
@@ -88,13 +101,13 @@ namespace DOL.GS
             if (_lastProcessedWheelTick == -1)
                 _lastProcessedWheelTick = _currentUpdateTick;
 
-            List<T> currentSwapList = _listPool.Count > 0 ? _listPool.Pop() : new();
+            List<SleepTicket> currentSwapList = _listPool.Count > 0 ? _listPool.Pop() : new();
 
             // Catch up on all missed ticks.
             while (_lastProcessedWheelTick <= _currentUpdateTick)
             {
                 int bucketIndex = (int) (_lastProcessedWheelTick & WHEEL_MASK);
-                List<T> bucket = _sleepWheel[bucketIndex];
+                List<SleepTicket> bucket = _sleepWheel[bucketIndex];
 
                 if (bucket.Count > 0)
                 {
@@ -102,19 +115,18 @@ namespace DOL.GS
 
                     for (int i = 0; i < bucket.Count; i++)
                     {
-                        T item = bucket[i];
+                        SleepTicket ticket = bucket[i];
+                        T item = ticket.Item;
                         SchedulableServiceObjectId id = item.ServiceObjectId;
 
-                        // Do not wake if it's no longer sleeping or has a pending action.
-                        if (id.ExpectedWakeTick != _lastProcessedWheelTick ||
-                            !id.IsSleeping ||
+                        // Do not wake if the sleep token changed or if there's a pending action.
+                        if (id.SleepToken != ticket.Token ||
                             id.PeekAction() is not ServiceObjectId.PendingAction.None)
                         {
                             continue;
                         }
 
                         AddToList(item);
-                        id.MoveTo(LastValidIndex);
                     }
 
                     bucket.Clear();
@@ -126,14 +138,14 @@ namespace DOL.GS
                 // If the lowest bits are 0, we just completed a full cycle of the wheel.
                 if ((_lastProcessedWheelTick & WHEEL_MASK) == 0)
                 {
-                    while (_farFuture.TryPeek(out T item, out long targetTick))
+                    while (_farFuture.TryPeek(out SleepTicket ticket, out long targetTick))
                     {
+                        T item = ticket.Item;
                         SchedulableServiceObjectId id = item.ServiceObjectId;
 
-                        // Lazy deletion. Discard items that were removed, unset, or rescheduled.
-                        if (id.PeekAction() is ServiceObjectId.PendingAction.Remove ||
-                            id.Value == ServiceObjectId.UNSET_ID ||
-                            id.ExpectedWakeTick != targetTick)
+                        // Lazy deletion.
+                        if (id.SleepToken != ticket.Token ||
+                            id.PeekAction() is ServiceObjectId.PendingAction.Remove)
                         {
                             _farFuture.Dequeue();
                             continue;
@@ -143,13 +155,37 @@ namespace DOL.GS
                         if (targetTick - _lastProcessedWheelTick >= WHEEL_SIZE)
                             break;
 
-                        _sleepWheel[(int) (targetTick & WHEEL_MASK)].Add(item);
+                        _sleepWheel[(int) (targetTick & WHEEL_MASK)].Add(ticket);
                         _farFuture.Dequeue();
                     }
                 }
             }
 
             _listPool.Push(currentSwapList);
+        }
+
+        private readonly struct ScheduleRequest
+        {
+            public readonly T Item;
+            public readonly long TargetTick;
+
+            public ScheduleRequest(T item, long targetTick)
+            {
+                Item = item;
+                TargetTick = targetTick;
+            }
+        }
+
+        private readonly struct SleepTicket
+        {
+            public readonly T Item;
+            public readonly long Token;
+
+            public SleepTicket(T item, long token)
+            {
+                Item = item;
+                Token = token;
+            }
         }
     }
 }

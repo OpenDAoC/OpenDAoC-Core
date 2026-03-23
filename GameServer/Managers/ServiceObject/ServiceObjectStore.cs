@@ -54,8 +54,8 @@ namespace DOL.GS
         {
             ServiceObjectId id = serviceObject.ServiceObjectId;
 
-            // Prevent re-entry if the object is already added, but not being removed or scheduled.
-            if (id.IsActive && id.PeekAction() is not ServiceObjectId.PendingAction.Remove and not ServiceObjectId.PendingAction.Schedule)
+            // Prevent re-entry if the object is already registered, but not being removed or scheduled.
+            if (id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Remove and not ServiceObjectId.PendingAction.Schedule)
                 return false;
 
             // Prevent re-entry if the object is already being added.
@@ -84,8 +84,8 @@ namespace DOL.GS
         {
             ServiceObjectId id = serviceObject.ServiceObjectId;
 
-            // Prevent re-entry if the object is already removed, but not being added or scheduled.
-            if (!id.IsActive && id.PeekAction() is not ServiceObjectId.PendingAction.Add and not ServiceObjectId.PendingAction.Schedule)
+            // Prevent re-entry if the object is already unregistered, but not being added or scheduled.
+            if (!id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Add and not ServiceObjectId.PendingAction.Schedule)
                 return false;
 
             // Prevent re-entry if the object is already being removed.

@@ -1937,9 +1937,7 @@ namespace DOL.GS
 		public override void OnUpdateOrCreateForPlayer()
 		{
 			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
-
-			if (Brain != null && !Brain.ServiceObjectId.IsActive)
-				Brain.Start();
+			Brain?.Start();
 		}
 
 		/// <summary>

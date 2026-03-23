@@ -108,11 +108,11 @@ namespace DOL.GS
             id.Unset();
         }
 
-        protected virtual void AddToList(T item)
+        protected void AddToList(T item)
         {
             ServiceObjectId id = item.ServiceObjectId;
 
-            if (id.IsActive)
+            if (id.IsRunning)
                 return;
 
             if (++_lastValidIndex >= Items.Capacity)
