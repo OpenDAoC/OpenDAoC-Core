@@ -212,7 +212,7 @@ SkillBase.RegisterPropertyNames.WitchcraftFocus:	Hexerei
 DashingDefenseAbility.AddEffectsInfo.Info1:		Nur ein Spieler pro Gruppe kann für die ganze Gruppe parieren und abblocken.
 DashingDefenseAbility.AddEffectsInfo.Info2:		Ziel: Selbst
 DashingDefenseAbility.AddEffectsInfo.Info3:		Zauberzeit: Sofort
-DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type!
+DashingDefenseAbility.Execute.AlreadyEffect:		You already have an effect of that type!
 DashingDefenseAbility.Execute.MustInGroup:		Ihr müsst in einer Gruppe sein, um diese Fähigkeit nutzen zu können!
 
 # /FirstAidAbility

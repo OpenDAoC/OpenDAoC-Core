@@ -21,7 +21,7 @@ namespace DOL.GS.RealmAbilities
 			if (living.EffectList.CountOfType<BadgeOfValorEffect>() > 0)
             {
 				if (living is GamePlayer)
-					(living as GamePlayer).Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					(living as GamePlayer).Out.SendMessage("You already have an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return;
             }
 

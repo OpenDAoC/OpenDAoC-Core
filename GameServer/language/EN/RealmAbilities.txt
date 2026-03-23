@@ -41,7 +41,7 @@ ConcentrationAbility.AddEffectsInfo.Info5:	Casting time: instant
 DashingDefenseAbility.AddEffectsInfo.Info1:		
 DashingDefenseAbility.AddEffectsInfo.Info2:		Target: Self
 DashingDefenseAbility.AddEffectsInfo.Info3:		Casting time: instant
-DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type!
+DashingDefenseAbility.Execute.AlreadyEffect:		You already have an effect of that type!
 DashingDefenseAbility.Execute.MustInGroup:		You must be in a group to use this ability!
 
 ## First Aid

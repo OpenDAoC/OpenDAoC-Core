@@ -20,7 +20,7 @@ namespace DOL.GS.RealmAbilities
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 			if (player.TempProperties.GetProperty<bool>(BofBaSb))
 			{
-				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You already have an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
 			}
 			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
