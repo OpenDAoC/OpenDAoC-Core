@@ -16,7 +16,7 @@ namespace DOL.GS
         // Array of pulse spell groups allowed to exist with others.
         // Used to allow players to have more than one pulse spell refreshing itself automatically.
         // 30 = Focus damage shields.
-        private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = [30];
+        private static readonly HashSet<int> PulseSpellGroupsIgnoringOtherPulseSpells = [30];
 
         // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
