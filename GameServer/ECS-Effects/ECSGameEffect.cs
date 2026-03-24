@@ -66,6 +66,11 @@ namespace DOL.GS
             SpellHandler = initParams.SpellHandler;
         }
 
+        public virtual long GetNextTick()
+        {
+            return ExpireTick;
+        }
+
         public bool Start()
         {
             if (!CanStart || !Owner.IsAlive)

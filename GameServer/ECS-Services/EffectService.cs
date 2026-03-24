@@ -51,6 +51,9 @@ namespace DOL.GS
                 if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref Instance.EntityCount);
 
+                if (!GameServiceUtils.ShouldTick(effect.GetNextTick()))
+                    return;
+
                 long startTick = MonotonicTime.NowMs;
                 TickEffect(effect);
                 long stopTick = MonotonicTime.NowMs;
