@@ -9,9 +9,9 @@ namespace DOL.GS
     {
         private const eFlags INACTIVE_FLAGS = eFlags.CANTTARGET | eFlags.DONTSHOWNAME | eFlags.PEACE;
 
-        public new TimeDependentSpawnBrain Brain => base.Brain as TimeDependentSpawnBrain;
-        public override eFlags Flags => Brain != null && Brain.IsVisible ? base.Flags : base.Flags | INACTIVE_FLAGS;
-        public override ushort Model => Brain != null && Brain.IsVisible ? base.Model : (ushort) 1;
+        public TimeDependentSpawnBrain TimeDependentBrain => Brain as TimeDependentSpawnBrain;
+        public override eFlags Flags => TimeDependentBrain == null || TimeDependentBrain.IsVisible ? base.Flags : base.Flags | INACTIVE_FLAGS;
+        public override ushort Model => TimeDependentBrain == null || TimeDependentBrain.IsVisible ? base.Model : (ushort) 1;
 
         public override bool AddToWorld()
         {
