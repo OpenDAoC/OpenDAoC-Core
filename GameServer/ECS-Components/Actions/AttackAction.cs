@@ -329,12 +329,12 @@ namespace DOL.GS
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
                     double preRapidFireAttackSpeed = AttackComponent.AttackSpeed(_weapon);
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                    long elapsedTime = GameLoop.GameLoopTime - _owner.rangeAttackComponent.AttackStartTime;
+                    long elapsedTime = _nextRangedTick - _owner.rangeAttackComponent.AttackStartTime; // Using _nextRangedTick as reference is correct here.
 
                     if (elapsedTime < preRapidFireAttackSpeed)
                     {
                         _effectiveness *= elapsedTime / preRapidFireAttackSpeed;
-                        _attackInterval = (int) (_attackInterval * _effectiveness);
+                        _attackInterval = (int) (preRapidFireAttackSpeed * _effectiveness);
                     }
 
                     break;
