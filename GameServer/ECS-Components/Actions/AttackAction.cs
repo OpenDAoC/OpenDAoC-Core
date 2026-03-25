@@ -28,10 +28,6 @@ namespace DOL.GS
         // Used to prevent combat log spam and kept until reset by AttackComponent.SendAttackingCombatMessages.
         public long RoundWithNoAttackTime { get; set; }
 
-        // When the current melee attack round is scheduled to end.
-        public long AttackRoundEndTime { get; private set; }
-        public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
-
         public AttackData LastAttackData { get; set; }
         protected AttackComponent AttackComponent => _owner.attackComponent;
         protected StyleComponent StyleComponent => _owner.styleComponent;
@@ -350,13 +346,31 @@ namespace DOL.GS
 
         protected virtual void PerformMeleeAttack()
         {
-            AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _leftWeapon, _effectiveness, _attackInterval, _combatStyle);
+            // AttackAction ticks in a way that prevent drifting,
+            // but we must pass the real interval to WeaponAction to ensure correct interrupt / block round durations.
+            AttackComponent.weaponAction = new(
+                _owner,
+                _target,
+                _weapon,
+                _leftWeapon,
+                _effectiveness,
+                (int) (_nextMeleeTick - GameLoop.GameLoopTime + _attackInterval),
+                _combatStyle);
             AttackComponent.weaponAction.Execute();
         }
 
         protected virtual void PerformRangedAttack()
         {
-            AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _attackInterval, _owner.rangeAttackComponent.RangedAttackType, _owner.rangeAttackComponent.Ammo);
+            // AttackAction ticks in a way that prevent drifting,
+            // but we must pass the real interval to WeaponAction to ensure correct interrupt / block round durations.
+            AttackComponent.weaponAction = new(
+                _owner,
+                _target,
+                _weapon,
+                _effectiveness,
+                (int) (_nextRangedTick - GameLoop.GameLoopTime + _attackInterval),
+                _owner.rangeAttackComponent.RangedAttackType,
+                _owner.rangeAttackComponent.Ammo);
 
             if (_owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
@@ -401,7 +415,6 @@ namespace DOL.GS
             }
 
             _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
-            AttackRoundEndTime = _nextMeleeTick + _interval;
             return true;
         }
 

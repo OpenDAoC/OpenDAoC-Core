@@ -2439,10 +2439,7 @@ namespace DOL.GS
                     return false;
                 }
 
-                // Decrement the count after a duration equal to the attack interval.
-                // We need to make sure it ticks before the attacker's next attack.
-                // We can't do GameLoop.GameLoopTime + AttackData.Interval to calculate when the attack round ends, because AttackAction catches up on lost time caused by the game loop's resolution.
-                new BlockRoundCountDecrementTimer(_owner, Relinquish).Start((int) (attackData.Attacker.attackComponent.attackAction.AttackRoundEndTime - GameLoop.GameLoopTime));
+                new BlockRoundCountDecrementTimer(_owner, Relinquish).Start(attackData.Interval);
                 return true;
             }
 

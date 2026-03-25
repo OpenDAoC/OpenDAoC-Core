@@ -113,7 +113,7 @@ namespace DOL.AI.Brain
         {
             // Only start casting if the pet has finished his attack round.
             // This will be false most of the time, unless called from the attack component directly.
-            if (!Body.attackComponent.attackAction.IsAttackRoundFinished)
+            if (Body.attackComponent.weaponAction?.IsAttackRoundFinished == false)
             {
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
                 return false;

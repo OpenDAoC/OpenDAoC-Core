@@ -175,9 +175,9 @@ namespace DOL.AI.Brain
 					}
 					if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
 					{
-						AttackAction attackAction = Body.attackComponent.attackAction;
+						WeaponAction weaponAction = Body.attackComponent.weaponAction;
 
-						if (attackAction.AttackRoundEndTime - GameLoop.GameLoopTime <= 800 && CanWalk == false)
+						if (weaponAction != null && weaponAction.AttackRoundEndTime - GameLoop.GameLoopTime <= 800 && CanWalk == false)
 						{
 							Body.styleComponent.NextCombatStyle = null;
 							Body.styleComponent.NextCombatBackupStyle = null;

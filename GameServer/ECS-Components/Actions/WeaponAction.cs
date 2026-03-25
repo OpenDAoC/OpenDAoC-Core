@@ -21,11 +21,13 @@ namespace DOL.GS
         private int _leftHandSwingCount;
         private bool _isDualWieldAttack; // Not necessarily true even if _leftHandSwingCount is > 0, for example H2H isn't technically dual wield.
 
+        public long AttackRoundEndTime { get; private set; }
+        public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
+
         // The active weapon slot, ranged attack type, and ammo at the time the ammo was released
         public eActiveWeaponSlot ActiveWeaponSlot { get; }
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
-
         public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
@@ -61,6 +63,8 @@ namespace DOL.GS
 
         public void Execute()
         {
+            AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
+
             // 1.89
             //- Pets will no longer continue to attack a character after the character has stealthed.
             // 1.88
