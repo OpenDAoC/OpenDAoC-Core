@@ -475,6 +475,7 @@ namespace DOL.GS.Housing
 				if (guild != null)
 				{
 					guild.GuildHouseNumber = 0;
+					guild.SaveIntoDatabase();
 				}
 			}
 
