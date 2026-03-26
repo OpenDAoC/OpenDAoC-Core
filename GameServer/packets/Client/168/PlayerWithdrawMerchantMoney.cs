@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
 
 			// current house is null, return
-            House house = HouseMgr.GetHouse(conMerchant.HouseNumber);
+            House house = conMerchant.CurrentHouse;
             if (house == null)
                 return;
 

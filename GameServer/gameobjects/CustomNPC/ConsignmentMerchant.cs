@@ -143,7 +143,7 @@ namespace DOL.GS
         /// </summary>
         public virtual IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
         {
-            House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
+            House house = CurrentHouse;
 
             if (house == null)
                 return null;
@@ -170,7 +170,7 @@ namespace DOL.GS
                 lock (_moneyLock)
                 {
                     _money = value;
-                    DbHouseConsignmentMerchant merchant = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+                    DbHouseConsignmentMerchant merchant = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(CurrentHouse.OwnerID));
                     merchant.Money = _money;
                     GameServer.Database.SaveObject(merchant);
                 }
@@ -182,7 +182,7 @@ namespace DOL.GS
         /// </summary>
         public virtual bool HasPermissionToMove(GamePlayer player)
         {
-            House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
+            House house = CurrentHouse;
             return house != null && house.CanUseConsignmentMerchant(player, ConsignmentPermissions.AddRemove);
         }
 
@@ -191,7 +191,7 @@ namespace DOL.GS
         /// </summary>
         public virtual bool CanHandleMove(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
         {
-            return player != null && player.ActiveInventoryObject == this && this.CanHandleRequest(fromClientSlot, toClientSlot);
+            return player.ActiveInventoryObject == this && this.CanHandleRequest(fromClientSlot, toClientSlot);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace DOL.GS
             if (fromClientSlot == toClientSlot)
                 return false;
 
-            House house = HouseMgr.GetHouse(HouseNumber);
+            House house = CurrentHouse;
 
             if (house == null)
                 return false;
@@ -246,7 +246,7 @@ namespace DOL.GS
                             // Move must be an attempt to buy.
                             OnPlayerBuy(player, fromClientSlot, toClientSlot);
                         }
-                        else if (player.TargetObject == this)
+                        else if (player.TargetObject is not null and not MarketExplorer)
                         {
                             // Allow a move only if the player with permission is standing in front of the CM.
                             // This prevents moves if player has owner permission but is viewing from the Market Explorer.
@@ -326,7 +326,7 @@ namespace DOL.GS
             if (player.ActiveInventoryObject is not GameConsignmentMerchant conMerchant)
                 return false;
 
-            House house = HouseMgr.GetHouse(conMerchant.HouseNumber);
+            House house = CurrentHouse;
 
             if (house == null || !house.CanUseConsignmentMerchant(player, ConsignmentPermissions.AddRemove))
                 return false;
@@ -556,7 +556,7 @@ namespace DOL.GS
 
             player.ActiveInventoryObject = this;
             AddObserver(player);
-            House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
+            House house = CurrentHouse;
 
             if (house == null)
                 return false;
@@ -578,7 +578,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            House house = HouseMgr.GetHouse(HouseNumber);
+            House house = CurrentHouse;
             DbHouseConsignmentMerchant houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 
             if (house == null)
@@ -695,7 +695,7 @@ namespace DOL.GS
             if (Inventory == null)
                 return;
 
-            House house = HouseMgr.GetHouse(HouseNumber);
+            House house = CurrentHouse;
 
             if (house == null)
                 return;

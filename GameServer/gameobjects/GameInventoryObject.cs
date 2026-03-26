@@ -42,7 +42,12 @@ namespace DOL.GS
 
         public static bool CanHandleRequest(this IGameInventoryObject thisObject, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
         {
-            return (fromClientSlot >= thisObject.FirstClientSlot && fromClientSlot <= thisObject.LastClientSlot) || (toClientSlot >= thisObject.FirstClientSlot && toClientSlot <= thisObject.LastClientSlot);
+            return CanHandleSlot(thisObject, fromClientSlot) || CanHandleSlot(thisObject, toClientSlot);
+        }
+
+        public static bool CanHandleSlot(this IGameInventoryObject thisObject, eInventorySlot slot)
+        {
+            return slot >= thisObject.FirstClientSlot && slot <= thisObject.LastClientSlot;
         }
 
         public static IDictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)

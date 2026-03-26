@@ -783,7 +783,7 @@ namespace DOL.GS.Housing
 							else
 							{
 								// house can't afford rent, so we schedule house to be repossessed.
-								log.Warn($"[HOUSING] House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossesed! rentamount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
+								log.Warn($"[HOUSING] House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
 								houseRemovalList.Add(house);
 							}
 						}
