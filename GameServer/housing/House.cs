@@ -14,11 +14,12 @@ namespace DOL.GS.Housing
 		private const int MAX_VAULT_COUNT = 8; // Must not be bigger than what `eInventorySlot` allows.
 
 		private readonly DbHouse _databaseItem;
-		private readonly Dictionary<int, DbHouseCharsXPerms> _housePermissions;
-		private readonly Dictionary<uint, DbHouseHookPointItem> _housepointItems;
-		private readonly Dictionary<int, IndoorItem> _indoorItems;
-		private readonly Dictionary<int, OutdoorItem> _outdoorItems;
-		private readonly Dictionary<int, DbHousePermissions> _permissionLevels;
+		private readonly Dictionary<int, DbHouseCharsXPerms> _housePermissions = new();
+		private readonly Dictionary<uint, DbHouseHookPointItem> _housepointItems  = new();
+		private readonly Dictionary<int, GameHouseVault> _houseVaults  = new();
+		private readonly Dictionary<int, IndoorItem> _indoorItems  = new();
+		private readonly Dictionary<int, OutdoorItem> _outdoorItems  = new();
+		private readonly Dictionary<int, DbHousePermissions> _permissionLevels = new();
 		private GameConsignmentMerchant _consignmentMerchant;
 
 		#region Properties
@@ -192,6 +193,11 @@ namespace DOL.GS.Housing
 			get { return _housepointItems; }
 		}
 
+		public IDictionary<int, GameHouseVault> HouseVaults
+		{
+			get { return _houseVaults; }
+		}
+
 		public DbHouse DatabaseItem
 		{
 			get { return _databaseItem; }
@@ -275,11 +281,6 @@ namespace DOL.GS.Housing
 		public House(DbHouse house)
 		{
 			_databaseItem = house;
-			_permissionLevels = new Dictionary<int, DbHousePermissions>();
-			_indoorItems = new Dictionary<int, IndoorItem>();
-			_outdoorItems = new Dictionary<int, OutdoorItem>();
-			_housepointItems = new Dictionary<uint, DbHouseHookPointItem>();
-			_housePermissions = new Dictionary<int, DbHouseCharsXPerms>();
 		}
 
 		/// <summary>
@@ -664,6 +665,7 @@ namespace DOL.GS.Housing
 					var houseVault = new GameHouseVault(item, index);
 					houseVault.Attach(this, position);
 					hookpointObject = houseVault;
+					_houseVaults[index] = houseVault;
 					break;
 				}
 				case eObjectType.HouseNPC:
@@ -733,6 +735,10 @@ namespace DOL.GS.Housing
 
 			obj.Delete();
 			player.CurrentHouse.HousepointItems.Remove((uint)position);
+
+			if (obj is GameHouseVault vault)
+				_houseVaults.Remove(vault.Index);
+
 			player.CurrentHouse.SendUpdate();
 
 			if (addToInventory)
