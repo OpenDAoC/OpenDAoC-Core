@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -36,14 +35,14 @@ namespace DOL.GS
             if (source is not GamePlayer player)
                 return false;
 
-            if (text.Equals("first", System.StringComparison.OrdinalIgnoreCase))
+            if (text.Equals("first", StringComparison.OrdinalIgnoreCase))
             {
                 AccountVault vault = new(player, 0, GetDummyVaultItem(player));
                 player.ActiveInventoryObject = vault;
                 player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
             }
 
-            if (text.Equals("second", System.StringComparison.OrdinalIgnoreCase))
+            if (text.Equals("second", StringComparison.OrdinalIgnoreCase))
             {
                 AccountVault vault = new(player, 1, GetDummyVaultItem(player));
                 player.ActiveInventoryObject = vault;
@@ -84,25 +83,16 @@ namespace DOL.GS
 
     public class AccountVault : GameHouseVault
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private string _vaultOwner;
-        private int _vaultNumber = 0;
+        private int _vaultIndex;
 
-        /// <summary>
-        /// An account vault that masquerades as a house vault to the game client
-        /// </summary>
-        /// <param name="player">Player who owns the vault</param>
-        /// <param name="vaultOwner">ID of vault owner (can be anything unique, if it's the account name then all toons on account can access the items)</param>
-        /// <param name="vaultNumber">Valid vault IDs are 0-3</param>
-        /// <param name="dummyTemplate">An ItemTemplate to satisfy the base class's constructor</param>
-        public AccountVault(GamePlayer player, int vaultNumber, DbItemTemplate dummyTemplate) : base(dummyTemplate, vaultNumber)
+        public AccountVault(GamePlayer player, int vaultIndex, DbItemTemplate dummyTemplate) : base(dummyTemplate, vaultIndex)
         {
-            if (vaultNumber is < 0 or > 1)
-                throw new ArgumentOutOfRangeException(nameof(vaultNumber), $"{nameof(vaultNumber)} must be either 0 or 1.");
+            if (vaultIndex is < 0 or > 1)
+                throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must be either 0 or 1.");
 
             _vaultOwner = GetOwner(player);
-            _vaultNumber = vaultNumber;
+            _vaultIndex = vaultIndex;
 
             DbHouse dbHouse = new()
             {
@@ -114,28 +104,19 @@ namespace DOL.GS
                 RegionID = player.CurrentRegionID
             };
 
-            CurrentHouse = new House(dbHouse);
+            CurrentHouse = new(dbHouse);
         }
 
-        /// <summary>
-        /// Whether or not this player can view the contents of this vault.
-        /// </summary>
         public override bool CanView(GamePlayer player)
         {
             return GetOwner(player) == _vaultOwner;
         }
 
-        /// <summary>
-        /// Whether or not this player can move items inside the vault
-        /// </summary>
         public override bool CanAddItems(GamePlayer player)
         {
             return GetOwner(player) == _vaultOwner;
         }
 
-        /// <summary>
-        /// Whether or not this player can move items inside the vault.
-        /// </summary>
         public override bool CanRemoveItems(GamePlayer player)
         {
             return GetOwner(player) == _vaultOwner;
@@ -146,15 +127,12 @@ namespace DOL.GS
             return $"{player.Client.Account.Name}_{player.Realm}";
         }
 
-        /// <summary>
-        /// List of items in the vault.
-        /// </summary>
         public override IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot))));
         }
 
-        public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * _vaultNumber;
+        public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * _vaultIndex;
 
         public override int LastDbSlot => FirstDbSlot + (VaultSize -1);
     }
