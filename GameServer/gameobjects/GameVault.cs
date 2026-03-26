@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using DOL.Database;
+using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -341,6 +342,7 @@ namespace DOL.GS
             private const int EXPIRES_AFTER = 30000;
 
             private readonly GameVault _vault;
+            private string _owner;
             private Dictionary<int, DbInventoryItem> _items; // Uses client slots, not DB slots.
 
             public ItemCache(GameVault vault) : base(vault)
@@ -472,10 +474,20 @@ namespace DOL.GS
                 // Always refresh or start the timer.
                 Start(EXPIRES_AFTER);
 
-                if (_items != null)
+                // The cache is still valid if:
+                // * The owner hasn't changed (for example house transformed into a guild house).
+                // * The timer hasn't ticked yet (in which case _items is null).
+                string realOwner = _vault.GetOwner(player);
+
+                if (_owner != realOwner)
+                    _owner = realOwner;
+                else if (_items != null)
                     return;
 
-                _items = new();
+                if (_items == null)
+                    _items = new();
+                else
+                    _items.Clear();
 
                 foreach (DbInventoryItem item in _vault.GetDbItems(player))
                 {
