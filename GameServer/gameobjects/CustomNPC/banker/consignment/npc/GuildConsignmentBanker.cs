@@ -27,7 +27,7 @@ namespace DOL.GS
             else if (house.ConsignmentMerchant != null)
                 return false;
 
-            consignmentMerchant = CreateDummyConsignmentMerchant(house);
+            consignmentMerchant = CreateDummyConsignmentMerchant(player, house);
             return true;
         }
     }

@@ -26,19 +26,27 @@ namespace DOL.GS
 
         protected abstract bool TryGetConsignmentMerchant(GamePlayer player, out GameConsignmentMerchant consignmentMerchant);
 
-        protected static RecoveredConsignmentMerchant CreateDummyConsignmentMerchant(House house)
+        protected static RecoveredConsignmentMerchant CreateDummyConsignmentMerchant(GamePlayer player, House house)
         {
-            // For basic withdrawal, only CurrentHouse should be needed.
+            // For basic withdrawal, only CurrentHouse and a valid position should be needed.
             // HouseNumber will be non 0 only if the player or guild owns a house but no consignment merchant.
             RecoveredConsignmentMerchant consignmentMerchant = new()
             {
                 CurrentHouse = house,
-                HouseNumber = (ushort) house.HouseNumber
+                HouseNumber = (ushort) house.HouseNumber,
+                CurrentRegion = player.CurrentRegion,
+                X = player.X,
+                Y = player.Y,
+                Z = player.Z
             };
 
+            consignmentMerchant.movementComponent.ForceUpdatePosition();
+
+            // Load money if any.
+            // TotalMoney's setter performs a DB query and save. This should be changed.
             DbHouseConsignmentMerchant houseCm = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(house.OwnerID));
 
-            if (houseCm != null)
+            if (houseCm != null && houseCm.Money > 0)
                 consignmentMerchant.TotalMoney = houseCm.Money;
 
             return consignmentMerchant;
