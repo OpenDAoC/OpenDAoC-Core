@@ -752,9 +752,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 						}
 
-						// create the new vault and attach it to the house
-						var houseVault = new GameHouseVault(orgitem.Template, vaultIndex);
-						houseVault.Attach(house, (uint) _position);
+						var point = new DbHouseHookPointItem
+						{
+							HouseNumber = house.HouseNumber,
+							ItemTemplateID = orgitem.Id_nb,
+							HookpointID = (uint) _position
+						};
+
+						house.HousepointItems.Add(point.HookpointID, point);
+						house.FillHookpoint(point.HookpointID, orgitem.Template.Id_nb, 0, vaultIndex);
 
 						// remove the original item from the player's inventory
 						client.Player.Inventory.RemoveItem(orgitem);
