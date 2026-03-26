@@ -1313,7 +1313,7 @@ namespace DOL.GS.Housing
 		public bool CanUseVault(GamePlayer player, GameHouseVault vault, VaultPermissions vaultPerms)
 		{
 			// make sure player isn't null
-			if (player == null || player.CurrentHouse != this)
+			if (player == null)
 				return false;
 
 			if (HasOwnerPermissions(player))
