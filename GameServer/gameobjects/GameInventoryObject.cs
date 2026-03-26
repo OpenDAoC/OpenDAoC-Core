@@ -50,19 +50,18 @@ namespace DOL.GS
             return slot >= thisObject.FirstClientSlot && slot <= thisObject.LastClientSlot;
         }
 
-        public static IDictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
+        public static Dictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
         {
             lock (thisObject.Lock)
             {
                 if (!GetItemInSlot(fromClientSlot, out DbInventoryItem fromItem))
                 {
                     SendUnsupportedActionMessage(player);
-                    return null;
+                    return new() { {(int) fromClientSlot, null}, {(int) toClientSlot, null} };
                 }
 
                 GetItemInSlot(toClientSlot, out DbInventoryItem toItem);
-                IDictionary<int, DbInventoryItem> updatedItems = MoveItemInner(fromItem, toItem);
-                return updatedItems;
+                return MoveItemInner(fromItem, toItem);
             }
 
             bool GetItemInSlot(eInventorySlot slot, out DbInventoryItem item)
@@ -77,7 +76,7 @@ namespace DOL.GS
                 return item != null;
             }
 
-            IDictionary<int, DbInventoryItem> MoveItemInner(DbInventoryItem fromItem, DbInventoryItem toItem)
+            Dictionary<int, DbInventoryItem> MoveItemInner(DbInventoryItem fromItem, DbInventoryItem toItem)
             {
                 Dictionary<int, DbInventoryItem> updatedItems = new(2);
 
