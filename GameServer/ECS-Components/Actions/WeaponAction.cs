@@ -363,10 +363,10 @@ namespace DOL.GS
             if (attackData.AttackResult is eAttackResult.HitUnstyled or eAttackResult.HitStyle)
             {
                 _owner.DealDamage(attackData);
-                _owner.CheckWeaponMagicalEffect(attackData);
                 HandleDamageAdd(_owner, attackData);
-                target.OnArmorHit(attackData, target.Inventory?.GetItem((eInventorySlot) attackData.ArmorHitLocation));
+                _owner.CheckWeaponMagicalEffect(attackData);
                 HandleDamageShields(attackData);
+                target.OnArmorHit(attackData, target.Inventory?.GetItem((eInventorySlot) attackData.ArmorHitLocation));
             }
             else if (attackData.AttackResult is eAttackResult.Blocked)
                 target.OnArmorHit(attackData, target.ActiveLeftWeapon);
