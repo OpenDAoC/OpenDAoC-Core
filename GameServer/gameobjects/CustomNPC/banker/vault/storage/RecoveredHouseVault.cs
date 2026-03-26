@@ -3,9 +3,9 @@ using DOL.Database;
 
 namespace DOL.GS
 {
-    public abstract class BankerVaultBase : GameHouseVault
+    public abstract class RecoveredHouseVault : GameHouseVault
     {
-        protected BankerVaultBase(GamePlayer player, DbItemTemplate itemTemplate, int vaultIndex) : base(itemTemplate, vaultIndex)
+        protected RecoveredHouseVault(GamePlayer player, DbItemTemplate itemTemplate, int vaultIndex) : base(itemTemplate, vaultIndex)
         {
             if (vaultIndex is < 0)
                 throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must not be negative.");

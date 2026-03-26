@@ -33,10 +33,10 @@ namespace DOL.GS
                 return false;
 
             // Re-use the currently cached vault if possible.
-            if (player.ActiveInventoryObject is BankerPersonalVault cachedVault && cachedVault.Index == Index)
+            if (player.ActiveInventoryObject is PersonalRecoveredHouseVault cachedVault && cachedVault.Index == Index)
                 return true;
 
-            player.ActiveInventoryObject = new BankerPersonalVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index);
+            player.ActiveInventoryObject = new PersonalRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index);
             return true;
         }
     }

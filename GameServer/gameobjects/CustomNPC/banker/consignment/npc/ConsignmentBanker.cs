@@ -26,11 +26,11 @@ namespace DOL.GS
 
         protected abstract bool TryGetConsignmentMerchant(GamePlayer player, out GameConsignmentMerchant consignmentMerchant);
 
-        protected static BankerConsignment CreateDummyConsignmentMerchant(House house)
+        protected static RecoveredConsignmentMerchant CreateDummyConsignmentMerchant(House house)
         {
             // For basic withdrawal, only CurrentHouse should be needed.
             // HouseNumber will be non 0 only if the player or guild owns a house but no consignment merchant.
-            BankerConsignment consignmentMerchant = new()
+            RecoveredConsignmentMerchant consignmentMerchant = new()
             {
                 CurrentHouse = house,
                 HouseNumber = (ushort) house.HouseNumber

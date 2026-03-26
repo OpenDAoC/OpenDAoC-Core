@@ -33,13 +33,13 @@ namespace DOL.GS
                 return false;
 
             // Re-use the currently cached vault if possible.
-            if (player.ActiveInventoryObject is BankerGuildVault cachedVault && cachedVault.Index == Index)
+            if (player.ActiveInventoryObject is GuildRecoveredHouseVault cachedVault && cachedVault.Index == Index)
                 return true;
 
             if (player.Guild == null)
                 return false;
 
-            player.ActiveInventoryObject = new BankerGuildVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index);
+            player.ActiveInventoryObject = new GuildRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index);
             return true;
         }
     }

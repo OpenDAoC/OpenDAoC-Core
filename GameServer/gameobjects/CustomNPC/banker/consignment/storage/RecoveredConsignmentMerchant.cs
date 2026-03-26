@@ -2,7 +2,7 @@
 
 namespace DOL.GS
 {
-    public class BankerConsignment : GameConsignmentMerchant
+    public class RecoveredConsignmentMerchant : GameConsignmentMerchant
     {
         public override House CurrentHouse { get; set; }
 

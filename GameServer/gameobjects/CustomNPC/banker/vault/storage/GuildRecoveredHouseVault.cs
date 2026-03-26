@@ -2,9 +2,9 @@
 
 namespace DOL.GS
 {
-    public class BankerGuildVault : BankerVaultBase
+    public class GuildRecoveredHouseVault : RecoveredHouseVault
     {
-        public BankerGuildVault(GamePlayer player, DbItemTemplate dummyTemplate, int vaultIndex) : base(player, dummyTemplate, vaultIndex) { }
+        public GuildRecoveredHouseVault(GamePlayer player, DbItemTemplate dummyTemplate, int vaultIndex) : base(player, dummyTemplate, vaultIndex) { }
 
         public override string GetOwner(GamePlayer player)
         {
