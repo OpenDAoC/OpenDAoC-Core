@@ -41,42 +41,42 @@ namespace DOL.GS
         }
     }
 
-    public class VaultBanker1 : PersonalVaultBanker
+    public class PersonalVaultBanker1 : PersonalVaultBanker
     {
         protected override int Index => 0;
     }
 
-    public class VaultBanker2 : PersonalVaultBanker
+    public class PersonalVaultBanker2 : PersonalVaultBanker
     {
         protected override int Index => 1;
     }
 
-    public class VaultBanker3 : PersonalVaultBanker
+    public class PersonalVaultBanker3 : PersonalVaultBanker
     {
         protected override int Index => 2;
     }
 
-    public class VaultBanker4 : PersonalVaultBanker
+    public class PersonalVaultBanker4 : PersonalVaultBanker
     {
         protected override int Index => 3;
     }
 
-    public class VaultBanker5 : PersonalVaultBanker
+    public class PersonalVaultBanker5 : PersonalVaultBanker
     {
         protected override int Index => 4;
     }
 
-    public class VaultBanker6 : PersonalVaultBanker
+    public class PersonalVaultBanker6 : PersonalVaultBanker
     {
         protected override int Index => 5;
     }
 
-    public class VaultBanker7 : PersonalVaultBanker
+    public class PersonalVaultBanker7 : PersonalVaultBanker
     {
         protected override int Index => 6;
     }
 
-    public class VaultBanker8 : PersonalVaultBanker
+    public class PersonalVaultBanker8 : PersonalVaultBanker
     {
         protected override int Index => 7;
     }
