@@ -52,7 +52,7 @@ namespace DOL.GS
         /// <summary>
         /// Last slot in the DB.
         /// </summary>
-        public virtual int LastDbSlot => (int) eInventorySlot.HouseVault_First + VaultSize * (Index + 1) - 1;
+        public virtual int LastDbSlot => FirstDbSlot + (VaultSize - 1);
 
         private readonly Lock _lock = new();
         public Lock Lock => _lock;

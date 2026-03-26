@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -126,14 +125,5 @@ namespace DOL.GS
         {
             return $"{player.Client.Account.Name}_{player.Realm}";
         }
-
-        public override IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
-        {
-            return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot))));
-        }
-
-        public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * _vaultIndex;
-
-        public override int LastDbSlot => FirstDbSlot + (VaultSize -1);
     }
 }

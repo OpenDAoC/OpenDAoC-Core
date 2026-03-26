@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
@@ -240,16 +239,10 @@ namespace DOL.GS
 
     public abstract class BankerVaultBase : GameHouseVault
     {
-        private string _vaultOwner;
-        private int _vaultIndex;
-
         protected BankerVaultBase(GamePlayer player, DbItemTemplate itemTemplate, int vaultIndex) : base(itemTemplate, vaultIndex)
         {
             if (vaultIndex is < 0)
                 throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must not be negative.");
-
-            _vaultOwner = GetOwner(player);
-            _vaultIndex = vaultIndex;
 
             DbHouse dbHouse = new()
             {
@@ -257,7 +250,7 @@ namespace DOL.GS
                 GuildHouse = false,
                 HouseNumber = player.ObjectID,
                 Name = "Vault",
-                OwnerID = _vaultOwner,
+                OwnerID = GetOwner(player),
                 RegionID = player.CurrentRegionID
             };
 
@@ -268,15 +261,6 @@ namespace DOL.GS
         {
             return false;
         }
-
-        public override IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
-        {
-            return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot))));
-        }
-
-        public override int FirstDbSlot => (int) eInventorySlot.HouseVault_First + VaultSize * _vaultIndex;
-
-        public override int LastDbSlot => FirstDbSlot + (VaultSize -1);
     }
 
     public class BankerPersonalVault : BankerVaultBase
