@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
@@ -12,9 +11,6 @@ namespace DOL.GS
         private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const string EXPLORER_ITEM_LIST = "MarketExplorerItems";
-
-        private readonly Lock _lock = new();
-        public Lock Lock => _lock;
 
         public override bool Interact(GamePlayer player)
         {
@@ -38,20 +34,26 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual string GetOwner(GamePlayer player)
+        public virtual string GetOwner()
         {
-            return player.InternalID;
+            return string.Empty;
         }
 
-        public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
+        public virtual Dictionary<int, DbInventoryItem> GetClientInventory()
         {
             return null;
+        }
+
+        public virtual bool TryGetItem(int slot, out DbInventoryItem item)
+        {
+            item = null;
+            return false;
         }
 
         /// <summary>
         /// List of items in this objects inventory
         /// </summary>
-        public virtual IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player)
+        public virtual IEnumerable<DbInventoryItem> GetDbItems()
         {
             throw new NotImplementedException();
         }
@@ -187,7 +189,7 @@ namespace DOL.GS
 
             player.ActiveInventoryObject?.RemoveObserver(player);
             player.ActiveInventoryObject = consignmentMerchant;
-            player.Out.SendInventoryItemsUpdate(consignmentMerchant.GetClientInventory(player), eInventoryWindowType.ConsignmentViewer);
+            player.Out.SendInventoryItemsUpdate(consignmentMerchant.GetClientInventory(), eInventoryWindowType.ConsignmentViewer);
             consignmentMerchant.AddObserver(player);
         }
 

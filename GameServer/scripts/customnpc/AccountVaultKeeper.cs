@@ -22,7 +22,7 @@ namespace DOL.GS
             message += "You can browse the [first] or [second] page of your Account Vault.";
             player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             player.ActiveInventoryObject = player.AccountVault;
-            player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
+            player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(), eInventoryWindowType.HouseVault);
             return true;
         }
 
@@ -38,14 +38,14 @@ namespace DOL.GS
             {
                 AccountVault vault = new(player, 0, GetDummyVaultItem(player));
                 player.ActiveInventoryObject = vault;
-                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
+                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(), eInventoryWindowType.HouseVault);
             }
 
             if (text.Equals("second", StringComparison.OrdinalIgnoreCase))
             {
                 AccountVault vault = new(player, 1, GetDummyVaultItem(player));
                 player.ActiveInventoryObject = vault;
-                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
+                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(), eInventoryWindowType.HouseVault);
             }
 
             return true;
@@ -89,7 +89,7 @@ namespace DOL.GS
             if (vaultIndex is < 0 or > 1)
                 throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must be either 0 or 1.");
 
-            _vaultOwner = GetOwner(player);
+            _vaultOwner = BuildOwnerId(player);
 
             DbHouse dbHouse = new()
             {
@@ -106,26 +106,31 @@ namespace DOL.GS
 
         public override bool CanView(GamePlayer player)
         {
-            return GetOwner(player) == _vaultOwner;
+            return BuildOwnerId(player) == _vaultOwner;
         }
 
         public override bool CanAddItems(GamePlayer player)
         {
-            return GetOwner(player) == _vaultOwner;
+            return BuildOwnerId(player) == _vaultOwner;
         }
 
         public override bool CanRemoveItems(GamePlayer player)
         {
-            return GetOwner(player) == _vaultOwner;
+            return BuildOwnerId(player) == _vaultOwner;
         }
 
-        public override string GetOwner(GamePlayer player)
+        public override string GetOwner()
         {
-            return $"{player.Client.Account.Name}_{player.Realm}";
+            return _vaultOwner;
         }
 
         public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * Index;
 
-        public override int LastDbSlot => FirstDbSlot + (VaultSize -1);
+        public override int LastDbSlot => FirstDbSlot + (VaultSize - 1);
+
+        private static string BuildOwnerId(GamePlayer player)
+        {
+            return $"{player.Client.Account.Name}_{player.Realm}";
+        }
     }
 }

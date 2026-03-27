@@ -92,21 +92,12 @@ namespace DOL.GS
             if (_hookedItem == null || CurrentHouse != player.CurrentHouse || CurrentHouse.CanEmptyHookpoint(player) == false)
                 return false;
 
-            lock (Lock)
-            {
-                foreach (GamePlayer observer in _observers.Values)
-                    observer.ActiveInventoryObject = null;
-
-                _observers.Clear();
-                _hookedItem = null;
-
-                CurrentHouse.EmptyHookpoint(player, this, false);
-            }
-
+            _hookedItem = null;
+            CurrentHouse.EmptyHookpoint(player, this, false);
             return true;
         }
 
-        public override string GetOwner(GamePlayer player = null)
+        public override string GetOwner()
         {
             return CurrentHouse.DatabaseItem.OwnerID;
         }

@@ -88,12 +88,12 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
             else
             {
-                DbInventoryItem item;
+                DbInventoryItem item = null;
 
                 if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromClientSlot) || GameInventoryObjectExtensions.IsCharacterVaultSlot(fromClientSlot))
                     item = client.Player.Inventory.GetItem(fromClientSlot);
                 else
-                    item = client.Player.ActiveInventoryObject?.GetClientInventory(client.Player)[(int) fromClientSlot];
+                    client.Player.ActiveInventoryObject?.TryGetItem((int) fromClientSlot, out item);
 
                 if (item == null)
                 {

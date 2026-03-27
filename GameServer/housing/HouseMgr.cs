@@ -85,12 +85,7 @@ namespace DOL.GS.Housing
 			if (client != null)
 				client.Out.SendMessage("Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-			if (CheckRentTimer == null)
-			{
-                CheckRentTimer =
-					new ECSGameTimer(null, (ECSGameTimer.ECSTimerCallback) CheckRents, TimerInterval);
-			}
-
+			CheckRentTimer ??= new(null, CheckRents, TimerInterval);
 			return true;
 		}
 
@@ -656,7 +651,7 @@ namespace DOL.GS.Housing
 
 			// Demand any consignment merchant inventory is removed before allowing a transfer
 			var consignmentMerchant = house.ConsignmentMerchant;
-			if (consignmentMerchant != null && (consignmentMerchant.GetDbItems(player).Any() || consignmentMerchant.TotalMoney > 0))
+			if (consignmentMerchant != null && (consignmentMerchant.GetDbItems().Any() || consignmentMerchant.TotalMoney > 0))
 			{
 				ChatUtil.SendSystemMessage(player, "All items and money must be removed from your consignment merchant in order to transfer this house!");
 				return false;
@@ -725,6 +720,8 @@ namespace DOL.GS.Housing
 
 		public static int CheckRents(ECSGameTimer timer)
 		{
+			// Not thread safe, but should be fine as long as there's no other timer modifying money on consignment merchants or houses
+
 			if (Properties.RENT_DUE_DAYS == 0)
 				return 0;
 
@@ -750,7 +747,7 @@ namespace DOL.GS.Housing
 
 					// Does this house need to pay rent?
 					if (rent > 0L && diff.Days >= Properties.RENT_DUE_DAYS)
-					{					
+					{
 						long lockboxAmount = house.KeptMoney;
 						long consignmentAmount = 0;
 

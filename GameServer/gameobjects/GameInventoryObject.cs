@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -17,10 +17,10 @@ namespace DOL.GS
         eInventorySlot LastClientSlot { get; }
         int FirstDbSlot { get; }
         int LastDbSlot { get; }
-        Lock Lock { get; }
-        string GetOwner(GamePlayer player);
-        IEnumerable<DbInventoryItem> GetDbItems(GamePlayer player);
-        Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player);
+        string GetOwner();
+        IEnumerable<DbInventoryItem> GetDbItems();
+        Dictionary<int, DbInventoryItem> GetClientInventory();
+        bool TryGetItem(int slot, out DbInventoryItem item);
         bool CanHandleMove(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot);
         bool MoveItem(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort itemCount);
         bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot);
@@ -38,7 +38,7 @@ namespace DOL.GS
     /// </summary>
     public static class GameInventoryObjectExtensions
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool CanHandleRequest(this IGameInventoryObject thisObject, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
         {
@@ -50,30 +50,29 @@ namespace DOL.GS
             return slot >= thisObject.FirstClientSlot && slot <= thisObject.LastClientSlot;
         }
 
-        public static Dictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
+        public static Dictionary<int, DbInventoryItem> MoveItemInternal(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
         {
-            lock (thisObject.Lock)
-            {
-                if (!GetItemInSlot(fromClientSlot, out DbInventoryItem fromItem))
-                {
-                    SendUnsupportedActionMessage(player);
-                    return new() { {(int) fromClientSlot, null}, {(int) toClientSlot, null} };
-                }
+            // No thread synchronization is performed here.
+            // The caller is expected to lock on relevant inventories, caches, etc.
 
-                GetItemInSlot(toClientSlot, out DbInventoryItem toItem);
-                return MoveItemInner(fromItem, toItem);
+            if (!GetItemInSlot(fromClientSlot, out DbInventoryItem fromItem))
+            {
+                SendUnsupportedActionMessage(player);
+                return new() { {(int) fromClientSlot, null} };
             }
+
+            GetItemInSlot(toClientSlot, out DbInventoryItem toItem);
+            return MoveItemInner(fromItem, toItem);
 
             bool GetItemInSlot(eInventorySlot slot, out DbInventoryItem item)
             {
-                item = null;
-
                 if (IsHousingInventorySlot(slot))
-                    thisObject.GetClientInventory(player).TryGetValue((int) slot, out item);
+                    return thisObject.TryGetItem((int) slot, out item);
                 else
+                {
                     item = player.Inventory.GetItem(slot);
-
-                return item != null;
+                    return item != null;
+                }
             }
 
             Dictionary<int, DbInventoryItem> MoveItemInner(DbInventoryItem fromItem, DbInventoryItem toItem)
@@ -103,12 +102,11 @@ namespace DOL.GS
             }
         }
 
-        public static void NotifyObservers(GameObject thisOwner, GamePlayer player, Dictionary<string, GamePlayer> observers, IDictionary<int, DbInventoryItem> updatedItems)
+        public static void NotifyObservers(GamePlayer player, Dictionary<string, GamePlayer> observers, IDictionary<int, DbInventoryItem> updatedItems)
         {
             if (updatedItems == null)
                 return;
 
-            List<string> inactiveList = [];
             Dictionary<int, DbInventoryItem> updatedItemsForObserver = updatedItems.Where(x => IsHousingInventorySlot((eInventorySlot) x.Key)).ToDictionary();
             bool playerFound = false;
 
@@ -119,17 +117,12 @@ namespace DOL.GS
                     observer.Client.Out.SendInventoryItemsUpdate(updatedItems, eInventoryWindowType.Update);
                     playerFound = true;
                 }
-                else if (observer.ActiveInventoryObject == thisOwner && observer.IsWithinRadius(thisOwner, WorldMgr.INTERACT_DISTANCE))
-                    observer.Client.Out.SendInventoryItemsUpdate(updatedItemsForObserver, eInventoryWindowType.Update);
-                else
-                    inactiveList.Add(observer.Name);
+
+                observer.Client.Out.SendInventoryItemsUpdate(updatedItemsForObserver, eInventoryWindowType.Update);
             }
 
             if (!playerFound)
                 player.Client.Out.SendInventoryItemsUpdate(updatedItems, eInventoryWindowType.Update);
-
-            foreach (string observerName in inactiveList)
-                observers.Remove(observerName);
         }
 
         private static void MoveItemToEmptySlot(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, ushort count, Dictionary<int, DbInventoryItem> updatedItems)
@@ -205,7 +198,7 @@ namespace DOL.GS
 
                     player.Inventory.OnItemMove(fromItem, null, fromClientSlot, toClientSlot);
                     fromItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
-                    fromItem.OwnerID = thisObject.GetOwner(player);
+                    fromItem.OwnerID = thisObject.GetOwner();
 
                     if (!SaveItem(fromItem))
                     {
@@ -222,7 +215,7 @@ namespace DOL.GS
                 {
                     int previousSlot = fromItem.SlotPosition;
                     fromItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
-                    fromItem.OwnerID = thisObject.GetOwner(player);
+                    fromItem.OwnerID = thisObject.GetOwner();
 
                     if (!SaveItem(fromItem))
                     {
@@ -309,7 +302,7 @@ namespace DOL.GS
                     }
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
-                    toItem.OwnerID = thisObject.GetOwner(player);
+                    toItem.OwnerID = thisObject.GetOwner();
 
                     if (!SaveItem(toItem))
                     {
@@ -333,7 +326,7 @@ namespace DOL.GS
                     }
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
-                    toItem.OwnerID = thisObject.GetOwner(player);
+                    toItem.OwnerID = thisObject.GetOwner();
 
                     if (!SaveItem(toItem))
                     {
@@ -567,7 +560,7 @@ namespace DOL.GS
 
                 int characterInventoryItemPreviousSlotPosition = characterInventoryItem.SlotPosition;
                 characterInventoryItem.SlotPosition = vaultItem.SlotPosition;
-                characterInventoryItem.OwnerID = thisObject.GetOwner(player);
+                characterInventoryItem.OwnerID = thisObject.GetOwner();
 
                 if (!SaveItem(characterInventoryItem))
                 {

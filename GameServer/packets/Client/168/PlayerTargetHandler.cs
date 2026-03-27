@@ -28,6 +28,14 @@ namespace DOL.GS.PacketHandler.Client.v168
                 target = null;
             }
 
+            // The inventory window closes itself when the player changes target.
+            // This is a good opportunity to call RemoveObserver on the currently active inventory object.
+            if (actionSource.TargetObject != target)
+            {
+                actionSource.ActiveInventoryObject?.RemoveObserver(actionSource);
+                actionSource.ActiveInventoryObject = null;
+            }
+
             actionSource.TargetObject = target;
             actionSource.TargetInView = targetInView;
 

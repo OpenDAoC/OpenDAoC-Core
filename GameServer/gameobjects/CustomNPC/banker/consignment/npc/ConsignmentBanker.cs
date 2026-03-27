@@ -1,5 +1,4 @@
-﻿using DOL.Database;
-using DOL.GS.Housing;
+﻿using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -42,14 +41,6 @@ namespace DOL.GS
             };
 
             consignmentMerchant.movementComponent.ForceUpdatePosition();
-
-            // Load money if any.
-            // TotalMoney's setter performs a DB query and save. This should be changed.
-            DbHouseConsignmentMerchant houseCm = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(house.OwnerID));
-
-            if (houseCm != null && houseCm.Money > 0)
-                consignmentMerchant.TotalMoney = houseCm.Money;
-
             return consignmentMerchant;
         }
 

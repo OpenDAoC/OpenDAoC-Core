@@ -70,7 +70,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// first try any active inventory object
 							if (invItem == null)
-								client.Player.ActiveInventoryObject?.GetClientInventory(client.Player)?.TryGetValue(objectId, out invItem);
+								client.Player.ActiveInventoryObject?.TryGetItem(objectId, out invItem);
 
 							// Failed to get any inventory
 							if (invItem == null)
