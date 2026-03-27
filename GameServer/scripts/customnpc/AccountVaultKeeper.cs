@@ -83,7 +83,6 @@ namespace DOL.GS
     public class AccountVault : GameHouseVault
     {
         private string _vaultOwner;
-        private int _vaultIndex;
 
         public AccountVault(GamePlayer player, int vaultIndex, DbItemTemplate dummyTemplate) : base(dummyTemplate, vaultIndex)
         {
@@ -91,7 +90,6 @@ namespace DOL.GS
                 throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must be either 0 or 1.");
 
             _vaultOwner = GetOwner(player);
-            _vaultIndex = vaultIndex;
 
             DbHouse dbHouse = new()
             {
@@ -125,5 +123,9 @@ namespace DOL.GS
         {
             return $"{player.Client.Account.Name}_{player.Realm}";
         }
+
+        public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * Index;
+
+        public override int LastDbSlot => FirstDbSlot + (VaultSize -1);
     }
 }
