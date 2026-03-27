@@ -18,6 +18,7 @@ namespace DOL.GS
 
             player.Out.SendMessage(BuildInteractionMessage(player), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
+            // House.GetPermissionLevel will currently return null, and only the guild leader will be able to interact with the banker.
             if (TryGetConsignmentMerchant(player, out GameConsignmentMerchant consignmentMerchant))
                 consignmentMerchant.Interact(player);
 
@@ -52,12 +53,6 @@ namespace DOL.GS
             return consignmentMerchant;
         }
 
-        protected static House CreateDummyHouse(string ownerId)
-        {
-            return new(new()
-            {
-                OwnerID = ownerId
-            });
-        }
+        protected abstract House CreateDummyHouse(string ownerId);
     }
 }

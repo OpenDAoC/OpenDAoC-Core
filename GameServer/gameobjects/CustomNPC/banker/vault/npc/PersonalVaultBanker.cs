@@ -17,7 +17,7 @@ namespace DOL.GS
                 $"I have the ability to give you the items you had in the {ToOrdinalWord(Index)} vault. ";
         }
 
-        protected override bool TryGetHouseVault(GamePlayer player, out GameHouseVault vault)
+        protected override bool TryGetRealHouseVault(GamePlayer player, out GameHouseVault vault)
         {
             // Do not use HouseMgr.GetHouseByPlayer because this is an account-wide check.
             vault = null;
@@ -25,19 +25,33 @@ namespace DOL.GS
             return house != null && house.HouseVaults.TryGetValue(Index, out vault);
         }
 
-        protected override bool SetPlayerActiveInventoryObject(GamePlayer player)
+        protected override bool TryGetHouseVault(GamePlayer player, out GameHouseVault vault)
         {
+            vault = null;
+
             // If the player has a house, it's very important not to create a different view as this can cause items to be duplicated.
             // We could give access to the house vault from here if we wanted.
-            if (TryGetHouseVault(player, out _))
+            if (TryGetRealHouseVault(player, out _))
                 return false;
 
             // Re-use the currently cached vault if possible.
             if (player.ActiveInventoryObject is PersonalRecoveredHouseVault cachedVault && cachedVault.Index == Index)
                 return true;
 
-            player.ActiveInventoryObject = new PersonalRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index);
+            vault = new PersonalRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index)
+            {
+                CurrentHouse = CreateDummyHouse(player.ObjectId)
+            };
+
             return true;
+        }
+
+        protected override House CreateDummyHouse(string ownerId)
+        {
+            return new(new()
+            {
+                OwnerID = ownerId,
+            });
         }
     }
 

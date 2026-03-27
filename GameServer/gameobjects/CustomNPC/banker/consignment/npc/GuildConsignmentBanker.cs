@@ -30,5 +30,14 @@ namespace DOL.GS
             consignmentMerchant = CreateDummyConsignmentMerchant(player, house);
             return true;
         }
+
+        protected override House CreateDummyHouse(string ownerId)
+        {
+            return new(new()
+            {
+                OwnerID = ownerId,
+                GuildHouse = true
+            });
+        }
     }
 }

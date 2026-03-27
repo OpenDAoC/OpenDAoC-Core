@@ -18,29 +18,46 @@ namespace DOL.GS
                 $"I can give you the items from the {ToOrdinalWord(Index)} vault. ";
         }
 
-        protected override bool TryGetHouseVault(GamePlayer player, out GameHouseVault vault)
+        protected override bool TryGetRealHouseVault(GamePlayer player, out GameHouseVault vault)
         {
             vault = null;
             House house = HouseMgr.GetGuildHouseByPlayer(player);
             return house != null && house.HouseVaults.TryGetValue(Index, out vault);
         }
 
-        protected override bool SetPlayerActiveInventoryObject(GamePlayer player)
+        protected override bool TryGetHouseVault(GamePlayer player, out GameHouseVault vault)
         {
+            vault = null;
+
             // If the player's guild has a house, it's very important not to create a different view as this can cause items to be duplicated.
             // We could give access to the house vault from here if we wanted.
-            if (TryGetHouseVault(player, out _))
+            if (TryGetRealHouseVault(player, out _))
                 return false;
 
             // Re-use the currently cached vault if possible.
             if (player.ActiveInventoryObject is GuildRecoveredHouseVault cachedVault && cachedVault.Index == Index)
                 return true;
 
-            if (player.Guild == null)
+            Guild guild = player.Guild;
+
+            if (guild == null)
                 return false;
 
-            player.ActiveInventoryObject = new GuildRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index);
+            vault = new GuildRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index)
+            {
+                CurrentHouse = CreateDummyHouse(guild.GuildID)
+            };
+
             return true;
+        }
+
+        protected override House CreateDummyHouse(string ownerId)
+        {
+            return new(new()
+            {
+                OwnerID = ownerId,
+                GuildHouse = true
+            });
         }
     }
 

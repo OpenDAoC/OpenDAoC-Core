@@ -6,7 +6,7 @@ namespace DOL.GS
     {
         public GuildRecoveredHouseVault(GamePlayer player, DbItemTemplate dummyTemplate, int vaultIndex) : base(player, dummyTemplate, vaultIndex) { }
 
-        public override string GetOwner(GamePlayer player)
+        protected override string BuildOwnerId(GamePlayer player)
         {
             Guild guild = player.Guild;
             return guild == null ? string.Empty : $"{guild.GuildID}";

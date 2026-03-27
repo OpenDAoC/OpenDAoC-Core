@@ -1,4 +1,5 @@
-﻿using DOL.GS.PacketHandler;
+﻿using DOL.GS.Housing;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -30,15 +31,18 @@ namespace DOL.GS
 
             player.Out.SendMessage(BuildInteractionMessage(player), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
-            if (SetPlayerActiveInventoryObject(player))
-                player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
+            // House.GetPermissionLevel will currently return null, and only the guild leader will be able to interact with the banker.
+            if (TryGetHouseVault(player, out GameHouseVault houseVault))
+                houseVault.Interact(player);
 
             return true;
         }
 
-        protected abstract bool TryGetHouseVault(GamePlayer player, out GameHouseVault vault);
+        protected abstract bool TryGetRealHouseVault(GamePlayer player, out GameHouseVault vault);
 
-        protected abstract bool SetPlayerActiveInventoryObject(GamePlayer player);
+        protected abstract bool TryGetHouseVault(GamePlayer player,  out GameHouseVault vault);
+
+        protected abstract House CreateDummyHouse(string ownerId);
 
         protected static string ToOrdinalWord(int index)
         {

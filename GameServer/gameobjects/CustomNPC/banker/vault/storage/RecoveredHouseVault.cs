@@ -5,10 +5,14 @@ namespace DOL.GS
 {
     public abstract class RecoveredHouseVault : GameHouseVault
     {
+        private string _vaultOwner;
+
         protected RecoveredHouseVault(GamePlayer player, DbItemTemplate itemTemplate, int vaultIndex) : base(itemTemplate, vaultIndex)
         {
             if (vaultIndex is < 0)
                 throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must not be negative.");
+
+            _vaultOwner = BuildOwnerId(player);
 
             DbHouse dbHouse = new()
             {
@@ -16,7 +20,7 @@ namespace DOL.GS
                 GuildHouse = false,
                 HouseNumber = player.ObjectID,
                 Name = "Vault",
-                OwnerID = GetOwner(player),
+                OwnerID = _vaultOwner,
                 RegionID = player.CurrentRegionID
             };
 
@@ -27,5 +31,7 @@ namespace DOL.GS
         {
             return false;
         }
+
+        protected abstract string BuildOwnerId(GamePlayer player);
     }
 }
