@@ -245,42 +245,7 @@ namespace DOL.GS
             }
         }
 
-        private readonly struct LosCheckKey : IEquatable<LosCheckKey>
-        {
-            public readonly ushort SourceObjectId;
-            public readonly ushort TargetObjectId;
-
-            public LosCheckKey(ushort sourceObjectId, ushort targetObjectId)
-            {
-                SourceObjectId = sourceObjectId;
-                TargetObjectId = targetObjectId;
-            }
-
-            public bool Equals(LosCheckKey other)
-            {
-                return SourceObjectId == other.SourceObjectId && TargetObjectId == other.TargetObjectId;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is LosCheckKey other && Equals(other);
-            }
-
-            public override int GetHashCode()
-            {
-                return HashCode.Combine(SourceObjectId, TargetObjectId);
-            }
-
-            public static bool operator ==(LosCheckKey left, LosCheckKey right)
-            {
-                return left.Equals(right);
-            }
-
-            public static bool operator !=(LosCheckKey left, LosCheckKey right)
-            {
-                return !(left == right);
-            }
-        }
+        private readonly record struct LosCheckKey(ushort SourceObjectId, ushort TargetObjectId);
     }
 
     public interface ILosCheckListener
