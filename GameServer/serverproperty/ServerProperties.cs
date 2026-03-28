@@ -578,7 +578,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Enable PvE Speed
 		/// </summary>
-		[ServerProperty("server", "enable_pve_speed", "Set to true if you wish to enable the extra 25% increase to speed when not in combat or an RvR zone", true)]
+		[ServerProperty("server", "enable_pve_speed", "Set to true if you wish to enable the extra 25% increase to speed when not in combat or an RvR zone", false)]
 		public static bool ENABLE_PVE_SPEED;
 
 		/// <summary>
