@@ -4,14 +4,15 @@ using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.Housing
 {
 	public class House : Point3D, IGameLocation
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private const int MAX_VAULT_COUNT = 8; // Must not be bigger than what `eInventorySlot` allows.
+		public const int MAX_VAULT_COUNT = 8; // Must not be bigger than what `eInventorySlot` allows.
 
 		private readonly DbHouse _databaseItem;
 		private readonly Dictionary<int, DbHouseCharsXPerms> _housePermissions = new();
