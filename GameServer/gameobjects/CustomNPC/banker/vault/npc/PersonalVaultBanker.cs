@@ -36,7 +36,10 @@ namespace DOL.GS
 
             // Re-use the currently cached vault if possible.
             if (player.ActiveInventoryObject is PersonalRecoveredHouseVault cachedVault && cachedVault.Index == Index)
+            {
+                vault = cachedVault;
                 return true;
+            }
 
             vault = new PersonalRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), Index)
             {

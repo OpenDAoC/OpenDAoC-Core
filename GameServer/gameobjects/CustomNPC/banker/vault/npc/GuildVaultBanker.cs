@@ -36,7 +36,10 @@ namespace DOL.GS
 
             // Re-use the currently cached vault if possible.
             if (player.ActiveInventoryObject is GuildRecoveredHouseVault cachedVault && cachedVault.Index == Index)
+            {
+                vault = cachedVault;
                 return true;
+            }
 
             Guild guild = player.Guild;
 
