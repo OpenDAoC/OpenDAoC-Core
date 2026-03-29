@@ -8,7 +8,7 @@ namespace DOL.GS
         public SureShotECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Berserk;
+            EffectType = eEffect.SureShot;
         }
 
         public override ushort Icon { get { return 485; } }
