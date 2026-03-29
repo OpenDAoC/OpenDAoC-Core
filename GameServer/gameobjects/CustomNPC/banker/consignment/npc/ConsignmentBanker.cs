@@ -40,7 +40,7 @@ namespace DOL.GS
 
                 // We could give access to the consignment merchant from here if we wanted.
                 if (house == null)
-                    house = CreateDummyHouse(player.ObjectId, type);
+                    house = new NullHouse(player.ObjectId, false);
                 else if (house.ConsignmentMerchant != null)
                     return false;
 
@@ -59,7 +59,7 @@ namespace DOL.GS
 
                 // We could give access to the consignment merchant from here if we wanted.
                 if (house == null)
-                    house = CreateDummyHouse(guild.GuildID, type);
+                    house = new NullHouse(guild.GuildID, true);
                 else if (house.ConsignmentMerchant != null)
                     return false;
 
@@ -72,29 +72,7 @@ namespace DOL.GS
 
         private static RecoveredConsignmentMerchant CreateDummyConsignmentMerchant(GamePlayer player, House house)
         {
-            // For basic withdrawal, only CurrentHouse and a valid position should be needed.
-            // HouseNumber will be non 0 only if the player or guild owns a house but no consignment merchant.
-            RecoveredConsignmentMerchant consignmentMerchant = new()
-            {
-                CurrentHouse = house,
-                HouseNumber = (ushort) house.HouseNumber,
-                CurrentRegion = player.CurrentRegion,
-                X = player.X,
-                Y = player.Y,
-                Z = player.Z
-            };
-
-            consignmentMerchant.movementComponent.ForceUpdatePosition();
-            return consignmentMerchant;
-        }
-
-        private static House CreateDummyHouse(string ownerId, VaultType type)
-        {
-            return new(new()
-            {
-                OwnerID = ownerId,
-                GuildHouse = type is VaultType.Guild
-            });
+            return new(player, house);
         }
     }
 }

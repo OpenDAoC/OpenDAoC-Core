@@ -45,7 +45,7 @@ namespace DOL.GS
             {
                 HouseNumber = house.HouseNumber,
                 HookpointID = hookPointId,
-                Heading = (ushort) ((house.GetHookpointHeading(hookPointId) + 2048) % 4096),
+                Heading = (ushort) ((house.GetHookPointHeading(hookPointId) + 2048) % 4096),
                 ItemTemplateID = TemplateID,
                 Index = (byte) Index
             };
@@ -68,7 +68,7 @@ namespace DOL.GS
 
             _hookedItem = hookedItem;
 
-            IPoint3D position = house.GetHookpointLocation(hookedItem.HookpointID);
+            IPoint3D position = house.GetHookPointLocation(hookedItem.HookpointID);
 
             if (position == null)
                 return false;
@@ -89,11 +89,11 @@ namespace DOL.GS
         /// </summary>
         public bool Detach(GamePlayer player)
         {
-            if (_hookedItem == null || CurrentHouse != player.CurrentHouse || CurrentHouse.CanEmptyHookpoint(player) == false)
+            if (_hookedItem == null || CurrentHouse != player.CurrentHouse || CurrentHouse.CanEmptyHookPoint(player) == false)
                 return false;
 
             _hookedItem = null;
-            CurrentHouse.EmptyHookpoint(player, this, false);
+            CurrentHouse.EmptyHookPoint(player, this, false);
             return true;
         }
 

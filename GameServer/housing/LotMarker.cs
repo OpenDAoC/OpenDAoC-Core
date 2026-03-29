@@ -7,8 +7,6 @@ namespace DOL.GS.Housing
 {
 	public class GameLotMarker : GameStaticItem
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 		private DbHouse m_dbitem;
 
 		public GameLotMarker()
@@ -179,7 +177,7 @@ namespace DOL.GS.Housing
 				DatabaseItem.Emblem = player.Guild.Emblem;
 			}
 
-			var house = new House(DatabaseItem);
+			GameHouse house = new(DatabaseItem);
 			HouseMgr.AddHouse(house);
 
 			if (model != 0)

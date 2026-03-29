@@ -4,12 +4,24 @@ namespace DOL.GS
 {
     public class RecoveredConsignmentMerchant : GameConsignmentMerchant
     {
-        public override House CurrentHouse { get; set; }
+        public override House CurrentHouse { get; set; } // Base class relies on HouseNumber, which may be 0.
+
+        public RecoveredConsignmentMerchant(GamePlayer player, House house)
+        {
+            CurrentHouse = house;
+            HouseNumber = (ushort) house.HouseNumber;
+
+            // Allows interaction.
+            CurrentRegion = player.CurrentRegion;
+            X = player.X;
+            Y = player.Y;
+            Z = player.Z;
+            movementComponent.ForceUpdatePosition();
+        }
 
         public override bool CanHandleMove(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
         {
             // Allow withdrawals only.
-            // This relies on GameConsignmentMerchant.MoveItem to correctly prevent item swaps between it and the player's inventory.
             return player.ActiveInventoryObject == this && this.CanHandleSlot(fromClientSlot) && !this.CanHandleSlot(toClientSlot);
         }
     }

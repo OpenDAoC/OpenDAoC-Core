@@ -1,5 +1,6 @@
 using System;
 using DOL.Database;
+using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -90,18 +91,7 @@ namespace DOL.GS
                 throw new ArgumentOutOfRangeException(nameof(vaultIndex), $"{nameof(vaultIndex)} must be either 0 or 1.");
 
             _vaultOwner = BuildOwnerId(player);
-
-            DbHouse dbHouse = new()
-            {
-                AllowAdd = false,
-                GuildHouse = false,
-                HouseNumber = player.ObjectID,
-                Name = "Account Vault",
-                OwnerID = _vaultOwner,
-                RegionID = player.CurrentRegionID
-            };
-
-            CurrentHouse = new(dbHouse);
+            CurrentHouse = new NullHouse(_vaultOwner, false);
         }
 
         public override bool CanView(GamePlayer player)

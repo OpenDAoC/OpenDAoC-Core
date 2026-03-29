@@ -1291,7 +1291,7 @@ namespace DOL.GS
                 bool canbindhere;
                 try
                 {
-                    canbindhere = house.HousepointItems.Any(kv => ((GameObject)kv.Value.GameObject).GetName(0, false).EndsWith("bindstone", StringComparison.OrdinalIgnoreCase));
+                    canbindhere = house.HousePointItems.Any(kv => ((GameObject)kv.Value.GameObject).GetName(0, false).EndsWith("bindstone", StringComparison.OrdinalIgnoreCase));
                 }
                 catch
                 {
@@ -9649,7 +9649,7 @@ namespace DOL.GS
 
             if ((floorObject is GameNPC || floorObject is GameStaticItem) && floorObject.CurrentHouse != null)
             {
-                floorObject.CurrentHouse.EmptyHookpoint(this, floorObject);
+                floorObject.CurrentHouse.EmptyHookPoint(this, floorObject);
                 return;
             }
 

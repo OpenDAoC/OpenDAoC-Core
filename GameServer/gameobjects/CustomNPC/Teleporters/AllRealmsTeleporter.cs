@@ -1,13 +1,11 @@
-﻿using DOL.Database;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -581,7 +579,7 @@ namespace DOL.GS
 
 				// Check if the house at the player's house bind location contains a bind stone
 				House targetHouse = (House)houses[0];
-				IDictionary<uint, DbHouseHookPointItem> hookpointItems = targetHouse.HousepointItems;
+				var hookpointItems = targetHouse.HousePointItems;
 				Boolean hasBindstone = false;
 
 				foreach (KeyValuePair<uint, DbHouseHookPointItem> targetHouseItem in hookpointItems)

@@ -66,7 +66,7 @@ namespace DOL.GS
 
                 vault = new PersonalRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), index)
                 {
-                    CurrentHouse = CreateDummyHouse(player.ObjectId, vaultType)
+                    CurrentHouse = new NullHouse(player.ObjectId, false)
                 };
 
                 return true;
@@ -87,7 +87,7 @@ namespace DOL.GS
 
                 vault = new GuildRecoveredHouseVault(player, AccountVaultKeeper.GetDummyVaultItem(player), index)
                 {
-                    CurrentHouse = CreateDummyHouse(guild.GuildID, vaultType)
+                    CurrentHouse = new NullHouse(guild.GuildID, true)
                 };
 
                 return true;
@@ -107,15 +107,6 @@ namespace DOL.GS
                 house = HouseMgr.GetGuildHouseByPlayer(player);
 
             return house != null && house.HouseVaults.TryGetValue(index, out vault);
-        }
-
-        private static House CreateDummyHouse(string ownerId, VaultType type)
-        {
-            return new(new()
-            {
-                OwnerID = ownerId,
-                GuildHouse = type is VaultType.Guild
-            });
         }
 
         private static string ToOrdinalWord(int index)
