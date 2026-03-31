@@ -321,23 +321,34 @@ namespace DOL.AI.Brain
 
             if (living is GamePlayer player)
             {
+                // Populate the aggro list with our own pet, group members and their pets.
+                // This ensures NPCs can attack other players and pets on their way.
+
                 AddPetAndSubPetsToAggroList(player);
 
-                // Add the whole group to the aggro list.
                 // This is done on every attack, but we may consider doing it only once per group, somehow.
                 if (player.Group != null)
                 {
                     foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
                     {
-                        if (playerInGroup != living)
-                        {
-                            if (!AggroList.ContainsKey(playerInGroup))
-                                AggroList.TryAdd(playerInGroup, new(0));
+                        if (playerInGroup == living)
+                            continue;
 
-                            AddPetAndSubPetsToAggroList(playerInGroup);
-                        }
+                        if (!AggroList.ContainsKey(playerInGroup))
+                            AggroList.TryAdd(playerInGroup, new(0));
+
+                        AddPetAndSubPetsToAggroList(playerInGroup);
                     }
                 }
+            }
+            else if (living is GameNPC npc && npc.Brain is IControlledBrain brain)
+            {
+                // If the attacker is a pet, we also add its owner.
+                // this prevents both receiving an aggro amount of 1 if the attack is a debuff for example, ensuring the NPC attacks the pet first.
+                GamePlayer owner = brain.GetPlayerOwner();
+
+                if (!AggroList.ContainsKey(owner))
+                    AggroList.TryAdd(owner, new(0));
             }
 
             // Change state and reschedule the next think tick to improve responsiveness.
