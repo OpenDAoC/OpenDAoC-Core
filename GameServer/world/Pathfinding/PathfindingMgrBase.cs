@@ -25,7 +25,7 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> destination)
+        public virtual PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> nodes)
         {
             return new(PathfindingStatus.NavmeshUnavailable, 0);
         }

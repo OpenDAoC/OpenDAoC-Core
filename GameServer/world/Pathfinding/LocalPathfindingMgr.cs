@@ -246,25 +246,73 @@ namespace DOL.GS
                 FreeNavMesh(ptr);
 
             _navmeshPtrs.Clear();
+            _doorPolyRefs.Clear();
+            _navmeshQueries.Value.Clear();
         }
 
         public override bool RegisterDoor(GameDoorBase door)
         {
-            const int MAX_DOOR_POLYS = 12;
+            const int MAX_DOOR_POLYS = 24;
 
             Zone zone = door.CurrentZone;
 
             if (zone == null)
                 return false;
 
-            ulong[] polyRefs = GetNearestPolys(zone, new(door.X, door.Y, door.Z), _doorMask, MAX_DOOR_POLYS);
+            ulong[] candidatePolyRefs = GetNearestPolys(
+                zone,
+                new(door.X, door.Y, door.Z),
+                _doorMask,
+                128f, 128f, 32f,
+                MAX_DOOR_POLYS);
 
-            if (polyRefs.Length == 0)
+            if (candidatePolyRefs.Length == 0)
                 return false;
 
             lock (_doorPolyRefsLock)
             {
-                _doorPolyRefs.Add(door, polyRefs);
+                if (_doorPolyRefs.ContainsKey(door))
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"Door (ID: {door.DoorId}) at {door.X},{door.Y},{door.Z} in zone {zone.ID} is already registered.");
+
+                    return false;
+                }
+
+                if (log.IsWarnEnabled)
+                {
+                    HashSet<ulong> claimedPolyRefs = new();
+
+                    foreach (var pair in _doorPolyRefs)
+                    {
+                        if (pair.Key.CurrentZone?.ID == zone.ID)
+                        {
+                            foreach (ulong poly in pair.Value)
+                                claimedPolyRefs.Add(poly);
+                        }
+                    }
+
+                    int claimedCount = 0;
+
+                    foreach (ulong poly in candidatePolyRefs)
+                    {
+                        if (claimedPolyRefs.Contains(poly))
+                            claimedCount++;
+                    }
+
+                    if (claimedCount == candidatePolyRefs.Length)
+                    {
+                        log.Warn($"Door (ID: {door.DoorId}) at {door.X},{door.Y},{door.Z} in zone {zone.ID} " +
+                            "overlaps entirely with another door's polygons.");
+                    }
+                    else if (claimedCount > 0)
+                    {
+                        log.Warn($"Door (ID: {door.DoorId}) at {door.X},{door.Y},{door.Z} in zone {zone.ID} " +
+                            $"has {claimedCount} overlapping polygons with another door.");
+                    }
+                }
+
+                _doorPolyRefs.Add(door, candidatePolyRefs);
             }
 
             UpdateDoorFlags(zone, door);
@@ -323,7 +371,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> destination)
+        public override PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> nodes)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return new(PathfindingStatus.NoPathFound, 0);
@@ -349,11 +397,11 @@ namespace DOL.GS
                 if ((status & EDtStatus.DT_SUCCESS) == 0)
                     return new(PathfindingStatus.NoPathFound, 0);
 
-                if (destination.Length < numNodes)
+                if (nodes.Length < numNodes)
                     return new(PathfindingStatus.BufferTooSmall, numNodes);
 
                 for (int i = 0; i < numNodes; i++)
-                    destination[i] = new(new(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR), flags[i]);
+                    nodes[i] = new(new(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR), flags[i]);
 
                 PathfindingStatus pathfindingStatus = (status & EDtStatus.DT_PARTIAL_RESULT) != 0 ? PathfindingStatus.PartialPathFound : PathfindingStatus.PathFound;
                 return new(pathfindingStatus, numNodes);
@@ -530,7 +578,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 || polyRef == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        private static ulong[] GetNearestPolys(Zone zone, Vector3 point, EDtPolyFlags[] filters, int maxPolyCount)
+        private static ulong[] GetNearestPolys(Zone zone, Vector3 point, EDtPolyFlags[] filters, float xRange, float yRange, float zRange, int maxPolyCount)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return [];
@@ -539,7 +587,7 @@ namespace DOL.GS
             FillRecastFloats(point, center);
 
             Span<float> extents = stackalloc float[3];
-            FillRecastFloats(new(64f, 64f, 128f), extents);
+            FillRecastFloats(new(xRange, yRange, zRange), extents);
 
             Span<ulong> polyRefs = stackalloc ulong[maxPolyCount];
             EDtStatus status = GetPolysInBox(query, center, extents, filters, polyRefs, out int outputPolyCount, maxPolyCount);

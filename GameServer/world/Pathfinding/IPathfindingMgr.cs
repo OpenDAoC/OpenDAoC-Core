@@ -9,7 +9,7 @@ namespace DOL.GS
         void Stop();
         bool RegisterDoor(GameDoorBase door);
         bool UpdateDoorFlags(GameDoorBase door);
-        PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> destination);
+        PathfindingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters, Span<WrappedPathfindingNode> nodes);
         Vector3? GetMoveAlongSurface(Zone zone, Vector3 start, Vector3 end, EDtPolyFlags[] filters);
         Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius, EDtPolyFlags[] filters);
         Vector3? GetClosestPoint(Zone zone, Vector3 position, EDtPolyFlags[] filters);

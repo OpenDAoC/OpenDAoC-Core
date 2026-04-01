@@ -19,15 +19,14 @@ namespace DOL.GS
         public const int NODE_MAX_SKIP_DISTANCE = 80;
         public const int DOOR_SEARCH_DISTANCE = 128;
 
+        private PathBuffer _activePath = new();
+        private PathBuffer _calculationBuffer = new();
+        private Vector3 _lastTarget = Vector3.Zero;
+        private PathVisualization _pathVisualization;
+
         public GameNPC Owner { get; }
         public bool ForceReplot { get; set; }
         public PathfindingStatus PathfindingStatus { get; private set; }
-
-        private PathBuffer _activePath = new();
-        private PathBuffer _calculationBuffer = new();
-
-        private Vector3 _lastTarget = Vector3.Zero;
-        private PathVisualization _pathVisualization;
 
         public static EDtPolyFlags[] DefaultFilters => PathfindingProvider.Instance.DefaultFilters;
         public static EDtPolyFlags[] BlockingDoorAvoidanceFilters => PathfindingProvider.Instance.BlockingDoorAvoidanceFilters;
@@ -238,7 +237,7 @@ namespace DOL.GS
         {
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
             {
-                CalculatePath(_activePath, zone, position, target, DefaultFilters);
+                CalculatePath(_activePath, zone, position, target, BlockingDoorAvoidanceFilters);
                 _lastTarget = target;
                 ForceReplot = false;
             }
