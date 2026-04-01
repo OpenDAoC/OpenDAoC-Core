@@ -487,7 +487,7 @@ namespace DOL.GS
             else if (!IsFlagSet(MovementState.Pathfinding))
                 TurnTo(FollowTarget);
 
-            int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
+            float ticksToArrive = distanceToTarget * 1000 / speed;
 
             if (ticksToArrive <= 0)
             {
@@ -502,7 +502,7 @@ namespace DOL.GS
             // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
             SetFlag(MovementState.WalkTo);
-            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
+            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + (int) ticksToArrive;
         }
 
         private void PathToInternal(Vector3 destination, short speed)
