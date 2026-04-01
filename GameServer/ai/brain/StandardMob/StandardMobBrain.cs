@@ -319,38 +319,6 @@ namespace DOL.AI.Brain
 
             AggroList.AddOrUpdate(living, Add, Update, aggroAmount);
 
-            if (living is GamePlayer player)
-            {
-                // Populate the aggro list with our own pet, group members and their pets.
-                // This ensures NPCs can attack other players and pets on their way.
-
-                AddPetAndSubPetsToAggroList(player);
-
-                // This is done on every attack, but we may consider doing it only once per group, somehow.
-                if (player.Group != null)
-                {
-                    foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
-                    {
-                        if (playerInGroup == living)
-                            continue;
-
-                        if (!AggroList.ContainsKey(playerInGroup))
-                            AggroList.TryAdd(playerInGroup, new(0));
-
-                        AddPetAndSubPetsToAggroList(playerInGroup);
-                    }
-                }
-            }
-            else if (living is GameNPC npc && npc.Brain is IControlledBrain brain)
-            {
-                // If the attacker is a pet, we also add its owner.
-                // this prevents both receiving an aggro amount of 1 if the attack is a debuff for example, ensuring the NPC attacks the pet first.
-                GamePlayer owner = brain.GetPlayerOwner();
-
-                if (!AggroList.ContainsKey(owner))
-                    AggroList.TryAdd(owner, new(0));
-            }
-
             // Change state and reschedule the next think tick to improve responsiveness.
             if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
             {
@@ -369,36 +337,6 @@ namespace DOL.AI.Brain
             {
                 oldValue.Base = Math.Max(0, oldValue.Base + arg);
                 return oldValue;
-            }
-        }
-
-        private void AddPetAndSubPetsToAggroList(GamePlayer player)
-        {
-            GameNPC pet = player.ControlledBrain?.Body;
-
-            if (pet == null)
-                return;
-
-            if (!AggroList.ContainsKey(pet))
-                AggroList.TryAdd(pet, new(0));
-
-            IControlledBrain[] controlledBrains = pet.ControlledNpcList;
-
-            if (controlledBrains == null)
-                return;
-
-            foreach (IControlledBrain subPetBrain in controlledBrains)
-            {
-                if (subPetBrain == null)
-                    continue;
-
-                GameNPC subPet = subPetBrain.Body;
-
-                if (subPet == null)
-                    continue;
-
-                if (!AggroList.ContainsKey(subPet))
-                    AggroList.TryAdd(subPet, new(0));
             }
         }
 
@@ -699,17 +637,87 @@ namespace DOL.AI.Brain
             int damage = Math.Max(0, ad.Damage + ad.CriticalDamage);
             GameLiving attacker = ad.Attacker;
 
-            if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is ControlledMobBrain controlledBrain)
+            if (attacker is GameNPC npcAttacker && npcAttacker.Brain is ControlledMobBrain controlledBrain)
             {
                 damage = controlledBrain.ModifyDamageWithTaunt(damage);
 
                 // A pet generates 100% of the aggro from its damage; the owner receives 30% additional aggro as a tag, without reducing the pet's contribution.
                 // The pet should be added first to the aggro list in case the attack does no damage (see `AddToAggroList` implementation).
-                AddToAggroList(NpcAttacker, damage);
+                AddToAggroList(npcAttacker, damage);
+                PropagateAggroToGroupMembers(npcAttacker);
                 AddToAggroList(controlledBrain.Owner, (int) (damage * 0.3));
+                PropagateAggroToGroupMembers(controlledBrain.Owner);
+                return;
             }
-            else
-                AddToAggroList(attacker, damage);
+
+            AddToAggroList(attacker, damage);
+            PropagateAggroToGroupMembers(attacker);
+        }
+
+        private void PropagateAggroToGroupMembers(GameLiving attacker)
+        {
+            // Propagate aggro to group members and pets. This only applies to attacks, not to body pulling.
+            if (attacker is GamePlayer player)
+            {
+                // Populate the aggro list with our own pet, group members and their pets.
+                // This ensures NPCs can attack other players and pets on their way.
+
+                AddPetAndSubPetsToAggroList(player);
+
+                // This is done on every attack, but we may consider doing it only once per group, somehow.
+                if (player.Group != null)
+                {
+                    foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
+                    {
+                        if (playerInGroup == attacker)
+                            continue;
+
+                        if (!AggroList.ContainsKey(playerInGroup))
+                            AggroList.TryAdd(playerInGroup, new(0));
+
+                        AddPetAndSubPetsToAggroList(playerInGroup);
+                    }
+                }
+            }
+            else if (attacker is GameNPC npc && npc.Brain is IControlledBrain brain)
+            {
+                // If the attacker is a pet, we also add its owner.
+                // this prevents both receiving an aggro amount of 1 if the attack is a debuff for example, ensuring the NPC attacks the pet first.
+                GamePlayer owner = brain.GetPlayerOwner();
+
+                if (!AggroList.ContainsKey(owner))
+                    AggroList.TryAdd(owner, new(0));
+            }
+        }
+
+        private void AddPetAndSubPetsToAggroList(GamePlayer player)
+        {
+            GameNPC pet = player.ControlledBrain?.Body;
+
+            if (pet == null)
+                return;
+
+            if (!AggroList.ContainsKey(pet))
+                AggroList.TryAdd(pet, new(0));
+
+            IControlledBrain[] controlledBrains = pet.ControlledNpcList;
+
+            if (controlledBrains == null)
+                return;
+
+            foreach (IControlledBrain subPetBrain in controlledBrains)
+            {
+                if (subPetBrain == null)
+                    continue;
+
+                GameNPC subPet = subPetBrain.Body;
+
+                if (subPet == null)
+                    continue;
+
+                if (!AggroList.ContainsKey(subPet))
+                    AggroList.TryAdd(subPet, new(0));
+            }
         }
 
         #endregion
