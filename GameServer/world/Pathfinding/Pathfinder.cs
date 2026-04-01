@@ -121,12 +121,9 @@ namespace DOL.GS
             }
 
             // Check if any doors on the path have become closed and can't be opened via interaction.
-            // If so, replot with door avoidance filters.
-            if (PathContainClosedUnopenableDoor(_activePath.Doors) && !TryApplyAlternativePath(zone, position, target))
-            {
-                nextNode = null;
-                return false;
-            }
+            // If so, try to replot with door avoidance filters.
+            if (PathContainsBlockingDoor())
+                TryApplyAlternativePath(zone, position, target);
 
             // Dequeue the next node if we're close to it, and any subsequent node that might be close.
             // Prevent corner-cutting by raycasting to the next node before removing the current one.
@@ -143,36 +140,16 @@ namespace DOL.GS
             return true;
         }
 
-        private static bool PathContainClosedUnopenableDoor(Dictionary<WrappedPathfindingNode, List<GameDoorBase>> doorsOnPath)
-        {
-            foreach (List<GameDoorBase> doorsAroundNode in doorsOnPath.Values)
-            {
-                foreach (GameDoorBase door in doorsAroundNode)
-                {
-                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool TryApplyAlternativePath(Zone zone, Vector3 position, Vector3 target)
+        private void TryApplyAlternativePath(Zone zone, Vector3 position, Vector3 target)
         {
             PathfindingStatus altStatus = CalculatePath(_calculationBuffer, zone, position, target, BlockingDoorAvoidanceFilters);
 
-            // Stop here if the alternative path isn't complete.
-            // This prevents NPCs from trying to get closer to their target by walking to the other side of a keep.
-            // Basically, if the primary path contains an impassable doors, take the alternative path unless it isn't complete.
-            if (altStatus is PathfindingStatus.PathFound)
-            {
-                (_activePath, _calculationBuffer) = (_calculationBuffer, _activePath);
-                UpdatePathState(altStatus, target);
-                return true;
-            }
+            // Abort if the alternative path isn't complete and let the caller handle the original path.
+            if (altStatus is not PathfindingStatus.PathFound)
+                return;
 
-            PathfindingStatus = PathfindingStatus.NoPathFound;
-            return false;
+            (_activePath, _calculationBuffer) = (_calculationBuffer, _activePath);
+            UpdatePathState(altStatus, target);
         }
 
         private void UpdatePathState(PathfindingStatus status, Vector3 target)
@@ -185,7 +162,14 @@ namespace DOL.GS
 
         private void ManagePathProgress(Zone zone, Vector3 position)
         {
-            if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current) || !Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+            if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
+                return;
+
+            if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+                return;
+
+            // Hard stop if we encounter a door we can't open.
+            if (NodeContainsBlockingDoor(current))
                 return;
 
             int nodesToRemove = 0;
@@ -193,9 +177,13 @@ namespace DOL.GS
 
             for (int i = 1; i < count; i++)
             {
-                Vector3 candidatePosition = _activePath.Nodes.Peek(i).Position;
+                WrappedPathfindingNode node = _activePath.Nodes.Peek(i);
+                Vector3 candidatePosition = node.Position;
 
                 if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
+                    break;
+
+                if (NodeContainsBlockingDoor(node))
                     break;
 
                 if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition, DefaultFilters))
@@ -231,6 +219,34 @@ namespace DOL.GS
                     }
                 }
             }
+        }
+
+        private bool PathContainsBlockingDoor()
+        {
+            foreach (List<GameDoorBase> doorsAroundNode in _activePath.Doors.Values)
+            {
+                foreach (GameDoorBase door in doorsAroundNode)
+                {
+                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool NodeContainsBlockingDoor(WrappedPathfindingNode node)
+        {
+            if (_activePath.Doors.TryGetValue(node, out List<GameDoorBase> doors))
+            {
+                foreach (GameDoorBase door in doors)
+                {
+                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         public bool TryGetClosestReachableNode(Zone zone, Vector3 position, Vector3 target, out Vector3? node)
