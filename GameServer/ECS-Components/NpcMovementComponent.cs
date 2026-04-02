@@ -688,6 +688,10 @@ namespace DOL.GS
                 }
             }
 
+            // Snap the destination to the mesh with a generous search distance.
+            if (!TrySnapToMesh(ref targetPos))
+                return Properties.GAMENPC_FOLLOWCHECK_TIME;
+
             Vector3 relative = targetPos - _ownerPosition;
             float distanceSquared = relative.LengthSquared();
 
@@ -710,11 +714,6 @@ namespace DOL.GS
             }
 
             float distance = MathF.Sqrt(distanceSquared);
-            float scale = MinFollowDistance / distance;
-
-            Vector3 destination = targetPos - relative * scale;
-            destination.Z = targetPos.Z; // May move the NPC closer than intended, but improves movement overall.
-
             short speed;
 
             // No smoothing if the NPC is attacking and is out of melee range.
@@ -723,14 +722,7 @@ namespace DOL.GS
             else
                 speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance) * 2.5);
 
-            // Snap the destination to the mesh with a generous search distance. Use the follow target's position as a fallback.
-            if (!TrySnapToMesh(ref destination))
-            {
-                destination = targetPos;
-                TrySnapToMesh(ref destination);
-            }
-
-            PathToInternal(destination, Math.Max((short) 20, speed));
+            PathToInternal(targetPos, Math.Max((short) 20, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
 
