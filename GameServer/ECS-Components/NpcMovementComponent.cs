@@ -6,6 +6,7 @@ using DOL.GS.Movement;
 using DOL.GS.ServerProperties;
 using DOL.Logging;
 using static DOL.GS.GameObject;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -531,13 +532,23 @@ namespace DOL.GS
                 return;
             }
 
-            if (_pathfinder.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? nextNode))
+            switch (_pathfinder.GetNextNode(zone, _ownerPosition, destination, out Vector3 nextNode))
             {
-                // Continue to the next node, even on partial paths.
-                _movementRequest.Set(MovementRequestType.Path, destination, speed);
-                SetFlag(MovementState.Pathfinding);
-                WalkToInternal(nextNode.Value, speed);
-                return;
+                case NextNodeResult.Valid:
+                {
+                    _movementRequest.Set(MovementRequestType.Path, destination, speed);
+                    SetFlag(MovementState.Pathfinding);
+                    WalkToInternal(nextNode, speed);
+                    return;
+                }
+                case NextNodeResult.Waiting:
+                {
+                    PauseMovement(this, destination);
+                    return;
+                }
+                case NextNodeResult.PathComplete:
+                default:
+                    break;
             }
 
             switch (_pathfinder.PathfindingStatus)

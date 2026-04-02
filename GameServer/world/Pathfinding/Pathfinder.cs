@@ -116,7 +116,7 @@ namespace DOL.GS
             }
         }
 
-        public bool TryGetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3? nextNode)
+        public NextNodeResult GetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3 nextNode)
         {
             ReplotIfNeeded(zone, position, target);
 
@@ -127,20 +127,20 @@ namespace DOL.GS
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
             {
-                nextNode = null;
-                return false;
+                nextNode = default;
+                return NextNodeResult.PathComplete;
             }
 
             if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
             {
                 nextNode = current.Position;
-                return true;
+                return NextNodeResult.Valid;
             }
 
             if (NodeContainsBlockingDoor(current))
             {
-                nextNode = current.Position;
-                return false;
+                nextNode = default;
+                return NextNodeResult.Waiting;
             }
 
             int nodesToRemove = 0;
@@ -193,12 +193,12 @@ namespace DOL.GS
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode next))
             {
-                nextNode = null;
-                return false;
+                nextNode = default;
+                return NextNodeResult.PathComplete;
             }
 
             nextNode = next.Position;
-            return true;
+            return NextNodeResult.Valid;
         }
 
         private void ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
@@ -295,6 +295,13 @@ namespace DOL.GS
             return $"{nameof(Pathfinder)}[Target={_lastTarget}, " +
                 $"Nodes={_activePath.Nodes.Count}, " +
                 $"NextNode={(_activePath.Nodes.Count > 0 ? _activePath.Nodes.Peek(0).ToString() : null)}]";
+        }
+
+        public enum NextNodeResult
+        {
+            Valid,
+            Waiting,
+            PathComplete
         }
 
         private class PathBuffer
