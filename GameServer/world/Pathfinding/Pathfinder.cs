@@ -23,6 +23,7 @@ namespace DOL.GS
         private PathBuffer _calculationBuffer = new();
         private Vector3 _lastTarget = Vector3.Zero;
         private PathVisualization _pathVisualization;
+        private bool _allowedToPath;
 
         public GameNPC Owner { get; }
         public bool ForceReplot { get; set; }
@@ -35,6 +36,7 @@ namespace DOL.GS
         {
             ForceReplot = true;
             Owner = owner;
+            _allowedToPath = Owner is not GameTaxi and not GameTaxiBoat;
         }
 
         public void Clear()
@@ -46,19 +48,12 @@ namespace DOL.GS
             ForceReplot = true;
         }
 
-        public bool ShouldPath(Zone zone, Vector3 target)
+        public bool ShouldPath(Zone zone)
         {
-            if (zone == null || !zone.IsPathfindingEnabled)
-                return false;
-
-            if ((Owner.Flags & (eFlags.FLYING | eFlags.SWIMMING)) != 0 || Owner is GameTaxi || Owner is GameTaxiBoat)
-                return false;
-
-            // Target is in a different zone (TODO: implement this maybe? not sure if really required).
-            if (Owner.CurrentRegion.GetZone((int) target.X, (int) target.Y) != zone)
-                return false;
-
-            return true;
+            return zone != null &&
+                zone.IsPathfindingEnabled &&
+                _allowedToPath &&
+                (Owner.Flags & (eFlags.FLYING | eFlags.SWIMMING)) == 0;
         }
 
         private PathfindingStatus CalculatePath(PathBuffer pathBuffer, Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters)
@@ -111,33 +106,34 @@ namespace DOL.GS
             }
         }
 
-        public bool TryGetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3? nextNode)
+        public bool ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
         {
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
-            if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
-            {
-                PathfindingStatus status = CalculatePath(_activePath, zone, position, target, DefaultFilters);
-                UpdatePathState(status, target);
-            }
+            if (!ForceReplot && _lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
+                return false;
 
+            PathfindingStatus status = CalculatePath(_activePath, zone, position, target, DefaultFilters);
+            UpdatePathState(status, target);
+            return true;
+        }
+
+        public bool IsNextNodeReached()
+        {
+            if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
+                return true;
+
+            // Hard stop if we encounter a door we can't open.
+            return Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE) && !NodeContainsBlockingDoor(current);
+        }
+
+        public bool TryGetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3? nextNode)
+        {
             // Check if any doors on the path have become closed and can't be opened via interaction.
             // If so, try to replot with door avoidance filters.
             if (PathContainsBlockingDoor())
                 TryApplyAlternativePath(zone, position, target);
 
-            // Dequeue the next node if we're close to it, and any subsequent node that might be close.
-            // Prevent corner-cutting by raycasting to the next node before removing the current one.
-            // Open any doors associated with the node as we reach it.
-            ManagePathProgress(zone, position);
-
-            if (_activePath.Nodes.Count == 0)
-            {
-                nextNode = null;
-                return false;
-            }
-
-            nextNode = _activePath.Nodes.Peek(0).Position;
-            return true;
+            return AdvancePath(zone, position, out nextNode);
         }
 
         private void TryApplyAlternativePath(Zone zone, Vector3 position, Vector3 target)
@@ -160,17 +156,17 @@ namespace DOL.GS
             _pathVisualization?.Visualize(_activePath.Nodes, Owner.CurrentRegion);
         }
 
-        private void ManagePathProgress(Zone zone, Vector3 position)
+        private bool AdvancePath(Zone zone, Vector3 position, out Vector3? nextNode)
         {
+            // Dequeue the next node and any subsequent node that might be close.
+            // Prevent corner-cutting by raycasting to the next node before removing the current one.
+            // Open any doors associated with the node as we reach it.
+
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
-                return;
-
-            if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
-                return;
-
-            // Hard stop if we encounter a door we can't open.
-            if (NodeContainsBlockingDoor(current))
-                return;
+            {
+                nextNode = null;
+                return false;
+            }
 
             int nodesToRemove = 0;
             int count = _activePath.Nodes.Count;
@@ -219,6 +215,15 @@ namespace DOL.GS
                     }
                 }
             }
+
+            if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode next))
+            {
+                nextNode = null;
+                return false;
+            }
+
+            nextNode = next.Position;
+            return true;
         }
 
         private bool PathContainsBlockingDoor()

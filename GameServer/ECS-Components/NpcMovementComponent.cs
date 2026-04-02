@@ -22,7 +22,6 @@ namespace DOL.GS
         private int _followTickInterval;
         private short _moveOnPathSpeed;
         private long _stopAtPathPointUntil;
-        private long _walkingToEstimatedArrivalTime;
         private readonly MovementRequest _movementRequest = new();
         private readonly Pathfinder _pathfinder;
         private ResetHeadingAction _resetHeadingAction;
@@ -108,7 +107,20 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.WalkTo))
             {
-                if (GameServiceUtils.ShouldTick(_walkingToEstimatedArrivalTime))
+                bool transitioning = false;
+
+                // Patrols with no wait time evaluate early for smooth curves.
+                if (IsFlagSet(MovementState.OnPath) && CurrentPathPoint != null && CurrentPathPoint.WaitTime == 0)
+                    transitioning = TryMoveToNextPathPoint();
+
+                if (IsFlagSet(MovementState.Pathfinding))
+                {
+                    // PathFinder handles its own internal distance checks and dequeues nodes when appropriate.
+                    ProcessMovementRequest();
+                    transitioning = IsFlagSet(MovementState.WalkTo);
+                }
+
+                if (!transitioning && IsAtDestination)
                 {
                     UnsetFlag(MovementState.WalkTo);
                     OnArrival();
@@ -480,6 +492,13 @@ namespace DOL.GS
                 return;
             }
 
+            // Prevent network broadcast spam if the exact same destination / speed is passed.
+            if (IsDestinationValid && _destination == destination && CurrentSpeed == speed)
+            {
+                SetFlag(MovementState.WalkTo);
+                return;
+            }
+
             float distanceToTarget = (_ownerPosition - destination).Length();
 
             if (distanceToTarget > 25)
@@ -487,9 +506,7 @@ namespace DOL.GS
             else if (!IsFlagSet(MovementState.Pathfinding))
                 TurnTo(FollowTarget);
 
-            float ticksToArrive = distanceToTarget * 1000 / speed;
-
-            if (ticksToArrive <= 0)
+            if (distanceToTarget <= 0)
             {
                 _ownerPosition = destination;
 
@@ -502,25 +519,27 @@ namespace DOL.GS
             // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
             SetFlag(MovementState.WalkTo);
-            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + (int) ticksToArrive;
         }
 
         private void PathToInternal(Vector3 destination, short speed)
         {
             Zone zone = Owner.CurrentZone;
 
-            if (!_pathfinder.ShouldPath(zone, destination))
+            if (!_pathfinder.ShouldPath(zone))
             {
                 FallbackToWalk(this, destination, speed);
                 return;
             }
 
-            if (_pathfinder.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? _nextNode))
+            if (!_pathfinder.ReplotIfNeeded(zone, _ownerPosition, destination) && !_pathfinder.IsNextNodeReached())
+                return;
+
+            if (_pathfinder.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? nextNode))
             {
                 // Continue to the next node, even on partial paths.
                 _movementRequest.Set(MovementRequestType.Path, destination, speed);
                 SetFlag(MovementState.Pathfinding);
-                WalkToInternal(_nextNode.Value, speed);
+                WalkToInternal(nextNode.Value, speed);
                 return;
             }
 
@@ -678,7 +697,7 @@ namespace DOL.GS
                 if (IsMoving)
                     UpdateMovement(0);
 
-                UnsetFlag(MovementState.Pathfinding); // Ensures OnArrival doesn't try to reach remaining nodes.
+                UnsetFlag(MovementState.Pathfinding); // Ensures the NPC doesn't try to reach remaining nodes.
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
@@ -716,14 +735,7 @@ namespace DOL.GS
 
         private void OnArrival()
         {
-            if (IsFlagSet(MovementState.Pathfinding))
-            {
-                ProcessMovementRequest();
-
-                if (IsFlagSet(MovementState.WalkTo))
-                    return;
-            }
-
+            // Follow logic handles its own ticks.
             if (IsFlagSet(MovementState.Follow))
                 return;
 
@@ -738,14 +750,8 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.OnPath))
             {
-                if (CurrentPathPoint != null)
+                if (CurrentPathPoint != null && CurrentPathPoint.WaitTime > 0)
                 {
-                    if (CurrentPathPoint.WaitTime == 0)
-                    {
-                        MoveToNextPathPoint();
-                        return;
-                    }
-
                     SetFlag(MovementState.AtPathPoint);
                     _stopAtPathPointUntil = GameLoop.GameLoopTime + CurrentPathPoint.WaitTime * 100;
                 }
@@ -758,6 +764,17 @@ namespace DOL.GS
                 _ownerPosition = _destination;
                 UpdateMovement(0);
             }
+        }
+
+        private bool TryMoveToNextPathPoint()
+        {
+            const int PATH_POINT_REACHED_DISTANCE = 16;
+
+            if (!CurrentPathPoint.IsWithinRadius(_ownerPosition, PATH_POINT_REACHED_DISTANCE))
+                return false;
+
+            MoveToNextPathPoint();
+            return true;
         }
 
         private void MoveToNextPathPoint()
@@ -827,7 +844,7 @@ namespace DOL.GS
                 _positionForClient = Vector3.Lerp(_destination, _ownerPosition, ratio);
             }
 
-            magic = (float) Math.Max(15, CurrentSpeed * 0.1);
+            magic = (float) Math.Max(15, CurrentSpeed * 0.15);
             ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
             _destinationForClient = Vector3.Lerp(_ownerPosition, _destination, ratio);
         }
