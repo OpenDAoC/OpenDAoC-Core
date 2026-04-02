@@ -48,7 +48,7 @@ namespace DOL.GS
             ForceReplot = true;
         }
 
-        public bool ShouldPath(Zone zone, Zone targetZone)
+        public bool ShouldPath(Zone zone, Vector3 target)
         {
             if (zone == null || !zone.IsPathfindingEnabled)
                 return false;
@@ -60,7 +60,7 @@ namespace DOL.GS
                 return false;
 
             // Target is in a different zone (TODO: implement this maybe? not sure if really required).
-            if (zone != targetZone)
+            if (Owner.CurrentRegion.GetZone((int) target.X, (int) target.Y) != zone)
                 return false;
 
             return true;

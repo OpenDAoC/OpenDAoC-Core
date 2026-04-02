@@ -23,6 +23,7 @@ namespace DOL.GS
         private int _followTickInterval;
         private short _moveOnPathSpeed;
         private long _stopAtPathPointUntil;
+        private long _walkingToEstimatedArrivalTime;
         private readonly MovementRequest _movementRequest = new();
         private readonly Pathfinder _pathfinder;
         private ResetHeadingAction _resetHeadingAction;
@@ -108,20 +109,7 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.WalkTo))
             {
-                bool transitioning = false;
-
-                // Patrols with no wait time evaluate early for smooth curves.
-                if (IsFlagSet(MovementState.OnPath) && CurrentPathPoint != null && CurrentPathPoint.WaitTime == 0)
-                    transitioning = TryMoveToNextPathPoint();
-
-                if (IsFlagSet(MovementState.Pathfinding))
-                {
-                    // PathFinder handles its own internal distance checks and dequeues nodes when appropriate.
-                    ProcessMovementRequest();
-                    transitioning = IsFlagSet(MovementState.WalkTo);
-                }
-
-                if (!transitioning && IsAtDestination)
+                if (GameServiceUtils.ShouldTick(_walkingToEstimatedArrivalTime))
                 {
                     UnsetFlag(MovementState.WalkTo);
                     OnArrival();
@@ -494,7 +482,7 @@ namespace DOL.GS
             }
 
             // Prevent network broadcast spam if the exact same destination / speed is passed.
-            if (IsDestinationValid && _destination == destination && CurrentSpeed == speed)
+            if (CurrentSpeed == speed && IsDestinationValid && _destination == destination)
             {
                 SetFlag(MovementState.WalkTo);
                 return;
@@ -520,13 +508,18 @@ namespace DOL.GS
             // Assume either the destination or speed has changed.
             UpdateMovement(destination, distanceToTarget, speed);
             SetFlag(MovementState.WalkTo);
+
+            if (IsFlagSet(MovementState.Pathfinding) || (IsFlagSet(MovementState.OnPath) && CurrentPathPoint?.WaitTime == 0))
+                distanceToTarget -= NODE_REACHED_DISTANCE;
+
+            _walkingToEstimatedArrivalTime = distanceToTarget <= 0 ? 0 : GameLoop.GameLoopTime + (long) (distanceToTarget * 1000f / speed);
         }
 
         private void PathToInternal(Vector3 destination, short speed)
         {
             Zone zone = Owner.CurrentZone;
 
-            if (!_pathfinder.ShouldPath(zone, Owner.CurrentRegion.GetZone((int) destination.X, (int) destination.Y)))
+            if (!_pathfinder.ShouldPath(zone, destination))
             {
                 FallbackToWalk(this, destination, speed);
                 return;
@@ -735,7 +728,14 @@ namespace DOL.GS
 
         private void OnArrival()
         {
-            // Follow logic handles its own ticks.
+            if (IsFlagSet(MovementState.Pathfinding))
+            {
+                ProcessMovementRequest();
+
+                if (IsFlagSet(MovementState.WalkTo))
+                    return;
+            }
+
             if (IsFlagSet(MovementState.Follow))
                 return;
 
@@ -750,8 +750,14 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.OnPath))
             {
-                if (CurrentPathPoint != null && CurrentPathPoint.WaitTime > 0)
+                if (CurrentPathPoint != null)
                 {
+                    if (CurrentPathPoint.WaitTime == 0)
+                    {
+                        MoveToNextPathPoint();
+                        return;
+                    }
+
                     SetFlag(MovementState.AtPathPoint);
                     _stopAtPathPointUntil = GameLoop.GameLoopTime + CurrentPathPoint.WaitTime * 100;
                 }
@@ -764,17 +770,6 @@ namespace DOL.GS
                 _ownerPosition = _destination;
                 UpdateMovement(0);
             }
-        }
-
-        private bool TryMoveToNextPathPoint()
-        {
-            const int PATH_POINT_REACHED_DISTANCE = 16;
-
-            if (!CurrentPathPoint.IsWithinRadius(_ownerPosition, PATH_POINT_REACHED_DISTANCE))
-                return false;
-
-            MoveToNextPathPoint();
-            return true;
         }
 
         private void MoveToNextPathPoint()
