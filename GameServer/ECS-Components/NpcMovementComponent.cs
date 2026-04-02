@@ -525,14 +525,11 @@ namespace DOL.GS
         {
             Zone zone = Owner.CurrentZone;
 
-            if (!_pathfinder.ShouldPath(zone))
+            if (!_pathfinder.ShouldPath(zone, Owner.CurrentRegion.GetZone((int) destination.X, (int) destination.Y)))
             {
                 FallbackToWalk(this, destination, speed);
                 return;
             }
-
-            if (!_pathfinder.ReplotIfNeeded(zone, _ownerPosition, destination) && !_pathfinder.IsNextNodeReached())
-                return;
 
             if (_pathfinder.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? nextNode))
             {

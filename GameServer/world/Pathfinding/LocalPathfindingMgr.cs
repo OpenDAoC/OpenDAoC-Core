@@ -395,7 +395,7 @@ namespace DOL.GS
                 EDtStatus status = PathStraight(query, startFloats, endFloats, _defaultHalfExtents, filters, options, out int numNodes, buffer, flags);
 
                 if ((status & EDtStatus.DT_SUCCESS) == 0)
-                    return new(PathfindingStatus.NavmeshUnavailable, 0);
+                    return new(PathfindingStatus.NoPathFound, 0);
 
                 if (nodes.Length < numNodes)
                     return new(PathfindingStatus.BufferTooSmall, numNodes);
