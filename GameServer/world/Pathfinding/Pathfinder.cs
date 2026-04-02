@@ -13,11 +13,9 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public const int MIN_TARGET_DIFF_REPLOT_DISTANCE = 64;
-        public const int NODE_REACHED_DISTANCE = 16;
-        public const int NODE_REACHED_DISTANCE_STRICT = 2;
-        public const int NODE_MAX_SKIP_DISTANCE = 80;
-        public const int DOOR_SEARCH_DISTANCE = 128;
+        public const int NODE_REACHED_DISTANCE = 16; // Exposed for NpcMovementComponent.
+        private const int MIN_TARGET_DIFF_REPLOT_DISTANCE = 64;
+        private const int DOOR_SEARCH_DISTANCE = 128;
 
         private PathBuffer _activePath = new();
         private PathBuffer _calculationBuffer = new();
@@ -131,42 +129,39 @@ namespace DOL.GS
                 return NextNodeResult.PathComplete;
             }
 
-            if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
-            {
-                nextNode = current.Position;
-                return NextNodeResult.Valid;
-            }
-
-            if (NodeContainsBlockingDoor(current))
+            if (NodeContainsDoor(current, true))
             {
                 nextNode = default;
                 return NextNodeResult.Waiting;
             }
 
             int nodesToRemove = 0;
-            int count = _activePath.Nodes.Count;
+            int maxLookahead = Math.Min(_activePath.Nodes.Count, 6); // Limit lookahead in case this gets expensive.
+            int furthestVisibleNodeIndex = -1;
 
-            for (int i = 1; i < count; i++)
+            // Look ahead to find the furthest node we can walk straight to.
+            // This stops at the first door, at any node we don't have LoS to, or at any node that would require a big jump in height compared to the current node.
+            for (int i = 0; i < maxLookahead; i++)
             {
-                WrappedPathfindingNode node = _activePath.Nodes.Peek(i);
-                Vector3 candidatePosition = node.Position;
+                WrappedPathfindingNode candidateNode = _activePath.Nodes.Peek(i);
 
-                if (!Owner.IsWithinRadius(candidatePosition, NODE_MAX_SKIP_DISTANCE))
+                if (NodeContainsDoor(candidateNode, false))
                     break;
 
-                if (NodeContainsBlockingDoor(node))
+                if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidateNode.Position, DefaultFilters))
                     break;
 
-                if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidatePosition, DefaultFilters))
+                if (!IsStraightLineHeightSafe(position, candidateNode.Position, i))
                     break;
 
-                nodesToRemove = i;
+                furthestVisibleNodeIndex = i;
             }
 
-            // If we don't have LoS to any subsequent node, only remove the current one if we're really close, or if we're moving away from it.
-            if (nodesToRemove == 0)
+            if (furthestVisibleNodeIndex > 0)
+                nodesToRemove = furthestVisibleNodeIndex;
+            else
             {
-                if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE_STRICT))
+                if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
                     nodesToRemove = 1;
                 else if (Owner.movementComponent.IsMoving)
                 {
@@ -199,6 +194,45 @@ namespace DOL.GS
 
             nextNode = next.Position;
             return NextNodeResult.Valid;
+        }
+
+        private bool IsStraightLineHeightSafe(Vector3 start, Vector3 target, int candidateIndex)
+        {
+            // This should always be at most the vertical half extent used for pathfinding,
+            // so that we don't put the NPC is a position where it couldn't be snapped to the mesh anymore.
+            // In practice, it should be even lower, otherwise distance calculations may return incoherent results (for melee attacks for example).
+            const float MAX_SAFE_HEIGHT_DEVIATION = 32f;
+
+            if (candidateIndex == 0)
+                return true;
+
+            float targetDx = target.X - start.X;
+            float targetDy = target.Y - start.Y;
+            float sqrTotalDistance2D = targetDx * targetDx + targetDy * targetDy;
+
+            if (sqrTotalDistance2D <= 0f)
+                return Math.Abs(start.Z - target.Z) <= MAX_SAFE_HEIGHT_DEVIATION;
+
+            float invSqrTotalDistance2D = 1f / sqrTotalDistance2D;
+
+            for (int i = 0; i < candidateIndex; i++)
+            {
+                Vector3 node = _activePath.Nodes.Peek(i).Position;
+                float nodeDx = node.X - start.X;
+                float nodeDy = node.Y - start.Y;
+
+                // Project the intermediate node onto the line segment.
+                // This calculates the 't' progression (0.0 to 1.0) along the segment.
+                float t = (nodeDx * targetDx + nodeDy * targetDy) * invSqrTotalDistance2D;
+                t = Math.Clamp(t, 0f, 1f);
+
+                float expectedZ = float.Lerp(start.Z, target.Z, t);
+
+                if (Math.Abs(expectedZ - node.Z) > MAX_SAFE_HEIGHT_DEVIATION)
+                    return false;
+            }
+
+            return true;
         }
 
         private void ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
@@ -245,13 +279,13 @@ namespace DOL.GS
             return false;
         }
 
-        private bool NodeContainsBlockingDoor(WrappedPathfindingNode node)
+        private bool NodeContainsDoor(WrappedPathfindingNode node, bool blockingOnly)
         {
             if (_activePath.Doors.TryGetValue(node, out List<GameDoorBase> doors))
             {
                 foreach (GameDoorBase door in doors)
                 {
-                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                    if (!blockingOnly || (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction))
                         return true;
                 }
             }
