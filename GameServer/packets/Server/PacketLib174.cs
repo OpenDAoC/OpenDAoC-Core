@@ -383,6 +383,42 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success)
 		{
+			switch (m_gameClient.EffectFilter)
+			{
+				case eEffectFilter.All:
+					break;
+				case eEffectFilter.Self:
+				{
+					if (m_gameClient.Player != spellCaster && m_gameClient.Player != spellTarget)
+						return;
+
+					break;
+				}
+				case eEffectFilter.None:
+					return;
+				case eEffectFilter.Group:
+				{
+					Group group = m_gameClient.Player.Group;
+
+					if (group == null)
+					{
+						if (m_gameClient.Player != spellCaster && m_gameClient.Player != spellTarget)
+							return;
+					}
+					else if (!group.IsInTheGroup(spellCaster as GameLiving) && !group.IsInTheGroup(spellTarget as GameLiving))
+						return;
+
+					break;
+				}
+				case eEffectFilter.Others:
+				{
+					if (m_gameClient.Player == spellCaster || m_gameClient.Player == spellTarget)
+						return;
+
+					break;
+				}
+			}
+
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
 				ushort casterObjectId;

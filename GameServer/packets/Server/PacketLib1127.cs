@@ -27,6 +27,10 @@ namespace DOL.GS.PacketHandler
         public override void SendMessage(string msg, eChatType type, eChatLoc loc)
         {
             SnoopManager.CheckAndBroadcast(m_gameClient.Player, msg, type, loc);
+
+            if (m_gameClient.DisabledChatTypes.Contains(type))
+                return;
+
             SendRawMessage(msg, type, loc);
         }
 

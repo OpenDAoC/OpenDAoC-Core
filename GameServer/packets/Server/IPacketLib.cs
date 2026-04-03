@@ -154,6 +154,7 @@ namespace DOL.GS.PacketHandler
         PlayerDismountRequest = 0xC8,        // 0x60 ^ 168
         PlayerHeadingUpdate = 0xBA,          // 0x12 ^ 168  also known as Short State
         PlayerPickupHouseItem = 0x0D,        // 0xA5 ^ 168
+        ClientFilterSettings = 0xDC,         // 0x74 ^ 168
         PlayerMoveItem = 0xDD,               // 0x75 ^ 168
         DetailRequest = 0xD8,                // 0x70 ^ 168
         BuyHookPoint = 0x64,                 // 0xCC ^ 168
@@ -304,8 +305,17 @@ namespace DOL.GS.PacketHandler
         CT_ScreenCenter = 0xC8,
         CT_ScreenCenterSmaller = 0xC9,
         CT_ScreenCenter_And_CT_System = 0xCA,
-        CT_ScreenCenterSmaller_And_CT_System = 0xCB,
-    } ;
+        CT_ScreenCenterSmaller_And_CT_System = 0xCB
+    };
+
+    public enum eEffectFilter : byte
+    {
+        All = 0x00,
+        Self = 0x01,
+        None = 0x02,
+        Group = 0x03,
+        Others = 0x04
+    }
 
     public enum eEmote : byte
     {

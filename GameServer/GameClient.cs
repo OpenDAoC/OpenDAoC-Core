@@ -95,6 +95,8 @@ namespace DOL.GS
         public string MinorRev { get; set; } = string.Empty;
         public byte MajorBuild { get; set; } = 0;
         public byte MinorBuild { get; set; } = 0;
+        public HashSet<eChatType> DisabledChatTypes { get; } = new();
+        public eEffectFilter EffectFilter { get; set; }
 
         public GameClient(Socket socket) : base(socket) { }
 
