@@ -167,7 +167,7 @@ namespace DOL.GS.Spells
 					if (EffectOwner == Target)
 					{
 						if (m_caster is GamePlayer)
-							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 
 						return false;
 					}

@@ -100,7 +100,7 @@ namespace DOL.GS
 					{
 						if (player.Client.Account.PrivLevel > (uint)ePrivLevel.Player)
 						{
-							player.Out.SendMessage("No portal keep found.", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("No portal keep found.", eChatType.CT_Items, eChatLoc.CL_SystemWindow);
 						}
 						return true;
 					}
@@ -293,7 +293,7 @@ namespace DOL.GS
 
 			if (player.Client.Account.PrivLevel > 1)
 				player.Out.SendMessage("Uni-Portal spell not found.",
-					eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+					eChatType.CT_Items, eChatLoc.CL_SystemWindow);
 			
 			this.OnTeleport(player, destination);
 		}

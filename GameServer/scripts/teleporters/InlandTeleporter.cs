@@ -501,7 +501,7 @@ namespace DOL.GS.Scripts
 
             if (player.Client.Account.PrivLevel > 1)
                 player.Out.SendMessage("Uni-Portal spell not found.",
-                    eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+                    eChatType.CT_Items, eChatLoc.CL_SystemWindow);
 
 
             this.OnTeleport(player, destination);

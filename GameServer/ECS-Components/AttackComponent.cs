@@ -1058,7 +1058,7 @@ namespace DOL.GS
                             string.Format(
                                 LanguageMgr.GetTranslation(((GamePlayer) owner).Client.Account.Language,
                                     "GameLiving.AttackData.InvisibleToYou"), ad.Target.GetName(0, true)),
-                            eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                            eChatType.CT_Action, eChatLoc.CL_SystemWindow);
                     ad.AttackResult = eAttackResult.NoValidTarget;
                     SendAttackingCombatMessages(action, ad);
                     return ad;
@@ -1234,7 +1234,7 @@ namespace DOL.GS
                     if (styleDamageCap > 0)
                         stringBuilder.Append($" | StyleDamageCap: {styleDamageCap:0.##}");
 
-                    player.Out.SendMessage(stringBuilder.ToString(), eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(stringBuilder.ToString(), eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
                 }
             }
 
@@ -1432,10 +1432,10 @@ namespace DOL.GS
                 }
 
                 if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
-                    attacker.Out.SendMessage($"target {message}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    attacker.Out.SendMessage($"target {message}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                 if (ad.Target is GamePlayer defender && defender.UseDetailedCombatLog)
-                    defender.Out.SendMessage($"your {message}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    defender.Out.SendMessage($"your {message}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                 if (blockSucceeded)
                     return true;
@@ -1510,10 +1510,10 @@ namespace DOL.GS
                     double guardRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
 
                     if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                        blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                     if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                        blockTarg.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        blockTarg.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                     if (guardChance > guardRoll)
                     {
@@ -1602,8 +1602,8 @@ namespace DOL.GS
 
                     if (bodyguard != null)
                     {
-                        playerOwner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.YouWereProtected"), bodyguard.Name, attacker.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                        bodyguard.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(bodyguard.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.YouHaveProtected"), playerOwner.Name, attacker.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.YouWereProtected"), bodyguard.Name, attacker.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
+                        bodyguard.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(bodyguard.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.YouHaveProtected"), playerOwner.Name, attacker.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 
                         if (attacker == tempPlayerAttacker)
                             tempPlayerAttacker.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(tempPlayerAttacker.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.YouAttempt"), playerOwner.Name, playerOwner.Name, bodyguard.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -1674,10 +1674,10 @@ namespace DOL.GS
                 if (evadeChance > 0)
                 {
                     if (ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
-                        evadeAtk.Out.SendMessage($"target evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        evadeAtk.Out.SendMessage($"target evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                     if (ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
-                        evadeTarg.Out.SendMessage($"your evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        evadeTarg.Out.SendMessage($"your evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                     if (evadeChance > evadeRoll)
                         return eAttackResult.Evaded;
@@ -1692,10 +1692,10 @@ namespace DOL.GS
                     if (parryChance > 0)
                     {
                         if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
-                            parryAtk.Out.SendMessage($"target parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            parryAtk.Out.SendMessage($"target parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                         if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
-                            parryTarg.Out.SendMessage($"your parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            parryTarg.Out.SendMessage($"your parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                         if (parryChance > parryRoll)
                             return eAttackResult.Parried;
@@ -1739,14 +1739,14 @@ namespace DOL.GS
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {
-                    playerAttacker.Out.SendMessage($"miss rate: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerAttacker.Out.SendMessage($"miss rate: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                     if (fumbleChance > 0)
-                        playerAttacker.Out.SendMessage($"chance to fumble: {fumbleChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        playerAttacker.Out.SendMessage($"chance to fumble: {fumbleChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
                 }
 
                 if (playerTarget != null && playerTarget.UseDetailedCombatLog)
-                    playerTarget.Out.SendMessage($"chance to be missed: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerTarget.Out.SendMessage($"chance to be missed: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                 if (missChance > missRoll)
                     return fumbleChance > missRoll ? eAttackResult.Fumbled : eAttackResult.Missed;
@@ -2045,7 +2045,7 @@ namespace DOL.GS
                 if (chance > 0)
                     message += $" ({chance:0.0}%)";
 
-                player.Out.SendMessage(message, eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, eChatType.CT_Action, eChatLoc.CL_SystemWindow);
             }
         }
 
@@ -2342,7 +2342,7 @@ namespace DOL.GS
                 {
                     // This shouldn't be done here.
                     double effectiveness = CalculateLeftAxeModifier();
-                    playerOwner.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty)\n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty)\n", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
                 }
 
                 return 1; // Always use left axe.
@@ -2355,7 +2355,7 @@ namespace DOL.GS
                 double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage($"OH swing%: {leftHandSwingChance:0.##}\n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"OH swing%: {leftHandSwingChance:0.##}\n", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                 return random < leftHandSwingChance ? 1 : 0;
             }
@@ -2367,7 +2367,7 @@ namespace DOL.GS
                 double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage( $"Chance for 2 swings: {doubleSwingChance:0.##}% | 3 swings: {tripleSwingChance:0.##}% | 4 swings: {quadSwingChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage( $"Chance for 2 swings: {doubleSwingChance:0.##}% | 3 swings: {tripleSwingChance:0.##}% | 4 swings: {quadSwingChance:0.##}% \n", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
                 if (random < doubleSwingChance)
                     return 1;

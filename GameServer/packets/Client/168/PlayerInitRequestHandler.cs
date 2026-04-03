@@ -164,7 +164,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                         if (player.Level > k.BaseLevel)
                         {
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.LevelCap"), eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.LevelCap"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             player.MoveTo((ushort) player.BindRegion, player.BindXpos, player.BindYpos, player.BindZpos, (ushort) player.BindHeading);
                             break;
                         }

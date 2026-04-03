@@ -43,7 +43,7 @@ namespace DOL.GS.PacketHandler
             pak.WriteByte((byte) type);
 
             // The @@ prefix seems to be technically needed only for the send reply feature.
-            // Otherwise the client able to print to the correct window based on eChatType.
+            // Otherwise the client is able to print to the correct window based on eChatType.
             // We're keeping it here in case something else still needs it (more research needed).
             if (loc is eChatLoc.CL_ChatWindow)
                 pak.WriteNonNullTerminatedString("@@");

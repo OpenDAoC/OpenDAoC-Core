@@ -32,7 +32,7 @@ namespace DOL.GS.Scripts.discord
                 case eChatType.CT_Advise:
                     formattedMessage = "**[ADVICE] ";
                     break;
-                case eChatType.CT_LFG:
+                case eChatType.CT_LookingForGroup:
                     formattedMessage = "**[LFG] (" + player.CharacterClass.Name + " " + player.Level + ") ";
                     break;
                 case eChatType.CT_Trade:

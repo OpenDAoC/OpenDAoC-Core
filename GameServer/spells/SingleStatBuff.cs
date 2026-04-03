@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
                 effectiveness = 1.0; // Neither a potion, item, buff, or debuff.
 
             if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
-                playerCaster.Out.SendMessage($"Effectiveness (spec): {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                playerCaster.Out.SendMessage($"Effectiveness (spec): {effectiveness:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
             return base.CalculateBuffDebuffEffectiveness() * effectiveness;
 

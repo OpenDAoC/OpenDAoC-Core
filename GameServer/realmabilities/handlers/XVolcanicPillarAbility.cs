@@ -124,7 +124,7 @@ namespace DOL.GS.RealmAbilities
 
 				aeplayer.TakeDamage(m_caster, eDamageType.Heat, m_dmgValue, 0);
 				m_caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + m_dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				aeplayer.Out.SendMessage(m_caster.Name + " hits you for " + m_dmgValue + " damage.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow); 
+				aeplayer.Out.SendMessage(m_caster.Name + " hits you for " + m_dmgValue + " damage.", eChatType.CT_System, eChatLoc.CL_SystemWindow); 
 				foreach (GamePlayer player3 in m_caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
 					player3.Out.SendSpellEffectAnimation(m_caster, aeplayer, 7025, 0, false, 1);

@@ -142,7 +142,7 @@ namespace DOL.GS.Spells
 				{
 					ad.AttackResult = eAttackResult.Missed;
 					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
-					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
+					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Action);
 					target.OnAttackedByEnemy(ad);
 					target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
 					if (target is GameNPC)
@@ -193,7 +193,7 @@ namespace DOL.GS.Spells
 									{
 										engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
 										if (engage.Owner is GamePlayer)
-											(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+											(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Items, eChatLoc.CL_SystemWindow);
 
 										if (blockchance < 95)
 											blockchance = 95;

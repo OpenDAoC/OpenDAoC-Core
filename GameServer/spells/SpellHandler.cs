@@ -514,7 +514,7 @@ namespace DOL.GS.Spells
 					if (EffectOwner==Target)
 					{
 						if (playerCaster != null && !quiet)
-							playerCaster.Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+							playerCaster.Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 
 						return false;
 					}
@@ -1456,7 +1456,7 @@ namespace DOL.GS.Spells
 									GameLiving EffectOwner = SelectiveBlindness.EffectSource;
 
 									if (EffectOwner == player)
-										(Caster as GamePlayer)?.Out.SendMessage($"{player.GetName(0, true)} is invisible to you!", eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+										(Caster as GamePlayer)?.Out.SendMessage($"{player.GetName(0, true)} is invisible to you!", eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 									else
 										list.Add(player);
 								}
@@ -1578,7 +1578,7 @@ namespace DOL.GS.Spells
 									GameLiving EffectOwner = SelectiveBlindness.EffectSource;
 
 									if (EffectOwner == player)
-										(Caster as GamePlayer)?.Out.SendMessage($"{player.GetName(0, true)} is invisible to you!", eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+										(Caster as GamePlayer)?.Out.SendMessage($"{player.GetName(0, true)} is invisible to you!", eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 									else
 										list.Add(player);
 								}
@@ -1616,7 +1616,7 @@ namespace DOL.GS.Spells
 									GameLiving EffectOwner = SelectiveBlindness.EffectSource;
 
 									if (EffectOwner == target)
-										(Caster as GamePlayer)?.Out.SendMessage($"{target.GetName(0, true)} is invisible to you!", eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+										(Caster as GamePlayer)?.Out.SendMessage($"{target.GetName(0, true)} is invisible to you!", eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 									else if (!target.HasAbility("DamageImmunity"))
 										list.Add(target);
 								}
@@ -2009,7 +2009,7 @@ namespace DOL.GS.Spells
 				effectiveness = 1.0; // Neither a potion, item, buff, or debuff.
 
 			if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog && effectiveness != 1)
-				playerCaster.Out.SendMessage($"Effectiveness (bonus / crit): {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				playerCaster.Out.SendMessage($"Effectiveness (bonus / crit): {effectiveness:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
 			return effectiveness;
 		}
@@ -2323,10 +2323,10 @@ namespace DOL.GS.Spells
 				spellResistRoll *= 100;
 
 				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
-					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
 				if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
-					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
 				if (spellResistChance > spellResistRoll)
 				{
@@ -2997,7 +2997,7 @@ namespace DOL.GS.Spells
 			int criticalChance = this is not DoTSpellHandler ? Math.Min(50, m_caster.SpellCriticalChance) : 0;
 
 			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
-				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | SpecMod: {variance:0.##} ({minVariance:0.00}~{maxVariance:0.00})", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | SpecMod: {variance:0.##} ({minVariance:0.00}~{maxVariance:0.00})", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
 			if (Caster.Chance(RandomDeckEvent.CriticalChance, criticalChance))
 			{

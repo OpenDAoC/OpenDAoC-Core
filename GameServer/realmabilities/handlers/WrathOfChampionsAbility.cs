@@ -92,7 +92,7 @@ namespace DOL.GS.RealmAbilities
 
 				// send a message
 				caster.Out.SendMessage("You hit " + t_player.Name + " for " + dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				t_player.Out.SendMessage(caster.Name + " hits you for " + dmgValue + " damage.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+				t_player.Out.SendMessage(caster.Name + " hits you for " + dmgValue + " damage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				foreach (GamePlayer n_player in t_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{

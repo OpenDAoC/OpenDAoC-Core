@@ -262,7 +262,7 @@ namespace DOL.GS.PacketHandler
     /// </summary>
     public enum eChatType : byte
     {
-        CT_System = 0x00,
+        // Chat channels.
         CT_Say = 0x01,
         CT_Send = 0x02,
         CT_Group = 0x03,
@@ -276,30 +276,31 @@ namespace DOL.GS.PacketHandler
         CT_Alliance = 0x0b,
         CT_BattleGroup = 0x0c,
         CT_BattleGroupLeader = 0x0d,
-        // 0x0e sends nothing (tested with client v1.99)
-        CT_Staff = 0xf,
+        CT_Staff = 0xf, // Can't be disabled by the client.
+        CT_LookingForGroup = 0x23,
+        CT_Trade = 0x24,
 
+        // Message types.
         CT_Spell = 0x10,
         CT_YouHit = 0x11,
-        CT_YouWereHit = 0x12,
-        CT_Skill = 0x13,
+        CT_System = 0x12,
+        CT_Items = 0x13,
         CT_Merchant = 0x14,
-        CT_YouDied = 0x15,
-        CT_PlayerDied = 0x16,
+        CT_YourDeath = 0x15,
+        CT_OthersDeath = 0x16,
         CT_OthersCombat = 0x17,
-        CT_DamageAdd = 0x18,
+        CT_ResistsChanged = 0x18,
         CT_SpellExpires = 0x19,
         CT_Loot = 0x1a,
         CT_SpellResisted = 0x1b,
         CT_Important = 0x1c,
         CT_Damaged = 0x1d,
-        CT_Missed = 0x1e,
+        CT_Action = 0x1e,
         CT_SpellPulse = 0x1f,
+
         CT_KilledByAlb = 0x20,
         CT_KilledByMid = 0x21,
         CT_KilledByHib = 0x22,
-        CT_LFG = 0x23,
-        CT_Trade = 0x24,
 
         CT_SocialInterface = 0x64,
         CT_ScreenCenter = 0xC8,

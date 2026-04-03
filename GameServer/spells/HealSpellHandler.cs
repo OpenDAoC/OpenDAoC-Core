@@ -110,7 +110,7 @@ namespace DOL.GS.Spells
                 effectiveness = 1.0;
 
             if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && effectiveness != 1)
-                spellCaster.Out.SendMessage($"heal effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                spellCaster.Out.SendMessage($"heal effectiveness: {effectiveness:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
             amount *= RelicMgr.GetRelicBonusModifier(Caster, eRelicType.Magic);
             amount *= effectiveness;

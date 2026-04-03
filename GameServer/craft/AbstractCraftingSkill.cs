@@ -114,7 +114,7 @@ namespace DOL.GS
 			int craftingTime = GetCraftingTime(player, recipe);
 
 			var chanceToMakeItem = CalculateChanceToMakeItem(player, recipe.Level);
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.BeginWork", recipe.Product.Name, chanceToMakeItem.ToString()), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.BeginWork", recipe.Product.Name, chanceToMakeItem.ToString()), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), craftingTime);
 
 			player.Stealth(false);
@@ -534,7 +534,7 @@ namespace DOL.GS
 
 			player.Inventory.CommitChanges();
 
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Successfully", product.Name, newItem.Quality), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Successfully", product.Name, newItem.Quality), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 
 			if (recipe.IsForUniqueProduct && newItem.Quality == 100)
 			{

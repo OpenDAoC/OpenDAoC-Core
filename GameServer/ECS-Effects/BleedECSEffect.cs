@@ -24,7 +24,7 @@ namespace DOL.GS
 
             if (OwnerPlayer != null)
             {
-                bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
+                bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_System);
                 Message.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
             }
 

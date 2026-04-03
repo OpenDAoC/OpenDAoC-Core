@@ -45,7 +45,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (examineTarget)
                 {
                     foreach (string message in target.GetExamineMessages(actionSource))
-                        actionSource.Out.SendMessage(message, eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                        actionSource.Out.SendMessage(message, eChatType.CT_Action, eChatLoc.CL_SystemWindow);
                 }
 
                 // No LOS message. Not sure which bit to use so use both.

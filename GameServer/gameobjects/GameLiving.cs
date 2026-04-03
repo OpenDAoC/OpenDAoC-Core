@@ -1232,7 +1232,7 @@ namespace DOL.GS
 		private void ConsumeEngageEndurance(GamePlayer player)
 		{
 			Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
-			player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+			player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Items, eChatLoc.CL_SystemWindow);
 		}
 
 		private double CalculateBaseBlockChance(GamePlayer player, DbInventoryItem shield, AttackData ad)
@@ -1651,22 +1651,22 @@ namespace DOL.GS
 						{
 							case eAttackResult.Blocked:
 							{
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Blocked"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Blocked"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 								break;
 							}
 							case eAttackResult.Parried:
 							{
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Parried"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Parried"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 								break;
 							}
 							case eAttackResult.Evaded:
 							{
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Evaded"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Evaded"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 								break;
 							}
 							case eAttackResult.Fumbled:
 							{
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Fumbled"), ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Fumbled"), ad.Attacker.GetName(0, true)), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 								break;
 							}
 							case eAttackResult.Missed:
@@ -1674,7 +1674,7 @@ namespace DOL.GS
 								if (ad.AttackType is eAttackType.Spell)
 									break;
 
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Misses"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.Misses"), ad.Attacker.GetName(0, true), ad.Target.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
 								break;
 							}
 							case eAttackResult.HitStyle:
