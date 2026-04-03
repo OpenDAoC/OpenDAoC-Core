@@ -57,6 +57,7 @@ namespace DOL.GS
         public bool CanMoveOnPath => !string.IsNullOrEmpty(PathID);
         public double HorizontalVelocityForClient { get; private set; }
         public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
+        public bool IsPathVisualizationActive => _pathVisualization != null;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
         public ref Vector3 PositionForClient => ref _positionForClientTick == GameLoop.GameLoopTime ? ref _positionForClient : ref _ownerPosition;
 

@@ -773,7 +773,7 @@ namespace DOL.GS.PacketHandler
 				if (npc.IsUnderwater)
 					flags |= 0x10;
 
-				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
+				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0 || npc.movementComponent.IsPathVisualizationActive)
 					flags |= 0x20;
 
 				if (!npc.IsMoving || npc.IsAtDestination)
