@@ -252,6 +252,8 @@ namespace DOL.GS.PacketHandler
     /// </summary>
     public enum eChatLoc : byte
     {
+        // Note: Modern clients (1.127) seems to determine the actual window to print to based on the eChatType, not the eChatLoc.
+        // Meaning this is mostly just a legacy value. NPCs send text as CT_Say or CT_System based on this.
         CL_ChatWindow = 0x0,
         CL_PopupWindow = 0x1,
         CL_SystemWindow = 0x2
