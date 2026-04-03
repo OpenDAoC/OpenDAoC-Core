@@ -347,7 +347,15 @@ namespace DOL.GS
             set => m_maxHealth = value;
         }
 
-        public virtual byte HealthPercent => (byte) Math.Clamp(Health * 100 / MaxHealth, 0, 100);
+        public virtual byte HealthPercent
+        {
+            get
+            {
+                int maxHealth = MaxHealth;
+                return (byte) (maxHealth <= 0 ? 0 : Math.Clamp(Health * 100 / maxHealth, 0, 100));
+            }
+        }
+
         public virtual byte HealthPercentGroupWindow => HealthPercent;
 
         public virtual string GetName(int article, bool firstLetterUppercase, string lang, ITranslatableObject obj)
