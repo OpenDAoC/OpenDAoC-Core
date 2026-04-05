@@ -248,16 +248,15 @@ namespace DOL.GS.Commands
             Vector3 pos = new(spawnPoint.X, spawnPoint.Y, spawnPoint.Z);
             EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
 
-            // Check if already valid.
-            if (PathfindingProvider.Instance.GetClosestPoint(zone, pos, filters).HasValue)
-                return null;
-
             Vector3? fixedPos = CalculateFixedPosition(zone, pos, snapMaxDistanceDown, snapMaxDistanceUp, filters);
 
             if (!fixedPos.HasValue)
                 return null;
 
             float distance = (pos - fixedPos.Value).Length();
+
+            if (distance < 16f)
+                return null;
 
             if (!dryRun)
             {
