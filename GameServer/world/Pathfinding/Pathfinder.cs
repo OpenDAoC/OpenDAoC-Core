@@ -14,6 +14,7 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public const int NODE_REACHED_DISTANCE = 16; // Exposed for NpcMovementComponent.
+        private const int NODE_REACHED_DISTANCE_STRICT = 2;
         private const int MIN_TARGET_DIFF_REPLOT_DISTANCE = 64;
         private const int DOOR_SEARCH_DISTANCE = 128;
 
@@ -129,6 +130,12 @@ namespace DOL.GS
                 return NextNodeResult.PathComplete;
             }
 
+            if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+            {
+                nextNode = current.Position;
+                return NextNodeResult.Valid;
+            }
+
             if (NodeContainsDoor(current, true))
             {
                 nextNode = default;
@@ -159,17 +166,14 @@ namespace DOL.GS
 
             if (furthestVisibleNodeIndex > 0)
                 nodesToRemove = furthestVisibleNodeIndex;
-            else
-            {
-                if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+            else if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE_STRICT))
                     nodesToRemove = 1;
-                else if (Owner.movementComponent.IsMoving)
-                {
-                    float dot = Vector3.Dot(current.Position - position, Vector3.Normalize(Owner.movementComponent.Velocity));
+            else if (Owner.movementComponent.IsMoving)
+            {
+                float dot = Vector3.Dot(current.Position - position, Vector3.Normalize(Owner.movementComponent.Velocity));
 
-                    if (dot < 0f)
-                        nodesToRemove = 1;
-                }
+                if (dot < 0f)
+                    nodesToRemove = 1;
             }
 
             for (int i = 0; i < nodesToRemove; i++)
@@ -198,9 +202,7 @@ namespace DOL.GS
 
         private bool IsStraightLineHeightSafe(Vector3 start, Vector3 target, int candidateIndex)
         {
-            // This should always be at most the vertical half extent used for pathfinding,
-            // so that we don't put the NPC is a position where it couldn't be snapped to the mesh anymore.
-            // In practice, it should be even lower, otherwise distance calculations may return incoherent results (for melee attacks for example).
+            // This should be low enough so that we avoid putting the NPC in a position where it couldn't be snapped to the mesh anymore.
             const float MAX_SAFE_HEIGHT_DEVIATION = 32f;
 
             if (candidateIndex == 0)
