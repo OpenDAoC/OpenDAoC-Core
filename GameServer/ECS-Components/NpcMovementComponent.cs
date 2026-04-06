@@ -526,25 +526,27 @@ namespace DOL.GS
                 return;
             }
 
-            switch (_pathfinder.GetNextNode(zone, _ownerPosition, destination, out Vector3 nextNode))
+            PathingStep step = _pathfinder.GetNextStep(zone, _ownerPosition, destination);
+            Vector3? snapPosition = step.SnapPosition;
+
+            if (snapPosition.HasValue)
+                _ownerPosition = snapPosition.GetValueOrDefault();
+
+            if (step.Result is NextNodeResult.Valid)
             {
-                case NextNodeResult.Valid:
-                {
-                    _movementRequest.Set(MovementRequestType.Path, destination, speed);
-                    SetFlag(MovementState.Pathfinding);
-                    WalkToInternal(nextNode, speed);
-                    return;
-                }
-                case NextNodeResult.Waiting:
-                {
-                    PauseMovement(this, destination);
-                    return;
-                }
-                case NextNodeResult.PathComplete:
-                default:
-                    break;
+                _movementRequest.Set(MovementRequestType.Path, destination, speed);
+                SetFlag(MovementState.Pathfinding);
+                WalkToInternal(step.NextNode.GetValueOrDefault(), speed);
+                return;
             }
 
+            if (step.Result is NextNodeResult.Waiting)
+            {
+                PauseMovement(this, destination);
+                return;
+            }
+
+            // End of path.
             switch (_pathfinder.PathfindingStatus)
             {
                 case PathfindingStatus.PathFound:
@@ -565,26 +567,7 @@ namespace DOL.GS
                 case PathfindingStatus.BufferTooSmall:
                 case PathfindingStatus.NoPathFound: // Happens when either the current position or the destination isn't on a mesh.
                 {
-                    // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
-                    // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
-                    // This helps against exploits and misplaced NPCs.
-
-                    // Pets following their owner are teleported at their feet if both are out of combat.
-                    // This allows them to keep up if they jump down a ledge or bridge.
-                    // This can theoretically be exploited by players in combat, but it requires both the pet and the owner to leave combat.
-
-                    if (Owner.Brain is not ControlledMobBrain petBrain)
-                    {
-                        if (JumpToClosestReachableNode(this, destination))
-                            break;
-                    }
-                    else if (!Owner.InCombat && !petBrain.Owner.InCombat && FollowTarget != null && petBrain.Owner == FollowTarget)
-                    {
-                        if (TeleportPetToFloorBeneathOwner(this, petBrain))
-                            break;
-                    }
-
-                    PauseMovement(this, destination);
+                    HandleIncompletePath(this, destination);
                     break;
                 }
                 case PathfindingStatus.NotSet:
@@ -604,6 +587,40 @@ namespace DOL.GS
             {
                 component.UnsetFlag(MovementState.Pathfinding);
                 component.WalkToInternal(destination, speed);
+            }
+
+            static void PauseMovement(NpcMovementComponent component, Vector3 destination)
+            {
+                component.TurnTo((int) destination.X, (int) destination.Y);
+                component.UnsetFlag(MovementState.Pathfinding);
+
+                if (component.IsMoving)
+                    component.UpdateMovement(0);
+            }
+
+            static void HandleIncompletePath(NpcMovementComponent component, Vector3 destination)
+            {
+                // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
+                // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
+                // This helps against exploits and misplaced NPCs.
+
+                // Pets following their owner are teleported at their feet if both are out of combat.
+                // This allows them to keep up if they jump down a ledge or bridge.
+                // This can theoretically be exploited by players in combat, but it requires both the pet and the owner to leave combat.
+
+                if (component.Owner.Brain is not ControlledMobBrain petBrain)
+                {
+                    if (JumpToClosestReachableNode(component, destination))
+                        return;
+                }
+                else if (!component.Owner.InCombat && !petBrain.Owner.InCombat && 
+                         component.FollowTarget != null && petBrain.Owner == component.FollowTarget)
+                {
+                    if (TeleportPetToFloorBeneathOwner(component, petBrain))
+                        return;
+                }
+
+                PauseMovement(component, destination);
             }
 
             static bool JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
@@ -639,15 +656,6 @@ namespace DOL.GS
                 component.UpdateMovement(0);
                 component._pathfinder.ForceReplot = true;
                 return true;
-            }
-
-            static void PauseMovement(NpcMovementComponent component, Vector3 destination)
-            {
-                component.TurnTo((int) destination.X, (int) destination.Y);
-                component.UnsetFlag(MovementState.Pathfinding);
-
-                if (component.IsMoving)
-                    component.UpdateMovement(0);
             }
         }
 

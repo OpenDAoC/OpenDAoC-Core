@@ -115,7 +115,7 @@ namespace DOL.GS
             }
         }
 
-        public NextNodeResult GetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3 nextNode)
+        public PathingStep GetNextStep(Zone zone, Vector3 position, Vector3 target)
         {
             ReplotIfNeeded(zone, position, target);
 
@@ -125,26 +125,18 @@ namespace DOL.GS
                 TryApplyAlternativePath(zone, position, target);
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
-            {
-                nextNode = default;
-                return NextNodeResult.PathComplete;
-            }
+                return new(NextNodeResult.PathComplete);
 
             if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
-            {
-                nextNode = current.Position;
-                return NextNodeResult.Valid;
-            }
+                return new(NextNodeResult.Valid, current.Position);
 
             if (NodeContainsDoor(current, true))
-            {
-                nextNode = default;
-                return NextNodeResult.Waiting;
-            }
+                return new(NextNodeResult.Waiting);
 
             int nodesToRemove = 0;
             int maxLookahead = Math.Min(_activePath.Nodes.Count, 6); // Limit lookahead in case this gets expensive.
             int furthestVisibleNodeIndex = -1;
+            Vector3? snapPosition = null;
 
             // Look ahead to find the furthest node we can walk straight to.
             // This stops at the first door, at any node we don't have LoS to, or at any node that would require a big jump in height compared to the current node.
@@ -152,14 +144,12 @@ namespace DOL.GS
             {
                 WrappedPathfindingNode candidateNode = _activePath.Nodes.Peek(i);
 
-                if (NodeContainsDoor(candidateNode, false))
+                if (NodeContainsDoor(candidateNode, false) ||
+                    !PathfindingProvider.Instance.HasLineOfSight(zone, position, candidateNode.Position, DefaultFilters) ||
+                    !IsStraightLineHeightSafe(position, candidateNode.Position, i))
+                {
                     break;
-
-                if (!PathfindingProvider.Instance.HasLineOfSight(zone, position, candidateNode.Position, DefaultFilters))
-                    break;
-
-                if (!IsStraightLineHeightSafe(position, candidateNode.Position, i))
-                    break;
+                }
 
                 furthestVisibleNodeIndex = i;
             }
@@ -167,13 +157,19 @@ namespace DOL.GS
             if (furthestVisibleNodeIndex > 0)
                 nodesToRemove = furthestVisibleNodeIndex;
             else if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE_STRICT))
-                    nodesToRemove = 1;
+            {
+                nodesToRemove = 1;
+                snapPosition = current.Position;
+            }
             else if (Owner.movementComponent.IsMoving)
             {
                 float dot = Vector3.Dot(current.Position - position, Vector3.Normalize(Owner.movementComponent.Velocity));
 
                 if (dot < 0f)
+                {
                     nodesToRemove = 1;
+                    snapPosition = current.Position;
+                }
             }
 
             for (int i = 0; i < nodesToRemove; i++)
@@ -191,13 +187,9 @@ namespace DOL.GS
             }
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode next))
-            {
-                nextNode = default;
-                return NextNodeResult.PathComplete;
-            }
+                return new(NextNodeResult.PathComplete, null, snapPosition);
 
-            nextNode = next.Position;
-            return NextNodeResult.Valid;
+            return new(NextNodeResult.Valid, next.Position, snapPosition);
         }
 
         private bool IsStraightLineHeightSafe(Vector3 start, Vector3 target, int candidateIndex)
@@ -332,6 +324,8 @@ namespace DOL.GS
                 $"Nodes={_activePath.Nodes.Count}, " +
                 $"NextNode={(_activePath.Nodes.Count > 0 ? _activePath.Nodes.Peek(0).ToString() : null)}]";
         }
+
+        public readonly record struct PathingStep(NextNodeResult Result, Vector3? NextNode = null, Vector3? SnapPosition = null);
 
         public enum NextNodeResult
         {
