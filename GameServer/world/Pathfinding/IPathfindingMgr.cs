@@ -25,59 +25,9 @@ namespace DOL.GS
         EDtPolyFlags[] BlockingDoorAvoidanceFilters { get; }
     }
 
-    public readonly struct PathfindingResult
-    {
-        public PathfindingStatus Status { get; }
-        public int NodeCount { get; }
+    public readonly record struct PathfindingResult(PathfindingStatus Status, int NodeCount);
 
-        public PathfindingResult(PathfindingStatus status, int nodeCount)
-        {
-            Status = status;
-            NodeCount = nodeCount;
-        }
-    }
-
-    public readonly struct WrappedPathfindingNode : IEquatable<WrappedPathfindingNode>
-    {
-        public Vector3 Position { get; }
-        public EDtPolyFlags Flags { get; }
-
-        public WrappedPathfindingNode(Vector3 position, EDtPolyFlags flags)
-        {
-            Position = position;
-            Flags = flags;
-        }
-
-        public override string ToString()
-        {
-            return $"({Position}, {Flags})";
-        }
-
-        public bool Equals(WrappedPathfindingNode other)
-        {
-            return Position.Equals(other.Position) && Flags == other.Flags;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is WrappedPathfindingNode other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Position, Flags);
-        }
-
-        public static bool operator ==(WrappedPathfindingNode left, WrappedPathfindingNode right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(WrappedPathfindingNode left, WrappedPathfindingNode right)
-        {
-            return !(left == right);
-        }
-    }
+    public readonly record struct WrappedPathfindingNode(Vector3 Position, EDtPolyFlags Flags);
 
     public enum PathfindingStatus
     {

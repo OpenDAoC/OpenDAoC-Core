@@ -164,28 +164,8 @@ namespace DOL.GS
             _listPool.Push(currentSwapList);
         }
 
-        private readonly struct ScheduleRequest
-        {
-            public readonly T Item;
-            public readonly long TargetTick;
+        private readonly record struct ScheduleRequest(T Item, long TargetTick);
 
-            public ScheduleRequest(T item, long targetTick)
-            {
-                Item = item;
-                TargetTick = targetTick;
-            }
-        }
-
-        private readonly struct SleepTicket
-        {
-            public readonly T Item;
-            public readonly long Token;
-
-            public SleepTicket(T item, long token)
-            {
-                Item = item;
-                Token = token;
-            }
-        }
+        private readonly record struct SleepTicket(T Item, long Token);
     }
 }

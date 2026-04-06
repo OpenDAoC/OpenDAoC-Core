@@ -12,17 +12,7 @@ namespace DOL.GS.Spells
 
         public SpreadhealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        private readonly struct InjuredTarget
-        {
-            public readonly GameLiving Living;
-            public readonly double HealthPercent;
-
-            public InjuredTarget(GameLiving living, double healthPercent)
-            {
-                Living = living;
-                HealthPercent = healthPercent;
-            }
-        }
+        private readonly record struct InjuredTarget(GameLiving Living, double HealthPercent);
 
         public override bool HealTarget(GameLiving target, double amount, bool affectedByDisease)
         {

@@ -270,32 +270,6 @@ namespace DOL.GS
             }
         }
 
-        private readonly struct PositionSample
-        {
-            public readonly int X;
-            public readonly int Y;
-            public readonly int Z;
-            public readonly long GameLoopTime;
-            public readonly long Timestamp;
-            public readonly short MaxSpeed;
-
-            public PositionSample(int x, int y, int z, long gameLoopTime, long timestamp, short maxSpeed)
-            {
-                X = x;
-                Y = y;
-                Z = z;
-                GameLoopTime = gameLoopTime;
-                Timestamp = timestamp;
-                MaxSpeed = maxSpeed;
-            }
-
-            public override string ToString()
-            {
-                return $"Position=({X}, {Y}, {Z}), " +
-                    $"{nameof(MaxSpeed)}={MaxSpeed}, " +
-                    $"{nameof(GameLoopTime)}={GameLoopTime}, " +
-                    $"{nameof(Timestamp)}={Timestamp}";
-            }
-        }
+        private readonly record struct PositionSample(int X, int Y, int Z, long GameLoopTime, long Timestamp, short MaxSpeed);
     }
 }

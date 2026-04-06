@@ -955,17 +955,7 @@ namespace DOL.AI.Brain
             }
         }
 
-        private readonly struct NpcWithDistance
-        {
-            public readonly GameNPC Npc;
-            public readonly long DistanceSq;
-
-            public NpcWithDistance(GameNPC npc, long distanceSq)
-            {
-                Npc = npc;
-                DistanceSq = distanceSq;
-            }
-        }
+        private readonly record struct NpcWithDistance(GameNPC Npc, long DistanceSq);
 
         private class NpcDistanceComparer : IComparer<NpcWithDistance>
         {

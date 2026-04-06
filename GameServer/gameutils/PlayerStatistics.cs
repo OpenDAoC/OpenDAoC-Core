@@ -277,18 +277,6 @@ namespace DOL.GS
             return realmPoints == 0 || time.TotalHours <= 0 ? 0.0 : realmPoints / time.TotalHours;
         }
 
-        private readonly struct StatEntry
-        {
-            public readonly string Name;
-            public readonly uint Value;
-            public readonly uint SecondaryValue;
-
-            public StatEntry(string name, uint value, uint secondaryValue = 0)
-            {
-                Name = name;
-                Value = value;
-                SecondaryValue = secondaryValue;
-            }
-        }
+        private readonly record struct StatEntry(string Name, uint Value, uint SecondaryValue = 0);
     }
 }

@@ -5,14 +5,13 @@ using DOL.Database;
 
 namespace DOL.GS
 {
-    public readonly struct ItemQuery
+    public readonly record struct ItemQuery(
+        eRealm? Realm = null,
+        int? Slot = null,
+        bool? IsCrafted = null,
+        bool? HasVisual = null,
+        string Owner = null)
     {
-        public readonly eRealm? Realm { get; init; }
-        public readonly int? Slot { get; init; }
-        public readonly bool? IsCrafted { get; init; }
-        public readonly bool? HasVisual { get; init; }
-        public readonly string Owner { get; init; }
-
         public bool HasAny =>
             Realm.HasValue ||
             Slot.HasValue ||
@@ -312,22 +311,11 @@ namespace DOL.GS
             _lock.Dispose();
         }
 
-        private readonly struct IndexKeys
-        {
-            public readonly eRealm Realm;
-            public readonly int Slot;
-            public readonly bool IsCrafted;
-            public readonly bool HasVisual;
-            public readonly string Owner;
-
-            public IndexKeys(eRealm realm, int slot, bool isCrafted, bool hasVisual, string owner)
-            {
-                Realm = realm;
-                Slot = slot;
-                IsCrafted = isCrafted;
-                HasVisual = hasVisual;
-                Owner = owner;
-            }
-        }
+        private readonly record struct IndexKeys(
+             eRealm Realm,
+             int Slot,
+             bool IsCrafted,
+             bool HasVisual,
+             string Owner);
     }
 }

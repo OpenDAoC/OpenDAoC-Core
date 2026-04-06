@@ -126,16 +126,6 @@ namespace DOL.GS
             }
         }
 
-        private readonly struct SpellWaitingForLosCheck
-        {
-            public readonly Spell Spell;
-            public readonly SpellLine SpellLine;
-
-            public SpellWaitingForLosCheck(Spell spell, SpellLine spellLine)
-            {
-                Spell = spell;
-                SpellLine = spellLine;
-            }
-        }
+        private readonly record struct SpellWaitingForLosCheck(Spell Spell, SpellLine SpellLine);
     }
 }

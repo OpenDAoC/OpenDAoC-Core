@@ -981,23 +981,12 @@ namespace DOL.GS
             Failed
         }
 
-        private readonly struct PendingEffect
+        private readonly record struct PendingEffect(ECSGameEffect Effect, Action<ECSGameEffect, bool> Action, bool State)
         {
-            private readonly ECSGameEffect _effect;
-            private readonly Action<ECSGameEffect, bool> _action;
-            private readonly bool _state;
-
-            public PendingEffect(ECSGameEffect effect, Action<ECSGameEffect, bool> action, bool state)
-            {
-                _effect = effect;
-                _action = action;
-                _state = state;
-            }
-
             public void Process()
             {
-                _action(_effect, _state);
-                _effect.IsBeingReplaced = false; // This need to always be set to false.
+                Action(Effect, State);
+                Effect.IsBeingReplaced = false; // This needs to always be set to false.
             }
         }
     }

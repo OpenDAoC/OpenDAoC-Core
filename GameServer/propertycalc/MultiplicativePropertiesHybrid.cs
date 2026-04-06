@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using DOL.GS;
@@ -119,37 +118,7 @@ public sealed class MultiplicativePropertiesHybrid : IMultiplicativeProperties
         }
     }
 
-    private readonly struct EffectKey : IEquatable<EffectKey>
-    {
-        private readonly EffectKeyType Tag;
-        private readonly int Id;
-
-        public EffectKey(EffectKeyType tag, int id)
-        {
-            Tag = tag;
-            Id = id;
-        }
-
-        public bool Equals(EffectKey other)
-        {
-            return Tag == other.Tag && Id == other.Id;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is EffectKey other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Tag, Id);
-        }
-
-        public override string ToString()
-        {
-            return $"{Tag}:{Id}";
-        }
-    }
+    private readonly record struct EffectKey(EffectKeyType Tag, int Id);
 
     private enum EffectKeyType
     {

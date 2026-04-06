@@ -2,21 +2,11 @@
 
 namespace DOL.GS
 {
-    public readonly struct ECSGameEffectInitParams
-    {
-        public readonly GameLiving Target { get; }
-        public readonly int Duration { get; }
-        public readonly double Effectiveness { get; }
-        public readonly ISpellHandler SpellHandler { get; }
-
-        public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler spellHandler = null)
-        {
-            Target = target;
-            Duration = duration;
-            Effectiveness = effectiveness;
-            SpellHandler = spellHandler;
-        }
-    }
+    public readonly record struct ECSGameEffectInitParams(
+        GameLiving Target,
+        int Duration,
+        double Effectiveness,
+        ISpellHandler SpellHandler = null);
 
     public static class ECSGameEffectFactory
     {

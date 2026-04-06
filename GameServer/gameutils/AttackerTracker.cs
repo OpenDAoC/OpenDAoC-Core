@@ -100,17 +100,7 @@ namespace DOL.GS
             _attackerCheckTimer.Stop();
         }
 
-        private readonly struct AttackerInfo
-        {
-            public readonly bool IsMelee;
-            public readonly long ExpireTime;
-
-            public AttackerInfo(bool isMelee, long expireTime)
-            {
-                IsMelee = isMelee;
-                ExpireTime = expireTime;
-            }
-        }
+        private readonly record struct AttackerInfo(bool IsMelee, long ExpireTime);
 
         private class StandardAttackerCheckTimer : AttackerCheckTimer
         {

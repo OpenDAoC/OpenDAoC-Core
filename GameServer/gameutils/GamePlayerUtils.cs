@@ -654,32 +654,8 @@ namespace DOL.GS
             }
         }
 
-        private readonly struct SkillKey : IEquatable<SkillKey>
+        private readonly record struct SkillKey(int Id, byte Type)
         {
-            private readonly int _id;
-            private readonly byte _type;
-
-            public SkillKey(int id, byte type)
-            {
-                _id = id;
-                _type = type;
-            }
-
-            public override int GetHashCode()
-            {
-                return (_id << 5) ^ _type;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is SkillKey other && Equals(other);
-            }
-
-            public bool Equals(SkillKey other)
-            {
-                return _id == other._id && _type == other._type;
-            }
-
             public static SkillKey GetKey(Skill skill)
             {
                 if (skill is Specialization spec)

@@ -127,17 +127,7 @@ namespace DOL.GS
             }
         }
 
-        private readonly struct CardAssignment
-        {
-            public readonly int Card;
-            public readonly int BucketIndex;
-
-            public CardAssignment(int card, int bucketIndex)
-            {
-                Card = card;
-                BucketIndex = bucketIndex;
-            }
-        }
+        private readonly record struct CardAssignment(int Card, int BucketIndex);
     }
 
     public enum RandomDeckEvent
