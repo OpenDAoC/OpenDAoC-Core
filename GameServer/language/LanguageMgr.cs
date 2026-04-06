@@ -619,6 +619,6 @@ namespace DOL.Language
             }
         }
 
-        private record struct TranslationEntry(string Id, string Text, string Language);
+        private readonly record struct TranslationEntry(string Id, string Text, string Language);
     }
 }
