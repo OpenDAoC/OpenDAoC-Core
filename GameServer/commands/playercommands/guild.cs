@@ -129,8 +129,13 @@ namespace DOL.GS.Commands
 		/// <returns></returns>
 		public void OnCommand(GameClient client, string[] args)
 		{
-			if (IsSpammingCommand(client.Player, "gc", 500))
-				return;
+			// Allow /gc info x to bypass the spam check.
+			// Ugly fix to allow the refresh button on the social window to work as intended, since it sends both /gc info and /gc who.
+			if (args.Length <= 2 || !args[1].Equals("info", StringComparison.OrdinalIgnoreCase))
+			{
+				if (IsSpammingCommand(client.Player, "gc", 500))
+					return;
+			}
 
 			try
 			{
