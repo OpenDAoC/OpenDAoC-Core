@@ -2172,16 +2172,28 @@ namespace DOL.GS.Commands
 						}
 
 						bool noteSet = false;
-						foreach (var guildMember in GuildMgr.GetGuildMemberViews(client.Player.Guild))
+
+						foreach (var guildMemberView in GuildMgr.GetGuildMemberViews(client.Player.Guild))
 						{
-							if (guildMember.Value.Name.ToLower() != args[2].ToLower()) continue;
-							string note = String.Join(" ", args, 3, args.Length - 3);
-							guildMember.Value.Note = note;
+							string guildMemberName = guildMemberView.Value.Name;
+
+							if (!guildMemberName.Equals(args[2], StringComparison.OrdinalIgnoreCase))
+								continue;
+
+							GamePlayer guildMember = ClientService.Instance.GetPlayerByExactName(guildMemberName);
+
+							string note = string.Join(" ", args, 3, args.Length - 3);
+
+							if (guildMember != null)
+								guildMember.GuildNote = note;
+							else
+								guildMemberView.Value.Note = note;
+
 							noteSet = true;
 							break;
 						}
-							
-						if(!noteSet)
+
+						if (!noteSet)
 							client.Out.SendMessage("No guild member with that name found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						else
 							client.Out.SendMessage($"Note set correctly for {args[2]}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
