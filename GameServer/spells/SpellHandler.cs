@@ -1148,11 +1148,31 @@ namespace DOL.GS.Spells
 			double powerCost = m_spell.Power;
 			GamePlayer playerCaster = Caster as GamePlayer;
 
-			// Percent of max power if less than zero.
+			/*
+			 * Percent of base power if negative.
+			 * 
+			 * Base power is calculated using:
+			 * Character's inherent acuity,
+			 * Acuity from buffs,
+			 * Acuity from RAs (Augmented Acuity).
+			 * 
+			 * The following aren't used to calculate base power:
+			 * Acuity from items,
+			 * Power bonuses (from items and RAs).
+			 * 
+			 * Focus mechanic is applied.
+			 */
+
 			if (powerCost < 0)
 			{
 				if (playerCaster != null && playerCaster.CharacterClass.ManaStat is not eStat.UNDEFINED)
-					powerCost = playerCaster.CalculateMaxMana(playerCaster.Level, playerCaster.GetBaseStat(playerCaster.CharacterClass.ManaStat)) * powerCost * -0.01;
+				{
+					eProperty manaStat = (eProperty) playerCaster.CharacterClass.ManaStat;
+					int baseStat = playerCaster.GetBaseStat(playerCaster.CharacterClass.ManaStat) +
+						playerCaster.GetModifiedFromBuffs(manaStat) +
+						playerCaster.AbilityBonus[manaStat] + playerCaster.AbilityBonus[eProperty.Acuity];
+					powerCost = playerCaster.CalculateMaxMana(playerCaster.Level, baseStat) * powerCost * -0.01;
+				}
 				else
 					powerCost = Caster.MaxMana * powerCost * -0.01;
 			}

@@ -2506,8 +2506,16 @@ namespace DOL.GS
             // Since 1.62, Augmented Acuity is supposed to increase Nightshade's power pool, but without increasing their actual stat.
             // This isn't implemented currently.
 
+            /*
+             * Current formula is within -1 to +1 mana (ignoring a few outliers) of the values displayed on Pendragon when leveling up or training.
+             * Tested between level 1 and 50, and with a mana stat between 60 and 233.
+             * This included Augmented Acuity, but no buffs as they didn't affect the feedback values.
+             * No difference between Sorcerer, Mentalist and Cleric (implying there is no power table).
+             * (Feb 2026).
+             */
+
             if (CharacterClass.ManaStat is not eStat.UNDEFINED || (eCharacterClass) CharacterClass.ID is eCharacterClass.Vampiir)
-                maxPower = Math.Max(5, level * 5 + (manaStat - 50));
+                maxPower = (int) (level * (manaStat + 145) / 41.0) + 5;
             else if (Champion && ChampionLevel > 0)
                 maxPower = 100; // This is a guess, need feedback.
 
