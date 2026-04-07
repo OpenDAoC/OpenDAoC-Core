@@ -643,16 +643,15 @@ namespace DOL.GS
                             return AddEffectResult.Failed;
                     }
 
-                    // How effects are refreshed is very badly implemented. New instances are created every time and we need to use them.
-                    // Most of the time, we want to stop the current effect and let the new one be started normally but silently.
-                    // Not calling `OnStopEffect` on the current effect and `OnStartEffect` on the new effect means some initialization may not be performed.
-                    // To give some examples:
+                    // How effects are refreshed is very badly implemented. New instances are created every time, and we need to use them.
+                    // Unless this is an effect being re-enabled, we generally want to stop the current instance and start the new one (but silently),
+                    // because not calling OnStopEffect / OnStartEffect means some initialization may not be performed. For example:
+                    // * Champion debuffs being forced to spec debuffs in OnStartEffect.
                     // * Effectiveness changes from resurrection illness expiring.
-                    // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
-                    // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
-                    // This should also ignore effects being re-enabled.
-                    // For those, we replace the instance directly, both in our list and in `ServiceObjectStore`.
-                    if (!existingEffect.IsDisabled && !effect.IsEnabling && !newSpell.IsPulsing)
+                    // Effects that don't want to be stopped and restarted are expected to check IsBeingReplaced themselves. For example:
+                    // * Pulsing charms.
+
+                    if (!existingEffect.IsDisabled && !effect.IsEnabling)
                     {
                         existingEffect.IsBeingReplaced = true;
 
@@ -669,8 +668,9 @@ namespace DOL.GS
                     }
                     else
                     {
+                        // Replace the instance both in our list and in ServiceObjectStore.
                         ServiceObjectStore.Remove(existingEffect);
-                        existingEffect.IsBeingReplaced = true; // Will be checked by the parent pulse effect so that it doesn't call `Stop` on it.
+                        existingEffect.IsBeingReplaced = true;
                         ServiceObjectStore.Add(effect);
                         existingEffects[i] = effect;
                         result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;

@@ -12,6 +12,9 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
+            if (IsBeingReplaced)
+                return;
+
             if (Owner is not GameNPC charmNpc)
                 return;
 
@@ -41,6 +44,9 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
+            if (IsBeingReplaced)
+                return;
+
             if (Owner is not GameNPC charmNpc)
                 return;
 
