@@ -2299,19 +2299,62 @@ namespace DOL.GS
 
         public (double, double, double) CalculateHthSwingChances(DbInventoryItem leftWeapon)
         {
-            if (leftWeapon == null)
-                return (0, 0, 0);
+            /*
+             * https://www.darkageofcamelot.com/2020/07/31/friday-grab-bag-07312020/:
+             * The rates at 50+16 are as follows:
+             * Triple: 16%
+             * Quad: 5.75%
+             * The rates at 44+16 are as follows:
+             * Triple: 14%
+             * Quad: 4.75%
+             * 
+             * Unknown grab bag:
+             * The realm ability raises your chance to get a second attack.
+             * It doesn't directly influence the triple or the quad hit chances,
+             * but it mathematically helps in an indirect way -
+             * your second attack is a prerequisite for your third attack, and so on.
+             * So by increasing your chances to get a second,
+             * you're automatically upping your chances to GET a third, and then a forth.
+             * So the answer is the RA only helps get more double attacks, but the effect will trickle down into your other attacks.
+             * 
+             * https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.65
+             * A bug in Savage's chances to triple or quad has been fixed.
+             * Savages should now triple more frequently than before, and quad less frequently than before.
+             * Due to this, overall savage damage should decrease.
+             */
+
+            /*
+             * What the 1.65 patch notes describe can be confirmed by looking at data gathered before 1.65,
+             * where triple hit chances dropped to almost 0, fully consumed by quad hit chances:
+             * https://forums.jeuxonline.info/sujet/212949-3/guide-le-sauvage#post4333752
+             * Unfortunately, there is no data post 1.65 to confirm the new rates, or if anything else changed.
+             * 
+             * One interesting thing about the old formula is that it appears to have triple and quad hit chances consuming from double hit chance.
+             * Our formula conciliates this idea with the rates given by the 2020 grab bag to the decimal.
+             * 
+             * The "base pool" determines the overall scaling of the chances, i.e. the expected amount of hits per attack given a certain spec.
+             * This follows the same growth as CD/DW and LA, with one exception: It has a base value of 30 instead of 25.
+             * When triple and quads hits aren't unlocked yet, this represents the chances of double hits.
+             * What live used for double hits is obviously unknown, but I suspect Savage had a slightly higher chance, being a SI class.
+             * This makes H2H sit slightly above CD/DW and LA at every level.
+             * 
+             * Dualist Reflex also "trickles down" to triple and quads hits,
+             * and offers a scaling comparable to CD/DW once quad hits are unlocked.
+             * Dualist Reflex still benefits LA a lot more.
+             */
 
             int specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
 
             if (specLevel <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
                 return (0, 0, 0);
 
-            double doubleSwingChance = specLevel * 0.5; // specLevel >> 1
-            double tripleSwingChance = specLevel >= 25 ? doubleSwingChance * 0.5 : 0; // specLevel >> 2
-            double quadSwingChance = specLevel >= 40 ? tripleSwingChance * 0.25 : 0; // specLevel >> 4
             int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
-            doubleSwingChance += bonus; // It's apparently supposed to only affect double swing chance around 1.65, which puts it more in line with DW / CD.
+            double basePool = 0.68 * specLevel + 30.0;
+            double bonusMod = (basePool + bonus) / basePool;
+
+            double quadSwingChance = specLevel < 40 ? 0 : (0.0625 * specLevel + 1.625) * bonusMod;
+            double tripleSwingChance = specLevel < 25 ? 0 : (0.125 * specLevel + 7.75) * bonusMod;
+            double doubleSwingChance = basePool + bonus - 2 * tripleSwingChance - 3 * quadSwingChance;
             return (doubleSwingChance, tripleSwingChance, quadSwingChance);
         }
 
