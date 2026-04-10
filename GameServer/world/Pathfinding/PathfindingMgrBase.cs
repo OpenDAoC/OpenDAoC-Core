@@ -8,6 +8,12 @@ namespace DOL.GS
         protected const float CONVERSION_FACTOR = 1.0f / 32f;
         protected const float INV_FACTOR = 1f / CONVERSION_FACTOR;
 
+        public PathfindingMgrBase()
+        {
+            DefaultFilters = [EDtPolyFlags.All ^ EDtPolyFlags.Disabled, 0];
+            BlockingDoorAvoidanceFilters = [DefaultFilters[0], EDtPolyFlags.BlockingDoor];
+        }
+
         public virtual bool Init()
         {
             return true;
@@ -86,8 +92,8 @@ namespace DOL.GS
         }
 
         public virtual bool IsAvailable => false;
-        public virtual EDtPolyFlags[] DefaultFilters => [EDtPolyFlags.All ^ EDtPolyFlags.Disabled, 0];
-        public virtual EDtPolyFlags[] BlockingDoorAvoidanceFilters => [DefaultFilters[0], EDtPolyFlags.BlockingDoor];
+        public virtual EDtPolyFlags[] DefaultFilters { get; }
+        public virtual EDtPolyFlags[] BlockingDoorAvoidanceFilters { get; }
 
         protected static void FillRecastFloats(Vector3 value, Span<float> destination)
         {
