@@ -2225,6 +2225,12 @@ namespace DOL.GS.ServerProperties
 
 		#region GUILDS / ALLIANCES
 		/// <summary>
+		/// Enable or disable guild banners (buybanner / summon commands)
+		/// </summary>
+		[ServerProperty("guild", "guild_banners_enabled", "Enable guild banners (buybanner and summon commands). Set to true to allow players to buy and summon guild banners.", false)]
+		public static bool GUILD_BANNERS_ENABLED;
+
+		/// <summary>
 		/// The max number of guilds in an alliance
 		/// </summary>
 		[ServerProperty("guild", "alliance_max", "Max Guilds In Alliance - Edit this to change the maximum number of guilds in an alliance -1 = unlimited, 0=disable alliances", -1)]
@@ -2535,6 +2541,18 @@ namespace DOL.GS.ServerProperties
 
 		[ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
 		public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
+
+		[ServerProperty("controls_automation", "enable_recorder", "Enable or disable the Recorder macro system (players can record and replay action sequences).", false)]
+		public static bool ENABLE_RECORDER;
+
+		[ServerProperty("controls_automation", "recorder_max_actions", "Maximum number of actions a single recorder macro may hold.", 14)]
+		public static int RECORDER_MAX_ACTIONS;
+
+		[ServerProperty("controls_automation", "recorder_max_per_player", "Maximum number of recorder macros a single character may own.", 20)]
+		public static int RECORDER_MAX_PER_PLAYER;
+
+		[ServerProperty("controls_automation", "recorder_max_name_length", "Maximum character length of a recorder macro name.", 24)]
+		public static int RECORDER_MAX_NAME_LENGTH;
 
 		#endregion
 
