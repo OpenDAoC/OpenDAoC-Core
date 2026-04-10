@@ -81,7 +81,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             Vector3 position = new(groundX, groundY, groundZ);
 
-            if (!PathfindingProvider.Instance.TrySnapToMesh(zone, ref position, snapMaxDistance))
+            if (zone.IsPathfindingEnabled && !PathfindingProvider.Instance.TrySnapToMesh(zone, ref position, snapMaxDistance))
                 return false;
 
             groundX = (int) Math.Round(position.X);

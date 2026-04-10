@@ -691,8 +691,15 @@ namespace DOL.GS
             }
 
             // Snap the destination to the mesh with a generous search distance.
-            if (!TrySnapToMesh(ref targetPos))
-                return Properties.GAMENPC_FOLLOWCHECK_TIME;
+            Zone zone = Owner.CurrentRegion.GetZone((int) targetPos.X, (int) targetPos.Y);
+
+            if (zone.IsPathfindingEnabled)
+            {
+                const float MAX_SNAP_DISTANCE = 128f;
+
+                if (!PathfindingProvider.Instance.TrySnapToMesh(zone, ref targetPos, MAX_SNAP_DISTANCE))
+                    return Properties.GAMENPC_FOLLOWCHECK_TIME;
+            }
 
             Vector3 relative = targetPos - _ownerPosition;
             float distanceSquared = relative.LengthSquared();
@@ -728,12 +735,6 @@ namespace DOL.GS
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
 
-        public bool TrySnapToMesh(ref Vector3 destination)
-        {
-            const float MAX_SNAP_DISTANCE = 128f;
-            Zone zone = Owner.CurrentRegion.GetZone((int) destination.X, (int) destination.Y);
-            return PathfindingProvider.Instance.TrySnapToMesh(zone, ref destination, MAX_SNAP_DISTANCE);
-        }
 
         private void OnArrival()
         {
