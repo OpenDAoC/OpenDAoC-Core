@@ -19,7 +19,7 @@ namespace DOL.GS
         protected int _ticksToTarget;
         protected int _attackInterval;
         protected int _interval;
-        private GameLiving _owner;
+        private readonly GameLiving _owner;
         private long _nextMeleeTick;
         private long _nextRangedTick;
         private bool _firstTick = true;

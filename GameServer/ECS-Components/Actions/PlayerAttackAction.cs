@@ -7,7 +7,7 @@ namespace DOL.GS
 {
     public class PlayerAttackAction : AttackAction
     {
-        private GamePlayer _playerOwner;
+        private readonly GamePlayer _playerOwner;
 
         public PlayerAttackAction(GamePlayer owner) : base(owner)
         {
