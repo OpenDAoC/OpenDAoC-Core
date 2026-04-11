@@ -34,7 +34,7 @@ namespace DOL.GS
 			StartRegionMgr();
 			BeginAutoClosureCountdown(10);
 			
-			foreach (Zone z in m_zones)
+			foreach (Zone z in _zones)
 			{
 				m_zoneSkinMap.Add(z.ZoneSkinID, z);
 			}
@@ -420,9 +420,9 @@ namespace DOL.GS
 				{
 					try
 					{
-						for (int i = 0; i < m_ZoneAreasCount[zoneIndex]; i++)
+						for (int i = 0; i < _zoneAreasCount[zoneIndex]; i++)
 						{
-							IArea area = (IArea)Areas[m_ZoneAreas[zoneIndex][i]];
+							IArea area = (IArea)Areas[_zoneAreas[zoneIndex][i]];
 							if (area.IsContaining(p, checkZ))
 							{
 								areas.Add(area);
@@ -432,7 +432,7 @@ namespace DOL.GS
 					catch (Exception e)
 					{
 						if (log.IsErrorEnabled)
-							log.Error("GetAreaOfZone: Caught exception for Zone " + zone.Description + ", Area count " + m_ZoneAreasCount[zoneIndex] + ".", e);
+							log.Error("GetAreaOfZone: Caught exception for Zone " + zone.Description + ", Area count " + _zoneAreasCount[zoneIndex] + ".", e);
 					}
 				}
 			}
@@ -471,9 +471,9 @@ namespace DOL.GS
 				{
 					try
 					{
-						for (int i = 0; i < m_ZoneAreasCount[zoneIndex]; i++)
+						for (int i = 0; i < _zoneAreasCount[zoneIndex]; i++)
 						{
-							IArea area = (IArea)Areas[m_ZoneAreas[zoneIndex][i]];
+							IArea area = (IArea)Areas[_zoneAreas[zoneIndex][i]];
 							if (area.IsContaining(x, y, z))
 								areas.Add(area);
 						}
@@ -481,7 +481,7 @@ namespace DOL.GS
 					catch (Exception e)
 					{
 						if (log.IsErrorEnabled)
-							log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
+							log.Error("GetArea exception.Area count " + _zoneAreasCount[zoneIndex], e);
 					}
 				}
 			}
