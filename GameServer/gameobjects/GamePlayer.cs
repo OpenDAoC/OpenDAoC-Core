@@ -9480,45 +9480,50 @@ namespace DOL.GS
         /// <returns>true if dropped</returns>
         public virtual bool DropItem(eInventorySlot slot_pos)
         {
-            WorldInventoryItem tempItem;
-            return DropItem(slot_pos, out tempItem);
+            return DropItem(slot_pos, out _);
         }
 
         /// <summary>
         /// Called to drop an item from the Inventory to the floor
         /// and return the GameInventoryItem that is created on the floor
         /// </summary>
-        /// <param name="slot_pos">SlotPosition to drop</param>
+        /// <param name="slot">SlotPosition to drop</param>
         /// <param name="droppedItem">out GameItem that was created</param>
         /// <returns>true if dropped</returns>
-        public virtual bool DropItem(eInventorySlot slot_pos, out WorldInventoryItem droppedItem)
+        public virtual bool DropItem(eInventorySlot slot, out WorldInventoryItem droppedItem)
         {
             droppedItem = null;
-            if (slot_pos >= eInventorySlot.FirstBackpack && slot_pos <= eInventorySlot.LastBackpack)
+
+            if (slot is
+                (< eInventorySlot.FirstBackpack or > eInventorySlot.FirstBackpack) and
+                (< eInventorySlot.FirstQuiver or > eInventorySlot.FourthQuiver))
             {
-                lock (Inventory.Lock)
-                {
-                    DbInventoryItem item = Inventory.GetItem(slot_pos);
-                    if (!item.IsDropable)
-                    {
-                        Out.SendMessage(item.GetName(0, true) + " can not be dropped!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return false;
-                    }
-
-                    if (!Inventory.RemoveItem(item)) return false;
-                    InventoryLogging.LogInventoryAction(this, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
-
-                    droppedItem = CreateItemOnTheGround(item);
-
-                    if (droppedItem != null)
-                    {
-                        Notify(PlayerInventoryEvent.ItemDropped, this, new ItemDroppedEventArgs(item, droppedItem));
-                    }
-
-                    return true;
-                }
+                return false;
             }
-            return false;
+
+            DbInventoryItem item;
+
+            lock (Inventory.Lock)
+            {
+                item = Inventory.GetItem(slot);
+
+                if (!item.IsDropable)
+                {
+                    Out.SendMessage($"{item.GetName(0, true)} can not be dropped!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (!Inventory.RemoveItem(item))
+                    return false;
+            }
+
+            InventoryLogging.LogInventoryAction(this, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+            droppedItem = CreateItemOnTheGround(item);
+
+            if (droppedItem != null)
+                Notify(PlayerInventoryEvent.ItemDropped, this, new ItemDroppedEventArgs(item, droppedItem));
+
+            return true;
         }
 
         /// <summary>

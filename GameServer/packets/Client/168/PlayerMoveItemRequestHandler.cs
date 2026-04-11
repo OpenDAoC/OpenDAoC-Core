@@ -294,19 +294,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            if (fromClientSlot < eInventorySlot.FirstBackpack)
-            {
-                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
-                return;
-            }
-
-            if (!item.IsDropable)
-            {
-                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
-                client.Out.SendMessage("You can not drop this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
             if (client.Player.DropItem(fromClientSlot))
             {
                 client.Out.SendMessage($"You drop {item.GetName(0, false)} on the ground!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
