@@ -25,7 +25,6 @@ using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
-using DOL.GS.Utils;
 using DOL.Language;
 using DOL.Logging;
 using JNogueira.Discord.WebhookClient;
@@ -8171,15 +8170,16 @@ namespace DOL.GS
         /// <summary>
         /// Holds all areas this player is currently within
         /// </summary>
-        private ReaderWriterList<IArea> m_currentAreas = new ReaderWriterList<IArea>();
+        private List<IArea> _currentAreas = new();
+        private List<IArea> _areaBuffer = new();
 
         /// <summary>
         /// Holds all areas this player is currently within
         /// </summary>
-        public override IList<IArea> CurrentAreas
+        public override List<IArea> CurrentAreas
         {
-            get { return m_currentAreas; }
-            set { m_currentAreas.FreezeWhile(l => { l.Clear(); l.AddRange(value); }); }
+            get => _currentAreas;
+            set => _currentAreas = value;
         }
 
         /// <summary>
@@ -8192,16 +8192,45 @@ namespace DOL.GS
         /// </summary>
         public const int PLAYER_BASE_SPEED = 191;
 
-        public long m_areaUpdateTick = 0;
+        private long _nextAreaUpdateTick;
 
-
-        /// <summary>
-        /// Gets the tick when the areas should be updated
-        /// </summary>
-        public long AreaUpdateTick
+        public virtual void CheckAreas(Zone newZone)
         {
-            get { return m_areaUpdateTick; }
-            set { m_areaUpdateTick = value; }
+            // Uses a double-buffer swap.
+
+            if (GameLoop.GameLoopTime <= _nextAreaUpdateTick)
+                return;
+
+            List<IArea> activeAreas = CurrentAreas;
+            List<IArea> areasOfZone = CurrentRegion.GetAreasOfZone(newZone, this, true);
+
+            _areaBuffer.Clear();
+
+            for (int i = 0; i < activeAreas.Count; i++)
+            {
+                IArea area = activeAreas[i];
+
+                if (!areasOfZone.Contains(area))
+                    area.OnPlayerLeave(this);
+                else
+                    _areaBuffer.Add(area);
+            }
+
+            for (int i = 0; i < areasOfZone.Count; i++)
+            {
+                IArea area = areasOfZone[i];
+
+                if (!activeAreas.Contains(area))
+                {
+                    area.OnPlayerEnter(this);
+                    _areaBuffer.Add(area);
+                }
+            }
+
+            _areaBuffer = Interlocked.Exchange(ref _currentAreas, _areaBuffer);
+
+            const int UPDATE_INTERVAL = 2000;
+            _nextAreaUpdateTick = GameLoop.GameLoopTime + UPDATE_INTERVAL;
         }
 
         /// <summary>
@@ -10556,9 +10585,6 @@ namespace DOL.GS
                     GameServer.Database.SaveObject(MoneyForRealm);
                 }
 
-                //Save realmtimer
-                RealmTimer.SaveRealmTimer(this);
-
                 SaveSkillsToCharacter();
                 DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
                 DBCharacter.PlayedTimeSinceLevel = PlayedTimeSinceLevel;
@@ -11494,9 +11520,9 @@ namespace DOL.GS
                 {
                     return speed * Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS;
                 } 
-                else if (CurrentZone.IsOF && m_currentAreas.Count > 0)
+                else if (CurrentZone.IsOF && _currentAreas.Count > 0)
                 {
-                    foreach (var area in m_currentAreas)
+                    foreach (var area in _currentAreas)
                     {
                         if (area is KeepArea kA)
                         {

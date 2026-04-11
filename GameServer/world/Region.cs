@@ -77,19 +77,9 @@ namespace DOL.GS
         /// </summary>
         protected readonly List<Zone> _zones;
 
-        protected readonly Lock _lockAreas = new();
-
         protected Dictionary<ushort, IArea> Areas { get; }
-
-        /// <summary>
-        /// Cache for zone area mapping to quickly access all areas within a certain zone
-        /// </summary>
-        protected ushort[][] _zoneAreas;
-
-        /// <summary>
-        /// /// Cache for number of items in _ZoneAreas array.
-        /// </summary>
-        protected ushort[] _zoneAreasCount;
+        protected readonly Dictionary<Zone, List<IArea>> _zoneAreas;
+        protected readonly ReaderWriterLockSlim _areasLock = new(LockRecursionPolicy.NoRecursion);
 
         /// <summary>
         /// How often shall we remove unused objects
@@ -168,18 +158,11 @@ namespace DOL.GS
             _objectsInRegion = 0;
             _nextObjectSlot = 0;
             _objectsAllocatedSlots = [];
-
             _graveStones = new();
-
             _zones = new();
-            _zoneAreas = new ushort[64][];
-            _zoneAreasCount = new ushort[64];
-            for (int i = 0; i < 64; i++)
-            {
-                _zoneAreas[i] = new ushort[AbstractArea.MAX_AREAS_PER_ZONE];
-            }
-
+            _zoneAreas = new();
             Areas = new();
+
             List<string> list = null;
 
             if (Properties.DEBUG_LOAD_REGIONS != string.Empty)
@@ -1130,169 +1113,162 @@ namespace DOL.GS
 
         #region Area
 
-        /// <summary>
-        /// Adds an area to the region and updates area-zone cache
-        /// </summary>
-        /// <param name="area"></param>
-        /// <returns></returns>
         public virtual IArea AddArea(IArea area)
         {
-            lock (_lockAreas)
+            _areasLock.EnterWriteLock();
+
+            try
             {
                 ushort nextAreaID = 0;
 
                 foreach (ushort areaID in Areas.Keys)
                 {
                     if (areaID >= nextAreaID)
-                    {
-                        nextAreaID = (ushort)(areaID + 1);
-                    }
+                        nextAreaID = (ushort) (areaID + 1);
                 }
 
                 area.ID = nextAreaID;
                 Areas.Add(area.ID, area);
 
-                int zonePos = 0;
                 foreach (Zone zone in Zones)
                 {
                     if (area.IsIntersectingZone(zone))
-                        _zoneAreas[zonePos][_zoneAreasCount[zonePos]++] = area.ID;
-                    
-                    zonePos++;
+                    {
+                        if (!_zoneAreas.TryGetValue(zone, out List<IArea> zoneAreas))
+                        {
+                            zoneAreas = new();
+                            _zoneAreas[zone] = zoneAreas;
+                        }
+
+                        zoneAreas.Add(area);
+                    }
                 }
 
                 return area;
             }
+            finally
+            {
+                _areasLock.ExitWriteLock();
+            }
         }
 
-        /// <summary>
-        /// Removes an area from the list of areas and updates area-zone cache
-        /// </summary>
-        /// <param name="area"></param>
         public virtual void RemoveArea(IArea area)
         {
-            lock (_lockAreas)
+            _areasLock.EnterWriteLock();
+
+            try
             {
-                if (Areas.ContainsKey(area.ID) == false)
-                {
+                if (!Areas.Remove(area.ID))
                     return;
-                }
 
-                Areas.Remove(area.ID);
-                int ZoneCount = Zones.Count;
-
-                for (int zonePos = 0; zonePos < ZoneCount; zonePos++)
-                {
-                    for (int areaPos = 0; areaPos < _zoneAreasCount[zonePos]; areaPos++)
-                    {
-                        if (_zoneAreas[zonePos][areaPos] == area.ID)
-                        {
-                            // move the remaining _ZoneAreas array one to the left
-
-                            for (int i = areaPos; i < _zoneAreasCount[zonePos] - 1; i++)
-                            {
-                                _zoneAreas[zonePos][i] = _zoneAreas[zonePos][i + 1];
-                            }
-
-                            _zoneAreasCount[zonePos]--;
-                            break;
-                        }
-                    }
-                }
+                foreach (var zoneAreas in _zoneAreas.Values)
+                    zoneAreas.Remove(area);
+            }
+            finally
+            {
+                _areasLock.ExitWriteLock();
             }
         }
 
-        /// <summary>
-        /// Gets the areas for given location,
-        /// less performant than getAreasOfZone so use other on if possible
-        /// </summary>
-        public virtual List<IArea> GetAreasOfSpot(IPoint3D point)
+        public virtual void GetAreasOfSpot(IPoint3D point, List<IArea> results)
         {
             Zone zone = GetZone(point.X, point.Y);
-            return GetAreasOfZone(zone, point);
+
+            if (zone != null)
+                GetAreasOfZone(zone, point, true, results);
         }
 
-        /// <summary>
-        /// Gets the areas for a certain spot,
-        /// less performant than getAreasOfZone so use other on if possible
-        /// </summary>
-        public virtual List<IArea> GetAreasOfSpot(int x, int y, int z)
+        public virtual void GetAreasOfSpot(int x, int y, int z, List<IArea> results)
         {
             Zone zone = GetZone(x, y);
-            Point3D p = new(x, y, z);
-            return GetAreasOfZone(zone, p);
+
+            if (zone != null)
+                GetAreasOfZone(zone, x, y, z, results);
         }
 
-        public virtual List<IArea> GetAreasOfZone(Zone zone, IPoint3D p)
+        public virtual void GetAreasOfZone(Zone zone, IPoint3D p, List<IArea> results)
         {
-            return GetAreasOfZone(zone, p, true);
+            GetAreasOfZone(zone, p, true, results);
         }
 
-        /// <summary>
-        /// Gets the areas for a certain spot
-        /// </summary>
-        /// <param name="zone"></param>
-        /// <param name="p"></param>
-        /// <param name="checkZ"></param>
-        /// <returns></returns>
-        public virtual List<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
+        public virtual void GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ, List<IArea> results)
         {
-            lock (_lockAreas)
+            results.Clear();
+
+            if (zone == null)
+                return;
+
+            _areasLock.EnterReadLock();
+
+            try
             {
-                int zoneIndex = Zones.IndexOf(zone);
-                List<IArea> areas = new();
-
-                if (zoneIndex >= 0)
+                if (_zoneAreas.TryGetValue(zone, out List<IArea> zoneAreas))
                 {
-                    try
+                    foreach (var area in zoneAreas)
                     {
-                        for (int i = 0; i < _zoneAreasCount[zoneIndex]; i++)
-                        {
-                            IArea area = Areas[_zoneAreas[zoneIndex][i]];
-                            if (area.IsContaining(p, checkZ))
-                            {
-                                areas.Add(area);
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error("GetArea exception.Area count " + _zoneAreasCount[zoneIndex], e);
+                        if (area.IsContaining(p, checkZ))
+                            results.Add(area);
                     }
                 }
-
-                return areas;
             }
+            finally
+            {
+                _areasLock.ExitReadLock();
+            }
+        }
+
+        public virtual void GetAreasOfZone(Zone zone, int x, int y, int z, List<IArea> results)
+        {
+            results.Clear();
+
+            if (zone == null)
+                return;
+
+            _areasLock.EnterReadLock();
+
+            try
+            {
+                if (_zoneAreas.TryGetValue(zone, out List<IArea> zoneAreas))
+                {
+                    foreach (var area in zoneAreas)
+                    {
+                        if (area.IsContaining(x, y, z))
+                            results.Add(area);
+                    }
+                }
+            }
+            finally
+            {
+                _areasLock.ExitReadLock();
+            }
+        }
+
+        public virtual List<IArea> GetAreasOfSpot(IPoint3D point)
+        {
+            var results = GameLoop.GetListForTick<IArea>();
+            GetAreasOfSpot(point, results);
+            return results;
+        }
+
+        public virtual List<IArea> GetAreasOfSpot(int x, int y, int z)
+        {
+            var results = GameLoop.GetListForTick<IArea>();
+            GetAreasOfSpot(x, y, z, results);
+            return results;
+        }
+
+        public virtual List<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
+        {
+            var results = GameLoop.GetListForTick<IArea>();
+            GetAreasOfZone(zone, p, checkZ, results);
+            return results;
         }
 
         public virtual List<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
         {
-            lock (_lockAreas)
-            {
-                int zoneIndex = Zones.IndexOf(zone);
-                List<IArea> areas = new();
-
-                if (zoneIndex >= 0)
-                {
-                    try
-                    {
-                        for (int i = 0; i < _zoneAreasCount[zoneIndex]; i++)
-                        {
-                            IArea area = Areas[_zoneAreas[zoneIndex][i]];
-                            if (area.IsContaining(x, y, z))
-                                areas.Add(area);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error("GetArea exception.Area count " + _zoneAreasCount[zoneIndex], e);
-                    }
-                }
-
-                return areas;
-            }
+            var results = GameLoop.GetListForTick<IArea>();
+            GetAreasOfZone(zone, x, y, z, results);
+            return results;
         }
 
         #endregion

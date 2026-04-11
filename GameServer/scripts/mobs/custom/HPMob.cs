@@ -14,7 +14,6 @@ using DOL.GS.Effects;
 using DOL.GS.Movement;
 using DOL.GS.Quests;
 using DOL.GS.Spells;
-using DOL.GS.Utils;
 using DOL.GS.Housing;
 using DOL.GS.RealmAbilities;
 using System;

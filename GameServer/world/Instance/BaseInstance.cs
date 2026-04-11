@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
 
@@ -33,11 +32,6 @@ namespace DOL.GS
 		{
 			StartRegionMgr();
 			BeginAutoClosureCountdown(10);
-			
-			foreach (Zone z in _zones)
-			{
-				m_zoneSkinMap.Add(z.ZoneSkinID, z);
-			}
 		}
 
         #region Inheritance and Region
@@ -246,8 +240,6 @@ namespace DOL.GS
 			}
 
 			DOL.Events.GameEventMgr.RemoveAllHandlersForObject(this);
-			
-			m_zoneSkinMap.Clear();
 
 			Areas.Clear();
 		}
@@ -379,117 +371,6 @@ namespace DOL.GS
 		}
 
         #endregion
-
-        
-		#region Area
-
-		/// <summary>
-		/// Zone Mapping for Instances
-		/// Update Leodagan : moved from Instance to BaseInstance to make Areas work !
-		/// </summary>
-		protected Dictionary<int, Zone> m_zoneSkinMap = new Dictionary<int, Zone>();
-
-		/// <summary>
-		/// Gets the areas for a certain spot
-		/// </summary>
-		/// <param name="zone"></param>
-		/// <param name="p"></param>
-		/// <param name="checkZ"></param>
-		/// <returns></returns>
-		public override List<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
-		{
-			Zone checkZone = zone;
-			var areas = new List<IArea>();
-
-			if (checkZone == null)
-			{
-				return areas;
-			}
-
-			// Players will always request the skinned zone so map it to the actual instance zone
-			if (m_zoneSkinMap.ContainsKey(zone.ID))
-			{
-				checkZone = m_zoneSkinMap[zone.ID];
-			}
-
-			int zoneIndex = Zones.IndexOf(checkZone);
-
-			if (zoneIndex >= 0)
-			{
-				lock (_lockAreas)
-				{
-					try
-					{
-						for (int i = 0; i < _zoneAreasCount[zoneIndex]; i++)
-						{
-							IArea area = (IArea)Areas[_zoneAreas[zoneIndex][i]];
-							if (area.IsContaining(p, checkZ))
-							{
-								areas.Add(area);
-							}
-						}
-					}
-					catch (Exception e)
-					{
-						if (log.IsErrorEnabled)
-							log.Error("GetAreaOfZone: Caught exception for Zone " + zone.Description + ", Area count " + _zoneAreasCount[zoneIndex] + ".", e);
-					}
-				}
-			}
-
-			return areas;
-		}
-
-		/// <summary>
-		/// Gets the areas for a certain spot
-		/// </summary>
-		/// <param name="zone"></param>
-		/// <param name="p"></param>
-		/// <param name="checkZ"></param>
-		/// <returns></returns>
-		public override List<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
-		{
-			Zone checkZone = zone;
-			var areas = new List<IArea>();
-
-			if (checkZone == null)
-			{
-				return areas;
-			}
-
-			// Players will always request the skinned zone so map it to the actual instance zone
-			if (m_zoneSkinMap.ContainsKey(zone.ID))
-			{
-				checkZone = m_zoneSkinMap[zone.ID];
-			}
-
-			int zoneIndex = Zones.IndexOf(checkZone);
-
-			if (zoneIndex >= 0)
-			{
-				lock (_lockAreas)
-				{
-					try
-					{
-						for (int i = 0; i < _zoneAreasCount[zoneIndex]; i++)
-						{
-							IArea area = (IArea)Areas[_zoneAreas[zoneIndex][i]];
-							if (area.IsContaining(x, y, z))
-								areas.Add(area);
-						}
-					}
-					catch (Exception e)
-					{
-						if (log.IsErrorEnabled)
-							log.Error("GetArea exception.Area count " + _zoneAreasCount[zoneIndex], e);
-					}
-				}
-			}
-
-			return areas;
-		}
-
-		#endregion
 
 		#region mobcount
 
