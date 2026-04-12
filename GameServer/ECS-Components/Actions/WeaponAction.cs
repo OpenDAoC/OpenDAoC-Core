@@ -18,8 +18,7 @@ namespace DOL.GS
         private double _effectiveness;
         private int _interval;
         private Style _combatStyle;
-        private int _leftHandSwingCount;
-        private bool _isDualWieldAttack; // Not necessarily true even if _leftHandSwingCount is > 0, for example H2H isn't technically dual wield.
+        private bool _isDualWieldAttack; // Not necessarily true even if we swing offhand, for example H2H isn't technically dual wield.
 
         public long AttackRoundEndTime { get; private set; }
         public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
@@ -70,13 +69,36 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            _isDualWieldAttack = IsDualWieldAttack(_attackWeapon, _leftWeapon, _owner); // Should be false for H2H.
-            _leftHandSwingCount = _owner.attackComponent.CalculateLeftHandSwingCount(_attackWeapon, _leftWeapon);
+            bool isDualWieldAttack = IsDualWieldAttack(_attackWeapon, _leftWeapon, _owner); // Must be false for H2H.
+            DetermineExtraSwings(out bool willOffhandSwing, out bool willMainDoubleHit, out bool willOffhandDoubleHit);
+            bool hasExtraSwings = willOffhandSwing || willMainDoubleHit || willOffhandDoubleHit;
 
-            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, out AttackData mainHandAttackData))
+            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, isDualWieldAttack, hasExtraSwings, out AttackData mainHandAttackData))
                 return;
 
-            MakeOffHandAttack(out AttackData leftHandAttackData); // This returns the last attack for H2H, not sure if this is correct.
+            AttackData extraAttackData = null;
+            DbInventoryItem lastExtraWeapon = null;
+
+            if (willOffhandSwing)
+            {
+                lastExtraWeapon = _leftWeapon;
+                extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _leftWeapon, null, _effectiveness, _interval, _isDualWieldAttack);
+                MakeAttack(extraAttackData);
+            }
+
+            if (willMainDoubleHit)
+            {
+                lastExtraWeapon = _attackWeapon;
+                extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _attackWeapon, null, _effectiveness, _interval, _isDualWieldAttack);
+                MakeAttack(extraAttackData);
+            }
+
+            if (willOffhandDoubleHit)
+            {
+                lastExtraWeapon = _leftWeapon;
+                extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _leftWeapon, null, _effectiveness, _interval, _isDualWieldAttack);
+                MakeAttack(extraAttackData);
+            }
 
             switch (mainHandAttackData.AttackResult)
             {
@@ -111,8 +133,8 @@ namespace DOL.GS
                 playerOwner.Stealth(false);
 
             // Show the animation.
-            if (mainHandAttackData.AttackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle && leftHandAttackData != null)
-                ShowAttackAnimation(leftHandAttackData, _leftWeapon);
+            if (mainHandAttackData.AttackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle && extraAttackData != null)
+                ShowAttackAnimation(extraAttackData, lastExtraWeapon);
             else
                 ShowAttackAnimation(mainHandAttackData, _attackWeapon);
 
@@ -130,6 +152,64 @@ namespace DOL.GS
                     ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(_owner, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                     spellHandler?.StartSpell(livingTarget);
                 }
+            }
+        }
+
+        private void DetermineExtraSwings(out bool willOffhandSwing, out bool willMainDoubleHit, out bool willOffhandDoubleHit)
+        {
+            willOffhandSwing = false;
+            willMainDoubleHit = false;
+            willOffhandDoubleHit = false;
+
+            if (!_owner.attackComponent.CanUseLefthandedWeapon ||
+                _leftWeapon == null ||
+                (eObjectType) _leftWeapon.Object_Type is eObjectType.Shield)
+            {
+                return;
+            }
+
+            if (_owner is GameNPC npcOwner)
+            {
+                if (_attackWeapon == null || _attackWeapon.SlotPosition is not Slot.RIGHTHAND)
+                    return;
+
+                double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
+                willOffhandSwing = random < npcOwner.LeftHandSwingChance;
+                return;
+            }
+
+            if (_owner is not GamePlayer playerOwner || _attackWeapon == null)
+                return;
+
+            // Left Axe.
+            if (_owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+            {
+                willOffhandSwing = true;
+                return;
+            }
+
+            // DW / CD.
+            double leftHandSwingChance = _owner.attackComponent.CalculateDwCdLeftHandSwingChance();
+
+            if (leftHandSwingChance > 0)
+            {
+                willOffhandSwing = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) < leftHandSwingChance;
+                return;
+            }
+
+            // H2H.
+            (double offhandSwingChance, double doubleHitChance) = _owner.attackComponent.CalculateHthSwingChances(_leftWeapon);
+
+            // Use deck for offhand chance only, as this requires rolls to be somewhat streaky to work as intended.
+            if (offhandSwingChance > 0)
+                willOffhandSwing = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) < offhandSwingChance;
+
+            if (doubleHitChance > 0)
+            {
+                if (willOffhandSwing)
+                    willOffhandDoubleHit = Util.RandomDouble() < doubleHitChance;
+
+                willMainDoubleHit = Util.RandomDouble() < doubleHitChance;
             }
         }
 
@@ -280,15 +360,22 @@ namespace DOL.GS
             return false;
         }
 
-        private bool MakeMainHandAttack(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, Style style, double mainHandEffectiveness, out AttackData attackData)
+        private bool MakeMainHandAttack(
+            DbInventoryItem mainWeapon,
+            DbInventoryItem leftWeapon,
+            Style style,
+            double mainHandEffectiveness,
+            bool isDualWieldAttack,
+            bool hasExtraSwings,
+            out AttackData attackData)
         {
             int animationId = 0;
             _owner.attackComponent.UsedHandOnLastDualWieldAttack = 0;
 
             // Determine the weapon and animation to use.
-            if (_leftHandSwingCount > 0)
+            if (hasExtraSwings)
             {
-                if (_isDualWieldAttack)
+                if (isDualWieldAttack)
                     _owner.attackComponent.UsedHandOnLastDualWieldAttack = 2;
 
                 if (style == null)
@@ -297,7 +384,7 @@ namespace DOL.GS
             else if (mainWeapon != null)
             {
                 // One of two hands is used for attack if no style, treated as a main hand attack.
-                if (_isDualWieldAttack && style == null && Util.Chance(50))
+                if (isDualWieldAttack && style == null && Util.Chance(50))
                 {
                     mainWeapon = leftWeapon;
                     _owner.attackComponent.UsedHandOnLastDualWieldAttack = 1;
@@ -333,22 +420,6 @@ namespace DOL.GS
 
             MakeAttack(attackData);
             return true;
-        }
-
-        private void MakeOffHandAttack(out AttackData leftHandAttackData)
-        {
-            leftHandAttackData = null;
-
-            for (int i = 0; i < _leftHandSwingCount; i++)
-            {
-                // Savage swings - main, left, main, left.
-                if (i % 2 == 0)
-                    leftHandAttackData = _owner.attackComponent.MakeAttack(this, _target, _leftWeapon, null, _effectiveness, _interval, _isDualWieldAttack);
-                else
-                    leftHandAttackData = _owner.attackComponent.MakeAttack(this, _target, _attackWeapon, null, _effectiveness, _interval, _isDualWieldAttack);
-
-                MakeAttack(leftHandAttackData);
-            }
         }
 
         private void MakeAttack(AttackData attackData)

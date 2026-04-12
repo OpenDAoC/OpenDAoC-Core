@@ -2291,16 +2291,18 @@ namespace DOL.GS
             if (specLevel > 0)
             {
                 int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
-                return 25 + specLevel * 68 * 0.01 + bonus;
+                return 0.25 + specLevel * 0.0068 + bonus * 0.01;
             }
 
             return 0;
         }
 
-        public (double, double, double) CalculateHthSwingChances(DbInventoryItem leftWeapon)
+        public (double offhandSwingChance, double doubleHitChance) CalculateHthSwingChances(DbInventoryItem leftWeapon)
         {
             /*
              * https://www.darkageofcamelot.com/2020/07/31/friday-grab-bag-07312020/:
+             * First, only your composite Hand to Hand specialization level (including any amounts over 50) affects triple or quad attack rates.
+             * 10,000 swing tests:
              * The rates at 50+16 are as follows:
              * Triple: 16%
              * Quad: 5.75%
@@ -2321,6 +2323,15 @@ namespace DOL.GS
              * A bug in Savage's chances to triple or quad has been fixed.
              * Savages should now triple more frequently than before, and quad less frequently than before.
              * Due to this, overall savage damage should decrease.
+             * 
+             * https://www.tapatalk.com/groups/lighttanksofdaoc/hth-quad-i-noticed-t1604.html
+             * I noticed something interesting with my savage when I used a pierce HTH in my right and slash HTH in my left.
+             * When I did a quad hit, hit number 1 and 3 had the same damage mod and hit 2 and 4 had the same damage mod.
+             * This would mean that hand one can double hit and hand two can double hit. Neither hand triples if this is the case.
+             * Double hits would occur when hand one doubles or hand one singles and hand two fires.
+             * Triple hits require hand two to fire and one hand to double.
+             * Quad hits happen when both hands double.
+             * This would mean that dualist reflexes will increase your chance to triple and quad since both require your left hand to fire.
              */
 
             /*
@@ -2329,104 +2340,38 @@ namespace DOL.GS
              * https://forums.jeuxonline.info/sujet/212949-3/guide-le-sauvage#post4333752
              * Unfortunately, there is no data post 1.65 to confirm the new rates, or if anything else changed.
              * 
-             * One interesting thing about the old formula is that it appears to have triple and quad hit chances consuming from double hit chance.
-             * Our formula conciliates this idea with the rates given by the 2020 grab bag to the decimal.
+             * One interesting thing about the old formula is that it appears to have triple and quad hit chances consuming from double hit chance,
+             * But it's unclear if this is actually how it worked.
              * 
-             * The "base pool" determines the overall scaling of the chances, i.e. the expected amount of hits per attack given a certain spec.
-             * This follows the same growth as CD/DW and LA, with one exception: It has a base value of 30 instead of 25.
-             * When triple and quads hits aren't unlocked yet, this represents the chances of double hits.
-             * What live used for double hits is obviously unknown, but I suspect Savage had a slightly higher chance, being a SI class.
-             * This makes H2H sit slightly above CD/DW and LA at every level.
-             * 
-             * Dualist Reflex also "trickles down" to triple and quads hits,
-             * and offers a scaling comparable to CD/DW once quad hits are unlocked.
-             * Dualist Reflex still benefits LA a lot more.
+             * Both the post on tapatalk and the way the grab bag mentions "10,000 swing tests" suggest the final chances weren't pre-calculated with a formula,
+             * but rather a logic flow was used, where the game would first check if an offhand swing occurred, then each hand would check for a double hit.
+             * This would also make Dualist Reflex naturally "trickles down" to triple and quads hits.
              */
 
-            int specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
+            if (leftWeapon == null)
+                return (0, 0);
 
-            if (specLevel <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
-                return (0, 0, 0);
+            int spec = owner.GetModifiedSpecLevel(Specs.HandToHand);
 
-            int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
-            double basePool = 0.68 * specLevel + 30.0;
-            double bonusMod = (basePool + bonus) / basePool;
+            if (spec <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
+                return (0, 0);
 
-            double quadSwingChance = specLevel < 40 ? 0 : (0.0625 * specLevel + 1.625) * bonusMod;
-            double tripleSwingChance = specLevel < 25 ? 0 : (0.125 * specLevel + 7.75) * bonusMod;
-            double doubleSwingChance = basePool + bonus - 2 * tripleSwingChance - 3 * quadSwingChance;
-            return (doubleSwingChance, tripleSwingChance, quadSwingChance);
+            double bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
+            double offhandSwingChance = spec * 0.005 + bonus * 0.01;
+            double doubleHitChance = 0.2 + spec * (1 / 300.0);
+            return (offhandSwingChance, doubleHitChance);
         }
 
-        /// <summary>
-        /// Calculates how many times left hand swings
-        /// </summary>
-        public int CalculateLeftHandSwingCount(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon)
+        public (double doubleChance, double tripleChance, double quadChance) DeriveHthSwingChances(DbInventoryItem leftWeapon)
         {
-            // Let's make NPCs require an actual weapon too. It looks silly otherwise.
-            if (!CanUseLefthandedWeapon || leftWeapon == null || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield)
-                return 0;
+            // Derive the final chances for double, triple, and quad hits from the offhand swing chance and the double hit (per hand) chance.
+            // For display purposes only.
 
-            if (owner is GameNPC npcOwner)
-            {
-                if (mainWeapon == null || mainWeapon.SlotPosition is not Slot.RIGHTHAND)
-                    return 0;
-
-                double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
-                return random < npcOwner.LeftHandSwingChance ? 1 : 0;
-            }
-
-            if (owner is not GamePlayer playerOwner || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield || mainWeapon == null)
-                return 0;
-
-            if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
-            {
-                if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                {
-                    // This shouldn't be done here.
-                    double effectiveness = CalculateLeftAxeModifier();
-                    playerOwner.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty)\n", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
-                }
-
-                return 1; // Always use left axe.
-            }
-
-            double leftHandSwingChance = CalculateDwCdLeftHandSwingChance();
-
-            if (leftHandSwingChance > 0)
-            {
-                double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
-
-                if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage($"OH swing%: {leftHandSwingChance:0.##}\n", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
-
-                return random < leftHandSwingChance ? 1 : 0;
-            }
-
-            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = CalculateHthSwingChances(leftWeapon);
-
-            if (doubleSwingChance > 0)
-            {
-                double random = owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
-
-                if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage( $"Chance for 2 swings: {doubleSwingChance:0.##}% | 3 swings: {tripleSwingChance:0.##}% | 4 swings: {quadSwingChance:0.##}% \n", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
-
-                if (random < doubleSwingChance)
-                    return 1;
-
-                tripleSwingChance += doubleSwingChance;
-
-                if (random < tripleSwingChance)
-                    return 2;
-
-                quadSwingChance += tripleSwingChance;
-
-                if (random < quadSwingChance)
-                    return 3;
-            }
-
-            return 0;
+            (double offhandSwingChance, double doubleHitChance) = CalculateHthSwingChances(leftWeapon);
+            double doubleChance = (1 - offhandSwingChance) * doubleHitChance + offhandSwingChance * Math.Pow(1 - doubleHitChance, 2);
+            double tripleChance = offhandSwingChance * 2 * doubleHitChance * (1 - doubleHitChance);
+            double quadChance = offhandSwingChance * doubleHitChance * doubleHitChance;
+            return (doubleChance, tripleChance, quadChance);
         }
 
         public double CalculateLeftAxeModifier()
