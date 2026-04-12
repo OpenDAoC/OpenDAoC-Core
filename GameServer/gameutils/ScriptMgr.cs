@@ -256,13 +256,14 @@ namespace DOL.GS
         {
             try
             {
+                ePrivLevel priv = client.Account == null ? ePrivLevel.Admin : (ePrivLevel)client.Account.PrivLevel;
                 string[] pars = ParseCmdLine(cmdLine);
-                GameCommand myCommand = GuessCommand(pars[0], (ePrivLevel) client.Account.PrivLevel);
+                GameCommand myCommand = GuessCommand(pars[0], priv);
 
                 if (myCommand == null)
                     return false;
 
-                if (client.Account.PrivLevel < myCommand.m_lvl && !SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
+                if ((uint)priv < myCommand.m_lvl && (client.Player == null || !SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1))))
                     return false;
 
                 ExecuteCommand(client, myCommand, pars);
@@ -271,6 +272,7 @@ namespace DOL.GS
             {
                 if (log.IsErrorEnabled)
                     log.Error("HandleCommand", e);
+                return false;
             }
             return true;
         }
