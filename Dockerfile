@@ -50,7 +50,7 @@ COPY --from=build /tmp/opendaoc-db/opendaoc-db-core/combined.sql /tmp/opendaoc-d
 COPY --from=build /build/entrypoint.sh /app
 
 # Make the entrypoint script executable
-RUN chmod +x /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
