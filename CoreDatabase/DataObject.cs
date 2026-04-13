@@ -114,6 +114,7 @@ namespace DOL.Database
             var obj = (DataObject) MemberwiseClone();
             obj.IsPersisted = false;
             obj.ObjectId = IdGenerator.GenerateID();
+            obj._snapshot = null;
             return obj;
         }
 
