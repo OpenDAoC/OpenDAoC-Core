@@ -405,7 +405,7 @@ FodyWeavers.xsd
 .idea
 
 #VS Code
-.vscode
+.vscode/*
 
 ##
 ## Visual studio for Mac
