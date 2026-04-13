@@ -2345,11 +2345,7 @@ namespace DOL.GS
              * 
              * Both the post on tapatalk and the way the grab bag mentions "10,000 swing tests" suggest the final chances weren't pre-calculated with a formula,
              * but rather a logic flow was used, where the game would first check if an offhand swing occurred, then each hand would check for a double hit.
-             * This would also make Dualist's Reflex naturally "trickles down" to triple and quads hits.
-             * 
-             * Our current implementation follows this logic, but doesn't respect the grab bag numbers,
-             * since it's very recent and can push quad hit chances to almost 10% at RR10 and with Dualist's Reflexes.
-             * We also try to respect the same expected hit count slope as other dual wield lines.
+             * This would also make Dualist Reflex naturally "trickles down" to triple and quads hits.
              */
 
             if (leftWeapon == null)
@@ -2361,8 +2357,8 @@ namespace DOL.GS
                 return (0, 0);
 
             double bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
-            double offhandSwingChance = spec * 0.005 - 0.025 + bonus * 0.01;
-            double doubleHitChance = 0.375;
+            double offhandSwingChance = spec * 0.005 + bonus * 0.01;
+            double doubleHitChance = 0.2 + spec * (1 / 300.0);
             return (offhandSwingChance, doubleHitChance);
         }
 
