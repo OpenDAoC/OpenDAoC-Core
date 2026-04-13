@@ -404,6 +404,9 @@ FodyWeavers.xsd
 *.sln.iml
 .idea
 
+#VS Code
+.vscode
+
 ##
 ## Visual studio for Mac
 ##
