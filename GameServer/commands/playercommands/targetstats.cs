@@ -149,10 +149,10 @@ namespace DOL.GS.Commands
                             info.Add($"Swing:  {leftHandSwingChance * 100:0.00}%");
                         else
                         {
-                            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = target.attackComponent.DeriveHthSwingChances(weapon);
+                            (double doubleChance, double tripleChance, double quadChance) = target.attackComponent.CalculateHthSwingChances(weapon);
 
-                            if (doubleSwingChance > 0)
-                                info.Add($"Double swing:  {doubleSwingChance * 100:0.00}%  |  Triple swing:  {tripleSwingChance * 100:0.00}%  |  Quad swing:  {quadSwingChance * 100:0.00}%");
+                            if (doubleChance > 0)
+                                info.Add($"Double swing:  {doubleChance * 100:0.00}%  |  Triple swing:  {tripleChance * 100:0.00}%  |  Quad swing:  {quadChance * 100:0.00}%");
                         }
                     }
                 }

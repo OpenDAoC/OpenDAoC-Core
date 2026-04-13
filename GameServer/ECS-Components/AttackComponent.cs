@@ -2297,7 +2297,7 @@ namespace DOL.GS
             return 0;
         }
 
-        public (double offhandSwingChance, double doubleHitChance) CalculateHthSwingChances(DbInventoryItem leftWeapon)
+        public (double doubleChance, double tripleChance, double quadChance) CalculateHthSwingChances(DbInventoryItem leftWeapon)
         {
             /*
              * https://www.darkageofcamelot.com/2020/07/31/friday-grab-bag-07312020/:
@@ -2349,29 +2349,20 @@ namespace DOL.GS
              */
 
             if (leftWeapon == null)
-                return (0, 0);
+                return (0, 0, 0);
 
-            int spec = owner.GetModifiedSpecLevel(Specs.HandToHand);
+            double spec = owner.GetModifiedSpecLevel(Specs.HandToHand);
 
             if (spec <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
-                return (0, 0);
+                return (0, 0, 0);
 
-            double bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
-            double offhandSwingChance = spec * 0.005 + bonus * 0.01;
-            double doubleHitChance = 0.2 + spec * (1 / 300.0);
-            return (offhandSwingChance, doubleHitChance);
-        }
-
-        public (double doubleChance, double tripleChance, double quadChance) DeriveHthSwingChances(DbInventoryItem leftWeapon)
-        {
-            // Derive the final chances for double, triple, and quad hits from the offhand swing chance and the double hit (per hand) chance.
-            // For display purposes only.
-
-            (double offhandSwingChance, double doubleHitChance) = CalculateHthSwingChances(leftWeapon);
-            double doubleChance = (1 - offhandSwingChance) * doubleHitChance + offhandSwingChance * Math.Pow(1 - doubleHitChance, 2);
-            double tripleChance = offhandSwingChance * 2 * doubleHitChance * (1 - doubleHitChance);
-            double quadChance = offhandSwingChance * doubleHitChance * doubleHitChance;
-            return (doubleChance, tripleChance, quadChance);
+            spec *= 0.01;
+            double doubleSwingChance = spec * 0.5;
+            double tripleSwingChance = doubleSwingChance * 0.5;
+            double quadSwingChance = tripleSwingChance * 0.25;
+            int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
+            doubleSwingChance += bonus; // It's apparently supposed to only affect double swing chance around 1.65, which puts it more in line with DW / CD.
+            return (doubleSwingChance, tripleSwingChance, quadSwingChance);
         }
 
         public double CalculateLeftAxeModifier()
