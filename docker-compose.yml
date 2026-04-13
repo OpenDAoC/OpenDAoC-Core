@@ -10,6 +10,8 @@ services:
   db:
     image: mariadb:10.6
     container_name: opendaoc-db
+    ports:
+      - "127.0.0.1:3306:3306"
     stdin_open: true
     tty: true
     command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1 --character-set-server=utf8mb3 --collation-server=utf8mb3_general_ci --innodb_large_prefix=1 --innodb_file_format=Barracuda --innodb_file_per_table=1
@@ -24,7 +26,10 @@ services:
       - opendaoc-network
 
   gameserver:
-    image: ghcr.io/opendaoc/opendaoc-core:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: opendaoc-core-local:dev
     container_name: opendaoc-server
     stdin_open: true
     tty: true
