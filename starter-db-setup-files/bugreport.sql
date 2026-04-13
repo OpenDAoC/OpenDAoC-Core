@@ -1,0 +1,23 @@
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE TABLE IF NOT EXISTS `bugreport` (
+  `ID` int(11) NOT NULL DEFAULT 0,
+  `Message` text NOT NULL,
+  `Submitter` text NOT NULL,
+  `DateSubmitted` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `ClosedBy` text NOT NULL,
+  `DateClosed` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `Category` text DEFAULT NULL,
+  `LastTimeRowUpdated` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `BugReport_ID` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `U_BugReport_BugReport_ID` (`BugReport_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+/*!40000 ALTER TABLE `bugreport` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bugreport` ENABLE KEYS */;
+
