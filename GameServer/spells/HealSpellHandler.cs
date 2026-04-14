@@ -226,13 +226,6 @@ namespace DOL.GS.Spells
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
-            if (m_spellLine.KeyName is GlobalSpellsLines.Item_Effects)
-            {
-                min = 0.75;
-                max = 1.25;
-                return;
-            }
-
             if (m_spellLine.KeyName is GlobalSpellsLines.Potions_Effects)
             {
                 min = 1.00;
@@ -240,7 +233,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
+            if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect or  GlobalSpellsLines.Item_Effects)
             {
                 min = max = 1.25;
                 return;
