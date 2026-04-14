@@ -488,3 +488,5 @@ $RECYCLE.BIN/
 
 # OpenDAoC
 /Pathing/Detour/Build
+
+OpenDAoC/**/*
