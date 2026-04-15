@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler.Client.v168;
 using DOL.GS.Spells;
 using DOL.Logging;
 
@@ -488,6 +489,9 @@ namespace DOL.GS
                             {
                                 ISpellHandler spellHandler = spellEffect.SpellHandler;
                                 Spell spell = spellHandler?.Spell;
+
+                                if (spell.IsDynamic)
+                                    effect.OwnerPlayer?.Out.SendDelveInfo(DetailDisplayHandler.DelveSpell(spellHandler));
 
                                 if (spell.IsPulsing)
                                 {
