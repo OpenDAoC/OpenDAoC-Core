@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 		public WallOfFlameAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		private int dmgValue = 400; // 400 Dmg
-		private uint duration = 15; // 15 Sec duration
+		private int duration = 15; // 15 Sec duration
 
 		public override void Execute(GameLiving living)
 		{

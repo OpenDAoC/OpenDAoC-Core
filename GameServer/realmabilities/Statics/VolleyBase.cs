@@ -3,7 +3,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities.Statics
 {
-	public class VolleyBase : GenericBase
+	public class VolleyBase : RealmAbilityStaticItemBase
 	{
 		protected override string GetStaticName() { return "Volley"; }
 		protected override ushort GetStaticModel() { return 2909; }//2909
@@ -35,9 +35,9 @@ namespace DOL.GS.RealmAbilities.Statics
         protected override void CastSpell(GameLiving target)
 		{
 			if (!target.IsAlive) return;
-			if (GameServer.ServerRules.IsAllowedToAttack(m_caster, target, true))
+			if (GameServer.ServerRules.IsAllowedToAttack(_caster, target, true))
 			{
-				ISpellHandler damage = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+				ISpellHandler damage = ScriptMgr.CreateSpellHandler(_caster, s, sl);
 				damage.StartSpell(target);
 			}
 		}
