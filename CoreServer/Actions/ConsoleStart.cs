@@ -36,6 +36,11 @@ namespace DOL.DOLServer.Actions
             get { return "Starts the DOL server in console mode"; }
         }
 
+        /// <summary>
+        /// Mock client for console commands
+        /// </summary>
+        private GameClient m_clientConsole;
+
         private bool crashOnFail = false;
 
 
@@ -113,17 +118,36 @@ namespace DOL.DOLServer.Actions
                         if (line[0] != '/')
                             line = $"/{line}";
 
-                        GameClient client = new(null);
-                        client.Out = new ConsolePacketLib();
-
                         try
                         {
-                            if (!ScriptMgr.HandleCommand(client, $"&{line[1..]}"))
+                            if (m_clientConsole == null)
+                            {
+                                m_clientConsole = new(null);
+                                m_clientConsole.Account = new();
+                                m_clientConsole.Account.Name = "ConsoleAdmin";
+                                m_clientConsole.Account.Language = DOL.GS.ServerProperties.Properties.SERV_LANGUAGE;
+                                m_clientConsole.Account.PrivLevel = (uint)ePrivLevel.Admin;
+                                m_clientConsole.ClientState = GameClient.eClientState.Playing;
+                                m_clientConsole.Out = new ConsolePacketLib();
+                                m_clientConsole.Player = new GamePlayer(m_clientConsole, null);
+                                m_clientConsole.Player.Name = m_clientConsole.Account.Name;
+                                m_clientConsole.Player.Realm = eRealm.None;
+                            }
+
+                            if (!ScriptMgr.HandleCommand(m_clientConsole, $"&{line[1..]}"))
+                            {
+                                ConsoleColor before = Console.ForegroundColor;
+                                Console.ForegroundColor = ConsoleColor.Cyan;
                                 Console.WriteLine($"Unknown command: {line}");
+                                Console.ForegroundColor = before;
+                            }
                         }
                         catch (Exception e)
                         {
+                            ConsoleColor before = Console.ForegroundColor;
+                            Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.WriteLine(e.ToString());
+                            Console.ForegroundColor = before;
                         }
 
                         break;
