@@ -2325,3 +2325,42 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('midgard_jamtland_mountains_zone113_venomum_057_057',100,113,'Venomum','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t6',15,1,1,2.5,2.5,45,57,57),
 ('midgard_jamtland_mountains_zone113_dire_wolverine_058_058',100,113,'dire wolverine','classic_ecology_loot_animal_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t6',4,1,0,1,1,0,58,58);
 -- END OpenDAoC local seed: Midgard Jamtland Mountains ecology mappings
+
+
+-- BEGIN OpenDAoC local seed: Midgard Odin's Gate ecology mappings
+REPLACE INTO `zoneecologyloot` VALUES
+('midgard_odins_gate_zone115_white_wolf_027_029',100,115,'white wolf','classic_ecology_loot_canine',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t3',4,1,0,1,1,0,27,29),
+('midgard_odins_gate_zone115_white_wolf_030_031',100,115,'white wolf','classic_ecology_loot_canine',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t4',4,1,0,1,1,0,30,31),
+('midgard_odins_gate_zone115_ice_giant_033_037',100,115,'ice giant','classic_ecology_loot_giant',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,33,37),
+('midgard_odins_gate_zone115_frost_orm_035_036',100,115,'frost orm','classic_ecology_loot_snake',1,0,1,'2026-04-16 00:00:00','snake','classic_ecology_material_reptile_t4',6,1,0,1,1,0,35,36),
+('midgard_odins_gate_zone115_torpor_worm_037_038',100,115,'torpor worm','classic_ecology_loot_insect',1,0,1,'2026-04-16 00:00:00','insect','classic_ecology_material_insect_t4',6,1,0,1,1,0,37,38),
+('midgard_odins_gate_zone115_frost_giant_037_039',100,115,'frost giant','classic_ecology_loot_giant',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,37,39),
+('midgard_odins_gate_zone115_great_lynx_039_039',100,115,'great lynx','classic_ecology_loot_feline',1,0,1,'2026-04-16 00:00:00','feline','classic_ecology_material_animal_t4',4,1,0,1,1,0,39,39),
+('midgard_odins_gate_zone115_great_lynx_040_042',100,115,'great lynx','classic_ecology_loot_feline',1,0,1,'2026-04-16 00:00:00','feline','classic_ecology_material_animal_t5',4,1,0,1,1,0,40,42),
+('midgard_odins_gate_zone115_wintery_dirge_040_044',100,115,'wintery dirge','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t5',6,1,0,1,1,0,40,44),
+('midgard_odins_gate_zone115_bone_eater_eviscerater_041_042',100,115,'bone-eater eviscerater','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,41,42),
+('midgard_odins_gate_zone115_aurora_041_048',100,115,'aurora','classic_ecology_loot_elemental',1,0,1,'2026-04-16 00:00:00','elemental','classic_ecology_material_spirit_t5',6,1,0,1,1,0,41,48),
+('midgard_odins_gate_zone115_frost_giant_042_042',100,115,'frost giant','classic_ecology_loot_giant',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,42,42),
+('midgard_odins_gate_zone115_shard_golem_042_043',100,115,'shard golem','classic_ecology_loot_stone',1,0,1,'2026-04-16 00:00:00','stone','classic_ecology_material_stone_t5',6,1,0,1,1,0,42,43),
+('midgard_odins_gate_zone115_ghastly_albion_invader_042_048',100,115,'ghastly Albion invader','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,42,48),
+('midgard_odins_gate_zone115_isalf_forayer_044_044',100,115,'isalf forayer','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,44,44),
+('midgard_odins_gate_zone115_fallen_troll_044_045',100,115,'fallen troll','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,44,45),
+('midgard_odins_gate_zone115_glacial_mauler_044_045',100,115,'glacial mauler','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t5',4,1,0,1,1,0,44,45),
+('midgard_odins_gate_zone115_icestrider_frostweaver_044_046',100,115,'icestrider frostweaver','classic_ecology_loot_spider',1,0,1,'2026-04-16 00:00:00','spider','classic_ecology_material_insect_t5',6,1,0,1,1,0,44,46),
+('midgard_odins_gate_zone115_fenrir_guard_045_045',100,115,'fenrir guard','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,45,45),
+('midgard_odins_gate_zone115_savage_wyvern_045_049',100,115,'savage wyvern','classic_ecology_loot_reptile',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t5',6,1,0,1,1,0,45,49),
+('midgard_odins_gate_zone115_winter_wolf_046_046',100,115,'winter wolf','classic_ecology_loot_canine',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t5',4,1,0,1,1,0,46,46),
+('midgard_odins_gate_zone115_briton_woodcutter_048_049',100,115,'briton woodcutter','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,48,49),
+('midgard_odins_gate_zone115_aged_boreal_cockatrice_049_049',100,115,'aged boreal cockatrice','classic_ecology_loot_reptile',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t5',6,1,0,1,1,0,49,49),
+('midgard_odins_gate_zone115_enhorning_049_049',100,115,'enhorning','classic_ecology_loot_horse',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t5',4,1,0,1,1,0,49,49),
+('midgard_odins_gate_zone115_enhorning_050_050',100,115,'enhorning','classic_ecology_loot_horse',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t6',4,1,0,1,1,0,50,50),
+('midgard_odins_gate_zone115_fenrir_guard_050_050',100,115,'fenrir guard','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,50,50),
+('midgard_odins_gate_zone115_fylgja_050_053',100,115,'fylgja','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,50,53),
+('midgard_odins_gate_zone115_windswept_wraith_050_053',100,115,'windswept wraith','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,50,53),
+('midgard_odins_gate_zone115_sleipneirsson_050_056',100,115,'sleipneirsson','classic_ecology_loot_horse',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t6',4,1,0,1,1,0,50,56),
+('midgard_odins_gate_zone115_frost_stallion_052_055',100,115,'frost stallion','classic_ecology_loot_horse',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t6',4,1,0,1,1,0,52,55),
+('midgard_odins_gate_zone115_aged_boreal_cockatrice_053_053',100,115,'aged boreal cockatrice','classic_ecology_loot_reptile',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t6',6,1,0,1,1,0,53,53),
+('midgard_odins_gate_zone115_mature_wyvern_053_057',100,115,'mature wyvern','classic_ecology_loot_reptile',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t6',6,1,0,1,1,0,53,57),
+('midgard_odins_gate_zone115_frore_lich_055_057',100,115,'frore lich','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t6',4,1,0,1,1,0,55,57),
+('midgard_odins_gate_zone115_gullfaxi_060_060',100,115,'Gullfaxi','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t6',15,1,1,2.5,2.5,45,60,60);
+-- END OpenDAoC local seed: Midgard Odin's Gate ecology mappings
