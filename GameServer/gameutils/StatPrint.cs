@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.PerformanceStatistics;
+using DOL.Logging;
 
 namespace DOL.GS
 {
     public class StatPrint
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static volatile Timer _timer;
 
@@ -29,21 +31,22 @@ namespace DOL.GS
             if (ServerProperties.Properties.STATPRINT_FREQUENCY <= 0)
                 return true;
 
-            try
+            Task.Run(() =>
             {
-                _timer = new(new TimerCallback(PrintStats), null, 10000, 0);
-                _systemCpuUsagePercent = TryToCreateStatistic(() => new SystemCpuUsagePercent());
-                _programCpuUsagePercent = TryToCreateStatistic(() => new CurrentProcessCpuUsagePercentStatistic());
-                _pageFaultsPerSecond = TryToCreateStatistic(() => new PageFaultsPerSecondStatistic());
-                _diskTransfersPerSecond = TryToCreateStatistic(() => new DiskTransfersPerSecondStatistic());
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error(e);
-
-                return false;
-            }
+                try
+                {
+                    _systemCpuUsagePercent = TryToCreateStatistic(() => new SystemCpuUsagePercent());
+                    _programCpuUsagePercent = TryToCreateStatistic(() => new CurrentProcessCpuUsagePercentStatistic());
+                    _pageFaultsPerSecond = TryToCreateStatistic(() => new PageFaultsPerSecondStatistic());
+                    _diskTransfersPerSecond = TryToCreateStatistic(() => new DiskTransfersPerSecondStatistic());
+                    _timer = new(PrintStats, null, 0, 0);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error(e);
+                }
+            });
 
             return true;
         }
