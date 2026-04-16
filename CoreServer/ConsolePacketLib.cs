@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
@@ -24,9 +25,13 @@ namespace DOL.GameServerConsole
 
 		public void SendMessage(string msg, eChatType type, eChatLoc loc)
 		{
-			if (log.IsDebugEnabled)
-				log.Debug(string.Format("({0}, {1}): {2}", type, loc, msg));
-		}
+            //if (log.IsDebugEnabled)
+            //	log.Debug(string.Format("({0}, {1}): {2}", type, loc, msg));
+            ConsoleColor prevCol = Console.ForegroundColor;
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine(msg);
+			Console.ForegroundColor = prevCol;
+        }
 
 		public void SendRawMessage(string msg, eChatType type, eChatLoc loc)
 		{
@@ -39,18 +44,38 @@ namespace DOL.GameServerConsole
 				msg = "(null)";
 			if (callback == null)
 			{
-				if (log.IsDebugEnabled)
-					log.Debug(string.Format("(info dialog): {0}", msg));
-			}
+                ConsoleColor prevCol = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(msg);
+                Console.ForegroundColor = prevCol;
+            }
 			else
 			{
-				if (log.IsDebugEnabled)
-					log.Debug(string.Format("Accepting dialog: {0} {1}\n\"{2}\"", callback.Target, callback.Method, msg));
-				callback(null, 1);
+                ConsoleColor prevCol = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(msg);
+                Console.ForegroundColor = prevCol;
+                callback(null, 1);
 			}
 		}
 
-		public byte GetPacketCode(eServerPackets packetCode) { return 0; }
+        public void SendCustomTextWindow(string caption, IList<string> text)
+		{
+			if (!String.IsNullOrEmpty(caption))
+				text.Insert(0, caption);
+			if (text.Count > 0)
+            {
+				StringBuilder msg = new();
+				foreach (string s in text)
+					msg.AppendLine(s);
+                ConsoleColor prevCol = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(msg.ToString());
+                Console.ForegroundColor = prevCol;
+            }
+        }
+
+        public byte GetPacketCode(eServerPackets packetCode) { return 0; }
 		public void SendTCP(GSTCPPacketOut packet) { }
 		public void SendUDP(GSUDPPacketOut packet) { }
 		public void SendWarlockChamberEffect(GamePlayer player) { }
@@ -124,7 +149,6 @@ namespace DOL.GameServerConsole
 		public void SendUpdatePlayer() { }
 		public void SendUpdatePlayerSkills(bool updateInternalCache) { }
 		public void SendUpdateWeaponAndArmorStats() { }
-		public void SendCustomTextWindow(string caption, IList<string> text) { }
 		public void SendEncumbrance() { }
 		public void SendAddFriends(string[] friendNames) { }
 		public void SendRemoveFriends(string[] friendNames) { }
