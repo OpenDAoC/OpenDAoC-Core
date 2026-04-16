@@ -2199,7 +2199,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("classes", "volley_roof_check", "Enables roof obstruction checks for Volley", false)]
 		public static bool VOLLEY_ROOF_CHECK;
 
-		[ServerProperty("classes", "ground_target_snap_max_distance", "Max snap distance for ground-targets onto a walkable surface. Failed checks invalidate the ground target. (0 = disabled)", 32f)]
+		[ServerProperty("classes", "ground_target_snap_max_distance", "Max snap distance for ground-targets onto a walkable surface. Failed checks invalidate the ground target. (0 = disabled)", 16f)]
 		public static float GROUND_TARGET_SNAP_MAX_DISTANCE;
 
 		#endregion
