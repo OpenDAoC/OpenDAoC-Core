@@ -2730,7 +2730,7 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('hibernia_shannon_estuary_zone202_arracht_038_038',200,202,'Arracht','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t4',15,1,1,2.5,2.5,45,38,38);
 -- END OpenDAoC local seed: Hibernia Shannon Estuary ecology mappings
 
-<<-- BEGIN OpenDAoC local seed: Hibernia Cliffs of Moher ecology mappings
+-- BEGIN OpenDAoC local seed: Hibernia Cliffs of Moher ecology mappings
 REPLACE INTO `zoneecologyloot` VALUES
 ('hibernia_cliffs_of_moher_zone203_bantam_spectre_015_015',200,203,'bantam spectre','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t2',6,1,0,1,1,0,15,15),
 ('hibernia_cliffs_of_moher_zone203_bocan_015_017',200,203,'bocan','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t2',6,1,0,1,1,0,15,17),
@@ -2966,3 +2966,60 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('hibernia_bog_of_cullen_zone205_far_dorocha_062_062',200,205,'far dorocha','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,62,62),
 ('hibernia_bog_of_cullen_zone205_cursed_leprechaun_063_063',200,205,'cursed leprechaun','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,63,63);
 -- END OpenDAoC local seed: Hibernia Bog of Cullen ecology mappings
+-- BEGIN OpenDAoC local seed: Hibernia Valley of Bri Leith ecology mappings
+REPLACE INTO `zoneecologyloot` VALUES
+('hibernia_valley_of_bri_leith_zone206_empyrean_orb_010_010',200,206,'empyrean orb','classic_ecology_loot_elemental',1,0,1,'2026-04-16 00:00:00','elemental','classic_ecology_material_spirit_t2',6,1,0,1,1,0,10,10),
+('hibernia_valley_of_bri_leith_zone206_primrose_010_011',200,206,'primrose','classic_ecology_loot_plant',1,0,1,'2026-04-16 00:00:00','plant','classic_ecology_material_fae_t2',4,1,0,1,1,0,10,11),
+('hibernia_valley_of_bri_leith_zone206_barca_010_013',200,206,'barca','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t2',6,1,0,1,1,0,10,13),
+('hibernia_valley_of_bri_leith_zone206_moss_sheerie_010_013',200,206,'moss sheerie','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t2',6,1,0,1,1,0,10,13),
+('hibernia_valley_of_bri_leith_zone206_veil_wisp_011_014',200,206,'veil wisp','classic_ecology_loot_elemental',1,0,1,'2026-04-16 00:00:00','elemental','classic_ecology_material_spirit_t2',6,1,0,1,1,0,11,14),
+('hibernia_valley_of_bri_leith_zone206_miner_cucugar_013_013',200,206,'Miner Cucugar','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t2',15,1,1,2.5,2.5,45,13,13),
+('hibernia_valley_of_bri_leith_zone206_empyrean_wisp_013_017',200,206,'empyrean wisp','classic_ecology_loot_elemental',1,0,1,'2026-04-16 00:00:00','elemental','classic_ecology_material_spirit_t2',6,1,0,1,1,0,13,17),
+('hibernia_valley_of_bri_leith_zone206_grass_sheerie_013_017',200,206,'grass sheerie','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t2',6,1,0,1,1,0,13,17),
+('hibernia_valley_of_bri_leith_zone206_fury_sprite_014_015',200,206,'fury sprite','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t2',6,1,0,1,1,0,14,15),
+('hibernia_valley_of_bri_leith_zone206_blademaster_015_015',200,206,'Blademaster','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t2',8,1,0,1,1,0,15,15),
+('hibernia_valley_of_bri_leith_zone206_fearan_015_015',200,206,'Fearan','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t2',15,1,1,2.5,2.5,45,15,15),
+('hibernia_valley_of_bri_leith_zone206_siog_footpad_015_018',200,206,'siog footpad','classic_ecology_loot_humanoid_bandit',1,1,1,'2026-04-16 00:00:00','humanoid_bandit','classic_ecology_material_humanoid_t2',8,1,0,1,1,0,15,18),
+('hibernia_valley_of_bri_leith_zone206_viola_016_016',200,206,'Viola','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t2',15,1,1,2.5,2.5,45,16,16),
+('hibernia_valley_of_bri_leith_zone206_empyrean_watcher_016_018',200,206,'empyrean watcher','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t2',8,1,0,1,1,0,16,18),
+('hibernia_valley_of_bri_leith_zone206_goronwy_017_017',200,206,'Goronwy','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t2',15,1,1,2.5,2.5,45,17,17),
+('hibernia_valley_of_bri_leith_zone206_sloithi_017_017',200,206,'Sloithi','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t2',15,1,1,2.5,2.5,45,17,17),
+('hibernia_valley_of_bri_leith_zone206_hill_hound_018_018',200,206,'hill hound','classic_ecology_loot_canine',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t2',4,1,0,1,1,0,18,18),
+('hibernia_valley_of_bri_leith_zone206_merman_018_018',200,206,'merman','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t2',6,1,0,1,1,0,18,18),
+('hibernia_valley_of_bri_leith_zone206_faerie_horse_018_019',200,206,'faerie horse','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t2',6,1,0,1,1,0,18,19),
+('hibernia_valley_of_bri_leith_zone206_faerie_steed_019_019',200,206,'faerie steed','classic_ecology_loot_horse',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t2',4,1,0,1,1,0,19,19),
+('hibernia_valley_of_bri_leith_zone206_siog_piller_019_019',200,206,'siog piller','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t2',8,1,0,1,1,0,19,19),
+('hibernia_valley_of_bri_leith_zone206_watcher_rylie_019_019',200,206,'Watcher Rylie','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t2',15,1,1,2.5,2.5,45,19,19),
+('hibernia_valley_of_bri_leith_zone206_faerie_drake_020_023',200,206,'faerie drake','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t3',6,1,0,1,1,0,20,23),
+('hibernia_valley_of_bri_leith_zone206_faerie_horse_020_023',200,206,'faerie horse','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t3',6,1,0,1,1,0,20,23),
+('hibernia_valley_of_bri_leith_zone206_faerie_steed_020_026',200,206,'faerie steed','classic_ecology_loot_horse',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t3',4,1,0,1,1,0,20,26),
+('hibernia_valley_of_bri_leith_zone206_druid_022_024',200,206,'druid','classic_ecology_loot_humanoid_caster',1,1,1,'2026-04-16 00:00:00','humanoid_caster','classic_ecology_material_caster_t3',10,1,0,1,1,0,22,24),
+('hibernia_valley_of_bri_leith_zone206_empyrean_keeper_023_025',200,206,'empyrean keeper','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t3',8,1,0,1,1,0,23,25),
+('hibernia_valley_of_bri_leith_zone206_wilde_024_024',200,206,'Wilde','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t3',15,1,1,2.5,2.5,45,24,24),
+('hibernia_valley_of_bri_leith_zone206_tric_025_025',200,206,'Tric','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t3',15,1,1,2.5,2.5,45,25,25),
+('hibernia_valley_of_bri_leith_zone206_fee_lion_025_028',200,206,'fee lion','classic_ecology_loot_feline',1,0,1,'2026-04-16 00:00:00','feline','classic_ecology_material_animal_t3',4,1,0,1,1,0,25,28),
+('hibernia_valley_of_bri_leith_zone206_keeper_rasa_026_026',200,206,'Keeper Rasa','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t3',15,1,1,2.5,2.5,45,26,26),
+('hibernia_valley_of_bri_leith_zone206_empyrean_sentinel_026_029',200,206,'empyrean sentinel','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t3',8,1,0,1,1,0,26,29),
+('hibernia_valley_of_bri_leith_zone206_mad_changeling_026_029',200,206,'mad changeling','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t3',6,1,0,1,1,0,26,29),
+('hibernia_valley_of_bri_leith_zone206_erhael_027_027',200,206,'Erhael','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t3',15,1,1,2.5,2.5,45,27,27),
+('hibernia_valley_of_bri_leith_zone206_nymir_027_027',200,206,'Nymir','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t3',15,1,1,2.5,2.5,45,27,27),
+('hibernia_valley_of_bri_leith_zone206_siog_waylayer_027_027',200,206,'siog waylayer','classic_ecology_loot_humanoid_bandit',1,1,1,'2026-04-16 00:00:00','humanoid_bandit','classic_ecology_material_humanoid_t3',8,1,0,1,1,0,27,27),
+('hibernia_valley_of_bri_leith_zone206_wrath_sprite_027_028',200,206,'wrath sprite','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t3',6,1,0,1,1,0,27,28),
+('hibernia_valley_of_bri_leith_zone206_riocard_028_028',200,206,'Riocard','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t3',15,1,1,2.5,2.5,45,28,28),
+('hibernia_valley_of_bri_leith_zone206_siog_seeker_028_029',200,206,'siog seeker','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t3',8,1,0,1,1,0,28,29),
+('hibernia_valley_of_bri_leith_zone206_house_findias_outrider_030_030',200,206,'House Findias Outrider','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,30,30),
+('hibernia_valley_of_bri_leith_zone206_mad_changeling_030_030',200,206,'mad changeling','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t4',6,1,0,1,1,0,30,30),
+('hibernia_valley_of_bri_leith_zone206_siog_seeker_030_034',200,206,'siog seeker','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,30,34),
+('hibernia_valley_of_bri_leith_zone206_rage_wolf_031_032',200,206,'rage wolf','classic_ecology_loot_canine',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t4',4,1,0,1,1,0,31,32),
+('hibernia_valley_of_bri_leith_zone206_empyrean_sentinel_032_032',200,206,'empyrean sentinel','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,32,32),
+('hibernia_valley_of_bri_leith_zone206_lashold_033_033',200,206,'Lashold','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t4',15,1,1,2.5,2.5,45,33,33),
+('hibernia_valley_of_bri_leith_zone206_empyrean_guardian_034_039',200,206,'empyrean guardian','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,34,39),
+('hibernia_valley_of_bri_leith_zone206_thra_036_036',200,206,'Thra','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t4',15,1,1,2.5,2.5,45,36,36),
+('hibernia_valley_of_bri_leith_zone206_empyrean_overseer_037_039',200,206,'empyrean overseer','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,37,39),
+('hibernia_valley_of_bri_leith_zone206_guardian_hru_040_040',200,206,'Guardian Hru','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',15,1,1,2.5,2.5,45,40,40),
+('hibernia_valley_of_bri_leith_zone206_niy_the_overseer_040_040',200,206,'Niy the Overseer','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',15,1,1,2.5,2.5,45,40,40),
+('hibernia_valley_of_bri_leith_zone206_empyrean_guardian_040_041',200,206,'empyrean guardian','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,40,41),
+('hibernia_valley_of_bri_leith_zone206_empyrean_elder_040_044',200,206,'empyrean elder','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,40,44),
+('hibernia_valley_of_bri_leith_zone206_empyrean_overseer_041_041',200,206,'empyrean overseer','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,41,41),
+('hibernia_valley_of_bri_leith_zone206_mikka_050_050',200,206,'Mikka','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',15,1,1,2.5,2.5,45,50,50);
+-- END OpenDAoC local seed: Hibernia Valley of Bri Leith ecology mappings
