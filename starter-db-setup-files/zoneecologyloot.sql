@@ -3119,3 +3119,37 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('hibernia_connacht_zone207_amadan_dubh_042_042',200,207,'Amadan Dubh','classic_ecology_loot_named_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',15,1,1,2.5,2.5,45,42,42),
 ('hibernia_connacht_zone207_hill_toad_050_050',200,207,'hill toad','classic_ecology_loot_frog',1,0,1,'2026-04-16 00:00:00','frog','classic_ecology_material_reptile_t6',4,1,0,1,1,0,50,50);
 -- END OpenDAoC local seed: Hibernia Connacht ecology mappings
+
+
+-- BEGIN OpenDAoC local seed: Hibernia Cursed Forest ecology mappings
+REPLACE INTO `zoneecologyloot` VALUES
+('hibernia_cursed_forest_zone208_diseased_parthelonian_pet_046_047',200,208,'diseased parthelonian pet','classic_ecology_loot_animal_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t5',4,1,0,1,1,0,46,47),
+('hibernia_cursed_forest_zone208_granny_048_048',200,208,'granny','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,48,48),
+('hibernia_cursed_forest_zone208_leprechaun_048_049',200,208,'leprechaun','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,48,49),
+('hibernia_cursed_forest_zone208_unearthed_cave_bear_049_049',200,208,'unearthed cave bear','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t5',4,1,0,1,1,0,49,49),
+('hibernia_cursed_forest_zone208_goborchend_piercer_050_052',200,208,'goborchend piercer','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,50,52),
+('hibernia_cursed_forest_zone208_leprechaun_050_053',200,208,'leprechaun','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,50,53),
+('hibernia_cursed_forest_zone208_gan_ceanach_050_055',200,208,'gan ceanach','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,50,55),
+('hibernia_cursed_forest_zone208_levian_al_050_056',200,208,'levian-al','classic_ecology_loot_animal_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t6',4,1,0,1,1,0,50,56),
+('hibernia_cursed_forest_zone208_spectral_manslayer_050_056',200,208,'spectral manslayer','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,50,56),
+('hibernia_cursed_forest_zone208_unearthed_cave_bear_050_056',200,208,'unearthed cave bear','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t6',4,1,0,1,1,0,50,56),
+('hibernia_cursed_forest_zone208_far_dorocha_051_056',200,208,'far dorocha','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,51,56),
+('hibernia_cursed_forest_zone208_savage_fishing_bear_052_053',200,208,'savage fishing bear','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t6',4,1,0,1,1,0,52,53),
+('hibernia_cursed_forest_zone208_goborchend_gasher_052_055',200,208,'goborchend gasher','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,52,55),
+('hibernia_cursed_forest_zone208_black_wraith_052_056',200,208,'black wraith','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,52,56),
+('hibernia_cursed_forest_zone208_pooka_052_057',200,208,'pooka','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,52,57),
+('hibernia_cursed_forest_zone208_forest_poacher_053_056',200,208,'forest poacher','classic_ecology_loot_humanoid_bandit',1,1,1,'2026-04-16 00:00:00','humanoid_bandit','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,53,56),
+('hibernia_cursed_forest_zone208_banshee_055_055',200,208,'banshee','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,55,55),
+('hibernia_cursed_forest_zone208_goborchend_wounder_055_056',200,208,'goborchend wounder','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,55,56),
+('hibernia_cursed_forest_zone208_queen_s_maid_056_056',200,208,'Queen''s Maid','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,56,56),
+('hibernia_cursed_forest_zone208_faerie_queen_057_057',200,208,'Faerie Queen','classic_ecology_loot_named_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',15,1,1,2.5,2.5,45,57,57),
+('hibernia_cursed_forest_zone208_mindworm_057_064',200,208,'mindworm','classic_ecology_loot_insect',1,0,1,'2026-04-16 00:00:00','insect','classic_ecology_material_insect_t6',6,1,0,1,1,0,57,64),
+('hibernia_cursed_forest_zone208_darkmare_058_058',200,208,'Darkmare','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','horse','classic_ecology_material_animal_t6',15,1,1,2.5,2.5,45,58,58),
+('hibernia_cursed_forest_zone208_shadowgnash_058_058',200,208,'Shadowgnash','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t6',15,1,1,2.5,2.5,45,58,58),
+('hibernia_cursed_forest_zone208_finliath_058_064',200,208,'finliath','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t6',4,1,0,1,1,0,58,64),
+('hibernia_cursed_forest_zone208_giant_lusus_059_063',200,208,'giant lusus','classic_ecology_loot_giant',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,59,63),
+('hibernia_cursed_forest_zone208_develin_060_060',200,208,'Develin','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t6',15,1,1,2.5,2.5,45,60,60),
+('hibernia_cursed_forest_zone208_grand_pooka_061_064',200,208,'grand pooka','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,61,64),
+('hibernia_cursed_forest_zone208_cursed_leprechaun_063_063',200,208,'cursed leprechaun','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,63,63),
+('hibernia_cursed_forest_zone208_flame_064_064',200,208,'Flame','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t6',15,1,1,2.5,2.5,45,64,64);
+-- END OpenDAoC local seed: Hibernia Cursed Forest ecology mappings
