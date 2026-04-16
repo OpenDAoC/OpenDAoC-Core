@@ -3275,3 +3275,41 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('hibernia_cruachan_gorge_zone211_unearthed_cave_bear_049_049',200,211,'unearthed cave bear','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t5',4,1,0,1,1,0,49,49),
 ('hibernia_cruachan_gorge_zone211_unearthed_cave_bear_050_051',200,211,'unearthed cave bear','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t6',4,1,0,1,1,0,50,51);
 -- END OpenDAoC local seed: Hibernia Cruachan Gorge ecology mappings
+
+-- BEGIN OpenDAoC local seed: Hibernia Breifine ecology mappings
+REPLACE INTO `zoneecologyloot` VALUES
+('hibernia_breifine_zone212_xia_027_027',200,212,'Xia','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t3',15,1,1,2.5,2.5,45,27,27),
+('hibernia_breifine_zone212_empyrean_wraith_029_029',200,212,'empyrean wraith','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t3',6,1,0,1,1,0,29,29),
+('hibernia_breifine_zone212_giant_boar_034_035',200,212,'giant boar','classic_ecology_loot_boar',1,0,1,'2026-04-16 00:00:00','boar','classic_ecology_material_animal_t4',4,1,0,1,1,0,34,35),
+('hibernia_breifine_zone212_umber_bear_042_045',200,212,'umber bear','classic_ecology_loot_bear',1,0,1,'2026-04-16 00:00:00','bear','classic_ecology_material_animal_t5',4,1,0,1,1,0,42,45),
+('hibernia_breifine_zone212_reamonn_044_044',200,212,'Reamonn','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t5',15,1,1,2.5,2.5,45,44,44),
+('hibernia_breifine_zone212_ghastly_midgard_invader_044_045',200,212,'ghastly midgard invader','classic_ecology_loot_skeleton',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,44,45),
+('hibernia_breifine_zone212_fallen_hibernian_defender_045_045',200,212,'fallen Hibernian defender','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,45,45),
+('hibernia_breifine_zone212_fallen_troll_invader_045_045',200,212,'fallen troll invader','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,45,45),
+('hibernia_breifine_zone212_ghostly_albion_invader_045_045',200,212,'ghostly albion invader','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,45,45),
+('hibernia_breifine_zone212_daughter_of_medb_045_046',200,212,'daughter of Medb','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,45,46),
+('hibernia_breifine_zone212_mangled_troll_invader_045_046',200,212,'mangled troll invader','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,45,46),
+('hibernia_breifine_zone212_corybantic_skeleton_046_047',200,212,'corybantic skeleton','classic_ecology_loot_skeleton',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,46,47),
+('hibernia_breifine_zone212_fuath_046_047',200,212,'fuath','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t5',6,1,0,1,1,0,46,47),
+('hibernia_breifine_zone212_grogan_046_048',200,212,'grogan','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,46,48),
+('hibernia_breifine_zone212_bocanach_046_049',200,212,'bocanach','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t5',6,1,0,1,1,0,46,49),
+('hibernia_breifine_zone212_ghastly_bolg_wraiths_047_047',200,212,'ghastly bolg wraiths','classic_ecology_loot_skeleton',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,47,47),
+('hibernia_breifine_zone212_earthshaker_047_049',200,212,'earthshaker','classic_ecology_loot_stone',1,0,1,'2026-04-16 00:00:00','stone','classic_ecology_material_stone_t5',6,1,0,1,1,0,47,49),
+('hibernia_breifine_zone212_fomorian_gehk_048_048',200,212,'fomorian gehk','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,48,48),
+('hibernia_breifine_zone212_giant_boar_048_048',200,212,'giant boar','classic_ecology_loot_boar',1,0,1,'2026-04-16 00:00:00','boar','classic_ecology_material_animal_t5',4,1,0,1,1,0,48,48),
+('hibernia_breifine_zone212_bloodletter_048_049',200,212,'bloodletter','classic_ecology_loot_spider',1,0,1,'2026-04-16 00:00:00','spider','classic_ecology_material_insect_t5',6,1,0,1,1,0,48,49),
+('hibernia_breifine_zone212_fomorian_cyclen_049_049',200,212,'fomorian cyclen','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,49,49),
+('hibernia_breifine_zone212_fomorian_wolfbeast_049_049',200,212,'fomorian wolfbeast','classic_ecology_loot_animal_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t5',4,1,0,1,1,0,49,49),
+('hibernia_breifine_zone212_fomorian_wolfbeast_050_050',200,212,'fomorian wolfbeast','classic_ecology_loot_animal_beast',1,0,1,'2026-04-16 00:00:00','animal_beast','classic_ecology_material_animal_t6',4,1,0,1,1,0,50,50),
+('hibernia_breifine_zone212_spectral_manslayer_050_053',200,212,'spectral manslayer','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,50,53),
+('hibernia_breifine_zone212_far_dorocha_051_053',200,212,'far dorocha','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,51,53),
+('hibernia_breifine_zone212_necht_055_055',200,212,'Necht','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',15,1,1,2.5,2.5,45,55,55),
+('hibernia_breifine_zone212_cruach_demon_058_058',200,212,'cruach demon','classic_ecology_loot_demon',1,0,1,'2026-04-16 00:00:00','demon','classic_ecology_material_spirit_t6',6,1,0,1,1,0,58,58),
+('hibernia_breifine_zone212_finliath_058_062',200,212,'finliath','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t6',4,1,0,1,1,0,58,62),
+('hibernia_breifine_zone212_fomorian_gleener_060_060',200,212,'fomorian gleener','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,60,60),
+('hibernia_breifine_zone212_idol_of_crom_cruiach_062_062',200,212,'Idol of Crom Cruiach','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','demon','classic_ecology_material_spirit_t6',15,1,1,2.5,2.5,45,62,62),
+('hibernia_breifine_zone212_conann_063_063',200,212,'Conann','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',15,1,1,2.5,2.5,45,63,63),
+('hibernia_breifine_zone212_grand_pooka_064_064',200,212,'grand pooka','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,64,64),
+('hibernia_breifine_zone212_notned_064_064',200,212,'Notned','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t6',15,1,1,2.5,2.5,45,64,64),
+('hibernia_breifine_zone212_ror_064_064',200,212,'Ror','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',15,1,1,2.5,2.5,45,64,64);
+-- END OpenDAoC local seed: Hibernia Breifine ecology mappings
