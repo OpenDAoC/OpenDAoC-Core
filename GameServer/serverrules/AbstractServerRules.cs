@@ -5,6 +5,7 @@ using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
@@ -1219,6 +1220,8 @@ namespace DOL.GS.ServerRules
                 baseXpReward = CalculateNpcExperience();
             }
 
+            baseXpReward = ApplyZoneEcologyXpMultiplier(baseXpReward);
+
             double damagePercent = CalculateDamagePercent();
             bool modifiedByDamage = damagePercent < 1.0;
 
@@ -1299,6 +1302,18 @@ namespace DOL.GS.ServerRules
             long CalculateNpcExperience()
             {
                 return killedNpc.ExperienceValue;
+            }
+
+            long ApplyZoneEcologyXpMultiplier(long experience)
+            {
+                double multiplier = ZoneEcologyLootRules.GetXpMultiplier(killedNpc);
+                if (multiplier <= 0 || multiplier == 1.0)
+                    return experience;
+
+                if (playerToAward.XPLogState is eXPLogState.Verbose)
+                    playerToAward.Out.SendMessage($"Zone ecology XP multiplier: {multiplier:0.##}x", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                return (long)Math.Ceiling(experience * multiplier);
             }
 
             long CalculateNpcExperienceModifiedByGroupOrBattlegroup(EntityCountTotalDamagePair entityCountTotalDamagePair)
@@ -1406,7 +1421,7 @@ namespace DOL.GS.ServerRules
                     */
 
                 long xpCap = GameServer.ServerRules.GetExperienceForLiving(playerToAward.Level);
-                return (long) (xpCap * Properties.XP_CAP_PERCENT / 100.0 * killedNpc.ExceedXPCapAmount);
+                return (long) (xpCap * Properties.XP_CAP_PERCENT / 100.0 * killedNpc.ExceedXPCapAmount * ZoneEcologyLootRules.GetXpCapMultiplier(killedNpc));
             }
 
             long CalculateCampBonus()

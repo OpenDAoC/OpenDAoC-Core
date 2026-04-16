@@ -95,6 +95,7 @@ namespace DOL.GS
 							continue;
 						}
 						generator = (ILootGenerator)Activator.CreateInstance(generatorType);
+						generator.ExclusivePriority = dbGenerator.ExclusivePriority;
 
 						PutGeneratorInCache(dbGenerator, generator);
 					}
@@ -466,6 +467,10 @@ namespace DOL.GS
 
 			foreach (ILootGenerator generator in allGenerators)
 			{
+				IConditionalLootGenerator conditionalGenerator = generator as IConditionalLootGenerator;
+				if (conditionalGenerator != null && !conditionalGenerator.IsActiveFor(mob))
+					continue;
+
 				if (generator.ExclusivePriority > 0)
 				{
 					if (exclusiveGenerator == null || exclusiveGenerator.ExclusivePriority < generator.ExclusivePriority)

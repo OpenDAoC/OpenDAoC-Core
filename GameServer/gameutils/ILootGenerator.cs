@@ -51,4 +51,13 @@ namespace DOL.GS
 		/// <returns>List of ItemTemplates</returns>
 		LootList GenerateLoot(GameNPC mob, GameObject killer);
 	}
+
+	/// <summary>
+	/// Optional filter for generators that are registered broadly but only apply
+	/// to a subset of matching mobs.
+	/// </summary>
+	public interface IConditionalLootGenerator
+	{
+		bool IsActiveFor(GameNPC mob);
+	}
 }
