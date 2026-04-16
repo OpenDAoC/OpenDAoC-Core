@@ -1,4 +1,4 @@
-﻿//===============================================
+﻿/*//===============================================
 // '/ngg' command fixed to work with latest revision - Trick
 // added custom save command - Unty
 // Color chart http://herald.uthgard.net/daoc/list.php?view=item%20colors
@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
        )]
     public class NGGCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        /*
+        *//*
            armor[0][][] = cloth;
            armor[1][][] = leather;
            armor[2][][] = studded;
@@ -75,7 +75,7 @@ namespace DOL.GS.Commands
            armor[][][x] = Model IDs;
            equip[][x] = Model IDs;
            cloak[x] = Model IDs;
-        */
+        *//*
         private static ushort[][][] armor = new ushort[6][][];
         private static ushort[][] equip = new ushort[11][];
         private static ushort[] cloak;
@@ -707,3 +707,4 @@ namespace DOL.GS.Commands
         }
     }
 }
+*/
