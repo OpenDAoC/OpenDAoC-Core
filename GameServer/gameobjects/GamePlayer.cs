@@ -9524,7 +9524,7 @@ namespace DOL.GS
             droppedItem = null;
 
             if (slot is
-                (< eInventorySlot.FirstBackpack or > eInventorySlot.FirstBackpack) and
+                (< eInventorySlot.FirstBackpack or > eInventorySlot.LastBackpack) and
                 (< eInventorySlot.FirstQuiver or > eInventorySlot.FourthQuiver))
             {
                 return false;
