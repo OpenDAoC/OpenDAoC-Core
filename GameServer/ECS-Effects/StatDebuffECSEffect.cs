@@ -93,11 +93,7 @@ namespace DOL.GS
                 not 9606)
                 return;
 
-            if (player != null)
-            {
-                player.StopCurrentSpellcast();
-                player.StartInterruptTimer(player.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
-            }
+            player?.StartInterruptTimer(player.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
         }
     }
 }

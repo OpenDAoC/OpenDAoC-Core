@@ -4,7 +4,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities.Statics
 {
-    public class NegativeMaelstromBase : GenericBase 
+    public class NegativeMaelstromBase : RealmAbilityStaticItemBase 
     {
 		protected override string GetStaticName() {return "Negative Maelstrom";}
 		protected override ushort GetStaticModel() => 3738;
@@ -37,14 +37,14 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override void CastSpell (GameLiving target)
         {
             if (!target.IsAlive) return;
-			if (GameServer.ServerRules.IsAllowedToAttack(m_caster, target, true))
+			if (GameServer.ServerRules.IsAllowedToAttack(_caster, target, true))
             {
 				int dealDamage =damage;
-				if (getCurrentPulse()<=6)
-					dealDamage = (int)Math.Round(((double)getCurrentPulse()/6*damage));
+				if (CurrentPulse<=6)
+					dealDamage = (int)Math.Round(((double)CurrentPulse/6*damage));
 				dbs.Damage = dealDamage;				
 				s = new Spell(dbs,1);
-				ISpellHandler dd = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+				ISpellHandler dd = ScriptMgr.CreateSpellHandler(_caster, s, sl);
 				dd.StartSpell(target);
 			}
 		}

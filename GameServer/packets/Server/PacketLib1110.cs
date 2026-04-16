@@ -81,7 +81,7 @@ namespace DOL.GS.PacketHandler
 					{
 						ISpellHandler spellHandler = gameEffect.SpellHandler;
 
-						if (spellHandler.Spell.IsDynamic || m_gameClient.CanSendTooltip(24, spellHandler.Spell.InternalID))
+						if (m_gameClient.CanSendTooltip(24, spellHandler.Spell.InternalID))
 							SendDelveInfo(DetailDisplayHandler.DelveSpell(spellHandler));
 					}
 

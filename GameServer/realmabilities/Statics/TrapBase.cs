@@ -8,7 +8,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities.Statics
 {
-	public class TrapBase : GenericBase 
+	public class TrapBase : RealmAbilityStaticItemBase 
     {
 		protected override string GetStaticName() {return "Rune Of Decimation";}
 		protected override ushort GetStaticModel() {return 1;}

@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 	{
         public NegativeMaelstromAbility(DbAbility dba, int level) : base(dba, level) { }
 		private int dmgValue;
-		private uint duration;
+		private int duration;
 		private GamePlayer player;
         private const string IS_CASTING = "isCasting";
         private const string NM_CAST_SUCCESS = "NMCasting";

@@ -175,10 +175,15 @@ namespace DOL.GS.Effects
 
                 if (Properties.VOLLEY_ROOF_CHECK)
                 {
-                    EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+                    Zone zone = target.CurrentZone;
 
-                    if (PathfindingProvider.Instance.GetRoofAbove(target.CurrentZone, new(target.X, target.Y, target.Z), ROOF_SEARCH_MAX_HEIGHT, filters).HasValue)
-                        return false;
+                    if (zone.IsPathfindingEnabled)
+                    {
+                        EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+
+                        if (PathfindingProvider.Instance.GetRoofAbove(zone, new(target.X, target.Y, target.Z), ROOF_SEARCH_MAX_HEIGHT, filters).HasValue)
+                            return false;
+                    }
                 }
 
                 return true;

@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 	{
 		public ThornweedFieldAbility(DbAbility dba, int level) : base(dba, level) { }
 		private int m_dmgValue;
-		private uint m_duration;
+		private int m_duration;
 		private GamePlayer m_player;
 
 		public override void Execute(GameLiving living)

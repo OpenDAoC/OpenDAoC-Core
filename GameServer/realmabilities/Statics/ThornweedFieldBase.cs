@@ -3,7 +3,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities.Statics
 {
-    public class ThornweedFieldBase : GenericBase 
+    public class ThornweedFieldBase : RealmAbilityStaticItemBase 
     {
 		protected override string GetStaticName() {return "Thornwood Field";}
 		protected override ushort GetStaticModel() {return 2653;}
@@ -35,9 +35,9 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override void CastSpell (GameLiving target)
         {
             if (!target.IsAlive) return;
-			if (GameServer.ServerRules.IsAllowedToAttack(m_caster, target, true))
+			if (GameServer.ServerRules.IsAllowedToAttack(_caster, target, true))
             {
-				ISpellHandler snare = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+				ISpellHandler snare = ScriptMgr.CreateSpellHandler(_caster, s, sl);
 				snare.StartSpell(target);
 			}
 		}

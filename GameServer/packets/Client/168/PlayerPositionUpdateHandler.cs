@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using DOL.Database;
-using DOL.GS.Utils;
 using DOL.Language;
 using DOL.Logging;
 
@@ -143,52 +141,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 client.Player.Z = (int) z;
                 client.Player.Heading = heading;
 
-                // Area.
-                if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick)
-                {
-                    IList<IArea> oldAreas = client.Player.CurrentAreas;
-
-                    // Because we may be in an instance we need to do the area check from the current region
-                    // rather than relying on the zone which is in the skinned region.  - Tolakram
-
-                    IList<IArea> newAreas = client.Player.CurrentRegion.GetAreasOfZone(newZone, client.Player);
-
-                    // Check for left areas
-                    if (oldAreas != null)
-                    {
-                        foreach (IArea area in oldAreas)
-                        {
-                            if (!newAreas.Contains(area))
-                            {
-                                area.OnPlayerLeave(client.Player);
-
-                                // Check if leaving Border Keep areas so we can check RealmTimer.
-                                // This is very ugly.
-                                if (area is AbstractArea borderKeep &&
-                                    (borderKeep.Description.Equals("Castle Sauvage") ||
-                                    borderKeep.Description.Equals("Snowdonia Fortress") ||
-                                    borderKeep.Description.Equals("Svasud Faste") ||
-                                    borderKeep.Description.Equals("Vindsaul Faste") ||
-                                    borderKeep.Description.Equals("Druim Ligen") ||
-                                    borderKeep.Description.Equals("Druim Cain")))
-                                {
-                                    RealmTimer.CheckRealmTimer(client.Player);
-                                }
-                            }
-                        }
-                    }
-
-                    // Check for entered areas
-                    foreach (IArea area in newAreas)
-                    {
-                        if (oldAreas == null || !oldAreas.Contains(area))
-                            area.OnPlayerEnter(client.Player);
-                    }
-
-                    // set current areas to new one...
-                    client.Player.CurrentAreas = newAreas;
-                    client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 2000; // update every 2 seconds
-                }
+                client.Player.CheckAreas(newZone);
 
                 // Fall damage.
                 if (GameServer.ServerRules.CanTakeFallDamage(client.Player) && !client.Player.IsSwimming)
@@ -334,51 +287,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (zoneChange)
                     client.Out.SendPlayerPositionAndObjectID();
 
-                // Begin ---------- New Area System -----------
-                if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed
-                {
-                    IList<IArea> oldAreas = client.Player.CurrentAreas;
-
-                    // Because we may be in an instance we need to do the area check from the current region
-                    // rather than relying on the zone which is in the skinned region.  - Tolakram
-
-                    IList<IArea> newAreas = client.Player.CurrentRegion.GetAreasOfZone(newZone, client.Player);
-
-                    // Check for left areas
-                    if (oldAreas != null)
-                    {
-                        foreach (IArea area in oldAreas)
-                        {
-                            if (!newAreas.Contains(area))
-                            {
-                                area.OnPlayerLeave(client.Player);
-
-                                //Check if leaving Border Keep areas so we can check RealmTimer
-                                if (area is AbstractArea checkrvrarea && (checkrvrarea.Description.Equals("Castle Sauvage") ||
-                                    checkrvrarea.Description.Equals("Snowdonia Fortress") ||
-                                    checkrvrarea.Description.Equals("Svasud Faste") ||
-                                    checkrvrarea.Description.Equals("Vindsaul Faste") ||
-                                    checkrvrarea.Description.Equals("Druim Ligen") ||
-                                    checkrvrarea.Description.Equals("Druim Cain")))
-                                {
-                                    RealmTimer.CheckRealmTimer(client.Player);
-                                }
-                            }
-                        }
-                    }
-
-                    // Check for entered areas
-                    foreach (IArea area in newAreas)
-                    {
-                        if (oldAreas == null || !oldAreas.Contains(area))
-                            area.OnPlayerEnter(client.Player);
-                    }
-
-                    // set current areas to new one...
-                    client.Player.CurrentAreas = newAreas;
-                    client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 750; // update every .75 seconds
-                }
-                // End ---------- New Area System -----------
+                client.Player.CheckAreas(newZone);
 
                 int status = (speedData & 0x1FF ^ speedData) >> 8;
                 int fly = (flyingflag & 0x1FF ^ flyingflag) >> 8;

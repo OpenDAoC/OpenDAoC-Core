@@ -27,8 +27,6 @@ namespace DOL.Database
 		private int m_charactersTraded;
 		private int m_soloCharactersTraded;
 		private string m_discordID;
-		private int m_realm_timer_realm;
-		private DateTime m_realm_timer_last_combat;
 		private DateTime m_lastDisconnected;
 		
 		/// <summary>
@@ -264,40 +262,6 @@ namespace DOL.Database
 			set { m_discordID = value; }
 		}
 
-		/// <summary>
-		/// The realm timer current realm of this account
-		/// </summary>
-		[DataElement(AllowDbNull=false)]
-		public int Realm_Timer_Realm
-		{
-			get
-			{
-				return m_realm_timer_realm;
-			}
-			set
-			{
-				Dirty = true;
-				m_realm_timer_realm = value;
-			}
-		}
-
-		/// <summary>
-		/// The date time of the last pvp combat of this account
-		/// </summary>
-		[DataElement(AllowDbNull=true)]
-		public DateTime Realm_Timer_Last_Combat
-		{
-			get
-			{
-				return m_realm_timer_last_combat;
-			}
-			set
-			{
-				Dirty = true;
-				m_realm_timer_last_combat = value;
-			}
-		}
-		
 		/// <summary>
 		/// The date time of the last disconnection
 		/// </summary>

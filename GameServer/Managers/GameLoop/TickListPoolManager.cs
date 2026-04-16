@@ -20,7 +20,8 @@ namespace DOL.GS
                 { typeof(ECSGameEffect), PooledListKey.Effect },
                 { typeof(ECSGameSpellEffect), PooledListKey.SpellEffect },
                 { typeof(ECSPulseEffect), PooledListKey.PulseEffect },
-                { typeof(ECSGameAbilityEffect), PooledListKey.AbilityEffect }
+                { typeof(ECSGameAbilityEffect), PooledListKey.AbilityEffect },
+                { typeof(IArea), PooledListKey.Area }
             }.ToFrozenDictionary();
 
         private readonly FrozenDictionary<PooledListKey, TickPoolBase> _pools =
@@ -36,7 +37,8 @@ namespace DOL.GS
                 { PooledListKey.Effect, new TickListPool<ECSGameEffect>() },
                 { PooledListKey.SpellEffect, new TickListPool<ECSGameSpellEffect>() },
                 { PooledListKey.PulseEffect, new TickListPool<ECSPulseEffect>() },
-                { PooledListKey.AbilityEffect, new TickListPool<ECSGameAbilityEffect>() }
+                { PooledListKey.AbilityEffect, new TickListPool<ECSGameAbilityEffect>() },
+                { PooledListKey.Area, new TickListPool<IArea>() }
             }.ToFrozenDictionary();
 
         public List<T> GetForTick<T>() where T : IPooledList<T>
@@ -69,7 +71,8 @@ namespace DOL.GS
         Effect,
         SpellEffect,
         PulseEffect,
-        AbilityEffect
+        AbilityEffect,
+        Area
     }
 
     public interface IPooledList<T> { }

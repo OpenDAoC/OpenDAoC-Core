@@ -9,9 +9,9 @@ namespace DOL.GS
     {
         private const double TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH = 500; // NPCs will switch to ranged if further than melee range + (this * maxSpeed * 0.001).
 
-        private GameNPC _npcOwner;
-        private bool _hasLos;
+        private readonly GameNPC _npcOwner;
         private CheckLosTimer _checkLosTimer;
+        private bool _hasLos;
         private GameObject _losCheckTarget;
         private bool _wasMeleeWeaponSwitchForced; // Used to prevent NPCs from switching to their ranged weapon automatically if they explicitly switched to a melee weapon during combat.
 
@@ -199,6 +199,8 @@ namespace DOL.GS
                 _checkLosTimer = null;
             }
 
+            _hasLos = false;
+            _losCheckTarget = null;
             _wasMeleeWeaponSwitchForced = false;
             base.CleanUp();
         }
@@ -266,10 +268,11 @@ namespace DOL.GS
                 if (_target != newTarget)
                 {
                     _target = newTarget;
+                    _losChecker = null;
 
                     if (_npcOwner.Brain is IControlledBrain brain)
                         _losChecker = brain.GetPlayerOwner();
-                    if (_target is GamePlayer targetPlayer)
+                    else if (_target is GamePlayer targetPlayer)
                         _losChecker = targetPlayer;
                     else if (_target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain targetBrain)
                         _losChecker = targetBrain.GetPlayerOwner();

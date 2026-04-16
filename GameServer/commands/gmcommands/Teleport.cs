@@ -23,7 +23,6 @@ using DOL.Language;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.Utils;
 using DOL.GS.Quests;
 using DOL.GS.PacketHandler.Client.v168;
 

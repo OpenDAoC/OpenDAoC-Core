@@ -140,14 +140,19 @@ namespace DOL.GS.Commands
                         AddWeaponInfo(info, "+ Attack (offhand):", client, target, weapon, attackType);
                         double leftHandSwingChance = target.attackComponent.CalculateDwCdLeftHandSwingChance();
 
-                        if (leftHandSwingChance > 0)
-                            info.Add($"Swing:  {leftHandSwingChance:0.00}%");
+                        if (target.ActiveLeftWeapon != null && target.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+                        {
+                            double leftAxeModifier = target.attackComponent.CalculateLeftAxeModifier();
+                            info.Add($"Left Axe modifier (both hands):  {leftAxeModifier * 100:0.00}%");
+                        }
+                        else if (leftHandSwingChance > 0)
+                            info.Add($"Swing:  {leftHandSwingChance * 100:0.00}%");
                         else
                         {
-                            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = target.attackComponent.CalculateHthSwingChances(weapon);
+                            (double doubleChance, double tripleChance, double quadChance) = target.attackComponent.CalculateHthSwingChances(weapon);
 
-                            if (doubleSwingChance > 0)
-                                info.Add($"Double swing:  {doubleSwingChance:0.00}%  |  Triple swing:  {tripleSwingChance:0.00}%  |  Quad swing:  {quadSwingChance:0.00}%");
+                            if (doubleChance > 0)
+                                info.Add($"Double swing:  {doubleChance * 100:0.00}%  |  Triple swing:  {tripleChance * 100:0.00}%  |  Quad swing:  {quadChance * 100:0.00}%");
                         }
                     }
                 }

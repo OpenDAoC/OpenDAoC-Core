@@ -5,7 +5,6 @@ using System.Reflection;
 using DOL.Events;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
-using DOL.GS.Utils;
 using DOL.Language;
 using DOL.Logging;
 
@@ -84,9 +83,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
                 CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
-
-            // Check realm timer and move player to bind if realm timer is not for this realm.
-            RealmTimer.CheckRealmTimer(player);
 
             if (checkInstanceLogin)
             {

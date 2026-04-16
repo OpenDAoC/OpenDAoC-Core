@@ -187,7 +187,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds all areas this object is currently within
 		/// </summary>
-		public virtual IList<IArea> CurrentAreas
+		public virtual List<IArea> CurrentAreas
 		{
 			get => CurrentZone.GetAreasOfSpot(this);
 			set { }
