@@ -1,0 +1,7 @@
+START TRANSACTION;
+
+DELETE FROM zoneecologyloot
+WHERE RegionID = 1
+  AND ZoneID = 1;
+
+COMMIT;

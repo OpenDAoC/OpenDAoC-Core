@@ -31,6 +31,7 @@ namespace DOL.GS
 
 			LootList loot = base.GenerateLoot(mob, killer);
 			loot.AddAll(m_oneTimeDrop.GenerateLoot(mob, killer));
+			loot.AddAll(m_template.GenerateLoot(mob, killer));
 			loot.AddAll(GenerateTemplateLoot(mapping.LootTemplateName, mapping.DropCount, killer));
 			loot.AddAll(GenerateMaterialLoot(mapping, killer));
 			loot.AddAll(GenerateNamedRogLoot(mapping, mob, killer));
