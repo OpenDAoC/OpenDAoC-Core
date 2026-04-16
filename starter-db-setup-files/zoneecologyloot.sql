@@ -1180,3 +1180,42 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('albion_forest_sauvage_zone11_rob_ria_040_040',1,11,'Rob Ria','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',15,1,1,2.5,2.5,45,40,40),
 ('albion_forest_sauvage_zone11_earl_grael_050_050',1,11,'Earl Grael','classic_ecology_loot_named_humanoid',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t6',15,1,1,2.5,2.5,45,50,50);
 -- END OpenDAoC local seed: Albion Forest Sauvage ecology mappings
+
+-- BEGIN OpenDAoC local seed: Albion Snowdonia ecology mappings
+REPLACE INTO `zoneecologyloot` VALUES
+('albion_snowdonia_zone12_faint_grim_020_023',1,12,'faint grim','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t3',6,1,0,1,1,0,20,23),
+('albion_snowdonia_zone12_bwca_024_024',1,12,'bwca','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t3',6,1,0,1,1,0,24,24),
+('albion_snowdonia_zone12_howling_knifeman_026_027',1,12,'howling knifeman','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t3',8,1,0,1,1,0,26,27),
+('albion_snowdonia_zone12_giant_skeleton_027_028',1,12,'giant skeleton','classic_ecology_loot_skeleton',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t3',4,1,0,1,1,0,27,28),
+('albion_snowdonia_zone12_faerie_frog_028_029',1,12,'faerie frog','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t3',6,1,0,1,1,0,28,29),
+('albion_snowdonia_zone12_faerie_frog_030_030',1,12,'faerie frog','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t4',6,1,0,1,1,0,30,30),
+('albion_snowdonia_zone12_giant_boar_034_035',1,12,'giant boar','classic_ecology_loot_boar',1,0,1,'2026-04-16 00:00:00','boar','classic_ecology_material_animal_t4',4,1,0,1,1,0,34,35),
+('albion_snowdonia_zone12_arawnite_shamaness_034_037',1,12,'arawnite shamaness','classic_ecology_loot_humanoid_caster',1,1,1,'2026-04-16 00:00:00','humanoid_caster','classic_ecology_material_caster_t4',10,1,0,1,1,0,34,37),
+('albion_snowdonia_zone12_sprawling_arachnid_034_039',1,12,'sprawling arachnid','classic_ecology_loot_spider',1,0,1,'2026-04-16 00:00:00','spider','classic_ecology_material_insect_t4',6,1,0,1,1,0,34,39),
+('albion_snowdonia_zone12_ghost_wolf_035_038',1,12,'ghost wolf','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t4',6,1,0,1,1,0,35,38),
+('albion_snowdonia_zone12_giant_lizard_036_038',1,12,'giant lizard','classic_ecology_loot_reptile',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t4',6,1,0,1,1,0,36,38),
+('albion_snowdonia_zone12_snowdon_grim_036_038',1,12,'snowdon grim','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t4',6,1,0,1,1,0,36,38),
+('albion_snowdonia_zone12_arawnite_headhunter_036_039',1,12,'arawnite headhunter','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,36,39),
+('albion_snowdonia_zone12_fitful_bwca_036_039',1,12,'fitful bwca','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t4',6,1,0,1,1,0,36,39),
+('albion_snowdonia_zone12_hill_scrag_039_039',1,12,'hill scrag','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,39,39),
+('albion_snowdonia_zone12_hollow_man_039_039',1,12,'hollow man','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t4',4,1,0,1,1,0,39,39),
+('albion_snowdonia_zone12_hollow_man_040_041',1,12,'hollow man','classic_ecology_loot_zombie',1,1,1,'2026-04-16 00:00:00','undead_humanoid','classic_ecology_material_undead_t5',4,1,0,1,1,0,40,41),
+('albion_snowdonia_zone12_hill_scrag_040_043',1,12,'hill scrag','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,40,43),
+('albion_snowdonia_zone12_cyclops_041_042',1,12,'cyclops','classic_ecology_loot_giant',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,41,42),
+('albion_snowdonia_zone12_tylwyth_teg_rover_041_042',1,12,'Tylwyth Teg rover','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,41,42),
+('albion_snowdonia_zone12_shadowhunter_she_wolf_042_046',1,12,'shadowhunter she-wolf','classic_ecology_loot_canine',1,0,1,'2026-04-16 00:00:00','canine','classic_ecology_material_animal_t5',4,1,0,1,1,0,42,46),
+('albion_snowdonia_zone12_pygmy_goblin_043_043',1,12,'pygmy goblin','classic_ecology_loot_humanoid_common',1,1,1,'2026-04-16 00:00:00','humanoid_common','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,43,43),
+('albion_snowdonia_zone12_tylwyth_teg_huntress_044_045',1,12,'Tylwyth Teg huntress','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,44,45),
+('albion_snowdonia_zone12_large_rock_bounder_045_046',1,12,'large rock bounder','classic_ecology_loot_stone',1,0,1,'2026-04-16 00:00:00','stone','classic_ecology_material_stone_t5',6,1,0,1,1,0,45,46),
+('albion_snowdonia_zone12_angry_bwca_045_047',1,12,'angry bwca','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,45,47),
+('albion_snowdonia_zone12_tylwyth_teg_ranger_046_047',1,12,'Tylwyth Teg ranger','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,46,47),
+('albion_snowdonia_zone12_grimwood_046_049',1,12,'grimwood','classic_ecology_loot_plant',1,0,1,'2026-04-16 00:00:00','plant','classic_ecology_material_fae_t5',4,1,0,1,1,0,46,49),
+('albion_snowdonia_zone12_ellyll_windchaser_047_049',1,12,'ellyll windchaser','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,47,49),
+('albion_snowdonia_zone12_ellyll_guard_049_049',1,12,'ellyll guard','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,49,49),
+('albion_snowdonia_zone12_ellyll_windchaser_050_050',1,12,'Ellyll windchaser','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,50,50),
+('albion_snowdonia_zone12_cyhraeth_050_051',1,12,'cyhraeth','classic_ecology_loot_spirit',1,0,1,'2026-04-16 00:00:00','spirit','classic_ecology_material_spirit_t6',6,1,0,1,1,0,50,51),
+('albion_snowdonia_zone12_ellyll_guard_050_051',1,12,'ellyll guard','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,50,51),
+('albion_snowdonia_zone12_ravenclan_giant_050_051',1,12,'ravenclan giant','classic_ecology_loot_giant',1,1,1,'2026-04-16 00:00:00','giant_humanoid','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,50,51),
+('albion_snowdonia_zone12_ellyll_froglord_051_054',1,12,'ellyll froglord','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,51,54),
+('albion_snowdonia_zone12_ellyll_sage_053_053',1,12,'ellyll sage','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,53,53);
+-- END OpenDAoC local seed: Albion Snowdonia ecology mappings
