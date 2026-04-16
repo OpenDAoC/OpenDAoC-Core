@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using DOL.GameServerConsole;
 using DOL.GS;
+using DOL.GS.ServerProperties;
 
 namespace DOL.DOLServer.Actions
 {
@@ -39,10 +40,9 @@ namespace DOL.DOLServer.Actions
         /// <summary>
         /// Mock client for console commands
         /// </summary>
-        private GameClient m_clientConsole;
+        private GameClient _consoleClient;
 
-        private bool crashOnFail = false;
-
+        private bool _crashOnFail = false;
 
         private static bool StartServer()
         {
@@ -67,7 +67,7 @@ namespace DOL.DOLServer.Actions
                 configFile = new FileInfo(currentAssembly.DirectoryName + Path.DirectorySeparatorChar + "config" + Path.DirectorySeparatorChar + "serverconfig.xml");
             }
             if (parameters.ContainsKey("-crashonfail"))
-                crashOnFail = true;
+                _crashOnFail = true;
 
             var config = new GameServerConfiguration();
             if (configFile.Exists)
@@ -88,7 +88,7 @@ namespace DOL.DOLServer.Actions
             GameServer.CreateInstance(config);
             StartServer();
 
-            if (crashOnFail && GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
+            if (_crashOnFail && GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
             {
                 throw new ApplicationException("Server did not start properly.");
             }
@@ -120,21 +120,9 @@ namespace DOL.DOLServer.Actions
 
                         try
                         {
-                            if (m_clientConsole == null)
-                            {
-                                m_clientConsole = new(null);
-                                m_clientConsole.Account = new();
-                                m_clientConsole.Account.Name = "ConsoleAdmin";
-                                m_clientConsole.Account.Language = DOL.GS.ServerProperties.Properties.SERV_LANGUAGE;
-                                m_clientConsole.Account.PrivLevel = (uint)ePrivLevel.Admin;
-                                m_clientConsole.ClientState = GameClient.eClientState.Playing;
-                                m_clientConsole.Out = new ConsolePacketLib();
-                                m_clientConsole.Player = new GamePlayer(m_clientConsole, null);
-                                m_clientConsole.Player.Name = m_clientConsole.Account.Name;
-                                m_clientConsole.Player.Realm = eRealm.None;
-                            }
+                            EnsureConsoleClientIsInitialized();
 
-                            if (!ScriptMgr.HandleCommand(m_clientConsole, $"&{line[1..]}"))
+                            if (!ScriptMgr.HandleCommand(_consoleClient, $"&{line[1..]}"))
                             {
                                 ConsoleColor before = Console.ForegroundColor;
                                 Console.ForegroundColor = ConsoleColor.Cyan;
@@ -156,6 +144,29 @@ namespace DOL.DOLServer.Actions
             }
 
             GameServer.Instance?.Stop();
+        }
+
+        private void EnsureConsoleClientIsInitialized()
+        {
+            if (_consoleClient != null)
+                return;
+
+            _consoleClient = new(null)
+            {
+                Account = new()
+                {
+                    Name = "ConsoleAdmin",
+                    Language = Properties.SERV_LANGUAGE,
+                    PrivLevel = (uint) ePrivLevel.Admin
+                },
+                ClientState = GameClient.eClientState.Playing,
+                Out = new ConsolePacketLib()
+            };
+            _consoleClient.Player = new(_consoleClient, null)
+            {
+                Name = _consoleClient.Account.Name,
+                Realm = eRealm.None
+            };
         }
     }
 }
