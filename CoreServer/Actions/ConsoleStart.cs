@@ -99,7 +99,7 @@ namespace DOL.DOLServer.Actions
             {
                 string line = Console.ReadLine();
 
-                if (line == null)
+                if (string.IsNullOrEmpty(line))
                     continue;
 
                 switch (line.ToLower())
@@ -111,39 +111,38 @@ namespace DOL.DOLServer.Actions
                         Console.Clear();
                         break;
                     default:
-                    {
-                        if (line.Length <= 0)
-                            break;
-
-                        if (line[0] != '/')
-                            line = $"/{line}";
-
-                        try
-                        {
-                            EnsureConsoleClientIsInitialized();
-
-                            if (!ScriptMgr.HandleCommand(_consoleClient, $"&{line[1..]}"))
-                            {
-                                ConsoleColor before = Console.ForegroundColor;
-                                Console.ForegroundColor = ConsoleColor.Cyan;
-                                Console.WriteLine($"Unknown command: {line}");
-                                Console.ForegroundColor = before;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            ConsoleColor before = Console.ForegroundColor;
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.WriteLine(e.ToString());
-                            Console.ForegroundColor = before;
-                        }
-
+                        ProcessCommand(line);
                         break;
-                    }
                 }
             }
 
             GameServer.Instance?.Stop();
+        }
+
+        private void ProcessCommand(string line)
+        {
+            try
+            {
+                if (line[0] != '/')
+                    line = $"/{line}";
+
+                EnsureConsoleClientIsInitialized();
+
+                if (!ScriptMgr.HandleCommand(_consoleClient, $"&{line[1..]}"))
+                {
+                    ConsoleColor before = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"Unknown command: {line}");
+                    Console.ForegroundColor = before;
+                }
+            }
+            catch (Exception e)
+            {
+                ConsoleColor before = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(e.ToString());
+                Console.ForegroundColor = before;
+            }
         }
 
         private void EnsureConsoleClientIsInitialized()
