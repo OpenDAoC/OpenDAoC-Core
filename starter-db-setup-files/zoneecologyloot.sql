@@ -1279,3 +1279,19 @@ REPLACE INTO `zoneecologyloot` VALUES
 ('albion_pennine_mountains_zone14_ellyl_hero_060_060',1,14,'ellyl hero','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,60,60),
 ('albion_pennine_mountains_zone14_draco_magnificens_061_061',1,14,'Draco Magnificens','classic_ecology_loot_named_beast',1,0,1,'2026-04-16 00:00:00','reptile','classic_ecology_material_reptile_t6',15,1,1,2.5,2.5,45,61,61);
 -- END OpenDAoC local seed: Albion Pennine Mountains ecology mappings
+
+-- BEGIN OpenDAoC local seed: Albion Hadrian's Wall ecology mappings
+REPLACE INTO `zoneecologyloot` VALUES
+('albion_hadrians_wall_zone15_legionnaire_031_036',1,15,'legionnaire','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t4',8,1,0,1,1,0,31,36),
+('albion_hadrians_wall_zone15_legionnaire_040_040',1,15,'legionnaire','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,40,40),
+('albion_hadrians_wall_zone15_pictish_druid_040_042',1,15,'pictish druid','classic_ecology_loot_humanoid_caster',1,1,1,'2026-04-16 00:00:00','humanoid_caster','classic_ecology_material_caster_t5',10,1,0,1,1,0,40,42),
+('albion_hadrians_wall_zone15_pictish_warrior_040_044',1,15,'pictish warrior','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,40,44),
+('albion_hadrians_wall_zone15_priestess_040_044',1,15,'priestess','classic_ecology_loot_humanoid_caster',1,1,1,'2026-04-16 00:00:00','humanoid_caster','classic_ecology_material_caster_t5',10,1,0,1,1,0,40,44),
+('albion_hadrians_wall_zone15_vampiric_spider_040_044',1,15,'vampiric spider','classic_ecology_loot_spider',1,0,1,'2026-04-16 00:00:00','spider','classic_ecology_material_insect_t5',6,1,0,1,1,0,40,44),
+('albion_hadrians_wall_zone15_cave_fairy_040_048',1,15,'cave fairy','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,40,48),
+('albion_hadrians_wall_zone15_albion_waylayer_044_044',1,15,'albion waylayer','classic_ecology_loot_humanoid_bandit',1,1,1,'2026-04-16 00:00:00','humanoid_bandit','classic_ecology_material_humanoid_t5',8,1,0,1,1,0,44,44),
+('albion_hadrians_wall_zone15_cait_sidhe_048_048',1,15,'cait sidhe','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t5',6,1,0,1,1,0,48,48),
+('albion_hadrians_wall_zone15_templar_050_054',1,15,'templar','classic_ecology_loot_humanoid_guard',1,1,1,'2026-04-16 00:00:00','humanoid_guard','classic_ecology_material_humanoid_t6',8,1,0,1,1,0,50,54),
+('albion_hadrians_wall_zone15_cait_sidhe_050_056',1,15,'cait sidhe','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,50,56),
+('albion_hadrians_wall_zone15_piper_fairy_052_056',1,15,'piper fairy','classic_ecology_loot_fae',1,0,1,'2026-04-16 00:00:00','fae','classic_ecology_material_fae_t6',6,1,0,1,1,0,52,56);
+-- END OpenDAoC local seed: Albion Hadrian's Wall ecology mappings
