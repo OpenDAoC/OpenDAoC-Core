@@ -13,7 +13,7 @@ namespace DOL.GS
     /// </summary>
     public static class GamePlayerUtils
     {
-        private static int[] _bonusesToBeDisplayed = [9, 10, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 210, 247, 248, 251, 252, 253, 254];
+        private static readonly int[] _bonusesToBeDisplayed = [9, 10, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 210, 247, 248, 251, 252, 253, 254];
 
         #region Spot and Area Description / Translation
         /// <summary>
@@ -265,7 +265,7 @@ namespace DOL.GS
 
             foreach (eProperty property in Enum.GetValues<eProperty>())
             {
-                if (player.ItemBonus[property] <= 0 || Array.BinarySearch(_bonusesToBeDisplayed, (int) property) < 0) //Tiny edit here to add the binary serach to weed out the non essential bonuses
+                if (player.ItemBonus[property] <= 0 || Array.BinarySearch(_bonusesToBeDisplayed, (int) property) < 0)
                     continue;
 
                 if (property is eProperty.PowerPool)
