@@ -16,6 +16,13 @@ namespace DOL.GS
             Instance = new();
         }
 
+        private PeriodicQuestService()
+        {
+            RegisterQuest<Quests.DailyQuest>(IntervalKey.Daily);
+            RegisterQuest<Quests.WeeklyQuest>(IntervalKey.Weekly);
+            RegisterQuest<Quests.MonthlyQuest>(IntervalKey.Monthly);
+        }
+
         public static void Initialize() { }
 
         public override void Tick()
@@ -49,13 +56,6 @@ namespace DOL.GS
 
                 return false;
             }, triggeredMask);
-        }
-
-        private PeriodicQuestService()
-        {
-            RegisterQuest<Quests.DailyQuest>(IntervalKey.Daily);
-            RegisterQuest<Quests.WeeklyQuest>(IntervalKey.Weekly);
-            RegisterQuest<Quests.MonthlyQuest>(IntervalKey.Monthly);
         }
 
         private static void RegisterQuest<T>(IntervalKey intervalKey)
