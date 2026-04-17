@@ -72,9 +72,9 @@ namespace DOL.GS
         private static void ResetQuests<T>()
         {
             List<GamePlayer> players = ClientService.Instance.GetPlayers();
-            GameLoop.ExecuteForEach(players, players.Count - 1, action);
+            GameLoop.ExecuteForEach(players, players.Count - 1, Action);
 
-            static void action(GamePlayer player)
+            static void Action(GamePlayer player)
             {
                 player.RemoveFinishedQuests(static quest => quest is T);
             }

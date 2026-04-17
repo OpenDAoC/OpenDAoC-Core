@@ -13,6 +13,8 @@ namespace DOL.GS
     /// </summary>
     public static class GamePlayerUtils
     {
+        private static int[] _bonusesToBeDisplayed = [9, 10, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 210, 247, 248, 251, 252, 253, 254];
+
         #region Spot and Area Description / Translation
         /// <summary>
         /// Get Spot Description Checking Any Area with Description or Zone Description
@@ -261,65 +263,30 @@ namespace DOL.GS
             info.Add(" ");
             info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Special"));
 
-            //This is an Array of the bonuses that show up in the Bonus Snapshot on Live, the only ones that really need to be there.
-            int[] bonusToBeDisplayed = [9, 10, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 210, 247, 248, 251, 252, 253, 254];
             foreach (eProperty property in Enum.GetValues<eProperty>())
             {
-                if ((player.ItemBonus[property] > 0) && (Array.BinarySearch(bonusToBeDisplayed, (int) property) >= 0)) //Tiny edit here to add the binary serach to weed out the non essential bonuses
+                if (player.ItemBonus[property] <= 0 || Array.BinarySearch(_bonusesToBeDisplayed, (int) property) < 0) //Tiny edit here to add the binary serach to weed out the non essential bonuses
+                    continue;
+
+                if (property is eProperty.PowerPool)
                 {
-                    if (player.ItemBonus[property] != 0)
-                    {
-                        //LIFEFLIGHT Add, to correct power pool from showing too much
-                        //This is where we need to correct the display, make it cut off at the cap if
-                        //Same with hits and hits cap
-                        if (property == eProperty.PowerPool)
-                        {
-                            int powercap = player.ItemBonus[eProperty.PowerPoolCapBonus];
-                            if (powercap > 50)
-                            {
-                                powercap = 50;
-                            }
-                            int powerpool = player.ItemBonus[eProperty.PowerPool];
-                            if (powerpool > 26)
-                                powerpool = 26;
-                            if (powerpool > powercap + 25)
-                            {
-                                int tempbonus = powercap + 25;
-                                info.Add(ItemBonusDescription(tempbonus, (int) property));
-                            }
-                            else
-                            {
-                                int tempbonus = powerpool;
-                                info.Add(ItemBonusDescription(tempbonus, (int) property));
-                            }
-
-
-                        }
-                        else if (property == eProperty.MaxHealth)
-                        {
-                            int hitscap = player.ItemBonus[eProperty.MaxHealthCapBonus];
-                            if (hitscap > 200)
-                            {
-                                hitscap = 200;
-                            }
-                            int hits = player.ItemBonus[eProperty.MaxHealth];
-                            if (hits > hitscap + 200)
-                            {
-                                int tempbonus = hitscap + 200;
-                                info.Add(ItemBonusDescription(tempbonus, (int) property));
-                            }
-                            else
-                            {
-                                int tempbonus = hits;
-                                info.Add(ItemBonusDescription(tempbonus, (int) property));
-                            }
-                        }
-                        else
-                        {
-                            info.Add(ItemBonusDescription(player.ItemBonus[property], (int) property));
-                        }
-                    }
+                    int powercap = Math.Min(player.ItemBonus[eProperty.PowerPoolCapBonus], 50);
+                    int powerpool = player.ItemBonus[property];
+                    info.Add(ItemBonusDescription(Math.Min(powerpool, powercap + 25), (int) property));
                 }
+                else if (property is eProperty.MaxMana)
+                {
+                    int maxMana = player.ItemBonus[property];
+                    info.Add(ItemBonusDescription(Math.Min(maxMana, 26), (int) property));
+                }
+                else if (property is eProperty.MaxHealth)
+                {
+                    int hitscap = Math.Min(player.ItemBonus[eProperty.MaxHealthCapBonus], 200);
+                    int hits = player.ItemBonus[property];
+                    info.Add(ItemBonusDescription(Math.Min(hits, hitscap + 200), (int) property));
+                }
+                else
+                    info.Add(ItemBonusDescription(player.ItemBonus[property], (int) property));
             }
 
             info.Add(" ");
