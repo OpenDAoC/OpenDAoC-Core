@@ -161,9 +161,8 @@ namespace DOL.GS
             AddStep(ReaperService.Instance, ReaperService.Instance.Tick);
             AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
             AddStep(ClientService.Instance, ClientService.Instance.EndTick);
-            AddStep(DailyQuestService.Instance, DailyQuestService.Instance.Tick);
-            AddStep(WeeklyQuestService.Instance, WeeklyQuestService.Instance.Tick);
-            AddStep(MonthlyQuestService.Instance, MonthlyQuestService.Instance.Tick);
+            AddStep(RolloverSchedulerService.Instance, RolloverSchedulerService.Instance.Tick);
+            PeriodicQuestService.Initialize(); // Ticks via RolloverSchedulerService.
 
             GameServiceContext.Current.Value = null;
 

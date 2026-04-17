@@ -7846,6 +7846,7 @@ namespace DOL.GS
             RefreshItemBonuses();
             LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             LastPlayerActivityTime = GameLoop.GameLoopTime;
+            PeriodicQuestService.OnPlayerJoin(this);
             ClientService.Instance.OnPlayerJoin(this);
             return true;
         }
@@ -11251,7 +11252,7 @@ namespace DOL.GS
             }
         }
 
-        public void RemoveFinishedQuests(Predicate<AbstractQuest> match)
+        public void RemoveFinishedQuests(Func<AbstractQuest, bool> match)
         {
             lock (_questListFinishedLock)
             {
@@ -11260,6 +11261,23 @@ namespace DOL.GS
                     AbstractQuest quest = _questListFinished[i];
 
                     if (match(quest))
+                    {
+                        _questListFinished.SwapRemoveAt(i);
+                        quest.DeleteFromDatabase();
+                    }
+                }
+            }
+        }
+
+        public void RemoveFinishedQuests<T>(Func<AbstractQuest, T, bool> match, T state)
+        {
+            lock (_questListFinishedLock)
+            {
+                for (int i = _questListFinished.Count - 1; i >= 0; i--)
+                {
+                    AbstractQuest quest = _questListFinished[i];
+
+                    if (match(quest, state))
                     {
                         _questListFinished.SwapRemoveAt(i);
                         quest.DeleteFromDatabase();
