@@ -37,8 +37,10 @@ namespace DOL.GS
             uint triggeredMask = 0;
 
             // Evaluate which intervals need resetting.
-            foreach (QuestRegistration reg in _registrations)
+            for (int i = 0; i < _registrations.Count; i++)
             {
+                QuestRegistration reg = _registrations[i];
+
                 if (login < RolloverSchedulerService.Instance.GetLastRollover(reg.Interval))
                     triggeredMask |= reg.BitMask;
             }
@@ -48,8 +50,10 @@ namespace DOL.GS
 
             player.RemoveFinishedQuests(static (quest, mask) =>
             {
-                foreach (QuestRegistration reg in _registrations)
+                for (int i = 0; i < _registrations.Count; i++)
                 {
+                    QuestRegistration reg = _registrations[i];
+
                     if ((mask & reg.BitMask) != 0 && reg.IsMatch(quest))
                         return true;
                 }
@@ -68,7 +72,12 @@ namespace DOL.GS
         private static void ResetQuests<T>()
         {
             List<GamePlayer> players = ClientService.Instance.GetPlayers();
-            GameLoop.ExecuteForEach(players, players.Count - 1, static player => player.RemoveFinishedQuests(quest => quest is T));
+            GameLoop.ExecuteForEach(players, players.Count - 1, action);
+
+            static void action(GamePlayer player)
+            {
+                player.RemoveFinishedQuests(static quest => quest is T);
+            }
         }
 
         private record struct QuestRegistration(IntervalKey Interval, uint BitMask, Func<AbstractQuest, bool> IsMatch) { }
