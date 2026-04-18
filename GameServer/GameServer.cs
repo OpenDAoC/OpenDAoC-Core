@@ -307,11 +307,6 @@ namespace DOL.GS
 				if (!InitComponent(InitMetrics(), "Setup Metric Server"))
 					return false;
 
-				// -----------------------------------------------------------
-				// Init Discord Client Manager
-				if (!InitComponent(InitDiscordClientManager(), "Setup Discord Client Manager"))
-					return false;
-
 				//---------------------------------------------------------------
 				//Try to compile the Scripts
 				if (!InitComponent(CompileScripts(), "Script compilation"))
@@ -320,6 +315,11 @@ namespace DOL.GS
 				//---------------------------------------------------------------
 				//Try to init Server Properties
 				if (!InitComponent(Properties.InitProperties, "Server Properties Lookup"))
+					return false;
+
+				// -----------------------------------------------------------
+				// Init Discord Client Manager
+				if (!InitComponent(InitDiscordClientManager(), "Setup Discord Client Manager"))
 					return false;
 
 				//---------------------------------------------------------------
