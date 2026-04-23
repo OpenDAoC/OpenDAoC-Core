@@ -39,7 +39,7 @@ namespace DOL.GS.Keeps
 			{
 				return;
 			}
-			switch (Realm)
+			switch (ModelRealm)
 			{
 				case eRealm.None:
 				case eRealm.Albion:
@@ -84,7 +84,7 @@ namespace DOL.GS.Keeps
 			if (!base.Interact(player))
 				return false;
 
-			if (player.Realm != Realm)
+			if (!GameServer.ServerRules.IsSameRealm(player, this, true))
 				return false;
 
 			TurnTo(player, 5000);
