@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text;
 using DOL.Logging;
-using DOL.Timing;
+using ECS.Debug;
 
 namespace DOL.Events
 {
@@ -10,8 +10,7 @@ namespace DOL.Events
     // This class is immutable; adding or removing handlers creates new instances of the chain.
     public sealed class DOLEventHandlerChain
     {
-        private static readonly Logger Log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const int LONG_EXECUTION_THRESHOLD = 5;
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly DOLEventHandler _handler;
         private readonly DOLEventHandlerChain _next;
@@ -80,7 +79,7 @@ namespace DOL.Events
 
             while (current != null)
             {
-                long startTick = MonotonicTime.NowMs;
+                TickMonitor monitor = new();
 
                 try
                 {
@@ -88,14 +87,12 @@ namespace DOL.Events
                 }
                 catch (Exception ex)
                 {
-                    if (Log.IsErrorEnabled)
-                        Log.Error($"Error in {nameof(Invoke)}. Event: {e?.Name ?? "null"}", ex);
+                    if (log.IsErrorEnabled)
+                        log.Error($"Error in {nameof(Invoke)}. Event: {e?.Name ?? "null"}", ex);
                 }
 
-                long stopTick = MonotonicTime.NowMs;
-
-                if (stopTick - startTick > LONG_EXECUTION_THRESHOLD)
-                    Log.Warn($"{nameof(Invoke)} took {stopTick - startTick}ms. Target: {current}");
+                if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                    log.Warn($"{nameof(Invoke)} took {elapsedMs}ms. Target: {current}");
 
                 current = current._next;
             }

@@ -4,7 +4,6 @@ using System.Threading;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Logging;
-using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -54,12 +53,11 @@ namespace DOL.GS
                 if (!GameServiceUtils.ShouldTick(effect.GetNextTick()))
                     return;
 
-                long startTick = MonotonicTime.NowMs;
+                TickMonitor monitor = new();
                 TickEffect(effect);
-                long stopTick = MonotonicTime.NowMs;
 
-                if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(TickInternal)} for {effect.Owner.Name}({effect.Owner.ObjectID}) Effect: {effect.EffectType} Time: {stopTick - startTick}ms");
+                if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(TickInternal)} for {effect.Owner.Name}({effect.Owner.ObjectID}) Effect: {effect.EffectType} Time: {elapsedMs}ms");
             }
             catch (Exception e)
             {

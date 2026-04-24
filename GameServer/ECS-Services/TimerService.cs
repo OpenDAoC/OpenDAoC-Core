@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Threading;
 using DOL.Logging;
-using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -52,12 +51,11 @@ namespace DOL.GS
                 if (!GameServiceUtils.ShouldTick(timer.NextTick))
                     return;
 
-                long startTick = MonotonicTime.NowMs;
+                TickMonitor monitor = new();
                 timer.Tick();
-                long stopTick = MonotonicTime.NowMs;
 
-                if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for Timer Callback: {timer.CallbackInfo?.DeclaringType}:{timer.CallbackInfo?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
+                if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for Timer Callback: {timer.CallbackInfo?.DeclaringType}:{timer.CallbackInfo?.Name}  Owner: {timer.Owner?.Name} Time: {elapsedMs}ms");
             }
             catch (Exception e)
             {

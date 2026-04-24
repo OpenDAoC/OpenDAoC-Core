@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.Threading;
 using DOL.Logging;
-using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -49,12 +48,11 @@ namespace DOL.GS
                 if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref Instance.EntityCount);
 
-                long startTick = MonotonicTime.NowMs;
+                TickMonitor monitor = new();
                 livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
-                long stopTick = MonotonicTime.NowMs;
 
-                if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {livingBeingKilled} Time: {stopTick - startTick}ms");
+                if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {livingBeingKilled} Time: {elapsedMs}ms");
             }
             catch (Exception e)
             {

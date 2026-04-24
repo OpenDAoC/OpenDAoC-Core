@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Threading;
 using DOL.AI;
 using DOL.Logging;
-using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -61,12 +60,11 @@ namespace DOL.GS
                     return;
                 }
 
-                long startTick = MonotonicTime.NowMs;
+                TickMonitor monitor = new();
                 brain.Think();
-                long stopTick = MonotonicTime.NowMs;
 
-                if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
+                if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {elapsedMs}ms");
 
                 brain.NextThinkTick = GameLoop.GameLoopTime + brain.ThinkInterval;
             }

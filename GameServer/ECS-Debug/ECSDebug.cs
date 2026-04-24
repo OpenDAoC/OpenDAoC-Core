@@ -39,7 +39,8 @@ namespace ECS.Debug
         private static int _notifyProfilingIntervalRequest;
 
         public static bool CheckServiceObjectCount { get; private set; }
-        public static int LongTickThreshold { get; private set; } = 25;
+        public static bool EnableTickProfiling { get; set; } = true;
+        public static int LongTickThreshold { get; set; } = 25;
 
         public static void PrintServiceObjectCount(string serviceName, ref int nonNull, int total)
         {
@@ -309,6 +310,7 @@ namespace DOL.GS.Commands
     "Toggle server logging of performance diagnostics.",
     "/diag perf <on|off> [duration] to toggle performance diagnostics logging on server with an optional duration (in minutes).",
     "/diag notify <on|off> <interval> to toggle GameEventMgr Notify profiling, where interval is the period of time in milliseconds during which to accumulate stats.",
+    "/diag tick <on|off> [threshold] to toggle tick profiling, optionally setting the long tick threshold in milliseconds.",
     "/diag object to count non-null service objects in ServiceObjectStore arrays.")]
     public class ECSDiagnosticsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -393,6 +395,40 @@ namespace DOL.GS.Commands
                     {
                         Diagnostics.RequestGameEventMgrNotifyTimeReporting(false);
                         DisplayMessage(client, "GameEventMgr Notify() logging turned off.");
+                    }
+                    else
+                        DisplaySyntax(client);
+
+                    break;
+                }
+                case "tick":
+                {
+                    if (args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+
+                    if (args[2].Equals("on", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (args.Length > 3)
+                        {
+                            if (!int.TryParse(args[3], out int threshold) || threshold <= 0)
+                            {
+                                DisplayMessage(client, "Invalid threshold argument. Please specify a positive value in milliseconds.");
+                                return;
+                            }
+
+                            Diagnostics.LongTickThreshold = threshold;
+                        }
+
+                        Diagnostics.EnableTickProfiling = true;
+                        DisplayMessage(client, $"Tick profiling turned on. Long tick threshold is set to {Diagnostics.LongTickThreshold}ms.");
+                    }
+                    else if (args[2].Equals("off", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Diagnostics.EnableTickProfiling = false;
+                        DisplayMessage(client, "Tick profiling turned off.");
                     }
                     else
                         DisplaySyntax(client);

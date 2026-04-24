@@ -7,7 +7,6 @@ using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using DOL.Logging;
 using DOL.Threading;
-using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -152,22 +151,20 @@ namespace DOL.GS
 
         private static void Receive(GameClient client)
         {
-            long startTick = MonotonicTime.NowMs;
+            TickMonitor monitor = new();
             client.Receive();
-            long stopTick = MonotonicTime.NowMs;
 
-            if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {Instance.ServiceName}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+            if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                log.Warn($"Long {Instance.ServiceName}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {elapsedMs}ms");
         }
 
         private static void Send(GameClient client)
         {
-            long startTick = MonotonicTime.NowMs;
+            TickMonitor monitor = new();
             client.PacketProcessor.SendPendingPackets();
-            long stopTick = MonotonicTime.NowMs;
 
-            if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {Instance.ServiceName}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+            if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                log.Warn($"Long {Instance.ServiceName}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {elapsedMs}ms");
         }
 
         public void OnClientConnect(GameClient client)
@@ -768,7 +765,7 @@ namespace DOL.GS
         private static void UpdateWorld(GamePlayer player)
         {
             // Players aren't updated here on purpose.
-            long startTick = MonotonicTime.NowMs;
+            TickMonitor monitor = new();
 
             lock (player.PlayerObjectCache.NpcUpdateCacheLock)
             {
@@ -790,10 +787,8 @@ namespace DOL.GS
                 UpdateHouses(player);
             }
 
-            long stopTick = MonotonicTime.NowMs;
-
-            if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {Instance.ServiceName}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+            if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
+                log.Warn($"Long {Instance.ServiceName}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {elapsedMs}ms");
         }
 
         private static void UpdateNpcs(GamePlayer player)

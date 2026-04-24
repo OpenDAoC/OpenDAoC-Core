@@ -1,6 +1,5 @@
 using System.Reflection;
 using DOL.Logging;
-using DOL.Timing;
 using ECS.Debug;
 
 namespace DOL.GS.PacketHandler
@@ -16,18 +15,14 @@ namespace DOL.GS.PacketHandler
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
-            long startTick = MonotonicTime.NowMs;
+            TickMonitor monitor = new();
             HandlePacketInternal(client, packet);
-            long stopTick = MonotonicTime.NowMs;
 
-            if (log.IsWarnEnabled)
+            if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
             {
-                if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                {
-                    string context = GetLogContext(client, packet);
-                    string contextMsg = string.IsNullOrEmpty(context) ? string.Empty : $" Context: {context}";
-                    log.Warn($"Long {nameof(PacketHandler)}.{nameof(HandlePacket)} ({(eClientPackets)packet.Code}) for {client.Player?.Name}({client.Player?.ObjectID}){contextMsg} Time: {stopTick - startTick}ms");
-                }
+                string context = GetLogContext(client, packet);
+                string contextMsg = string.IsNullOrEmpty(context) ? string.Empty : $" Context: {context}";
+                log.Warn($"Long {nameof(PacketHandler)}.{nameof(HandlePacket)} ({(eClientPackets)packet.Code}) for {client.Player?.Name}({client.Player?.ObjectID}){contextMsg} Time: {elapsedMs}ms");
             }
         }
 
