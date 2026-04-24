@@ -3,7 +3,7 @@ using DOL.Timing;
 
 namespace ECS.Debug
 {
-    public ref struct TickMonitor
+    public readonly ref struct TickMonitor
     {
         private readonly bool _isEnabled = Diagnostics.EnableTickProfiling;
         private readonly long _startTick;
