@@ -428,6 +428,7 @@ namespace DOL.GS
         StylePowerDrain,
         UniPortalKeep,
         ValkyrieOffensiveProc,
-        BuffCommand
+        BuffCommand,
+        RecorderAction
     }
 }
