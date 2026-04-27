@@ -5,30 +5,15 @@ using static DOL.GS.RolloverSchedulerService;
 
 namespace DOL.GS
 {
-    public sealed class PeriodicQuestService : GameServiceBase
+    public sealed class PeriodicQuestService
     {
-        public static PeriodicQuestService Instance { get; }
-
         private static readonly List<QuestRegistration> _registrations = new();
 
-        static PeriodicQuestService()
-        {
-            Instance = new();
-        }
-
-        private PeriodicQuestService()
+        public static void Initialize()
         {
             RegisterQuest<Quests.DailyQuest>(IntervalKey.Daily);
             RegisterQuest<Quests.WeeklyQuest>(IntervalKey.Weekly);
             RegisterQuest<Quests.MonthlyQuest>(IntervalKey.Monthly);
-        }
-
-        public static void Initialize() { }
-
-        public override void Tick()
-        {
-            // Core service duties are still processed, but delegated to the rollover scheduler.
-            ProcessPostedActionsParallel();
         }
 
         public static void OnPlayerJoin(GamePlayer player)
