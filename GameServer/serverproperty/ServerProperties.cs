@@ -2116,28 +2116,28 @@ namespace DOL.GS.ServerProperties
 		public static string DISABLED_RACES;
 
 		/// <summary>
-		/// Days before your elligable for a free level in Albion
+		/// Days before your eligible for a free level in Albion
 		/// </summary>
-		[ServerProperty("classes", "freelevel_days_albion", "days before your elligable for a free level in Albion, use -1 to deactivate", 7)]
+		[ServerProperty("classes", "freelevel_days_albion", "days before your eligible for a free level in Albion, use -1 to deactivate", 7)]
 		public static int FREELEVEL_DAYS_ALBION;
 		
 		/// <summary>
-		/// Days before your elligable for a free level in Midgard
+		/// Days before your eligible for a free level in Midgard
 		/// </summary>
-		[ServerProperty("classes", "freelevel_days_midgard", "days before your elligable for a free level in Midgard, use -1 to deactivate", 7)]
+		[ServerProperty("classes", "freelevel_days_midgard", "days before your eligible for a free level in Midgard, use -1 to deactivate", 7)]
 		public static int FREELEVEL_DAYS_MIDGARD;
 
 		/// <summary>
-		/// Days before your elligable for a free level in Hibernia
+		/// Days before your eligible for a free level in Hibernia
 		/// </summary>
-		[ServerProperty("classes", "freelevel_days_hibernia", "days before your elligable for a free level in Hibernia, use -1 to deactivate", 7)]
+		[ServerProperty("classes", "freelevel_days_hibernia", "days before your eligible for a free level in Hibernia, use -1 to deactivate", 7)]
 		public static int FREELEVEL_DAYS_HIBERNIA;
 
-		/// <summary>
-		/// Buff Range, 0 for unlimited
-		/// </summary>
-		[ServerProperty("classes", "buff_range", "The range that concentration buffs can last from the owner before it expires.  0 for unlimited.", 0)]
-		public static int BUFF_RANGE;
+		[ServerProperty("classes", "concentration_buff_range", "The range at which concentration buffs get disabled. 0 for unlimited.", 5000)]
+		public static int CONCENTRATION_BUFF_RANGE;
+
+		[ServerProperty("classes", "endurance_concentration_buff_range", "The range at which endurance concentration buffs get disabled. 0 for unlimited.", 1500)]
+		public static int ENDURANCE_CONCENTRATION_BUFF_RANGE;
 
 		/// <summary>
 		/// Allow Cata Slash Level

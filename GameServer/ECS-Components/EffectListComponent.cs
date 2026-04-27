@@ -110,9 +110,8 @@ namespace DOL.GS
                     if (existingEffect.IsConcentrationEffect())
                     {
                         ISpellHandler spellHandler = existingEffect.SpellHandler;
-                        int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
 
-                        if (!spellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck))
+                        if (!EffectHelper.IsWithinConcentrationBuffRadius(effect.Owner, spellHandler.Caster, spellHandler.Spell.SpellType))
                             continue;
                     }
 
@@ -403,49 +402,52 @@ namespace DOL.GS
             if (effectOwner == caster)
                 return;
 
-            int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
+            bool isWithinRadius = EffectHelper.IsWithinConcentrationBuffRadius(effectOwner, caster, spellHandler.Spell.SpellType);
 
             lock (_effectsLock)
             {
                 // Check if the concentration buff needs to be enabled or disabled, based on its current state and the distance between the player and the caster.
-                if (caster.IsWithinRadius(effectOwner, radiusToCheck))
+                if (!isWithinRadius)
                 {
-                    if (spellEffect.IsDisabled)
+                    if (spellEffect.IsActive)
+                        spellEffect.Disable();
+
+                    return;
+                }
+
+                if (spellEffect.IsDisabled)
+                {
+                    // Check if the concentration buff is better than currently enabled effects.
+                    // If there isn't any other effect of this type, simply enable it.
+                    if (!_effects.TryGetValue(spellEffect.EffectType, out List<ECSGameEffect> existingEffects))
+                        spellEffect.Enable();
+                    else
                     {
-                        // Check if the concentration buff is better than currently enabled effects.
-                        // If there isn't any other effect of this type, simply enable it.
-                        if (!_effects.TryGetValue(spellEffect.EffectType, out List<ECSGameEffect> existingEffects))
+                        if (existingEffects.Count == 1)
                             spellEffect.Enable();
                         else
                         {
-                            if (existingEffects.Count == 1)
-                                spellEffect.Enable();
-                            else
+                            ECSGameEffect effectToDisable = null;
+
+                            // Get the weakest enabled effect.
+                            foreach (ECSGameEffect existingEnabledEffect in existingEffects)
                             {
-                                ECSGameEffect effectToDisable = null;
+                                if (spellEffect == existingEnabledEffect || !existingEnabledEffect.IsActive)
+                                    continue;
 
-                                // Get the weakest enabled effect.
-                                foreach (ECSGameEffect existingEnabledEffect in existingEffects)
-                                {
-                                    if (spellEffect == existingEnabledEffect || !existingEnabledEffect.IsActive)
-                                        continue;
+                                if (!spellEffect.IsBetterThan(existingEnabledEffect) || existingEnabledEffect is not ECSGameSpellEffect)
+                                    continue;
 
-                                    if (!spellEffect.IsBetterThan(existingEnabledEffect) || existingEnabledEffect is not ECSGameSpellEffect)
-                                        continue;
-
-                                    if (effectToDisable == null || existingEnabledEffect.IsBetterThan(effectToDisable))
-                                        effectToDisable = existingEnabledEffect;
-                                }
-
-                                // We shouldn't enable the concentration effect explicitly if there are any other effect of the same type.
-                                // There is a risk of the effect being activated when it shouldn't. It's safer to let `EndTick` handles it when another similar effect is stopped.
-                                effectToDisable?.Disable();
+                                if (effectToDisable == null || existingEnabledEffect.IsBetterThan(effectToDisable))
+                                    effectToDisable = existingEnabledEffect;
                             }
+
+                            // We shouldn't enable the concentration effect explicitly if there are any other effects of the same type.
+                            // There is a risk of the effect being activated when it shouldn't. It's safer to let `EndTick` handles it when another similar effect is stopped.
+                            effectToDisable?.Disable();
                         }
                     }
                 }
-                else if (spellEffect.IsActive)
-                    spellEffect.Disable();
             }
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
+using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
 using DOL.Logging;
 
@@ -11,9 +12,13 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static int GetConcentrationEffectActivationRange(eSpellType spellType)
+        public static bool IsWithinConcentrationBuffRadius(GameLiving effectOwner, GameLiving effectSource, eSpellType spellType)
         {
-            return spellType is not eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
+            int radius = spellType is eSpellType.EnduranceRegenBuff ?
+                Properties.ENDURANCE_CONCENTRATION_BUFF_RANGE :
+                Properties.CONCENTRATION_BUFF_RANGE;
+
+            return radius == 0 || effectOwner.IsWithinRadius(effectSource, radius);
         }
 
         public static void SendSpellAnimation(ECSGameSpellEffect e)
