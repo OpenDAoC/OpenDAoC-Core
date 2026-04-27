@@ -906,11 +906,7 @@ namespace DOL.GS
             HashSet<House> inRangeSet = player.PlayerObjectCache.HouseInRangeCache;
             Dictionary<House, long> houseUpdateCache = player.PlayerObjectCache.HouseUpdateCache;
 
-            foreach (House house in HouseMgr.GetHouses(player.CurrentRegionID).Values)
-            {
-                if (house.RegionID == player.CurrentRegionID && house.IsWithinRadius(player, HousingConstants.HouseViewingDistance))
-                    inRangeSet.Add(house);
-            }
+            HouseMgr.AddHousesInViewRange(player, inRangeSet);
 
             foreach (var house in houseUpdateCache)
             {

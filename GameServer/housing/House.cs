@@ -10,7 +10,7 @@ using DOL.Logging;
 
 namespace DOL.GS.Housing
 {
-    public abstract class House : Point3D
+    public abstract class House : Point3D, IPooledList<House>
     {
         protected static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public const int MAX_VAULT_COUNT = 8; // Must not be bigger than what `eInventorySlot` allows.

@@ -2035,12 +2035,6 @@ namespace DOL.GS.ServerProperties
 		public static int RENT_DUE_DAYS;
 
 		/// <summary>
-		/// How often, in minutes, do we check for rent?
-		/// </summary>
-		[ServerProperty("housing", "rent_check_interval", "How often, in minutes, do we check for rent?", 120)]
-		public static int RENT_CHECK_INTERVAL;
-
-		/// <summary>
 		/// How many rent payments can be stored in the lockbox?
 		/// </summary>
 		[ServerProperty("housing", "rent_lockbox_payments", "How many rent payments can be stored in the lockbox?", 4)]

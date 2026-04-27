@@ -162,7 +162,10 @@ namespace DOL.GS
             AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
             AddStep(ClientService.Instance, ClientService.Instance.EndTick);
             AddStep(RolloverSchedulerService.Instance, RolloverSchedulerService.Instance.Tick);
-            PeriodicQuestService.Initialize(); // Ticks via RolloverSchedulerService.
+
+            // The following services tick via RolloverSchedulerService.
+            PeriodicQuestService.Initialize();
+            HouseRentService.Initialize();
 
             GameServiceContext.Current.Value = null;
 

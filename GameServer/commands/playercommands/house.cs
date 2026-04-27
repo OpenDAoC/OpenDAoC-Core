@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using DOL.GS.Housing;
 
 namespace DOL.GS.Commands
@@ -79,7 +78,7 @@ namespace DOL.GS.Commands
 				}
 			}
 
-			ArrayList houses = (ArrayList)HouseMgr.GetHousesCloseToSpot(player.CurrentRegionID, player.X, player.Y, 700);
+			var houses = HouseMgr.GetHousesCloseToSpot(player.CurrentRegionID, player.X, player.Y, 700);
 			if (houses.Count != 1)
 			{
 				DisplayMessage(player.Client, "You need to stand closer to a house!");
@@ -88,7 +87,7 @@ namespace DOL.GS.Commands
 
 			if (args[1].ToLower() == "info")
 			{
-				(houses[0] as House).SendHouseInfo(player);
+				houses[0].SendHouseInfo(player);
 				return;
 			}
 
