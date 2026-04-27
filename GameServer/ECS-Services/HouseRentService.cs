@@ -22,7 +22,7 @@ namespace DOL.GS
         private static readonly Queue<House> _removalQueue = new(); // Populated by ProcessHouseRent.
         private static readonly Lock _removalLock = new();
 
-        public static void CheckRents()
+        private static void CheckRents()
         {
             if (Properties.RENT_DUE_DAYS == 0)
                 return;
@@ -86,7 +86,8 @@ namespace DOL.GS
             }
 
             // If we reached here, they can't afford rent.
-            log.Warn($"[HOUSING] House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
+            if (log.IsWarnEnabled)
+                log.Warn($"[HOUSING] House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
 
             lock (_removalLock)
             {
