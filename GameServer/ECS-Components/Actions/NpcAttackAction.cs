@@ -169,7 +169,7 @@ namespace DOL.GS
             if (Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK)
             {
                 if (_checkLosTimer == null)
-                    _checkLosTimer = new(_npcOwner, _target, this);
+                    _checkLosTimer = new(_npcOwner, this, _target);
                 else if (_losCheckTarget != _target)
                 {
                     _hasLos = false;
@@ -243,14 +243,14 @@ namespace DOL.GS
             _npcOwner.TurnTo(_losCheckTarget);
         }
 
-        public class CheckLosTimer : ECSGameTimerWrapperBase
+        private class CheckLosTimer : ECSGameTimerWrapperBase
         {
-            private GameNPC _npcOwner;
+            private readonly GameNPC _npcOwner;
+            private readonly NpcAttackAction _attackAction;
             private GameObject _target;
-            private NpcAttackAction _attackAction;
             private GamePlayer _losChecker;
 
-            public CheckLosTimer(GameObject owner, GameObject target, NpcAttackAction attackAction) : base(owner)
+            public CheckLosTimer(GameObject owner, NpcAttackAction attackAction, GameObject target) : base(owner)
             {
                 _npcOwner = owner as GameNPC;
                 _attackAction = attackAction;
@@ -261,6 +261,8 @@ namespace DOL.GS
             {
                 if (newTarget == null)
                 {
+                    _target = null;
+                    _losChecker = null;
                     Stop();
                     return;
                 }
@@ -268,7 +270,6 @@ namespace DOL.GS
                 if (_target != newTarget)
                 {
                     _target = newTarget;
-                    _losChecker = null;
 
                     if (_npcOwner.Brain is IControlledBrain brain)
                         _losChecker = brain.GetPlayerOwner();
@@ -276,27 +277,30 @@ namespace DOL.GS
                         _losChecker = targetPlayer;
                     else if (_target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain targetBrain)
                         _losChecker = targetBrain.GetPlayerOwner();
+                    else
+                        _losChecker = null;
                 }
 
-                // Don't bother starting the timer if there's no one to perform the LoS check.
+                // If there's no LoS checker, stop the timer and force LoS.
                 if (_losChecker == null)
                 {
                     _attackAction.ForceLos();
+                    Stop();
                     return;
                 }
 
-                if (!IsAlive && _losChecker != null)
-                {
-                    Start(1);
-                    Interval = LosCheckInterval;
-                }
+                Start(0);
+                Interval = LosCheckInterval;
             }
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                // We normally rely on `AttackActon.CleanUp()` to stop this timer.
-                if (!_npcOwner.attackComponent.AttackState || _npcOwner.ObjectState is not eObjectState.Active)
+                if (_losChecker == null ||
+                    !_npcOwner.attackComponent.AttackState ||
+                    _npcOwner.ObjectState is not eObjectState.Active)
+                {
                     return 0;
+                }
 
                 _losChecker.Out.SendLosCheckRequest(_npcOwner, _target, _attackAction);
                 return LosCheckInterval;
