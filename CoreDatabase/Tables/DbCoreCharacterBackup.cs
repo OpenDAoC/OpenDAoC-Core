@@ -76,13 +76,11 @@ namespace DOL.Database
 			this.GainXP = character.GainXP;
 			this.Gender = character.Gender;
 			this.Gold = character.Gold;
-			this.GravestoneRegion = character.GravestoneRegion;
 			this.GuildID = character.GuildID;
 			this.GuildNote = character.GuildNote;
 			this.GuildRank = character.GuildRank;
 			this.HairColor = character.HairColor;
 			this.HairStyle = character.HairStyle;
-			this.HasGravestone = character.HasGravestone;
 			this.Health = character.Health;
             this.IgnoreStatistics = character.IgnoreStatistics;
             this.Intelligence = character.Intelligence;

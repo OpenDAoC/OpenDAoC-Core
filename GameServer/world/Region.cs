@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -64,13 +63,6 @@ namespace DOL.GS
         /// but needs further checks (basically its last added object index + 1)
         /// </summary>
         protected int _nextObjectSlot;
-
-        /// <summary>
-        /// This holds the gravestones in this region for fast access
-        /// Player unique id(string) -> GameGraveStone
-        /// </summary>
-        protected readonly Hashtable _graveStones;
-        private readonly Lock _graveStonesLock = new();
 
         /// <summary>
         /// Holds all the Zones inside this Region
@@ -158,7 +150,6 @@ namespace DOL.GS
             _objectsInRegion = 0;
             _nextObjectSlot = 0;
             _objectsAllocatedSlots = [];
-            _graveStones = new();
             _zones = new();
             _zoneAreas = new();
             Areas = new();
@@ -228,9 +219,6 @@ namespace DOL.GS
             }
 
             _zones.Clear();
-
-            _graveStones.Clear();
-
             GameEventMgr.RemoveAllHandlersForObject(this);
         }
 
@@ -563,11 +551,6 @@ namespace DOL.GS
         /// <summary>
         /// Loads the region from database
         /// </summary>
-        /// <param name="mobs"></param>
-        /// <param name="mobCount"></param>
-        /// <param name="merchantCount"></param>
-        /// <param name="itemCount"></param>
-        /// <param name="bindCount"></param>
         public virtual void LoadFromDatabase(DbMob[] mobs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
             if (!LoadObjects)
@@ -575,11 +558,13 @@ namespace DOL.GS
 
             Assembly assembly = Assembly.GetAssembly(typeof(GameServer));
             IList<DbWorldObject> staticObjects = DOLDB<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            IList<DbGravestone> gravestones = DOLDB<DbGravestone>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
             IList<DbBindPoint> bindPoints = DOLDB<DbBindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
-            int count = mobs.Length + staticObjects.Count;
+            int count = mobs.Length + staticObjects.Count + gravestones.Count;
             if (count > 0)
                 PreAllocateRegionSpace(count + 100);
             int myItemCount = staticObjects.Count;
+            int myGravestoneCount = gravestones.Count;
             int myMobCount = 0;
             int myMerchantCount = 0;
             int myBindCount = bindPoints.Count;
@@ -729,13 +714,23 @@ namespace DOL.GS
                 });
             }
 
+            if (gravestones.Count > 0)
+            {
+                Parallel.ForEach(gravestones, (stone) =>
+                {
+                    GameGravestone myStone = new();
+                    myStone.LoadFromDatabase(stone);
+                    myStone.AddToWorld();
+                });
+            }
+
             foreach (DbBindPoint bindPoint in bindPoints)
                 AddArea(new Area.BindArea("bind point", bindPoint));
 
-            if (myMobCount + myItemCount + myMerchantCount + myBindCount > 0)
+            if (myMobCount + myItemCount + myGravestoneCount + myMerchantCount + myBindCount > 0)
             {
                 if (log.IsInfoEnabled)
-                    log.Info(string.Format("Region: {0} ({1}) loaded {2} mobs, {3} merchants, {4} items {5} bind points", Description, ID, myMobCount, myMerchantCount, myItemCount, myBindCount));
+                    log.Info($"Region: {Description} ({ID}) loaded {myMobCount} mobs, {myMerchantCount} merchants, {myItemCount + myGravestoneCount} items, {myBindCount} bind points");
 
                 if (log.IsDebugEnabled)
                     log.Debug("Used Memory: " + GC.GetTotalMemory(false) / 1024 / 1024 + "MB");
@@ -746,7 +741,7 @@ namespace DOL.GS
 
             Interlocked.Add(ref mobCount, myMobCount);
             Interlocked.Add(ref merchantCount, myMerchantCount);
-            Interlocked.Add(ref itemCount, myItemCount);
+            Interlocked.Add(ref itemCount, myItemCount + myGravestoneCount);
             Interlocked.Add(ref bindCount, myBindCount);
         }
 
@@ -894,19 +889,7 @@ namespace DOL.GS
                     _objects = objectsRef;
 
                     if (obj is GamePlayer)
-                    {
                         ++_numPlayer;
-                    }
-                    else
-                    {
-                        if (obj is GameGravestone)
-                        {
-                            lock (_graveStonesLock)
-                            {
-                                _graveStones[obj.InternalID] = obj;
-                            }
-                        }
-                    }
                 }
                 else
                 {
@@ -936,19 +919,7 @@ namespace DOL.GS
                 }
 
                 if (obj is GamePlayer)
-                {
                     --_numPlayer;
-                }
-                else
-                {
-                    if (obj is GameGravestone)
-                    {
-                        lock (_graveStonesLock)
-                        {
-                            _graveStones.Remove(obj.InternalID);
-                        }
-                    }
-                }
 
                 GameObject inPlace = _objects[obj.ObjectID - 1];
                 if (inPlace == null)
@@ -987,19 +958,6 @@ namespace DOL.GS
 
                 obj.ObjectID = 0; // invalidate object id
                 _objectsInRegion--;
-            }
-        }
-
-        /// <summary>
-        /// Searches for players gravestone in this region
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns>the found gravestone or null</returns>
-        public GameGravestone FindGraveStone(GamePlayer player)
-        {
-            lock (_graveStonesLock)
-            {
-                return (GameGravestone)_graveStones[player.InternalID];
             }
         }
 

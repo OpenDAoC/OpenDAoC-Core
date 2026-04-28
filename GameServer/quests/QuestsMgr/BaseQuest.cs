@@ -305,7 +305,8 @@ namespace DOL.GS.Quests
 						if (GiveItem(player, info.itemResult, false))
 						{
 							player.Out.SendMessage(info.interactText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							staticItem.RemoveFromWorld(INTERACT_ITEM_RESPAWN_SECONDS);
+							staticItem.RemoveFromWorld();
+							staticItem.StartRespawn(INTERACT_ITEM_RESPAWN_SECONDS);
 							OnObjectInteract(info);
 						}
 					}

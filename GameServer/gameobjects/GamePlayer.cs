@@ -1682,28 +1682,7 @@ namespace DOL.GS
                 lostExp -= Experience;
 
                 if (lostExp > 0)
-                {
-                    // Find old gravestone of player and remove it.
-                    if (character.HasGravestone)
-                    {
-                        Region reg = WorldMgr.GetRegion((ushort) character.GravestoneRegion);
-
-                        if (reg != null)
-                        {
-                            GameGravestone oldGrave = reg.FindGraveStone(this);
-                            oldGrave?.Delete();
-                        }
-
-                        character.HasGravestone = false;
-                    }
-
-                    GameGravestone gravestone = new GameGravestone(this, lostExp);
-                    gravestone.AddToWorld();
-                    character.GravestoneRegion = gravestone.CurrentRegionID;
-                    character.HasGravestone = true;
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.GraveErected"), eChatType.CT_YourDeath, eChatLoc.CL_SystemWindow);
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReturnToPray"), eChatType.CT_YourDeath, eChatLoc.CL_SystemWindow);
-                }
+                    GameGravestone.Create(this, lostExp);
             }
 
             if (Level >= Properties.PVE_CON_LOSS_LEVEL)
@@ -1899,7 +1878,7 @@ namespace DOL.GS
                 cantPrayMessage = "GamePlayer.Pray.CantPrayRiding";
             else if (gravestone == null)
                 cantPrayMessage = "GamePlayer.Pray.NeedTarget";
-            else if (!gravestone.InternalID.Equals(InternalID))
+            else if (!gravestone.OwnerID.Equals(InternalID))
                 cantPrayMessage = "GamePlayer.Pray.SelectGrave";
             else if (!IsWithinRadius(gravestone, 2000))
                 cantPrayMessage = "GamePlayer.Pray.MustGetCloser";
@@ -1914,16 +1893,16 @@ namespace DOL.GS
                 return;
             }
 
-            m_prayAction = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            m_prayAction = new(this, new(_ =>
             {
-                if (gravestone.XPValue > 0)
+                long xpValue = gravestone.Consume();
+
+                if (xpValue > 0)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Pray.GainBack"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    GainExperience(eXPSource.Praying, gravestone.XPValue);
+                    GainExperience(eXPSource.Praying, xpValue);
                 }
 
-                gravestone.XPValue = 0;
-                gravestone.Delete();
                 m_prayAction = null;
                 return 0;
             }), 5000);

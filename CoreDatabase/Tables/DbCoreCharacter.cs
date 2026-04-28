@@ -93,9 +93,6 @@ namespace DOL.Database
 		private byte m_deathCount;
 		private int m_conLostAtDeath;
 
-		private bool m_hasGravestone;
-		private int m_gravestoneRegion;
-
 		private int m_direction;
 		private int m_maxSpeed;
 
@@ -206,40 +203,6 @@ namespace DOL.Database
             m_autoloot = true;
             m_lastLevelUp = DateTime.Now;
         }
-
-		/// <summary>
-		/// Gets/sets if this character has xp in a gravestone
-		/// </summary>
-		[DataElement(AllowDbNull = false)]
-		public bool HasGravestone
-		{
-			get
-			{
-				return m_hasGravestone;
-			}
-			set
-			{
-				m_hasGravestone = value;
-				Dirty = true;
-			}
-		}
-
-		/// <summary>
-		/// Gets/sets the region id where the gravestone of the player is located
-		/// </summary>
-		[DataElement(AllowDbNull = false)]
-		public int GravestoneRegion
-		{
-			get
-			{
-				return m_gravestoneRegion;
-			}
-			set
-			{
-				m_gravestoneRegion = value;
-				Dirty = true;
-			}
-		}
 
 		/// <summary>
 		/// Gets/sets character constitution

@@ -50,7 +50,7 @@ namespace DOL.GS
 
         public override bool RemoveFromWorld()
         {
-            if (RemoveFromWorld(RespawnInterval))
+            if (base.RemoveFromWorld())
             {
                 _removeItemAction?.Stop();
                 return true;
