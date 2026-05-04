@@ -412,7 +412,7 @@ namespace DOL.GS
 
         public static List<(SpellLine, List<Skill>)> UpdateUsableListSpells(GamePlayer player, List<(SpellLine, List<Skill>)> usableListSpells)
         {
-            // Map existing Tuples by SpellLine ID to reuse the inner List<Skill> objects.
+            // Map existing tuples by SpellLine ID so we can preserve SpellLine objects where appropriate.
             Dictionary<int, (SpellLine, List<Skill>)> existingMap = new(usableListSpells.Count);
 
             foreach (var item in usableListSpells)
@@ -435,28 +435,20 @@ namespace DOL.GS
 
                 foreach (SpellLine sl in spec.GetSpellLinesForLiving(player))
                 {
-                    List<Skill> innerList;
-                    (SpellLine, List<Skill>) tuple;
+                    // Do not reuse the inner List<Skill>; callers may still be reading previous snapshots.
+                    List<Skill> innerList = new();
+                    SpellLine line = sl;
 
                     if (existingMap.TryGetValue(sl.ID, out var existingTuple))
-                    {
-                        innerList = existingTuple.Item2;
-                        innerList.Clear();
-
-                        // If the SpellLine object instance is identical, reuse the Tuple. Otherwise, create a new Tuple with the new SpellLine but the old List.
-                        tuple = existingTuple.Item1 == sl ? existingTuple : new(sl, innerList);
-                    }
-                    else
-                    {
-                        innerList = new();
-                        tuple = new(sl, innerList);
-                    }
+                        line = existingTuple.Item1 == sl ? existingTuple.Item1 : sl;
 
                     // Populate the inner list with skills.
                     SpellLine key = spellsMap.Keys.FirstOrDefault(k => k.ID == sl.ID);
 
                     if (key != null && spellsMap.TryGetValue(key, out List<Skill> spellsInLine))
                         innerList.AddRange(spellsInLine);
+
+                    (SpellLine, List<Skill>) tuple = new(line, innerList);
 
                     if (sl.IsBaseLine)
                         newBase.Add(tuple);
