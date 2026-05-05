@@ -700,6 +700,7 @@ namespace DOL.GS.PacketHandler
         void SendPlayerRevive(GamePlayer revivedPlayer);
         void SendUpdatePlayer();
         void SendUpdatePlayerSkills(bool updateInternalCache);
+        void SendNonHybridSpellLines(bool updateInternalCache);
         void SendUpdateWeaponAndArmorStats();
         void SendCustomTextWindow(string caption, IList<string> text);
         void SendPlayerTitles();
@@ -785,7 +786,6 @@ namespace DOL.GS.PacketHandler
         void SendMovingObjectCreate(GameMovingObject obj);
         void SendSetControlledHorse(GamePlayer player);
         void SendControlledHorse(GamePlayer player, bool flag);
-        void SendNonHybridSpellLines();
         void SendCrash(string str);
         void SendRegionColorScheme();
         void SendRegionColorScheme(byte color);

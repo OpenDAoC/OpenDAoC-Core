@@ -352,7 +352,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Send List Cast Spells...
-			SendNonHybridSpellLines();
+			SendNonHybridSpellLines(updateInternalCache);
 			// reset trainer cache
 			m_gameClient.TrainerSkillCache = null;
 		}

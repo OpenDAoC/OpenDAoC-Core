@@ -23,9 +23,9 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public override void SendNonHybridSpellLines()
+		public override void SendNonHybridSpellLines(bool updateInternalCache)
 		{
-			base.SendNonHybridSpellLines();
+			base.SendNonHybridSpellLines(updateInternalCache);
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{

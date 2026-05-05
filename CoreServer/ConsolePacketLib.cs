@@ -144,6 +144,7 @@ namespace DOL.GameServerConsole
         public void SendPlayerRevive(GamePlayer revivedPlayer) { }
         public void SendUpdatePlayer() { }
         public void SendUpdatePlayerSkills(bool updateInternalCache) { }
+        public void SendNonHybridSpellLines(bool updateInternalCache) { }
         public void SendUpdateWeaponAndArmorStats() { }
         public void SendEncumbrance() { }
         public void SendAddFriends(string[] friendNames) { }
@@ -224,7 +225,6 @@ namespace DOL.GameServerConsole
         public void SendSetControlledHorse(GamePlayer player) { }
         public void SendControlledHorse(GamePlayer player, bool flag) { }
         public void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first) { }
-        public void SendNonHybridSpellLines() { }
         public void SendCrash(string str) { }
         public void SendRvRGuildBanner(GamePlayer player, bool show) { }
         public void SendPlayerFreeLevelUpdate() { }

@@ -2262,7 +2262,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Send List Cast Spells...
-			SendNonHybridSpellLines();
+			SendNonHybridSpellLines(updateInternalCache);
 			// clear trainer cache
 			m_gameClient.TrainerSkillCache = null;
 
@@ -2271,13 +2271,13 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// Send non hybrid and advanced spell lines
 		/// </summary>
-		public virtual void SendNonHybridSpellLines()
+		public virtual void SendNonHybridSpellLines(bool updateInternalCache)
 		{
 			GamePlayer player = m_gameClient.Player;
 			if (player == null)
 				return;
 
-			var spellsXLines = player.GetAllUsableListSpells(true);
+			var spellsXLines = player.GetAllUsableListSpells(updateInternalCache);
 
 			int lineIndex = 0;
 			foreach (var spXsl in spellsXLines)
