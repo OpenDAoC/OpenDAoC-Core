@@ -625,11 +625,12 @@ namespace DOL.GS.Housing
                 return false;
             }
 
-            // Demand any consignment merchant inventory is removed before allowing a transfer
+            // Ask the player to remove the consignment merchant first.
+            // ConsignmentState relies on the house's ownerId when querying the DbHouseConsignmentMerchant object, but it isn't updated by MakeGuildLot.
             var consignmentMerchant = house.ConsignmentMerchant;
-            if (consignmentMerchant != null && (consignmentMerchant.GetDbItems().Any() || consignmentMerchant.TotalMoney > 0))
+            if (consignmentMerchant != null)
             {
-                ChatUtil.SendSystemMessage(player, "All items and money must be removed from your consignment merchant in order to transfer this house!");
+                ChatUtil.SendSystemMessage(player, "The consignment merchant must be removed in order to transfer this house.");
                 return false;
             }
 
