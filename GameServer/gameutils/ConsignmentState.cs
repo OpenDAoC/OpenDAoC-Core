@@ -44,6 +44,12 @@ namespace DOL.GS
         {
             lock (_lock)
             {
+                if (!EnsureMoneyLoaded())
+                {
+                    ChatUtil.SendErrorMessage(player, "Merchant data could not be loaded. Please try removing and re-adding the merchant.");
+                    return;
+                }
+
                 long totalMoney = GetTotalMoney();
 
                 if (totalMoney <= 0)
@@ -73,17 +79,24 @@ namespace DOL.GS
             }
         }
 
-        private void EnsureMoneyLoaded()
+        private bool EnsureMoneyLoaded()
         {
             if (_moneyLoaded)
-                return;
+                return true;
 
-            DbHouseConsignmentMerchant houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(_ownerId));
+            DbHouseConsignmentMerchant houseCm = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(_ownerId));
 
-            if (houseCM != null)
-                _money = houseCM.Money;
+            if (houseCm == null)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Failed to load money for CM owner {_ownerId}. DB object not found.");
 
+                return false;
+            }
+
+            _money = houseCm.Money;
             _moneyLoaded = true;
+            return true;
         }
 
         public long GetTotalMoney()
@@ -93,10 +106,7 @@ namespace DOL.GS
             lock (_lock)
             {
                 if (!_isDisposed)
-                {
-                    EnsureMoneyLoaded();
-                    return _money;
-                }
+                    return !EnsureMoneyLoaded() ? 0 : _money;
 
                 newState = ConsignmentStateManager.GetState(_ownerId);
             }
@@ -112,15 +122,17 @@ namespace DOL.GS
             {
                 if (!_isDisposed)
                 {
-                    EnsureMoneyLoaded();
+                    if (!EnsureMoneyLoaded())
+                        return;
+
                     _money += amount;
 
-                    DbHouseConsignmentMerchant houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(_ownerId));
+                    DbHouseConsignmentMerchant houseCm = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(_ownerId));
 
-                    if (houseCM != null)
+                    if (houseCm != null)
                     {
-                        houseCM.Money = _money;
-                        GameServer.Database.SaveObject(houseCM);
+                        houseCm.Money = _money;
+                        GameServer.Database.SaveObject(houseCm);
                     }
 
                     return;
@@ -140,15 +152,17 @@ namespace DOL.GS
             {
                 if (!_isDisposed)
                 {
-                    EnsureMoneyLoaded();
+                    if (!EnsureMoneyLoaded())
+                        return;
+
                     _money = amount;
 
-                    DbHouseConsignmentMerchant houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(_ownerId));
+                    DbHouseConsignmentMerchant houseCm = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(_ownerId));
 
-                    if (houseCM != null)
+                    if (houseCm != null)
                     {
-                        houseCM.Money = _money;
-                        GameServer.Database.SaveObject(houseCM);
+                        houseCm.Money = _money;
+                        GameServer.Database.SaveObject(houseCm);
                     }
 
                     return;
@@ -268,6 +282,12 @@ namespace DOL.GS
                 if (!_isDisposed)
                 {
                     Start(EXPIRES_AFTER);
+
+                    if (!EnsureMoneyLoaded())
+                    {
+                        ChatUtil.SendErrorMessage(player, "Merchant data could not be loaded. Please try again later.");
+                        return;
+                    }
 
                     if (fromClientSlot is eInventorySlot.Invalid || !merchant.TryGetItem((int)fromClientSlot, out DbInventoryItem item))
                     {
