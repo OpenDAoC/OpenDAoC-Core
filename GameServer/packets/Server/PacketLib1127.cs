@@ -1,4 +1,5 @@
-﻿using DOL.GS.Commands;
+﻿using System;
+using DOL.GS.Commands;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.PacketHandler
