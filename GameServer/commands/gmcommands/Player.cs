@@ -262,6 +262,7 @@ namespace DOL.GS.Commands
                             player.Out.SendUpdatePlayer();
                             player.Out.SendUpdatePoints();
                             player.Out.SendCharStatsUpdate();
+                            player.Out.SendUpdatePlayerSkills(true);
                             player.UpdatePlayerStatus();
                             player.SaveIntoDatabase();
                         }
