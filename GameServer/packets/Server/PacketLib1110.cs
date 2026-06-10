@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using DOL.GS.PacketHandler.Client.v168;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
@@ -13,8 +12,6 @@ namespace DOL.GS.PacketHandler
     [PacketLib(1110, GameClient.eClientVersion.Version1110)]
     public class PacketLib1110 : PacketLib1109
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         /// Constructs a new PacketLib for Client Version 1.110
         /// </summary>
@@ -91,27 +88,19 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((effect is ECSGameAbilityEffect && effect.Icon <= 5000) ? (byte)0xff : (byte)(fxcount - 1));
 					//pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); // <- [Takii] previous version
 
-					byte ImmunByte = 0;
-					var gsp = effect as ECSGameEffect;
-					if (gsp is ECSImmunityEffect || gsp.IsDisabled)
-						ImmunByte = 1;
-					//todo this should be the ImmunByte
+					byte ImmunByte = (byte) (effect is ECSImmunityEffect || effect.IsDisabled ? 1 : 0);
 					pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
 
 					// bit 0x08 adds "more..." to right click info
 					pak.WriteShort(effect.Icon);
 					pak.WriteShort((ushort)(effect.GetRemainingTimeForClient() / 1000));
-					if (effect is ECSGameEffect || effect is ECSImmunityEffect)
-						pak.WriteShort(effect.Icon); //v1.110+ send the spell ID for delve info in active icon
+
+					if (effect is ECSGameEffect)
+						pak.WriteShort(effect.TooltipId); //v1.110+ send the spell ID for delve info in active icon
 					else
 						pak.WriteShort(0);//don't override existing tooltip ids
 
-					byte flagNegativeEffect = 0;
-
-					if (!effect.HasPositiveEffect)
-					{
-						flagNegativeEffect = 1;
-					}
+					byte flagNegativeEffect = (byte) (effect.HasPositiveEffect ? 0 : 1);
 
 					pak.WriteByte(flagNegativeEffect);
 

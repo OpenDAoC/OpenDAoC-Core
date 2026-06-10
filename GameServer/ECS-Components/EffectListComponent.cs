@@ -340,7 +340,7 @@ namespace DOL.GS
             return temp;
         }
 
-        public virtual ECSGameEffect TryGetEffectFromEffectId(int effectId)
+        public virtual ECSGameEffect TryGetEffectByTooltipId(int effectId)
         {
             // Only used by players.
             return null;
@@ -451,12 +451,12 @@ namespace DOL.GS
             }
         }
 
-        protected virtual void SetEffectIdToEffect(ECSGameEffect effect)
+        protected virtual void MapTooltipIdToEffect(ECSGameEffect effect)
         {
             // Only used by players.
         }
 
-        protected virtual void RemoveEffectIdToEffect(ECSGameEffect effect)
+        protected virtual void UnmapTooltipIdToEffect(ECSGameEffect effect)
         {
             // Only used by players.
         }
@@ -598,7 +598,7 @@ namespace DOL.GS
                     else
                         _effects.TryAdd(effect.EffectType, [effect]);
 
-                    SetEffectIdToEffect(effect);
+                    MapTooltipIdToEffect(effect);
                     return AddEffectResult.Added;
                 }
 
@@ -615,7 +615,7 @@ namespace DOL.GS
                     _effects.TryAdd(effect.EffectType, [effect]);
 
                     if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
-                        SetEffectIdToEffect(effect);
+                        MapTooltipIdToEffect(effect);
 
                     return AddEffectResult.Added;
                 }
@@ -683,7 +683,7 @@ namespace DOL.GS
                     }
 
                     _effects.TryAdd(effect.EffectType, existingEffects);
-                    SetEffectIdToEffect(effect);
+                    MapTooltipIdToEffect(effect);
                     return result;
                 }
 
@@ -788,7 +788,7 @@ namespace DOL.GS
                 _effects.TryAdd(effect.EffectType, existingEffects);
 
                 if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
-                    SetEffectIdToEffect(effect);
+                    MapTooltipIdToEffect(effect);
 
                 // Disabling and stopping weaker effects must be done after the current effect has been added to the list.
 
@@ -913,7 +913,7 @@ namespace DOL.GS
                 if (effect.IsEnding)
                 {
                     existingEffects.Remove(effect);
-                    RemoveEffectIdToEffect(effect);
+                    UnmapTooltipIdToEffect(effect);
 
                     if (existingEffects.Count == 0)
                         _effects.Remove(effect.EffectType);

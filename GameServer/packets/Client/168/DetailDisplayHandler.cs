@@ -537,7 +537,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						// 		}
 						// 	}
 						// }
-						ECSGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectFromEffectId(objectId);
+						ECSGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectByTooltipId(objectId);
 						ECSGameSpellEffect spellEffect = foundEffect as ECSGameSpellEffect;
 						if (foundEffect == null)
 							break;

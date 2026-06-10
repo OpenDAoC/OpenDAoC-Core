@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             void CancelEffect1110()
             {
                 EffectListComponent effectListComponent = player.effectListComponent;
-                ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(effectId);
+                ECSGameEffect effect = effectListComponent.TryGetEffectByTooltipId(effectId);
                 effect?.End(true);
                 return;
             }

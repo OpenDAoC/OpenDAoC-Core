@@ -27,6 +27,7 @@ namespace DOL.GS
 
         public ISpellHandler SpellHandler { get; protected set; }
         public virtual ushort Icon => 0;
+        public virtual ushort TooltipId => 0;
         public virtual string Name => "Default Effect Name";
         public virtual string OwnerName => Owner != null ? Owner.Name : string.Empty;
         public virtual bool HasPositiveEffect => false;
