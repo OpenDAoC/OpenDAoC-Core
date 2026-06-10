@@ -182,7 +182,17 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            temp.Sort(static (e1, e2) =>
+            {
+                int tickCompare = e1.StartTick.CompareTo(e2.StartTick);
+
+                if (tickCompare != 0)
+                    return tickCompare;
+
+                // ServiceObjectId.Value would be ideal, but it may not be set yet.
+                return e1.Icon.CompareTo(e2.Icon);
+            });
+
             return temp;
         }
 
