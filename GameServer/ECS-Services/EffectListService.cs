@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Logging;
@@ -83,39 +82,60 @@ namespace DOL.GS
             }
         }
 
-        public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.None)
+        public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Unknown)
         {
-            if (spellType is eSpellType.None)
+            if (spellType is eSpellType.Unknown)
             {
                 List<ECSGameEffect> effects = target.effectListComponent.GetEffects(effectType);
-                return effects.FirstOrDefault();
+                return effects.Count > 0 ? effects[0] : null;
             }
             else
                 return GetSpellEffectOnTarget(target, effectType, spellType);
         }
 
-        public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType)
+        public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Unknown)
         {
             List<ECSGameSpellEffect> effects = target.effectListComponent.GetSpellEffects(effectType);
-            return effects.FirstOrDefault(e => e.SpellHandler.Spell.SpellType == spellType);
+
+            foreach (ECSGameSpellEffect effect in effects)
+            {
+                if (spellType is eSpellType.Unknown || effect.SpellHandler.Spell.SpellType == spellType)
+                    return effect;
+            }
+
+            return null;
         }
 
         public static ECSGameAbilityEffect GetAbilityEffectOnTarget(GameLiving target, eEffect effectType)
         {
             List<ECSGameAbilityEffect> effects = target.effectListComponent.GetAbilityEffects(effectType);
-            return effects.FirstOrDefault();
+            return effects.Count > 0 ? effects[0] : null;
         }
 
         public static ECSImmunityEffect GetImmunityEffectOnTarget(GameLiving target, eEffect effectType)
         {
             List<ECSGameEffect> effects = target.effectListComponent.GetEffects(effectType);
-            return effects.FirstOrDefault(e => e is ECSImmunityEffect) as ECSImmunityEffect;
+
+            foreach (ECSGameEffect effect in effects)
+            {
+                if (effect is ECSImmunityEffect immunity)
+                    return immunity;
+            }
+
+            return null;
         }
 
         public static ECSPulseEffect GetPulseEffectOnTarget(GameLiving target, Spell spell)
         {
             List<ECSPulseEffect> effects = target.effectListComponent.GetPulseEffects();
-            return effects?.FirstOrDefault(e => e.SpellHandler.Spell == spell);
+
+            foreach (ECSPulseEffect effect in effects)
+            {
+                if (effect.SpellHandler.Spell == spell)
+                    return effect;
+            }
+
+            return null;
         }
 
         public static bool TryCancelFirstEffectOfTypeOnTarget(GameLiving target, eEffect effectType)

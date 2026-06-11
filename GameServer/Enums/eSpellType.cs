@@ -2,7 +2,7 @@ namespace DOL.GS
 {
     public enum eSpellType : short
     {
-        None,
+        Unknown,
         SavageEnduranceHeal,
         SavageEvadeBuff,
         SavageStyleEvadeBuff,
