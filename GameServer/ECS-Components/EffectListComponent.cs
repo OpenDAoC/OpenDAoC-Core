@@ -17,7 +17,7 @@ namespace DOL.GS
         // Array of pulse spell groups allowed to exist with others.
         // Used to allow players to have more than one pulse spell refreshing itself automatically.
         // 30 = Focus damage shields.
-        private static readonly HashSet<int> PulseSpellGroupsIgnoringOtherPulseSpells = [30];
+        private static readonly HashSet<int> _pulseSpellGroupsIgnoringOtherPulseSpells = [30];
 
         // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
@@ -372,9 +372,9 @@ namespace DOL.GS
 
         public void CancelIncompatiblePulseEffects(ISpellHandler spellHandler)
         {
-            if (!PulseSpellGroupsIgnoringOtherPulseSpells.Contains(spellHandler.Spell.Group))
+            if (!_pulseSpellGroupsIgnoringOtherPulseSpells.Contains(spellHandler.Spell.Group))
             {
-                IEnumerable<ECSPulseEffect> otherPulseEffects = GetPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
+                IEnumerable<ECSPulseEffect> otherPulseEffects = GetPulseEffects().Where(x => !_pulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
                 foreach (ECSPulseEffect otherPulseEffect in otherPulseEffects)
                     otherPulseEffect.End();
