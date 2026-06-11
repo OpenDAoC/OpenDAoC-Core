@@ -813,9 +813,9 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(0x80 | living.GroupIndex));
 
 				byte i = 0;
-				var effects = living.effectListComponent.GetEffects();
+				var effects = living.effectListComponent.GetSortedEffects();
 				if (living is GamePlayer necro && necro.CharacterClass is ClassDisciple && necro.HasShadeModel)
-					effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetEffects().Where(e => e.TriggersImmunity));
+					effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetSortedEffects(static e => e.TriggersImmunity));
 				foreach (var effect in effects)
 				{
 					if (effect is ECSGameEffect && !effect.IsDisabled)

@@ -75,7 +75,7 @@ namespace DOL.GS
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Icons) != 0)
             {
                 _owner.Group?.UpdateMember(_owner, true, false);
-                _owner.Out.SendUpdateIcons(GetEffects(), ref _lastUpdateEffectsCount);
+                _owner.Out.SendUpdateIcons(GetSortedEffects(), ref _lastUpdateEffectsCount);
             }
 
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Status) != 0)

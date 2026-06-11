@@ -463,10 +463,10 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(0x80 | living.GroupIndex));
 
 				byte i = 0;
-				var effects = living.effectListComponent.GetEffects();
+				var effects = living.effectListComponent.GetSortedEffects();
 
 				if (player != null && player.ControlledBrain is NecromancerPet necromancerPet)
-					effects.AddRange(necromancerPet.effectListComponent.GetEffects().Where(e => e.TriggersImmunity));
+					effects.AddRange(necromancerPet.effectListComponent.GetSortedEffects(static e => e.TriggersImmunity));
 
 				foreach (var effect in effects)//.Effects.Values)
 												//foreach (ECSGameEffect effect in effects)

@@ -154,7 +154,7 @@ namespace DOL.GS.PacketHandler
 					Span<ushort> buffer = stackalloc ushort[8];
 					int count = 0;
 
-					foreach (var effect in pet.effectListComponent.GetEffects())
+					foreach (var effect in pet.effectListComponent.GetSortedEffects())
 					{
 						if (effect.Icon == 0 || effect.IsDisabled || effect is ECSImmunityEffect)
 							continue;

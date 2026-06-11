@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
             List<ECSGameEffect> negative = GameLoop.GetListForTick<ECSGameEffect>();
             List<ECSGameEffect> nonSpellEffects = GameLoop.GetListForTick<ECSGameEffect>();
 
-            List<ECSGameEffect> effects = target.effectListComponent.GetEffects();
+            List<ECSGameEffect> effects = target.effectListComponent.GetSortedEffects();
 
             foreach (var effect in effects)
             {

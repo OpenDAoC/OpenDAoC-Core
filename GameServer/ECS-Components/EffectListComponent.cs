@@ -18,6 +18,16 @@ namespace DOL.GS
         // Used to allow players to have more than one pulse spell refreshing itself automatically.
         // 30 = Focus damage shields.
         private static readonly HashSet<int> _pulseSpellGroupsIgnoringOtherPulseSpells = [30];
+        private static Comparison<ECSGameEffect> _effectSortComparison = static (e1, e2) =>
+        {
+            int tickCompare = e1.StartTick.CompareTo(e2.StartTick);
+
+            if (tickCompare != 0)
+                return tickCompare;
+
+            // ServiceObjectId.Value would be ideal, but it may not be set yet.
+            return e1.Icon.CompareTo(e2.Icon);
+        };
 
         // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
@@ -182,18 +192,44 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) =>
+            return temp;
+        }
+
+        public List<ECSGameEffect> GetEffects(Predicate<ECSGameEffect> predicate)
+        {
+            List<ECSGameEffect> temp = GameLoop.GetListForTick<ECSGameEffect>();
+
+            lock (_effectsLock)
             {
-                int tickCompare = e1.StartTick.CompareTo(e2.StartTick);
+                foreach (var pair in _effects)
+                {
+                    List<ECSGameEffect> effects = pair.Value;
 
-                if (tickCompare != 0)
-                    return tickCompare;
+                    for (int i = effects.Count - 1; i >= 0; i--)
+                    {
+                        ECSGameEffect effect = effects[i];
 
-                // ServiceObjectId.Value would be ideal, but it may not be set yet.
-                return e1.Icon.CompareTo(e2.Icon);
-            });
+                        if (effect is not ECSPulseEffect && predicate(effect))
+                            temp.Add(effects[i]);
+                    }
+                }
+            }
 
             return temp;
+        }
+
+        public List<ECSGameEffect> GetSortedEffects()
+        {
+            List<ECSGameEffect> effects = GetEffects();
+            effects.Sort(_effectSortComparison);
+            return effects;
+        }
+
+        public List<ECSGameEffect> GetSortedEffects(Predicate<ECSGameEffect> predicate)
+        {
+            List<ECSGameEffect> effects = GetEffects(predicate);
+            effects.Sort(_effectSortComparison);
+            return effects;
         }
 
         public List<ECSGameEffect> GetEffects(eEffect effectType)
@@ -212,7 +248,6 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
             return temp;
         }
 
@@ -284,7 +319,6 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
             return temp;
         }
 
@@ -304,7 +338,6 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
             return temp;
         }
 
@@ -326,7 +359,6 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
             return temp;
         }
 
@@ -346,7 +378,6 @@ namespace DOL.GS
                 }
             }
 
-            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
             return temp;
         }
 
