@@ -68,10 +68,22 @@ namespace DOL.GS.PacketHandler
 						continue;
 
 					fxcount++;
-					if (changedEffects != null && !changedEffects.Contains(effect))
+					int currentClientIndex = fxcount - 1;
+					bool needsUpdate = false;
+
+					// Did the effect's data change?
+					if (changedEffects != null && changedEffects.Contains(effect))
+						needsUpdate = true;
+
+					// Did the effect's position shift because an earlier effect was removed?
+					if (effect.LastClientIndex != currentClientIndex)
 					{
-						continue;
+						needsUpdate = true;
+						effect.LastClientIndex = currentClientIndex;
 					}
+
+					if (!needsUpdate)
+						continue;
 
 					// store tooltip update for gamespelleffect.
 					if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)

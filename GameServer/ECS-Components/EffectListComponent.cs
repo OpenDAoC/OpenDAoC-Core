@@ -31,8 +31,8 @@ namespace DOL.GS
 
         // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
-        private Queue<PendingEffect> _pendingEffects = new();                        // Queue for effects to be started, stopped.
-        private Queue<PendingEffect> _effectsToProcess = new();                      // Temporary queue for processing pending effects.
+        private List<PendingEffect> _pendingEffects = new();                         // Queue for effects to be started, stopped.
+        protected List<PendingEffect> _effectsToProcess = new();                     // Temporary queue for processing pending effects.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -60,7 +60,7 @@ namespace DOL.GS
                 return new EffectListComponent(living);
         }
 
-        public virtual void BeginTick()
+        public void BeginTick()
         {
             // This can become an infinite loop if effects add pending effects recursively during processing.
             // It's however important for immunity effects to be started immediately and not leave a gap.
@@ -78,10 +78,12 @@ namespace DOL.GS
 
                     // Process effects outside of the lock for safety. Some effects may try to acquire locks on other components.
                     // Currently the case for Guard, Intercept, and Protect.
-                    while (_effectsToProcess.TryDequeue(out PendingEffect pendingEffect))
-                        pendingEffect.Process();
+                    foreach (PendingEffect effectToProcess in _effectsToProcess)
+                        effectToProcess.Process();
                 } while (true);
             }
+
+            OnEffectsProcessed();
 
             // At this point, new effects can still be enqueued by other components, but they'll be processed on the next tick.
         }
@@ -492,6 +494,11 @@ namespace DOL.GS
             }
         }
 
+        protected virtual void OnEffectsProcessed()
+        {
+            _effectsToProcess.Clear();
+        }
+
         protected virtual void MapTooltipIdToEffect(ECSGameEffect effect)
         {
             // Only used by players.
@@ -517,7 +524,7 @@ namespace DOL.GS
                 {
                     bool start = effect.FinalizeState(result);
 
-                    component._pendingEffects.Enqueue(new(effect, static (effect, start) =>
+                    component._pendingEffects.Add(new(effect, static (effect, start) =>
                     {
                         try
                         {
@@ -572,7 +579,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    component._pendingEffects.Enqueue(new(effect, static (effect, _) =>
+                    component._pendingEffects.Add(new(effect, static (effect, _) =>
                     {
                         try
                         {
@@ -907,7 +914,7 @@ namespace DOL.GS
                 {
                     bool stop = effect.FinalizeState(result);
 
-                    component._pendingEffects.Enqueue(new(effect, static (effect, stop) =>
+                    component._pendingEffects.Add(new(effect, static (effect, stop) =>
                     {
                         try
                         {
@@ -1028,7 +1035,7 @@ namespace DOL.GS
             Failed
         }
 
-        private readonly record struct PendingEffect(ECSGameEffect Effect, Action<ECSGameEffect, bool> Action, bool State)
+        protected readonly record struct PendingEffect(ECSGameEffect Effect, Action<ECSGameEffect, bool> Action, bool State)
         {
             public void Process()
             {
