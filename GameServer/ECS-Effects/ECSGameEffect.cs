@@ -26,8 +26,26 @@ namespace DOL.GS
         public long NextTick;
 
         public ISpellHandler SpellHandler { get; protected set; }
-        public virtual ushort Icon => 0;
-        public virtual ushort TooltipId => 0;
+        public virtual ushort Icon => SpellHandler != null ? SpellHandler.Spell.Icon : (ushort) 0;
+        public virtual ushort TooltipId
+        {
+            get
+            {
+                // Workaround for abilities that don't define a tooltip ID.
+                // Get it from SpellHandler or default to Icon.
+                // Needed for cancel via shift + right click to work. Can cause collisions.
+
+                ushort tooltipId = 0;
+
+                if (SpellHandler != null)
+                    tooltipId = (ushort) SpellHandler.Spell.InternalID;
+
+                if (tooltipId == 0)
+                    tooltipId = Icon;
+
+                return tooltipId;
+            }
+        }
         public virtual string Name => "Default Effect Name";
         public virtual string OwnerName => Owner != null ? Owner.Name : string.Empty;
         public virtual bool HasPositiveEffect => false;

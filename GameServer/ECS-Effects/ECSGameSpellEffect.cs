@@ -15,8 +15,6 @@ namespace DOL.GS
         string IConcentrationEffect.Name => Name;
         ushort IConcentrationEffect.Icon => Icon;
         byte IConcentrationEffect.Concentration => SpellHandler.Spell.Concentration;
-        public override ushort Icon => SpellHandler.Spell.Icon;
-        public override ushort TooltipId => (ushort) SpellHandler.Spell.InternalID;
         public override string Name => SpellHandler.Spell.Name;
         public override bool HasPositiveEffect => SpellHandler != null && SpellHandler.HasPositiveEffect;
         public bool IsAllowedToPulse => NextTick > 0 && PulseFreq > 0;
