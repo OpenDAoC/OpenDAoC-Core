@@ -7,7 +7,7 @@ namespace DOL.GS
     {
         private GamePlayer _owner;
 
-        private readonly Dictionary<int, ECSGameEffect> _TooltipIdToEffect = new();   // Dictionary of effects by their tooltip ID.
+        private readonly Dictionary<int, ECSGameEffect> _tooltipIdToEffect = new();  // Dictionary of effects by their tooltip ID.
         private EffectHelper.PlayerUpdate _requestedPlayerUpdates;                   // Player updates requested by the effects, to be sent in the next tick.
         private int _lastUpdateEffectsCount;                                         // Number of effects sent in the last player update, used externally.
         private readonly Lock _playerUpdatesLock = new();
@@ -38,7 +38,7 @@ namespace DOL.GS
 
             lock (_effectsLock)
             {
-                _TooltipIdToEffect.TryGetValue(tooltipId, out effect);
+                _tooltipIdToEffect.TryGetValue(tooltipId, out effect);
             }
 
             return effect;
@@ -47,13 +47,13 @@ namespace DOL.GS
         protected override void MapTooltipIdToEffect(ECSGameEffect effect)
         {
             // `_effectsLock` is expected to be acquired already.
-            _TooltipIdToEffect[effect.TooltipId] = effect;
+            _tooltipIdToEffect[effect.TooltipId] = effect;
         }
 
         protected override void UnmapTooltipIdToEffect(ECSGameEffect effect)
         {
             // `_effectsLock` is expected to be acquired already.
-            _TooltipIdToEffect.Remove(effect.TooltipId);
+            _tooltipIdToEffect.Remove(effect.TooltipId);
         }
 
         private void SendPlayerUpdates()
