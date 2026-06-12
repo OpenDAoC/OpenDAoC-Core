@@ -60,7 +60,7 @@ namespace DOL.GS
                 return new EffectListComponent(living);
         }
 
-        public void BeginTick()
+        public virtual void BeginTick()
         {
             // This can become an infinite loop if effects add pending effects recursively during processing.
             // It's however important for immunity effects to be started immediately and not leave a gap.
@@ -80,8 +80,6 @@ namespace DOL.GS
                     // Currently the case for Guard, Intercept, and Protect.
                     while (_effectsToProcess.TryDequeue(out PendingEffect effectToProcess))
                         effectToProcess.Process();
-
-                    OnEffectsProcessed();
                 } while (true);
             }
 
@@ -492,11 +490,6 @@ namespace DOL.GS
                     }
                 }
             }
-        }
-
-        protected virtual void OnEffectsProcessed()
-        {
-            // Only used by players.
         }
 
         protected virtual void MapTooltipIdToEffect(ECSGameEffect effect)

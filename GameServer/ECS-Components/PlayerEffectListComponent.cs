@@ -17,6 +17,12 @@ namespace DOL.GS
             _owner = owner;
         }
 
+        public override void BeginTick()
+        {
+            base.BeginTick();
+            SendPlayerUpdates();
+        }
+
         public override void RequestPlayerUpdate(EffectHelper.PlayerUpdate playerUpdate)
         {
             lock (_playerUpdatesLock)
@@ -36,11 +42,6 @@ namespace DOL.GS
             }
 
             return effect;
-        }
-
-        protected override void OnEffectsProcessed()
-        {
-            SendPlayerUpdates();
         }
 
         protected override void MapTooltipIdToEffect(ECSGameEffect effect)
