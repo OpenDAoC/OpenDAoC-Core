@@ -31,8 +31,8 @@ namespace DOL.GS
 
         // Active and pending effects.
         private readonly Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
-        private List<PendingEffect> _pendingEffects = new();                         // Queue for effects to be started, stopped.
-        protected List<PendingEffect> _effectsToProcess = new();                     // Temporary queue for processing pending effects.
+        private Queue<PendingEffect> _pendingEffects = new();                        // Queue for effects to be started, stopped.
+        protected Queue<PendingEffect> _effectsToProcess = new();                    // Temporary queue for processing pending effects.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -78,7 +78,7 @@ namespace DOL.GS
 
                     // Process effects outside of the lock for safety. Some effects may try to acquire locks on other components.
                     // Currently the case for Guard, Intercept, and Protect.
-                    foreach (PendingEffect effectToProcess in _effectsToProcess)
+                    while (_effectsToProcess.TryDequeue(out PendingEffect effectToProcess))
                         effectToProcess.Process();
 
                     OnEffectsProcessed();
@@ -496,7 +496,7 @@ namespace DOL.GS
 
         protected virtual void OnEffectsProcessed()
         {
-            _effectsToProcess.Clear();
+            // Only used by players.
         }
 
         protected virtual void MapTooltipIdToEffect(ECSGameEffect effect)
@@ -524,7 +524,7 @@ namespace DOL.GS
                 {
                     bool start = effect.FinalizeState(result);
 
-                    component._pendingEffects.Add(new(effect, static (effect, start) =>
+                    component._pendingEffects.Enqueue(new(effect, static (effect, start) =>
                     {
                         try
                         {
@@ -579,7 +579,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    component._pendingEffects.Add(new(effect, static (effect, _) =>
+                    component._pendingEffects.Enqueue(new(effect, static (effect, _) =>
                     {
                         try
                         {
@@ -914,7 +914,7 @@ namespace DOL.GS
                 {
                     bool stop = effect.FinalizeState(result);
 
-                    component._pendingEffects.Add(new(effect, static (effect, stop) =>
+                    component._pendingEffects.Enqueue(new(effect, static (effect, stop) =>
                     {
                         try
                         {
@@ -1039,6 +1039,7 @@ namespace DOL.GS
         {
             public void Process()
             {
+                Effect.NeedsClientUpdate = true; // Allows IPacketLib.SendUpdateIcons to only send updates for effects that have changed.
                 Action(Effect, State);
                 Effect.IsBeingReplaced = false; // This needs to always be set to false.
             }

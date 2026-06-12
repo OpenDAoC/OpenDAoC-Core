@@ -54,6 +54,7 @@ namespace DOL.GS
         public int ImmunityDuration { get; protected set; } = 60000;
         public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
         public int LastClientIndex { get; set; } = -1; // Used eternally for effect list updates.
+        public bool NeedsClientUpdate { get; set; } // Used eternally for effect list updates.
         public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Effect);
 
         // State properties.

@@ -45,10 +45,13 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount)
 		{
+			SendUpdateIcons(ref lastUpdateEffectsCount, false);
+		}
+
+		public override void SendUpdateIcons(ref int lastUpdateEffectsCount, bool forced)
+		{
 			if (m_gameClient.Player == null)
-			{
 				return;
-			}
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.UpdateIcons)))
 			{
@@ -69,21 +72,14 @@ namespace DOL.GS.PacketHandler
 
 					fxcount++;
 					int currentClientIndex = fxcount - 1;
-					bool needsUpdate = false;
-
-					// Did the effect's data change?
-					if (changedEffects != null && changedEffects.Contains(effect))
-						needsUpdate = true;
 
 					// Did the effect's position shift because an earlier effect was removed?
-					if (effect.LastClientIndex != currentClientIndex)
-					{
-						needsUpdate = true;
-						effect.LastClientIndex = currentClientIndex;
-					}
-
-					if (!needsUpdate)
+					// Or is this a brand new effect (LastClientIndex == -1, or NeedsUpdate == true)?
+					if (!forced && !effect.NeedsClientUpdate && effect.LastClientIndex == currentClientIndex)
 						continue;
+
+					effect.LastClientIndex = currentClientIndex;
+					effect.NeedsClientUpdate = false;
 
 					// store tooltip update for gamespelleffect.
 					if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)
@@ -128,11 +124,6 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)(fxcount++));
 					pak.Fill(0, 10);
 					entriesCount++;
-				}
-
-				if (changedEffects != null)
-				{
-					changedEffects.Clear();
 				}
 
 				if (entriesCount == 0)

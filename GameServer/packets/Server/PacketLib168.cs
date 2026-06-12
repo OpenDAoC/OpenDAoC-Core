@@ -2828,6 +2828,11 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
+		public virtual void SendUpdateIcons(ref int lastUpdateEffectsCount, bool forced)
+		{
+			SendUpdateIcons(null, ref lastUpdateEffectsCount);
+		}
+
 		public virtual void SendLevelUpSound()
 		{
 			// not sure what package this is, but it triggers the mob color update

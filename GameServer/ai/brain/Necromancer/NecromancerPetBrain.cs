@@ -411,9 +411,9 @@ namespace DOL.AI.Brain
                     return;
 
                 shadeEffect.SetTetherTimer(duration);
-                ECSGameEffect[] effectList = [shadeEffect];
+                shadeEffect.NeedsClientUpdate = true;
                 int effectsCount = 1;
-                _playerOwner.Out.SendUpdateIcons(effectList, ref effectsCount);
+                _playerOwner.Out.SendUpdateIcons(ref effectsCount);
             }
         }
 

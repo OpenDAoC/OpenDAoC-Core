@@ -715,7 +715,8 @@ namespace DOL.GS.PacketHandler
         void SendTrainerWindow();
         void SendInterruptAnimation(GameLiving living);
         void SendDisableSkill(ICollection<Tuple<Skill, int>> skills);
-        void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount);
+        [Obsolete("changedEffects is unused in v1.110+. Previous versions don't handle ECSGameEffect.")] void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount);
+        void SendUpdateIcons(ref int lastUpdateEffectsCount, bool forced = false);
         void SendLevelUpSound();
         void SendRegionEnterSound(byte soundId);
         void SendDebugMessage(string format, params object[] parameters);

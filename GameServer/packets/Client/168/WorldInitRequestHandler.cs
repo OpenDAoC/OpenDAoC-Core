@@ -126,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             player.Out.SendCharStatsUpdate();
             player.Out.SendCharResistsUpdate();
             int effectsCount = 0;
-            player.Out.SendUpdateIcons(null, ref effectsCount);
+            player.Out.SendUpdateIcons(ref effectsCount, true);
             player.Out.SendUpdateWeaponAndArmorStats();
             player.Out.SendQuestListUpdate();
             // player.Out.SendStatusUpdate(); // Doesn't seem to work and is redundant.

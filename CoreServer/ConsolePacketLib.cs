@@ -157,6 +157,7 @@ namespace DOL.GameServerConsole
         public void SendInterruptAnimation(GameLiving living) { }
         public void SendDisableSkill(ICollection<Tuple<Skill, int>> skills) { }
         public void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount) { }
+        public void SendUpdateIcons(ref int lastUpdateEffectsCount, bool forced) { }
         public void SendLevelUpSound() { }
         public void SendRegionEnterSound(byte soundId) { }
         public void SendSoundEffect(ushort soundId, ushort zoneId, ushort x, ushort y, ushort z, ushort radius) { }

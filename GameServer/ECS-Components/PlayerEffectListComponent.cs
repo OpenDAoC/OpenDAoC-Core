@@ -40,8 +40,7 @@ namespace DOL.GS
 
         protected override void OnEffectsProcessed()
         {
-            SendPlayerUpdates(); // Accesses _effectsToProcess.
-            base.OnEffectsProcessed(); // Clears _effectsToProcess.
+            SendPlayerUpdates();
         }
 
         protected override void MapTooltipIdToEffect(ECSGameEffect effect)
@@ -75,7 +74,7 @@ namespace DOL.GS
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Icons) != 0)
             {
                 _owner.Group?.UpdateMember(_owner, true, false);
-                _owner.Out.SendUpdateIcons(_effectsToProcess, ref _lastUpdateEffectsCount);
+                _owner.Out.SendUpdateIcons(ref _lastUpdateEffectsCount);
             }
 
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Status) != 0)
