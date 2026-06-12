@@ -80,10 +80,10 @@ namespace DOL.GS
                     // Currently the case for Guard, Intercept, and Protect.
                     foreach (PendingEffect effectToProcess in _effectsToProcess)
                         effectToProcess.Process();
+
+                    OnEffectsProcessed();
                 } while (true);
             }
-
-            OnEffectsProcessed();
 
             // At this point, new effects can still be enqueued by other components, but they'll be processed on the next tick.
         }
