@@ -2360,7 +2360,7 @@ namespace DOL.GS
             double doubleSwingChance = spec * 0.5;
             double tripleSwingChance = doubleSwingChance * 0.5;
             double quadSwingChance = tripleSwingChance * 0.25;
-            int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
+            double bonus = owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
             doubleSwingChance += bonus; // It's apparently supposed to only affect double swing chance around 1.65, which puts it more in line with DW / CD.
             return (doubleSwingChance, tripleSwingChance, quadSwingChance);
         }
