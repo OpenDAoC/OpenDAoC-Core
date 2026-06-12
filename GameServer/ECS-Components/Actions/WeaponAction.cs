@@ -61,8 +61,6 @@ namespace DOL.GS
 
         public void Execute()
         {
-            AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
-
             // 1.89
             //- Pets will no longer continue to attack a character after the character has stealthed.
             // 1.88
@@ -74,6 +72,7 @@ namespace DOL.GS
             if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, isDualWieldAttack, extraSwingCount > 0, out AttackData mainHandAttackData))
                 return;
 
+            AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
             AttackData extraAttackData = null;
             DbInventoryItem lastExtraWeapon = null;
 

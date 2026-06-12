@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
