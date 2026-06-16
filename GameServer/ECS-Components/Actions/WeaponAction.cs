@@ -425,8 +425,7 @@ namespace DOL.GS
             else if (attackData.AttackResult is eAttackResult.Blocked)
                 target.OnArmorHit(attackData, target.ActiveLeftWeapon);
 
-            if (_target is GameLiving livingTarget && livingTarget.effectListComponent.ContainsEffectForEffectType(eEffect.ReflexAttack))
-                HandleReflexAttack(_owner, attackData.Target, attackData.AttackResult, _interval);
+            HandleReflexAttack(_owner, target, attackData.AttackResult);
         }
 
         private static void HandleDamageAdd(GameLiving owner, AttackData ad)
@@ -493,18 +492,26 @@ namespace DOL.GS
             }
         }
 
-        private static void HandleReflexAttack(GameLiving attacker, GameLiving target, eAttackResult attackResult, int interval)
+        private static void HandleReflexAttack(GameLiving attacker, GameLiving target, eAttackResult attackResult)
         {
-            // Create an attack where the target hits the attacker back.
-            // Triggers if we actually took a swing at the target, regardless of whether or not we hit.
+            // 1.65 behavior:
+            // https://forums.jeuxonline.info/sujet/250789/attaque-reflexe-moine
+            // https://web.archive.org/web/20050108223232/http://forums.drunkenfriar.com/viewtopic.php?t=47#1435&sid=037826ba0db6f1217513823c90303a52
+            // In summary:
+            // * Only works against frontal attacks.
+            // * Only works against attacks that actually hit the target.
+            // * Can counter the offhand from dual wield attacks.
+            // * Counter attacks can miss or be defended against.
+            // * Has a weird interaction with Friar's Boon, allowing counter attacks to be styled (not implemented here).
+            // * May have some kind of internal cooldown (not affecting offhands somehow) or be based on the Friar's attack speed (not implemented here).
+
+            if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.ReflexAttack) || !target.IsObjectInFront(attacker, 120))
+                return;
+
             switch (attackResult)
             {
                 case eAttackResult.HitStyle:
                 case eAttackResult.HitUnstyled:
-                case eAttackResult.Missed:
-                case eAttackResult.Blocked:
-                case eAttackResult.Evaded:
-                case eAttackResult.Parried:
                 {
                     int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
                     WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null);
@@ -524,18 +531,6 @@ namespace DOL.GS
 
                     break;
                 }
-                case eAttackResult.NotAllowed_ServerRules:
-                case eAttackResult.NoTarget:
-                case eAttackResult.TargetDead:
-                case eAttackResult.OutOfRange:
-                case eAttackResult.NoValidTarget:
-                case eAttackResult.TargetNotVisible:
-                case eAttackResult.Fumbled:
-                case eAttackResult.Bodyguarded:
-                case eAttackResult.Phaseshift:
-                case eAttackResult.Grappled:
-                default:
-                    break;
             }
         }
     }
