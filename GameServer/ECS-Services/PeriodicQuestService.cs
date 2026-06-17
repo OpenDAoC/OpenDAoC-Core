@@ -5,7 +5,7 @@ using static DOL.GS.RolloverSchedulerService;
 
 namespace DOL.GS
 {
-    public sealed class PeriodicQuestService
+    public static class PeriodicQuestService
     {
         private static readonly List<QuestRegistration> _registrations = new();
 

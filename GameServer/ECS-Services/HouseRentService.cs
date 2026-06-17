@@ -9,13 +9,13 @@ using static DOL.GS.RolloverSchedulerService;
 
 namespace DOL.GS
 {
-    public class HouseRentService
+    public static class HouseRentService
     {
         public static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void Initialize()
         {
-            // We check every hour, CheckRents only processes houses whose individual RENT_DUE_DAYS timer has expired.
+            // We check every hour, but CheckRents only processes houses whose individual RENT_DUE_DAYS timer has expired.
             RolloverSchedulerService.Instance.Subscribe(IntervalKey.Hourly, CheckRents);
         }
 
@@ -24,7 +24,7 @@ namespace DOL.GS
 
         private static void CheckRents()
         {
-            if (Properties.RENT_DUE_DAYS == 0)
+            if (Properties.RENT_DUE_DAYS <= 0)
                 return;
 
             List<House> houses = HouseMgr.GetHouses();
@@ -87,7 +87,7 @@ namespace DOL.GS
 
             // If we reached here, they can't afford rent.
             if (log.IsWarnEnabled)
-                log.Warn($"[HOUSING] House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
+                log.Warn($"House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
 
             lock (_removalLock)
             {

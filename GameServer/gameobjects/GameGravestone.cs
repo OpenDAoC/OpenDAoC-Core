@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -12,16 +10,14 @@ namespace DOL.GS
         // GameGravestone inherits from GameStaticItem, but uses its own database object (DbGravestone).
         // This means _dbWorldObject should not be used in this class and in non-overridden methods from GameStaticItem.
 
-        private static Dictionary<string, HashSet<GameGravestone>> _gravestonesByOwner = new();
-        private static Lock _gravestonesLock = new();
-
         private DbGravestone _dbGravestone;
         private long _xpValue;
-        private DateTime _creationTime;
+
+        public DateTime CreationTime { get; private set; }
 
         public static void Create(GamePlayer player, long xpValue)
         {
-            GameGravestone gravestone = PruneExcessGravestonesAndGetReusable(player);
+            GameGravestone gravestone = GravestoneService.PruneExcessGravestonesAndGetReusable(player);
 
             if (gravestone != null)
                 gravestone.Delete();
@@ -52,31 +48,14 @@ namespace DOL.GS
             if (!base.AddToWorld())
                 return false;
 
-            lock (_gravestonesLock)
-            {
-                if (_gravestonesByOwner.TryGetValue(OwnerID, out var gravestones))
-                    gravestones.Add(this);
-                else
-                    _gravestonesByOwner[OwnerID] = [this];
-            }
-
+            GravestoneService.AddGravestone(this);
             return true;
         }
 
         public override bool RemoveFromWorld()
         {
             // Always remove from internal cache even if RemoveFromWorld fails.
-            lock (_gravestonesLock)
-            {
-                if (_gravestonesByOwner.TryGetValue(OwnerID, out var gravestones))
-                {
-                    gravestones.Remove(this);
-
-                    if (gravestones.Count == 0)
-                        _gravestonesByOwner.Remove(OwnerID);
-                }
-            }
-
+            GravestoneService.RemoveGravestone(this);
             return base.RemoveFromWorld();
         }
 
@@ -92,7 +71,7 @@ namespace DOL.GS
             CurrentRegionID = _dbGravestone.Region;
             Model = _dbGravestone.Model;
             _xpValue = _dbGravestone.XpValue;
-            _creationTime = _dbGravestone.CreationTime;
+            CreationTime = _dbGravestone.CreationTime;
             InternalID = obj.ObjectId;
         }
 
@@ -111,7 +90,7 @@ namespace DOL.GS
             _dbGravestone.Region = CurrentRegionID;
             _dbGravestone.Model = Model;
             _dbGravestone.XpValue = _xpValue;
-            _dbGravestone.CreationTime = _creationTime;
+            _dbGravestone.CreationTime = CreationTime;
 
             if (InternalID == null)
             {
@@ -142,7 +121,7 @@ namespace DOL.GS
             CurrentRegionID = player.CurrentRegionID;
             Model = GetGraveRealm(player.Realm);
             _xpValue = xpValue;
-            _creationTime = DateTime.Now;
+            CreationTime = DateTime.Now;
             LoadedFromScript = false;
         }
 
@@ -155,47 +134,6 @@ namespace DOL.GS
                 eRealm.Hibernia => 637,
                 _ => 1681,
             };
-        }
-
-        public static GameGravestone PruneExcessGravestonesAndGetReusable(GamePlayer player)
-        {
-            const int MAX_GRAVESTONES_PER_PLAYER = 1;
-
-            do
-            {
-                GameGravestone oldestGrave = null;
-                bool isExcess = false;
-
-                lock (_gravestonesLock)
-                {
-                    if (_gravestonesByOwner.TryGetValue(player.ObjectId, out var gravestones) && gravestones.Count >= MAX_GRAVESTONES_PER_PLAYER)
-                    {
-                        DateTime oldestTime = DateTime.MaxValue;
-
-                        foreach (GameGravestone gravestone in gravestones)
-                        {
-                            if (gravestone._creationTime < oldestTime)
-                            {
-                                oldestTime = gravestone._creationTime;
-                                oldestGrave = gravestone;
-                            }
-                        }
-
-                        isExcess = gravestones.Count > MAX_GRAVESTONES_PER_PLAYER;
-                    }
-                }
-
-                if (oldestGrave == null)
-                    return null;
-
-                if (isExcess)
-                {
-                    oldestGrave.Delete();
-                    oldestGrave.DeleteFromDatabase();
-                }
-                else
-                    return oldestGrave;
-            } while (true);
         }
     }
 }

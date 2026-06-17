@@ -166,6 +166,7 @@ namespace DOL.GS
             // The following services tick via RolloverSchedulerService.
             PeriodicQuestService.Initialize();
             HouseRentService.Initialize();
+            GravestoneService.Initialize();
 
             GameServiceContext.Current.Value = null;
 

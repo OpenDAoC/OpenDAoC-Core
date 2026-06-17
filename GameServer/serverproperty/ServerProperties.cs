@@ -673,6 +673,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "los_check_timeout", "After how long (milliseconds) should a los check timeout. If less than 0, the default ECS timer interval will be used.", 1500)]
 		public static int LOS_CHECK_TIMEOUT;
 
+		[ServerProperty("world", "gravestone_decay_time", "Minimum time (days) before a gravestone is removed from the world. 0 means no gravestones will be removed.", 7)]
+		public static int GRAVESTONE_DECAY_TIME;
+
 		/// <summary>
 		/// HPs gained per champion's level
 		/// </summary>
