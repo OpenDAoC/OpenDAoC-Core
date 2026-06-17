@@ -34,13 +34,38 @@ namespace DOL.GS
 
             IList<DbScheduledRollover> dbRollovers = GameServer.Database.SelectAllObjects<DbScheduledRollover>();
 
-            foreach (DbScheduledRollover dbRollover in dbRollovers)
+            foreach (IntervalTracker tracker in _trackers)
             {
-                foreach (IntervalTracker tracker in _trackers)
-                {
-                    if (tracker.Key != (IntervalKey) dbRollover.RolloverIntervalKey)
-                        continue;
+                DbScheduledRollover dbRollover = null;
 
+                foreach (DbScheduledRollover db in dbRollovers)
+                {
+                    if ((IntervalKey) db.RolloverIntervalKey == tracker.Key)
+                    {
+                        dbRollover = db;
+                        break;
+                    }
+                }
+
+                if (dbRollover != null)
+                {
+                    tracker.DbRecord = dbRollover;
+                    tracker.LastRollover = dbRollover.LastRollover;
+                    tracker.NextRollover = tracker.CalculateNextRollover(dbRollover.LastRollover);
+                }
+                else
+                {
+                    // If the DB record doesn't exist, create it immediately.
+                    // This ensures that even if the server restarts before the next threshold, the timestamp is safely stored in the database.
+                    dbRollover = new()
+                    {
+                        RolloverIntervalKey = (int) tracker.Key,
+                        LastRollover = DateTime.Now
+                    };
+
+                    GameServer.Database.AddObject(dbRollover);
+
+                    tracker.DbRecord = dbRollover;
                     tracker.LastRollover = dbRollover.LastRollover;
                     tracker.NextRollover = tracker.CalculateNextRollover(dbRollover.LastRollover);
                 }
@@ -54,8 +79,8 @@ namespace DOL.GS
             _trackers.Add(new()
             {
                 Key = key,
-                CalculateNextRollover = calculateNextRollover,
-                NextRollover = calculateNextRollover(DateTime.Now)
+                CalculateNextRollover = calculateNextRollover
+                // NextRollover initialization is handled safely in the constructor logic.
             });
         }
 
@@ -141,23 +166,8 @@ namespace DOL.GS
 
         private static void ExecuteRollover(IntervalTracker tracker, DateTime now)
         {
-            DbScheduledRollover dbRollover = GameServer.Database.SelectObject<DbScheduledRollover>(DB.Column("RolloverIntervalKey").IsEqualTo((int) tracker.Key));
-
-            if (dbRollover != null)
-            {
-                dbRollover.LastRollover = now;
-                GameServer.Database.SaveObject(dbRollover);
-            }
-            else
-            {
-                dbRollover = new()
-                {
-                    LastRollover = now,
-                    RolloverIntervalKey = (int) tracker.Key
-                };
-
-                GameServer.Database.AddObject(dbRollover);
-            }
+            tracker.DbRecord.LastRollover = now;
+            GameServer.Database.SaveObject(tracker.DbRecord);
 
             tracker.LastRollover = now;
             tracker.NextRollover = tracker.CalculateNextRollover(now);
@@ -192,6 +202,7 @@ namespace DOL.GS
 
         private class IntervalTracker
         {
+            public DbScheduledRollover DbRecord { get; set; }
             public IntervalKey Key { get; set; }
             public DateTime LastRollover { get; set; }
             public DateTime NextRollover { get; set; }
