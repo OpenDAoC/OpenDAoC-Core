@@ -25,12 +25,12 @@ namespace DOL.GS.GameEvents
 		/// Declare a logger for this class.
 		/// </summary>
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-		
+
 		/// <summary>
 		/// Table Cache
 		/// </summary>
 		private static readonly Dictionary<eCharacterClass, List<DbItemTemplate>> m_cachedClassEquipment = new Dictionary<eCharacterClass, List<DbItemTemplate>>();
-		
+
 		/// <summary>
 		/// Register Character Creation Events
 		/// </summary>
@@ -43,7 +43,7 @@ namespace DOL.GS.GameEvents
 			InitStarterEquipment();
 			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 		}
-		
+
 		/// <summary>
 		/// Init (Or Refresh) Starter Equipment Cache
 		/// </summary>
@@ -51,7 +51,7 @@ namespace DOL.GS.GameEvents
 		public static void InitStarterEquipment()
 		{
 			m_cachedClassEquipment.Clear();
-			
+
 			// Init Startup Collection.
 			foreach (var equipclass in GameServer.Database.SelectAllObjects<StarterEquipment>())
 			{
@@ -67,7 +67,7 @@ namespace DOL.GS.GameEvents
 								eCharacterClass gameClass = (eCharacterClass)cId;
 								if (!m_cachedClassEquipment.ContainsKey(gameClass))
 									m_cachedClassEquipment.Add(gameClass, new List<DbItemTemplate>());
-								
+
 								m_cachedClassEquipment[gameClass].Add(equipclass.Template);
 							}
 							catch (Exception e)
@@ -86,7 +86,7 @@ namespace DOL.GS.GameEvents
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Unregister Character Creation Events
 		/// </summary>
@@ -98,30 +98,30 @@ namespace DOL.GS.GameEvents
 		{
 			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
 		}
-		
+
 		/// <summary>
 		/// On Character Creation set up equipment from StarterEquipment Table.
 		/// </summary>
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args)
+		public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args)
 		{
 			if (!ENABLE_FREE_STARTER_EQUIPMENT)
 				return;
-			
+
 			// Check Args
 			var chArgs = args as CharacterEventArgs;
-			
+
 			if (chArgs == null)
 				return;
-			
+
 			DbCoreCharacter ch = chArgs.Character;
-			
+
 			try
 			{
 				var usedSlots = new Dictionary<eInventorySlot, bool>();
-				
+
 				if (m_cachedClassEquipment.ContainsKey((eCharacterClass)ch.Class))
 				{
 					// sort for filling righ hand first...
@@ -135,12 +135,12 @@ public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args
 
 						bool itemChoosen = false;
 						eInventorySlot currentSlot = (eInventorySlot) inventoryItem.Item_Type;
-		
+
 						// if equipable item, find equippable slot
 						if (GameLivingInventory.EquipmentSlots.Contains(currentSlot))
 						{
 							eInventorySlot chosenSlot;
-		
+
 							// try to set Left Hand in Right Hand slot if not already used.
 							if (currentSlot == eInventorySlot.LeftHandWeapon && (eObjectType)inventoryItem.Object_Type != eObjectType.Shield && !usedSlots.ContainsKey(eInventorySlot.RightHandWeapon))
 							{
@@ -150,7 +150,7 @@ public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args
 							{
 								chosenSlot = currentSlot;
 							}
-		
+
 							// Slot is occupied, add this to backpack.
 							if (usedSlots.ContainsKey(chosenSlot))
 							{
@@ -175,16 +175,16 @@ public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args
 											ch.ActiveWeaponSlot = (byte)eActiveWeaponSlot.Distance;
 											break;
 									}
-										
+
 									// Save char to DB if Active Slot changed...
 									if (ch.ActiveWeaponSlot != 0)
 										GameServer.Database.SaveObject(ch);
 								}
-									
+
 								itemChoosen = true;
 							}
 						}
-						
+
 						if (!itemChoosen)
 						{
 							//otherwise stick the item in the backpack
@@ -198,7 +198,7 @@ public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args
 								}
 							}
 						}
-						
+
 						GameServer.Database.AddObject(inventoryItem);
 					}
 				}
