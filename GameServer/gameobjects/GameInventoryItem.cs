@@ -853,46 +853,12 @@ namespace DOL.GS
 
         public double GetTotalUtility()
         {
-            double totalUti = 0;
-            totalUti += GetSingleUtility((eProperty) Bonus1Type, Bonus1);
-            totalUti += GetSingleUtility((eProperty) Bonus2Type, Bonus2);
-            totalUti += GetSingleUtility((eProperty) Bonus3Type, Bonus3);
-            totalUti += GetSingleUtility((eProperty) Bonus4Type, Bonus4);
-            totalUti += GetSingleUtility((eProperty) Bonus5Type, Bonus5);
-            totalUti += GetSingleUtility((eProperty) Bonus6Type, Bonus6);
-            totalUti += GetSingleUtility((eProperty) Bonus7Type, Bonus7);
-            totalUti += GetSingleUtility((eProperty) Bonus8Type, Bonus8);
-            totalUti += GetSingleUtility((eProperty) Bonus9Type, Bonus9);
-            totalUti += GetSingleUtility((eProperty) Bonus10Type, Bonus10);
-            totalUti += GetSingleUtility((eProperty) ExtraBonusType, ExtraBonus);
-            return totalUti;
+            return ItemUtilityCalculator.GetTotalUtility(this);
         }
 
-        private static double GetSingleUtility(eProperty bonusType, int bonus)
+        public static double GetSingleUtility(int bonusType, int bonus)
         {
-            if (bonusType is eProperty.Undefined || bonus == 0)
-                return 0;
-
-            if (bonusType is (>= eProperty.Stat_First and <= eProperty.Stat_Last) or eProperty.Acuity)
-                return bonus * 0.6667;
-
-            if (bonusType is >= eProperty.Resist_First and <= eProperty.Resist_Last)
-                return bonus * 2.0;
-
-            if (bonusType is >= eProperty.Skill_First and <= eProperty.Skill_Last)
-                return bonus * 5.0;
-
-            return bonusType switch
-            {
-                eProperty.MaxMana => bonus * 2.0,
-                eProperty.MaxHealth => bonus * 0.25,
-                eProperty.AllMagicSkills or
-                eProperty.AllMeleeWeaponSkills or
-                eProperty.AllDualWieldingSkills or
-                eProperty.AllArcherySkills or
-                eProperty.AllSkills => bonus * 5.0,
-                _ => 0,
-            };
+            return ItemUtilityCalculator.GetSingleUtility(bonusType, bonus);
         }
 
         protected virtual void WriteBonusLine(List<string> list, GameClient client, int bonusCat, int bonusValue)
@@ -906,7 +872,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    string singleUti = String.Format("{0:0.00}", GetSingleUtility((eProperty) bonusCat, bonusValue));
+                    string singleUti = String.Format("{0:0.00}", GetSingleUtility(bonusCat, bonusValue));
                     //- Axe: 5 pts
                     //- Strength: 15 pts
                     //- Constitution: 15 pts

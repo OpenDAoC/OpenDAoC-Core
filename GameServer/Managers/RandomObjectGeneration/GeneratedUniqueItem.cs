@@ -5103,40 +5103,14 @@ namespace DOL.GS
             return Bonus;
         }
 
-        private static double GetSingleUtility(int bonusType, int bonusValue)
+        public double GetTotalUtility()
         {
-            eProperty property = (eProperty) bonusType;
-
-            if (property is eProperty.Undefined || bonusValue == 0)
-                return 0.0;
-
-            double multiplier = property switch
-            {
-                (>= eProperty.Stat_First and <= eProperty.Stat_Last) or eProperty.Acuity => 2 / 3.0,
-                eProperty.MaxMana => 2.0,
-                eProperty.MaxHealth => 0.25,
-                >= eProperty.Resist_First and <= eProperty.Resist_Last => 2.0,
-                >= eProperty.Skill_First and <= eProperty.Skill_Last => 5.0,
-                eProperty.AllMagicSkills or eProperty.AllMeleeWeaponSkills or eProperty.AllDualWieldingSkills or eProperty.AllArcherySkills or eProperty.AllSkills => 10.0,
-                _ => 0.0
-            };
-
-            return bonusValue * multiplier;
+            return ItemUtilityCalculator.GetTotalUtility(this);
         }
 
-        private double GetTotalUtility()
+        public static double GetSingleUtility(int bonusType, int bonusValue)
         {
-            return GetSingleUtility(Bonus1Type, Bonus1) +
-                GetSingleUtility(Bonus2Type, Bonus2) +
-                GetSingleUtility(Bonus3Type, Bonus3) +
-                GetSingleUtility(Bonus4Type, Bonus4) +
-                GetSingleUtility(Bonus5Type, Bonus5) +
-                GetSingleUtility(Bonus6Type, Bonus6) +
-                GetSingleUtility(Bonus7Type, Bonus7) +
-                GetSingleUtility(Bonus8Type, Bonus8) +
-                GetSingleUtility(Bonus9Type, Bonus9) +
-                GetSingleUtility(Bonus10Type, Bonus10) +
-                GetSingleUtility(ExtraBonusType, ExtraBonus);
+            return ItemUtilityCalculator.GetSingleUtility((eProperty) bonusType, bonusValue);
         }
 
         #region generate item type
