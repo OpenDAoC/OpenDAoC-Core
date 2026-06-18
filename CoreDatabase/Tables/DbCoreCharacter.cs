@@ -1299,6 +1299,17 @@ namespace DOL.Database
 			}
 		}
 
+		[DataElement(AllowDbNull = false)]
+		public bool HideGraves
+		{
+			get;
+			set
+			{
+				field = value;
+				Dirty = true;
+			}
+		}
+
 		/// <summary>
 		/// Gets/sets half-level flag
 		/// </summary>

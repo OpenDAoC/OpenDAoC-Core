@@ -146,6 +146,7 @@ namespace DOL.Database
 			this.ShowXFireInfo = character.ShowXFireInfo;
 			this.Silver = character.Silver;
 			this.SpellQueue = character.SpellQueue;
+			this.HideGraves = character.HideGraves;
 			this.Strength = character.Strength;
 			this.UsedLevelCommand = character.UsedLevelCommand;
 			this.Xpos = character.Xpos;

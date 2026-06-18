@@ -110,6 +110,15 @@ namespace DOL.GS
             InternalID = null;
         }
 
+        public override bool IsVisibleTo(GameObject checkObject)
+        {
+            if (!base.IsVisibleTo(checkObject))
+                return false;
+
+            // Hide gravestones of other players if the player has the HideGraves option enabled.
+            return checkObject is not GamePlayer player || !player.DBCharacter.HideGraves || OwnerID == player.ObjectId;
+        }
+
         private void Initialize(GamePlayer player, long xpValue)
         {
             OwnerID = player.ObjectId;
