@@ -4903,7 +4903,7 @@ namespace DOL.GS
                 DBCharacter.IsCloakHoodUp = value;
 
                 Out.SendInventoryItemsUpdate(null);
-                UpdateEquipmentAppearance();
+                BroadcastEquipmentUpdate();
 
                 if (value)
                 {
@@ -4931,7 +4931,7 @@ namespace DOL.GS
                 DBCharacter.IsCloakInvisible = value;
 
                 Out.SendInventoryItemsUpdate(null);
-                UpdateEquipmentAppearance();
+                BroadcastEquipmentUpdate();
 
                 if (value)
                 {
@@ -4959,7 +4959,7 @@ namespace DOL.GS
                 DBCharacter.IsHelmInvisible = value;
 
                 Out.SendInventoryItemsUpdate(null);
-                UpdateEquipmentAppearance();
+                BroadcastEquipmentUpdate();
 
                 if (value)
                 {
@@ -5069,10 +5069,7 @@ namespace DOL.GS
             }
 
             if (ObjectState is eObjectState.Active)
-            {
                 Out.SendInventorySlotsUpdate(null);
-                UpdateEquipmentAppearance();
-            }
         }
 
         /// <summary>
@@ -7809,7 +7806,7 @@ namespace DOL.GS
                     playerInRadius.Out.SendPlayerCreate(this);
             }
 
-            UpdateEquipmentAppearance();
+            BroadcastEquipmentUpdate();
             UpdateEncumbrance(true);
 
             // display message
@@ -7948,7 +7945,7 @@ namespace DOL.GS
             }
 
             Out.SendPlayerJump(false);
-            UpdateEquipmentAppearance();
+            BroadcastEquipmentUpdate();
 
             if (IsUnderwater)
                 IsDiving = true;
@@ -8857,7 +8854,7 @@ namespace DOL.GS
             Out.SendEncumbrance();
         }
 
-        public void UpdateEquipmentAppearance()
+        public void BroadcastEquipmentUpdate()
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -9043,6 +9040,7 @@ namespace DOL.GS
             }
 
             _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
+            _statsSenderOnEquipmentChange.BroadcastEquipment |= GameLivingInventory.VisibleSlots.Contains((eInventorySlot) item.Template.Item_Type);
         }
 
         private int m_activeBuffCharges = 0;
@@ -9199,6 +9197,7 @@ namespace DOL.GS
                 inventoryItem.OnUnEquipped(this);
 
             _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
+            _statsSenderOnEquipmentChange.BroadcastEquipment |= GameLivingInventory.VisibleSlots.Contains((eInventorySlot) item.Template.Item_Type);
         }
 
         private StatsSenderOnEquipmentChange _statsSenderOnEquipmentChange;
@@ -9213,6 +9212,8 @@ namespace DOL.GS
         {
             private new GamePlayer Owner { get; }
             private Func<int> _onCompletion;
+
+            public bool BroadcastEquipment { get; set; }
 
             public StatsSenderOnEquipmentChange(GameObject owner, Func<int> OnCompletion) : base(owner)
             {
@@ -9233,6 +9234,9 @@ namespace DOL.GS
                 Owner.Out.SendUpdatePlayerSkills(false);
                 Owner.UpdateEncumbrance(); // Currently also sent by GamePlayerInventory.UpdateChangedSlots, but too early.
                 Owner.UpdatePlayerStatus();
+
+                if (BroadcastEquipment)
+                    Owner.BroadcastEquipmentUpdate();
 
                 if (!IsAlive)
                     return _onCompletion();

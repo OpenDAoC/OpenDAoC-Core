@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace DOL.GS
 	{
 		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static readonly eInventorySlot[] EQUIP_SLOTS =
+		public static FrozenSet<eInventorySlot> EquipmentSlots { get; } = new HashSet<eInventorySlot>()
 		{
 			eInventorySlot.Horse,
 			eInventorySlot.HorseArmor,
@@ -39,10 +40,9 @@ namespace DOL.GS
 			eInventorySlot.LeftRing,
 			eInventorySlot.RightRing,
 			eInventorySlot.Mythical,
-		};
+		}.ToFrozenSet();
 
-		//Defines the visible slots that will be displayed to players
-		protected static readonly eInventorySlot[] VISIBLE_SLOTS =
+		public static FrozenSet<eInventorySlot> VisibleSlots { get; } = new HashSet<eInventorySlot>()
 		{
 			eInventorySlot.RightHandWeapon,
 			eInventorySlot.LeftHandWeapon,
@@ -55,7 +55,7 @@ namespace DOL.GS
 			eInventorySlot.Cloak,
 			eInventorySlot.LegsArmor,
 			eInventorySlot.ArmsArmor
-		};
+		}.ToFrozenSet();
 
 		private readonly Lock _inventoryLock = new();
 		public Lock Lock => _inventoryLock;
@@ -781,18 +781,14 @@ namespace DOL.GS
 		{
 			get
 			{
-				var items = new List<DbInventoryItem>(VISIBLE_SLOTS.Length);
+				var items = new List<DbInventoryItem>(VisibleSlots.Count);
 
 				lock (Lock)
 				{
-					foreach (eInventorySlot slot in VISIBLE_SLOTS)
+					foreach (eInventorySlot slot in VisibleSlots)
 					{
-						DbInventoryItem item;
-
-						if (m_items.TryGetValue(slot, out item))
-						{
+						if (m_items.TryGetValue(slot, out DbInventoryItem item))
 							items.Add(item);
-						}
 					}
 				}
 
@@ -807,18 +803,14 @@ namespace DOL.GS
 		{
 			get
 			{
-				var items = new List<DbInventoryItem>(EQUIP_SLOTS.Length);
+				var items = new List<DbInventoryItem>(EquipmentSlots.Count);
 
 				lock (Lock)
 				{
-					foreach (eInventorySlot slot in EQUIP_SLOTS)
+					foreach (eInventorySlot slot in EquipmentSlots)
 					{
-						DbInventoryItem item;
-
-						if (m_items.TryGetValue(slot, out item))
-						{
+						if (m_items.TryGetValue(slot, out DbInventoryItem item))
 							items.Add(item);
-						}
 					}
 				}
 

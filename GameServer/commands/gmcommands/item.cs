@@ -289,7 +289,7 @@ namespace DOL.GS.Commands
 							item.Model = Convert.ToUInt16(args[2]);
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
-								client.Player.UpdateEquipmentAppearance();
+								client.Player.BroadcastEquipmentUpdate();
 							break;
 						}
 						#endregion Model
@@ -323,7 +323,7 @@ namespace DOL.GS.Commands
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
-								client.Player.UpdateEquipmentAppearance();
+								client.Player.BroadcastEquipmentUpdate();
 							break;
 						}
 						#endregion Extension
@@ -357,7 +357,7 @@ namespace DOL.GS.Commands
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
-								client.Player.UpdateEquipmentAppearance();
+								client.Player.BroadcastEquipmentUpdate();
 							break;
 						}
 						#endregion Color
@@ -385,7 +385,7 @@ namespace DOL.GS.Commands
 							item.Effect = Convert.ToUInt16(args[2]);
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
-								client.Player.UpdateEquipmentAppearance();
+								client.Player.BroadcastEquipmentUpdate();
 							break;
 						}
 						#endregion Effect
@@ -606,7 +606,7 @@ namespace DOL.GS.Commands
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
-								client.Player.UpdateEquipmentAppearance();
+								client.Player.BroadcastEquipmentUpdate();
 							break;
 						}
 						#endregion Emblem

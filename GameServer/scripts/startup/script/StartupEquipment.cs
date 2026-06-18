@@ -105,7 +105,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args)
+public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args)
 		{
 			if (!ENABLE_FREE_STARTER_EQUIPMENT)
 				return;
@@ -134,32 +134,31 @@ namespace DOL.GS.GameEvents
 						inventoryItem.Realm = ch.Realm;
 
 						bool itemChoosen = false;
+						eInventorySlot currentSlot = (eInventorySlot) inventoryItem.Item_Type;
 		
 						// if equipable item, find equippable slot
-						foreach (eInventorySlot currentSlot in GameLivingInventory.EQUIP_SLOTS)
+						if (GameLivingInventory.EquipmentSlots.Contains(currentSlot))
 						{
-							if ((eInventorySlot)inventoryItem.Item_Type == currentSlot)
+							eInventorySlot chosenSlot;
+		
+							// try to set Left Hand in Right Hand slot if not already used.
+							if (currentSlot == eInventorySlot.LeftHandWeapon && (eObjectType)inventoryItem.Object_Type != eObjectType.Shield && !usedSlots.ContainsKey(eInventorySlot.RightHandWeapon))
 							{
-								eInventorySlot chosenSlot;
+								chosenSlot = eInventorySlot.RightHandWeapon;
+							}
+							else
+							{
+								chosenSlot = currentSlot;
+							}
 		
-								// try to set Left Hand in Right Hand slot if not already used.
-								if (currentSlot == eInventorySlot.LeftHandWeapon && (eObjectType)inventoryItem.Object_Type != eObjectType.Shield && !usedSlots.ContainsKey(eInventorySlot.RightHandWeapon))
-								{
-									chosenSlot = eInventorySlot.RightHandWeapon;
-								}
-								else
-								{
-									chosenSlot = currentSlot;
-								}
-		
-								// Slot is occupied, add this to backpack.
-								if (usedSlots.ContainsKey(chosenSlot))
-								{
-									if (log.IsWarnEnabled)
-										log.WarnFormat("Cannot add Starter Equipment item {0} to class {1} an item is already assigned to this slot! (Added to Backpack...)", item.Id_nb, ch.Class);
-									break;
-								}
-		
+							// Slot is occupied, add this to backpack.
+							if (usedSlots.ContainsKey(chosenSlot))
+							{
+								if (log.IsWarnEnabled)
+									log.WarnFormat("Cannot add Starter Equipment item {0} to class {1} an item is already assigned to this slot! (Added to Backpack...)", item.Id_nb, ch.Class);
+							}
+							else
+							{
 								inventoryItem.SlotPosition = (int)chosenSlot;
 								usedSlots[chosenSlot] = true;
 								if (ch.ActiveWeaponSlot == 0)
@@ -176,14 +175,13 @@ namespace DOL.GS.GameEvents
 											ch.ActiveWeaponSlot = (byte)eActiveWeaponSlot.Distance;
 											break;
 									}
-									
+										
 									// Save char to DB if Active Slot changed...
 									if (ch.ActiveWeaponSlot != 0)
 										GameServer.Database.SaveObject(ch);
 								}
-								
+									
 								itemChoosen = true;
-								break;
 							}
 						}
 						

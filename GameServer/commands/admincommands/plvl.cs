@@ -371,7 +371,7 @@ namespace DOL.GS.Commands
 							GameServer.Database.SaveObject(target.Client.Account);
 							client.Player.PlayerObjectCache.Clear();
 							// Refresh equipment for player so they don't appear naked after changing plvl
-							client.Player.UpdateEquipmentAppearance();
+							client.Player.BroadcastEquipmentUpdate();
 
 							// Message: "You have changed {0}'s account privilege level to {1}!"
 							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.PlvlSet", target.Name,

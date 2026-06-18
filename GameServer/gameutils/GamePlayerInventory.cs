@@ -110,7 +110,7 @@ namespace DOL.GS
                         }
                     }
 
-                    foreach (eInventorySlot slot in EQUIP_SLOTS)
+                    foreach (eInventorySlot slot in EquipmentSlots)
                     {
                         if (slot is >= eInventorySlot.RightHandWeapon and <= eInventorySlot.DistanceWeapon)
                             continue;
@@ -1044,16 +1044,8 @@ namespace DOL.GS
         public virtual bool IsEquippedSlot(eInventorySlot slot)
         {
             // skip weapons. only active weapons should fire equip event, done in player.SwitchWeapon
-            if (slot > eInventorySlot.DistanceWeapon || slot < eInventorySlot.RightHandWeapon)
-            {
-                foreach (eInventorySlot staticSlot in EQUIP_SLOTS)
-                {
-                    if (slot == staticSlot)
-                        return true;
-                }
-
-                return false;
-            }
+            if (slot is > eInventorySlot.DistanceWeapon or < eInventorySlot.RightHandWeapon)
+                return EquipmentSlots.Contains(slot);
 
             switch (slot)
             {

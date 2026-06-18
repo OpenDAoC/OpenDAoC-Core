@@ -94,10 +94,7 @@ namespace DOL.GS
 		/// <returns>the slot if it's valid or eInventorySlot.Invalid if not</returns>
 		protected override eInventorySlot GetValidInventorySlot(eInventorySlot slot)
 		{
-			foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
-				if (visibleSlot == slot)
-					return slot;
-			return eInventorySlot.Invalid;
+			return VisibleSlots.Contains(slot) ? slot : eInventorySlot.Invalid;
 		}
 
 		#region AddNPCEquipment/RemoveNPCEquipment/CloseTemplate/CloneTemplate

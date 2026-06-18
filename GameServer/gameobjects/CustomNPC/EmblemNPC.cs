@@ -137,7 +137,7 @@ namespace DOL.GS
 			item.Emblem = player.Guild.Emblem;
 			player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] {item});
 			if (item.SlotPosition < (int) eInventorySlot.FirstBackpack)
-				player.UpdateEquipmentAppearance();
+				player.BroadcastEquipmentUpdate();
 			SayTo(player, eChatLoc.CL_ChatWindow, "I have put an emblem on your item.");
 			return;
 		}
