@@ -12,23 +12,26 @@ namespace DOL.GS
 
         private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true;
 
-        private double _tickDuration;
+        private readonly double _tickDurationMs;
+        private readonly long _tickDurationTicks;
         private bool _running;
         private Thread _busyWaitThresholdThread;
-        private int _busyWaitThreshold;
+        private int _busyWaitThresholdMs;
+        private long _busyWaitThresholdTicks;
 
         private double _gameLoopTime;
-        private double _totalElapsedTime;
+        private double _totalElapsedTimeMs;
         private Stopwatch _stopwatch;
 
         public GameLoopTickPacerStats Stats { get; private set; }
 
-        public GameLoopTickPacer(double tickDuration)
+        public GameLoopTickPacer(double tickDurationMs)
         {
-            if (tickDuration <= 0)
-                throw new ArgumentOutOfRangeException(nameof(tickDuration), "Tick duration must be a positive value.");
+            if (tickDurationMs <= 0)
+                throw new ArgumentOutOfRangeException(nameof(tickDurationMs), "Tick duration must be a positive value.");
 
-            _tickDuration = tickDuration;
+            _tickDurationMs = tickDurationMs;
+            _tickDurationTicks = (long) (_tickDurationMs * Stopwatch.Frequency / 1000.0);
         }
 
         public void Start()
@@ -49,7 +52,7 @@ namespace DOL.GS
                 _busyWaitThresholdThread.Start();
             }
 
-            Stats = new([60000, 30000, 10000], 1000.0 / _tickDuration);
+            Stats = new([60000, 30000, 10000], 1000.0 / _tickDurationMs);
             _stopwatch = Stopwatch.StartNew();
         }
 
@@ -68,27 +71,29 @@ namespace DOL.GS
 
         public long WaitForNextTick()
         {
-            int sleepFor = (int) (_tickDuration - _stopwatch.Elapsed.TotalMilliseconds);
-            int busyWaitThreshold = _busyWaitThreshold;
+            long startTicks = _stopwatch.ElapsedTicks;
+            long ticksRemaining = _tickDurationTicks - startTicks;
 
-            if (sleepFor >= busyWaitThreshold)
-                Thread.Sleep(sleepFor - busyWaitThreshold);
-
-            if (_tickDuration > _stopwatch.Elapsed.TotalMilliseconds)
+            if (ticksRemaining >= _busyWaitThresholdTicks)
             {
-                // Any small number will do here. Technically, this could be 0.
-                // If the game loop appears to overshoot the tick duration for no reason, this can be reduced even further.
-                while (_tickDuration > _stopwatch.Elapsed.TotalMilliseconds)
-                    Thread.SpinWait(10);
+                int sleepForMs = (int) (ticksRemaining * 1000.0 / Stopwatch.Frequency) - _busyWaitThresholdMs;
+
+                if (sleepForMs > 0)
+                    Thread.Sleep(sleepForMs);
             }
 
+            // Any small number will do here. Technically, this could be 0.
+            // If the game loop appears to overshoot the tick duration for no reason, this can be reduced even further.
+            while (_stopwatch.ElapsedTicks < _tickDurationTicks)
+                Thread.SpinWait(10);
+
             double elapsedTime = _stopwatch.Elapsed.TotalMilliseconds;
-            _totalElapsedTime += elapsedTime;
+            _totalElapsedTimeMs += elapsedTime;
             _stopwatch.Restart();
 
             // In case the game loop is running faster than the tick rate. We don't want things to run faster than intended.
-            _gameLoopTime += elapsedTime < _tickDuration ? elapsedTime : _tickDuration;
-            Stats.RecordTick(_totalElapsedTime);
+            _gameLoopTime += elapsedTime < _tickDurationMs ? elapsedTime : _tickDurationMs;
+            Stats.RecordTick(_totalElapsedTimeMs);
             return (long) _gameLoopTime;
         }
 
@@ -118,7 +123,8 @@ namespace DOL.GS
                             highest = overSleptFor;
                     }
 
-                    _busyWaitThreshold = (int) Math.Max(0, Math.Ceiling(highest));
+                    _busyWaitThresholdMs = (int) Math.Max(0, Math.Ceiling(highest));
+                    _busyWaitThresholdTicks = (long) (_busyWaitThresholdMs * Stopwatch.Frequency / 1000.0);
                     Thread.Sleep(pauseFor);
                 }
             }
