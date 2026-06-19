@@ -18,7 +18,7 @@ namespace DOL.GS
         private static GameLoopThreadPool _threadPool;
         private static GameLoopTickPacer _tickPacer;
         private static bool _running;
-        private static List<TickStep> _tickSequence;
+        private static List<TickState> _tickSequence;
 
         public static int DegreeOfParallelism { get; } = Environment.ProcessorCount;
         public static double TickDuration { get; private set; }
@@ -118,16 +118,9 @@ namespace DOL.GS
 
             for (int i = 0; i < _tickSequence.Count; i++)
             {
-                TickStep tickStep = _tickSequence[i];
-                ExecutionContext.Run(tickStep.Context, TickCallback, tickStep.State);
-            }
-
-            Diagnostics.StopPerfCounter(THREAD_NAME);
-            Diagnostics.Tick();
-
-            static void TickCallback(object state)
-            {
-                TickState tickState = (TickState) state;
+                TickState tickState = _tickSequence[i];
+                SynchronizationContext prevCtx = SynchronizationContext.Current;
+                SynchronizationContext.SetSynchronizationContext(tickState.ServiceContext);
                 ActiveService = tickState.ProfileKey;
                 Diagnostics.StartPerfCounter(ActiveService);
 
@@ -137,10 +130,14 @@ namespace DOL.GS
                 }
                 finally
                 {
+                    SynchronizationContext.SetSynchronizationContext(prevCtx);
                     Diagnostics.StopPerfCounter(ActiveService);
                     ActiveService = string.Empty;
                 }
             }
+
+            Diagnostics.StopPerfCounter(THREAD_NAME);
+            Diagnostics.Tick();
         }
 
         private static void BuildTickSequence()
@@ -168,26 +165,12 @@ namespace DOL.GS
             HouseRentService.Initialize();
             GravestoneService.Initialize();
 
-            GameServiceContext.Current.Value = null;
-
             static void AddStep(IGameService service, Action action)
             {
                 string methodName = action.Method.Name;
                 string profileKey = methodName == nameof(IGameService.Tick) ? service.ServiceName : $"{service.ServiceName}.{methodName}";
-                GameServiceContext.Current.Value = service;
-                _tickSequence.Add(new(new(action, profileKey), ExecutionContext.Capture()));
-            }
-        }
-
-        private sealed class TickStep
-        {
-            public readonly TickState State;
-            public readonly ExecutionContext Context;
-
-            public TickStep(TickState state, ExecutionContext context)
-            {
-                State = state;
-                Context = context;
+                GameServiceSynchronizationContext serviceContext = GameServiceContext.GetContextFor(service);
+                _tickSequence.Add(new(action, profileKey, serviceContext));
             }
         }
 
@@ -195,11 +178,13 @@ namespace DOL.GS
         {
             public readonly Action TickAction;
             public readonly string ProfileKey;
+            public readonly GameServiceSynchronizationContext ServiceContext;
 
-            public TickState(Action tickAction, string profileKey)
+            public TickState(Action tickAction, string profileKey, GameServiceSynchronizationContext serviceContext)
             {
                 TickAction = tickAction;
                 ProfileKey = profileKey;
+                ServiceContext = serviceContext;
             }
         }
     }

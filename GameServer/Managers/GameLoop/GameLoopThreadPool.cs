@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace DOL.GS
 {
     public abstract class GameLoopThreadPool : IDisposable
     {
-        public static GameLoopSynchronizationContext Context { get; } = new();
         [ThreadStatic] private static TickObjectPoolManager _tickObjectPoolManager;
         [ThreadStatic] private static TickListPoolManager _tickListPoolManager;
         [ThreadStatic] private static long _lastResetTick;
@@ -37,7 +35,6 @@ namespace DOL.GS
 
         private void InitThreadStatics()
         {
-            SynchronizationContext.SetSynchronizationContext(Context);
             _tickObjectPoolManager = new();
             _tickListPoolManager = new();
             _lastResetTick = -1;

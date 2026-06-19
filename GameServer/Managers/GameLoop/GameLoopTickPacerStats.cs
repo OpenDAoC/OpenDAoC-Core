@@ -37,14 +37,16 @@ namespace DOL.GS
             List<(int, double)> result = new(_intervals.Count);
 
             // Fast-path: We are on the game loop, run directly.
-            if (SynchronizationContext.Current == GameLoopThreadPool.Context)
+            if (SynchronizationContext.Current is GameServiceSynchronizationContext)
             {
                 GetAverageTicksInternal(result);
                 return result;
             }
 
             // Slow-path: We are on an external thread. Use Send to marshal the call.
-            GameLoopThreadPool.Context.Send(static state =>
+            GameServiceSynchronizationContext context = GameServiceContext.GetContextFor(GameLoopService.Instance);
+
+            context.Send(static state =>
             {
                 var (result, tickPacer) = ((List<(int, double)>, GameLoopTickPacerStats)) state;
                 tickPacer.GetAverageTicksInternal(result);

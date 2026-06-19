@@ -38,7 +38,6 @@ namespace DOL.GS
         // Work processing.
         private WorkProcessor _workProcessor;           // Current work processor instance, reused for each execution.
         private readonly WorkState _workState = new();  // Shared state for work distribution and completion tracking.
-        private ExecutionContext _workContext;          // Execution context captured from the thread entering ExecuteForEach.
 
         [StructLayout(LayoutKind.Explicit)]
         private class WorkState
@@ -160,7 +159,6 @@ namespace DOL.GS
 
         private void ExecuteForEachInternal(int count)
         {
-            _workContext = ExecutionContext.Capture();
             _workState.RemainingWork = count;
             _workState.CompletedWorkerCount = 0;
 
@@ -171,7 +169,7 @@ namespace DOL.GS
             for (int i = 0; i < workersToStart; i++)
                 _workReady[i].Set();
 
-            ProcessWorkActions();
+            ProcessWorkActions(SynchronizationContext.Current);
             Interlocked.Increment(ref _workState.CompletedWorkerCount);
 
             // Spin very tightly until all the workers have completed their work.
@@ -240,7 +238,7 @@ namespace DOL.GS
                 {
                     workReady.Wait(cancellationToken);
                     workerCycle = ++cycle;
-                    ExecutionContext.Run(_workContext, static state => ((GameLoopThreadPoolMultiThreaded) state).ProcessWorkActions(), this);
+                    ProcessWorkActions(SynchronizationContext.Current);
                 }
                 catch (OperationCanceledException)
                 {
@@ -273,30 +271,40 @@ namespace DOL.GS
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
-        private void ProcessWorkActions()
+        private void ProcessWorkActions(SynchronizationContext callerContext)
         {
-            CheckResetTick();
-            int remainingWork = Volatile.Read(ref _workState.RemainingWork);
+            SynchronizationContext previousContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(callerContext);
 
-            while (remainingWork > 0)
+            try
             {
-                int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workState.CompletedWorkerCount);
-                int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
+                CheckResetTick();
+                int remainingWork = Volatile.Read(ref _workState.RemainingWork);
 
-                if (chunkSize < 1)
-                    chunkSize = 1;
+                while (remainingWork > 0)
+                {
+                    int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workState.CompletedWorkerCount);
+                    int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
 
-                int start = Interlocked.Add(ref _workState.RemainingWork, -chunkSize);
-                int end = start + chunkSize;
+                    if (chunkSize < 1)
+                        chunkSize = 1;
 
-                if (end < 1)
-                    break;
+                    int start = Interlocked.Add(ref _workState.RemainingWork, -chunkSize);
+                    int end = start + chunkSize;
 
-                if (start < 0)
-                    start = 0;
+                    if (end < 1)
+                        break;
 
-                _workProcessor.Process(start, end);
-                remainingWork = start - 1;
+                    if (start < 0)
+                        start = 0;
+
+                    _workProcessor.Process(start, end);
+                    remainingWork = start - 1;
+                }
+            }
+            finally
+            {
+                SynchronizationContext.SetSynchronizationContext(previousContext);
             }
         }
 

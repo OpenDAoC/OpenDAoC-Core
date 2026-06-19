@@ -32,7 +32,7 @@ namespace DOL.GS
             // actions until it ticks, neither side can make progress.
 
             if (!_actionPool.TryTake(out PostedAction pooledAction))
-                pooledAction = new PostedAction();
+                pooledAction = new();
 
             pooledAction.Init(this, action, state, Invoker<TState>.Invoke);
             _actions.Enqueue(pooledAction);
