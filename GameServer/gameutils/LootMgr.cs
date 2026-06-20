@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Reflection;
 using DOL.Database;
 
@@ -21,32 +19,32 @@ namespace DOL.GS
 		/// <summary>
 		/// Map holding one generator for each different class, to reuse similar generators...
 		/// </summary>
-		static readonly HybridDictionary m_ClassGenerators = new HybridDictionary();
+		static readonly Dictionary<string, ILootGenerator> m_ClassGenerators = new();
 
 		/// <summary>
 		/// List of global Lootgenerators 
 		/// </summary>
-		static readonly IList m_globalGenerators = new ArrayList();
+		static readonly List<ILootGenerator> m_globalGenerators = new();
 
 		/// <summary>
 		/// List of Lootgenerators related by mobname
 		/// </summary>
-		static readonly HybridDictionary m_mobNameGenerators = new HybridDictionary();
+		static readonly Dictionary<string, List<ILootGenerator>> m_mobNameGenerators = new();
 
 		/// <summary>
 		/// List of Lootgenerators related by mobguild
 		/// </summary>
-		static readonly HybridDictionary m_mobGuildGenerators = new HybridDictionary();
+		static readonly Dictionary<string, List<ILootGenerator>> m_mobGuildGenerators = new();
 
 		/// <summary>
 		/// List of Lootgenerators related by region ID
 		/// </summary>
-		static readonly HybridDictionary m_mobRegionGenerators = new HybridDictionary();
+		static readonly Dictionary<int, List<ILootGenerator>> m_mobRegionGenerators = new();
 
-		// /// <summary>
-		// /// List of Lootgenerators related by mobfaction
-		// /// </summary>
-		static readonly HybridDictionary m_mobFactionGenerators = new HybridDictionary();		
+		/// <summary>
+		/// List of Lootgenerators related by mobfaction
+		/// </summary>
+		static readonly Dictionary<int, List<ILootGenerator>> m_mobFactionGenerators = new();
 
 		/// <summary>
 		/// Initializes the LootMgr. This function must be called
@@ -57,7 +55,7 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Loading LootGenerators...");
 
-			IList<DbLootGenerator> m_lootGenerators;
+			List<DbLootGenerator> m_lootGenerators;
 			try
 			{
 				m_lootGenerators = GameServer.Database.SelectAllObjects<DbLootGenerator>();
@@ -139,16 +137,16 @@ namespace DOL.GS
 		/// <returns></returns>
 		private static ILootGenerator GetGeneratorInCache(DbLootGenerator dbGenerator)
 		{
-			if (m_ClassGenerators[dbGenerator.LootGeneratorClass + dbGenerator.ExclusivePriority] != null)
+			if (m_ClassGenerators.TryGetValue(dbGenerator.LootGeneratorClass + dbGenerator.ExclusivePriority, out ILootGenerator generator))
 			{
-				return (ILootGenerator)m_ClassGenerators[dbGenerator.LootGeneratorClass + dbGenerator.ExclusivePriority];
+				return generator;
 			}
 			return null;
 		}
 
 		public static void UnRegisterLootGenerator(ILootGenerator generator, string mobname, string mobguild, string mobfaction)
 		{
-		    UnRegisterLootGenerator(generator, mobname, mobguild, mobfaction, 0);
+			UnRegisterLootGenerator(generator, mobname, mobguild, mobfaction, 0);
 		}
 
 		/// <summary>
@@ -174,9 +172,9 @@ namespace DOL.GS
 					
 					foreach(string mob in mobNames) 
 					{
-						if ((IList)m_mobNameGenerators[mob] != null)
+						if (m_mobNameGenerators.TryGetValue(mob, out var list))
 						{
-							((IList)m_mobNameGenerators[mob]).Remove(generator);
+							list.Remove(generator);
 						}
 					}
 
@@ -201,9 +199,9 @@ namespace DOL.GS
 					
 					foreach(string guild in mobGuilds) 
 					{
-						if ((IList)m_mobGuildGenerators[guild] != null)
+						if (m_mobGuildGenerators.TryGetValue(guild, out var list))
 						{
-							((IList)m_mobGuildGenerators[guild]).Remove(generator);
+							list.Remove(generator);
 						}
 					}
 
@@ -232,8 +230,8 @@ namespace DOL.GS
 						{
 							int ifaction = int.Parse(sfaction);
 
-							if ((IList)m_mobFactionGenerators[ifaction] != null)
-								((IList)m_mobFactionGenerators[ifaction]).Remove(generator);
+							if (m_mobFactionGenerators.TryGetValue(ifaction, out var list))
+								list.Remove(generator);
 						}
 						catch
 						{
@@ -255,8 +253,7 @@ namespace DOL.GS
 			// Loot Generator Region Indexed
 			if (mobregion > 0)
 			{
-				IList regionList = (IList)m_mobRegionGenerators[mobregion];
-				if (regionList != null)
+				if (m_mobRegionGenerators.TryGetValue(mobregion, out var regionList))
 				{
 					regionList.Remove(generator);
 				}
@@ -267,7 +264,6 @@ namespace DOL.GS
 				m_globalGenerators.Remove(generator);
 			}
 		}
-
 
 		/// <summary>
 		/// Register a generator for the given parameters,
@@ -292,11 +288,12 @@ namespace DOL.GS
 					
 					foreach(string mob in mobNames) 
 					{
-						if ((IList)m_mobNameGenerators[mob] == null) 
+						if (!m_mobNameGenerators.TryGetValue(mob, out var list)) 
 						{
-							m_mobNameGenerators[mob] = new ArrayList();
+							list = new();
+							m_mobNameGenerators[mob] = list;
 						}
-						((IList)m_mobNameGenerators[mob]).Add(generator);
+						list.Add(generator);
 					}
 				}
 				catch 
@@ -317,11 +314,12 @@ namespace DOL.GS
 					
 					foreach(string guild in mobGuilds) 
 					{
-						if ((IList)m_mobGuildGenerators[guild] == null) 
+						if (!m_mobGuildGenerators.TryGetValue(guild, out var list))
 						{
-							m_mobGuildGenerators[guild] = new ArrayList();
+							list = new();
+							m_mobGuildGenerators[guild] = list;
 						}
-						((IList)m_mobGuildGenerators[guild]).Add(generator);
+						list.Add(generator);
 					}
 				}
 				catch 
@@ -347,10 +345,13 @@ namespace DOL.GS
 						{
 							int ifaction = int.Parse(sfaction);
 
-							if ((IList)m_mobFactionGenerators[ifaction] == null)
-								m_mobFactionGenerators[ifaction] = new ArrayList();
+							if (!m_mobFactionGenerators.TryGetValue(ifaction, out var list))
+							{
+								list = new();
+								m_mobFactionGenerators[ifaction] = list;
+							}
 
-							((IList)m_mobFactionGenerators[ifaction]).Add(generator);
+							list.Add(generator);
 						}
 						catch
 						{
@@ -371,10 +372,9 @@ namespace DOL.GS
 			// Loot Generator Region Indexed
 			if (mobregion > 0)
 			{
-				IList regionList = (IList)m_mobRegionGenerators[mobregion];
-				if (regionList == null)
+				if (!m_mobRegionGenerators.TryGetValue(mobregion, out var regionList))
 				{
-					regionList = new ArrayList();
+					regionList = new();
 					m_mobRegionGenerators[mobregion] = regionList;
 				}
 				regionList.Add(generator);
@@ -385,7 +385,6 @@ namespace DOL.GS
 				m_globalGenerators.Add(generator);
 			}
 		}
-
 
 		/// <summary>
 		/// Call the refresh method for each generator to update loot, if implemented
@@ -412,7 +411,7 @@ namespace DOL.GS
 		public static DbItemTemplate[] GetLoot(GameNPC mob, GameObject killer)
 		{
 			LootList lootList = null;
-			IList generators = GetLootGenerators(mob);
+			List<ILootGenerator> generators = GetLootGenerators(mob);
 			foreach (ILootGenerator generator in generators)
 			{
 				try
@@ -431,7 +430,7 @@ namespace DOL.GS
 			if (lootList != null)
 				return lootList.GetLoot();
 			else
-				return new DbItemTemplate[0];
+				return [];
 		}
 
 		/// <summary>
@@ -439,21 +438,26 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="mob"></param>
 		/// <returns></returns>
-		public static IList GetLootGenerators(GameNPC mob)
+		public static List<ILootGenerator> GetLootGenerators(GameNPC mob)
 		{
-			IList filteredGenerators = new ArrayList();
+			List<ILootGenerator> filteredGenerators = new();
 			ILootGenerator exclusiveGenerator = null;
 
-			IList nameGenerators = (IList)m_mobNameGenerators[mob.Name];
-			IList guildGenerators = (IList)m_mobGuildGenerators[mob.GuildName];
-			IList regionGenerators = (IList)m_mobRegionGenerators[(int)mob.CurrentRegionID];
-			IList factionGenerators = null;
+			List<ILootGenerator> nameGenerators = null;
+			if (mob.Name != null)
+				m_mobNameGenerators.TryGetValue(mob.Name, out nameGenerators);
+
+			List<ILootGenerator> guildGenerators = null;
+			if (mob.GuildName != null)
+				m_mobGuildGenerators.TryGetValue(mob.GuildName, out guildGenerators);
+
+			m_mobRegionGenerators.TryGetValue(mob.CurrentRegionID, out var regionGenerators);
+
+			List<ILootGenerator> factionGenerators = null;
 			if (mob.Faction != null)
-				factionGenerators = (IList)m_mobFactionGenerators[mob.Faction.Id];
+				m_mobFactionGenerators.TryGetValue(mob.Faction.Id, out factionGenerators);
 
-			ArrayList allGenerators = new ArrayList();
-
-			allGenerators.AddRange(m_globalGenerators);
+			List<ILootGenerator> allGenerators = [.. m_globalGenerators];
 
 			if (nameGenerators != null)
 				allGenerators.AddRange(nameGenerators);
