@@ -176,37 +176,33 @@ namespace DOL.AI.Brain
 
 		private void HandleNpcCheck(GameNPC npc)
 		{
-			if (npc is {IsAlive: true} and GameSummonedPet pet)
+			if (npc is not GameSummonedPet pet || !pet.IsAlive)
+				return;
+
+			bool isEnemy = false;
+
+			for (int i = 0; i < _points.Count; i++)
 			{
-				GamePlayer playerOwner = pet.Owner as GamePlayer;
-				var nearbyPoint = _points.FirstOrDefault(point => ((point == _points[0] || point == _points[4]) && pet.IsWithinRadius(point, 400))
-				                                          || pet.IsWithinRadius(point, 200));
+				Point3D point = _points[i];
 
-				if (nearbyPoint != null)
+				if (((i == 0 || i == 4) && pet.IsWithinRadius(point, 400)) || pet.IsWithinRadius(point, 200))
 				{
-					if (!DD_Enemys.Contains(pet))
-					{
-						DD_Enemys.Add(pet);
-					}
+					isEnemy = true;
+					break;
 				}
-				else
-				{
-					if (DD_Enemys.Contains(pet))
-					{
-						DD_Enemys.Remove(pet);
-					}
-				}
-
-				if (pet is {IsAlive: false} && DD_Enemys.Contains(pet))
-					DD_Enemys.Remove(pet);
-				if (playerOwner is {IsAlive: true} && playerOwner.Client.Account.PrivLevel != 1 &&
-				    pet.IsAlive && DD_Enemys.Contains(pet))
-					DD_Enemys.Remove(pet);
 			}
+
+			if (isEnemy && pet.Owner is GamePlayer playerOwner && playerOwner.IsAlive && playerOwner.Client.Account.PrivLevel != 1)
+				isEnemy = false;
+
+			if (!isEnemy)
+				DD_Enemys.Remove(pet);
+			else if (!DD_Enemys.Contains(pet))
+				DD_Enemys.Add(pet);
 		}
 
 		private int PrepareDD(ECSGameTimer timer)
-        {
+		{
 			if (DD_Enemys.Count > 0)
 			{
 				foreach (GameLiving targets in DD_Enemys)
