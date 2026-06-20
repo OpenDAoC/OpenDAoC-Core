@@ -1513,13 +1513,13 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds all the quests this npc can give to players
 		/// </summary>
-		protected readonly ArrayList m_questListToGive = new ArrayList();
+		protected readonly List<AbstractQuest> m_questListToGive = new();
 		protected readonly Lock _questListToGiveLock = new();
 
 		/// <summary>
 		/// Gets the questlist of this player
 		/// </summary>
-		public IList QuestListToGive
+		public List<AbstractQuest> QuestListToGive
 		{
 			get { return m_questListToGive; }
 		}
