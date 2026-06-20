@@ -22,12 +22,12 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static IList<T> SelectAllObjects()
+        public static List<T> SelectAllObjects()
         {
             return GameServer.Database.SelectAllObjects<T>();
         }
 
-        public static async Task<IList<T>> SelectAllObjectsAsync()
+        public static async Task<List<T>> SelectAllObjectsAsync()
         {
             return await Task.Factory.StartNew(
                 static (state) => GameServer.Database.SelectAllObjects<T>(),
@@ -52,12 +52,12 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static IList<T> SelectObjects(WhereClause whereClause)
+        public static List<T> SelectObjects(WhereClause whereClause)
         {
             return GameServer.Database.SelectObjects<T>(whereClause);
         }
 
-        public static async Task<IList<T>> SelectObjectsAsync(WhereClause whereClause)
+        public static async Task<List<T>> SelectObjectsAsync(WhereClause whereClause)
         {
             return await Task.Factory.StartNew(
                 static (state) => GameServer.Database.SelectObjects<T>(state as WhereClause),
@@ -67,12 +67,12 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static IList<IList<T>> MultipleSelectObjects(IEnumerable<WhereClause> whereClauseBatch)
+        public static List<List<T>> MultipleSelectObjects(IEnumerable<WhereClause> whereClauseBatch)
         {
             return GameServer.Database.MultipleSelectObjects<T>(whereClauseBatch);
         }
 
-        public static async Task<IList<IList<T>>> MultipleSelectObjectsAsync(IEnumerable<WhereClause> whereClauseBatch)
+        public static async Task<List<List<T>>> MultipleSelectObjectsAsync(IEnumerable<WhereClause> whereClauseBatch)
         {
             return await Task.Factory.StartNew(
                 static (state) => GameServer.Database.MultipleSelectObjects<T>(state as IEnumerable<WhereClause>),

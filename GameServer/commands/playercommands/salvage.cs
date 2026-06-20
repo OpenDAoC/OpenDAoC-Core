@@ -113,7 +113,7 @@ namespace DOL.GS.Commands
 					}
 				}
 
-				IList<DbInventoryItem> items = new List<DbInventoryItem>();
+				List<DbInventoryItem> items = new List<DbInventoryItem>();
 				firstItem += (uint)eInventorySlot.FirstBackpack - 1;
 				lastItem += (uint)eInventorySlot.FirstBackpack - 1;
 

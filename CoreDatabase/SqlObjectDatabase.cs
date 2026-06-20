@@ -428,7 +428,7 @@ namespace DOL.Database
         /// <param name="parameters">Parameters for filtering</param>
         /// <param name="isolation">Isolation Level</param>
         /// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-        protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation)
+        protected override List<List<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation)
         {
             var columns = tableHandler.FieldElementBindings.ToArray();
 
@@ -447,10 +447,10 @@ namespace DOL.Database
             var dataObjects = new List<List<DataObject>>();
             ExecuteSelectImpl(command, parameters, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects));
 
-            return dataObjects.ToArray();
+            return dataObjects;
         }
 
-        protected override IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch)
+        protected override List<List<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch)
         {
             var columns = tableHandler.FieldElementBindings.ToArray();
 
@@ -463,7 +463,7 @@ namespace DOL.Database
 
             ExecuteSelectImpl(selectFromExpression, whereClauseBatch, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects));
 
-            return dataObjects.ToArray();
+            return dataObjects;
         }
 
         private void FillQueryResultList(IDataReader reader, DataTableHandler tableHandler, ElementBinding[] columns, ElementBinding primary, List<List<DataObject>> resultList)

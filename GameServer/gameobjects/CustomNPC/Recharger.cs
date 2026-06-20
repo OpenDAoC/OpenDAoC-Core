@@ -169,7 +169,7 @@ public class Recharger : GameNPC
         item.Charges = item.MaxCharges;
         item.Charges1 = item.MaxCharges1;
 
-        player.Out.SendInventoryItemsUpdate(new[] {item});
+        player.Out.SendInventoryItemsUpdate([item]);
         SayTo(player,
             LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.FullyCharged"));
@@ -235,7 +235,7 @@ public class Recharger : GameNPC
         {
             if (!CanBeRecharged(inventoryItem)) continue;
             Recharge(inventoryItem);
-            player.Out.SendInventoryItemsUpdate(new[] {inventoryItem});
+            player.Out.SendInventoryItemsUpdate([inventoryItem]);
         }
         
         SayTo(player,eChatLoc.CL_PopupWindow,

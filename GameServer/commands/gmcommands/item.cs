@@ -198,7 +198,7 @@ namespace DOL.GS.Commands
 								item.Count = Convert.ToInt32(args[2]);
 							}
 
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							client.Player.UpdateEncumbrance();
 							break;
 						}
@@ -287,7 +287,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Model = Convert.ToUInt16(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
 								client.Player.BroadcastEquipmentUpdate();
 							break;
@@ -321,7 +321,7 @@ namespace DOL.GS.Commands
 								item.Template.Extension = item.Extension;
 							}
 
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
 								client.Player.BroadcastEquipmentUpdate();
 							break;
@@ -355,7 +355,7 @@ namespace DOL.GS.Commands
 								item.Template.Color = item.Color;
 							}
 
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
 								client.Player.BroadcastEquipmentUpdate();
 							break;
@@ -383,7 +383,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Effect = Convert.ToUInt16(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
 								client.Player.BroadcastEquipmentUpdate();
 							break;
@@ -411,7 +411,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Item_Type = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Type
@@ -437,7 +437,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Object_Type = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Object
@@ -463,7 +463,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Hand = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Hand
@@ -489,7 +489,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Type_Damage = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion DamageType
@@ -517,7 +517,7 @@ namespace DOL.GS.Commands
 							}
 
 							item.Name = name;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Name
@@ -545,7 +545,7 @@ namespace DOL.GS.Commands
 							}
 
 							item.Description = desc;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Name
@@ -572,7 +572,7 @@ namespace DOL.GS.Commands
 							}
 							item.IsCrafted = true;
 							item.Creator = args[2];
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion CrafterName
@@ -604,7 +604,7 @@ namespace DOL.GS.Commands
 								item.Template.Emblem = item.Emblem;
 							}
 
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
 								client.Player.BroadcastEquipmentUpdate();
 							break;
@@ -632,7 +632,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Level = Convert.ToUInt16(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Level
@@ -658,7 +658,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Price = Money.GetMoney(0, (int)(Convert.ToInt16(args[2]) % 1000), (int)(Convert.ToInt16(args[3]) % 1000), (int)(Convert.ToByte(args[4]) % 100), (int)(Convert.ToByte(args[5]) % 100));
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Price
@@ -693,7 +693,7 @@ namespace DOL.GS.Commands
 							{
 								item.Template.Condition = item.Condition;
 							}
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Condition
@@ -728,7 +728,7 @@ namespace DOL.GS.Commands
 								item.Template.Durability = item.Durability;
 							}
 							item.MaxDurability = MaxDur;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Durability
@@ -755,7 +755,7 @@ namespace DOL.GS.Commands
 							}
 							int Qua = Convert.ToInt32(args[2]);
 							item.Quality = Qua;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Quality
@@ -782,7 +782,7 @@ namespace DOL.GS.Commands
 							}
 							int Bonus = Convert.ToInt32(args[2]);
 							item.Bonus = Bonus;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Bonus
@@ -941,7 +941,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.Weight = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Weight
@@ -969,7 +969,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.DPS_AF = Convert.ToByte(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion DPS_AF - DPS - AF
@@ -997,7 +997,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.SPD_ABS = Convert.ToByte(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion SPD_ABS - SPD - ABS
@@ -1183,7 +1183,7 @@ namespace DOL.GS.Commands
 								item.Template.MaxCharges = item.MaxCharges;
 							}
 							item.SpellID = SpellID;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Spell
@@ -1219,7 +1219,7 @@ namespace DOL.GS.Commands
 								item.Template.MaxCharges1 = item.MaxCharges1;
 							}
 							item.SpellID1 = SpellID1;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Spell1
@@ -1245,7 +1245,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.ProcSpellID = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Proc
@@ -1271,7 +1271,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.ProcSpellID1 = Convert.ToInt32(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Proc1
@@ -1297,7 +1297,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 							item.ProcChance = Convert.ToByte(args[2]);
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion ProcChance
@@ -1333,7 +1333,7 @@ namespace DOL.GS.Commands
 								item.Template.PoisonMaxCharges = item.PoisonMaxCharges;
 							}
 							item.PoisonSpellID = SpellID;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Poison
@@ -1385,7 +1385,7 @@ namespace DOL.GS.Commands
 							}
 							int setting = Convert.ToInt32(args[2]);
 							item.LevelRequirement = setting;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Level Required
@@ -1412,7 +1412,7 @@ namespace DOL.GS.Commands
 							}
 							int setting = Convert.ToInt32(args[2]);
 							item.BonusLevel = setting;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Bonus Level
@@ -1435,7 +1435,7 @@ namespace DOL.GS.Commands
 							}
 
 							item.ClassType = classType;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion ClassType
@@ -1458,7 +1458,7 @@ namespace DOL.GS.Commands
 							}
 
 							item.PackageID = packageID;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion PackageID
@@ -1481,7 +1481,7 @@ namespace DOL.GS.Commands
 							}
 
 							item.Flags = flags;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 						#endregion Flags
@@ -1504,7 +1504,7 @@ namespace DOL.GS.Commands
 							}
 
 							item.SalvageYieldID = salvageID;
-							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+							client.Out.SendInventoryItemsUpdate([item]);
 							break;
 						}
 					case "salvageinfo":

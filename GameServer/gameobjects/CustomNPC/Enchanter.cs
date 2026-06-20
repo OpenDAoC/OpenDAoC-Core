@@ -190,7 +190,7 @@ namespace DOL.GS
 
 			// bright
             item.Name = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.ItemLevel.Bright") + " " + item.Name;
-            player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+            player.Out.SendInventoryItemsUpdate([item]);
             GameServer.Database.SaveObject(item);
             // Message: You give {0} {1}.
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.YouGive",

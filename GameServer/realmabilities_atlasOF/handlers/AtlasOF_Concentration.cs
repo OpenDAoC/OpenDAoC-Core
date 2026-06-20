@@ -57,7 +57,7 @@ namespace DOL.GS.RealmAbilities
                         DisableSkill(living);
 
                         // Force the icon in the client to re-enable by updating its disabled time to 0
-                        List<Tuple<Skill, int>> disables = [new(FacilitatePainworking, 0)];
+                        List<(Skill, int)> disables = [new(FacilitatePainworking, 0)];
                         player.Out.SendDisableSkill(disables);
                         SendCasterSpellEffectAndCastMessage(living, 7006, true);
                     }
@@ -82,7 +82,7 @@ namespace DOL.GS.RealmAbilities
                         DisableSkill(living);
 
                         // Force the icon in the client to re-enable by updating its disabled time to 1ms
-                        List<Tuple<Skill, int>> disables = [new(player.GetAbility(Abilities.Quickcast), 1)];
+                        List<(Skill, int)> disables = [new(player.GetAbility(Abilities.Quickcast), 1)];
                         player.Out.SendDisableSkill(disables);
                         SendCasterSpellEffectAndCastMessage(living, 7006, true);
                     }

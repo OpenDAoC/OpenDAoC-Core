@@ -1735,7 +1735,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots)
+		public virtual void SendInventorySlotsUpdate(List<eInventorySlot> slots)
 		{
 			// slots contain ints
 
@@ -1774,12 +1774,12 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public virtual void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate)
+		public virtual void SendInventoryItemsUpdate(List<DbInventoryItem> itemsToUpdate)
 		{
 			SendInventoryItemsUpdate(eInventoryWindowType.Update, itemsToUpdate);
 		}
 
-		public virtual void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate)
+		public virtual void SendInventoryItemsUpdate(eInventoryWindowType windowType, List<DbInventoryItem> itemsToUpdate)
 		{
 			if (m_gameClient.Player == null)
 				return;
@@ -2703,7 +2703,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendDisableSkill(ICollection<Tuple<Skill, int>> skills)
+		public virtual void SendDisableSkill(List<(Skill, int)> skills)
 		{
 			if (m_gameClient.Player == null)
 				return;
@@ -2713,10 +2713,10 @@ namespace DOL.GS.PacketHandler
 
 			var listspells = m_gameClient.Player.GetAllUsableListSpells();
 			var listskills = m_gameClient.Player.GetAllUsableSkills();
-			int specCount = listskills.Where(sk => sk.Item1 is Specialization).Count();
+			int specCount = listskills.Count(sk => sk.Item1 is Specialization);
 
 			// Get through all disabled skills
-			foreach (Tuple<Skill, int> disabled in skills)
+			foreach ((Skill, int) disabled in skills)
 			{
 				// Check if spell
 				byte lsIndex = 0;
@@ -3634,7 +3634,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
+		public virtual void SendMarketExplorerWindow(List<DbInventoryItem> items, byte page, byte maxpage)
 		{
 			if (m_gameClient == null || m_gameClient.Player == null)
 				return;
@@ -3999,7 +3999,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void SendInventorySlotsUpdateRange(ICollection<eInventorySlot> slots, eInventoryWindowType windowType)
+		protected virtual void SendInventorySlotsUpdateRange(List<eInventorySlot> slots, eInventoryWindowType windowType)
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{

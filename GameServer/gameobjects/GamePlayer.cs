@@ -6151,7 +6151,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="skill">the skill to disable</param>
         /// <param name="duration">duration of disable in milliseconds</param>
-        public override void DisableSkills(ICollection<Tuple<Skill, int>> skills)
+        public override void DisableSkills(List<(Skill, int)> skills)
         {
             if ((ePrivLevel) Client.Account.PrivLevel >= ePrivLevel.GM)
                 return;
@@ -11688,7 +11688,7 @@ namespace DOL.GS
             Salvage.BeginWork(this, item);
         }
 
-        public virtual void SalvageItemList(IList<DbInventoryItem> itemList)
+        public virtual void SalvageItemList(List<DbInventoryItem> itemList)
         {
             Salvage.BeginWorkList(this, itemList);
         }

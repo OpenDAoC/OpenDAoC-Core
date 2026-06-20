@@ -1001,7 +1001,7 @@ namespace DOL.GS
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-            player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
+            player.Out.SendInventoryItemsUpdate([newInventoryItem]);
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
@@ -1093,7 +1093,7 @@ namespace DOL.GS
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-            player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
+            player.Out.SendInventoryItemsUpdate([newInventoryItem]);
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);

@@ -723,7 +723,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="keys">Collection of Primary Key Values</param>
 		/// <returns>Collection of DataObject with primary key matching values</returns>
-		public virtual IList<TObject> FindObjectsByKey<TObject>(IEnumerable<object> keys)
+		public virtual List<TObject> FindObjectsByKey<TObject>(IEnumerable<object> keys)
 			where TObject : DataObject
 		{
 			var tableHandler = GetTableOrViewHandler(typeof(TObject));
@@ -736,9 +736,9 @@ namespace DOL.Database
 			}
 			
 			if (tableHandler.UsesPreCaching)
-				return keys.Select(key => tableHandler.GetPreCachedObject(key)).Cast<TObject>().ToArray();
+				return keys.Select(tableHandler.GetPreCachedObject).Cast<TObject>().ToList();
 			
-			var objs = FindObjectByKeyImpl(tableHandler, keys).Cast<TObject>().ToArray();
+			var objs = FindObjectByKeyImpl(tableHandler, keys).Cast<TObject>().ToList();
 			
 			FillObjectRelations(objs.Where(obj => obj != null), false);
 			
@@ -761,13 +761,13 @@ namespace DOL.Database
 			return SelectObjects<TObject>(whereClause).FirstOrDefault();
 		}
 
-		public IList<TObject> SelectObjects<TObject>(WhereClause whereClause)
+		public List<TObject> SelectObjects<TObject>(WhereClause whereClause)
 			where TObject : DataObject
 		{
 			return MultipleSelectObjects<TObject>(new[] { whereClause }).First();
 		}
 
-		public IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereClauseBatch)
+		public List<List<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereClauseBatch)
 			where TObject : DataObject
 		{
 			if (whereClauseBatch == null) throw new ArgumentNullException("Parameter whereClauseBatch may not be null.");
@@ -781,7 +781,7 @@ namespace DOL.Database
 				throw new DatabaseException(string.Format("Table {0} is not registered for Database Connection...", typeof(TObject).FullName));
 			}
 
-			var objs = MultipleSelectObjectsImpl(tableHandler, whereClauseBatch).Select(res => res.OfType<TObject>().ToArray()).ToArray();
+			var objs = MultipleSelectObjectsImpl(tableHandler, whereClauseBatch).Select(res => res.OfType<TObject>().ToList()).ToList();
 
 			FillObjectRelations(objs.SelectMany(obj => obj), false);
 
@@ -790,7 +790,7 @@ namespace DOL.Database
 		#endregion
 		
 		#region Public Object Select All API
-		public IList<TObject> SelectAllObjects<TObject>()
+		public List<TObject> SelectAllObjects<TObject>()
 			where TObject : DataObject
 		{
 			var tableHandler = GetTableOrViewHandler(typeof(TObject));
@@ -803,9 +803,9 @@ namespace DOL.Database
 			}
 
 			if (tableHandler.UsesPreCaching)
-				return tableHandler.SearchPreCachedObjects(obj => obj != null).OfType<TObject>().ToArray();
+				return tableHandler.SearchPreCachedObjects(obj => obj != null).OfType<TObject>().ToList();
 
-			var dataObjects = MultipleSelectObjectsImpl(tableHandler, new[] { WhereClause.Empty }).Single().OfType<TObject>().ToArray();
+			var dataObjects = MultipleSelectObjectsImpl(tableHandler, new[] { WhereClause.Empty }).Single().OfType<TObject>().ToList();
 
 			FillObjectRelations(dataObjects, false);
 
@@ -903,9 +903,9 @@ namespace DOL.Database
 		/// <param name="parameters">Parameters for filtering</param>
 		/// <param name="isolation">Isolation Level</param>
 		/// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-		protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation);
+		protected abstract List<List<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation);
 
-		protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch);
+		protected abstract List<List<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch);
 
 		/// <summary>
 		/// Gets the number of objects in a given table in the database based on a given set of criteria. (where clause)

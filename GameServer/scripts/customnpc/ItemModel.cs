@@ -6731,7 +6731,7 @@ namespace DOL.GS
                 item.IsDropable = false;
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-                player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
+                player.Out.SendInventoryItemsUpdate([newInventoryItem]);
                 // player.RemoveBountyPoints(300);
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
@@ -6772,7 +6772,7 @@ namespace DOL.GS
                 unique.Extension = number;
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-                player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
+                player.Out.SendInventoryItemsUpdate([newInventoryItem]);
                 // player.RemoveBountyPoints(300);
                 //player.RealmPoints -= price;
                 //player.RespecRealm();

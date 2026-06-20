@@ -580,19 +580,19 @@ namespace DOL.GS.Commands
                 #region /gmvote list
                 case "list":
                     {
-                        DBVoting[] votings;
+                        List<DBVoting> votings;
                         if (param != string.Empty)
-                            votings = (DBVoting[])GameServer.Database.SelectObjects<DBVoting>(DB.Column("VoteID").IsLike("%" + GameServer.Database.Escape(param) + "%"));
+                            votings = GameServer.Database.SelectObjects<DBVoting>(DB.Column("VoteID").IsLike("%" + GameServer.Database.Escape(param) + "%"));
                         else
-                            votings = (DBVoting[])GameServer.Database.SelectAllObjects<DBVoting>();
+                            votings = GameServer.Database.SelectAllObjects<DBVoting>();
 
-                        if (votings == null || votings.Length == 0)
+                        if (votings == null || votings.Count == 0)
                         {
                             player.Out.SendMessage("No saved votings found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
                         }
                         else
-                            player.Out.SendMessage("Found " + votings.Length + " votings.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage("Found " + votings.Count + " votings.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         foreach (DBVoting voting in votings)
                             player.Out.SendMessage("Voting: '" + voting.VoteID + "'.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }

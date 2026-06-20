@@ -486,7 +486,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125d+ Market Explorer
 		/// </summary>
-		public override void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
+		public override void SendMarketExplorerWindow(List<DbInventoryItem> items, byte page, byte maxpage)
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MarketExplorerWindow)))
 			{

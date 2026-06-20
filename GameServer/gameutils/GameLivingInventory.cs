@@ -376,7 +376,7 @@ namespace DOL.GS
 		/// <param name="minSlot">Slot Position where begin the search</param>
 		/// <param name="maxSlot">Slot Position where stop the search</param>
 		/// <returns>all items found</returns>
-		public virtual ICollection<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot)
+		public virtual List<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot)
 		{
 			minSlot = GetValidInventorySlot(minSlot);
 			maxSlot = GetValidInventorySlot(maxSlot);
@@ -777,11 +777,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the list of all visible items
 		/// </summary>
-		public virtual ICollection<DbInventoryItem> VisibleItems
+		public virtual List<DbInventoryItem> VisibleItems
 		{
 			get
 			{
-				var items = new List<DbInventoryItem>(VisibleSlots.Count);
+				List<DbInventoryItem> items = new(VisibleSlots.Count);
 
 				lock (Lock)
 				{
@@ -799,11 +799,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the list of all equipped items
 		/// </summary>
-		public virtual ICollection<DbInventoryItem> EquippedItems
+		public virtual List<DbInventoryItem> EquippedItems
 		{
 			get
 			{
-				var items = new List<DbInventoryItem>(EquipmentSlots.Count);
+				List<DbInventoryItem> items = new(EquipmentSlots.Count);
 
 				lock (Lock)
 				{
@@ -821,9 +821,15 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the list of all items in the inventory
 		/// </summary>
-		public virtual ICollection<DbInventoryItem> AllItems
+		public virtual List<DbInventoryItem> AllItems
 		{
-			get { return m_items.Values; }
+			get
+			{
+				lock (Lock)
+				{
+					return [.. m_items.Values];
+				}
+			}
 		}
 
 		#endregion

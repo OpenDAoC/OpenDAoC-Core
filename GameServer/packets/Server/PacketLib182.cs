@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		protected override void SendInventorySlotsUpdateRange(ICollection<eInventorySlot> slots, eInventoryWindowType windowType)
+		protected override void SendInventorySlotsUpdateRange(List<eInventorySlot> slots, eInventoryWindowType windowType)
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{

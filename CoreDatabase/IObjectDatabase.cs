@@ -69,7 +69,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="keys">Collection of Primary Key Values</param>
 		/// <returns>Collection of DataObject with primary key matching values</returns>
-		IList<TObject> FindObjectsByKey<TObject>(IEnumerable<object> keys)
+		List<TObject> FindObjectsByKey<TObject>(IEnumerable<object> keys)
 			where TObject : DataObject;
 		#endregion
 
@@ -88,7 +88,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="whereClause">WhereClause object with implied parameters</param>
 		/// <returns>Collection of matching DataObjects</returns>
-		IList<TObject> SelectObjects<TObject>(WhereClause whereClause)
+		List<TObject> SelectObjects<TObject>(WhereClause whereClause)
 			where TObject : DataObject;
 
 		/// <summary>
@@ -96,7 +96,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="whereClauseBatch">Batch of WhereClauses with implied parameters</param>
 		/// <returns>Collection of matching DataObjects</returns>
-		IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereClauseBatch)
+		List<List<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereClauseBatch)
 			where TObject : DataObject;
 		#endregion
 		
@@ -106,7 +106,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <typeparam name="TObject">DataObject Type to Select</typeparam>
 		/// <returns>Collection of all DataObject for this Type</returns>
-		IList<TObject> SelectAllObjects<TObject>()
+		List<TObject> SelectAllObjects<TObject>()
 			where TObject : DataObject;
 		#endregion
 		

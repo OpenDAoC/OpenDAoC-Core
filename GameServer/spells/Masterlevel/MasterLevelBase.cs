@@ -641,7 +641,7 @@ namespace DOL.GS.Spells
     #region SummonItemBase
     public class SummonItemSpellHandler : MasterlevelHandling
     {
-        protected IList<DbInventoryItem> items;
+        protected List<DbInventoryItem> items;
 
         /// <summary>
         /// Execute create item spell

@@ -3474,14 +3474,14 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="skill">the skill to disable</param>
 		/// <param name="duration">duration of disable in milliseconds</param>
-		public virtual void DisableSkills(ICollection<Tuple<Skill, int>> skills)
+		public virtual void DisableSkills(List<(Skill, int)> skills)
 		{
 			if (skills.Count == 0)
 				return;
 
 			lock (_disabledSkillsLock)
 			{
-				foreach (Tuple<Skill, int> tuple in skills)
+				foreach ((Skill, int) tuple in skills)
 				{
 					Skill skill = tuple.Item1;
 					int duration = tuple.Item2;

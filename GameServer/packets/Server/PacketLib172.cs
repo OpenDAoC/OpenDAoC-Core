@@ -84,7 +84,7 @@ namespace DOL.GS.PacketHandler
 			SendObjectGuildID(playerToCreate, playerToCreate.Guild); //used for nearest friendly/enemy object buttons and name colors on PvP server
 		}
 
-		protected override void SendInventorySlotsUpdateRange(ICollection<eInventorySlot> slots, eInventoryWindowType windowType)
+		protected override void SendInventorySlotsUpdateRange(List<eInventorySlot> slots, eInventoryWindowType windowType)
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{
@@ -203,7 +203,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
 
-				ICollection<DbInventoryItem> items = null;
+				List<DbInventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
 

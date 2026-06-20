@@ -215,9 +215,9 @@ namespace DOL.GS
         /// </summary>
         public static void UpdateDisabledSkills(this GamePlayer player)
         {
-            player.Out.SendDisableSkill(player.GetAllUsableSkills().Select(skt => skt.Item1).Where(sk => !(sk is Specialization))
+            player.Out.SendDisableSkill(player.GetAllUsableSkills().Select(skt => skt.Item1).Where(sk => sk is not Specialization)
                      .Union(player.GetAllUsableListSpells().SelectMany(sl => sl.Item2))
-                     .Select(sk => new Tuple<Skill, int>(sk, player.GetSkillDisabledDuration(sk))).ToArray());
+                     .Select(sk => (sk, player.GetSkillDisabledDuration(sk))).ToList());
         }
 
         /// <summary>

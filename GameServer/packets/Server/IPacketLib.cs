@@ -688,9 +688,9 @@ namespace DOL.GS.PacketHandler
         void SendGroupWindowUpdate();
         void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living);
         void SendGroupMembersUpdate(bool updateIcons, bool updateMap);
-        void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate);
-        void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots);
-        void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate);
+        void SendInventoryItemsUpdate(List<DbInventoryItem> itemsToUpdate);
+        void SendInventorySlotsUpdate(List<eInventorySlot> slots);
+        void SendInventoryItemsUpdate(eInventoryWindowType windowType, List<DbInventoryItem> itemsToUpdate);
         void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType);
         void SendDoorState(Region region, GameDoorBase door);
         void SendMerchantWindow(MerchantTradeItems itemlist, eMerchantWindowType windowType);
@@ -714,7 +714,7 @@ namespace DOL.GS.PacketHandler
         void SendChampionTrainerWindow(int type);
         void SendTrainerWindow();
         void SendInterruptAnimation(GameLiving living);
-        void SendDisableSkill(ICollection<Tuple<Skill, int>> skills);
+        void SendDisableSkill(List<(Skill, int)> skills);
         [Obsolete("changedEffects is unused in v1.110+. Previous versions don't handle ECSGameEffect.")] void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount);
         void SendUpdateIcons(ref int lastUpdateEffectsCount, bool forced = false);
         void SendLevelUpSound();
@@ -776,7 +776,7 @@ namespace DOL.GS.PacketHandler
         void SendHousePayRentDialog(string title);
         void SendToggleHousePoints(House house);
         void SendRentReminder(House house);
-        void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage);
+        void SendMarketExplorerWindow(List<DbInventoryItem> items, byte page, byte maxpage);
         void SendMarketExplorerWindow();
         void SendConsignmentMerchantMoney(long money);
         void SendHouseUsersPermissions(House house);

@@ -140,7 +140,7 @@ namespace DOL.GS
         void OnItemMove(DbInventoryItem fromItem, DbInventoryItem toItem, eInventorySlot fromSlot, eInventorySlot toSlot);
         bool UpdateInventoryWeight();
         DbInventoryItem GetItem(eInventorySlot slot);
-        ICollection<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot);
+        List<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot);
 
         void BeginChanges();
         void CommitChanges();
@@ -161,9 +161,9 @@ namespace DOL.GS
         DbInventoryItem GetFirstItemByObjectType(int objectType, eInventorySlot minSlot, eInventorySlot maxSlot);
         DbInventoryItem GetFirstItemByName(string name ,eInventorySlot minSlot, eInventorySlot maxSlot);
 
-        ICollection<DbInventoryItem> VisibleItems { get; }
-        ICollection<DbInventoryItem> EquippedItems { get; }
-        ICollection<DbInventoryItem> AllItems { get; }
+        List<DbInventoryItem> VisibleItems { get; }
+        List<DbInventoryItem> EquippedItems { get; }
+        List<DbInventoryItem> AllItems { get; }
         int InventoryWeight { get; }
         Lock Lock { get; }
     }

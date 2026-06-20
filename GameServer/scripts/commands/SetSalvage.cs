@@ -62,7 +62,7 @@ namespace DOL.GS.Commands
             
             GameServer.Database.SaveObject(item.Template);
             GameServer.Database.UpdateInCache<DbItemTemplate>(item.Template.Id_nb);
-            client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
+            client.Out.SendInventoryItemsUpdate([item]);
 
             DisplayMessage(client, $"{item.Name} price changed from {oldprice} to {item.Price}!");
         }

@@ -26,7 +26,7 @@ namespace DOL.GS
             try
             {
                 WhereClause filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.Consignment_First).And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.Consignment_Last));
-                IList<DbInventoryItem> list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot);
+                List<DbInventoryItem> list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot);
 
                 foreach (DbInventoryItem item in list)
                     _searchEngine.AddItem(GameInventoryItem.Create(item));

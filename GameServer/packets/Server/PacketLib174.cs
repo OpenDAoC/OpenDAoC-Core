@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
-				IList<DbInventoryItem> items;
+				List<DbInventoryItem> items;
 				DbCoreCharacter[] characters = m_gameClient.Account.Characters;
 				if (characters == null)
 				{
@@ -537,7 +537,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
 
-				ICollection<DbInventoryItem> items = null;
+				List<DbInventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
 

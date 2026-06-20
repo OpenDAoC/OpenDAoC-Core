@@ -131,9 +131,9 @@ namespace DOL.GameServerConsole
         public void SendGroupWindowUpdate() { }
         public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living) { }
         public void SendGroupMembersUpdate(bool updateIcons, bool updateMap) { }
-        public void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate) { }
-        public void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots) { }
-        public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate) { }
+        public void SendInventoryItemsUpdate(List<DbInventoryItem> itemsToUpdate) { }
+        public void SendInventorySlotsUpdate(List<eInventorySlot> slots) { }
+        public void SendInventoryItemsUpdate(eInventoryWindowType windowType, List<DbInventoryItem> itemsToUpdate) { }
         public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType) { }
         public void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType) { }
         public void SendDoorState(Region region, GameDoorBase door) { }
@@ -155,7 +155,7 @@ namespace DOL.GameServerConsole
         public void SendCustomTrainerWindow(int type, List<Tuple<Specialization, List<Tuple<Skill, byte>>>> tree) { }
         public void SendChampionTrainerWindow(int type) { }
         public void SendInterruptAnimation(GameLiving living) { }
-        public void SendDisableSkill(ICollection<Tuple<Skill, int>> skills) { }
+        public void SendDisableSkill(List<(Skill, int)> skills) { }
         public void SendUpdateIcons(IList changedEffects, ref int lastUpdateEffectsCount) { }
         public void SendUpdateIcons(ref int lastUpdateEffectsCount, bool forced) { }
         public void SendLevelUpSound() { }
@@ -235,7 +235,7 @@ namespace DOL.GameServerConsole
         public void SendVampireEffect(GameLiving living, bool show) { }
         public void SendXFireInfo(byte flag) { }
         public void SendMarketExplorerWindow() { }
-        public void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage) { }
+        public void SendMarketExplorerWindow(List<DbInventoryItem> items, byte page, byte maxpage) { }
         public void SendConsignmentMerchantMoney(long money) { }
         public void SendMinotaurRelicMapRemove(byte id) { }
         public void SendMinotaurRelicMapUpdate(byte id, ushort region, int x, int y, int z) { }

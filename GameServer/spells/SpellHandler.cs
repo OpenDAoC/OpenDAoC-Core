@@ -1389,7 +1389,7 @@ namespace DOL.GS.Spells
 
 			if (m_caster is GamePlayer playerCaster)
 			{
-				List<Tuple<Skill, int>> toDisable = [];
+				List<(Skill, int)> toDisable = [];
 
 				foreach (var skill in playerCaster.GetAllUsableSkills())
 				{

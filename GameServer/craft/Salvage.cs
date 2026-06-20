@@ -218,7 +218,7 @@ namespace DOL.GS
             return ReturnCount;
         }
 		
-		public static int BeginWorkList(GamePlayer player, IList<DbInventoryItem> itemList)
+		public static int BeginWorkList(GamePlayer player, List<DbInventoryItem> itemList)
 		{
 			player.TempProperties.SetProperty(SALVAGE_QUEUE,itemList);
 			player.CraftTimer?.Stop();
@@ -303,7 +303,7 @@ namespace DOL.GS
 			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER);
 			DbInventoryItem itemToSalvage = timer.Properties.GetProperty<DbInventoryItem>(SALVAGED_ITEM);
 			DbSalvageYield yield = timer.Properties.GetProperty<DbSalvageYield>(SALVAGE_YIELD);
-			IList<DbInventoryItem> itemList = player.TempProperties.GetProperty<IList<DbInventoryItem>>(SALVAGE_QUEUE);
+			List<DbInventoryItem> itemList = player.TempProperties.GetProperty<List<DbInventoryItem>>(SALVAGE_QUEUE);
 			int materialCount = yield.Count;
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)
