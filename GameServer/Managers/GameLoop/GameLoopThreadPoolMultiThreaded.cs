@@ -38,6 +38,7 @@ namespace DOL.GS
         // Work processing.
         private WorkProcessor _workProcessor;           // Current work processor instance, reused for each execution.
         private readonly WorkState _workState = new();  // Shared state for work distribution and completion tracking.
+        private SynchronizationContext _callerContext;  // Context of the caller thread.
 
         [StructLayout(LayoutKind.Explicit)]
         private class WorkState
@@ -159,6 +160,7 @@ namespace DOL.GS
 
         private void ExecuteForEachInternal(int count)
         {
+            _callerContext = SynchronizationContext.Current;
             _workState.RemainingWork = count;
             _workState.CompletedWorkerCount = 0;
 
@@ -169,7 +171,7 @@ namespace DOL.GS
             for (int i = 0; i < workersToStart; i++)
                 _workReady[i].Set();
 
-            ProcessWorkActions(SynchronizationContext.Current);
+            ProcessWorkActions();
             Interlocked.Increment(ref _workState.CompletedWorkerCount);
 
             // Spin very tightly until all the workers have completed their work.
@@ -238,7 +240,7 @@ namespace DOL.GS
                 {
                     workReady.Wait(cancellationToken);
                     workerCycle = ++cycle;
-                    ProcessWorkActions(SynchronizationContext.Current);
+                    ProcessWorkActions();
                 }
                 catch (OperationCanceledException)
                 {
@@ -271,10 +273,10 @@ namespace DOL.GS
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
-        private void ProcessWorkActions(SynchronizationContext callerContext)
+        private void ProcessWorkActions()
         {
             SynchronizationContext previousContext = SynchronizationContext.Current;
-            SynchronizationContext.SetSynchronizationContext(callerContext);
+            SynchronizationContext.SetSynchronizationContext(_callerContext);
 
             try
             {
