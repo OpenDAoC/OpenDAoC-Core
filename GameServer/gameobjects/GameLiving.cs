@@ -1221,11 +1221,11 @@ namespace DOL.GS
 			blockChance *= 0.001;
 
 			// 5% additional chance to guard with each Guard level.
-			// Otherwise, increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
-			// Unsure if the bonus against ranged attacks is meant to be applied to Guard as well.
 			if (isGuard)
 				blockChance += GetAbilityLevel(Abilities.Guard) * 0.05;
-			else if (ad.AttackType is eAttackType.Ranged)
+
+			// Increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
+			if (ad.AttackType is eAttackType.Ranged)
 				blockChance += 0.25;
 
 			// Engage mechanics are not fully known.
