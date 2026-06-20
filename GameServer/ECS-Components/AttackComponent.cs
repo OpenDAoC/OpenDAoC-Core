@@ -1406,9 +1406,9 @@ namespace DOL.GS
             target.Endurance = Math.Min(target.MaxEndurance, target.Endurance + enduranceConversion);
         }
 
-        public virtual bool CheckBlock(AttackData ad)
+        public bool CheckBlock(AttackData ad)
         {
-            double blockChance = owner.TryBlock(ad, out int shieldSize);
+            double blockChance = owner.TryBlock(ad, false, out int shieldSize);
             ad.BlockChance = blockChance * 100;
 
             if (blockChance > 0)
@@ -1468,61 +1468,32 @@ namespace DOL.GS
                 GameLiving source = guard.Source;
 
                 if (source == null ||
-                    source.IsCrowdControlled ||
-                    source.IsSitting ||
-                    source.IsCasting ||
-                    source.IsIncapacitated ||
-                    source.ActiveWeaponSlot is eActiveWeaponSlot.Distance ||
                     stealthStyle ||
-                    !guard.Source.IsObjectInFront(ad.Attacker, 180) ||
                     !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
                 {
                     continue;
                 }
 
-                DbInventoryItem rightHand = source.ActiveWeapon;
-                DbInventoryItem leftHand = source.ActiveLeftWeapon;
+                double guardChance = source.TryBlock(ad, true, out _);
 
-                if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || (eObjectType) leftHand.Object_Type is not eObjectType.Shield) && source is not GameNPC)
+                if (guardChance <= 0)
                     continue;
 
-                double guardChance;
+                double guardRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
 
-                if (source is GameNPC)
-                    guardChance = source.GetModified(eProperty.BlockChance);
-                else
-                    guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.ConditionPercent * 0.01);
+                if (source is GamePlayer guardSource && guardSource.UseDetailedCombatLog)
+                    guardSource.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
-                guardChance *= 0.001;
-                guardChance += source.GetAbilityLevel(Abilities.Guard) * 0.05; // 5% additional chance to guard with each Guard level.
-                guardChance *= 1 - ad.DefensePenetration;
+                if (guard.Target is GamePlayer guardTarget && guardTarget.UseDetailedCombatLog)
+                    guardTarget.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
-                // Guard isn't affected by shield size or attacker count.
+                if (guardChance <= guardRoll)
+                    continue;
 
-                if (ad.AttackType is AttackData.eAttackType.MeleeDualWield)
-                    guardChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
-
-                if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-                    guardChance = Properties.BLOCK_CAP;
-
-                if (guardChance > 0)
-                {
-                    double guardRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
-
-                    if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                        blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
-
-                    if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                        blockTarg.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
-
-                    if (guardChance > guardRoll)
-                    {
-                        ad.OriginalTarget = ad.Target;
-                        ad.Target = source;
-                        ad.BlockChance = guardChance * 100;
-                        return true;
-                    }
-                }
+                ad.OriginalTarget = ad.Target;
+                ad.Target = source;
+                ad.BlockChance = guardChance * 100;
+                return true;
             }
 
             return false;

@@ -205,7 +205,7 @@ namespace DOL.GS.Commands
                     dummyAttackData.AttackType = attackTypes[i - 1];
                     evades[i] = target.TryEvade(dummyAttackData, lastAttackData, meleeAttackerCount);
                     parries[i] = target.TryParry(dummyAttackData, lastAttackData, meleeAttackerCount);
-                    blocks[i] = target.TryBlock(dummyAttackData, out _);
+                    blocks[i] = target.TryBlock(dummyAttackData, false, out _);
                 }
 
                 info.Add("");

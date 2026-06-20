@@ -1117,40 +1117,64 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock(AttackData ad, out int shieldSize)
+		public virtual double TryBlock(AttackData ad, bool isGuard, out int shieldSize)
 		{
+			// 1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
+			// 2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03
+			// 3.There is currently no hard cap on chance to block  Grab Bag 2/27/03 and 8/16/02
+			// 4.Dual Wielders (enemy) decrease the chance to block  Grab Bag 10/18/02
+			// 5.Block formula: Shield = base 5% + .5% per spec point. Then modified by dex (.1% per point of dex above 60 and below 300?). Further modified by condition, bonus and shield level
+			// 8.The shields size only makes a difference when multiple things are attacking you  a small shield can block one attacker, a medium shield can block two at once, and a large shield can block three.  Grab Bag 4/4/03
+
+			/*
+			 * Q: How do blocking and parrying work?
+			 * 
+			 * A: Both of these skills use dexterity, and the quality of your shield/weapon, to create a numerical value.
+			 * That value is compared to your opponents weapon skill value to determine your chances to block or parry.
+			 * If the numbers are equal, your base chance is determined entirely by your skill level.
+			 * Also, before this comparison happens, the game looks to see if your opponent is in your forward arc.
+			 * To determine that arc, make a 120 degree angle, and put yourself at the point.
+			 * Dual wielders throw an extra wrinkle in. You have half the chance of shield blocking a dual wielder as you do a player using only one weapon.
+			 * Your chance to parry is halved if you are facing a two handed weapon, as opposed to a one handed weapon.
+			 * If you have multiple attackers, your chance to parry any one attack (which is determined in part by your skill in parry) will be divided by the number of attackers.
+			 * Blocking is a little different. Your chances of blocking multiple opponents partly depends on the size of your shield. (One opponent for small, two for medium, three for large.)
+			 * You will have no chance to shield block any more than that number in any given round of combat.
+			*/
+
+			// From Prima guide:
+			// "Your chance to block arrows from a same-level
+			// archer with your shield is 30%. This is modified
+			// by Shield spec, quality and condition of the
+			// shield, and the Engage skill."
+
+			// From 1.34 patch notes:
+			// The base chance to block a same-level archer is 30%, if your shield specialization is maxed for your level this can reach 60%.
+			// Quality and condition act as modifiers to this chance, if your skill-based chance was 50%,
+			// your Shield had a quality of 90% and a condition of 88%,then your actual chance to block would be 40%.
+
+			// From 1.34 patch notes:
+			// Using the Engage skill gives a base 95% chance to block arrows fired by your target.
+			// How many archers you can block attacks from is determined by the size of the shield, the same as Melee targets.
+			// You can Engage one archer and still get normal blocking chances against other archers you are facing, if you have a Medium or Large shield.
+			// Essentially, Engage works exactly the same against arrows as it does against melee attacks.
+
+			// Shield size isn't meant be used by Guard.
 			shieldSize = 0;
 
 			if (IsCrowdControlled || IsSitting || IsCasting)
 				return 0;
 
-			//1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
-			//2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03
-			//3.There is currently no hard cap on chance to block  Grab Bag 2/27/03 and 8/16/02
-			//4.Dual Wielders (enemy) decrease the chance to block  Grab Bag 10/18/02
-			//5.Block formula: Shield = base 5% + .5% per spec point. Then modified by dex (.1% per point of dex above 60 and below 300?). Further modified by condition, bonus and shield level
-			//8.The shields size only makes a difference when multiple things are attacking you  a small shield can block one attacker, a medium shield can block two at once, and a large shield can block three.  Grab Bag 4/4/03
-			//Your chance to block is affected by the number of attackers, the size of the shield youre using, and your spec in block.
-			//Shield% = (5% + 0.5% * Shield)
-			//Small Shield = 1 attacker
-			//Medium Shield = 2 attacker
-			//Large Shield = 3 attacker
-			//Each attacker above these numbers will reduce your chance to block.
-			//From Grab Bag: "Dual wielders throw an extra wrinkle in. You have half the chance of shield blocking a dual wielder as you do a player using only one weapon. Your chance to parry is halved if you are facing a two handed weapon, as opposed to a one handed weapon."
-			//Block: (((Dex*2)-100)/40)+(Shield/2)+(Mastery of B*3)+5. < Possible relation to buffs
+			// Not sure if the angle is meant to be different for block and Guard.
+			if (!IsObjectInFront(ad.Attacker, isGuard ? 180 : 120))
+				return 0;
 
-			//http://www.camelotherald.com/more/453.php
-
-			//Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
-			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
-
+			double blockChance;
 			DbInventoryItem shield = ActiveLeftWeapon;
+			GamePlayer player = this as GamePlayer;
 
 			// NPCs too require a shield (left hand weapon) to block.
 			if (shield == null)
 				return 0;
-;
-			GamePlayer player = this as GamePlayer;
 
 			if (player != null)
 			{
@@ -1171,39 +1195,88 @@ namespace DOL.GS
 					return 0;
 			}
 
-			if (!IsObjectInFront(ad.Attacker, 120))
-				return 0;
+			if (player != null)
+			{
+				if (!player.HasAbility(Abilities.Shield))
+					return 0;
 
-			double blockChance = CalculateBaseBlockChance(player, shield, ad);
+				bool hasValidWeaponSetup = player.ActiveWeapon == null || player.ActiveWeapon.Item_Type is Slot.RIGHTHAND || player.ActiveWeapon.Item_Type is Slot.LEFTHAND;
 
-			if (blockChance <= 0)
-				return 0;
+				if (!hasValidWeaponSetup)
+					return 0;
+
+				blockChance = GetModified(eProperty.BlockChance);
+				blockChance *= shield.Quality * 0.01 * shield.ConditionPercent * 0.01;
+			}
+			else
+			{
+				blockChance = GetModified(eProperty.BlockChance);
+
+				// Ensure NPCs with no base block chance set don't receive any bonus.
+				// This is probably a NPC with an offhand weapon but no offhand swing chance set either.
+				if (blockChance == 0)
+					return 0;
+			}
+
+			blockChance *= 0.001;
+
+			// 5% additional chance to guard with each Guard level.
+			// Otherwise, increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
+			// Unsure if the bonus against ranged attacks is meant to be applied to Guard as well.
+			if (isGuard)
+				blockChance += GetAbilityLevel(Abilities.Guard) * 0.05;
+			else if (ad.AttackType is eAttackType.Ranged)
+				blockChance += 0.25;
+
+			// Engage mechanics are not fully known.
+			// Traditionally, people would sometimes put only a few points in Shield to get it, hinting that it provided a good block chance even at low spec.
+			// It is also apparently meant to work with Guard.
+			if (IsEngaging)
+			{
+				EngageECSGameEffect engage = EffectListService.GetEffectOnTarget(this, eEffect.Engage) as EngageECSGameEffect;
+
+				if (IsValidEngageState(engage, attackComponent, ad) && CanEngageTarget(engage, player))
+				{
+					if (!HasSufficientEndurance())
+						engage.Cancel(false, true);
+					else
+					{
+						// This is a guess, and is based on the patch notes stating that the base block chance against arrows is 30% (so +25% from the normal base), and is 95% with engage.
+						// 65% is the difference between both, and gives a base block chance of 70% against melee attacks, before spec and stats.
+						blockChance += 0.65;
+						ConsumeEngageEndurance(player);
+					}
+				}
+			}
 
 			blockChance *= 1 - ad.DefensePenetration;
 
 			if (ad.AttackType is eAttackType.MeleeDualWield)
 				blockChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 
-			// Infiltrator RR5.
-			if (player != null)
+			// Outdated / irrelevant code for 1.65. Leaving it here for reference.
+			/*if (!isGuard)
 			{
-				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
+				// Infiltrator RR5.
+				if (player != null)
+				{
+					OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
 
-				if (Overwhelm != null)
-					blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
-			}
+					if (Overwhelm != null)
+						blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
+				}
 
-			// This was added in 1.74, then superseded in 1.96 with a 60% cap.
-			// Leaving it here for reference.
-			// Possibly intended to be applied in RvR or PvE only.
-			/*if (shieldSize == 1 && blockChance > 0.8)
-				blockChance = 0.8;
-			else if (shieldSize == 2 && blockChance > 0.9)
-				blockChance = 0.9;
-			else if (shieldSize == 3 && blockChance > 0.99)
-				blockChance = 0.99;*/
+				// This was added in 1.74, then superseded in 1.96 with a 60% cap.
+				// Possibly intended to be applied in RvR or PvE only.
+				if (shieldSize == 1 && blockChance > 0.8)
+					blockChance = 0.8;
+				else if (shieldSize == 2 && blockChance > 0.9)
+					blockChance = 0.9;
+				else if (shieldSize == 3 && blockChance > 0.99)
+					blockChance = 0.99;
+			}*/
 
-			// Engage shouldn't be affected by the cap: https://darkageofcamelot.com/article/friday-grab-bag-11032017
+			// RvR cap. Engage shouldn't be affected by it: https://darkageofcamelot.com/article/friday-grab-bag-11032017
 			if (!IsEngaging && blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 				blockChance = Properties.BLOCK_CAP;
 
@@ -1233,78 +1306,6 @@ namespace DOL.GS
 		{
 			Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
 			player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Items, eChatLoc.CL_SystemWindow);
-		}
-
-		private double CalculateBaseBlockChance(GamePlayer player, DbInventoryItem shield, AttackData ad)
-		{
-			// From Prima guide:
-			// "Your chance to block arrows from a same-level
-			// archer with your shield is 30%. This is modified
-			// by Shield spec, quality and condition of the
-			// shield, and the Engage skill."
-
-			// From 1.34 patch notes:
-			// The base chance to block a same-level archer is 30%, if your shield specialization is maxed for your level this can reach 60%.
-			// Quality and condition act as modifiers to this chance, if your skill-based chance was 50%,
-			// your Shield had a quality of 90% and a condition of 88%,then your actual chance to block would be 40%.
-
-			// From 1.34 patch notes:
-			// Using the Engage skill gives a base 95% chance to block arrows fired by your target.
-			// How many archers you can block attacks from is determined by the size of the shield, the same as Melee targets.
-			// You can Engage one archer and still get normal blocking chances against other archers you are facing, if you have a Medium or Large shield.
-			// Essentially, Engage works exactly the same against arrows as it does against melee attacks.
-
-			double baseBlockChance;
-
-			if (player != null)
-			{
-				if (!player.HasAbility(Abilities.Shield))
-					return 0;
-
-				bool hasValidWeaponSetup = player.ActiveWeapon == null || player.ActiveWeapon.Item_Type is Slot.RIGHTHAND || player.ActiveWeapon.Item_Type is Slot.LEFTHAND;
-
-				if (!hasValidWeaponSetup)
-					return 0;
-
-				baseBlockChance = GetModified(eProperty.BlockChance);
-				baseBlockChance *= shield.Quality * 0.01 * shield.ConditionPercent * 0.01;
-			}
-			else
-			{
-				baseBlockChance = GetModified(eProperty.BlockChance);
-
-				// Ensure NPCs with no base block chance set don't receive any bonus.
-				// This is probably a NPC with an offhand weapon but no offhand swing chance set either.
-				if (baseBlockChance == 0)
-					return 0;
-			}
-
-			baseBlockChance /= 1000; // Not a typo.
-
-			// Increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
-			if (ad.AttackType is eAttackType.Ranged)
-				baseBlockChance += 0.25;
-
-			// Engage mechanics are not fully known, but traditionally people would sometimes put only a few points in Shield to get it, hinting that it provided a good block chance even at low spec.
-			if (IsEngaging)
-			{
-				EngageECSGameEffect engage = EffectListService.GetEffectOnTarget(this, eEffect.Engage) as EngageECSGameEffect;
-
-				if (IsValidEngageState(engage, attackComponent, ad) && CanEngageTarget(engage, player))
-				{
-					if (!HasSufficientEndurance())
-						engage.Cancel(false, true);
-					else
-					{
-						// This is a guess, and is based on the patch notes stating that the base block chance against arrows is 30% (so +25% from the normal base), and is 95% with engage.
-						// 65% is the difference between both, and gives a base block chance of 70% against melee attacks, before spec and stats.
-						baseBlockChance += 0.65;
-						ConsumeEngageEndurance(player);
-					}
-				}
-			}
-
-			return baseBlockChance;
 		}
 
 		/// <summary>
