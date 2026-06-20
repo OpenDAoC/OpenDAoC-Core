@@ -3403,7 +3403,7 @@ namespace DOL.GS
 		/// Table of skills currently disabled
 		/// skill => disabletimeout (ticks) or 0 when endless
 		/// </summary>
-		private readonly Dictionary<KeyValuePair<int, Type>, KeyValuePair<long, Skill>> m_disabledSkills = new Dictionary<KeyValuePair<int, Type>, KeyValuePair<long, Skill>>();
+		private readonly Dictionary<(int, Type), (long, Skill)> m_disabledSkills = new();
 		private readonly Lock _disabledSkillsLock = new();
 
 		/// <summary>
@@ -3415,24 +3415,22 @@ namespace DOL.GS
 		{
 			lock (_disabledSkillsLock)
 			{
-				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
+				(int, Type) key = new(skill.ID, skill.GetType());
 
-				if (m_disabledSkills.TryGetValue(key, out KeyValuePair<long, Skill> value))
+				if (!m_disabledSkills.TryGetValue(key, out var value))
+					return 0;
+
+				long timeout = value.Item1;
+				long left = timeout - GameLoop.GameLoopTime;
+
+				if (left <= 0)
 				{
-					long timeout = value.Key;
-					long left = timeout - GameLoop.GameLoopTime;
-
-					if (left <= 0)
-					{
-						left = 0;
-						m_disabledSkills.Remove(key);
-					}
-
-					return (int) left;
+					left = 0;
+					m_disabledSkills.Remove(key);
 				}
-			}
 
-			return 0;
+				return (int) left;
+			}
 		}
 
 		/// <summary>
@@ -3443,11 +3441,12 @@ namespace DOL.GS
 		{
 			lock (_disabledSkillsLock)
 			{
-				List<Skill> skillList = new List<Skill>();
-				
-				foreach(KeyValuePair<long, Skill> disabled in m_disabledSkills.Values)
-					skillList.Add(disabled.Value);
-				
+				// Consider reusing the list to avoid allocations if this is called often.
+				List<Skill> skillList = new();
+
+				foreach (var disabled in m_disabledSkills.Values)
+					skillList.Add(disabled.Item2);
+
 				return skillList;
 			}
 		}
@@ -3461,7 +3460,7 @@ namespace DOL.GS
 		{
 			lock (_disabledSkillsLock)
 			{
-				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
+				(int, Type) key = new(skill.ID, skill.GetType());
 
 				if (duration > 0)
 					m_disabledSkills[key] = new(GameLoop.GameLoopTime + duration, skill);
@@ -3486,7 +3485,7 @@ namespace DOL.GS
 				{
 					Skill skill = tuple.Item1;
 					int duration = tuple.Item2;
-					KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
+					(int, Type) key = new(skill.ID, skill.GetType());
 
 					if (duration > 0)
 						m_disabledSkills[key] = new(GameLoop.GameLoopTime + duration, skill);
