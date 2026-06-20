@@ -43,11 +43,6 @@ namespace DOL.GS.Spells
 		bool IsInCastingPhase { get; }
 
 		/// <summary>
-		/// Can this spell be queued with other spells?
-		/// </summary>
-		bool CanQueue { get; }
-
-		/// <summary>
 		/// Does this spell break stealth on start of cast?
 		/// </summary>
 		bool UnstealthCasterOnStart {get; }
@@ -181,11 +176,6 @@ namespace DOL.GS.Spells
 		/// The DelveInfo
 		/// </summary>
 		IList<string> DelveInfo { get; }
-
-		/// <summary>
-		/// Current depth of delve info
-		/// </summary>
-		byte DelveInfoDepth { get; set; }
 
 		DbPlayerXEffect GetSavedEffect(GameSpellEffect e);
 		void OnEffectRestored(GameSpellEffect effect, int[] RestoreVars);

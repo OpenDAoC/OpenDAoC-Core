@@ -6,14 +6,11 @@ using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using DOL.Logging;
 
 namespace DOL.GS.Spells
 {
     public abstract class BaseProcSpellHandler : SpellHandler
     {
-        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         protected readonly SpellLine _buffSpellLine;
         protected readonly Spell _procSpell;
         protected SpellLine _procSpellLine;
@@ -149,36 +146,23 @@ namespace DOL.GS.Spells
                 if (Spell.Radius != 0)
                     list.Add($"Radius: {Spell.Radius}");
 
-                byte nextDelveDepth = (byte) (DelveInfoDepth + 1);
+                list.Add(" ");
+                list.Add("Sub-spell information: ");
+                list.Add(" ");
+                ISpellHandler subSpellHandler = ScriptMgr.CreateSpellHandler(Caster, _procSpell, _procSpellLine);
 
-                if (nextDelveDepth > MAX_DELVE_RECURSION)
+                if (subSpellHandler == null)
                 {
-                    list.Add("(recursion - see server logs)");
-
-                    if (log.IsErrorEnabled)
-                        log.Error($"Spell delve info recursion limit reached. Source spell ID: {m_spell.ID}, Sub-spell ID: {_procSpell.ID}");
+                    list.Add($"unable to create sub-spell handler: '{_procSpellLine}', {m_spell.Value}");
+                    return list;
                 }
-                else
+
+                IList<string> subSpellDelve = subSpellHandler.DelveInfo;
+
+                if (subSpellDelve.Count > 0)
                 {
-                    list.Add(" ");
-                    list.Add("Sub-spell information: ");
-                    list.Add(" ");
-                    ISpellHandler subSpellHandler = ScriptMgr.CreateSpellHandler(Caster, _procSpell, _procSpellLine);
-
-                    if (subSpellHandler == null)
-                    {
-                        list.Add($"unable to create sub-spell handler: '{_procSpellLine}', {m_spell.Value}");
-                        return list;
-                    }
-
-                    subSpellHandler.DelveInfoDepth = nextDelveDepth;
-                    IList<string> subSpellDelve = subSpellHandler.DelveInfo;
-
-                    if (subSpellDelve.Count > 0)
-                    {
-                        subSpellDelve.RemoveAt(0);
-                        list.AddRange(subSpellDelve);
-                    }
+                    subSpellDelve.RemoveAt(0);
+                    list.AddRange(subSpellDelve);
                 }
 
                 return list;

@@ -14,11 +14,6 @@ namespace DOL.GS.Spells
         public GatewayPersonalBind(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
         /// <summary>
-        /// Can this spell be queued with other spells?
-        /// </summary>
-        public override bool CanQueue => false;
-
-        /// <summary>
         /// Whether this spell can be cast on the selected target at all.
         /// </summary>
         public override bool CheckBeginCast(GameLiving selectedTarget)

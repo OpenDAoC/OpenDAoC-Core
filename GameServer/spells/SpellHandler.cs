@@ -24,9 +24,6 @@ namespace DOL.GS.Spells
 	{
 		private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		// Maximum number of sub-spells to get delve info for.
-		protected const byte MAX_DELVE_RECURSION = 5;
-
 		// Minimum lower variance bound. Not supposed to be changed.
 		private const double MIN_LOWER_VARIANCE_BOUND = 0.208;
 
@@ -66,14 +63,6 @@ namespace DOL.GS.Spells
 		public bool StartReuseTimer => m_startReuseTimer;
 
 		/// <summary>
-		/// Can this spell be queued with other spells?
-		/// </summary>
-		public virtual bool CanQueue
-		{
-			get { return true; }
-		}
-
-		/// <summary>
 		/// Does this spell break stealth on start of cast?
 		/// </summary>
 		public virtual bool UnstealthCasterOnStart
@@ -95,11 +84,6 @@ namespace DOL.GS.Spells
 		/// Ability that casts a spell
 		/// </summary>
 		protected ISpellCastingAbilityHandler m_ability = null;
-
-		/// <summary>
-		/// Stores the current delve info depth
-		/// </summary>
-		private byte m_delveInfoDepth;
 
 		/// <summary>
 		/// AttackData result for this spell, if any
@@ -2337,25 +2321,23 @@ namespace DOL.GS.Spells
 		{
 			double spellResistChance = CalculateSpellResistChance(target);
 
-			if (spellResistChance > 0)
-			{
-				double spellResistRoll = Caster.GetPseudoDouble(RandomDeckEvent.Miss);
-				spellResistRoll *= 100;
+			if (spellResistChance <= 0)
+				return false;
 
-				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
-					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
+			double spellResistRoll = Caster.GetPseudoDouble(RandomDeckEvent.Miss);
+			spellResistRoll *= 100;
 
-				if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
-					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
+			if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
+				playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
-				if (spellResistChance > spellResistRoll)
-				{
-					OnSpellNegated(target, SpellNegatedReason.Resisted);
-					return true;
-				}
-			}
+			if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
+				playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
-			return false;
+			if (spellResistChance <= spellResistRoll)
+				return false;
+
+			OnSpellNegated(target, SpellNegatedReason.Resisted);
+			return true;
 		}
 
 		protected virtual void OnSpellNegated(GameLiving target, SpellNegatedReason reason)
@@ -2551,15 +2533,6 @@ namespace DOL.GS.Spells
 		}
 
 		public virtual ECSPulseEffect PulseEffect { get; private set; }
-
-		/// <summary>
-		/// Current depth of delve info
-		/// </summary>
-		public byte DelveInfoDepth
-		{
-			get { return m_delveInfoDepth; }
-			set { m_delveInfoDepth = value; }
-		}
 
 		public static IList<string> GetDelveInfo(SpellHandler spellHandler, Spell spell, GameLiving caster)
 		{
