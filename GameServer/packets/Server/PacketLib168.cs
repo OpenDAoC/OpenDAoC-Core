@@ -1555,42 +1555,46 @@ namespace DOL.GS.PacketHandler
 			// Send up to JOURNAL_MAX_QUEST_COUNT quests.
 			// `indexOffset` is used to accommodate for the client version and represents the first index it accepts.
 			// Our dictionary's value doesn't change and starts a 0.
-			byte questIndex;
-			byte lastIndex = (byte) (JOURNAL_MAX_QUEST_COUNT + indexOffset);
-			HashSet<byte> sentIndexes = [];
-			HashSet<AbstractQuest> questsWithTooHighIndex = null;
+			int lastIndex = JOURNAL_MAX_QUEST_COUNT + indexOffset;
+			Span<bool> sentIndexes = stackalloc bool[JOURNAL_MAX_QUEST_COUNT];
+			KeyValuePair<AbstractQuest, byte>[] entries = m_gameClient.Player.RentActiveQuestEntries(out int entryCount);
 
-			foreach (var entry in m_gameClient.Player.QuestList)
+			try
 			{
-				questIndex = (byte) (entry.Value + indexOffset);
-
-				if (questIndex < lastIndex)
+				for (int i = 0; i < entryCount; i++)
 				{
-					SendQuestPacket(entry.Key, questIndex);
-					sentIndexes.Add(questIndex);
+					KeyValuePair<AbstractQuest, byte> entry = entries[i];
+					int adjustedQuestIndex = entry.Value + indexOffset;
+
+					if (adjustedQuestIndex < lastIndex)
+					{
+						SendQuestPacket(entry.Key, (byte) adjustedQuestIndex);
+						sentIndexes[adjustedQuestIndex - indexOffset] = true;
+					}
 				}
-				else
-				{
-					questsWithTooHighIndex ??= [];
-					questsWithTooHighIndex.Add(entry.Key);
-				}
-			}
 
-			// If possible, move and send quests which indexes are too high.
-			if (questsWithTooHighIndex != null)
-			{
-				questIndex = indexOffset;
+				// If possible, move and send quests which indexes are too high.
+				int questIndex = indexOffset;
 
-				foreach (AbstractQuest questWithTooHighIndex in questsWithTooHighIndex)
+				for (int i = 0; i < entryCount; i++)
 				{
+					KeyValuePair<AbstractQuest, byte> entry = entries[i];
+
+					if (entry.Value + indexOffset < lastIndex)
+						continue;
+
 					for ( ; questIndex < lastIndex; questIndex++)
 					{
-						if (sentIndexes.Contains(questIndex))
+						int sentIndex = questIndex - indexOffset;
+
+						if (sentIndexes[sentIndex])
 							continue;
 
-						m_gameClient.Player.QuestList[questWithTooHighIndex] = (byte) (questIndex - indexOffset);
-						SendQuestPacket(questWithTooHighIndex, questIndex);
-						sentIndexes.Add(questIndex);
+						if (!m_gameClient.Player.TrySetQuestIndex(entry.Key, (byte) sentIndex))
+							continue;
+
+						SendQuestPacket(entry.Key, (byte) questIndex);
+						sentIndexes[sentIndex] = true;
 						break;
 					}
 
@@ -1598,12 +1602,16 @@ namespace DOL.GS.PacketHandler
 						break;
 				}
 			}
+			finally
+			{
+				GamePlayer.ReturnActiveQuestEntries(entries);
+			}
 
 			// Send null for unused indexes.
-			for (questIndex = indexOffset; questIndex < lastIndex; questIndex++)
+			for (int questIndexToClear = indexOffset; questIndexToClear < lastIndex; questIndexToClear++)
 			{
-				if (!sentIndexes.Contains(questIndex))
-					SendQuestPacket(null, questIndex);
+				if (!sentIndexes[questIndexToClear - indexOffset])
+					SendQuestPacket(null, (byte) questIndexToClear);
 			}
 		}
 
@@ -1614,7 +1622,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestUpdate(AbstractQuest quest, byte indexOffset)
 		{
-			if (!m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
+			if (!m_gameClient.Player.TryGetQuestIndex(quest, out byte index))
 				return;
 
 			if (index + indexOffset >= JOURNAL_MAX_QUEST_COUNT + indexOffset)
@@ -1625,7 +1633,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestRemove(byte index)
 		{
-			if (m_gameClient.Player.QuestList.Count > JOURNAL_MAX_QUEST_COUNT)
+			if (m_gameClient.Player.NeedsQuestListRefreshAfterRemove(JOURNAL_MAX_QUEST_COUNT))
 				SendQuestListUpdate();
 			else
 				SendQuestPacket(null, index);

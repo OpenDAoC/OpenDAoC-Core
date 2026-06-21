@@ -36,7 +36,7 @@ namespace DOL.GS.Commands
                 return;
 
             string message = string.Empty;
-            List<AbstractQuest> activeQuests = client.Player.QuestList.Keys.ToList();
+            List<AbstractQuest> activeQuests = client.Player.GetActiveQuests();
             List<AbstractQuest> finishedQuests = client.Player.GetFinishedQuests();
 
             if (activeQuests.Count == 0)

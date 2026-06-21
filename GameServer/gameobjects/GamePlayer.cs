@@ -1,6 +1,6 @@
 using System;
+using System.Buffers;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -10408,9 +10408,12 @@ namespace DOL.GS
 
             void HandleQuests(IList<DbQuest> scriptedQuests, DataQuest[] dataQuests)
             {
-                AvailableQuestIndexes.Clear();
-                QuestList.Clear();
-                _questListFinished.Clear();
+                ClearActiveQuests();
+                lock (_questListFinishedLock)
+                {
+                    _questListFinished.Clear();
+                }
+
                 int activeQuestCount = 0;
 
                 foreach (DbQuest dbQuest in scriptedQuests)
@@ -10423,7 +10426,7 @@ namespace DOL.GS
                     if (quest.Step < 0)
                         AddFinishedQuest(quest);
                     else
-                        QuestList.TryAdd(quest, (byte) activeQuestCount++);
+                        SetActiveQuest(quest, (byte) activeQuestCount++);
 
                     switch (quest)
                     {
@@ -10448,9 +10451,9 @@ namespace DOL.GS
                 foreach (DataQuest dataQuest in dataQuests)
                 {
                     if (dataQuest.Step > 0)
-                        QuestList.TryAdd(dataQuest, (byte) activeQuestCount++);
+                        SetActiveQuest(dataQuest, (byte) activeQuestCount++);
                     else if (dataQuest.Count > 0)
-                        _questListFinished.Add(dataQuest);
+                        AddFinishedQuest(dataQuest);
                 }
             }
 
@@ -10581,17 +10584,7 @@ namespace DOL.GS
                 if (cachedCharacter != null)
                     cachedCharacter = DBCharacter;
 
-                foreach (AbstractQuest quest in QuestList.Keys)
-                {
-                    if (quest is Quests.DailyQuest dq)
-                        dq.SaveQuestParameters();
-
-                    if (quest is Quests.WeeklyQuest wq)
-                        wq.SaveQuestParameters();
-
-                    if (quest is Quests.MonthlyQuest mq)
-                        mq.SaveQuestParameters();
-                }
+                SaveActiveQuestParameters();
 
                 if (m_mlSteps != null)
                     GameServer.Database.SaveObject(m_mlSteps.OfType<DbCharacterXMasterLevel>());
@@ -11155,11 +11148,306 @@ namespace DOL.GS
             get { return InternalID; }
         }
 
+        private readonly Dictionary<AbstractQuest, byte> _questList = new(); // Value is the index to send to clients.
+        private readonly Lock _questListLock = new();
         private List<AbstractQuest> _questListFinished = new();
         private readonly Lock _questListFinishedLock = new();
-        public virtual ConcurrentDictionary<AbstractQuest, byte> QuestList { get; } = new(); // Value is the index to send to clients.
-        public ConcurrentQueue<byte> AvailableQuestIndexes { get; } = new(); // If empty, 'QuestList.Count' will be used when adding a quest to 'QuestList'
         public ECSGameTimer QuestActionTimer;
+
+        public List<AbstractQuest> GetActiveQuests()
+        {
+            lock (_questListLock)
+            {
+                return _questList.Keys.ToList();
+            }
+        }
+
+        internal bool TryGetQuestIndex(AbstractQuest quest, out byte index)
+        {
+            lock (_questListLock)
+            {
+                return _questList.TryGetValue(quest, out index);
+            }
+        }
+
+        public AbstractQuest GetQuestByIndex(int index)
+        {
+            lock (_questListLock)
+            {
+                foreach (KeyValuePair<AbstractQuest, byte> entry in _questList)
+                {
+                    if (entry.Value == index)
+                        return entry.Key;
+                }
+            }
+
+            return null;
+        }
+
+        internal bool TrySetQuestIndex(AbstractQuest quest, byte index)
+        {
+            lock (_questListLock)
+            {
+                bool found = false;
+
+                foreach (KeyValuePair<AbstractQuest, byte> entry in _questList)
+                {
+                    if (EqualityComparer<AbstractQuest>.Default.Equals(entry.Key, quest))
+                    {
+                        found = true;
+                        continue;
+                    }
+
+                    if (entry.Value == index)
+                        return false;
+                }
+
+                if (!found)
+                    return false;
+
+                _questList[quest] = index;
+                return true;
+            }
+        }
+
+        internal bool NeedsQuestListRefreshAfterRemove(byte visibleQuestCount)
+        {
+            lock (_questListLock)
+            {
+                if (_questList.Count > visibleQuestCount)
+                    return true;
+
+                foreach (byte questIndex in _questList.Values)
+                {
+                    if (questIndex >= visibleQuestCount)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsDoingDataQuest(int id)
+        {
+            lock (_questListLock)
+            {
+                foreach (AbstractQuest quest in _questList.Keys)
+                {
+                    if (quest is DataQuest dataQuest && dataQuest.ID == id)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsDoingDataQuest(int id, int step)
+        {
+            lock (_questListLock)
+            {
+                foreach (AbstractQuest quest in _questList.Keys)
+                {
+                    if (quest is DataQuest dataQuest && dataQuest.ID == id && dataQuest.Step == step)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool HasQuestToFinishAt(GameNPC npc)
+        {
+            string npcName = npc.Name;
+            ushort regionID = npc.CurrentRegionID;
+
+            lock (_questListLock)
+            {
+                foreach (AbstractQuest quest in _questList.Keys)
+                {
+                    if (quest is DataQuest dataQuest && dataQuest.TargetName == npcName && (dataQuest.TargetRegion == 0 || dataQuest.TargetRegion == regionID))
+                    {
+                        switch (dataQuest.StepType)
+                        {
+                            case DataQuest.eStepType.DeliverFinish:
+                            case DataQuest.eStepType.InteractFinish:
+                            case DataQuest.eStepType.KillFinish:
+                            case DataQuest.eStepType.WhisperFinish:
+                            case DataQuest.eStepType.CollectFinish:
+                                return true;
+                        }
+                    }
+
+                    if (quest is RewardQuest rewardQuest && rewardQuest.QuestGiver == npc)
+                    {
+                        bool done = true;
+
+                        foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
+                        {
+                            if (!goal.IsAchieved)
+                            {
+                                done = false;
+                                break;
+                            }
+                        }
+
+                        if (done)
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool CommandActiveQuests(AbstractQuest.eQuestCommand command, AbstractArea area = null)
+        {
+            bool handled = false;
+            AbstractQuest[] snapshot = RentActiveQuestSnapshot(out int count);
+
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (snapshot[i].Command(this, command, area))
+                        handled = true;
+                }
+            }
+            finally
+            {
+                ReturnActiveQuestSnapshot(snapshot);
+            }
+
+            return handled;
+        }
+
+        internal KeyValuePair<AbstractQuest, byte>[] RentActiveQuestEntries(out int count)
+        {
+            lock (_questListLock)
+            {
+                count = _questList.Count;
+
+                if (count == 0)
+                    return null;
+
+                KeyValuePair<AbstractQuest, byte>[] snapshot = ArrayPool<KeyValuePair<AbstractQuest, byte>>.Shared.Rent(count);
+                int index = 0;
+
+                foreach (KeyValuePair<AbstractQuest, byte> entry in _questList)
+                    snapshot[index++] = entry;
+
+                return snapshot;
+            }
+        }
+
+        internal static void ReturnActiveQuestEntries(KeyValuePair<AbstractQuest, byte>[] snapshot)
+        {
+            if (snapshot == null)
+                return;
+
+            Array.Clear(snapshot, 0, snapshot.Length);
+            ArrayPool<KeyValuePair<AbstractQuest, byte>>.Shared.Return(snapshot);
+        }
+
+        private void ClearActiveQuests()
+        {
+            lock (_questListLock)
+            {
+                _questList.Clear();
+            }
+        }
+
+        private void SetActiveQuest(AbstractQuest quest, byte index)
+        {
+            lock (_questListLock)
+            {
+                _questList[quest] = index;
+            }
+        }
+
+        private AbstractQuest IsDoingQuestUnsafe(AbstractQuest quest)
+        {
+            foreach (AbstractQuest questInList in _questList.Keys)
+            {
+                if (questInList.GetType().Equals(quest.GetType()) && questInList.IsDoingQuest())
+                    return questInList;
+            }
+
+            return null;
+        }
+
+        private AbstractQuest[] RentActiveQuestSnapshot(out int count)
+        {
+            lock (_questListLock)
+            {
+                count = _questList.Count;
+
+                if (count == 0)
+                    return null;
+
+                AbstractQuest[] snapshot = ArrayPool<AbstractQuest>.Shared.Rent(count);
+                int index = 0;
+
+                foreach (AbstractQuest quest in _questList.Keys)
+                    snapshot[index++] = quest;
+
+                return snapshot;
+            }
+        }
+
+        private static void ReturnActiveQuestSnapshot(AbstractQuest[] snapshot)
+        {
+            if (snapshot == null)
+                return;
+
+            Array.Clear(snapshot, 0, snapshot.Length);
+            ArrayPool<AbstractQuest>.Shared.Return(snapshot);
+        }
+
+        private void SaveActiveQuestParameters()
+        {
+            AbstractQuest[] snapshot = RentActiveQuestSnapshot(out int count);
+
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    AbstractQuest quest = snapshot[i];
+
+                    if (quest is Quests.DailyQuest dq)
+                        dq.SaveQuestParameters();
+
+                    if (quest is Quests.WeeklyQuest wq)
+                        wq.SaveQuestParameters();
+
+                    if (quest is Quests.MonthlyQuest mq)
+                        mq.SaveQuestParameters();
+                }
+            }
+            finally
+            {
+                ReturnActiveQuestSnapshot(snapshot);
+            }
+        }
+
+        private bool TryGetNextQuestIndexUnsafe(out byte index)
+        {
+            Span<bool> usedIndexes = stackalloc bool[byte.MaxValue + 1];
+
+            foreach (byte questIndex in _questList.Values)
+                usedIndexes[questIndex] = true;
+
+            for (int i = byte.MinValue; i <= byte.MaxValue; i++)
+            {
+                if (!usedIndexes[i])
+                {
+                    index = (byte) i;
+                    return true;
+                }
+            }
+
+            index = 0;
+            return false;
+        }
 
         public List<AbstractQuest> GetFinishedQuests()
         {
@@ -11285,6 +11573,30 @@ namespace DOL.GS
             return false;
         }
 
+        public bool RemoveQuest(AbstractQuest quest, bool notifyPlayer)
+        {
+            if (quest == null)
+                return false;
+
+            bool removed;
+            byte index;
+
+            lock (_questListLock)
+            {
+                removed = _questList.Remove(quest, out index);
+            }
+
+            if (removed && notifyPlayer)
+            {
+                if (quest is DataQuest)
+                    Out.SendQuestListUpdate();
+                else
+                    Out.SendQuestRemove(index);
+            }
+
+            return removed;
+        }
+
         /// <summary>
         /// Adds a quest to the players questlist
         /// Can be used by both scripted quests and data quests
@@ -11293,15 +11605,22 @@ namespace DOL.GS
         /// <returns>true if added, false if player is already doing the quest!</returns>
         public bool AddQuest(AbstractQuest quest)
         {
-            if (QuestList.Count > 25)
+            bool added;
 
-            if (IsDoingQuest(quest) != null)
+            lock (_questListLock)
+            {
+                if (IsDoingQuestUnsafe(quest) != null)
+                    return false;
+
+                if (!TryGetNextQuestIndexUnsafe(out byte index))
+                    return false;
+
+                added = _questList.TryAdd(quest, index);
+            }
+
+            if (!added)
                 return false;
 
-            if (!AvailableQuestIndexes.TryDequeue(out byte index))
-                index = (byte) QuestList.Count;
-
-            QuestList.TryAdd(quest, index);
             quest.OnQuestAssigned(this);
             Out.SendQuestUpdate(quest);
             return true;
@@ -11314,13 +11633,10 @@ namespace DOL.GS
         /// <returns>the quest if player is doing the quest or null if not</returns>
         public AbstractQuest IsDoingQuest(AbstractQuest quest)
         {
-            foreach (AbstractQuest questInList in QuestList.Keys)
+            lock (_questListLock)
             {
-                if (questInList.GetType().Equals(quest.GetType()) && questInList.IsDoingQuest())
-                    return questInList;
+                return IsDoingQuestUnsafe(quest);
             }
-
-            return null;
         }
 
         /// <summary>
@@ -11331,12 +11647,15 @@ namespace DOL.GS
         /// <returns>the quest if player is doing the quest or null if not</returns>
         public AbstractQuest IsDoingQuest(Type questType)
         {
-            foreach (AbstractQuest quest in QuestList.Keys)
+            lock (_questListLock)
             {
-                if (quest is not DataQuest)
+                foreach (AbstractQuest quest in _questList.Keys)
                 {
-                    if (quest.GetType().Equals(questType))
-                        return quest;
+                    if (quest is not DataQuest)
+                    {
+                        if (quest.GetType().Equals(questType))
+                            return quest;
+                    }
                 }
             }
 
@@ -11351,10 +11670,19 @@ namespace DOL.GS
             CharacterClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
-            foreach (AbstractQuest quest in QuestList.Keys)
+            AbstractQuest[] activeQuests = RentActiveQuestSnapshot(out int activeQuestCount);
+
+            try
             {
-                // player forwards every single notify message to all active quests
-                quest.Notify(e, sender, args);
+                for (int i = 0; i < activeQuestCount; i++)
+                {
+                    // player forwards every single notify message to all active quests
+                    activeQuests[i].Notify(e, sender, args);
+                }
+            }
+            finally
+            {
+                ReturnActiveQuestSnapshot(activeQuests);
             }
 
             if (GameTask != null)

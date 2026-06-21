@@ -148,16 +148,8 @@ namespace DOL.GS.Quests
                 ChatUtil.SendDebugMessage(player, "Entered QuestSearchArea for DataQuest ID:" + m_dataQuest.ID + ", Step " + Step);
 
                 // first check active data quests
-   			    foreach (AbstractQuest quest in player.QuestList.Keys)
-			    {
-				    if (quest is DataQuest)
-				    {
-                        if ((quest as DataQuest).ID == m_dataQuest.ID && quest.Step == Step && m_popupText != string.Empty)
-                        {
-                            showText = true;
-                        }
-				    }
-			    }
+                if (player.IsDoingDataQuest(m_dataQuest.ID, Step) && m_popupText != string.Empty)
+                    showText = true;
 
                 // next check for searches that start a dataquest
                 if (Step == 0 && DataQuest.CheckQuestQualification(player))

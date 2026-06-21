@@ -372,8 +372,7 @@ namespace DOL.GS.DailyQuest
 			PlayerKilled = 0;
 			Step = -1;
 
-			if (m_questPlayer.QuestList.TryRemove(this, out byte value))
-				m_questPlayer.AvailableQuestIndexes.Enqueue(value);
+			m_questPlayer.RemoveQuest(this, notifyPlayer: false);
 
 			m_questPlayer.AddFinishedQuest(this);
 			m_questPlayer.Out.SendQuestListUpdate();

@@ -39,31 +39,20 @@ namespace DOL.GS.Commands
 			if (player == null)
 				return;
 
-			bool searched = false;
+			bool searched = player.CommandActiveQuests(AbstractQuest.eQuestCommand.SEARCH);
 
-			foreach (AbstractQuest quest in player.QuestList.Keys)
+			// Also check for DataQuests started via searching
+			if (searched == false)
 			{
-				if (quest.Command(player, AbstractQuest.eQuestCommand.SEARCH))
+				foreach (AbstractArea area in player.CurrentAreas)
 				{
-					searched = true;
+					if (area is not QuestSearchArea questSearchArea || questSearchArea.DataQuest == null || questSearchArea.Step != 0)
+						continue;
+
+					if (questSearchArea.DataQuest.Command(player, AbstractQuest.eQuestCommand.SEARCH_START, area))
+						searched = true;
 				}
 			}
-
-            // Also check for DataQuests started via searching
-
-            if (searched == false)
-            {
-                foreach (AbstractArea area in player.CurrentAreas)
-                {
-                    if (area is QuestSearchArea && (area as QuestSearchArea).DataQuest != null && (area as QuestSearchArea).Step == 0)
-                    {
-                        if ((area as QuestSearchArea).DataQuest.Command(player, AbstractQuest.eQuestCommand.SEARCH_START, area))
-                        {
-                            searched = true;
-                        }
-                    }
-                }
-            }
 
 			if (searched == false)
 			{
