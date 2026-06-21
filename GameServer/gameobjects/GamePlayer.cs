@@ -6120,19 +6120,6 @@ namespace DOL.GS
         #region Spell cast
 
         /// <summary>
-        /// The time someone can not cast
-        /// </summary>
-        protected long m_disabledCastingTimeout = 0;
-        /// <summary>
-        /// Time when casting is allowed again (after interrupt from enemy attack)
-        /// </summary>
-        public long DisabledCastingTimeout
-        {
-            get { return m_disabledCastingTimeout; }
-            set { m_disabledCastingTimeout = value; }
-        }
-
-        /// <summary>
         /// Grey out some skills on client for specified duration
         /// </summary>
         /// <param name="skill">the skill to disable</param>
