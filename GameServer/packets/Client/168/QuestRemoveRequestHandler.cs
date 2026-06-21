@@ -10,14 +10,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             _ = packet.ReadShort();
             _ = packet.ReadShort();
 
-            foreach (var entry in client.Player.QuestList)
-            {
-                if (questIndex != entry.Value)
-                    continue;
-
-                entry.Key.AbortQuest();
-                return;
-            }
+            client.Player.GetQuestByIndex(questIndex)?.AbortQuest();
         }
     }
 }
