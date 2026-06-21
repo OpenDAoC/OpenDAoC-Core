@@ -71,37 +71,36 @@ namespace DOL.GS
             uint mask = _capacity - 1;
             uint start = writeIndex >= _capacity ? writeIndex & mask : 0;
             double latestTick = _buffer[(start + (uint) (count - 1)) & mask];
-
             int startIndex = 0;
 
             // Count ticks per interval and calculate averages.
             foreach (int interval in _intervals)
             {
                 double intervalStart = latestTick - interval;
-                int tickCount = 0;
-                int intervalStartIndex = startIndex;
+                double firstTick = 0;
 
-                // Find the number of ticks within this interval.
-                for (int i = startIndex; i < count; i++)
+                // Advance startIndex until we find a tick within the current interval.
+                while (startIndex < count)
                 {
-                    double tick = _buffer[(start + (uint) i) & mask];
+                    double tick = _buffer[(start + (uint) startIndex) & mask];
 
                     if (tick >= intervalStart)
                     {
-                        tickCount = count - i;
-                        startIndex = i;
-                        intervalStartIndex = i;
+                        firstTick = tick;
                         break;
                     }
+
+                    startIndex++;
                 }
 
-                if (tickCount < 2)
+                int ticksInInterval = count - startIndex;
+
+                if (ticksInInterval < 2)
                 {
                     result.Add((interval, 0));
                     continue;
                 }
 
-                double firstTick = _buffer[(start + (uint) intervalStartIndex) & mask];
                 double actualInterval = latestTick - firstTick;
 
                 if (actualInterval <= 0)
@@ -110,7 +109,7 @@ namespace DOL.GS
                     continue;
                 }
 
-                double average = (tickCount - 1) / (actualInterval / 1000.0);
+                double average = (ticksInInterval - 1) / (actualInterval / 1000.0);
                 result.Add((interval, average));
             }
         }
