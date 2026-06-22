@@ -963,6 +963,8 @@ namespace DOL.GS
 			// target's offensive RA, debuffs, and a few others. (The type of weapon - large, 1H,
 			// etc - doesn't matter.) ...."
 
+			// 120 degrees angle according to https://www.chadwickgjohnson.com/data/20080715114516/index.html.
+
 			if (IsCrowdControlled || IsSitting || IsCasting)
 				return 0;
 
@@ -977,10 +979,10 @@ namespace DOL.GS
 					player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
 					player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
 					evadeChance = GetModified(eProperty.EvadeChance);
-				else if (IsObjectInFront(ad.Attacker, 180) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
+				else if (IsObjectInFront(ad.Attacker, 120) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
 					evadeChance = Math.Max(GetModified(eProperty.EvadeChance), 0);
 			}
-			else if (this is GameNPC && IsObjectInFront(ad.Attacker, 180))
+			else if (this is GameNPC && IsObjectInFront(ad.Attacker, 120))
 				evadeChance = GetModified(eProperty.EvadeChance);
 
 			if (evadeChance > 0)
@@ -1027,21 +1029,19 @@ namespace DOL.GS
 
 		public virtual double TryParry(AttackData ad, AttackData lastAD, int attackerCount)
 		{
-			//1.  Dual wielding does not grant more chances to parry than a single weapon.  Grab Bag 9/12/03
-			//2.  There is no hard cap on ability to Parry.  Grab Bag 8/13/02
-			//3.  Your chances of doing so are best when you are solo, trying to block or parry a style from someone who is also solo. The chances of doing so decrease with grouped, simultaneous attackers.  Grab Bag 7/19/02
-			//4.  The parry chance is divided up amongst the attackers, such that if you had a 50% chance to parry normally, and were under attack by two targets, you would get a 25% chance to parry one, and a 25% chance to parry the other. So, the more people or monsters attacking you, the lower your chances to parry any one attacker. -   Grab Bag 11/05/04
-			//Your chance to parry is affected by the number of attackers, the size of the weapon youre using, and your spec in parry.
+			// 1. Dual wielding does not grant more chances to parry than a single weapon.  Grab Bag 9/12/03
+			// 2. There is no hard cap on ability to Parry.  Grab Bag 8/13/02
+			// 3. Your chances of doing so are best when you are solo, trying to block or parry a style from someone who is also solo. The chances of doing so decrease with grouped, simultaneous attackers.  Grab Bag 7/19/02
+			// 4. The parry chance is divided up amongst the attackers, such that if you had a 50% chance to parry normally, and were under attack by two targets, you would get a 25% chance to parry one, and a 25% chance to parry the other. So, the more people or monsters attacking you, the lower your chances to parry any one attacker. -   Grab Bag 11/05/04
+			// Your chance to parry is affected by the number of attackers, the size of the weapon youre using, and your spec in parry.
 
-			//Parry % = (5% + 0.5% * Parry) / # of Attackers
-			//Parry: (((Dex*2)-100)/40)+(Parry/2)+(Mastery of P*3)+5. < Possible relation to buffs
-			//So, if you have parry of 20 you will have a chance of parrying 15% if there is one attacker. If you have parry of 20 you will have a chance of parrying 7.5%, if there are two attackers.
-			//From Grab Bag: "Dual wielders throw an extra wrinkle in. You have half the chance of shield blocking a dual wielder as you do a player using only one weapon. Your chance to parry is halved if you are facing a two handed weapon, as opposed to a one handed weapon."
-			//So, when facing a 2H weapon, you may see a penalty to your evade.
+			// Parry % = (5% + 0.5% * Parry) / # of Attackers
+			// Parry: (((Dex*2)-100)/40)+(Parry/2)+(Mastery of P*3)+5. < Possible relation to buffs
+			// So, if you have parry of 20 you will have a chance of parrying 15% if there is one attacker. If you have parry of 20 you will have a chance of parrying 7.5%, if there are two attackers.
+			// From Grab Bag: "Dual wielders throw an extra wrinkle in. You have half the chance of shield blocking a dual wielder as you do a player using only one weapon. Your chance to parry is halved if you are facing a two handed weapon, as opposed to a one handed weapon."
+			// So, when facing a 2H weapon, you may see a penalty to your evade.
 
-			//http://www.camelotherald.com/more/453.php
-
-			//Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
+			// 120 degrees angle according to https://www.chadwickgjohnson.com/data/20080715114516/index.html.
 
 			if (IsCrowdControlled || IsSitting || IsCasting)
 				return 0;
