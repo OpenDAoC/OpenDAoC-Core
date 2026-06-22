@@ -1158,6 +1158,12 @@ namespace DOL.GS
 			// You can Engage one archer and still get normal blocking chances against other archers you are facing, if you have a Medium or Large shield.
 			// Essentially, Engage works exactly the same against arrows as it does against melee attacks.
 
+			// 120 degrees angle for block (and maybe Guard) according to https://www.chadwickgjohnson.com/data/20080715114516/index.html (2002).
+			// 120 for both block and Guard according to http://web.archive.org/web/20040210014020/http://guides.rpgaheris.com/paladin.htm#_Toc57081020 (2003~2004).
+			// 180 for Guard according to https://www.chadwickgjohnson.com/data/20110518210634/index.html (2010).
+			// 180 for block according to: https://www.darkageofcamelot.com/2017/03/09/friday-grab-bag-03102017/ (2017).
+			// 180 on Live for both block and Guard (2026).
+
 			// Shield size isn't meant be used by Guard.
 			shieldSize = 0;
 
@@ -1165,7 +1171,7 @@ namespace DOL.GS
 				return 0;
 
 			// Not sure if the angle is meant to be different for block and Guard.
-			if (!IsObjectInFront(ad.Attacker, isGuard ? 180 : 120))
+			if (!IsObjectInFront(ad.Attacker, 120))
 				return 0;
 
 			double blockChance;
