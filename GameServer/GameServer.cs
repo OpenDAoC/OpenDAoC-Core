@@ -106,6 +106,7 @@ namespace DOL.GS
 		/// World save timer
 		/// </summary>
 		protected Timer m_timer;
+		private readonly Lock _saveTimerLock = new();
 
 		/// <summary>
 		/// A general logger for the server
@@ -1234,62 +1235,63 @@ namespace DOL.GS
 		/// <param name="sender">Object that generated the event</param>
 		protected void SaveTimerProc(object sender)
 		{
-			ThreadPriority oldPriority = Thread.CurrentThread.Priority;
-
-			try
+			lock (_saveTimerLock)
 			{
-				long startTick = MonotonicTime.NowMs;
+				ThreadPriority oldPriority = Thread.CurrentThread.Priority;
 
-				if (log.IsInfoEnabled)
-					log.Info("Saving database...");
-
-				(int count, long elapsed) players = (0, 0);
-				(int count, long elapsed) keepDoors = (0, 0);
-				(int count, long elapsed) guilds = (0, 0);
-				(int count, long elapsed) boats = (0, 0);
-				(int count, long elapsed) factions = (0, 0);
-				(int count, long elapsed) crafting = (0, 0);
-				(int count, long elapsed) appeals = (0, 0);
-
-				if (m_database != null)
+				try
 				{
-					Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-					Save(ClientService.Instance.SavePlayers, ref players);
-					Save(DoorMgr.SaveKeepDoors, ref keepDoors);
-					Save(GuildMgr.SaveAllGuilds, ref guilds);
-					Save(BoatMgr.SaveAllBoats, ref boats);
-					Save(FactionMgr.SaveAllAggroToFaction, ref factions);
-					Save(CraftingProgressMgr.Save, ref crafting);
-					Save(AppealMgr.Save, ref appeals);
-				}
-
-				startTick = MonotonicTime.NowMs - startTick;
-
-				if (log.IsInfoEnabled)
-				{
-					StringBuilder stringBuilder = new();
-					stringBuilder.Append($"Saving completed in {startTick}ms\n");
-					stringBuilder.Append($"   {nameof(players)}: {players.count} in {players.elapsed}ms\n");
-					stringBuilder.Append($" {nameof(keepDoors)}: {keepDoors.count} in {keepDoors.elapsed}ms\n");
-					stringBuilder.Append($"    {nameof(guilds)}: {guilds.count} in {guilds.elapsed}ms\n");
-					stringBuilder.Append($"     {nameof(boats)}: {boats.count} in {boats.elapsed}ms\n");
-					stringBuilder.Append($"  {nameof(factions)}: {factions.count} in {factions.elapsed}ms\n");
-					stringBuilder.Append($"  {nameof(crafting)}: {crafting.count} in {crafting.elapsed}ms\n");
-					stringBuilder.Append($"   {nameof(appeals)}: {appeals.count} in {appeals.elapsed}ms");
+					long startTick = MonotonicTime.NowMs;
 
 					if (log.IsInfoEnabled)
+						log.Info("Saving database...");
+
+					(int count, long elapsed) players = (0, 0);
+					(int count, long elapsed) keepDoors = (0, 0);
+					(int count, long elapsed) guilds = (0, 0);
+					(int count, long elapsed) boats = (0, 0);
+					(int count, long elapsed) factions = (0, 0);
+					(int count, long elapsed) crafting = (0, 0);
+					(int count, long elapsed) appeals = (0, 0);
+
+					if (m_database != null)
+					{
+						Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+						Save(ClientService.Instance.SavePlayers, ref players);
+						Save(DoorMgr.SaveKeepDoors, ref keepDoors);
+						Save(GuildMgr.SaveAllGuilds, ref guilds);
+						Save(BoatMgr.SaveAllBoats, ref boats);
+						Save(FactionMgr.SaveAllAggroToFaction, ref factions);
+						Save(CraftingProgressMgr.Save, ref crafting);
+						Save(AppealMgr.Save, ref appeals);
+					}
+
+					startTick = MonotonicTime.NowMs - startTick;
+
+					if (log.IsInfoEnabled)
+					{
+						StringBuilder stringBuilder = new();
+						stringBuilder.Append($"Saving completed in {startTick}ms\n");
+						stringBuilder.Append($"   {nameof(players)}: {players.count} in {players.elapsed}ms\n");
+						stringBuilder.Append($" {nameof(keepDoors)}: {keepDoors.count} in {keepDoors.elapsed}ms\n");
+						stringBuilder.Append($"    {nameof(guilds)}: {guilds.count} in {guilds.elapsed}ms\n");
+						stringBuilder.Append($"     {nameof(boats)}: {boats.count} in {boats.elapsed}ms\n");
+						stringBuilder.Append($"  {nameof(factions)}: {factions.count} in {factions.elapsed}ms\n");
+						stringBuilder.Append($"  {nameof(crafting)}: {crafting.count} in {crafting.elapsed}ms\n");
+						stringBuilder.Append($"   {nameof(appeals)}: {appeals.count} in {appeals.elapsed}ms");
 						log.Info(stringBuilder.ToString());
+					}
 				}
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("SaveTimerProc", e);
-			}
-			finally
-			{
-				m_timer?.Change(SaveInterval * MINUTE_CONV, Timeout.Infinite);
-				Thread.CurrentThread.Priority = oldPriority;
+				catch (Exception e)
+				{
+					if (log.IsErrorEnabled)
+						log.Error("SaveTimerProc", e);
+				}
+				finally
+				{
+					Thread.CurrentThread.Priority = oldPriority;
+					m_timer?.Change(SaveInterval * MINUTE_CONV, Timeout.Infinite);
+				}
 			}
 
 			static void Save(Func<int> save, ref (int count, long elapsed) result)
