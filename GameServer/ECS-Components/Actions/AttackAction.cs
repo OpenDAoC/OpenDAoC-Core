@@ -246,7 +246,7 @@ namespace DOL.GS
         {
             int attackSpeed = _owner.attackComponent.AttackSpeed(_weapon);
 
-            if (_owner.rangeAttackComponent.RangedAttackState == eRangedAttackState.None)
+            if (_owner.rangeAttackComponent.RangedAttackState is eRangedAttackState.None)
             {
                 _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
@@ -264,12 +264,12 @@ namespace DOL.GS
 
             eCheckRangeAttackStateResult rangeCheckResult = _owner.rangeAttackComponent.CheckRangeAttackState(_target);
 
-            if (rangeCheckResult == eCheckRangeAttackStateResult.Hold)
+            if (rangeCheckResult is eCheckRangeAttackStateResult.Hold)
             {
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                 return false;
             }
-            else if (rangeCheckResult == eCheckRangeAttackStateResult.Stop || _target == null)
+            else if (rangeCheckResult is eCheckRangeAttackStateResult.Stop || _target == null)
             {
                 AttackComponent.StopAttack();
                 return false;
@@ -279,8 +279,8 @@ namespace DOL.GS
             _attackInterval = _interval;
             _ticksToTarget = _owner.GetDistanceTo(_target) * 1000 / RangeAttackComponent.PROJECTILE_FLIGHT_SPEED;
             int model = _weapon == null ? 0 : _weapon.Model;
-            byte flightDuration = (byte)(_ticksToTarget > 350 ? 1 + (_ticksToTarget - 350) / 75 : 1);
-            bool cancelPrepareAnimation = _owner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown;
+            byte flightDuration = (byte) (_ticksToTarget > 350 ? 1 + (_ticksToTarget - 350) / 75 : 1);
+            bool cancelPrepareAnimation = (eObjectType) _weapon.Object_Type is eObjectType.Thrown;
 
             foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
