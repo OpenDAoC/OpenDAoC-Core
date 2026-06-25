@@ -773,7 +773,6 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 800;
             ThinkInterval = 1500;
-            Body.MaxSpeedBase = 300;
         }
         private protected bool Point1check = false;
         private protected bool Point2check = false;
