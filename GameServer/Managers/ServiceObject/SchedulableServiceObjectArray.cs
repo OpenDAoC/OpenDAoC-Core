@@ -17,16 +17,18 @@ namespace DOL.GS
         private const int WHEEL_BITS = 16;
         private const int WHEEL_SIZE = 1 << WHEEL_BITS;
         private const int WHEEL_MASK = WHEEL_SIZE - 1;
-        private const int SKIP_SCHEDULE_THRESHOLD_TICK = 30;
+        private const int DEFAULT_SKIP_SCHEDULE_THRESHOLD_TICK = 30;
 
         private readonly List<SleepTicket>[] _sleepWheel;
         private readonly Stack<List<SleepTicket>> _listPool = new();
         private readonly PriorityQueue<SleepTicket, long> _farFuture = new();
+        private readonly int _skipScheduleThresholdTick;
         private long _lastProcessedWheelTick = -1;
         private long _currentUpdateTick;
 
-        public SchedulableServiceObjectArray(int capacity) : base(capacity)
+        public SchedulableServiceObjectArray(int capacity, int skipScheduleThresholdTick = DEFAULT_SKIP_SCHEDULE_THRESHOLD_TICK) : base(capacity)
         {
+            _skipScheduleThresholdTick = skipScheduleThresholdTick;
             _sleepWheel = new List<SleepTicket>[WHEEL_SIZE];
 
             for (int i = 0; i < WHEEL_SIZE; i++)
@@ -37,9 +39,10 @@ namespace DOL.GS
         {
             long now = GameLoop.GameLoopTime;
             SchedulableServiceObjectId id = item.ServiceObjectId;
+            long scheduleToken = id.NextScheduleToken();
 
             // Bypass the wheel entirely if wakeUpTimeMs is close.
-            if (wakeUpTimeMs - now <= SKIP_SCHEDULE_THRESHOLD_TICK * GameLoop.TickDuration)
+            if (wakeUpTimeMs - now <= _skipScheduleThresholdTick * GameLoop.TickDuration)
             {
                 if (id.IsRunning)
                 {
@@ -55,7 +58,7 @@ namespace DOL.GS
 
             long currentTick = now / WHEEL_RESOLUTION_MS;
             long targetTick = Math.Max(currentTick, wakeUpTimeMs / WHEEL_RESOLUTION_MS);
-            _itemsToSchedule.Add(new(item, targetTick));
+            _itemsToSchedule.Add(new(item, targetTick, scheduleToken));
         }
 
         protected override void ProcessItemsToRemove(long now)
@@ -80,9 +83,13 @@ namespace DOL.GS
             SchedulableServiceObjectId id = item.ServiceObjectId;
             long targetTick = request.TargetTick;
 
-            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule) ||
-                targetTick < _lastProcessedWheelTick)
+            if (request.Token != id.ScheduleToken ||
+                !id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule))
+                return;
+
+            if (targetTick < _lastProcessedWheelTick)
             {
+                AddToList(item);
                 return;
             }
 
@@ -122,9 +129,7 @@ namespace DOL.GS
                         // Do not wake if the sleep token changed or if there's a pending action.
                         if (id.SleepToken != ticket.Token ||
                             id.PeekAction() is not ServiceObjectId.PendingAction.None)
-                        {
                             continue;
-                        }
 
                         AddToList(item);
                     }
@@ -164,7 +169,7 @@ namespace DOL.GS
             _listPool.Push(currentSwapList);
         }
 
-        private readonly record struct ScheduleRequest(T Item, long TargetTick);
+        private readonly record struct ScheduleRequest(T Item, long TargetTick, long Token);
 
         private readonly record struct SleepTicket(T Item, long Token);
     }

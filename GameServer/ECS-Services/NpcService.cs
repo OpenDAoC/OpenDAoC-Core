@@ -66,7 +66,7 @@ namespace DOL.GS
                 if (monitor.IsLongTick(out long elapsedMs) && log.IsWarnEnabled)
                     log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {elapsedMs}ms");
 
-                brain.NextThinkTick = GameLoop.GameLoopTime + brain.ThinkInterval;
+                brain.ScheduleNextThink(GameLoop.GameLoopTime + brain.ThinkInterval);
             }
             catch (Exception e)
             {

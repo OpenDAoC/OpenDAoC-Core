@@ -59,7 +59,7 @@ namespace DOL.AI.Brain
         public override void Enter()
         {
             _brain.Body.StopMoving();
-            _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
+            _brain.WakeNow(); // Don't stay in IDLE for a full think cycle.
             base.Enter();
         }
 
@@ -78,7 +78,7 @@ namespace DOL.AI.Brain
                 _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
 
             if (_brain.FSM.GetCurrentState() != this)
-                _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
+                _brain.WakeNow(); // Don't stay in IDLE for a full think cycle.
             else
                 base.Think();
         }
