@@ -38,7 +38,7 @@ namespace DOL.GS
             new Dictionary<ServiceObjectType, IServiceObjectArray>()
             {
                 { ServiceObjectType.Client, new ServiceObjectArray<GameClient>(Properties.MAX_PLAYERS) },
-                { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(Properties.MAX_ENTITIES) },
+                { ServiceObjectType.Brain, new ShardedServiceObjectArray<ABrain>(Properties.MAX_ENTITIES, 1) },
                 { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
                 { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
                 { ServiceObjectType.Effect, new ServiceObjectArray<ECSGameEffect>(10000) },
@@ -68,15 +68,48 @@ namespace DOL.GS
 
         // Schedule an object to be returned at a later time.
         // Scheduling in the past is allowed (the item will be returned immediately), and it's the caller's responsibility to ensure this makes sense.
-        public static bool Schedule<T>(T serviceObject, long nextTickMs) where T : class, ISchedulableServiceObject
+        public static bool Schedule<T>(T serviceObject, long nextTickMs, bool allowPendingRemove = false) where T : class, ISchedulableServiceObject
         {
             SchedulableServiceObjectId id = serviceObject.ServiceObjectId;
 
-            // Prevent re-entry if the object is already being scheduled.
-            if (!id.TrySetAction(ServiceObjectId.PendingAction.Schedule))
+            if (id.PeekAction() is ServiceObjectId.PendingAction.Remove && !allowPendingRemove)
+                return false;
+
+            // Re-scheduling is allowed. The schedulable array uses request tokens so stale
+            // schedule requests cannot override a newer wake/schedule request.
+            if (id.PeekAction() is not ServiceObjectId.PendingAction.Schedule &&
+                !id.TrySetAction(ServiceObjectId.PendingAction.Schedule))
                 return false;
 
             (_serviceObjectArrays[id.Type] as ServiceObjectArrayBase<T>).Schedule(serviceObject, nextTickMs);
+            return true;
+        }
+
+        public static bool Wake<T>(T serviceObject) where T : class, ISchedulableServiceObject
+        {
+            SchedulableServiceObjectId id = serviceObject.ServiceObjectId;
+
+            if (id.PeekAction() is ServiceObjectId.PendingAction.Remove)
+                return false;
+
+            if (!id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Add and not ServiceObjectId.PendingAction.Schedule)
+                return false;
+
+            id.InvalidateScheduleRequests();
+
+            if (id.IsRunning)
+            {
+                id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule);
+                return true;
+            }
+
+            if (id.PeekAction() is ServiceObjectId.PendingAction.Add)
+                return true;
+
+            if (!id.TrySetAction(ServiceObjectId.PendingAction.Add))
+                return false;
+
+            (_serviceObjectArrays[id.Type] as ServiceObjectArrayBase<T>).Add(serviceObject);
             return true;
         }
 

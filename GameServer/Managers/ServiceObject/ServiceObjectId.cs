@@ -1,12 +1,15 @@
-﻿namespace DOL.GS
+using System.Threading;
+
+namespace DOL.GS
 {
     public class ServiceObjectId
     {
         public const int UNSET_ID = -1;
 
-        private PendingAction _action = PendingAction.None;
+        private int _action = (int) PendingAction.None;
+        private int _value = UNSET_ID;
 
-        public int Value { get; private set; } = UNSET_ID;
+        public int Value => Volatile.Read(ref _value);
         public ServiceObjectType Type { get; }
 
         public bool IsRegistered => Value != UNSET_ID;
@@ -20,35 +23,27 @@
 
         public bool TrySetAction(PendingAction action)
         {
-            if (_action == action)
-                return false;
-
-            _action = action;
-            return true;
+            return Interlocked.Exchange(ref _action, (int) action) != (int) action;
         }
 
         public bool TryConsumeAction(PendingAction expectedAction)
         {
-            if (_action != expectedAction)
-                return false;
-
-            _action = PendingAction.None;
-            return true;
+            return Interlocked.CompareExchange(ref _action, (int) PendingAction.None, (int) expectedAction) == (int) expectedAction;
         }
 
         public PendingAction PeekAction()
         {
-            return _action;
+            return (PendingAction) Volatile.Read(ref _action);
         }
 
         public virtual void MoveTo(int index)
         {
-            Value = index;
+            Volatile.Write(ref _value, index);
         }
 
         public void Unset()
         {
-            _action = PendingAction.None;
+            Volatile.Write(ref _action, (int) PendingAction.None);
             MoveTo(UNSET_ID); // Ensure MoveTo overrides are called.
         }
 

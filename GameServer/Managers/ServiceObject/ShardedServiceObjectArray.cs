@@ -9,6 +9,7 @@ namespace DOL.GS
         private readonly List<SchedulableServiceObjectArray<T>> _shards;
         private readonly List<T>[] _shardsView;
         private readonly int[] _shardStartIndices;
+        private readonly int _skipScheduleThresholdTick;
         private int _roundRobinCounter;
         private int _totalValidCount;
 
@@ -19,8 +20,9 @@ namespace DOL.GS
         public override int[] ShardStartIndices => _shardStartIndices;
         public override int TotalValidCount => _totalValidCount;
 
-        public ShardedServiceObjectArray(int initialCapacity)
+        public ShardedServiceObjectArray(int initialCapacity, int skipScheduleThresholdTick = 30)
         {
+            _skipScheduleThresholdTick = skipScheduleThresholdTick;
             int shardCount = GameLoop.DegreeOfParallelism;
             _shards = new(shardCount);
             _shardsView = new List<T>[shardCount];
@@ -29,7 +31,7 @@ namespace DOL.GS
 
             for (int i = 0; i < shardCount; i++)
             {
-                _shards.Add(new(capacityPerShard));
+                _shards.Add(new(capacityPerShard, _skipScheduleThresholdTick));
                 _shardsView[i] = _shards[i].Items;
             }
 
@@ -39,11 +41,15 @@ namespace DOL.GS
         private SchedulableServiceObjectArray<T> RouteItem(T item)
         {
             ShardedServiceObjectId id = item.ServiceObjectId;
+            int shardIndex = id.ShardIndex;
 
-            if (id.ShardIndex == -1)
-                id.ShardIndex = (int) ((uint) Interlocked.Increment(ref _roundRobinCounter) % _shards.Count);
+            if (shardIndex == -1)
+            {
+                int nextShardIndex = (int) ((uint) Interlocked.Increment(ref _roundRobinCounter) % _shards.Count);
+                shardIndex = id.TryAssignShardIndex(nextShardIndex);
+            }
 
-            return _shards[id.ShardIndex];
+            return _shards[shardIndex];
         }
 
         public override void Add(T item)

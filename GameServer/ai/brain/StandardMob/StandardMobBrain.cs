@@ -323,7 +323,7 @@ namespace DOL.AI.Brain
             if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
             {
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
-                NextThinkTick = GameLoop.GameLoopTime;
+                WakeNow();
             }
 
             static AggroAmount Add(GameLiving key, long arg)
@@ -387,7 +387,7 @@ namespace DOL.AI.Brain
                 if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
                     FSM.SetCurrentState(eFSMStateType.AGGRO);
 
-                NextThinkTick = GameLoop.GameLoopTime;
+                WakeNow();
             }
 
             return true;
