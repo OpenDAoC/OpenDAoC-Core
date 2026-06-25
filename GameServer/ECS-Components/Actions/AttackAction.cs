@@ -219,9 +219,9 @@ namespace DOL.GS
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
-                if (StyleComponent.NextCombatBackupStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault() != null)
+                if (StyleComponent.NextCombatBackupStyle?.Procs.FirstOrDefault(x => x.Spell.SpellType is eSpellType.NaturesShield) != null)
                     StyleComponent.NextCombatStyle = StyleComponent.NextCombatBackupStyle;
-                else if (StyleComponent.NextCombatStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault() == null)
+                else if (StyleComponent.NextCombatStyle?.Procs.FirstOrDefault(x => x.Spell.SpellType is eSpellType.NaturesShield) == null)
                     StyleComponent.NextCombatStyle = null;
 
                 StyleComponent.NextCombatBackupStyle = null;
