@@ -120,6 +120,14 @@ namespace DOL.GS
             {
                 player.Duel?.Stop();
                 player.Out.SendGroupMembersUpdate(true, true);
+                AbstractMission groupMission = Mission;
+
+                if (groupMission != null)
+                {
+                    // Quest list updates also carry task/mission text for newer clients.
+                    player.Out.SendQuestListUpdate();
+                    player.Out.SendMessage(groupMission.Description, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
 
                 // Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
                 // We could also check for non controlled pets (turrets for example) around the player, but it isn't very important.
@@ -174,11 +182,14 @@ namespace DOL.GS
 
         public bool RemoveMember(GameLiving living)
         {
+            AbstractMission groupMission;
+
             lock (_groupMembersLock)
             {
                 if (!_groupMembers.Remove(living))
                     return false;
 
+                groupMission = Mission;
                 living.Group = null;
                 living.GroupIndex = 0xFF;
 
@@ -192,7 +203,12 @@ namespace DOL.GS
             if (living is GamePlayer player)
             {
                 player.Out.SendGroupWindowUpdate();
-                player.Out.SendQuestListUpdate();
+
+                if (groupMission != null)
+                {
+                    // Quest list updates also carry task/mission text for newer clients.
+                    player.Out.SendQuestListUpdate();
+                }
 
                 List<ECSGameAbilityEffect> abilityEffects = player.effectListComponent.GetAbilityEffects();
 
