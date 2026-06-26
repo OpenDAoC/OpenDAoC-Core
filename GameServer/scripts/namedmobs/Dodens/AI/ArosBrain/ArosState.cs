@@ -6,7 +6,7 @@ namespace DOL.AI.Brain
     {
         protected new ArosBrain _brain = null;
 
-        public ArosState(ArosBrain brain, eFSMStateType stateType) : base(brain, stateType)
+        public ArosState(ArosBrain brain) : base(brain)
         {
             _brain = brain;
         }
@@ -14,7 +14,10 @@ namespace DOL.AI.Brain
 
     public class ArosState_IDLE : ArosState
     {
-        public ArosState_IDLE(ArosBrain brain) : base(brain, eFSMStateType.IDLE) { }
+        public ArosState_IDLE(ArosBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.IDLE;
+        }
 
         public override void Think()
         {
@@ -59,7 +62,10 @@ namespace DOL.AI.Brain
 
     public class ArosState_AGGRO : ArosState
     {
-        public ArosState_AGGRO(ArosBrain brain) : base(brain, eFSMStateType.AGGRO) { }
+        public ArosState_AGGRO(ArosBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.AGGRO;
+        }
 
         public override void Think()
         {
@@ -79,7 +85,10 @@ namespace DOL.AI.Brain
 
     public class ArosState_RETURN_TO_SPAWN : ArosState
     {
-        public ArosState_RETURN_TO_SPAWN(ArosBrain brain) : base(brain, eFSMStateType.RETURN_TO_SPAWN) { }
+        public ArosState_RETURN_TO_SPAWN(ArosBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.RETURN_TO_SPAWN;
+        }
 
         public override void Enter()
         {

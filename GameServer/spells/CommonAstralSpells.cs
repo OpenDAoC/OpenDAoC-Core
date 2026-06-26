@@ -149,6 +149,7 @@ namespace DOL.GS.Spells
             m_pet.Level = Caster.Level;
             m_pet.Strength = 0;
             petBrain.AddToAggroList(target);
+            petBrain.Think();
         }
 
         protected override GameSummonedPet GetGamePet(INpcTemplate template) { return new SummonElementalPet(template); }

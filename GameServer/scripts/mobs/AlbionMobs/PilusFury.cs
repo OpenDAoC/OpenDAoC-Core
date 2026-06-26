@@ -94,6 +94,11 @@ namespace DOL.AI.Brain
 			}
 		}
 
+		public override void KillFSM()
+		{
+			
+		}
+
 		private void HandlePlayerCheck(GamePlayer player)
 		{
 			if (player is {IsAlive: true} && player.Client.Account.PrivLevel == 1)

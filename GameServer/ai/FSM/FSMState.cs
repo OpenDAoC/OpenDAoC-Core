@@ -4,12 +4,9 @@ namespace DOL.AI
 {
     public abstract class FSMState
     {
-        public eFSMStateType StateType { get; }
+        public eFSMStateType StateType { get; protected set; }
 
-        public FSMState(eFSMStateType stateType)
-        {
-            StateType = stateType;
-        }
+        public FSMState() { }
 
         public abstract void Enter();
         public abstract void Exit();

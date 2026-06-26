@@ -97,5 +97,10 @@ namespace DOL.AI.Brain
 			}
 			
 		}
+
+		public override void KillFSM()
+		{
+			
+		}
 	}
 }

@@ -1,76 +1,48 @@
 ﻿using System.Collections.Generic;
-using DOL.AI;
 using DOL.GS;
 
-public class FSM
+namespace DOL.AI
 {
-    private Dictionary<eFSMStateType, FSMState> _states = new();
-    private Dictionary<eFSMStateType, long> _stateLastThinkTimes = new();
-    private FSMState _currentState;
-
-    public FSM() { }
-
-    public void Add(FSMState state)
+    public class FSM
     {
-        if (state == null)
-            return;
+        protected Dictionary<eFSMStateType, FSMState> _states = [];
+        protected FSMState _state;
 
-        _states[state.StateType] = state;
-        _stateLastThinkTimes[state.StateType] = 0;
-    }
+        public FSM() { }
 
-    public void ClearStates()
-    {
-        _states.Clear();
-        _stateLastThinkTimes.Clear();
-    }
-
-    public FSMState GetState(eFSMStateType stateType)
-    {
-        _states.TryGetValue(stateType, out FSMState state);
-        return state;
-    }
-
-    public void SetCurrentState(eFSMStateType stateType)
-    {
-        if (_currentState != null)
+        public virtual void Add(FSMState state)
         {
-            // Prevent unnecessary re-entry into the exact same state.
-            if (_currentState.StateType == stateType)
-                return;
-
-            _currentState.Exit();
+            _states[state.StateType] = state;
         }
 
-        if (!_states.TryGetValue(stateType, out _currentState))
-            return;
+        public virtual void ClearStates()
+        {
+            _states.Clear();
+        }
 
-        _currentState.Enter();
+        public virtual FSMState GetState(eFSMStateType stateType)
+        {
+            _states.TryGetValue(stateType, out FSMState state);
+            return state;
+        }
 
-        // Think immediately if NpcService is ticking and game loop time has advanced since the last think.
-        if (!NpcService.IsTicking)
-            return;
+        public virtual void SetCurrentState(eFSMStateType stateType)
+        {
+            _state?.Exit();
+            _states.TryGetValue(stateType, out _state);
+            _state?.Enter();
+        }
 
-        long now = GameLoop.GameLoopTime;
+        public virtual FSMState GetCurrentState()
+        {
+            return _state;
+        }
 
-        if (_stateLastThinkTimes[stateType] == now)
-            return;
+        public virtual void Think()
+        {
+            _state?.Think();
+        }
 
-        _stateLastThinkTimes[stateType] = now;
-        _currentState.Think();
-    }
-
-    public FSMState GetCurrentState()
-    {
-        return _currentState;
-    }
-
-    public void Think()
-    {
-        if (_currentState == null)
-            return;
-
-        _stateLastThinkTimes[_currentState.StateType] = GameLoop.GameLoopTime;
-        _currentState.Think();
+        public virtual void KillFSM() { }
     }
 }

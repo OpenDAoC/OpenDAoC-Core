@@ -1,10 +1,14 @@
-﻿using DOL.GS;
+﻿using System;
+using DOL.GS;
 
 namespace DOL.AI.Brain
 {
     public class AlluvianGlobuleState_IDLE : StandardMobState_IDLE
     {
-        public AlluvianGlobuleState_IDLE(AlluvianGlobuleBrain brain) : base(brain) { }
+        public AlluvianGlobuleState_IDLE(AlluvianGlobuleBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.IDLE;
+        }
 
         public override void Think()
         {
@@ -20,7 +24,10 @@ namespace DOL.AI.Brain
 
     public class AlluvianGlobuleState_ROAMING : StandardMobState_ROAMING
     {
-        public AlluvianGlobuleState_ROAMING(AlluvianGlobuleBrain brain) : base(brain) { }
+        public AlluvianGlobuleState_ROAMING(AlluvianGlobuleBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.ROAMING;
+        }
 
         public override void Think()
         {

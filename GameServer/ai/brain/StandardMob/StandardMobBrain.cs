@@ -61,6 +61,11 @@ namespace DOL.AI.Brain
             return true;
         }
 
+        public override void KillFSM()
+        {
+            FSM.KillFSM();
+        }
+
         #region AI
 
         public override void Think()
@@ -315,8 +320,11 @@ namespace DOL.AI.Brain
             AggroList.AddOrUpdate(living, Add, Update, aggroAmount);
 
             // Change state and reschedule the next think tick to improve responsiveness.
-            if (HasAggro)
+            if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
+            {
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
+                NextThinkTick = GameLoop.GameLoopTime;
+            }
 
             static AggroAmount Add(GameLiving key, long arg)
             {
@@ -375,7 +383,12 @@ namespace DOL.AI.Brain
             _tempAggroList = null;
 
             if (HasAggro)
-                FSM.SetCurrentState(eFSMStateType.AGGRO);
+            {
+                if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
+                    FSM.SetCurrentState(eFSMStateType.AGGRO);
+
+                NextThinkTick = GameLoop.GameLoopTime;
+            }
 
             return true;
         }

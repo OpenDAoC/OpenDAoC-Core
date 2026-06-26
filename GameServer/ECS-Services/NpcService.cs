@@ -14,7 +14,6 @@ namespace DOL.GS
         private ServiceObjectView<ABrain> _view;
 
         public static NpcService Instance { get; }
-        public static bool IsTicking => GameLoop.ActiveService == Instance;
 
         static NpcService()
         {

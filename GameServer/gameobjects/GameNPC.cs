@@ -2791,6 +2791,7 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
+			Brain?.KillFSM();
 			FireAmbientSentence(eAmbientTrigger.dying, killer);
 
 			if (ControlledBrain != null)

@@ -23,7 +23,7 @@ namespace DOL.GS
         public static int DegreeOfParallelism { get; } = Environment.ProcessorCount;
         public static double TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
-        public static IGameService ActiveService { get; set; }
+        public static string ActiveService { get; set; }
 
         public static bool Init()
         {
@@ -120,10 +120,9 @@ namespace DOL.GS
             {
                 TickState tickState = _tickSequence[i];
                 SynchronizationContext prevCtx = SynchronizationContext.Current;
-                GameServiceSynchronizationContext newCtx = tickState.ServiceContext;
-                SynchronizationContext.SetSynchronizationContext(newCtx);
-                ActiveService = newCtx.TargetService;
-                Diagnostics.StartPerfCounter(tickState.ProfileKey);
+                SynchronizationContext.SetSynchronizationContext(tickState.ServiceContext);
+                ActiveService = tickState.ProfileKey;
+                Diagnostics.StartPerfCounter(ActiveService);
 
                 try
                 {
@@ -132,8 +131,8 @@ namespace DOL.GS
                 finally
                 {
                     SynchronizationContext.SetSynchronizationContext(prevCtx);
-                    Diagnostics.StopPerfCounter(tickState.ProfileKey);
-                    ActiveService = null;
+                    Diagnostics.StopPerfCounter(ActiveService);
+                    ActiveService = string.Empty;
                 }
             }
 
