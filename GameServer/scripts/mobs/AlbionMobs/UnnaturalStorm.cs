@@ -275,10 +275,6 @@ namespace DOL.AI.Brain
 				SpawnUnnaturalStorm();
 		}
 
-		public override void KillFSM()
-		{
-		}
-
 		public void SpawnUnnaturalStorm()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))

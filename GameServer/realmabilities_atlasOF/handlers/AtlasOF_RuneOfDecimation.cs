@@ -160,8 +160,6 @@ namespace DOL.GS.RealmAbilities
                 spellHandler.StartSpell(triggeringLiving);
                 rune.Die(rune);
             }
-
-            public override void KillFSM() { }
         }
     }
 }

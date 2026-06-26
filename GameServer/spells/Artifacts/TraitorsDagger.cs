@@ -88,7 +88,6 @@ namespace DOL.GS.Spells
             base.ApplyEffectOnTarget(target);
             ProcPetBrain petBrain = (ProcPetBrain) m_pet.Brain;
             petBrain.AddToAggroList(target);
-            petBrain.Think();
         }
 
         protected override GameSummonedPet GetGamePet(INpcTemplate template) { return new TraitorDaggerPet(template); }

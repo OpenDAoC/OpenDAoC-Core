@@ -43,6 +43,7 @@ namespace DOL.AI
                 // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
                 // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
                 NextThinkTick = GameLoop.GameLoopTime + ThinkOffsetOnStart;
+                FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
                 return true;
             }
 
@@ -63,7 +64,6 @@ namespace DOL.AI
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
 
             Body.ClearObjectsInRadiusCache();
-            FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
             return ServiceObjectStore.Remove(this);
         }
 
@@ -79,7 +79,5 @@ namespace DOL.AI
         /// This method is called whenever the brain does some thinking
         /// </summary>
         public abstract void Think();
-
-        public abstract void KillFSM();
     }
 }

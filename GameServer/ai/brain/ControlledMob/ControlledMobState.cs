@@ -6,10 +6,7 @@ namespace DOL.AI.Brain
     {
         private bool _abilitiesChecked;
 
-        public ControlledMobState_WAKING_UP(ControlledMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.WAKING_UP;
-        }
+        public ControlledMobState_WAKING_UP(ControlledMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -31,17 +28,12 @@ namespace DOL.AI.Brain
                 brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             else if (brain.AggressionState is eAggressionState.Passive)
                 brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
-
-            brain.Think();
         }
     }
 
     public class ControlledMobState_DEFENSIVE : StandardMobState_IDLE
     {
-        public ControlledMobState_DEFENSIVE(ControlledMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.IDLE;
-        }
+        public ControlledMobState_DEFENSIVE(ControlledMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -78,10 +70,7 @@ namespace DOL.AI.Brain
 
     public class ControlledMobState_AGGRO : StandardMobState_AGGRO
     {
-        public ControlledMobState_AGGRO(ControlledMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.AGGRO;
-        }
+        public ControlledMobState_AGGRO(ControlledMobBrain brain) : base(brain) { }
 
         public override void Exit()
         {
@@ -151,10 +140,7 @@ namespace DOL.AI.Brain
 
     public class ControlledMobState_PASSIVE : StandardMobState
     {
-        public ControlledMobState_PASSIVE(ControlledMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.PASSIVE;
-        }
+        public ControlledMobState_PASSIVE(ControlledMobBrain brain) : base(brain, eFSMStateType.PASSIVE) { }
 
         public override void Enter()
         {

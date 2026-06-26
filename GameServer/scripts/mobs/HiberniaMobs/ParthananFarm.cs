@@ -940,10 +940,6 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		public override void KillFSM()
-		{
-		}
-
 		public void SpawnBigOne()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
@@ -1038,11 +1034,6 @@ namespace DOL.AI.Brain
 				SacrificeParthanan2 = false;
 				ConnachtBoss = 1;
 			}
-		}
-
-		public override void KillFSM()
-		{
-			
 		}
 
 		public void SpawnBigOne()
@@ -1140,10 +1131,6 @@ namespace DOL.AI.Brain
 				SacrificeParthanan2b = false;
 				Connacht2Boss = 1;
 			}
-		}
-
-		public override void KillFSM()
-		{
 		}
 
 		public void SpawnBigOne()

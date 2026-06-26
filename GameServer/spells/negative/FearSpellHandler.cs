@@ -64,7 +64,6 @@ namespace DOL.GS.Spells
 			m_NPCFearBrains[npcTarget] = fearBrain;
 			
 			npcTarget.AddBrain(fearBrain);
-			fearBrain.Think();
 			
 			base.OnEffectStart(effect);
 		}
