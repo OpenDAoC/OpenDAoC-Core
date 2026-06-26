@@ -1,13 +1,10 @@
-﻿using System.Reflection;
-using DOL.GS;
+﻿using DOL.GS;
 using DOL.GS.ServerProperties;
 
 namespace DOL.AI.Brain
 {
-    public class StandardMobState : FSMState
+    public abstract class StandardMobState : FSMState
     {
-        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         protected StandardMobBrain _brain = null;
 
         public StandardMobState(StandardMobBrain brain) : base()
@@ -22,10 +19,9 @@ namespace DOL.AI.Brain
 
     public class StandardMobState_WAKING_UP : StandardMobState
     {
-        public StandardMobState_WAKING_UP(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.WAKING_UP;
-        }
+        public override eFSMStateType StateType => eFSMStateType.WAKING_UP;
+
+        public StandardMobState_WAKING_UP(StandardMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -51,10 +47,9 @@ namespace DOL.AI.Brain
 
     public class StandardMobState_IDLE : StandardMobState
     {
-        public StandardMobState_IDLE(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.IDLE;
-        }
+        public override eFSMStateType StateType => eFSMStateType.IDLE;
+
+        public StandardMobState_IDLE(StandardMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -89,10 +84,9 @@ namespace DOL.AI.Brain
         private const int LEAVE_WHEN_OUT_OF_COMBAT_FOR = 25000;
         private long _aggroEndTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
 
-        public StandardMobState_AGGRO(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.AGGRO;
-        }
+        public override eFSMStateType StateType => eFSMStateType.AGGRO;
+
+        public StandardMobState_AGGRO(StandardMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -143,11 +137,9 @@ namespace DOL.AI.Brain
         protected virtual short Speed => NpcMovementComponent.DEFAULT_WALK_SPEED;
         protected virtual int MinCooldown => Properties.GAMENPC_ROAM_COOLDOWN_MIN;
         protected virtual int MaxCooldown => Properties.GAMENPC_ROAM_COOLDOWN_MAX;
+        public override eFSMStateType StateType => eFSMStateType.ROAMING;
 
-        public StandardMobState_ROAMING(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.ROAMING;
-        }
+        public StandardMobState_ROAMING(StandardMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -188,11 +180,9 @@ namespace DOL.AI.Brain
     public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     {
         protected virtual short Speed => NpcMovementComponent.DEFAULT_WALK_SPEED;
+        public override eFSMStateType StateType => eFSMStateType.RETURN_TO_SPAWN;
 
-        public StandardMobState_RETURN_TO_SPAWN(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.RETURN_TO_SPAWN;
-        }
+        public StandardMobState_RETURN_TO_SPAWN(StandardMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
@@ -218,10 +208,9 @@ namespace DOL.AI.Brain
 
     public class StandardMobState_PATROLLING : StandardMobState
     {
-        public StandardMobState_PATROLLING(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.PATROLLING;
-        }
+        public override eFSMStateType StateType => eFSMStateType.PATROLLING;
+
+        public StandardMobState_PATROLLING(StandardMobBrain brain) : base(brain) { }
 
         public override void Enter()
         {
