@@ -75,7 +75,6 @@ namespace DOL.GS.Spells
 			m_NPCFriendBrain[npcTarget] = friendBrain;
 			
 			npcTarget.AddBrain(friendBrain);
-			friendBrain.Think();
 			
 			// Prevent Aggro on Effect Expires.
 			if (currentBrain != null)
