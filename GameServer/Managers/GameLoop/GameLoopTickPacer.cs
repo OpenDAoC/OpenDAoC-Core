@@ -58,10 +58,10 @@ namespace DOL.GS
 
         public void Stop()
         {
+            _running = false;
+
             if (_busyWaitThresholdThread == null)
                 return;
-
-            _running = false;
 
             if (_busyWaitThresholdThread != Thread.CurrentThread && _busyWaitThresholdThread.IsAlive)
                 _busyWaitThresholdThread.Interrupt(); // This thread sleeps for a long time, let's not wait for it to finish.
