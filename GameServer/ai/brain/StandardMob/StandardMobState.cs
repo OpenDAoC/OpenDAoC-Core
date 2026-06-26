@@ -41,7 +41,6 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-            _brain.Think();
         }
     }
 
@@ -54,7 +53,6 @@ namespace DOL.AI.Brain
         public override void Enter()
         {
             _brain.Body.StopMoving();
-            _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
             base.Enter();
         }
 
@@ -72,10 +70,7 @@ namespace DOL.AI.Brain
             else if (_brain.Body.CanRoam)
                 _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
 
-            if (_brain.FSM.GetCurrentState() != this)
-                _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
-            else
-                base.Think();
+            base.Think();
         }
     }
 

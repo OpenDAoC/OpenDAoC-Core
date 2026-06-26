@@ -28,8 +28,6 @@ namespace DOL.AI.Brain
                 brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             else if (brain.AggressionState is eAggressionState.Passive)
                 brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
-
-            brain.Think();
         }
     }
 

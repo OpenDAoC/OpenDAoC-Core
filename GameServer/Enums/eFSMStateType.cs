@@ -2,6 +2,7 @@
 {
     public enum eFSMStateType
     {
+        NULL, // Reserved.
         WAKING_UP,
         IDLE,
         AGGRO,
