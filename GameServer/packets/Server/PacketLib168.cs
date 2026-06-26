@@ -1552,67 +1552,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestListUpdate(byte indexOffset)
 		{
-			// Send up to JOURNAL_MAX_QUEST_COUNT quests.
-			// `indexOffset` is used to accommodate for the client version and represents the first index it accepts.
-			// Our dictionary's value doesn't change and starts a 0.
-			int lastIndex = JOURNAL_MAX_QUEST_COUNT + indexOffset;
-			Span<bool> sentIndexes = stackalloc bool[JOURNAL_MAX_QUEST_COUNT];
-			KeyValuePair<AbstractQuest, byte>[] entries = m_gameClient.Player.RentActiveQuestEntries(out int entryCount);
-
-			try
-			{
-				for (int i = 0; i < entryCount; i++)
-				{
-					KeyValuePair<AbstractQuest, byte> entry = entries[i];
-					int adjustedQuestIndex = entry.Value + indexOffset;
-
-					if (adjustedQuestIndex < lastIndex)
-					{
-						SendQuestPacket(entry.Key, (byte) adjustedQuestIndex);
-						sentIndexes[adjustedQuestIndex - indexOffset] = true;
-					}
-				}
-
-				// If possible, move and send quests which indexes are too high.
-				int questIndex = indexOffset;
-
-				for (int i = 0; i < entryCount; i++)
-				{
-					KeyValuePair<AbstractQuest, byte> entry = entries[i];
-
-					if (entry.Value + indexOffset < lastIndex)
-						continue;
-
-					for ( ; questIndex < lastIndex; questIndex++)
-					{
-						int sentIndex = questIndex - indexOffset;
-
-						if (sentIndexes[sentIndex])
-							continue;
-
-						if (!m_gameClient.Player.TrySetQuestIndex(entry.Key, (byte) sentIndex))
-							continue;
-
-						SendQuestPacket(entry.Key, (byte) questIndex);
-						sentIndexes[sentIndex] = true;
-						break;
-					}
-
-					if (questIndex == lastIndex)
-						break;
-				}
-			}
-			finally
-			{
-				GamePlayer.ReturnActiveQuestEntries(entries);
-			}
-
-			// Send null for unused indexes.
-			for (int questIndexToClear = indexOffset; questIndexToClear < lastIndex; questIndexToClear++)
-			{
-				if (!sentIndexes[questIndexToClear - indexOffset])
-					SendQuestPacket(null, (byte) questIndexToClear);
-			}
+			m_gameClient.Player.SendQuestListUpdate(indexOffset, JOURNAL_MAX_QUEST_COUNT, SendQuestPacket);
 		}
 
 		public virtual void SendQuestUpdate(AbstractQuest quest)
