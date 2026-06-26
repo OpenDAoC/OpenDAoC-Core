@@ -162,7 +162,9 @@ namespace DOL.GS.Quests
                 ChatUtil.SendDebugMessage(player, "Entered QuestSearchArea for " + m_questType.Name + ", Step " + Step);
 
                 // popup a dialog telling the player they should search here
-                if (player.IsDoingQuest(m_questType) != null && player.IsDoingQuest(m_questType).Step == m_validStep && PopupText != string.Empty)
+                AbstractQuest quest = player.IsDoingQuest(m_questType);
+
+                if (quest != null && quest.Step == m_validStep && PopupText != string.Empty)
                 {
                     showText = true;
                 }

@@ -11149,6 +11149,8 @@ namespace DOL.GS
         }
 
         private readonly Dictionary<AbstractQuest, byte> _questList = new(); // Value is the index to send to clients.
+        private readonly Dictionary<int, DataQuest> _activeDataQuestsById = new();
+        private readonly Dictionary<Type, AbstractQuest> _activeQuestsByType = new();
         private readonly Lock _questListLock = new();
         private List<AbstractQuest> _questListFinished = new();
         private readonly Lock _questListFinishedLock = new();
@@ -11184,32 +11186,6 @@ namespace DOL.GS
             return null;
         }
 
-        internal bool TrySetQuestIndex(AbstractQuest quest, byte index)
-        {
-            lock (_questListLock)
-            {
-                bool found = false;
-
-                foreach (KeyValuePair<AbstractQuest, byte> entry in _questList)
-                {
-                    if (EqualityComparer<AbstractQuest>.Default.Equals(entry.Key, quest))
-                    {
-                        found = true;
-                        continue;
-                    }
-
-                    if (entry.Value == index)
-                        return false;
-                }
-
-                if (!found)
-                    return false;
-
-                _questList[quest] = index;
-                return true;
-            }
-        }
-
         internal bool NeedsQuestListRefreshAfterRemove(byte visibleQuestCount)
         {
             lock (_questListLock)
@@ -11231,28 +11207,16 @@ namespace DOL.GS
         {
             lock (_questListLock)
             {
-                foreach (AbstractQuest quest in _questList.Keys)
-                {
-                    if (quest is DataQuest dataQuest && dataQuest.ID == id)
-                        return true;
-                }
+                return _activeDataQuestsById.ContainsKey(id);
             }
-
-            return false;
         }
 
         public bool IsDoingDataQuest(int id, int step)
         {
             lock (_questListLock)
             {
-                foreach (AbstractQuest quest in _questList.Keys)
-                {
-                    if (quest is DataQuest dataQuest && dataQuest.ID == id && dataQuest.Step == step)
-                        return true;
-                }
+                return _activeDataQuestsById.TryGetValue(id, out DataQuest dataQuest) && dataQuest.Step == step;
             }
-
-            return false;
         }
 
         public bool HasQuestToFinishAt(GameNPC npc)
@@ -11320,32 +11284,49 @@ namespace DOL.GS
             return handled;
         }
 
-        internal KeyValuePair<AbstractQuest, byte>[] RentActiveQuestEntries(out int count)
+        internal void SendQuestListUpdate(byte indexOffset, int visibleQuestCount, Action<AbstractQuest, byte> sendQuestPacket)
         {
             lock (_questListLock)
             {
-                count = _questList.Count;
-
-                if (count == 0)
-                    return null;
-
-                KeyValuePair<AbstractQuest, byte>[] snapshot = ArrayPool<KeyValuePair<AbstractQuest, byte>>.Shared.Rent(count);
-                int index = 0;
+                int lastIndex = visibleQuestCount + indexOffset;
+                Span<bool> sentIndexes = stackalloc bool[visibleQuestCount];
 
                 foreach (KeyValuePair<AbstractQuest, byte> entry in _questList)
-                    snapshot[index++] = entry;
+                {
+                    int adjustedQuestIndex = entry.Value + indexOffset;
 
-                return snapshot;
+                    if (adjustedQuestIndex < lastIndex)
+                    {
+                        sendQuestPacket(entry.Key, (byte) adjustedQuestIndex);
+                        sentIndexes[adjustedQuestIndex - indexOffset] = true;
+                    }
+                }
+
+                // If possible, move and send quests whose indexes are too high.
+                for (int questIndex = indexOffset; questIndex < lastIndex; questIndex++)
+                {
+                    int sentIndex = questIndex - indexOffset;
+
+                    if (sentIndexes[sentIndex])
+                        continue;
+
+                    AbstractQuest quest = GetFirstQuestAtOrAboveIndexUnsafe(visibleQuestCount);
+
+                    if (quest == null)
+                        continue;
+
+                    _questList[quest] = (byte) sentIndex;
+                    sendQuestPacket(quest, (byte) questIndex);
+                    sentIndexes[sentIndex] = true;
+                }
+
+                // Send null for unused indexes.
+                for (int questIndex = indexOffset; questIndex < lastIndex; questIndex++)
+                {
+                    if (!sentIndexes[questIndex - indexOffset])
+                        sendQuestPacket(null, (byte) questIndex);
+                }
             }
-        }
-
-        internal static void ReturnActiveQuestEntries(KeyValuePair<AbstractQuest, byte>[] snapshot)
-        {
-            if (snapshot == null)
-                return;
-
-            Array.Clear(snapshot, 0, snapshot.Length);
-            ArrayPool<KeyValuePair<AbstractQuest, byte>>.Shared.Return(snapshot);
         }
 
         private void ClearActiveQuests()
@@ -11353,6 +11334,8 @@ namespace DOL.GS
             lock (_questListLock)
             {
                 _questList.Clear();
+                _activeDataQuestsById.Clear();
+                _activeQuestsByType.Clear();
             }
         }
 
@@ -11361,18 +11344,56 @@ namespace DOL.GS
             lock (_questListLock)
             {
                 _questList[quest] = index;
+                AddActiveQuestIndexesUnsafe(quest);
             }
         }
 
         private AbstractQuest IsDoingQuestUnsafe(AbstractQuest quest)
         {
-            foreach (AbstractQuest questInList in _questList.Keys)
+            if (quest is DataQuest dataQuest)
             {
-                if (questInList.GetType().Equals(quest.GetType()) && questInList.IsDoingQuest())
-                    return questInList;
+                if (_activeDataQuestsById.TryGetValue(dataQuest.ID, out DataQuest activeDataQuest) && activeDataQuest.IsDoingQuest())
+                    return activeDataQuest;
+            }
+            else if (_activeQuestsByType.TryGetValue(quest.GetType(), out AbstractQuest activeQuest) && activeQuest.IsDoingQuest())
+                return activeQuest;
+
+            return null;
+        }
+
+        private AbstractQuest GetFirstQuestAtOrAboveIndexUnsafe(int index)
+        {
+            foreach (KeyValuePair<AbstractQuest, byte> entry in _questList)
+            {
+                if (entry.Value >= index)
+                    return entry.Key;
             }
 
             return null;
+        }
+
+        private void AddActiveQuestIndexesUnsafe(AbstractQuest quest)
+        {
+            if (quest is DataQuest dataQuest)
+                _activeDataQuestsById[dataQuest.ID] = dataQuest;
+            else
+                _activeQuestsByType[quest.GetType()] = quest;
+        }
+
+        private void RemoveActiveQuestIndexesUnsafe(AbstractQuest quest)
+        {
+            if (quest is DataQuest dataQuest)
+            {
+                if (_activeDataQuestsById.TryGetValue(dataQuest.ID, out DataQuest activeQuest) && ReferenceEquals(activeQuest, dataQuest))
+                    _activeDataQuestsById.Remove(dataQuest.ID);
+            }
+            else
+            {
+                Type questType = quest.GetType();
+
+                if (_activeQuestsByType.TryGetValue(questType, out AbstractQuest activeQuest) && ReferenceEquals(activeQuest, quest))
+                    _activeQuestsByType.Remove(questType);
+            }
         }
 
         private AbstractQuest[] RentActiveQuestSnapshot(out int count)
@@ -11584,6 +11605,9 @@ namespace DOL.GS
             lock (_questListLock)
             {
                 removed = _questList.Remove(quest, out index);
+
+                if (removed)
+                    RemoveActiveQuestIndexesUnsafe(quest);
             }
 
             if (removed && notifyPlayer)
@@ -11616,6 +11640,9 @@ namespace DOL.GS
                     return false;
 
                 added = _questList.TryAdd(quest, index);
+
+                if (added)
+                    AddActiveQuestIndexesUnsafe(quest);
             }
 
             if (!added)
@@ -11649,17 +11676,9 @@ namespace DOL.GS
         {
             lock (_questListLock)
             {
-                foreach (AbstractQuest quest in _questList.Keys)
-                {
-                    if (quest is not DataQuest)
-                    {
-                        if (quest.GetType().Equals(questType))
-                            return quest;
-                    }
-                }
+                _activeQuestsByType.TryGetValue(questType, out AbstractQuest quest);
+                return quest;
             }
-
-            return null;
         }
 
         #endregion
