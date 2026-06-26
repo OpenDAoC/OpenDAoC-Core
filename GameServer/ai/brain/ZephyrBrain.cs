@@ -23,7 +23,5 @@ namespace DOL.AI.Brain
                 _arriveAtTargetCallback(Body);
             }
         }
-
-        public override void KillFSM() { }
     }
 }

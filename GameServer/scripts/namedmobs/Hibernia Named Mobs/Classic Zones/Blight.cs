@@ -628,11 +628,6 @@ namespace DOL.AI.Brain
 				SpawnBlight();
 		}
 
-		public override void KillFSM()
-		{
-			
-		}
-
 		public void SpawnLateBlight()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))

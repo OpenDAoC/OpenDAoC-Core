@@ -24,7 +24,5 @@ namespace DOL.AI.Brain
         public BlankBrain() : base() { }
 
         public override void Think() { }
-
-        public override void KillFSM() { }
     }
 }

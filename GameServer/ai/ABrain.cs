@@ -79,7 +79,5 @@ namespace DOL.AI
         /// This method is called whenever the brain does some thinking
         /// </summary>
         public abstract void Think();
-
-        public abstract void KillFSM();
     }
 }

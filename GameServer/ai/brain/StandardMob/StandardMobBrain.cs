@@ -61,11 +61,6 @@ namespace DOL.AI.Brain
             return true;
         }
 
-        public override void KillFSM()
-        {
-            FSM.KillFSM();
-        }
-
         #region AI
 
         public override void Think()

@@ -138,11 +138,6 @@ namespace DOL.AI.Brain
                 allowTimer = true;
             }
         }
-
-        public override void KillFSM()
-        {
-            
-        }
     }
 }
 ////////////////////////////////////////////////////////////////////////////Effect Mob/////////////////////

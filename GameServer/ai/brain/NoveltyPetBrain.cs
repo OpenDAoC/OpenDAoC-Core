@@ -93,7 +93,6 @@ namespace DOL.AI.Brain
 		public void UpdatePetWindow() { }
 		public GamePlayer GetPlayerOwner() { return m_owner as GamePlayer; }
 		public bool IsMainPet { get { return false; } set { } }
-		public override void KillFSM(){ }
 		#endregion
 	}
 }

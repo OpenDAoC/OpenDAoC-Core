@@ -743,11 +743,6 @@ namespace DOL.AI.Brain
             }
         }
 
-        public override void KillFSM()
-        {
-            
-        }
-
         private int SpawnBoss(ECSGameTimer timer)
         {
             switch(Util.Random(1,2))
