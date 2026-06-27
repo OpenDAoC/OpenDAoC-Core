@@ -474,13 +474,6 @@ namespace DOL.GS
                 return;
             }
 
-            // Prevent network broadcast spam if the exact same destination / speed is passed.
-            if (CurrentSpeed == speed && IsDestinationValid && _destination == destination)
-            {
-                SetFlag(MovementState.WalkTo);
-                return;
-            }
-
             float distanceToTarget = (_ownerPosition - destination).Length();
 
             if (distanceToTarget > 25)
@@ -498,12 +491,20 @@ namespace DOL.GS
                 return;
             }
 
-            // Assume either the destination or speed has changed.
-            UpdateMovement(destination, distanceToTarget, speed);
+            // Only call UpdateMovement (which broadcasts to clients) if something actually changed.
+            if (CurrentSpeed != speed || !IsDestinationValid || _destination != destination)
+                UpdateMovement(destination, distanceToTarget, speed);
+
             SetFlag(MovementState.WalkTo);
 
             if (IsFlagSet(MovementState.Pathfinding) || (IsFlagSet(MovementState.OnPath) && CurrentPathPoint?.WaitTime == 0))
-                distanceToTarget -= NODE_REACHED_DISTANCE;
+            {
+                float subtracted = distanceToTarget - NODE_REACHED_DISTANCE;
+
+                // Only deduct the 16 unit lookahead early-arrival allowance if we aren't already inside it.
+                if (subtracted > 0)
+                    distanceToTarget = subtracted;
+            }
 
             _walkingToEstimatedArrivalTime = distanceToTarget <= 0 ? 0 : GameLoop.GameLoopTime + (long) (distanceToTarget * 1000f / speed);
         }
