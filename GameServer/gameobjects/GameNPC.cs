@@ -2216,22 +2216,22 @@ namespace DOL.GS
 
 					switch (Faction.GetStandingToFaction(player))
 					{
-						case Faction.Standing.AGGRESIVE:
+						case Faction.Standing.Aggresive:
 						{
 							translationString = "GameNPC.GetAggroLevelString.Aggressive1";
 							break;
 						}
-						case Faction.Standing.HOSTILE:
+						case Faction.Standing.Hostile:
 						{
 							translationString = "GameNPC.GetAggroLevelString.Hostile1";
 							break;
 						}
-						case Faction.Standing.NEUTRAL:
+						case Faction.Standing.Neutral:
 						{
 							translationString = "GameNPC.GetAggroLevelString.Neutral1";
 							break;
 						}
-						case Faction.Standing.FRIENDLY:
+						case Faction.Standing.Friendly:
 						{
 							translationString = "GameNPC.GetAggroLevelString.Friendly1";
 							break;
@@ -2483,7 +2483,7 @@ namespace DOL.GS
 			if (!base.Interact(player))
 				return false;
 
-			if (!GameServer.ServerRules.IsSameRealm(this, player, true) && Faction != null && Faction.GetStandingToFaction(player) >= Faction.Standing.HOSTILE)
+			if (!GameServer.ServerRules.IsSameRealm(this, player, true) && Faction != null && Faction.GetStandingToFaction(player) >= Faction.Standing.Hostile)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.DirtyLook",
 					GetName(0, true, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);

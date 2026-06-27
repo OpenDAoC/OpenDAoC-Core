@@ -607,7 +607,7 @@ namespace DOL.AI.Brain
             if (Body.Faction != null)
             {
                 if (realTarget is GamePlayer realTargetPlayer)
-                    return Body.Faction.GetStandingToFaction(realTargetPlayer) is Faction.Standing.AGGRESIVE;
+                    return Body.Faction.GetStandingToFaction(realTargetPlayer) is Faction.Standing.Aggresive;
                 else if (realTarget is GameNPC realTargetNpc && Body.Faction.EnemyFactions.Contains(realTargetNpc.Faction))
                     return true;
             }
