@@ -122,12 +122,9 @@ namespace DOL.GS
                     break;
             }
 
+            // Show H2H multihit attacks.
             if (_owner is GamePlayer playerOwner)
             {
-                // Unstealth before attack animation.
-                playerOwner.Stealth(false);
-
-                // Show H2H multihit attacks.
                 string multihitMessage = null;
 
                 if (_extraSwingCount == 2)
