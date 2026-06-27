@@ -122,9 +122,22 @@ namespace DOL.GS
                     break;
             }
 
-            // Unstealth before attack animation.
             if (_owner is GamePlayer playerOwner)
+            {
+                // Unstealth before attack animation.
                 playerOwner.Stealth(false);
+
+                // Show H2H multihit attacks.
+                string multihitMessage = null;
+
+                if (_extraSwingCount == 2)
+                    multihitMessage = "Triple attack!";
+                else if (_extraSwingCount == 3)
+                    multihitMessage = "Quad attack!";
+
+                if (!string.IsNullOrEmpty(multihitMessage))
+                    playerOwner.Out.SendMessage(multihitMessage, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            }
 
             // Show the animation.
             if (mainHandAttackData.AttackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle && extraAttackData != null)
