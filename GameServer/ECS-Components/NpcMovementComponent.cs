@@ -413,19 +413,11 @@ namespace DOL.GS
                 return;
             }
 
-            Vector3 absToDestination = Vector3.Abs(_destination - _ownerPosition);
-            Vector3 absMovementDelta = Vector3.Abs(movementDelta);
+            float distSqr = (_destination - _ownerPosition).LengthSquared();
+            float moveSqr = movementDelta.LengthSquared();
 
-            // Create a "mask" vector (1.0f or 0.0f) for each axis.
-            // 1.0f means we use the potential position.
-            // 0.0f means we have overshot and should clamp to destination.
-            Vector3 usePotential = new(
-                absToDestination.X >= absMovementDelta.X ? 1.0f : 0.0f,
-                absToDestination.Y >= absMovementDelta.Y ? 1.0f : 0.0f,
-                absToDestination.Z >= absMovementDelta.Z ? 1.0f : 0.0f
-            );
-
-            _ownerPosition = potentialPosition * usePotential + _destination * (Vector3.One - usePotential);
+            // If the distance we are about to move is greater than the distance to the target, we have arrived.
+            _ownerPosition = moveSqr >= distSqr ? _destination : potentialPosition;
             _lastPositionUpdateTick = GameLoop.GameLoopTime;
         }
 
