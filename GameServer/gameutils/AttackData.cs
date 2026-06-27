@@ -2,6 +2,7 @@
 using DOL.Database;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using static DOL.GS.WeaponAction;
 
 namespace DOL.GS
 {
@@ -40,7 +41,7 @@ namespace DOL.GS
         // Used by pets in `GameNPC.OnAttackedByEnemy` for convenience.
         public string BroadcastMessage { get; set; }
 
-        public bool IsMeleeAttack => AttackType is eAttackType.MeleeOneHand or eAttackType.MeleeTwoHand or eAttackType.MeleeDualWield;
+        public bool IsMeleeAttack => AttackType is eAttackType.MeleeOneHand or eAttackType.MeleeTwoHand or eAttackType.MeleeDualWield or eAttackType.MeleeHandToHand;
 
         public bool IsHit => AttackResult switch
         {
@@ -58,11 +59,17 @@ namespace DOL.GS
 
         public AttackData() { }
 
-        public static eAttackType GetAttackType(DbInventoryItem weapon, bool dualWield, GameLiving attacker)
+        public static eAttackType GetAttackType(DbInventoryItem weapon, WeaponAction action, GameLiving attacker)
         {
-            if (dualWield && (attacker is not GamePlayer playerAttacker || (eCharacterClass) playerAttacker.CharacterClass.ID is not eCharacterClass.Savage))
-                return eAttackType.MeleeDualWield;
-            else if (weapon == null)
+            if (action != null)
+            {
+                if (action.DualWieldMechanic is eDualWieldMechanic.Classic)
+                    return eAttackType.MeleeDualWield;
+                else if (action.DualWieldMechanic is eDualWieldMechanic.HandToHand)
+                    return eAttackType.MeleeHandToHand;
+            }
+
+            if (weapon == null)
                 return eAttackType.MeleeOneHand;
 
             eAttackType attackType = weapon.SlotPosition switch
@@ -74,7 +81,7 @@ namespace DOL.GS
 
             if (attacker is GamePlayer)
             {
-                // This should the only important one to check.
+                // This should the only important ones to check.
                 if (attackType is eAttackType.MeleeTwoHand)
                 {
                     if (weapon.Item_Type is not Slot.TWOHAND)
@@ -90,14 +97,15 @@ namespace DOL.GS
             return attackType;
         }
 
-        public enum eAttackType : int
+        public enum eAttackType : byte
         {
-            Unknown = 0,
-            MeleeOneHand = 1,
-            MeleeDualWield = 2,
-            MeleeTwoHand = 3,
-            Ranged = 4,
-            Spell = 5
+            Unknown,
+            MeleeOneHand,
+            MeleeDualWield,
+            MeleeHandToHand,
+            MeleeTwoHand,
+            Ranged,
+            Spell
         }
     }
 }

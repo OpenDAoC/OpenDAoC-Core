@@ -18,6 +18,7 @@ namespace DOL.GS
         private double _effectiveness;
         private int _interval;
         private Style _combatStyle;
+        private int _extraSwingCount;
 
         public long AttackRoundEndTime { get; private set; }
         public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
@@ -27,6 +28,9 @@ namespace DOL.GS
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
         public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
+
+        public eDualWieldMechanic DualWieldMechanic { get; private set; }
+        public bool HasConsumedBlockRound { get; set; }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
         {
@@ -38,6 +42,7 @@ namespace DOL.GS
             _interval = interval;
             _combatStyle = combatStyle;
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
+            _extraSwingCount = CalculateExtraSwings();
         }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
@@ -66,22 +71,25 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            bool isDualWieldAttack = IsDualWieldAttack(_attackWeapon, _leftWeapon, _owner); // Must be false for H2H.
-            int extraSwingCount = CalculateExtraSwings();
-
-            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, isDualWieldAttack, extraSwingCount > 0, out AttackData mainHandAttackData))
+            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, DualWieldMechanic is not eDualWieldMechanic.None, _extraSwingCount > 0, out AttackData mainHandAttackData))
                 return;
 
             AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
             AttackData extraAttackData = null;
             DbInventoryItem lastExtraWeapon = null;
 
-            for (int i = 0; i < extraSwingCount; i++)
+            for (int i = 0; i < _extraSwingCount; i++)
             {
                 if (i % 2 == 0)
-                    extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _leftWeapon, null, _effectiveness, _interval, isDualWieldAttack);
+                {
+                    lastExtraWeapon = _leftWeapon;
+                    extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _leftWeapon, null, _effectiveness, _interval);
+                }
                 else
-                    extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _attackWeapon, null, _effectiveness, _interval, isDualWieldAttack);
+                {
+                    lastExtraWeapon = _attackWeapon;
+                    extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _attackWeapon, null, _effectiveness, _interval);
+                }
 
                 MakeAttack(extraAttackData);
             }
@@ -143,6 +151,8 @@ namespace DOL.GS
 
         private int CalculateExtraSwings()
         {
+            DualWieldMechanic = eDualWieldMechanic.None;
+
             if (!_owner.attackComponent.CanUseLefthandedWeapon ||
                 _leftWeapon == null ||
                 (eObjectType) _leftWeapon.Object_Type is eObjectType.Shield)
@@ -155,28 +165,36 @@ namespace DOL.GS
                 if (_attackWeapon == null || _attackWeapon.SlotPosition is not Slot.RIGHTHAND)
                     return 0;
 
+                DualWieldMechanic = eDualWieldMechanic.Classic;
                 double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
 
-            if (_owner is not GamePlayer playerOwner || _attackWeapon == null)
+            if (_owner is not GamePlayer || _attackWeapon == null)
                 return 0;
 
             // Left Axe.
             if (_owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+            {
+                DualWieldMechanic = eDualWieldMechanic.Classic;
                 return 1;
+            }
 
             // DW / CD.
             double leftHandSwingChance = _owner.attackComponent.CalculateDwCdLeftHandSwingChance();
 
             if (leftHandSwingChance > 0)
+            {
+                DualWieldMechanic = eDualWieldMechanic.Classic;
                 return _owner.GetPseudoDouble(RandomDeckEvent.DualWield) < leftHandSwingChance ? 1 : 0;
+            }
 
             // H2H.
-            (double doubleChance, double tripleChance, double quadChance) = _owner.attackComponent.CalculateHthSwingChances(_leftWeapon);
+            (double doubleChance, double tripleChance, double quadChance) = _owner.attackComponent.CalculateHthSwingChances(_attackWeapon);
 
             if (doubleChance > 0)
             {
+                DualWieldMechanic = eDualWieldMechanic.HandToHand;
                 double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield);
 
                 if (random < doubleChance)
@@ -321,28 +339,6 @@ namespace DOL.GS
             }
         }
 
-        public static bool IsDualWieldAttack(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, GameLiving attacker)
-        {
-            if (mainWeapon == null || mainWeapon.Item_Type is Slot.TWOHAND || mainWeapon.SlotPosition is Slot.RANGED)
-                return false;
-
-            if (leftWeapon == null || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield)
-                return false;
-
-            if (attacker is GamePlayer)
-            {
-                // The two handed checks shouldn't be necessary.
-                return (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand &&
-                    (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand &&
-                    (eObjectType) mainWeapon.Object_Type is not eObjectType.TwoHandedWeapon &&
-                    (eObjectType) leftWeapon.Object_Type is not eObjectType.TwoHandedWeapon;
-            }
-            else if (attacker is GameNPC npcAttacker)
-                return npcAttacker.LeftHandSwingChance > 0;
-
-            return false;
-        }
-
         private bool MakeMainHandAttack(
             DbInventoryItem mainWeapon,
             DbInventoryItem leftWeapon,
@@ -375,7 +371,7 @@ namespace DOL.GS
                 }
             }
 
-            attackData = _owner.attackComponent.MakeAttack(this, _target, mainWeapon, style, mainHandEffectiveness, _interval, isDualWieldAttack);
+            attackData = _owner.attackComponent.MakeAttack(this, _target, mainWeapon, style, mainHandEffectiveness, _interval);
 
             if (style == null)
                 attackData.AnimationId = animationId;
@@ -518,7 +514,7 @@ namespace DOL.GS
                     // Don't call `WeaponAction.Execute` here.
                     // It applies damage adds and shields, but Reflex Attack shouldn't trigger them.
                     // It would also cause a stack overflow if the target has Reflex Attack too.
-                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(weaponAction, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, false, true);
+                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(weaponAction, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, true);
                     target.DealDamage(ReflexAttackAD);
 
                     // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually
@@ -532,6 +528,13 @@ namespace DOL.GS
                     break;
                 }
             }
+        }
+
+        public enum eDualWieldMechanic : byte
+        {
+            None,
+            Classic,
+            HandToHand
         }
     }
 }

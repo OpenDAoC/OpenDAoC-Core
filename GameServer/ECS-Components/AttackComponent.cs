@@ -805,7 +805,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public AttackData MakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool dualWield)
+        public AttackData MakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -825,7 +825,7 @@ namespace DOL.GS
                     playerOwner.Out.SendCloseTimerWindow();
                 }
 
-                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness, interval, dualWield);
+                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness, interval);
 
                 switch (ad.AttackResult)
                 {
@@ -960,7 +960,7 @@ namespace DOL.GS
                 else
                     effectiveness = 1;
 
-                return LivingMakeAttack(action, target, weapon, style, effectiveness, interval, dualWield);
+                return LivingMakeAttack(action, target, weapon, style, effectiveness, interval);
             }
         }
 
@@ -969,7 +969,7 @@ namespace DOL.GS
         /// attacktimer and should not be called manually
         /// </summary>
         /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool dualWield, bool ignoreLOS = false)
+        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool ignoreLOS = false)
         {
             AttackData ad = new()
             {
@@ -986,13 +986,13 @@ namespace DOL.GS
 
             if (style != null)
             {
-                StyleProcInfo styleProcInfo = style?.Procs.Where(x => x.Spell.SpellType is eSpellType.StyleRange).FirstOrDefault();
+                StyleProcInfo styleProcInfo = style?.Procs.FirstOrDefault(x => x.Spell.SpellType is eSpellType.StyleRange);
 
                 if (styleProcInfo != null)
                     attackRange = (int) styleProcInfo.Spell.Value; // Fixed range for some reason, don't add to attack range.
             }
 
-            ad.AttackType = AttackData.GetAttackType(weapon, dualWield, ad.Attacker);
+            ad.AttackType = AttackData.GetAttackType(weapon, action, ad.Attacker);
 
             // No target.
             if (ad.Target == null)
@@ -1405,7 +1405,7 @@ namespace DOL.GS
             target.Endurance = Math.Min(target.MaxEndurance, target.Endurance + enduranceConversion);
         }
 
-        public bool CheckBlock(AttackData ad)
+        public bool CheckBlock(WeaponAction action, AttackData ad)
         {
             double blockChance = owner.TryBlock(ad, false, out int shieldSize);
             ad.BlockChance = blockChance * 100;
@@ -1421,7 +1421,7 @@ namespace DOL.GS
                 // If we consume blocks, then the reduction is lower the lower the base block chance, and identical with a theoretical 100% block chance.
                 if (blockSucceeded)
                 {
-                    if (!_blockRoundHandler.Consume(shieldSize, ad, out int usedBlockRoundCount))
+                    if (!_blockRoundHandler.Consume(shieldSize, ad, action, out int usedBlockRoundCount))
                         blockSucceeded = false;
 
                     // `usedBlockRoundCount` is 0 if the block was allowed without consuming a round.
@@ -1444,8 +1444,8 @@ namespace DOL.GS
             {
                 // Nature's shield, 100% block chance, 120° frontal angle.
                 StyleProcInfo styleProcInfo =
-                    owner.styleComponent.NextCombatStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault() ??
-                    owner.styleComponent.NextCombatBackupStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault();
+                    owner.styleComponent.NextCombatStyle?.Procs.FirstOrDefault(x => x.Spell.SpellType is eSpellType.NaturesShield) ??
+                    owner.styleComponent.NextCombatBackupStyle?.Procs.FirstOrDefault(x => x.Spell.SpellType is eSpellType.NaturesShield);
 
                 if (styleProcInfo != null && owner.IsObjectInFront(ad.Attacker, 120))
                 {
@@ -1672,7 +1672,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (CheckBlock(ad))
+                if (CheckBlock(action, ad))
                     return eAttackResult.Blocked;
             }
 
@@ -2267,7 +2267,7 @@ namespace DOL.GS
             return 0;
         }
 
-        public (double doubleChance, double tripleChance, double quadChance) CalculateHthSwingChances(DbInventoryItem leftWeapon)
+        public (double doubleChance, double tripleChance, double quadChance) CalculateHthSwingChances(DbInventoryItem mainWeapon)
         {
             /*
              * https://www.darkageofcamelot.com/2020/07/31/friday-grab-bag-07312020/:
@@ -2318,12 +2318,14 @@ namespace DOL.GS
              * This would also make Dualist Reflex naturally "trickles down" to triple and quads hits.
              */
 
-            if (leftWeapon == null)
+            // The main hand enables H2H mechanics. Confirmed on Live (May 2026).
+
+            if (mainWeapon == null)
                 return (0, 0, 0);
 
             double spec = owner.GetModifiedSpecLevel(Specs.HandToHand);
 
-            if (spec <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
+            if (spec <= 0 || (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand)
                 return (0, 0, 0);
 
             spec *= 0.01;
@@ -2360,7 +2362,7 @@ namespace DOL.GS
                 _owner = owner;
             }
 
-            public bool Consume(int shieldSize, AttackData attackData, out int usedBlockRoundCount)
+            public bool Consume(int shieldSize, AttackData attackData, WeaponAction action, out int usedBlockRoundCount)
             {
                 // Block rounds work from the point of view of the attacker and use their attack speed, similar to how interrupts work.
                 // However, according to grab bags, it's supposed to be based on the defender's swing speed. But this sounds very wrong, since it implies haste buffs should make blocking more effective.
@@ -2371,9 +2373,9 @@ namespace DOL.GS
                     return true;
                 }
 
-                // There is no need to make dual wield even more effective against shields.
-                // Returning true allows the off-hand of dual wield attacks to be blocked without consuming a block.
-                if (attackData.AttackType is AttackData.eAttackType.MeleeDualWield && attackData.IsOffHand)
+                // Prevent multihit attacks from consuming more than one block round.
+                // The null check is to handle bolts.
+                if (action?.HasConsumedBlockRound == true)
                 {
                     usedBlockRoundCount = 0;
                     return true;
@@ -2388,6 +2390,7 @@ namespace DOL.GS
                     return false;
                 }
 
+                action?.HasConsumedBlockRound = true;
                 new BlockRoundCountDecrementTimer(_owner, Relinquish).Start(attackData.Interval);
                 return true;
             }
