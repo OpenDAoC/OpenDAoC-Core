@@ -93,18 +93,16 @@ namespace DOL.GS
             lock (_saveLoadLock)
             {
                 // Update our `GamePlayer` reference if it's new.
-                _aggroLevels.AddOrUpdate(player.ObjectId, Add, Update);
-            }
-
-            AggroLevel Add(string characterId)
-            {
-                return new(player, aggro);
-            }
-
-            AggroLevel Update(string characterId, AggroLevel oldValue)
-            {
-                oldValue.Player = player;
-                return oldValue;
+                _aggroLevels.AddOrUpdate(
+                    player.ObjectId,
+                    static (_, arg) => new(arg.Player, arg.Aggro),
+                    static (_, oldValue, arg) =>
+                    {
+                        oldValue.Player = arg.Player;
+                        return oldValue;
+                    },
+                    (Player: player, Aggro: aggro)
+                );
             }
         }
 
@@ -112,7 +110,12 @@ namespace DOL.GS
         {
             if (Util.Chance(20))
             {
-                AggroLevel playerAggro = _aggroLevels.GetOrAdd(player.ObjectId, (key) => new(player, _baseAggroLevel));
+                AggroLevel playerAggro = _aggroLevels.GetOrAdd(
+                    player.ObjectId,
+                    static (_, arg) => new(arg.Player, arg.BaseAggro),
+                    (Player: player, BaseAggro: _baseAggroLevel)
+                );
+
                 int oldAggro = playerAggro.Aggro;
                 int newAggro = oldAggro + amount;
 
