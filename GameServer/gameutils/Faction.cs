@@ -44,6 +44,9 @@ namespace DOL.GS
                 {
                     AggroLevel playerAggro = pair.Value;
 
+                    if (playerAggro.Player.Client.ClientState is GameClient.eClientState.Disconnected)
+                        _aggroLevels.TryRemove(pair);
+
                     if (!playerAggro.Dirty)
                         continue;
 
@@ -68,9 +71,6 @@ namespace DOL.GS
                         dbFactionAggroLevel.AggroLevel = aggro;
                         GameServer.Database.SaveObject(dbFactionAggroLevel);
                     }
-
-                    if (playerAggro.Player.Client.ClientState == GameClient.eClientState.Disconnected)
-                        _aggroLevels.TryRemove(pair);
 
                     count++;
                 }
