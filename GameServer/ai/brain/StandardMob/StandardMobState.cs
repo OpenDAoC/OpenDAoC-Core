@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            if (!_brain.Body.IsCasting && !_brain.Body.IsMoving && !_brain.Body.movementComponent.HasActiveResetHeadingAction)
+            if (!_brain.Body.IsCasting && !_brain.Body.IsMoving && !_brain.Body.movementComponent.HasActiveResetHeadingTimer)
             {
                 if (!_nextRoamingTickSet)
                 {

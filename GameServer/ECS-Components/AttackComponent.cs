@@ -1066,9 +1066,8 @@ namespace DOL.GS
             }
 
             // DamageImmunity Ability.
-            if ((GameLiving) target != null && ((GameLiving) target).HasAbility(Abilities.DamageImmunity))
+            if (ad.Target.HasAbility(Abilities.DamageImmunity))
             {
-                //if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(string.Format("{0} can't be attacked!", ad.Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                 ad.AttackResult = eAttackResult.NoValidTarget;
                 SendAttackingCombatMessages(action, ad);
                 return ad;

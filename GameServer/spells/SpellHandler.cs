@@ -495,7 +495,7 @@ namespace DOL.GS.Spells
 				{
 					GameLiving EffectOwner = SelectiveBlindness.EffectSource;
 
-					if (EffectOwner==Target)
+					if (EffectOwner == Target)
 					{
 						if (playerCaster != null && !quiet)
 							playerCaster.Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
@@ -505,7 +505,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (Target !=null && Target.HasAbility("DamageImmunity") && Spell.SpellType == eSpellType.DirectDamage && Spell.Radius == 0)
+			if (Target != null && Target.HasAbility(Abilities.DamageImmunity) && !Spell.IsAoE)
 			{
 				if (!quiet)
 					MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
@@ -1475,7 +1475,7 @@ namespace DOL.GS.Spells
 								list.Add(npc);
 							else if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							{
-								if (!npc.HasAbility("DamageImmunity"))
+								if (!npc.HasAbility(Abilities.DamageImmunity))
 									list.Add(npc);
 							}
 						}
@@ -1595,7 +1595,7 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							{
-								if (!npc.HasAbility("DamageImmunity"))
+								if (!npc.HasAbility(Abilities.DamageImmunity))
 									list.Add(npc);
 							}
 						}
@@ -1621,13 +1621,13 @@ namespace DOL.GS.Spells
 
 									if (EffectOwner == target)
 										(Caster as GamePlayer)?.Out.SendMessage($"{target.GetName(0, true)} is invisible to you!", eChatType.CT_Action, eChatLoc.CL_SystemWindow);
-									else if (!target.HasAbility("DamageImmunity"))
+									else if (!target.HasAbility(Abilities.DamageImmunity))
 										list.Add(target);
 								}
-								else if (!target.HasAbility("DamageImmunity"))
+								else if (!target.HasAbility(Abilities.DamageImmunity))
 									list.Add(target);
 							}
-							else if (!target.HasAbility("DamageImmunity"))
+							else if (!target.HasAbility(Abilities.DamageImmunity))
 								list.Add(target);
 						}
 					}
@@ -1842,7 +1842,7 @@ namespace DOL.GS.Spells
 						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							continue;
 
-						if (!npc.HasAbility("DamageImmunity"))
+						if (!npc.HasAbility(Abilities.DamageImmunity))
 							list.Add(npc);
 					}
 

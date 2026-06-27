@@ -26,7 +26,7 @@ namespace DOL.GS
         private long _walkingToEstimatedArrivalTime;
         private readonly MovementRequest _movementRequest = new();
         private readonly Pathfinder _pathfinder;
-        private ResetHeadingAction _resetHeadingAction;
+        private ResetHeadingTimer _resetHeadingTimer;
         private Vector3 _destinationForClient;
         private long _positionForClientTick;
         private Vector3 _positionForClient;
@@ -34,6 +34,7 @@ namespace DOL.GS
         private short _currentMovementDesiredSpeed;
         private PathVisualization _pathVisualization;
         private long _lastPositionUpdateTick = -1;
+        private AntiExploitImmunityTimer _antiExploitImmunity;
 
         public new GameNPC Owner { get; }
         public ref Vector3 Velocity => ref _velocity;
@@ -56,7 +57,7 @@ namespace DOL.GS
         public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && !CanMoveOnPath;
         public bool CanMoveOnPath => !string.IsNullOrEmpty(PathID);
         public double HorizontalVelocityForClient { get; private set; }
-        public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
+        public bool HasActiveResetHeadingTimer => _resetHeadingTimer?.IsAlive == true;
         public bool IsPathVisualizationActive => _pathVisualization != null;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
         public ref Vector3 PositionForClient => ref _positionForClientTick == GameLoop.GameLoopTime ? ref _positionForClient : ref _ownerPosition;
@@ -85,8 +86,8 @@ namespace DOL.GS
                 }
 
                 UnsetFlag(MovementState.TurnTo);
-                _resetHeadingAction.Stop();
-                _resetHeadingAction = null;
+                _resetHeadingTimer?.Stop();
+                _resetHeadingTimer = null;
             }
 
             if (IsFlagSet(MovementState.Request))
@@ -275,6 +276,7 @@ namespace DOL.GS
 
         public void CancelReturnToSpawnPoint()
         {
+            ClearAntiExploitImmunity();
             IsReturningToSpawnPoint = false;
         }
 
@@ -332,20 +334,20 @@ namespace DOL.GS
             {
                 SetFlag(MovementState.TurnTo);
 
-                if (_resetHeadingAction == null)
+                if (_resetHeadingTimer == null)
                 {
-                    _resetHeadingAction = CreateResetHeadingAction();
-                    _resetHeadingAction.Start(duration);
+                    _resetHeadingTimer = CreateResetHeadingTimer();
+                    _resetHeadingTimer.Start(duration);
                 }
                 else
                 {
                     // Attempt to extend the duration of our existing `ResetHeadingAction`.
-                    _resetHeadingAction.Start(duration);
+                    _resetHeadingTimer.Start(duration);
 
-                    if (!_resetHeadingAction.IsAlive)
+                    if (!_resetHeadingTimer.IsAlive)
                     {
-                        _resetHeadingAction = CreateResetHeadingAction();
-                        _resetHeadingAction.Start(duration);
+                        _resetHeadingTimer = CreateResetHeadingTimer();
+                        _resetHeadingTimer.Start(duration);
                     }
                 }
             }
@@ -458,6 +460,8 @@ namespace DOL.GS
 
         private void WalkToInternal(Vector3 destination, short speed)
         {
+            ClearAntiExploitImmunity();
+
             if (IsTurningDisabled)
                 return;
 
@@ -560,7 +564,7 @@ namespace DOL.GS
                 case PathfindingStatus.BufferTooSmall:
                 case PathfindingStatus.NoPathFound: // Happens when either the current position or the destination isn't on a mesh.
                 {
-                    HandleIncompletePath(this, destination);
+                    HandleUnreachableDestination(destination);
                     break;
                 }
                 case PathfindingStatus.NotSet:
@@ -589,66 +593,6 @@ namespace DOL.GS
 
                 if (component.IsMoving)
                     component.UpdateMovement(0);
-            }
-
-            static void HandleIncompletePath(NpcMovementComponent component, Vector3 destination)
-            {
-                // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
-                // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
-                // This helps against exploits and misplaced NPCs.
-
-                // Pets following their owner are teleported at their feet if both are out of combat.
-                // This allows them to keep up if they jump down a ledge or bridge.
-                // This can theoretically be exploited by players in combat, but it requires both the pet and the owner to leave combat.
-
-                if (component.Owner.Brain is not ControlledMobBrain petBrain)
-                {
-                    if (JumpToClosestReachableNode(component, destination))
-                        return;
-                }
-                else if (!component.Owner.InCombat && !petBrain.Owner.InCombat && 
-                         component.FollowTarget != null && petBrain.Owner == component.FollowTarget)
-                {
-                    if (TeleportPetToFloorBeneathOwner(component, petBrain))
-                        return;
-                }
-
-                PauseMovement(component, destination);
-            }
-
-            static bool JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
-            {
-                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
-                    return false;
-
-                component._ownerPosition = node.Value;
-                component.UpdateMovement(0);
-                component._pathfinder.ForceReplot = true;
-                return true;
-            }
-
-            static bool TeleportPetToFloorBeneathOwner(NpcMovementComponent component, ControlledMobBrain petBrain)
-            {
-                const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
-                const int MAX_FLOOR_SEARCH_DEPTH = 1024;
-                const int MIN_TELEPORT_DISTANCE = 128;
-
-                GamePlayer playerOwner = petBrain.GetPlayerOwner();
-
-                if (!component.Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
-                    return false;
-
-                Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
-                EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
-                Vector3? floor = PathfindingProvider.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH, filters);
-
-                if (!floor.HasValue || component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
-                    return false;
-
-                component._ownerPosition = floor.Value;
-                component.UpdateMovement(0);
-                component._pathfinder.ForceReplot = true;
-                return true;
             }
         }
 
@@ -691,7 +635,10 @@ namespace DOL.GS
                 const float MAX_SNAP_DISTANCE = 128f;
 
                 if (!PathfindingProvider.Instance.TrySnapToMesh(zone, ref targetPos, MAX_SNAP_DISTANCE))
+                {
+                    HandleUnreachableDestination(targetPos);
                     return Properties.GAMENPC_FOLLOWCHECK_TIME;
+                }
             }
 
             Vector3 relative = targetPos - _ownerPosition;
@@ -706,6 +653,7 @@ namespace DOL.GS
             // The way position is updated ensures that we never move past the destination, so we need to take potential small inaccuracies into account.
             if (distanceSquared <= (MinFollowDistance + 1) * (MinFollowDistance + 1))
             {
+                ClearAntiExploitImmunity();
                 TurnTo(FollowTarget);
 
                 if (IsMoving)
@@ -728,6 +676,86 @@ namespace DOL.GS
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
 
+        private void HandleUnreachableDestination(Vector3 destination)
+        {
+            // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
+            // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
+            // NPCs that can't be teleported receive a damage immunity ability and start regenerating HP.
+            // This helps against exploits and misplaced NPCs.
+
+            // Pets following their owner are teleported at their feet if both are out of combat.
+            // This allows them to keep up if they jump down a ledge or bridge.
+            // This can theoretically be exploited by players in combat, but it requires both the pet and the owner to leave combat.
+
+            if (Owner.Brain is not ControlledMobBrain petBrain)
+            {
+                if (JumpToClosestReachableNode(this, destination))
+                    return;
+
+                StartAntiExploitImmunity();
+            }
+            else if (!Owner.InCombat && !petBrain.Owner.InCombat && 
+                     FollowTarget != null && petBrain.Owner == FollowTarget)
+            {
+                if (TeleportPetToFloorBeneathOwner(this, petBrain))
+                    return;
+            }
+
+            TurnTo((int) destination.X, (int) destination.Y);
+            UnsetFlag(MovementState.Pathfinding);
+
+            if (IsMoving)
+                UpdateMovement(0);
+
+            static bool JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
+            {
+                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
+                    return false;
+
+                component._ownerPosition = node.Value;
+                component.UpdateMovement(0);
+                component._pathfinder.ForceReplot = true;
+                return true;
+            }
+
+            static bool TeleportPetToFloorBeneathOwner(NpcMovementComponent component, ControlledMobBrain petBrain)
+            {
+                const int MAX_TELEPORT_TRIGGER_RANGE = 1024;
+                const int MAX_FLOOR_SEARCH_DEPTH = 1024;
+                const int MIN_TELEPORT_DISTANCE = 128;
+
+                GamePlayer playerOwner = petBrain.GetPlayerOwner();
+
+                if (!component.Owner.IsWithinRadius(playerOwner, MAX_TELEPORT_TRIGGER_RANGE))
+                    return false;
+
+                Vector3 playerOwnerPos = new(playerOwner.X, playerOwner.Y, playerOwner.Z);
+                EDtPolyFlags[] filters = PathfindingProvider.Instance.DefaultFilters;
+                Vector3? floor = PathfindingProvider.Instance.GetFloorBeneath(playerOwner.CurrentZone, playerOwnerPos, MAX_FLOOR_SEARCH_DEPTH, filters);
+
+                if (!floor.HasValue || component.Owner.IsWithinRadius(floor.Value, MIN_TELEPORT_DISTANCE))
+                    return false;
+
+                component._ownerPosition = floor.Value;
+                component.UpdateMovement(0);
+                component._pathfinder.ForceReplot = true;
+                return true;
+            }
+        }
+
+        private void StartAntiExploitImmunity()
+        {
+            _antiExploitImmunity ??= new(this);
+        }
+
+        private void ClearAntiExploitImmunity()
+        {
+            if (_antiExploitImmunity?.IsAlive != true)
+                return;
+
+            _antiExploitImmunity.Stop();
+            _antiExploitImmunity = null;
+        }
 
         private void OnArrival()
         {
@@ -879,12 +907,12 @@ namespace DOL.GS
             PrepareValuesForClient(wasMoving, distanceToTarget);
         }
 
-        private ResetHeadingAction CreateResetHeadingAction()
+        private ResetHeadingTimer CreateResetHeadingTimer()
         {
-            return new(Owner, this, () =>
+            return new(this, () =>
             {
                 UnsetFlag(MovementState.TurnTo);
-                _resetHeadingAction = null;
+                _resetHeadingTimer = null;
             });
         }
 
@@ -925,17 +953,17 @@ namespace DOL.GS
             }
         }
 
-        private class ResetHeadingAction : ECSGameTimerWrapperBase
+        private class ResetHeadingTimer : ECSGameTimerWrapperBase
         {
             private NpcMovementComponent _movementComponent;
             private ushort _oldHeading;
             private long _oldMovementStartTick;
             private Action _onCompletion;
 
-            public ResetHeadingAction(GameObject actionSource, NpcMovementComponent movementComponent, Action onCompletion) : base(actionSource)
+            public ResetHeadingTimer(NpcMovementComponent movementComponent, Action onCompletion) : base(movementComponent.Owner)
             {
                 _movementComponent = movementComponent;
-                _oldHeading = actionSource.Heading;
+                _oldHeading = _movementComponent.Owner.Heading;
                 _oldMovementStartTick = movementComponent.MovementStartTick;
                 _onCompletion = onCompletion;
             }
@@ -955,6 +983,47 @@ namespace DOL.GS
 
                 _onCompletion();
                 return 0;
+            }
+        }
+
+        private class AntiExploitImmunityTimer : ECSGameTimerWrapperBase
+        {
+            const int INTERVAL = 1000;
+            const int INITIAL_INTERVAL = 3000;
+            const double PERCENT_PER_TICK = 0.05;
+
+            private NpcMovementComponent _movementComponent;
+            private GameNPC _owner;
+            private bool _wasAbilityGiven;
+
+            public AntiExploitImmunityTimer(NpcMovementComponent movementComponent) : base(movementComponent.Owner)
+            {
+                _movementComponent = movementComponent;
+                _owner = _movementComponent.Owner;
+
+                Start(INITIAL_INTERVAL);
+
+                // Don't add the ability if the NPC is naturally immune to damage.
+                if (_owner.HasAbility(Abilities.DamageImmunity))
+                    return;
+
+                _owner.AddAbility(SkillBase.GetAbility(Abilities.DamageImmunity));
+                _wasAbilityGiven = true;
+            }
+
+            public new void Stop()
+            {
+                if (_wasAbilityGiven)
+                    _owner.RemoveAbility(Abilities.DamageImmunity);
+
+                base.Stop();
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                GameNPC owner = _movementComponent.Owner;
+                owner.ChangeHealth(owner, eHealthChangeType.Regenerate, (int) Math.Ceiling(owner.MaxHealth * PERCENT_PER_TICK));
+                return INTERVAL;
             }
         }
 
