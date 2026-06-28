@@ -2329,11 +2329,14 @@ namespace DOL.GS
                 return (0, 0, 0);
 
             spec *= 0.01;
-            double doubleSwingChance = spec * 0.5;
+
+            // Adding 8/13 of the bonus to the double hit chance and letting it trickle down gives triple and quad 4/13 and 1/13 respectively.
+            // If we compare this to adding the full value to the double hit chance after calcualting the triple and quad hit chances,
+            // this makes Dualist's Reflexes scale better, but with an identical single hit chance.
+            double bonus = owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01 * (8 / 13.0);
+            double doubleSwingChance = spec * 0.5 + bonus;
             double tripleSwingChance = doubleSwingChance * 0.5;
             double quadSwingChance = tripleSwingChance * 0.25;
-            double bonus = owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
-            doubleSwingChance += bonus; // It's apparently supposed to only affect double swing chance around 1.65, which puts it more in line with DW / CD.
             return (doubleSwingChance, tripleSwingChance, quadSwingChance);
         }
 
