@@ -200,7 +200,7 @@ namespace DOL.GS
             }
 
             // H2H.
-            (double doubleChance, double tripleChance, double quadChance) = _owner.attackComponent.CalculateHthSwingChances(_attackWeapon);
+            (double doubleChance, double tripleChance, double quadChance) = _owner.attackComponent.CalculateHthSwingChances();
 
             if (doubleChance > 0)
             {

@@ -2267,7 +2267,7 @@ namespace DOL.GS
             return 0;
         }
 
-        public (double doubleChance, double tripleChance, double quadChance) CalculateHthSwingChances(DbInventoryItem mainWeapon)
+        public (double doubleChance, double tripleChance, double quadChance) CalculateHthSwingChances()
         {
             /*
              * https://www.darkageofcamelot.com/2020/07/31/friday-grab-bag-07312020/:
@@ -2318,14 +2318,17 @@ namespace DOL.GS
              * This would also make Dualist Reflex naturally "trickles down" to triple and quads hits.
              */
 
-            // The main hand enables H2H mechanics. Confirmed on Live (May 2026).
-
-            if (mainWeapon == null)
-                return (0, 0, 0);
+            /*
+             * https://web.archive.org/web/20030412091059/http://vnboards.ign.com/message.asp?topic=40584140&replies=0
+             * Can you hit 3 or 4 times when using non-HTH weapons? (two axes or a hammer/sword for instance)
+             * Yes. You can even use non-HTH styles and still hit multiple times.
+             * 
+             * This behavior is still accurate on Live (June 2026).
+             */
 
             double spec = owner.GetModifiedSpecLevel(Specs.HandToHand);
 
-            if (spec <= 0 || (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand)
+            if (spec <= 0)
                 return (0, 0, 0);
 
             spec *= 0.01;

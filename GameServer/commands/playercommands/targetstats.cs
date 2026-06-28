@@ -84,7 +84,7 @@ namespace DOL.GS.Commands
                     AddMainHandInfo(info, client, target, mainWeapon, attackType);
 
                 if (target.attackComponent.CanUseLefthandedWeapon)
-                    AddOffHandInfo(info, client, target, mainWeapon, leftWeapon, attackType);
+                    AddOffHandInfo(info, client, target, leftWeapon, attackType);
 
                 static void AddWeaponInfo(List<string> info, string header, GameClient client, GameLiving target, DbInventoryItem weapon, AttackData.eAttackType attackType)
                 {
@@ -121,12 +121,12 @@ namespace DOL.GS.Commands
                     info.Add(defensePenetrationString);
                 }
 
-                static void AddMainHandInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem weapon, AttackData.eAttackType attackType)
+                static void AddMainHandInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem rightWeapon, AttackData.eAttackType attackType)
                 {
-                    AddWeaponInfo(info, "+ Attack (main hand):", client, target, weapon, attackType);
+                    AddWeaponInfo(info, "+ Attack (main hand):", client, target, rightWeapon, attackType);
                 }
 
-                static void AddOffHandInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, AttackData.eAttackType attackType)
+                static void AddOffHandInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem leftWeapon, AttackData.eAttackType attackType)
                 {
                     if (target is GameNPC npcTarget)
                     {
@@ -157,7 +157,7 @@ namespace DOL.GS.Commands
                             }
                             case AttackData.eAttackType.MeleeHandToHand:
                             {
-                                (double doubleChance, double tripleChance, double quadChance) = target.attackComponent.CalculateHthSwingChances(mainWeapon);
+                                (double doubleChance, double tripleChance, double quadChance) = target.attackComponent.CalculateHthSwingChances();
 
                                 if (doubleChance > 0)
                                     info.Add($"Double swing:  {doubleChance * 100:0.00}%  |  Triple swing:  {tripleChance * 100:0.00}%  |  Quad swing:  {quadChance * 100:0.00}%");
