@@ -67,6 +67,23 @@ namespace DOL.GS
 
         private static void TickEffect(ECSGameEffect effect)
         {
+            if (effect.IsEnded)
+            {
+                // When an effect is requested to end, it's removed immediately from the component and marked as ended,
+                // but it's only removed from ServiceObjectStore on the next tick.
+
+                // Because EffectService ticks before EffectListComponent,
+                // we need to check its state to ensure it wasn't requested to end.
+                // Otherwise, pulsing effects may tick on entities that just died (causing them to die again if the effect is a DoT).
+
+                // Removing effects from the store as soon as they're requested to end was attempted, but caused other issues,
+                // such as double poison application keeping both effect instances alive, and doesn't exempt from performing this check.
+                // See commit 3104fc40059361fcc96d29c4b189770bc6094dad
+
+                ServiceObjectStore.Remove(effect);
+                return;
+            }
+
             if (effect is ECSGameAbilityEffect abilityEffect)
                 TickAbilityEffect(abilityEffect);
             else if (effect is ECSGameSpellEffect spellEffect)

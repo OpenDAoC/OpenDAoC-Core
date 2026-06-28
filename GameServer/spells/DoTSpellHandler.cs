@@ -4,7 +4,6 @@ using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using static DOL.GS.GameObject;
 
 namespace DOL.GS.Spells
 {
@@ -150,9 +149,6 @@ namespace DOL.GS.Spells
 
         public override void OnDirectEffect(GameLiving target)
         {
-            if (target == null || !target.IsAlive || target.ObjectState is not eObjectState.Active)
-                return;
-
             AttackData ad = CalculateDamageToTarget(target);
 
             if (!_criticalDamagePercentByTarget.TryGetValue(target, out double criticalDamagePercent))
