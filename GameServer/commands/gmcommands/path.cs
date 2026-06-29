@@ -10,9 +10,9 @@ namespace DOL.GS.Commands
         "&path",
         ePrivLevel.GM,
         "There are several path functions",
-        "/path create - creates a new temporary path, deleting any existing temporary path",
+        "/path create [speedlimit] [wait time in second] [trigger name] - creates a new temporary path, deleting any existing temporary path",
         "/path load <pathname> - loads a path from db",
-        "/path add [speedlimit] [wait time in second] - adds a point at the end of the current path",
+        "/path add [speedlimit] [wait time in second] [trigger name] - adds a point at the end of the current path",
         "/path save <pathname> - saves a path to db",
         "/path travel - makes a target npc travel the current path",
         "/path stop - clears the path for a targeted npc and tells npc to walk to spawn",
@@ -80,12 +80,37 @@ namespace DOL.GS.Commands
                 obj.Delete();
         }
 
-        private void PathCreate(GameClient client)
+        private void PathCreate(GameClient client, string[] args)
         {
+            short maxSpeed = 1000;
+            int waitTime = 0;
+            string triggerName = string.Empty;
+
+            if (args.Length > 2)
+            {
+                if (!short.TryParse(args[2], out maxSpeed))
+                {
+                    DisplayMessage(client, $"No valid speedlimit '{args[2]}'!");
+                    return;
+                }
+            }
+
+            if (args.Length > 3)
+            {
+                if (!int.TryParse(args[3], out waitTime))
+                {
+                    DisplayMessage(client, $"No valid wait time '{args[3]}'!");
+                    return;
+                }
+            }
+
+            if (args.Length > 4)
+                triggerName = args[4];
+
             //Remove old temp objects
             RemoveAllPathPointObjects(client);
 
-            PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 1000, EPathType.Once);
+            PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, maxSpeed, EPathType.Once, waitTime * 10, triggerName);
             client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
             client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
             client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -101,35 +126,32 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            short speedlimit = 1000;
-            int waittime = 0;
+            short maxSpeed = 1000;
+            int waitTime = 0;
+            string triggerName = string.Empty;
+
             if (args.Length > 2)
             {
-                try
+                if (!short.TryParse(args[2], out maxSpeed))
                 {
-                    speedlimit = short.Parse(args[2]);
-                }
-                catch
-                {
-                    DisplayMessage(client, "No valid speedlimit '{0}'!", args[2]);
+                    DisplayMessage(client, $"No valid speedlimit '{args[2]}'!");
                     return;
-                }
-
-                if (args.Length > 3)
-                {
-                    try
-                    {
-                        waittime = int.Parse(args[3]);
-                    }
-                    catch
-                    {
-                        DisplayMessage(client, "No valid wait time '{0}'!", args[3]);
-                    }
                 }
             }
 
-            PathPoint newpp = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, speedlimit, path.Type);
-            newpp.WaitTime = waittime * 10;
+            if (args.Length > 3)
+            {
+                if (!int.TryParse(args[3], out waitTime))
+                {
+                    DisplayMessage(client, $"No valid wait time '{args[3]}'!");
+                    return;
+                }
+            }
+
+            if (args.Length > 4)
+                triggerName = args[4];
+
+            PathPoint newpp = new(client.Player.X, client.Player.Y, client.Player.Z, maxSpeed, path.Type, waitTime * 10, triggerName);
             path.Next = newpp;
             newpp.Prev = path;
             client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, newpp);
@@ -397,7 +419,7 @@ namespace DOL.GS.Commands
             {
                 case "create":
                 {
-                    PathCreate(client);
+                    PathCreate(client, args);
                     break;
                 }
                 case "add":

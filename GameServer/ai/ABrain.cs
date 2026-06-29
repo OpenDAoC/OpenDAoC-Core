@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.Movement;
 
 namespace DOL.AI
 {
@@ -66,6 +67,8 @@ namespace DOL.AI
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
             return ServiceObjectStore.Remove(this);
         }
+
+        public virtual void OnPathPointReached(PathPoint pathPoint) { }
 
         /// <summary>
         /// Receives all messages of the body

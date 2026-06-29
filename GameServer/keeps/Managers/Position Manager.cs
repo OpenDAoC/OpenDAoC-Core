@@ -342,15 +342,13 @@ namespace DOL.GS.Keeps
 			for (int i = 0; i < sorted.Count; i++)
 			{
 				DbPathPoint pp = (DbPathPoint)sorted.GetByIndex(i);
-				PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, (short) pp.MaxSpeed, pathType);
+				PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, (short) pp.MaxSpeed, pathType, pp.WaitTime, pp.TriggerName);
 
 				int x, y;
 				LoadXY(component, pp.X, pp.Y, out x, out y);
 				p.X = x;
 				p.Y = y;
 				p.Z = component.Keep.Z + p.Z;
-
-				p.WaitTime = pp.WaitTime;
 
 				if (first == null)
 				{
@@ -389,7 +387,7 @@ namespace DOL.GS.Keeps
 			int i = 1;
 			do
 			{
-				DbPathPoint dbpp = new DbPathPoint(path.X, path.Y, path.Z, path.MaxSpeed);
+				DbPathPoint dbpp = new DbPathPoint(path.X, path.Y, path.Z, path.MaxSpeed, path.WaitTime, path.TriggerName);
 				int x, y;
 				SaveXY(component, dbpp.X, dbpp.Y, out x, out y);
 				dbpp.X = x;
@@ -397,8 +395,7 @@ namespace DOL.GS.Keeps
 				dbpp.Z = dbpp.Z - component.Z;
 
 				dbpp.Step = i++;
-				dbpp.PathID = pathID;
-				dbpp.WaitTime = path.WaitTime;
+				dbpp.PathId = pathID;
 				GameServer.Database.AddObject(dbpp);
 				path = path.Next;
 			} while (path != null && path != root);

@@ -356,7 +356,7 @@ namespace DOL.GS.Commands
 								{
 									RemoveAllTempPathObjects(client);
 
-									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, short.MaxValue, EPathType.Once);
+									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, short.MaxValue, EPathType.Loop);
 									client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
 									client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
 									client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.CreationStarted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -423,7 +423,6 @@ namespace DOL.GS.Commands
 										return;
 									}
 
-									path.Type = EPathType.Loop;
 									PositionMgr.SavePatrolPath(guard.TemplateID, path, guard.Component);
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.Saved"));
 									RemoveAllTempPathObjects(client);

@@ -774,6 +774,8 @@ namespace DOL.GS
             {
                 if (CurrentPathPoint != null)
                 {
+                    Owner.Brain.OnPathPointReached(CurrentPathPoint);
+
                     if (CurrentPathPoint.WaitTime == 0)
                     {
                         MoveToNextPathPoint();

@@ -33,15 +33,5 @@ namespace DOL.Database
 			get { return m_type; }
 			set { m_type = value; }
 		}
-
-		/// <summary>
-		/// Used in PathDesigner tool, only. Not in DoL code
-		/// </summary>
-		[DataElement(AllowDbNull = false)]
-		public ushort RegionID
-		{
-			get { return m_region; }
-			set { m_region = value; }
-		}
 	}
 }
