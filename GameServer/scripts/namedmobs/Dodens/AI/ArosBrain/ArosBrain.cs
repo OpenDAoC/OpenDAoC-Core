@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Reflection;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
@@ -10,11 +9,6 @@ namespace DOL.AI.Brain
 {
     public class ArosBrain : StandardMobBrain
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         /// Create a new ArosBrain.
         /// </summary>
@@ -26,9 +20,9 @@ namespace DOL.AI.Brain
 
             FSM.ClearStates();
             FSM.Add(new StandardMobState_WAKING_UP(this));
+            FSM.Add(new StandardMobState_RETURN_TO_SPAWN(this));
             FSM.Add(new ArosState_IDLE(this));
             FSM.Add(new ArosState_AGGRO(this));
-            FSM.Add(new ArosState_RETURN_TO_SPAWN(this));
         }
 
         /// <summary>

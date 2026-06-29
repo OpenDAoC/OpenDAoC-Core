@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using DOL.AI;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
@@ -74,13 +73,6 @@ namespace DOL.GS.Scripts
             get { return 40000; }
         }
         public override int MeleeAttackRange => 350;
-        public override bool HasAbility(string keyName)
-        {
-            if (IsReturningToSpawnPoint && keyName == GS.Abilities.CCImmunity)
-                return true;
-
-            return base.HasAbility(keyName);
-        }
 
         /// <summary>
         /// Invoked when Aros the Spiritmaster dies.
@@ -139,13 +131,6 @@ namespace DOL.GS.Scripts
         public override void ReturnToSpawnPoint(short speed)
         {
             base.ReturnToSpawnPoint(MaxSpeed);
-        }
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-            if (IsReturningToSpawnPoint)
-                return;
-
-            base.OnAttackedByEnemy(ad);
         }
 
         #region Health

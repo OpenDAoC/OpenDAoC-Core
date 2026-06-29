@@ -20,9 +20,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            //if we're walking home, do nothing else
-            if (_brain.Body.IsReturningToSpawnPoint) return;
-
             //if Aros is full health, reset the encounter stages
             if (_brain.Body.HealthPercent == 100 && _brain.Stage < 10)
                 _brain.Stage = 10;
@@ -79,28 +76,5 @@ namespace DOL.AI.Brain
             }
         }
 
-    }
-
-    public class ArosState_RETURN_TO_SPAWN : ArosState
-    {
-        public override eFSMStateType StateType => eFSMStateType.RETURN_TO_SPAWN;
-
-        public ArosState_RETURN_TO_SPAWN(ArosBrain brain) : base(brain) { }
-
-        public override void Enter()
-        {
-            _brain.Body.StopFollowing();
-            _brain.ClearAggroList();
-            _brain.Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
-        }
-
-        public override void Think()
-        {
-            if (_brain.Body.IsNearSpawn)
-            {
-                _brain.Body.CancelReturnToSpawnPoint();
-                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-            }
-        }
     }
 }

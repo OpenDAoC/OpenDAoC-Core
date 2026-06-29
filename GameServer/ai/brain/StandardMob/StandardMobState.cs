@@ -191,10 +191,8 @@ namespace DOL.AI.Brain
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
                 _brain.Body.TurnTo(_brain.Body.SpawnHeading);
-                return;
             }
-
-            if (!_brain.Body.IsReturningToSpawnPoint)
+            else if (!_brain.Body.IsMoving)
                 _brain.Body.ReturnToSpawnPoint(Speed);
 
             base.Think();

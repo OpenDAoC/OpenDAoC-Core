@@ -1482,81 +1482,79 @@ namespace DOL.GS
 
 			HandleCrowdControlOnAttacked(ad);
 
-			if (ad.IsHit && ad.CausesCombat)
+			if (!ad.IsHit || !ad.CausesCombat)
+				return;
+
+			TryCancelMovementSpeedBuffs(ad, false);
+
+			if (ad.AttackType is not eAttackType.Spell || ad.Damage != 0)
 			{
-				TryCancelMovementSpeedBuffs(ad, false);
+				if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+					Stealth(false);
+			}
 
-				if (ad.AttackType is not eAttackType.Spell || ad.Damage != 0)
+			if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
+				gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
+
+			attackComponent.AddAttacker(ad);
+
+			if (ad.Attacker != this)
+			{
+				if (ad.Attacker.Realm is eRealm.None || Realm is eRealm.None)
+					LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+				else
+					LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+			}
+
+			// Melee attack that actually caused damage.
+			if (ad.IsMeleeAttack && ad.Damage > 0)
+			{
+				// Handle ablatives.
+				List<ECSGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+
+				for (int i = 0; i < effects.Count; i++)
 				{
-					if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
-						Stealth(false);
-				}
+					if (effects[i] is not AblativeArmorECSGameEffect effect)
+						continue;
 
-				if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
-					gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
+					AblativeArmorSpellHandler ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpellHandler;
 
-				attackComponent.AddAttacker(ad);
+					if (!ablativeArmorSpellHandler.MatchingDamageType(ref ad))
+						continue;
 
-				if (ad.Attacker != this)
-				{
-					if (ad.Attacker.Realm is eRealm.None || Realm is eRealm.None)
-						LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+					int ablativeHp = effect.RemainingValue;
+					double absorbPercent = AblativeArmorSpellHandler.ValidateSpellDamage((int) effect.SpellHandler.Spell.Damage);
+					int damageAbsorbed = (int) (0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
+
+					if (damageAbsorbed > ablativeHp)
+						damageAbsorbed = ablativeHp;
+
+					ablativeHp -= damageAbsorbed;
+					ad.Damage -= damageAbsorbed;
+
+					(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+
+					if (ad.Target is GamePlayer playerTarget)
+						playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+					if (ad.Attacker is GamePlayer playerAttacker)
+						playerAttacker.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+
+					if (ablativeHp <= 0)
+						effect.End();
 					else
-						LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				}
-
-				// Melee attack that actually caused damage.
-				if (ad.IsMeleeAttack && ad.Damage > 0)
-				{
-					// Handle ablatives.
-					List<ECSGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
-
-					for (int i = 0; i < effects.Count; i++)
-					{
-						if (effects[i] is not AblativeArmorECSGameEffect effect)
-							continue;
-
-						AblativeArmorSpellHandler ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpellHandler;
-
-						if (!ablativeArmorSpellHandler.MatchingDamageType(ref ad))
-							continue;
-
-						int ablativeHp = effect.RemainingValue;
-						double absorbPercent = AblativeArmorSpellHandler.ValidateSpellDamage((int)effect.SpellHandler.Spell.Damage);
-						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
-
-						if (damageAbsorbed > ablativeHp)
-							damageAbsorbed = ablativeHp;
-
-						ablativeHp -= damageAbsorbed;
-						ad.Damage -= damageAbsorbed;
-
-						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
-
-						if (ad.Target is GamePlayer playerTarget)
-							playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-						if (ad.Attacker is GamePlayer playerAttacker)
-							playerAttacker.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-						if (ablativeHp <= 0)
-							effect.End();
-						else
-							effect.RemainingValue = ablativeHp;
-					}
-				}
-
-				// Handle DefensiveProcs.
-				List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
-
-				if (ad.Target == this && dProcEffects != null && ad.AttackType is not eAttackType.Spell)
-				{
-					for (int i = 0; i < dProcEffects.Count; i++)
-						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+						effect.RemainingValue = ablativeHp;
 				}
 			}
-			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
-				npc.CancelReturnToSpawnPoint();
+
+			// Handle DefensiveProcs.
+			List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
+
+			if (ad.Target == this && dProcEffects != null && ad.AttackType is not eAttackType.Spell)
+			{
+				for (int i = 0; i < dProcEffects.Count; i++)
+					(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+			}
 		}
 
 		private void HandleControlledPetCombatMessageOnAttacked(AttackData ad)

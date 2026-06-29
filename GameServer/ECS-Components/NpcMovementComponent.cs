@@ -44,7 +44,6 @@ namespace DOL.GS
         public int MaxFollowDistance { get; private set; }
         public string PathID { get; set; }
         public PathPoint CurrentPathPoint { get; set; }
-        public bool IsReturningToSpawnPoint { get; private set; }
         public int RoamingRange { get; set; }
         public long MovementStartTick { get; set; }
         public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
@@ -164,7 +163,6 @@ namespace DOL.GS
             _movementState = MovementState.None;
             StopFollowing();
             StopMovingOnPath();
-            CancelReturnToSpawnPoint();
 
             if (IsMoving)
                 UpdateMovement(0);
@@ -270,14 +268,7 @@ namespace DOL.GS
             Owner.TargetObject = null;
             Owner.attackComponent.StopAttack();
             (Owner.Brain as StandardMobBrain)?.ClearAggroList();
-            IsReturningToSpawnPoint = true;
             PathTo(new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), speed);
-        }
-
-        public void CancelReturnToSpawnPoint()
-        {
-            ClearAntiExploitImmunity();
-            IsReturningToSpawnPoint = false;
         }
 
         public void Roam(short speed)
@@ -421,6 +412,12 @@ namespace DOL.GS
             // If the distance we are about to move is greater than the distance to the target, we have arrived.
             _ownerPosition = moveSqr >= distSqr ? _destination : potentialPosition;
             _lastPositionUpdateTick = GameLoop.GameLoopTime;
+        }
+
+        protected override void RemoveFromServiceObjectStore()
+        {
+            base.RemoveFromServiceObjectStore();
+            ClearAntiExploitImmunity();
         }
 
         private void ProcessMovementRequest()
@@ -769,15 +766,6 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.Follow))
                 return;
-
-            if (IsReturningToSpawnPoint)
-            {
-                _ownerPosition = _destination;
-                UpdateMovement(0);
-                CancelReturnToSpawnPoint();
-                TurnTo(Owner.SpawnHeading);
-                return;
-            }
 
             if (IsFlagSet(MovementState.OnPath))
             {

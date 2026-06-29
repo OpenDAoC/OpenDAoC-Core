@@ -204,12 +204,6 @@ namespace DOL.GS.Commands
 				*/
 					info.Add("");
 					info.Add(" ------ State ------");
-					if (target.IsReturningToSpawnPoint)
-					{
-						info.Add("IsReturningToSpawnPoint: " + target.IsReturningToSpawnPoint);
-						info.Add("");
-					}
-
 					info.Add("InCombat: " + target.InCombat);
 					info.Add("AttackState: " + target.attackComponent.AttackState);
 					info.Add("LastCombatPVE: " + target.LastCombatTickPvE);

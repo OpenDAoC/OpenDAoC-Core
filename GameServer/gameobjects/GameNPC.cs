@@ -805,7 +805,6 @@ namespace DOL.GS
 			get => movementComponent.CurrentPathPoint;
 			set => movementComponent.CurrentPathPoint = value;
 		}
-		public bool IsReturningToSpawnPoint => movementComponent.IsReturningToSpawnPoint;
 		public int RoamingRange
 		{
 			get => movementComponent.RoamingRange;
@@ -866,11 +865,6 @@ namespace DOL.GS
 		public virtual void ReturnToSpawnPoint(short speed)
 		{
 			movementComponent.ReturnToSpawnPoint(speed);
-		}
-
-		public virtual void CancelReturnToSpawnPoint()
-		{
-			movementComponent.CancelReturnToSpawnPoint();
 		}
 
 		public virtual void Roam(short speed)

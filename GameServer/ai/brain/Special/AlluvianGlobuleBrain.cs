@@ -33,7 +33,7 @@ namespace DOL.AI.Brain
 					Grow();
 				}
 			}
-			if (!Body.IsReturningToSpawnPoint)
+			if (FSM?.GetCurrentState().StateType is eFSMStateType.RETURN_TO_SPAWN)
 			{
 				if (!Body.attackComponent.AttackState && AggroRange > 0)
 				{

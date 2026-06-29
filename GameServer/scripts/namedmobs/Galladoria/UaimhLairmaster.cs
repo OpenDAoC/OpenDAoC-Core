@@ -1,6 +1,5 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts.DOL.AI.Brain;
@@ -100,14 +99,6 @@ namespace DOL.GS.Scripts
         public override void ReturnToSpawnPoint(short speed)
         {
             base.ReturnToSpawnPoint(MaxSpeed);
-        }
-
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-            if (IsReturningToSpawnPoint)
-                return;
-
-            base.OnAttackedByEnemy(ad);
         }
 
         #region Broadcast Message

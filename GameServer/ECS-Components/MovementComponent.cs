@@ -78,7 +78,7 @@ namespace DOL.GS
             ServiceObjectStore.Add(this);
         }
 
-        protected void RemoveFromServiceObjectStore()
+        protected virtual void RemoveFromServiceObjectStore()
         {
             ServiceObjectStore.Remove(this);
         }

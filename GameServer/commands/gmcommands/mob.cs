@@ -2959,12 +2959,6 @@ namespace DOL.GS.Commands
 				text.Add("");
 			}
 
-			if (targetMob.IsReturningToSpawnPoint)
-			{
-				text.Add("IsReturningToSpawnPoint: " + targetMob.IsReturningToSpawnPoint);
-				text.Add("");
-			}
-
 			text.Add("InCombat: " + targetMob.InCombat);
 			text.Add("AttackState: " + targetMob.attackComponent.AttackState);
 			text.Add("LastCombatPVE: " + targetMob.LastCombatTickPvE);

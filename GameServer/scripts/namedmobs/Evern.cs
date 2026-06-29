@@ -41,8 +41,7 @@ namespace DOL.GS
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
                 return true;
-            if (IsReturningToSpawnPoint && keyName == GS.Abilities.DamageImmunity)
-                return true;
+
             return base.HasAbility(keyName);
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -312,7 +311,6 @@ namespace DOL.AI.Brain
         {
             Body.MaxSpeedBase = 0;
             Body.MoveTo(Body.CurrentRegionID, target.X, target.Y, target.Z, Body.Heading);
-            Body.CancelReturnToSpawnPoint();
 
             foreach(GameNPC evern in Body.GetNPCsInRadius(2500))
             {

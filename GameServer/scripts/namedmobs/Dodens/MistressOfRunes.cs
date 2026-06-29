@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -75,13 +74,6 @@ namespace DOL.GS.Scripts
 			base.ReturnToSpawnPoint(MaxSpeed);
 		}
 
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-			if (IsReturningToSpawnPoint)
-				return;
-
-			base.OnAttackedByEnemy(ad);
-		}
 		/// <summary>
 		/// Broadcast relevant messages to the raid.
 		/// </summary>
