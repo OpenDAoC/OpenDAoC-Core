@@ -206,6 +206,7 @@ namespace DOL.GS.Commands
         {
             int processed = 0;
             int fixedCount = 0;
+            bool hasScriptedNpc = false;
 
             foreach (GameNPC npc in npcs)
             {
@@ -223,6 +224,9 @@ namespace DOL.GS.Commands
 
                 if (result != null)
                 {
+                    if (result.IsScripted)
+                        hasScriptedNpc = true;
+
                     if (fixedCount < PAGE_SIZE)
                         DisplayResult(client, fixedCount, result);
 
@@ -235,6 +239,9 @@ namespace DOL.GS.Commands
 
             if (fixedCount > 0)
                 DisplayMessage(client, $"Total results: {_results.Count}. Type '/fixnpcspawn result <page>' to view details or '/fixnpcspawn goto <index>' to teleport.");
+
+            if (hasScriptedNpc)
+                DisplayMessage(client, "Notice: Scripted NPCs will not be moved by this command and must be fixed in the code.");
         }
 
         private static FixResult CheckAndFixNpc(
@@ -258,7 +265,7 @@ namespace DOL.GS.Commands
             if (distance < 16f)
                 return null;
 
-            if (!dryRun)
+            if (!dryRun && !npc.LoadedFromScript)
             {
                 npc.MoveInRegion(
                     zone.ZoneRegion.ID,
@@ -277,13 +284,15 @@ namespace DOL.GS.Commands
                 OriginalPos = pos,
                 NewPos = fixedPos.Value,
                 Zone = zone,
-                Distance = distance
+                Distance = distance,
+                IsScripted = npc.LoadedFromScript
             };
         }
 
         private void DisplayResult(GameClient client, int index, FixResult result)
         {
-            DisplayMessage(client, $"[{index}]: {result.Npc.Name} (Dist: {result.Distance:F1}) in {result.Zone.Description}");
+            string scriptedTag = result.IsScripted ? " [Scripted]" : string.Empty;
+            DisplayMessage(client, $"[{index}]:{scriptedTag} {result.Npc.Name} (Dist: {result.Distance:F1}) in {result.Zone.Description}");
         }
 
         private static Vector3? CalculateFixedPosition(
@@ -328,6 +337,7 @@ namespace DOL.GS.Commands
             public Vector3 NewPos;
             public Zone Zone;
             public float Distance;
+            public bool IsScripted;
         }
     }
 }
