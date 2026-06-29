@@ -677,7 +677,7 @@ namespace DOL.GS
         {
             // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
             // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
-            // NPCs that can't be teleported receive a damage immunity ability and start regenerating HP.
+            // NPCs that are in combat and can't be teleported receive a damage immunity ability and start regenerating HP.
             // This helps against exploits and misplaced NPCs.
 
             // Pets following their owner are teleported at their feet if both are out of combat.
@@ -689,10 +689,13 @@ namespace DOL.GS
                 if (JumpToClosestReachableNode(this, destination))
                     return;
 
-                StartAntiExploitImmunity();
+                if (Owner.InCombat || Owner.Brain is StandardMobBrain { HasAggro: true })
+                    StartAntiExploitImmunity();
             }
-            else if (!Owner.InCombat && !petBrain.Owner.InCombat && 
-                     FollowTarget != null && petBrain.Owner == FollowTarget)
+            else if (!Owner.InCombat &&
+                !petBrain.Owner.InCombat &&
+                FollowTarget != null &&
+                petBrain.Owner == FollowTarget)
             {
                 if (TeleportPetToFloorBeneathOwner(this, petBrain))
                     return;
