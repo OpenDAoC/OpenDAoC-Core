@@ -505,7 +505,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (Target != null && Target.HasAbility(Abilities.DamageImmunity) && !Spell.IsAoE)
+			if (Target != null && Target.HasAbility(Abilities.DamageImmunity) && Spell.IsHarmful && !Spell.IsAoE)
 			{
 				if (!quiet)
 					MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
