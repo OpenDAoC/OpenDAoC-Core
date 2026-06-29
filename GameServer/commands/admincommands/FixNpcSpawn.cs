@@ -302,15 +302,24 @@ namespace DOL.GS.Commands
             float snapMaxDistanceUp,
             EDtPolyFlags[] filters)
         {
-            Vector3? fixedPos = null;
+            Vector3? posDown = null;
+            Vector3? posUp = null;
 
             if (snapMaxDistanceDown > 0)
-                fixedPos = PathfindingProvider.Instance.GetFloorBeneath(zone, pos, snapMaxDistanceDown, filters);
+                posDown = PathfindingProvider.Instance.GetFloorBeneath(zone, pos, snapMaxDistanceDown, filters);
 
-            if (!fixedPos.HasValue && snapMaxDistanceUp > 0)
-                fixedPos = PathfindingProvider.Instance.GetRoofAbove(zone, pos, snapMaxDistanceUp, filters);
+            if (snapMaxDistanceUp > 0)
+                posUp = PathfindingProvider.Instance.GetRoofAbove(zone, pos, snapMaxDistanceUp, filters);
 
-            return fixedPos;
+            if (posDown.HasValue && posUp.HasValue)
+            {
+                float distDown = Vector3.DistanceSquared(pos, posDown.Value);
+                float distUp = Vector3.DistanceSquared(pos, posUp.Value);
+
+                return distDown <= distUp ? posDown : posUp;
+            }
+
+            return posDown ?? posUp;
         }
 
         private static bool ShouldNpcBeExcluded(GameNPC npc)
