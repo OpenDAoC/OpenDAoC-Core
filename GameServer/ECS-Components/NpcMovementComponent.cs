@@ -34,6 +34,7 @@ namespace DOL.GS
         private short _currentMovementDesiredSpeed;
         private PathVisualization _pathVisualization;
         private long _lastPositionUpdateTick = -1;
+        private Path _path = Path.None;
         private AntiExploitImmunityTimer _antiExploitImmunity;
 
         public new GameNPC Owner { get; }
@@ -42,8 +43,6 @@ namespace DOL.GS
         public GameLiving FollowTarget { get; private set; }
         public int MinFollowDistance { get; private set; }
         public int MaxFollowDistance { get; private set; }
-        public string PathID { get; set; }
-        public PathPoint CurrentPathPoint { get; set; }
         public int RoamingRange { get; set; }
         public long MovementStartTick { get; set; }
         public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
@@ -54,12 +53,24 @@ namespace DOL.GS
         public bool IsDestinationValid { get; private set; }
         public bool IsAtDestination => !IsDestinationValid || (_destination - _ownerPosition).LengthSquared() < 1.0f;
         public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && !CanMoveOnPath;
-        public bool CanMoveOnPath => !string.IsNullOrEmpty(PathID);
+        public bool CanMoveOnPath => !_path.IsNone;
         public double HorizontalVelocityForClient { get; private set; }
         public bool HasActiveResetHeadingTimer => _resetHeadingTimer?.IsAlive == true;
         public bool IsPathVisualizationActive => _pathVisualization != null;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
         public ref Vector3 PositionForClient => ref _positionForClientTick == GameLoop.GameLoopTime ? ref _positionForClient : ref _ownerPosition;
+
+        public string PathId
+        {
+            get => _path.Id;
+            set => _path = Path.WithPathId(_path, value);
+        }
+
+        public PathPoint CurrentPathPoint
+        {
+            get => _path.Point;
+            set => _path = Path.WithPathPoint(_path, value);
+        }
 
         public int X => (int) Math.Round(_ownerPosition.X);
         public int Y => (int) Math.Round(_ownerPosition.Y);
@@ -202,20 +213,20 @@ namespace DOL.GS
             // Otherwise and if we're not currently moving on path, move to the previous one (current path point if none).
             if (CurrentPathPoint == null)
             {
-                if (PathID == null)
+                if (string.IsNullOrEmpty(PathId))
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"Called {nameof(MoveOnPath)} but PathID is null (NPC: {Owner})");
+                        log.Error($"Called {nameof(MoveOnPath)} but {nameof(PathId)} is null or empty and {nameof(CurrentPathPoint)} is null (NPC: {Owner})");
 
                     return;
                 }
 
-                CurrentPathPoint = MovementMgr.LoadPath(PathID);
+                CurrentPathPoint = MovementMgr.LoadPath(PathId);
 
                 if (CurrentPathPoint == null)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"Called {nameof(MoveOnPath)} but LoadPath returned null (PathID: {PathID}) (NPC: {Owner})");
+                        log.Error($"Called {nameof(MoveOnPath)} but {nameof(MovementMgr.LoadPath)} returned null ({nameof(PathId)}: {PathId}) (NPC: {Owner})");
 
                     return;
                 }
@@ -224,28 +235,30 @@ namespace DOL.GS
                 PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed));
                 return;
             }
-            else if (!IsFlagSet(MovementState.OnPath))
+
+            if (IsFlagSet(MovementState.OnPath))
             {
-                SetFlag(MovementState.OnPath);
+                if (log.IsWarnEnabled)
+                    log.Warn($"Called {nameof(MoveOnPath)} but {nameof(MovementState.OnPath)} is already set (NPC: {Owner})");
 
-                if (Owner.IsWithinRadius(CurrentPathPoint, 25))
-                {
-                    MoveToNextPathPoint();
-                    return;
-                }
-
-                if (CurrentPathPoint.Type == EPathType.Path_Reverse && CurrentPathPoint.FiredFlag)
-                {
-                    if (CurrentPathPoint.Next != null)
-                        CurrentPathPoint = CurrentPathPoint.Next;
-                }
-                else if (CurrentPathPoint.Prev != null)
-                    CurrentPathPoint = CurrentPathPoint.Prev;
-
-                PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Owner.MaxSpeed);
+                return;
             }
-            else if (log.IsErrorEnabled)
-                log.Error($"Called {nameof(MoveOnPath)} but both {nameof(CurrentPathPoint)} and {nameof(MovementState.OnPath)} are already set. (NPC: {Owner})");
+
+            SetFlag(MovementState.OnPath);
+
+            // Ignore the first path point if it's very close.
+            // If the distance is 0 and we don't skip it, WalkToInternal will stop any movement.
+            if (Owner.IsWithinRadius(CurrentPathPoint, 10))
+            {
+                MoveToNextPathPoint();
+                return;
+            }
+
+            CurrentPathPoint = _path.IsReversing ?
+                CurrentPathPoint.Next ?? CurrentPathPoint :
+                CurrentPathPoint.Prev ?? CurrentPathPoint;
+            Vector3 destination = new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z);
+            PathTo(destination, Owner.MaxSpeed);
         }
 
         public void StopMovingOnPath()
@@ -799,13 +812,9 @@ namespace DOL.GS
 
         private void MoveToNextPathPoint()
         {
-            PathPoint oldPathPoint = CurrentPathPoint;
-            PathPoint nextPathPoint = CurrentPathPoint.Next;
+            PathPoint next = _path.IsReversing ? CurrentPathPoint.Prev : CurrentPathPoint.Next;
 
-            if ((CurrentPathPoint.Type is EPathType.Path_Reverse) && CurrentPathPoint.FiredFlag)
-                nextPathPoint = CurrentPathPoint.Prev;
-
-            if (nextPathPoint == null)
+            if (next == null)
             {
                 switch (CurrentPathPoint.Type)
                 {
@@ -816,24 +825,34 @@ namespace DOL.GS
                     }
                     case EPathType.Once:
                     {
-                        CurrentPathPoint = null;
-                        PathID = null; // Unset the path ID, otherwise the brain will re-enter patrolling state and restart it.
-                        break;
+                        // Clear fully so CanMoveOnPath returns false and the brain doesn't restart.
+                        _path = Path.None;
+                        StopMovingOnPath();
+                        return;
                     }
                     case EPathType.Path_Reverse:
                     {
-                        CurrentPathPoint = oldPathPoint.FiredFlag ? CurrentPathPoint.Next : CurrentPathPoint.Prev;
+                        _path.IsReversing = !_path.IsReversing;
+                        next = _path.IsReversing ? CurrentPathPoint.Prev : CurrentPathPoint.Next;
+                        _path.Point = next;
                         break;
                     }
                 }
             }
             else
-                CurrentPathPoint = CurrentPathPoint.Type is EPathType.Path_Reverse && CurrentPathPoint.FiredFlag ? CurrentPathPoint.Prev : CurrentPathPoint.Next;
+                _path.Point = next;
 
-            oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
+            if (_path.Point != null)
+            {
+                Vector3 destination = new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z);
+                short speed = Math.Min(_moveOnPathSpeed, _path.Point.MaxSpeed);
 
-            if (CurrentPathPoint != null)
-                PathTo(new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z), Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed));
+                // Minor optimization allowing faster transitions if this is called from Tick.
+                if (ServiceObjectId.IsRunning)
+                    PathToInternal(destination, speed);
+                else
+                    PathTo(destination, speed);
+            }
             else
                 StopMovingOnPath();
         }
@@ -859,12 +878,12 @@ namespace DOL.GS
                 _positionForClient = _ownerPosition;
             else
             {
-                magic = (float) (CurrentSpeed * 0.15);
+                magic = CurrentSpeed * 0.15f;
                 ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
                 _positionForClient = Vector3.Lerp(_destination, _ownerPosition, ratio);
             }
 
-            magic = (float) Math.Max(15, CurrentSpeed * 0.15);
+            magic = Math.Max(15, CurrentSpeed * 0.15f);
             ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
             _destinationForClient = Vector3.Lerp(_ownerPosition, _destination, ratio);
         }

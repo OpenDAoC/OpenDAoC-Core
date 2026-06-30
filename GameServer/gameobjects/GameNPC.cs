@@ -787,8 +787,8 @@ namespace DOL.GS
 		public GameObject FollowTarget => movementComponent.FollowTarget;
 		public string PathID
 		{
-			get => movementComponent.PathID;
-			set => movementComponent.PathID = value;
+			get => movementComponent.PathId;
+			set => movementComponent.PathId = value;
 		}
 		public PathPoint CurrentPathPoint
 		{

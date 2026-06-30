@@ -11,7 +11,6 @@ namespace DOL.GS.Movement
 
         public PathPoint Next { get; set; }
         public PathPoint Prev { get; set; }
-        public bool FiredFlag { get; set; } // Used by path reverse, doesn't support more than one NPC on the path.
 
         public PathPoint(int x, int y, int z, short maxSpeed, EPathType type) : base(x, y, z)
         {
