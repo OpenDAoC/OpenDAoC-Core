@@ -12,18 +12,18 @@ namespace DOL.GS.Commands
         "&path",
         ePrivLevel.GM,
         "There are several path functions",
-        "/path create [speedlimit] [wait time in second] [trigger name] - creates a new temporary path, deleting any existing temporary path",
-        "/path load <pathname> - loads a path from db",
+        "/path create [speedLimit] [waitTime(s)] [triggerName] - creates a new temporary path, deleting any existing temporary path",
+        "/path load <pathName> - loads a path from db",
         "/path loadtarget - loads the path currently used by the selected NPC",
-        "/path add [speedlimit] [wait time in second] [trigger name] - adds a point at the end of the current path",
-        "/path insert <after step> [speedlimit] [wait time in second] [trigger name] - inserts a point after an existing pathpoint",
+        "/path add [speedLimit] [waitTime(s)] [triggerName] - adds a point at the end of the current path",
+        "/path insert <after step> [speedLimit] [waitTime(s)] [triggerName] - inserts a point after an existing pathpoint",
         "/path discardpoint - removes the targeted pathpoint from the current path",
-        "/path save [pathname] - saves a path to db, using the loaded path name when omitted",
+        "/path edit [speedLimit] [waitTime(s)] [triggerName] - edits the targeted pathpoint",
+        "/path save [pathName] - saves a path to db, using the loaded path name when omitted",
         "/path travel - makes a target npc travel the current path",
         "/path test - spawns a temporary NPC at the start of the current path and runs it once",
         "/path stop - clears the path for a targeted npc and tells npc to walk to spawn",
-        "/path speed [speedlimit] - sets the speed of all path nodes",
-        "/path assigntaxiroute <Destination> - sets the current path as taxiroute on stablemaster",
+        "/path assigntaxiroute <destination> - sets the current path as taxiroute on stablemaster",
         "/path hide - hides all path markers but does not delete the path",
         "/path delete - deletes the temporary path",
         "/path type - changes the paths type",
@@ -125,18 +125,14 @@ namespace DOL.GS.Commands
             return len;
         }
 
-        private bool TryParsePathPointArgs(GameClient client, string[] args, int speedArgIndex, out short speedlimit, out int waittime, out string triggerName)
+        private bool TryParsePathPointArgs(GameClient client, string[] args, int speedArgIndex, ref short speedLimit, ref int waitTime, ref string triggerName)
         {
-            speedlimit = 1000;
-            waittime = 0;
-            triggerName = string.Empty;
-
             if (args.Length <= speedArgIndex)
                 return true;
 
-            if (!short.TryParse(args[speedArgIndex], out speedlimit))
+            if (!short.TryParse(args[speedArgIndex], out speedLimit))
             {
-                DisplayMessage(client, $"No valid speedlimit '{args[speedArgIndex]}'!");
+                DisplayMessage(client, $"No valid speedLimit '{args[speedArgIndex]}'!");
                 return false;
             }
 
@@ -144,7 +140,7 @@ namespace DOL.GS.Commands
             if (args.Length <= waitArgIndex)
                 return true;
 
-            if (!int.TryParse(args[waitArgIndex], out waittime))
+            if (!int.TryParse(args[waitArgIndex], out waitTime))
             {
                 DisplayMessage(client, $"No valid wait time '{args[waitArgIndex]}'!");
                 return false;
@@ -152,10 +148,7 @@ namespace DOL.GS.Commands
 
             int triggerArgIndex = waitArgIndex + 1;
             if (args.Length > triggerArgIndex)
-            {
                 triggerName = args[triggerArgIndex];
-                return true;
-            }
 
             return true;
         }
@@ -241,7 +234,11 @@ namespace DOL.GS.Commands
 
         private void PathCreate(GameClient client, string[] args)
         {
-            if (!TryParsePathPointArgs(client, args, 2, out short maxSpeed, out int waitTime, out string triggerName))
+            short maxSpeed = 1000;
+            int waitTime = 0;
+            string triggerName = string.Empty;
+
+            if (!TryParsePathPointArgs(client, args, 2, ref maxSpeed, ref waitTime, ref triggerName))
                 return;
 
             RemoveAllPathPointObjects(client);
@@ -263,7 +260,11 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            if (!TryParsePathPointArgs(client, args, 2, out short maxSpeed, out int waitTime, out string triggerName))
+            short maxSpeed = 1000;
+            int waitTime = 0;
+            string triggerName = string.Empty;
+
+            if (!TryParsePathPointArgs(client, args, 2, ref maxSpeed, ref waitTime, ref triggerName))
                 return;
 
             PathPoint newpp = new(client.Player.X, client.Player.Y, client.Player.Z, maxSpeed, path.Type, waitTime * 10, triggerName);
@@ -280,14 +281,14 @@ namespace DOL.GS.Commands
 
             len += 2;
             CreatePathPointObject(client, newpp, len);
-            DisplayMessage(client, $"Pathpoint added. Current pathlength = {len}");
+            DisplayMessage(client, $"Pathpoint added. Current path length = {len}");
         }
 
         private void PathInsert(GameClient client, string[] args)
         {
             if (args.Length < 3)
             {
-                DisplayMessage(client, "Usage: /path insert <after step> [speedlimit] [wait time in second] [trigger name]");
+                DisplayMessage(client, "Usage: /path insert <after step> [speedLimit] [wait time in second] [trigger name]");
                 return;
             }
 
@@ -305,7 +306,11 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            if (!TryParsePathPointArgs(client, args, 3, out short speedlimit, out int waittime, out string triggerName))
+            short speedLimit = 1000;
+            int waitTime = 0;
+            string triggerName = string.Empty;
+
+            if (!TryParsePathPointArgs(client, args, 3, ref speedLimit, ref waitTime, ref triggerName))
                 return;
 
             PathPoint after = GetPathPointByStep(first, afterStep);
@@ -316,7 +321,7 @@ namespace DOL.GS.Commands
             }
 
             PathPoint next = after.Next;
-            PathPoint newpp = new(client.Player.X, client.Player.Y, client.Player.Z, speedlimit, after.Type, waittime * 10, triggerName)
+            PathPoint newpp = new(client.Player.X, client.Player.Y, client.Player.Z, speedLimit, after.Type, waitTime * 10, triggerName)
             {
                 Prev = after,
                 Next = next
@@ -329,8 +334,45 @@ namespace DOL.GS.Commands
                 client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, newpp);
 
             int len = RecreatePathPointObjects(client, first);
-            DisplayMessage(client, $"Pathpoint inserted after step {afterStep}. Current pathlength = {len}");
+            DisplayMessage(client, $"Pathpoint inserted after step {afterStep}. Current path length = {len}");
             RefreshPathVisualization(client);
+        }
+
+        private void PathEdit(GameClient client, string[] args)
+        {
+            PathPoint first = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            if (first == null)
+            {
+                DisplayMessage(client, "No path created yet! Use /path create or /path load first!");
+                return;
+            }
+
+            int step = GetTargetedPathPointStep(client);
+            if (step < 1)
+            {
+                DisplayMessage(client, "You need to target one of the current pathpoint markers first!");
+                return;
+            }
+
+            PathPoint targeted = GetPathPointByStep(first, step);
+            if (targeted == null)
+            {
+                DisplayMessage(client, "Targeted pathpoint marker no longer matches the current path.");
+                return;
+            }
+
+            short speedLimit = targeted.MaxSpeed;
+            int waitTime = targeted.WaitTime / 10;
+            string triggerName = targeted.TriggerName;
+
+            if (!TryParsePathPointArgs(client, args, 2, ref speedLimit, ref waitTime, ref triggerName))
+                return;
+
+            targeted.MaxSpeed = speedLimit;
+            targeted.WaitTime = waitTime * 10;
+            targeted.TriggerName = triggerName;
+
+            DisplayMessage(client, $"Pathpoint {step}: MaxSpeed={targeted.MaxSpeed}, WaitTime={targeted.WaitTime / 10}s, Trigger='{targeted.TriggerName}'");
         }
 
         private void PathDiscardPoint(GameClient client)
@@ -384,46 +426,8 @@ namespace DOL.GS.Commands
             }
 
             int len = RecreatePathPointObjects(client, first);
-            DisplayMessage(client, $"Pathpoint {step} discarded. Current pathlength = {len}");
+            DisplayMessage(client, $"Pathpoint {step} discarded. Current path length = {len}");
             RefreshPathVisualization(client);
-        }
-
-        private void PathSpeed(GameClient client, string[] args)
-        {
-            if (args.Length < 3)
-            {
-                DisplayMessage(client, "Usage: /path speed <speedlimit>");
-                return;
-            }
-
-            short speedlimit;
-            try
-            {
-                speedlimit = short.Parse(args[2]);
-            }
-            catch
-            {
-                DisplayMessage(client, $"No valid speedlimit '{args[2]}'!");
-                return;
-            }
-
-            PathPoint pathpoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
-
-            if (pathpoint == null)
-            {
-                DisplayMessage(client, "No path created yet! Use /path create first!");
-                return;
-            }
-
-            pathpoint.MaxSpeed = speedlimit;
-
-            while (pathpoint.Next != null)
-            {
-                pathpoint = pathpoint.Next;
-                pathpoint.MaxSpeed = speedlimit;
-            }
-
-            DisplayMessage(client, $"All path points set to speed {args[2]}!");
         }
 
         private void PathTravel(GameClient client)
@@ -560,7 +564,7 @@ namespace DOL.GS.Commands
         {
             if (args.Length < 3)
             {
-                DisplayMessage(client, "Usage: /path load <pathname>");
+                DisplayMessage(client, "Usage: /path load <pathName>");
                 return;
             }
 
@@ -623,9 +627,9 @@ namespace DOL.GS.Commands
             client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, lastPathPoint);
 
             if (pathNpc == npc)
-                DisplayMessage(client, $"Loaded {npc.Name}'s current path. Current pathlength = {len}");
+                DisplayMessage(client, $"Loaded {npc.Name}'s current path. Current path length = {len}");
             else
-                DisplayMessage(client, $"Loaded {npc.Name}'s leader {pathNpc.Name}'s current path. Current pathlength = {len}");
+                DisplayMessage(client, $"Loaded {npc.Name}'s leader {pathNpc.Name}'s current path. Current path length = {len}");
         }
 
         private void PathSave(GameClient client, string[] args)
@@ -637,17 +641,17 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            string pathname = args.Length >= 3 ? string.Join(" ", args, 2, args.Length - 2) : client.Player.TempProperties.GetProperty<string>(TEMP_PATH_NAME);
-            if (string.IsNullOrEmpty(pathname))
+            string pathName = args.Length >= 3 ? string.Join(" ", args, 2, args.Length - 2) : client.Player.TempProperties.GetProperty<string>(TEMP_PATH_NAME);
+            if (string.IsNullOrEmpty(pathName))
             {
-                DisplayMessage(client, "Usage: /path save <pathname>");
+                DisplayMessage(client, "Usage: /path save <pathName>");
                 DisplayMessage(client, "No loaded path name is available for /path save.");
                 return;
             }
 
-            MovementMgr.SavePath(pathname, path);
-            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, pathname);
-            DisplayMessage(client, $"Path saved as '{pathname}'");
+            MovementMgr.SavePath(pathName, path);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, pathName);
+            DisplayMessage(client, $"Path saved as '{pathName}'");
         }
 
         private void DisplayPathInfo(GameClient client)
@@ -690,7 +694,7 @@ namespace DOL.GS.Commands
             if (!string.IsNullOrEmpty(pathName))
                 DisplayMessage(client, $"Use /path save to save back to '{pathName}'.");
             else
-                DisplayMessage(client, "Use /path save <pathname> to save this path.");
+                DisplayMessage(client, "Use /path save <pathName> to save this path.");
 
             DisplaySyntax(client);
         }
@@ -731,7 +735,7 @@ namespace DOL.GS.Commands
             // With the new horse system, the stablemasters are using the item.Id_nb to find the horse route in the database
             // So we have to save a path in the database with the Id_nb as a PathID
             // The following string will contain the item Id_nb if it is found in the merchant list
-            string pathname = string.Empty;
+            string pathName = string.Empty;
             if (merchant.TradeItems != null)
             {
                 foreach (DbItemTemplate template in merchant.TradeItems.GetAllItems().Values)
@@ -739,7 +743,7 @@ namespace DOL.GS.Commands
                     if (template != null && template.Name.Equals(ticket, StringComparison.OrdinalIgnoreCase))
                     {
                         ticketFound = true;
-                        pathname = template.Id_nb;
+                        pathName = template.Id_nb;
                         break;
                     }
                 }
@@ -751,8 +755,8 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            MovementMgr.SavePath(pathname, path);
-            DisplayMessage(client, $"Taxi route set to path '{pathname}'!");
+            MovementMgr.SavePath(pathName, path);
+            DisplayMessage(client, $"Taxi route set to path '{pathName}'!");
         }
 
         private void TogglePathVisualization(GameClient client)
@@ -820,6 +824,11 @@ namespace DOL.GS.Commands
                     PathDiscardPoint(client);
                     break;
                 }
+                case "edit":
+                {
+                    PathEdit(client, args);
+                    break;
+                }
                 case "travel":
                 {
                     PathTravel(client);
@@ -833,11 +842,6 @@ namespace DOL.GS.Commands
                 case "stop":
                 {
                     PathStop(client);
-                    break;
-                }
-                case "speed":
-                {
-                    PathSpeed(client, args);
                     break;
                 }
                 case "type":
