@@ -772,10 +772,8 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.OnPath))
             {
-                if (CurrentPathPoint != null)
+                if (CurrentPathPoint != null && !Owner.Brain.OnPathPointReached(CurrentPathPoint))
                 {
-                    Owner.Brain.OnPathPointReached(CurrentPathPoint);
-
                     if (CurrentPathPoint.WaitTime == 0)
                     {
                         MoveToNextPathPoint();

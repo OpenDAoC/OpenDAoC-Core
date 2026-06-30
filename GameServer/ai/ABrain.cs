@@ -68,7 +68,12 @@ namespace DOL.AI
             return ServiceObjectStore.Remove(this);
         }
 
-        public virtual void OnPathPointReached(PathPoint pathPoint) { }
+        public virtual bool OnPathPointReached(PathPoint pathPoint)
+        {
+            // Returns true if the NPC should stop moving.
+            // The path won't be resumed automatically.
+            return false;
+        }
 
         /// <summary>
         /// Receives all messages of the body
