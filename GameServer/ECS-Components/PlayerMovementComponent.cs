@@ -86,26 +86,25 @@ namespace DOL.GS
             base.TickInternal();
         }
 
-        public void BroadcastPosition()
+        public override void ForceUpdatePosition()
         {
-            PlayerPositionUpdateHandler.BroadcastPosition(Owner.Client);
+            base.ForceUpdatePosition();
+            _playerMovementMonitor.Pause();
         }
 
-        public void BroadcastHeading()
+        public void UpdatePosition(Vector3 newPosition)
         {
-            PlayerHeadingUpdateHandler.BroadcastHeading(Owner.Client);
-        }
-
-        public override void OnPositionUpdate()
-        {
-            base.OnPositionUpdate();
-
             Vector3 oldPosition = _ownerPosition;
-            UpdatePosition();
+
+            _ownerPosition = newPosition;
+            Owner.X = (int) newPosition.X;
+            Owner.Y = (int) newPosition.Y;
+            Owner.Z = (int) newPosition.Z;
 
             if (!oldPosition.EqualsXY(_ownerPosition))
             {
                 Owner.OnPlayerMove();
+                UpdateLastMovementTick();
                 _playerMovementMonitor.RecordPosition();
                 _validateMovementOnNextTick = true;
                 Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
@@ -143,24 +142,24 @@ namespace DOL.GS
             }
         }
 
+        public void BroadcastPosition()
+        {
+            PlayerPositionUpdateHandler.BroadcastPosition(Owner.Client);
+        }
+
+        public void BroadcastHeading()
+        {
+            PlayerHeadingUpdateHandler.BroadcastHeading(Owner.Client);
+        }
+
         public void OnHeadingUpdate()
         {
             _needBroadcastHeading = true;
         }
 
-        public void OnTeleportOrRegionChange()
-        {
-            _playerMovementMonitor.OnTeleportOrRegionChange();
-        }
-
         public bool TryGetSafePosition(out Vector3 safePosition)
         {
             return _playerMovementMonitor.TryGetSafePosition(out safePosition) && !safePosition.Equals(_ownerPosition);
-        }
-
-        protected override void UpdatePosition()
-        {
-            _ownerPosition = new(Owner.X, Owner.Y, Owner.Z);
         }
     }
 }

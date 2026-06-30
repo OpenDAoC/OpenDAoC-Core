@@ -22,7 +22,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
 
             Handle(client, packet);
-            client.Player.OnPositionUpdateFromPacket();
         }
 
         private static void Handle(GameClient client, GSPacketIn packet)
@@ -136,10 +135,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
 
                 client.Player.LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
-                client.Player.X = (int) x;
-                client.Player.Y = (int) y;
-                client.Player.Z = (int) z;
                 client.Player.Heading = heading;
+                client.Player.OnPositionUpdateFromPacket(new(x, y, z));
 
                 client.Player.CheckAreas(newZone);
 
@@ -279,9 +276,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 ProcessActionFlags(client.Player, (ActionFlags) packet.ReadByte());
 
                 client.Player.Heading = headingflag;
-                client.Player.X = realX;
-                client.Player.Y = realY;
-                client.Player.Z = realZ;
+                client.Player.OnPositionUpdateFromPacket(new(realX, realY, realZ));
 
                 // update client zone information for waterlevel and diving
                 if (zoneChange)

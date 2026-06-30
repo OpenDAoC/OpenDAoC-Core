@@ -133,10 +133,14 @@ namespace DOL.GS
         {
             base.TickInternal();
 
+            Owner.X = (int) _ownerPosition.X;
+            Owner.Y = (int) _ownerPosition.Y;
+            Owner.Z = (int) _ownerPosition.Z;
+
             if (_needsBroadcastUpdate)
             {
                 _needsBroadcastUpdate = false;
-                OnPositionUpdate();
+                UpdateLastMovementTick();
                 ClientService.UpdateNpcForPlayers(Owner);
             }
 
@@ -376,15 +380,20 @@ namespace DOL.GS
                 _pathVisualization.Visualize(MovementMgr.FindFirstPathPoint(CurrentPathPoint), Owner.CurrentRegion);
         }
 
-        public void ForceUpdatePosition()
+        public override void ForceUpdatePosition()
         {
-            // Must be called every time the NPC is teleported or moved by other means than this component.
-            _ownerPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
+            base.ForceUpdatePosition();
             _positionForClient = _ownerPosition;
             _lastPositionUpdateTick = GameLoop.GameLoopTime;
         }
 
-        protected override void UpdatePosition()
+        protected override void RemoveFromServiceObjectStore()
+        {
+            base.RemoveFromServiceObjectStore();
+            ClearAntiExploitImmunity();
+        }
+
+        private void UpdatePosition()
         {
             if (_lastPositionUpdateTick == GameLoop.GameLoopTime)
                 return;
@@ -412,12 +421,6 @@ namespace DOL.GS
             // If the distance we are about to move is greater than the distance to the target, we have arrived.
             _ownerPosition = moveSqr >= distSqr ? _destination : potentialPosition;
             _lastPositionUpdateTick = GameLoop.GameLoopTime;
-        }
-
-        protected override void RemoveFromServiceObjectStore()
-        {
-            base.RemoveFromServiceObjectStore();
-            ClearAntiExploitImmunity();
         }
 
         private void ProcessMovementRequest()
@@ -868,11 +871,6 @@ namespace DOL.GS
 
         private void UpdateMovement(short speed)
         {
-            // Save current position.
-            Owner.X = (int) Math.Round(_ownerPosition.X);
-            Owner.Y = (int) Math.Round(_ownerPosition.Y);
-            Owner.Z = (int) Math.Round(_ownerPosition.Z);
-
             _needsBroadcastUpdate = true;
             IsDestinationValid = false;
             bool wasMoving = IsMoving;

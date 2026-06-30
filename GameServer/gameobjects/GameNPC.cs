@@ -726,16 +726,6 @@ namespace DOL.GS
 			set { m_spawnHeading = value; }
 		}
 
-		// Delegate to the movement component for position interpolation and caching.
-		public override int X => movementComponent.X;
-		public override int Y => movementComponent.Y;
-		public override int Z => movementComponent.Z;
-
-		// Only meant to be used by the movement component.
-		public int RealX => m_x;
-		public int RealY => m_y;
-		public int RealZ => m_z;
-
 		/// <summary>
 		/// The stealth state of this NPC
 		/// </summary>

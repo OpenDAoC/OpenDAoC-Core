@@ -865,9 +865,9 @@ namespace DOL.GS
             return false;
         }
 
-        public void OnPositionUpdateFromPacket()
+        public void OnPositionUpdateFromPacket(Vector3 newPosition)
         {
-            movementComponent.OnPositionUpdate();
+            movementComponent.UpdatePosition(newPosition);
         }
 
         public void OnHeadingPacketReceived()
@@ -7783,8 +7783,8 @@ namespace DOL.GS
                 return false;
             }
 
+            movementComponent.ForceUpdatePosition();
             m_invulnerabilityTick = 0;
-            craftComponent = new CraftComponent(this);
 
             foreach (GamePlayer playerInRadius in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -7922,7 +7922,7 @@ namespace DOL.GS
             Z = z;
             Heading = heading;
             IsSitting = false;
-            movementComponent.OnTeleportOrRegionChange();
+            movementComponent.ForceUpdatePosition();
 
             if (regionID != CurrentRegionID)
             {
@@ -13700,6 +13700,7 @@ namespace DOL.GS
         {
             movementComponent ??= base.movementComponent as PlayerMovementComponent;
             styleComponent ??= base.styleComponent as PlayerStyleComponent;
+            craftComponent = new(this);
 
             m_steed = new WeakRef(null);
             m_client = client;

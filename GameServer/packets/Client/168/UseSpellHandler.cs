@@ -25,12 +25,12 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (client.Player.IsPositionUpdateFromPacketAllowed())
                 {
-                    client.Player.X = (int) packet.ReadFloatLowEndian();
-                    client.Player.Y = (int) packet.ReadFloatLowEndian();
-                    client.Player.Z = (int) packet.ReadFloatLowEndian();
+                    float x = packet.ReadFloatLowEndian();
+                    float y = packet.ReadFloatLowEndian();
+                    float z = packet.ReadFloatLowEndian();
                     client.Player.CurrentSpeed = (short) packet.ReadFloatLowEndian();
                     client.Player.Heading = packet.ReadShort();
-                    client.Player.OnPositionUpdateFromPacket();
+                    client.Player.OnPositionUpdateFromPacket(new(x, y, z));
                 }
 
                 flagSpeedData = packet.ReadShort();
@@ -58,12 +58,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                             Log.Warn($"Unknown zone in UseSpellHandler: {currentZoneID} player: {client.Player.Name}");
                         else
                         {
-                            client.Player.X = newZone.XOffset + xOffsetInZone;
-                            client.Player.Y = newZone.YOffset + yOffsetInZone;
-                            client.Player.Z = realZ;
+                            float x = newZone.XOffset + xOffsetInZone;
+                            float y = newZone.YOffset + yOffsetInZone;
+                            float z = realZ;
+                            client.Player.OnPositionUpdateFromPacket(new(x, y, z));
                         }
-
-                        client.Player.OnPositionUpdateFromPacket();
                     }
                 }
 

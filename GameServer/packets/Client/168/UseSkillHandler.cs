@@ -16,12 +16,12 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (client.Player.IsPositionUpdateFromPacketAllowed())
                 {
-                    client.Player.X = (int)packet.ReadFloatLowEndian();
-                    client.Player.Y = (int)packet.ReadFloatLowEndian();
-                    client.Player.Z = (int)packet.ReadFloatLowEndian();
-                    client.Player.CurrentSpeed = (short)packet.ReadFloatLowEndian();
+                    float x = packet.ReadFloatLowEndian();
+                    float y = packet.ReadFloatLowEndian();
+                    float z = packet.ReadFloatLowEndian();
+                    client.Player.CurrentSpeed = (short) packet.ReadFloatLowEndian();
                     client.Player.Heading = packet.ReadShort();
-                    client.Player.OnPositionUpdateFromPacket();
+                    client.Player.OnPositionUpdateFromPacket(new(x, y, z));
                 }
             }
 

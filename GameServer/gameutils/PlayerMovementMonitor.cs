@@ -147,7 +147,7 @@ namespace DOL.GS
             }
         }
 
-        public void OnTeleportOrRegionChange()
+        public void Pause()
         {
             _previous = default;
             _current = default;

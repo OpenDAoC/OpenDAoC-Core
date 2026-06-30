@@ -47,6 +47,12 @@ namespace DOL.GS
             TickInternal();
         }
 
+        public virtual void ForceUpdatePosition()
+        {
+            // Must be called every time the entity is teleported or moved by other means than this component.
+            _ownerPosition = new(Owner.X, Owner.Y, Owner.Z);
+        }
+
         protected virtual void TickInternal()
         {
             if (!_relocationCheckPending && !GameServiceUtils.ShouldTick(_nextRelocationCheckTick))
@@ -57,7 +63,7 @@ namespace DOL.GS
             _relocationCheckPending = false;
         }
 
-        public virtual void OnPositionUpdate()
+        protected void UpdateLastMovementTick()
         {
             _relocationCheckPending = true;
             LastMovementTick = GameLoop.GameLoopTime;
@@ -70,8 +76,6 @@ namespace DOL.GS
             else
                 Interlocked.Decrement(ref _turningDisabledCount);
         }
-
-        protected virtual void UpdatePosition() { }
 
         protected void AddToServiceObjectStore()
         {
