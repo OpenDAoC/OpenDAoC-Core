@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
@@ -12,9 +14,13 @@ namespace DOL.GS.Commands
         "There are several path functions",
         "/path create [speedlimit] [wait time in second] [trigger name] - creates a new temporary path, deleting any existing temporary path",
         "/path load <pathname> - loads a path from db",
+        "/path loadtarget - loads the path currently used by the selected NPC",
         "/path add [speedlimit] [wait time in second] [trigger name] - adds a point at the end of the current path",
-        "/path save <pathname> - saves a path to db",
+        "/path insert <after step> [speedlimit] [wait time in second] [trigger name] - inserts a point after an existing pathpoint",
+        "/path discardpoint - removes the targeted pathpoint from the current path",
+        "/path save [pathname] - saves a path to db, using the loaded path name when omitted",
         "/path travel - makes a target npc travel the current path",
+        "/path test - spawns a temporary NPC at the start of the current path and runs it once",
         "/path stop - clears the path for a targeted npc and tells npc to walk to spawn",
         "/path speed [speedlimit] - sets the speed of all path nodes",
         "/path assigntaxiroute <Destination> - sets the current path as taxiroute on stablemaster",
@@ -24,95 +30,226 @@ namespace DOL.GS.Commands
         "/path visualize - toggles path visualization for the selected NPC")]
     public class PathCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        protected string TEMP_PATH_FIRST = "TEMP_PATH_FIRST";
-        protected string TEMP_PATH_LAST = "TEMP_PATH_LAST";
-        protected string TEMP_PATH_OBJS = "TEMP_PATH_OBJS";
+        private static string TEMP_PATH_FIRST = "TEMP_PATH_FIRST";
+        private static string TEMP_PATH_LAST = "TEMP_PATH_LAST";
+        private static string TEMP_PATH_OBJS = "TEMP_PATH_OBJS";
+        private static string TEMP_PATH_NAME = "TEMP_PATH_NAME";
+        private static string TEMP_PATH_TEST_NPC = "TEMP_PATH_TEST_NPC";
+        private static string TEMP_PATH_VISUALIZATION_NPC = "TEMP_PATH_VISUALIZATION_NPC";
 
-        private void CreatePathPointObject(GameClient client, PathPoint pp, int id)
+        private static void CreatePathPointObject(GameClient client, PathPoint pp, int id)
         {
-            //Create a new object
-            GameStaticItem obj = new GameStaticItem();
-            //Fill the object variables
-            obj.X = pp.X;
-            obj.Y = pp.Y;
-            obj.Z = pp.Z + 1; // raise a bit off of ground level
-            obj.CurrentRegion = client.Player.CurrentRegion;
-            obj.Heading = client.Player.Heading;
-            obj.Name = $"PP ({id})";
-            obj.Model = 488;
-            obj.Emblem = 0;
+            GameStaticItem obj = new()
+            {
+                X = pp.X,
+                Y = pp.Y,
+                Z = pp.Z + 1,
+                CurrentRegion = client.Player.CurrentRegion,
+                Heading = client.Player.Heading,
+                Name = $"PP ({id})",
+                Model = 488,
+                Emblem = 0
+            };
+
             obj.AddToWorld();
 
             ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
-            if (objs == null)
-                objs = new ArrayList();
+            objs ??= new();
             objs.Add(obj);
             client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, objs);
         }
 
-        private void RemoveAllPathPointObjects(GameClient client)
+        private static void RemoveAllPathPointObjects(GameClient client)
         {
             ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
-            if (objs == null)
-                return;
+            if (objs != null)
+            {
+                RemovePathPointObjects(objs);
+                objs.Clear();
+            }
 
-            // remove the markers
-            foreach (GameStaticItem obj in objs)
-                obj.Delete();
-
-            // clear the path point array
-            objs.Clear();
-
-            // remove all path properties
             client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, null);
             client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, null);
             client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, null);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, null);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_VISUALIZATION_NPC, null);
         }
 
-        private void PathHide(GameClient client)
+        private static void RemovePathPointObjects(GameClient client)
         {
             ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
             if (objs == null)
                 return;
 
-            // remove the markers
+            RemovePathPointObjects(objs);
+            objs.Clear();
+            client.Player.TempProperties.SetProperty(TEMP_PATH_OBJS, null);
+        }
+
+        private static void RemovePathPointObjects(ArrayList objs)
+        {
+            foreach (GameStaticItem obj in objs)
+                obj.Delete();
+        }
+
+        private static int RecreatePathPointObjects(GameClient client, PathPoint first)
+        {
+            RemovePathPointObjects(client);
+
+            int len = 0;
+            PathPoint pathPoint = first;
+
+            while (pathPoint != null)
+            {
+                CreatePathPointObject(client, pathPoint, ++len);
+                pathPoint = pathPoint.Next;
+            }
+
+            return len;
+        }
+
+        private static int CountPathPoints(PathPoint first, out PathPoint last)
+        {
+            int len = 0;
+            last = null;
+            HashSet<PathPoint> visited = new();
+            PathPoint pathPoint = first;
+
+            while (pathPoint != null && visited.Add(pathPoint))
+            {
+                last = pathPoint;
+                len++;
+                pathPoint = pathPoint.Next;
+            }
+
+            return len;
+        }
+
+        private bool TryParsePathPointArgs(GameClient client, string[] args, int speedArgIndex, out short speedlimit, out int waittime, out string triggerName)
+        {
+            speedlimit = 1000;
+            waittime = 0;
+            triggerName = string.Empty;
+
+            if (args.Length <= speedArgIndex)
+                return true;
+
+            if (!short.TryParse(args[speedArgIndex], out speedlimit))
+            {
+                DisplayMessage(client, $"No valid speedlimit '{args[speedArgIndex]}'!");
+                return false;
+            }
+
+            int waitArgIndex = speedArgIndex + 1;
+            if (args.Length <= waitArgIndex)
+                return true;
+
+            if (!int.TryParse(args[waitArgIndex], out waittime))
+            {
+                DisplayMessage(client, $"No valid wait time '{args[waitArgIndex]}'!");
+                return false;
+            }
+
+            int triggerArgIndex = waitArgIndex + 1;
+            if (args.Length > triggerArgIndex)
+            {
+                triggerName = args[triggerArgIndex];
+                return true;
+            }
+
+            return true;
+        }
+
+        private static PathPoint GetPathPointByStep(PathPoint first, int step)
+        {
+            int currentStep = 1;
+            PathPoint pathPoint = first;
+
+            while (pathPoint != null)
+            {
+                if (currentStep == step)
+                    return pathPoint;
+
+                currentStep++;
+                pathPoint = pathPoint.Next;
+            }
+
+            return null;
+        }
+
+        private static int GetTargetedPathPointStep(GameClient client)
+        {
+            ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
+            if (objs == null || client.Player.TargetObject == null)
+                return 0;
+
+            for (int i = 0; i < objs.Count; i++)
+            {
+                if (ReferenceEquals(objs[i], client.Player.TargetObject))
+                    return i + 1;
+            }
+
+            return 0;
+        }
+
+        private static ushort GetPathHeading(PathPoint first)
+        {
+            return first?.Next == null ? (ushort) 0 : first.GetHeading(first.Next);
+        }
+
+        private static PathPoint ClonePathForTest(PathPoint first, short testSpeed)
+        {
+            PathPoint firstClone = null;
+            PathPoint previousClone = null;
+            PathPoint pathPoint = first;
+
+            while (pathPoint != null)
+            {
+                PathPoint clone = new(
+                    pathPoint.X,
+                    pathPoint.Y,
+                    pathPoint.Z,
+                    pathPoint.MaxSpeed <= 0 ? testSpeed : pathPoint.MaxSpeed,
+                    EPathType.Once,
+                    pathPoint.WaitTime,
+                    string.Empty);
+
+                firstClone ??= clone;
+
+                if (previousClone != null)
+                {
+                    previousClone.Next = clone;
+                    clone.Prev = previousClone;
+                }
+
+                previousClone = clone;
+                pathPoint = pathPoint.Next;
+            }
+
+            return firstClone;
+        }
+
+        private static void PathHide(GameClient client)
+        {
+            ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
+            if (objs == null)
+                return;
+
             foreach (GameStaticItem obj in objs)
                 obj.Delete();
         }
 
         private void PathCreate(GameClient client, string[] args)
         {
-            short maxSpeed = 1000;
-            int waitTime = 0;
-            string triggerName = string.Empty;
+            if (!TryParsePathPointArgs(client, args, 2, out short maxSpeed, out int waitTime, out string triggerName))
+                return;
 
-            if (args.Length > 2)
-            {
-                if (!short.TryParse(args[2], out maxSpeed))
-                {
-                    DisplayMessage(client, $"No valid speedlimit '{args[2]}'!");
-                    return;
-                }
-            }
-
-            if (args.Length > 3)
-            {
-                if (!int.TryParse(args[3], out waitTime))
-                {
-                    DisplayMessage(client, $"No valid wait time '{args[3]}'!");
-                    return;
-                }
-            }
-
-            if (args.Length > 4)
-                triggerName = args[4];
-
-            //Remove old temp objects
             RemoveAllPathPointObjects(client);
 
-            PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, maxSpeed, EPathType.Once, waitTime * 10, triggerName);
+            PathPoint startpoint = new(client.Player.X, client.Player.Y, client.Player.Z, maxSpeed, EPathType.Once, waitTime * 10, triggerName);
             client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
             client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, null);
             client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             CreatePathPointObject(client, startpoint, 1);
         }
@@ -126,30 +263,8 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            short maxSpeed = 1000;
-            int waitTime = 0;
-            string triggerName = string.Empty;
-
-            if (args.Length > 2)
-            {
-                if (!short.TryParse(args[2], out maxSpeed))
-                {
-                    DisplayMessage(client, $"No valid speedlimit '{args[2]}'!");
-                    return;
-                }
-            }
-
-            if (args.Length > 3)
-            {
-                if (!int.TryParse(args[3], out waitTime))
-                {
-                    DisplayMessage(client, $"No valid wait time '{args[3]}'!");
-                    return;
-                }
-            }
-
-            if (args.Length > 4)
-                triggerName = args[4];
+            if (!TryParsePathPointArgs(client, args, 2, out short maxSpeed, out int waitTime, out string triggerName))
+                return;
 
             PathPoint newpp = new(client.Player.X, client.Player.Y, client.Player.Z, maxSpeed, path.Type, waitTime * 10, triggerName);
             path.Next = newpp;
@@ -162,16 +277,122 @@ namespace DOL.GS.Commands
                 len++;
                 path = path.Prev;
             }
+
             len += 2;
             CreatePathPointObject(client, newpp, len);
-            DisplayMessage(client, "Pathpoint added. Current pathlength = {0}", len);
+            DisplayMessage(client, $"Pathpoint added. Current pathlength = {len}");
+        }
+
+        private void PathInsert(GameClient client, string[] args)
+        {
+            if (args.Length < 3)
+            {
+                DisplayMessage(client, "Usage: /path insert <after step> [speedlimit] [wait time in second] [trigger name]");
+                return;
+            }
+
+            PathPoint first = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            PathPoint last = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
+            if (first == null || last == null)
+            {
+                DisplayMessage(client, "No path created yet! Use /path create or /path load first!");
+                return;
+            }
+
+            if (!int.TryParse(args[2], out int afterStep) || afterStep < 1)
+            {
+                DisplayMessage(client, $"No valid path step '{args[2]}'!");
+                return;
+            }
+
+            if (!TryParsePathPointArgs(client, args, 3, out short speedlimit, out int waittime, out string triggerName))
+                return;
+
+            PathPoint after = GetPathPointByStep(first, afterStep);
+            if (after == null)
+            {
+                DisplayMessage(client, $"Path step {afterStep} does not exist!");
+                return;
+            }
+
+            PathPoint next = after.Next;
+            PathPoint newpp = new(client.Player.X, client.Player.Y, client.Player.Z, speedlimit, after.Type, waittime * 10, triggerName)
+            {
+                Prev = after,
+                Next = next
+            };
+            after.Next = newpp;
+
+            if (next != null)
+                next.Prev = newpp;
+            else
+                client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, newpp);
+
+            int len = RecreatePathPointObjects(client, first);
+            DisplayMessage(client, $"Pathpoint inserted after step {afterStep}. Current pathlength = {len}");
+            RefreshPathVisualization(client);
+        }
+
+        private void PathDiscardPoint(GameClient client)
+        {
+            PathPoint first = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            PathPoint last = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
+            if (first == null || last == null)
+            {
+                DisplayMessage(client, "No path created yet! Use /path create or /path load first!");
+                return;
+            }
+
+            int step = GetTargetedPathPointStep(client);
+            if (step < 1)
+            {
+                DisplayMessage(client, "You need to target one of the current pathpoint markers first!");
+                return;
+            }
+
+            PathPoint discarded = GetPathPointByStep(first, step);
+            if (discarded == null)
+            {
+                DisplayMessage(client, "Targeted pathpoint marker no longer matches the current path.");
+                return;
+            }
+
+            PathPoint previous = discarded.Prev;
+            PathPoint next = discarded.Next;
+
+            if (previous != null)
+                previous.Next = next;
+            else
+                first = next;
+
+            if (next != null)
+                next.Prev = previous;
+            else
+                last = previous;
+
+            discarded.Prev = null;
+            discarded.Next = null;
+
+            client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, first);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, last);
+
+            if (first == null)
+            {
+                RemovePathPointObjects(client);
+                DisplayMessage(client, $"Pathpoint {step} discarded. Current path is empty.");
+                return;
+            }
+
+            int len = RecreatePathPointObjects(client, first);
+            DisplayMessage(client, $"Pathpoint {step} discarded. Current pathlength = {len}");
+            RefreshPathVisualization(client);
         }
 
         private void PathSpeed(GameClient client, string[] args)
         {
             if (args.Length < 3)
             {
-                DisplayMessage(client, "No valid speedlimit '{0}'!", args[2]);
+                DisplayMessage(client, "Usage: /path speed <speedlimit>");
                 return;
             }
 
@@ -182,7 +403,7 @@ namespace DOL.GS.Commands
             }
             catch
             {
-                DisplayMessage(client, "No valid speedlimit '{0}'!", args[2]);
+                DisplayMessage(client, $"No valid speedlimit '{args[2]}'!");
                 return;
             }
 
@@ -202,13 +423,13 @@ namespace DOL.GS.Commands
                 pathpoint.MaxSpeed = speedlimit;
             }
 
-            DisplayMessage(client, "All path points set to speed {0}!", args[2]);
+            DisplayMessage(client, $"All path points set to speed {args[2]}!");
         }
 
         private void PathTravel(GameClient client)
         {
             PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
-            if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNPC))
+            if (client.Player.TargetObject is not GameNPC targetNpc)
             {
                 DisplayMessage(client, "You need to select a mob first!");
                 return;
@@ -219,80 +440,125 @@ namespace DOL.GS.Commands
                 DisplayMessage(client, "No path created yet! Use /path create first!");
                 return;
             }
-            short speed = Math.Min(((GameNPC)client.Player.TargetObject).MaxSpeedBase, path.MaxSpeed);
 
-            // clear any current path
-            ((GameNPC)client.Player.TargetObject).CurrentPathPoint = null;
+            short speed = Math.Min(targetNpc.MaxSpeedBase, path.MaxSpeed);
+            targetNpc.CurrentPathPoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            targetNpc.MoveOnPath(speed);
+            DisplayMessage(client, $"{client.Player.TargetObject.Name} told to travel path!");
+        }
 
-            // set the new path
-            ((GameNPC)client.Player.TargetObject).CurrentPathPoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+        private void PathTest(GameClient client)
+        {
+            PathPoint first = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            if (first == null)
+            {
+                DisplayMessage(client, "No path created yet! Use /path create or /path load first!");
+                return;
+            }
 
-            ((GameNPC)client.Player.TargetObject).MoveOnPath(speed);
+            PathTestNpc previousNpc = client.Player.TempProperties.GetProperty<PathTestNpc>(TEMP_PATH_TEST_NPC);
+            previousNpc?.Delete();
 
-            DisplayMessage(client, "{0} told to travel path!", client.Player.TargetObject.Name);
+            short testSpeed = 350;
+            PathPoint testPath = ClonePathForTest(first, testSpeed);
+            if (testPath == null)
+            {
+                DisplayMessage(client, "Current path has no pathpoints!");
+                return;
+            }
 
+            PathTestNpc npc = new()
+            {
+                Name = "Path Test Runner",
+                GuildName = "Temporary path test",
+                CurrentRegion = client.Player.CurrentRegion,
+                X = testPath.X,
+                Y = testPath.Y,
+                Z = testPath.Z,
+                Heading = GetPathHeading(testPath),
+                Realm = eRealm.None,
+                Level = 1,
+                Model = 408,
+                Size = 50,
+                Flags = GameNPC.eFlags.PEACE,
+                MaxSpeedBase = testSpeed,
+                RespawnInterval = 0,
+                CurrentPathPoint = testPath
+            };
+
+            if (!npc.AddToWorld())
+            {
+                DisplayMessage(client, "Failed to spawn path test NPC.");
+                return;
+            }
+
+            client.Player.TempProperties.SetProperty(TEMP_PATH_TEST_NPC, npc);
+            npc.StartPathTest(testSpeed);
+            DisplayMessage(client, "Path test NPC spawned at step 1. It will die 10 seconds after reaching the end.");
         }
 
         private void PathStop(GameClient client)
         {
-            if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNPC))
+            if (client.Player.TargetObject is not GameNPC targetNpc)
             {
                 DisplayMessage(client, "You need to select a mob first!");
                 return;
             }
 
             // clear any current path
-            GameNPC npcTarget = (GameNPC) client.Player.TargetObject;
-            npcTarget.CurrentPathPoint = null;
-            npcTarget.ReturnToSpawnPoint(npcTarget.MaxSpeed);
-
-            DisplayMessage(client, "{0} told to walk to spawn!", client.Player.TargetObject.Name);
+            targetNpc.CurrentPathPoint = null;
+            targetNpc.ReturnToSpawnPoint(targetNpc.MaxSpeed);
+            DisplayMessage(client, $"{client.Player.TargetObject.Name} told to walk to spawn!");
         }
 
         private void PathType(GameClient client, string[] args)
         {
             PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
                 DisplayMessage(client, "Usage: /path type <pathtype>");
-                DisplayMessage(client, "Current path type is '{0}'", path.Type.ToString());
+                if (path != null)
+                    DisplayMessage(client, $"Current path type is '{path.Type}'");
                 DisplayMessage(client, "Possible pathtype values are:");
-                DisplayMessage(client, String.Join(", ", Enum.GetNames(typeof(EPathType))));
+                DisplayMessage(client, string.Join(", ", Enum.GetNames<EPathType>()));
                 return;
             }
+
             if (path == null)
             {
                 DisplayMessage(client, "No path created yet! Use /path create or /path load first!");
                 return;
             }
 
-            EPathType pathType = EPathType.Once;
+            EPathType pathType;
             try
             {
-                pathType = (EPathType)Enum.Parse(typeof(EPathType), args[2], true);
+                pathType = Enum.Parse<EPathType>(args[2], true);
             }
             catch
             {
                 DisplayMessage(client, "Usage: /path type <pathtype>");
-                DisplayMessage(client, "Current path type is '{0}'", path.Type.ToString());
+                DisplayMessage(client, $"Current path type is '{path.Type}'");
                 DisplayMessage(client, "PathType must be one of the following:");
-                DisplayMessage(client, String.Join(", ", Enum.GetNames(typeof(EPathType))));
+                DisplayMessage(client, string.Join(", ", Enum.GetNames<EPathType>()));
                 return;
             }
 
             path.Type = pathType;
             PathPoint temp = path.Prev;
+
             while ((temp != null) && (temp != path))
             {
                 temp.Type = pathType;
                 temp = temp.Prev;
             }
-            DisplayMessage(client, "Current path type set to '{0}'", path.Type.ToString());
+
+            DisplayMessage(client, $"Current path type set to '{path.Type}'");
         }
 
         private void PathLoad(GameClient client, string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
                 DisplayMessage(client, "Usage: /path load <pathname>");
                 return;
@@ -303,13 +569,14 @@ namespace DOL.GS.Commands
 
             if (pathPoint == null)
             {
-                DisplayMessage(client, "Path '{0}' not found!", pathName);
+                DisplayMessage(client, $"Path '{pathName}' not found!");
                 return;
             }
 
             RemoveAllPathPointObjects(client);
-            DisplayMessage(client, "Path '{0}' loaded.", pathName);
+            DisplayMessage(client, $"Path '{pathName}' loaded.");
             client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, pathPoint);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, pathName);
             int len = 0;
             PathPoint lastPathPoint;
 
@@ -323,30 +590,116 @@ namespace DOL.GS.Commands
             client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, lastPathPoint);
         }
 
-        private void PathSave(GameClient client, string[] args)
+        private void PathLoadTarget(GameClient client)
         {
-            PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
-            if (args.Length < 3)
+            if (client.Player.TargetObject is not GameNPC npc)
             {
-                DisplayMessage(client, "Usage: /path save <pathname>");
+                DisplayMessage(client, "You need to select a mob first!");
                 return;
             }
 
+            GameNPC pathNpc = npc;
+
+            PathPoint pathPoint = pathNpc.CurrentPathPoint;
+            if (pathPoint == null)
+            {
+                DisplayMessage(client, $"{pathNpc.Name} is not currently using a path!");
+                return;
+            }
+
+            PathPoint firstPathPoint = MovementMgr.FindFirstPathPoint(pathPoint);
+            if (firstPathPoint == null)
+            {
+                DisplayMessage(client, $"Failed to find the first pathpoint for {pathNpc.Name}'s current path.");
+                return;
+            }
+
+            RemoveAllPathPointObjects(client);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, firstPathPoint);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, string.IsNullOrEmpty(pathNpc.PathID) ? null : pathNpc.PathID);
+
+            int len = RecreatePathPointObjects(client, firstPathPoint);
+            PathPoint lastPathPoint = GetPathPointByStep(firstPathPoint, len);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, lastPathPoint);
+
+            if (pathNpc == npc)
+                DisplayMessage(client, $"Loaded {npc.Name}'s current path. Current pathlength = {len}");
+            else
+                DisplayMessage(client, $"Loaded {npc.Name}'s leader {pathNpc.Name}'s current path. Current pathlength = {len}");
+        }
+
+        private void PathSave(GameClient client, string[] args)
+        {
+            PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
             if (path == null)
             {
                 DisplayMessage(client, "No path created yet! Use /path create first!");
                 return;
             }
 
-            string pathname = String.Join(" ", args, 2, args.Length - 2);
+            string pathname = args.Length >= 3 ? string.Join(" ", args, 2, args.Length - 2) : client.Player.TempProperties.GetProperty<string>(TEMP_PATH_NAME);
+            if (string.IsNullOrEmpty(pathname))
+            {
+                DisplayMessage(client, "Usage: /path save <pathname>");
+                DisplayMessage(client, "No loaded path name is available for /path save.");
+                return;
+            }
+
             MovementMgr.SavePath(pathname, path);
-            DisplayMessage(client, "Path saved as '{0}'", pathname);
+            client.Player.TempProperties.SetProperty(TEMP_PATH_NAME, pathname);
+            DisplayMessage(client, $"Path saved as '{pathname}'");
+        }
+
+        private void DisplayPathInfo(GameClient client)
+        {
+            PathPoint first = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST);
+            string pathName = client.Player.TempProperties.GetProperty<string>(TEMP_PATH_NAME);
+
+            if (first == null)
+            {
+                DisplayMessage(client, "No temporary path loaded.");
+
+                if (client.Player.TargetObject is GameNPC target)
+                {
+                    GameNPC pathNpc = target;
+
+                    string targetPathName = string.IsNullOrEmpty(pathNpc.PathID) ? "none" : pathNpc.PathID;
+                    string currentPath = pathNpc.CurrentPathPoint == null ? "not moving on a path" : "currently has a pathpoint";
+
+                    if (pathNpc == target)
+                        DisplayMessage(client, $"Target {target.Name}: PathID={targetPathName}, {currentPath}.");
+                    else
+                        DisplayMessage(client, $"Target {target.Name} uses leader {pathNpc.Name}: PathID={targetPathName}, {currentPath}.");
+                }
+
+                DisplaySyntax(client);
+                return;
+            }
+
+            PathPoint root = MovementMgr.FindFirstPathPoint(first) ?? first;
+            int len = CountPathPoints(root, out PathPoint last);
+            string loadedName = string.IsNullOrEmpty(pathName) ? "unsaved temporary path" : pathName;
+
+            DisplayMessage(client, $"Current path: {loadedName}");
+            DisplayMessage(client, $"Pathpoints: {len}, Type: {root.Type}");
+            DisplayMessage(client, $"Start: {root.X}, {root.Y}, {root.Z}");
+
+            if (last != null && last != root)
+                DisplayMessage(client, $"End: {last.X}, {last.Y}, {last.Z}");
+
+            if (!string.IsNullOrEmpty(pathName))
+                DisplayMessage(client, $"Use /path save to save back to '{pathName}'.");
+            else
+                DisplayMessage(client, "Use /path save <pathname> to save this path.");
+
+            DisplaySyntax(client);
         }
 
         private void PathAssignTaxiRoute(GameClient client, string[] args)
         {
             PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
-            if (args.Length < 2)
+
+            if (args.Length < 3)
             {
                 DisplayMessage(client, "Usage: /path assigntaxiroute <destination>");
                 return;
@@ -361,17 +714,20 @@ namespace DOL.GS.Commands
             GameMerchant merchant = null;
             if (client.Player.TargetObject is GameStableMaster)
                 merchant = client.Player.TargetObject as GameStableMaster;
+
             if (client.Player.TargetObject is GameBoatStableMaster)
                 merchant = client.Player.TargetObject as GameBoatStableMaster;
+
             if (merchant == null)
             {
                 DisplayMessage(client, "You must select a stable master to assign a taxi route!");
                 return;
             }
-            string target = String.Join(" ", args, 2, args.Length - 2); ;
+
+            string target = string.Join(" ", args, 2, args.Length - 2);
             bool ticketFound = false;
-            string ticket = "Ticket to " + target;
-            // Most //
+            string ticket = $"Ticket to {target}";
+
             // With the new horse system, the stablemasters are using the item.Id_nb to find the horse route in the database
             // So we have to save a path in the database with the Id_nb as a PathID
             // The following string will contain the item Id_nb if it is found in the merchant list
@@ -380,38 +736,65 @@ namespace DOL.GS.Commands
             {
                 foreach (DbItemTemplate template in merchant.TradeItems.GetAllItems().Values)
                 {
-                    if (template != null && template.Name.ToLower() == ticket.ToLower())
+                    if (template != null && template.Name.Equals(ticket, StringComparison.OrdinalIgnoreCase))
                     {
                         ticketFound = true;
                         pathname = template.Id_nb;
                         break;
                     }
-
                 }
             }
+
             if (!ticketFound)
             {
-                DisplayMessage(client, "Stablemaster has no {0}!", ticket);
+                DisplayMessage(client, $"Stablemaster has no {ticket}!");
                 return;
             }
+
             MovementMgr.SavePath(pathname, path);
-            DisplayMessage(client, "Taxi route set to path '{0}'!", pathname);
+            DisplayMessage(client, $"Taxi route set to path '{pathname}'!");
         }
 
         private void TogglePathVisualization(GameClient client)
         {
-            if (client.Player.TargetObject is not GameNPC npc)
+            GameNPC npc = GetPathVisualizationNpc(client);
+            if (npc == null)
                 return;
 
+            client.Player.TempProperties.SetProperty(TEMP_PATH_VISUALIZATION_NPC, npc);
             npc.movementComponent.TogglePathVisualization();
-            DisplayMessage(client, "Toggling path visualization for {0} ({1})", npc.Name, npc.ObjectID);
+            if (client.Player.TargetObject == npc)
+                DisplayMessage(client, $"Toggling path visualization for {npc.Name} ({npc.ObjectID})");
+            else
+                DisplayMessage(client, $"Toggling path visualization for {client.Player.TargetObject.Name}'s leader {npc.Name} ({npc.ObjectID})");
+        }
+
+        private void RefreshPathVisualization(GameClient client)
+        {
+            GameNPC npc = GetPathVisualizationNpc(client);
+            if (npc == null)
+                return;
+
+            if (npc.movementComponent.IsPathVisualizationActive)
+                npc.movementComponent.TogglePathVisualization();
+
+            npc.movementComponent.TogglePathVisualization();
+            DisplayMessage(client, $"Refreshing path visualization for {npc.Name} ({npc.ObjectID})");
+        }
+
+        private static GameNPC GetPathVisualizationNpc(GameClient client)
+        {
+            if (client.Player.TargetObject is not GameNPC npc)
+                return client.Player.TempProperties.GetProperty<GameNPC>(TEMP_PATH_VISUALIZATION_NPC);
+
+            return npc;
         }
 
         public void OnCommand(GameClient client, string[] args)
         {
             if (args.Length < 2)
             {
-                DisplaySyntax(client);
+                DisplayPathInfo(client);
                 return;
             }
 
@@ -427,9 +810,24 @@ namespace DOL.GS.Commands
                     PathAdd(client, args);
                     break;
                 }
+                case "insert":
+                {
+                    PathInsert(client, args);
+                    break;
+                }
+                case "discardpoint":
+                {
+                    PathDiscardPoint(client);
+                    break;
+                }
                 case "travel":
                 {
                     PathTravel(client);
+                    break;
+                }
+                case "test":
+                {
+                    PathTest(client);
                     break;
                 }
                 case "stop":
@@ -457,6 +855,11 @@ namespace DOL.GS.Commands
                     PathLoad(client, args);
                     break;
                 }
+                case "loadtarget":
+                {
+                    PathLoadTarget(client);
+                    break;
+                }
                 case "assigntaxiroute":
                 {
                     PathAssignTaxiRoute(client, args);
@@ -482,6 +885,48 @@ namespace DOL.GS.Commands
                     DisplaySyntax(client);
                     break;
                 }
+            }
+        }
+
+        private class PathTestNpc : GameNPC
+        {
+            private ECSGameTimer _pathEndCheckTimer;
+            private ECSGameTimer _deathTimer;
+
+            public PathTestNpc() : base(new BlankBrain()) { }
+
+            public void StartPathTest(short speed)
+            {
+                MoveOnPath(speed);
+                _pathEndCheckTimer = new(this, CheckPathEnd, 500);
+            }
+
+            public override void Delete()
+            {
+                _pathEndCheckTimer?.Stop();
+                _deathTimer?.Stop();
+                base.Delete();
+            }
+
+            private int CheckPathEnd(ECSGameTimer timer)
+            {
+                if (ObjectState is not eObjectState.Active || !IsAlive)
+                    return 0;
+
+                if (IsMovingOnPath || CurrentPathPoint != null)
+                    return 500;
+
+                _deathTimer = new(this, KillPathTestNpc, 10000);
+                Say("Path test complete.");
+                return 0;
+            }
+
+            private int KillPathTestNpc(ECSGameTimer timer)
+            {
+                if (ObjectState is eObjectState.Active && IsAlive)
+                    Die(null);
+
+                return 0;
             }
         }
     }
