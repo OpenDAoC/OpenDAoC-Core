@@ -16,11 +16,11 @@ namespace DOL.GS
         private readonly long _tickDurationTicks;
         private bool _running;
         private Thread _busyWaitThresholdThread;
-        private int _busyWaitThresholdMs;
-        private long _busyWaitThresholdTicks;
+        private int _estimatedSleepOvershootMs;
+        private long _estimatedSleepOvershootTicks;
 
-        private double _gameLoopTime;
-        private double _totalElapsedTimeMs;
+        private double _gameLoopTimeMs;
+        private long _nextTickDeadlineTicks;
         private Stopwatch _stopwatch;
 
         public GameLoopTickPacerStats Stats { get; private set; }
@@ -54,6 +54,7 @@ namespace DOL.GS
 
             Stats = new([60000, 30000, 10000], 1000.0 / _tickDurationMs);
             _stopwatch = Stopwatch.StartNew();
+            _nextTickDeadlineTicks = _stopwatch.ElapsedTicks + _tickDurationTicks;
         }
 
         public void Stop()
@@ -71,37 +72,47 @@ namespace DOL.GS
 
         public long WaitForNextTick()
         {
-            long startTicks = _stopwatch.ElapsedTicks;
-            long ticksRemaining = _tickDurationTicks - startTicks;
+            long currentTicks = _stopwatch.ElapsedTicks;
+            long ticksUntilDeadline = _nextTickDeadlineTicks - currentTicks;
 
-            if (ticksRemaining >= _busyWaitThresholdTicks)
+            // Only sleep if enough time remains that the OS overshoot won't carry us past the deadline.
+            if (ticksUntilDeadline >= _estimatedSleepOvershootTicks)
             {
-                int sleepForMs = (int) (ticksRemaining * 1000.0 / Stopwatch.Frequency) - _busyWaitThresholdMs;
+                int sleepDurationMs = (int) (ticksUntilDeadline * 1000.0 / Stopwatch.Frequency) - _estimatedSleepOvershootMs;
 
-                if (sleepForMs > 0)
-                    Thread.Sleep(sleepForMs);
+                if (sleepDurationMs > 0)
+                    Thread.Sleep(sleepDurationMs);
             }
 
-            // Any small number will do here. Technically, this could be 0.
-            // If the game loop appears to overshoot the tick duration for no reason, this can be reduced even further.
-            while (_stopwatch.ElapsedTicks < _tickDurationTicks)
+            while (_stopwatch.ElapsedTicks < _nextTickDeadlineTicks)
                 Thread.SpinWait(10);
 
-            double elapsedTime = _stopwatch.Elapsed.TotalMilliseconds;
-            _totalElapsedTimeMs += elapsedTime;
-            _stopwatch.Restart();
+            currentTicks = _stopwatch.ElapsedTicks;
 
-            // In case the game loop is running faster than the tick rate. We don't want things to run faster than intended.
-            _gameLoopTime += elapsedTime < _tickDurationMs ? elapsedTime : _tickDurationMs;
-            Stats.RecordTick(_totalElapsedTimeMs);
-            return (long) _gameLoopTime;
+            // Drop the missed frames if this tick took longer than intended.
+            if (currentTicks - _nextTickDeadlineTicks >= _tickDurationTicks)
+                _nextTickDeadlineTicks = currentTicks + _tickDurationTicks;
+            else
+                _nextTickDeadlineTicks += _tickDurationTicks;
+
+            // Game loop time advances by exactly by the target tick duration.
+            _gameLoopTimeMs += _tickDurationMs;
+
+            // Record tick using real elapsed time.
+            double _realElapsedTimeMs = _stopwatch.ElapsedTicks * 1000.0 / Stopwatch.Frequency;
+            Stats.RecordTick(_realElapsedTimeMs);
+
+            return (long) _gameLoopTimeMs;
         }
 
         private void UpdateBusyWaitThreshold()
         {
-            int maxIteration = 10;
-            int sleepFor = 1;
-            int pauseFor = 10000;
+            // Periodically measures how much Thread.Sleep(1) overshoots on this machine/OS.
+
+            const int MAX_ITERATIONS = 10;
+            const int SLEEP_FOR_MS = 1;
+            const int RECALIBRATION_INTERVAL_MS = 10000;
+
             Stopwatch stopwatch = new();
             stopwatch.Start();
 
@@ -110,22 +121,22 @@ namespace DOL.GS
                 while (Volatile.Read(ref _running))
                 {
                     double start;
-                    double overSleptFor;
-                    double highest = 0;
+                    double sleepOvershootMs;
+                    double maxOversleepMs = 0;
 
-                    for (int i = 0; i < maxIteration; i++)
+                    for (int i = 0; i < MAX_ITERATIONS; i++)
                     {
                         start = stopwatch.Elapsed.TotalMilliseconds;
-                        Thread.Sleep(sleepFor);
-                        overSleptFor = stopwatch.Elapsed.TotalMilliseconds - start - sleepFor;
+                        Thread.Sleep(SLEEP_FOR_MS);
+                        sleepOvershootMs = stopwatch.Elapsed.TotalMilliseconds - start - SLEEP_FOR_MS;
 
-                        if (highest < overSleptFor)
-                            highest = overSleptFor;
+                        if (maxOversleepMs < sleepOvershootMs)
+                            maxOversleepMs = sleepOvershootMs;
                     }
 
-                    _busyWaitThresholdMs = (int) Math.Max(0, Math.Ceiling(highest));
-                    _busyWaitThresholdTicks = (long) (_busyWaitThresholdMs * Stopwatch.Frequency / 1000.0);
-                    Thread.Sleep(pauseFor);
+                    _estimatedSleepOvershootMs = (int) Math.Max(0, Math.Ceiling(maxOversleepMs));
+                    _estimatedSleepOvershootTicks = (long) (_estimatedSleepOvershootMs * Stopwatch.Frequency / 1000.0);
+                    Thread.Sleep(RECALIBRATION_INTERVAL_MS);
                 }
             }
             catch (ThreadInterruptedException)
