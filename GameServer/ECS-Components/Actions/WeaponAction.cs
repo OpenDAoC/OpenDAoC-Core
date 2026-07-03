@@ -18,7 +18,7 @@ namespace DOL.GS
         private double _effectiveness;
         private int _interval;
         private Style _combatStyle;
-        private int _extraSwingCount;
+        private int _extraSwings;
 
         public long AttackRoundEndTime { get; private set; }
         public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
@@ -27,10 +27,10 @@ namespace DOL.GS
         public eActiveWeaponSlot ActiveWeaponSlot { get; }
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
+        public bool HasConsumedBlockRound { get; set; } // Used to prevent multihit attacks from consuming multiple block rounds.
         public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
-
         public eDualWieldMechanic DualWieldMechanic { get; private set; }
-        public bool HasConsumedBlockRound { get; set; }
+        public int SwingsExecuted { get; private set; }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
         {
@@ -41,8 +41,8 @@ namespace DOL.GS
             _effectiveness = effectiveness;
             _interval = interval;
             _combatStyle = combatStyle;
+            _extraSwings = CalculateExtraSwings();
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
-            _extraSwingCount = CalculateExtraSwings();
         }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
@@ -52,9 +52,9 @@ namespace DOL.GS
             _attackWeapon = attackWeapon;
             _effectiveness = effectiveness;
             _interval = interval;
+            ActiveWeaponSlot = owner.ActiveWeaponSlot;
             RangedAttackType = rangedAttackType;
             Ammo = ammo;
-            ActiveWeaponSlot = owner.ActiveWeaponSlot;
         }
 
         public int Execute(ECSGameTimer timer)
@@ -71,27 +71,27 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, DualWieldMechanic is not eDualWieldMechanic.None, _extraSwingCount > 0, out AttackData mainHandAttackData))
+            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, DualWieldMechanic is not eDualWieldMechanic.None, _extraSwings > 0, out AttackData mainHandAttackData))
                 return;
 
             AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
             AttackData extraAttackData = null;
             DbInventoryItem lastExtraWeapon = null;
 
-            for (int i = 0; i < _extraSwingCount; i++)
+            for (int i = 0; i < _extraSwings; i++)
             {
                 if (i % 2 == 0)
                 {
                     lastExtraWeapon = _leftWeapon;
-                    extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _leftWeapon, null, _effectiveness, _interval);
+                    extraAttackData = InitiateAttack(_leftWeapon, null);
                 }
                 else
                 {
                     lastExtraWeapon = _attackWeapon;
-                    extraAttackData = _owner.attackComponent.MakeAttack(this, _target, _attackWeapon, null, _effectiveness, _interval);
+                    extraAttackData = InitiateAttack(_attackWeapon, null);
                 }
 
-                MakeAttack(extraAttackData);
+                FinalizeAttack(extraAttackData);
             }
 
             switch (mainHandAttackData.AttackResult)
@@ -127,9 +127,9 @@ namespace DOL.GS
             {
                 string multihitMessage = null;
 
-                if (_extraSwingCount == 2)
+                if (_extraSwings == 2)
                     multihitMessage = "Triple attack!";
-                else if (_extraSwingCount == 3)
+                else if (_extraSwings == 3)
                     multihitMessage = "Quad attack!";
 
                 if (!string.IsNullOrEmpty(multihitMessage))
@@ -357,7 +357,6 @@ namespace DOL.GS
             DbInventoryItem mainWeapon,
             DbInventoryItem leftWeapon,
             Style style,
-            double mainHandEffectiveness,
             bool isDualWieldAttack,
             bool hasExtraSwings,
             out AttackData attackData)
@@ -385,7 +384,7 @@ namespace DOL.GS
                 }
             }
 
-            attackData = _owner.attackComponent.MakeAttack(this, _target, mainWeapon, style, mainHandEffectiveness, _interval);
+            attackData = InitiateAttack(mainWeapon, style);
 
             if (style == null)
                 attackData.AnimationId = animationId;
@@ -411,11 +410,18 @@ namespace DOL.GS
                     playerTarget.Out.SendChangeTarget(attackData.Attacker);
             }
 
-            MakeAttack(attackData);
+            FinalizeAttack(attackData);
             return true;
         }
 
-        private void MakeAttack(AttackData attackData)
+        private AttackData InitiateAttack(DbInventoryItem weapon, Style style)
+        {
+            AttackData attackData = _owner.attackComponent.MakeAttack(this, _target, weapon, style, _effectiveness, _interval);
+            SwingsExecuted++;
+            return attackData;
+        }
+
+        private void FinalizeAttack(AttackData attackData)
         {
             GameLiving target = attackData.Target;
 
