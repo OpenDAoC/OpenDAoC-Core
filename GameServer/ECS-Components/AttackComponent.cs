@@ -2260,8 +2260,9 @@ namespace DOL.GS
 
             if (specLevel > 0)
             {
-                int bonus = owner.GetModified(eProperty.OffhandDamageAndChance);
-                return 0.25 + specLevel * 0.0068 + bonus * 0.01;
+                double modifier = 0.25 + specLevel * 0.0068;
+                double bonus = owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
+                return modifier + bonus;
             }
 
             return 0;
@@ -2351,11 +2352,8 @@ namespace DOL.GS
                 return 1.0;
 
             double modifier = 0.625 + 0.0034 * leftAxeSpec;
-
-            if (owner.GetModified(eProperty.OffhandDamageAndChance) > 0)
-                return modifier + owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
-
-            return modifier;
+            double bonus = owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
+            return modifier + bonus;
         }
 
         public class BlockRoundHandler
