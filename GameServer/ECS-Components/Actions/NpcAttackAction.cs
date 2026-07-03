@@ -215,10 +215,7 @@ namespace DOL.GS
                 _hasLos = response is LosCheckResponse.True;
 
             if (!_hasLos)
-            {
                 OnOutOfRangeOrNoLosRangedAttack();
-                return;
-            }
         }
 
         private void SwitchToMeleeAndTick()
@@ -295,12 +292,8 @@ namespace DOL.GS
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                if (_losChecker == null ||
-                    !_npcOwner.attackComponent.AttackState ||
-                    _npcOwner.ObjectState is not eObjectState.Active)
-                {
+                if (_losChecker == null || _npcOwner.ObjectState is not eObjectState.Active)
                     return 0;
-                }
 
                 _losChecker.Out.SendLosCheckRequest(_npcOwner, _target, _attackAction);
                 return LosCheckInterval;
