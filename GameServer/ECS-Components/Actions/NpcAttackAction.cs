@@ -71,12 +71,6 @@ namespace DOL.GS
                 if (_losCheckTarget is GameLiving livingLosCheckTarget)
                     brain.RemoveFromAggroList(livingLosCheckTarget);
 
-                brain.AttackMostWanted(); // This won't immediately start the attack on the new target, but we can use `TargetObject` to start checking it.
-                GameObject nextTarget = _npcOwner.TargetObject;
-
-                if (nextTarget != _losCheckTarget)
-                    _checkLosTimer?.ChangeTarget(nextTarget); // The timer might be already cleaned up if this was the last target.
-
                 return true;
             }
             else if (AttackComponent.AttackState && !_hasLos)
