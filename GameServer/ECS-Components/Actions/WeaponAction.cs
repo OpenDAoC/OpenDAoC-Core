@@ -172,8 +172,12 @@ namespace DOL.GS
 
             if (_owner is GameNPC npcOwner)
             {
-                if (_attackWeapon == null || _attackWeapon.SlotPosition is not Slot.RIGHTHAND)
+                if (_attackWeapon == null ||
+                    _attackWeapon.SlotPosition is not Slot.RIGHTHAND ||
+                    npcOwner.LeftHandSwingChance <= 0)
+                {
                     return 0;
+                }
 
                 DualWieldMechanic = eDualWieldMechanic.Classic;
                 double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
