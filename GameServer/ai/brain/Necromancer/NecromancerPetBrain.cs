@@ -15,8 +15,6 @@ namespace DOL.AI.Brain
     {
         public NecromancerPetBrain(GameLiving owner) : base(owner) { }
 
-        public override int ThinkInterval => 500;
-
         /// <summary>
         /// Brain main loop.
         /// </summary>

@@ -86,14 +86,7 @@ namespace DOL.AI.Brain
 			set { m_isMainPet = value; }
 		}
 
-		/// <summary>
-		/// The interval for thinking, set via server property, default is 1500 or every 1.5 seconds
-		/// </summary>
-		public override int ThinkInterval
-		{
-			get { return GS.ServerProperties.Properties.PET_THINK_INTERVAL; }
-		}
-
+		public override int ThinkInterval => Properties.PET_THINK_INTERVAL;
 		protected override int ThinkOffsetOnStart => 0;
 
 		#region Control
