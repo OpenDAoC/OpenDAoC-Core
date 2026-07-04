@@ -20,8 +20,6 @@ namespace DOL.AI.Brain
 
             if (!CheckSpells(eCheckSpellType.Offensive))
                 CheckSpells(eCheckSpellType.Defensive);
-
-            GetPlayerOwner().Out.SendMessage("tick", GS.PacketHandler.eChatType.CT_Chat, GS.PacketHandler.eChatLoc.CL_ChatWindow);
         }
 
         public override bool CheckProximityAggro()
