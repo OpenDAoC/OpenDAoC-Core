@@ -127,7 +127,9 @@ namespace DOL.GS
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
                 return new(NextNodeResult.PathComplete);
 
-            if (!Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE))
+            float distanceToCurrentSqr = (current.Position - position).LengthSquared();
+
+            if (distanceToCurrentSqr > NODE_REACHED_DISTANCE * NODE_REACHED_DISTANCE)
                 return new(NextNodeResult.Valid, current.Position);
 
             if (NodeContainsDoor(current, true))
@@ -156,7 +158,7 @@ namespace DOL.GS
 
             if (furthestVisibleNodeIndex > 0)
                 nodesToRemove = furthestVisibleNodeIndex;
-            else if (Owner.IsWithinRadius(current.Position, NODE_REACHED_DISTANCE_STRICT))
+            else if (distanceToCurrentSqr <= NODE_REACHED_DISTANCE_STRICT * NODE_REACHED_DISTANCE_STRICT)
             {
                 nodesToRemove = 1;
                 snapPosition = current.Position;
