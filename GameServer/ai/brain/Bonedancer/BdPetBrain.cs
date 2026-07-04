@@ -7,15 +7,12 @@ namespace DOL.AI.Brain
     {
         protected const int BASEFORMATIONDIST = 50;
 
+        public bool MinionsAssisting => Owner is CommanderPet commander && commander.MinionsAssisting;
+
         public BdPetBrain(GameLiving Owner) : base(Owner)
         {
             IsMainPet = false;
         }
-
-        /// <summary>
-        /// Are minions assisting the commander?
-        /// </summary>
-        public bool MinionsAssisting => Owner is CommanderPet commander && commander.MinionsAssisting;
 
         protected override GameLiving CalculateNextAttackTarget()
         {

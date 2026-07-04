@@ -15,7 +15,7 @@ namespace DOL.AI.Brain
 
 		protected override void CheckPlayerAggro()
 		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
+			foreach (var player in BuildPlayerAggroCandidateLoop())
 			{
 				if (!CanAggroTarget(player))
 					continue;
@@ -33,7 +33,7 @@ namespace DOL.AI.Brain
 
 		protected override void CheckNpcAggro()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+			foreach (var npc in BuildNpcAggroCandidateLoop())
 			{
 				if (!CanAggroTarget(npc))
 					continue;

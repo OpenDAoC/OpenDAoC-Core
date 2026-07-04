@@ -63,8 +63,14 @@ namespace DOL.AI.Brain
 
         #region AI
 
+        protected const int MAX_LOS_CHECK_PER_TICK = 5;
+        protected int _aggroLosChecksThisTick;
+        protected int _playerAggroIndex;
+        protected int _npcAggroIndex;
+
         public override void Think()
         {
+            _aggroLosChecksThisTick = 0;
             FSM.Think();
         }
 
@@ -84,12 +90,9 @@ namespace DOL.AI.Brain
             return HasAggro;
         }
 
-        /// <summary>
-        /// Check for aggro against players
-        /// </summary>
         protected virtual void CheckPlayerAggro()
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
+            foreach (var player in BuildPlayerAggroCandidateLoop())
             {
                 if (!CanAggroTarget(player))
                     continue;
@@ -103,21 +106,21 @@ namespace DOL.AI.Brain
                 if (Properties.CHECK_LOS_BEFORE_AGGRO)
                     SendAggroLosCheck(player, player);
                 else
-                {
                     AddToAggroList(player);
-                    return;
-                }
 
                 // We don't know if the LoS check will be positive, so we have to ask other players
             }
         }
 
-        /// <summary>
-        /// Check for aggro against close NPCs
-        /// </summary>
+        protected AggroCandidateLoop<GamePlayer> BuildPlayerAggroCandidateLoop()
+        {
+            var players = Body.GetPlayersInRadius((ushort) AggroRange);
+            return new(players, MAX_LOS_CHECK_PER_TICK, ref _aggroLosChecksThisTick, ref _playerAggroIndex);
+        }
+
         protected virtual void CheckNpcAggro()
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
+            foreach (var npc in BuildNpcAggroCandidateLoop())
             {
                 if (!CanAggroTarget(npc))
                     continue;
@@ -145,10 +148,19 @@ namespace DOL.AI.Brain
             }
         }
 
+        protected AggroCandidateLoop<GameNPC> BuildNpcAggroCandidateLoop()
+        {
+            var npcs = Body.GetNPCsInRadius((ushort) AggroRange);
+            return new(npcs, MAX_LOS_CHECK_PER_TICK, ref _aggroLosChecksThisTick, ref _npcAggroIndex);
+        }
+
         protected void SendAggroLosCheck(GamePlayer losChecker, GameObject target)
         {
-            if (losChecker.Out.SendLosCheckRequest(Body, target, _aggroLosCheckListener))
-                _aggroLosCheckListener.OnLosCheckStarted();
+            if (!losChecker.Out.SendLosCheckRequest(Body, target, _aggroLosCheckListener))
+                return;
+
+            _aggroLosCheckListener.OnLosCheckStarted();
+            _aggroLosChecksThisTick++;
         }
 
         public virtual void FireAmbientSentence()

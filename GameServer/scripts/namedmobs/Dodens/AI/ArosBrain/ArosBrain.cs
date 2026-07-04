@@ -34,7 +34,7 @@ namespace DOL.AI.Brain
         {
             Resists();
             ResistsTwo();
-            FSM.Think();
+            base.Think();
         }
 
         public void Resists()
@@ -124,12 +124,13 @@ namespace DOL.AI.Brain
                 Body.AbilityBonus[eProperty.StyleAbsorb] = 10;
             }
         }
+
         protected override void CheckNpcAggro()
         {
             if (Body.attackComponent.AttackState)
                 return;
 
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+            foreach (var npc in BuildNpcAggroCandidateLoop())
             {
                 if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
                     continue;
@@ -149,7 +150,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        
+
         /// <summary>
         /// Called whenever Aros the Spiritmaster's body sends something to its brain.
         /// </summary>

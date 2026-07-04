@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 
         protected override void CheckPlayerAggro()
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
+            foreach (var player in BuildPlayerAggroCandidateLoop())
             {
                 if (!CanAggroTarget(player))
                     continue;
@@ -45,13 +45,13 @@ namespace DOL.AI.Brain
 
                 WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
                 SendAggroLosCheck(player, player);
-                // We don't know if the LoS check will be positive, so we have to ask other players
+                // We don't know if the LoS check will be positive, so we have to ask other players.
             }
         }
 
         protected override void CheckNpcAggro()
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+            foreach (var npc in BuildNpcAggroCandidateLoop())
             {
                 // Non-pet NPCs are ignored.
                 if (npc is GameKeepGuard || npc.Brain == null || npc.Brain is not IControlledBrain npcBrain)

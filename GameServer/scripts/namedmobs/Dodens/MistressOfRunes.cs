@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
 			if (Body.attackComponent.AttackState)
 				return;
 
-			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+			foreach (var npc in BuildNpcAggroCandidateLoop())
 			{
 				if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
 					continue;

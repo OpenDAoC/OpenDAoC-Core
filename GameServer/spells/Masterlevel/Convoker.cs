@@ -856,7 +856,7 @@ public class MLBrain : GuardBrain
 		if (Body.attackComponent.AttackState)
 			return;
 
-		foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+		foreach (var npc in BuildNpcAggroCandidateLoop())
 		{
 			if (AggroList.ContainsKey(npc))
 				continue; // add only new npcs

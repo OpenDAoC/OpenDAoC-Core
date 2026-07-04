@@ -8,16 +8,20 @@ namespace DOL.AI.Brain
     {
         private List<GameLiving> _filteredAggroList = new();
 
-        public TurretFNFBrain(GameLiving owner) : base(owner) { }
-
         protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.CHECK_LOS_BEFORE_AGGRO_FNF;
+        protected override bool CanAddToAggroListFromMultipleLosChecks => true;
+
+        public TurretFNFBrain(GameLiving owner) : base(owner) { }
 
         public override void Think()
         {
+            _aggroLosChecksThisTick = 0;
             CheckProximityAggro();
 
             if (!CheckSpells(eCheckSpellType.Offensive))
                 CheckSpells(eCheckSpellType.Defensive);
+
+            GetPlayerOwner().Out.SendMessage("tick", GS.PacketHandler.eChatType.CT_Chat, GS.PacketHandler.eChatLoc.CL_ChatWindow);
         }
 
         public override bool CheckProximityAggro()
@@ -31,7 +35,8 @@ namespace DOL.AI.Brain
         protected override void CheckPlayerAggro()
         {
             // Copy paste of 'base.CheckPlayerAggro()' except we add all players in range.
-            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
+
+            foreach (var player in BuildPlayerAggroCandidateLoop())
             {
                 if (!CanAggroTarget(player))
                     continue;
@@ -52,7 +57,8 @@ namespace DOL.AI.Brain
         protected override void CheckNpcAggro()
         {
             // Copy paste of 'base.CheckNPCAggro()' except we add all NPCs in range.
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
+
+            foreach (var npc in BuildNpcAggroCandidateLoop())
             {
                 if (!CanAggroTarget(npc))
                     continue;
@@ -77,8 +83,6 @@ namespace DOL.AI.Brain
                 AddToAggroList(npc);
             }
         }
-
-        protected override bool CanAddToAggroListFromMultipleLosChecks => true;
 
         protected override bool ShouldBeIgnoredFromAggroList(GameLiving living)
         {
