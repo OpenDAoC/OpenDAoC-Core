@@ -359,11 +359,20 @@ namespace DOL.GS.Spells
         {
             GamePlayer playerCaster = Caster as GamePlayer;
 
-            //You should be able to chain pulsing charm on the same mob
+            // You should be able to chain pulsing charm on the same mob.
             if (Spell.Pulse != 0 && playerCaster?.ControlledBrain != null && playerCaster.ControlledBrain.Body != target)
                 playerCaster.CommandNpcRelease();
 
-            // Make sure the pet is in the same region and alive
+            // Stop the song in case the pet was stolen during a CC or if it was manually released.
+            if (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != Caster)
+            {
+                MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "CharmSpell.EndCast.Fail.CurrentlyControlled", target.GetName(0, true)), eChatType.CT_SpellResisted);
+                ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster, Spell);
+                song?.End();
+                return;
+            }
+
+            // Make sure the pet is in the same region and alive.
             if (target.CurrentRegion != Caster.CurrentRegion || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active)
             {
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster, Spell);
