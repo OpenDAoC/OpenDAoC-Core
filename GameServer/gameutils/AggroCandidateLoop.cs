@@ -10,7 +10,7 @@ namespace DOL.GS
         // Because the lists returned by GetPlayersInRadius always contain elements in the same order (unless players move in or out of a subzone),
         // _index (ref) is used to rotate through the candidates, preventing the same candidates from being checked every tick.
 
-        private readonly Span<T> _targets;
+        private readonly ReadOnlySpan<T> _targets;
         private readonly int _maxLosChecks;
         private ref int _losChecksThisTick;
         private ref int _index;
