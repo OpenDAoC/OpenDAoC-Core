@@ -515,15 +515,9 @@ namespace DOL.GS
             SetFlag(MovementState.WalkTo);
 
             if (IsFlagSet(MovementState.Pathfinding) || (IsFlagSet(MovementState.OnPath) && CurrentPathPoint?.WaitTime == 0))
-            {
-                float subtracted = distanceToTarget - NODE_REACHED_DISTANCE;
+                distanceToTarget = Math.Max(0, distanceToTarget - NODE_REACHED_DISTANCE);
 
-                // Only deduct the 16 unit lookahead early-arrival allowance if we aren't already inside it.
-                if (subtracted > 0)
-                    distanceToTarget = subtracted;
-            }
-
-            _walkingToEstimatedArrivalTime = distanceToTarget <= 0 ? 0 : GameLoop.GameLoopTime + (long) (distanceToTarget * 1000f / speed);
+            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + (long) (distanceToTarget * 1000 / speed);
         }
 
         private void PathToInternal(Vector3 destination, short speed)
