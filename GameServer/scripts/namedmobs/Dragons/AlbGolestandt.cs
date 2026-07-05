@@ -201,7 +201,7 @@ namespace DOL.GS
 				base.StartAttack(target);
 		}
 		private static Point3D spawnPoint = new Point3D(391344, 755419, 395);
-		public override ushort SpawnHeading { get => base.SpawnHeading; set => base.SpawnHeading = 2071; }
+		public override ushort SpawnHeading { get => 2071; set { } }
 		public override Point3D SpawnPoint { get => spawnPoint; set => base.SpawnPoint = spawnPoint; }
 		public override bool AddToWorld()
 		{
@@ -233,7 +233,7 @@ namespace DOL.GS
 			#endregion
 			MeleeDamageType = eDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(31);
-			AlbGolestandtBrain sbrain = new AlbGolestandtBrain();
+			AlbGolestandtBrain sbrain = new AlbGolestandtBrain(SpawnPoint);
 			SetOwnBrain(sbrain);
 			sbrain.Start();
 			LoadedFromScript = false;//load from database
@@ -261,14 +261,14 @@ namespace DOL.AI.Brain
     public class AlbGolestandtBrain : StandardMobBrain
 	{
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public AlbGolestandtBrain()
+		public AlbGolestandtBrain(Point3D spawnPoint)
 			: base()
 		{
 			AggroLevel = 100;
 			AggroRange = 800;
 			ThinkInterval = 5000;
 			
-			_roamingPathPoints.Add(new Point3D(391129, 755603, 378));//spawn
+			_roamingPathPoints.Add(spawnPoint);
 			_roamingPathPoints.Add(new Point3D(385865, 756961, 3504));
 			_roamingPathPoints.Add(new Point3D(378547, 755862, 3504));
 			_roamingPathPoints.Add(new Point3D(373114, 749008, 3504));
@@ -296,6 +296,7 @@ namespace DOL.AI.Brain
 			_roamingPathPoints.Add(new Point3D(407425, 720655, 3512));
 			_roamingPathPoints.Add(new Point3D(408918, 742335, 3512));
 			_roamingPathPoints.Add(new Point3D(397944, 754701, 3512));
+			_roamingPathPoints.Add(spawnPoint);
 		}
 		public static bool CanGlare = false;
 		public static bool CanGlare2 = false;
@@ -427,7 +428,7 @@ namespace DOL.AI.Brain
 			if (!ResetChecks && _lastRoamIndex >= _roamingPathPoints.Count)
 			{
 				IsRestless = false;//can roam again
-				Body.ReturnToSpawnPoint(400);//move dragon to spawn so he can attack again
+				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN); //move dragon to spawn so he can attack again
 				Body.Flags = 0; //remove all flags
 				_lastRoamIndex = 0;
 				ResetChecks = true;//do it only once
@@ -490,9 +491,9 @@ namespace DOL.AI.Brain
 				if (Body.IsWithinRadius(_roamingPathPoints[_lastRoamIndex], 100))
 					_lastRoamIndex++;
 
-				if(_lastRoamIndex >= _roamingPathPoints.Count)
-					Body.ReturnToSpawnPoint(400);
-				else if(!Body.IsMoving)
+				if (_lastRoamIndex >= _roamingPathPoints.Count)
+					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				else if (!Body.IsMoving)
 					Body.WalkTo(_roamingPathPoints[_lastRoamIndex], speed);
 			}
 		}
