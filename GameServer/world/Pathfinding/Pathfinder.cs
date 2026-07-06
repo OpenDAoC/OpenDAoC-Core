@@ -14,17 +14,21 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public const int NODE_REACHED_DISTANCE = 16; // Exposed for NpcMovementComponent.
-        private const int NODE_REACHED_DISTANCE_STRICT = 2;
         private const int MIN_TARGET_DIFF_REPLOT_DISTANCE = 64;
-        private const int DOOR_SEARCH_DISTANCE = 128;
 
         private PathBuffer _activePath = new();
         private PathBuffer _calculationBuffer = new();
-        private Vector3 _lastTarget = Vector3.Zero;
+        private Vector3 _lastTarget;
         private PathVisualization _pathVisualization;
         private bool _allowedToPath;
 
+        // Cross-zone bridging.
+        private Zone _lastZone;
+        private Vector3 _localTarget;
+        private Vector3? _crossZoneEntryPoint;
+
         public GameNPC Owner { get; }
+        public bool ShouldPath => _allowedToPath && (Owner.Flags & (eFlags.FLYING | eFlags.SWIMMING)) == 0;
         public bool ForceReplot { get; set; }
         public PathfindingStatus PathfindingStatus { get; private set; }
 
@@ -43,31 +47,18 @@ namespace DOL.GS
             _activePath.Clear();
             _calculationBuffer.Clear();
             _lastTarget = Vector3.Zero;
+            _lastZone = null;
+            _localTarget = Vector3.Zero;
+            _crossZoneEntryPoint = null;
             PathfindingStatus = PathfindingStatus.NotSet;
             ForceReplot = true;
-        }
-
-        public bool ShouldPath(Zone zone, Vector3 target)
-        {
-            if (zone == null || !zone.IsPathfindingEnabled)
-                return false;
-
-            if (!_allowedToPath)
-                return false;
-
-            if ((Owner.Flags & (eFlags.FLYING | eFlags.SWIMMING)) != 0)
-                return false;
-
-            // Target is in a different zone (TODO: implement this maybe? not sure if really required).
-            if (Owner.CurrentRegion.GetZone((int) target.X, (int) target.Y) != zone)
-                return false;
-
-            return true;
         }
 
         private PathfindingStatus CalculatePath(PathBuffer pathBuffer, Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters)
         {
             const int MAX_PATH_NODES = 512;
+            const int DOOR_SEARCH_DISTANCE = 128;
+
             WrappedPathfindingNode[] rentedNodeBuffer = ArrayPool<WrappedPathfindingNode>.Shared.Rent(MAX_PATH_NODES);
 
             try
@@ -117,6 +108,9 @@ namespace DOL.GS
 
         public PathingStep GetNextStep(Zone zone, Vector3 position, Vector3 target)
         {
+            const int NODE_REACHED_DISTANCE_STRICT = 2;
+            const int MAX_LOOKAHEAD = 6;
+
             ReplotIfNeeded(zone, position, target);
 
             // Check if any doors on the path have become closed and can't be opened via interaction.
@@ -125,7 +119,7 @@ namespace DOL.GS
                 TryApplyAlternativePath(zone, position, target);
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
-                return new(NextNodeResult.PathComplete);
+                return BuildCompletionStep(null);
 
             float distanceToCurrentSqr = (current.Position - position).LengthSquared();
 
@@ -136,7 +130,7 @@ namespace DOL.GS
                 return new(NextNodeResult.Waiting);
 
             int nodesToRemove = 0;
-            int maxLookahead = Math.Min(_activePath.Nodes.Count, 6); // Limit lookahead in case this gets expensive.
+            int maxLookahead = Math.Min(_activePath.Nodes.Count, MAX_LOOKAHEAD); // Limit lookahead in case this gets expensive.
             int furthestVisibleNodeIndex = -1;
             Vector3? snapPosition = null;
 
@@ -189,9 +183,16 @@ namespace DOL.GS
             }
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode next))
-                return new(NextNodeResult.PathComplete, null, snapPosition);
+                return BuildCompletionStep(snapPosition);
 
             return new(NextNodeResult.Valid, next.Position, snapPosition);
+        }
+
+        private PathingStep BuildCompletionStep(Vector3? snapPosition)
+        {
+            return _crossZoneEntryPoint.HasValue && PathfindingStatus is PathfindingStatus.PathFound ?
+                new(NextNodeResult.Valid, _crossZoneEntryPoint, snapPosition) :
+                new(NextNodeResult.PathComplete, null, snapPosition);
         }
 
         private bool IsStraightLineHeightSafe(Vector3 start, Vector3 target, int candidateIndex)
@@ -234,16 +235,89 @@ namespace DOL.GS
         private void ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
         {
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
-            if (!ForceReplot && _lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
+            if (_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE) && !ForceReplot && zone == _lastZone)
                 return;
 
-            PathfindingStatus status = CalculatePath(_activePath, zone, position, target, DefaultFilters);
+            // Find a crossing point to the next zone if its outside the current zone.
+            if (!zone.IsPointInZone(target) &&
+                TryGetZoneExitPoint(zone, position, target, out Vector3 exitPoint, out Vector3 entryPoint))
+            {
+                _localTarget = exitPoint;
+                _crossZoneEntryPoint = entryPoint;
+            }
+            else
+            {
+                _localTarget = target;
+                _crossZoneEntryPoint = null;
+            }
+
+            PathfindingStatus status = CalculatePath(_activePath, zone, position, _localTarget, DefaultFilters);
+            _lastZone = zone;
             UpdatePathState(status, target);
+        }
+
+        private bool TryGetZoneExitPoint(Zone zone, Vector3 position, Vector3 target, out Vector3 inZonePoint, out Vector3 neighborZonePoint)
+        {
+            const float BORDER_PRECISION = 0.5f;
+            const float ZONE_BORDER_MARGIN = 8f;
+            const float SNAP_EXTENT = 128f;
+            const float ZONE_BORDER_HEIGHT_RANGE = 4000f;
+
+            Vector3 inside = position;
+            Vector3 outside = target;
+
+            // Binary search along the straight line until our two points converge on the border.
+            while ((outside - inside).LengthSquared() > BORDER_PRECISION * BORDER_PRECISION)
+            {
+                Vector3 mid = (inside + outside) * 0.5f;
+
+                if (zone.IsPointInZone(mid))
+                    inside = mid;
+                else
+                    outside = mid;
+            }
+
+            Vector3 crossing = outside - inside;
+            float distance = crossing.Length();
+
+            if (distance <= float.Epsilon)
+            {
+                inZonePoint = inside;
+                neighborZonePoint = outside;
+            }
+            else
+            {
+                Vector3 direction = crossing / distance;
+                inZonePoint = inside - direction * ZONE_BORDER_MARGIN;
+                neighborZonePoint = outside + direction * ZONE_BORDER_MARGIN;
+            }
+
+            // Snap the exit point in the current zone.
+            Vector3? snapped = PathfindingProvider.Instance.GetClosestPoint(zone, inZonePoint, SNAP_EXTENT, SNAP_EXTENT, ZONE_BORDER_HEIGHT_RANGE, DefaultFilters);
+
+            if (!snapped.HasValue)
+                return false;
+
+            inZonePoint = snapped.Value;
+
+            // Snap the entry point in the neighboring zone.
+            Zone neighborZone = Owner.CurrentRegion.GetZone((int) neighborZonePoint.X, (int) neighborZonePoint.Y);
+
+            if (neighborZone == null)
+                return false;
+
+            snapped = PathfindingProvider.Instance.GetClosestPoint(neighborZone, neighborZonePoint, SNAP_EXTENT, SNAP_EXTENT, ZONE_BORDER_HEIGHT_RANGE, DefaultFilters);
+
+            if (!snapped.HasValue)
+                return false;
+
+            neighborZonePoint = snapped.Value;
+            return true;
         }
 
         private void TryApplyAlternativePath(Zone zone, Vector3 position, Vector3 target)
         {
-            PathfindingStatus altStatus = CalculatePath(_calculationBuffer, zone, position, target, BlockingDoorAvoidanceFilters);
+            PathfindingStatus altStatus = CalculatePath(_calculationBuffer, zone, position, _localTarget, BlockingDoorAvoidanceFilters);
 
             // Abort if the alternative path isn't complete and let the caller handle the original path.
             if (altStatus is not PathfindingStatus.PathFound)
@@ -291,6 +365,8 @@ namespace DOL.GS
 
         public bool TryGetClosestReachableNode(Zone zone, Vector3 position, Vector3 target, out Vector3? node)
         {
+            // This currently doesn't bridge zone crossings. Unsure if needed.
+
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
             {
                 CalculatePath(_activePath, zone, position, target, BlockingDoorAvoidanceFilters);

@@ -522,9 +522,16 @@ namespace DOL.GS
 
         private void PathToInternal(Vector3 destination, short speed)
         {
-            Zone zone = Owner.CurrentZone;
+            if (!_pathfinder.ShouldPath)
+            {
+                FallbackToWalk(this, destination, speed);
+                return;
+            }
 
-            if (!_pathfinder.ShouldPath(zone, destination))
+            // Don't substitute this with CurrentZone.
+            Zone zone = Owner.CurrentRegion.GetZone((int) _ownerPosition.X, (int) _ownerPosition.Y);
+
+            if (zone?.IsPathfindingEnabled != true)
             {
                 FallbackToWalk(this, destination, speed);
                 return;
@@ -719,7 +726,9 @@ namespace DOL.GS
 
             static bool JumpToClosestReachableNode(NpcMovementComponent component, Vector3 destination)
             {
-                if (!component._pathfinder.TryGetClosestReachableNode(component.Owner.CurrentZone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
+                Zone zone = component.Owner.CurrentRegion.GetZone((int) destination.X, (int) destination.Y);
+
+                if (!component._pathfinder.TryGetClosestReachableNode(zone, destination, component._ownerPosition, out Vector3? node) || !node.HasValue)
                     return false;
 
                 component._ownerPosition = node.Value;
