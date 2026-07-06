@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
@@ -676,6 +677,16 @@ namespace DOL.GS
         }
 
         #endregion
+
+        public bool IsPointInZone(Vector3 position)
+        {
+            return IsPointInZone((int) position.X, (int) position.Y);
+        }
+
+        public bool IsPointInZone(int x, int y)
+        {
+            return XOffset <= x && YOffset <= y && (XOffset + Width) > x && (YOffset + Height) > y;
+        }
 
         public bool IsUnderwater(int x, int y, int z)
         {
