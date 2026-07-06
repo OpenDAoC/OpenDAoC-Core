@@ -216,6 +216,8 @@ namespace DOL.GS.ServerRules
 		/// <param name="killer">killer</param>
 		void OnPlayerKilled(GamePlayer killedPlayer, GameObject killer);
 
+		long CalculateOutpostExperienceBonus(GamePlayer playerToAward, long baseXpReward);
+
 		/// <summary>
 		/// Invoked when a player teleports somewhere
 		/// </summary>
