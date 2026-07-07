@@ -176,7 +176,7 @@ namespace DOL.GS
                 {
                     foreach (GameDoorBase door in doors)
                     {
-                        if (door.CanBeOpenedViaInteraction && door.State is not eDoorState.Open)
+                        if (door.CanBeOpenedViaInteraction)
                             door.Open();
                     }
                 }
