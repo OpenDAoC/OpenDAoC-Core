@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 
             foreach (GameLiving healTarget in targets)
             {
-                double variance = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * (max - min);
+                double variance = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.Variance) * (max - min);
                 healed |= HealTarget(healTarget, spellValue * variance, true);
             }
 

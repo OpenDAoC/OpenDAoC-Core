@@ -1334,7 +1334,7 @@ namespace DOL.GS
         {
             varianceRange = CalculateVarianceRange(target, spec);
             double difference = varianceRange.upperLimit - varianceRange.lowerLimit;
-            return varianceRange.lowerLimit + owner.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * difference;
+            return varianceRange.lowerLimit + owner.GetPseudoDoubleIncl(RandomDeckEvent.Variance) * difference;
         }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)

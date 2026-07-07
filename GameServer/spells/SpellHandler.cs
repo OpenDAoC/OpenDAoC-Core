@@ -2943,7 +2943,7 @@ namespace DOL.GS.Spells
 			if (DistanceFallOff > 0)
 				spellDamage *= 1 - DistanceFallOff;
 
-			double variance = minVariance + Caster.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * (maxVariance - minVariance);
+			double variance = minVariance + Caster.GetPseudoDoubleIncl(RandomDeckEvent.Variance) * (maxVariance - minVariance);
 			double finalDamage = spellDamage * variance;
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
