@@ -2324,7 +2324,7 @@ namespace DOL.GS.Spells
 			if (spellResistChance <= 0)
 				return false;
 
-			double spellResistRoll = Caster.GetPseudoDouble(RandomDeckEvent.Miss);
+			double spellResistRoll = Caster.GetPseudoDouble(RandomDeckEvent.Resist);
 			spellResistRoll *= 100;
 
 			if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)

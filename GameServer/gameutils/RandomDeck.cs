@@ -135,7 +135,8 @@ namespace DOL.GS
         Evade,
         Parry,
         Block,                  // Includes guard.
-        Miss,                   // Physical and magical attacks (resists).
+        Miss,
+        Resist,
         DualWield,              // Off-hand attacks for CD/DW/H2H.
         OffensiveProcChance,    // Weapon and spell based offensive procs.
         DefensiveProcChance,    // Armor and spell based defensive procs.
