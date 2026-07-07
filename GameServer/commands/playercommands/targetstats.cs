@@ -95,9 +95,11 @@ namespace DOL.GS.Commands
                     info.Add(header);
                     info.Add($"Weapon damage:  {weaponDamage:0}  |  {weaponDamageCap:0} (cap)");
 
-                    _ = target.attackComponent.CalculateWeaponSkill(weapon, client.Player, out _, out (double lowerLimit, double upperLimit) varianceRange, out _, out double baseWeaponSkill);
+                    _ = target.attackComponent.CalculateWeaponSkill(weapon, 0, out double baseWeaponSkill);
+                    int spec = target.attackComponent.CalculateSpec(weapon);
+                    (double lowerVariance, double upperVariance) = target.attackComponent.CalculateVarianceRange(client.Player, spec);
                     info.Add($"Weapon skill:  {baseWeaponSkill:0.00}");
-                    info.Add($"Variance range:  {varianceRange.lowerLimit:0.00}~{varianceRange.upperLimit:0.00}");
+                    info.Add($"Variance range:  {lowerVariance:0.00}~{upperVariance:0.00}");
                     info.Add($"Attack speed:  {target.AttackSpeed(weapon) / 1000.0:0.00#}");
 
                     double defensePenetration = target.attackComponent.CalculateDefensePenetration(weapon, client.Player.Level);
