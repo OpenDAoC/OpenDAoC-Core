@@ -1160,21 +1160,21 @@ namespace DOL.GS.ServerRules
                 static void ProcessDamage<T>(GamePlayer player, double damage, T entity, ItemOwnerTotalDamagePair mostDamagingEntity, Dictionary<T, EntityCountTotalDamagePair> entityDamage) where T : class, IGameStaticItemOwner
                 {
                     double totalDamage;
+                    int level = player.Level;
 
                     if (entityDamage.TryGetValue(entity, out EntityCountTotalDamagePair value))
                     {
                         value.Count++;
                         value.Damage += damage;
                         totalDamage = value.Damage;
-                        int level = player.Level;
 
-                        if (value.HighestLevelPlayer.Level < level)
-                            value.HighestLevelPlayer = player;
+                        if (value.HighestLevel < level)
+                            value.HighestLevel = level;
                     }
                     else
                     {
                         totalDamage = damage;
-                        entityDamage[entity] = new(1, totalDamage, player);
+                        entityDamage[entity] = new(1, totalDamage, level);
                     }
 
                     if (mostDamagingEntity.Damage == 0 || totalDamage > mostDamagingEntity.Damage)
@@ -1389,21 +1389,21 @@ namespace DOL.GS.ServerRules
                 static void ProcessDamage<T>(GamePlayer player, double damage, T entity, ItemOwnerTotalDamagePair mostDamagingEntity, Dictionary<T, EntityCountTotalDamagePair> entityDamage) where T : class, IGameStaticItemOwner
                 {
                     double totalDamage;
+                    int level = player.Level;
 
                     if (entityDamage.TryGetValue(entity, out EntityCountTotalDamagePair value))
                     {
                         value.Count++;
                         value.Damage += damage;
                         totalDamage = value.Damage;
-                        int level = player.Level;
 
-                        if (value.HighestLevelPlayer.Level < level)
-                            value.HighestLevelPlayer = player;
+                        if (value.HighestLevel < level)
+                            value.HighestLevel = level;
                     }
                     else
                     {
                         totalDamage = damage;
-                        entityDamage[entity] = new(1, totalDamage, player);
+                        entityDamage[entity] = new(1, totalDamage, level);
                     }
 
                     if (mostDamagingEntity.Damage == 0 || totalDamage > mostDamagingEntity.Damage)

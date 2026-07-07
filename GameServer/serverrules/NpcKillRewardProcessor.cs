@@ -172,10 +172,10 @@ namespace DOL.GS.ServerRules
             * challenge code may not kick in. It could also kick in if the monster is low yellow to the high level player, depending on the group strength of the pair.
             */
 
-            GamePlayer highestLevelPlayer = _entityStats.HighestLevelPlayer;
-            ConColor conColorForHighestLevelPlayerInGroup = ConLevels.GetConColor(highestLevelPlayer.GetConLevel(_npc));
+            int highestLevelInGroup = _entityStats.HighestLevel;
+            ConColor conColorForHighestLevelInGroup = ConLevels.GetConColor(ConLevels.GetConLevel(highestLevelInGroup, _npc.Level));
 
-            if (conColorForHighestLevelPlayerInGroup is ConColor.GREY)
+            if (conColorForHighestLevelInGroup is ConColor.GREY)
                 return 0;
 
             if (_player.XPLogState is eXPLogState.Verbose && memberCount > 1)
@@ -191,48 +191,48 @@ namespace DOL.GS.ServerRules
             else
                 conColorThreshold = ConColor.YELLOW;
 
-            // If the con color for the highest level player in the group is above the threshold for "challenge code" to be activated.
-            if (conColorForHighestLevelPlayerInGroup >= conColorThreshold)
+            // If the con color for the highest level in the group is above the threshold for "challenge code" to be activated.
+            if (conColorForHighestLevelInGroup >= conColorThreshold)
                 return (long) Math.Ceiling((double) _npc.ExperienceValue / memberCount);
 
-            // If we're checking the highest level player, or if the npc is of the same or higher con level for us.
+            // If we're checking the highest level, or if the npc is of the same or higher con level for us.
             // We shouldn't try to treat the NPC as if it was of a different con color if it's already of that color to us (this could raise or lower the experience).
-            if (highestLevelPlayer == _player || ConLevels.GetConColor(_player.GetConLevel(_npc)) <= conColorForHighestLevelPlayerInGroup)
+            if (ConLevels.GetConColor(_player.GetConLevel(_npc)) <= conColorForHighestLevelInGroup)
                 return (long) Math.Ceiling((double) _npc.ExperienceValue / memberCount);
 
-            // Find an adequate NPC level so that its con color for the player being handled matches the con color of the highest level player in the group.
+            // Find an adequate NPC level so that its con color for the player being handled matches the con color of the highest level in the group.
             // If it's below yellow, loop downwards; if it's above yellow, loop upwards; if it's yellow, use our own level.
             // We have to check every level starting from the player's. This isn't very efficient but there shouldn't be too many iterations.
             int level = 0;
 
-            if (conColorForHighestLevelPlayerInGroup < ConColor.YELLOW)
+            if (conColorForHighestLevelInGroup < ConColor.YELLOW)
             {
-                // Downwards loop. Return the first level found.
-                for (int i = _player.Level - 1; i > 1; i--)
+                // Downward loop. Return the first level found.
+                for (int i = _player.Level - 1; i > 0; i--)
                 {
-                    if (ConLevels.GetConColor(ConLevels.GetConLevel(_player.Level, i)) == conColorForHighestLevelPlayerInGroup)
+                    if (ConLevels.GetConColor(ConLevels.GetConLevel(_player.Level, i)) == conColorForHighestLevelInGroup)
                     {
                         level = i;
                         break;
                     }
                 }
             }
-            else if (conColorForHighestLevelPlayerInGroup > ConColor.YELLOW)
+            else if (conColorForHighestLevelInGroup > ConColor.YELLOW)
             {
                 level = _player.Level + 1;
 
-                // Upwards loop. Continue until we find the highest level matching this color.
+                // Upward loop. Continue until we find the highest level matching this color.
                 for (int i = level; i < 51; i++)
                 {
                     ConColor color = ConLevels.GetConColor(ConLevels.GetConLevel(_player.Level, i));
 
-                    if (color == conColorForHighestLevelPlayerInGroup)
+                    if (color == conColorForHighestLevelInGroup)
                         level = i;
-                    else if (color > conColorForHighestLevelPlayerInGroup)
+                    else if (color > conColorForHighestLevelInGroup)
                         break;
                 }
             }
-            else if (conColorForHighestLevelPlayerInGroup is ConColor.YELLOW)
+            else if (conColorForHighestLevelInGroup is ConColor.YELLOW)
                 level = _player.Level;
 
             if (_player.XPLogState is eXPLogState.Verbose)

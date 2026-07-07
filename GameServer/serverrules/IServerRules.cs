@@ -437,11 +437,11 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		void OnPlayerLevelUp(GamePlayer player, int previousLevel);
 
-		public class EntityCountTotalDamagePair(int count, double damage, GamePlayer highestLevelPlayer)
+		public class EntityCountTotalDamagePair(int count, double damage, int highestLevel)
 		{
 			public int Count { get; set; } = count;
 			public double Damage { get; set; } = damage;
-			public GamePlayer HighestLevelPlayer { get; set; } = highestLevelPlayer;
+			public int HighestLevel { get; set; } = highestLevel;
 		}
 	}
 }
