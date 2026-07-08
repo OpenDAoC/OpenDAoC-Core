@@ -620,7 +620,7 @@ namespace DOL.GS.Spells
                 else
                 {
                     ad.CriticalChance = player.attackComponent.CalculateCriticalChance(null);
-                    ad.CriticalDamage = player.attackComponent.CalculateCriticalDamage(ad);
+                    ad.CriticalDamage = player.attackComponent.CalculateCriticalDamage(null, ad);
                 }
 
                 static int GetDamageResist(GameLiving living, eResist resistType)

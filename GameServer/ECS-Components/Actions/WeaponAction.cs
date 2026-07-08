@@ -31,7 +31,7 @@ namespace DOL.GS
         public bool HasConsumedBlockRound { get; set; } // Used to prevent multihit attacks from consuming multiple block rounds.
         public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
         public DualWieldMechanic DualWieldMechanic { get; private set; }
-        public int SwingsExecuted { get; private set; }
+        public byte SwingsExecuted { get; private set; }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle, byte styleChainStage)
         {

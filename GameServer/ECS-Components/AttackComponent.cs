@@ -1102,7 +1102,9 @@ namespace DOL.GS
                     if (ad.Target.Inventory != null)
                         armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
 
-                    double weaponSkill = CalculateWeaponSkill(weapon, ad.Target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill);
+                    int spec = CalculateSpec(weapon);
+                    double specModifier = CalculateSpecModifier(action, ad.Target, spec, out (double, double) varianceRange);
+                    double weaponSkill = CalculateWeaponSkill(weapon, specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
 
                     double damageMod = weaponSkill / armorMod;
@@ -1201,7 +1203,7 @@ namespace DOL.GS
                     ad.Damage = (int) damage;
                     ad.Modifier = (int) Math.Floor(resistModifier);
                     ad.CriticalChance = CalculateCriticalChance(action);
-                    ad.CriticalDamage = CalculateCriticalDamage(ad);
+                    ad.CriticalDamage = CalculateCriticalDamage(action, ad);
 
                     if (playerOwner != null && playerOwner.UseDetailedCombatLog)
                         PrintDetailedCombatLog(playerOwner, armorFactor, absorb, armorMod, baseWeaponSkill, varianceRange, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
@@ -1267,13 +1269,6 @@ namespace DOL.GS
             return 1.0;
         }
 
-        public double CalculateWeaponSkill(DbInventoryItem weapon, GameLiving target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill)
-        {
-            spec = CalculateSpec(weapon);
-            specModifier = CalculateSpecModifier(target, spec, out varianceRange);
-            return CalculateWeaponSkill(weapon, specModifier, out baseWeaponSkill);
-        }
-
         public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
             baseWeaponSkill = owner.GetWeaponSkill(weapon);
@@ -1330,11 +1325,11 @@ namespace DOL.GS
             return varianceRange;
         }
 
-        public double CalculateSpecModifier(GameLiving target, int spec, out (double lowerLimit, double upperLimit) varianceRange)
+        public double CalculateSpecModifier(WeaponAction action, GameLiving target, int spec, out (double lowerLimit, double upperLimit) varianceRange)
         {
             varianceRange = CalculateVarianceRange(target, spec);
             double difference = varianceRange.upperLimit - varianceRange.lowerLimit;
-            return varianceRange.lowerLimit + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.PhysicalVariance()) * difference;
+            return varianceRange.lowerLimit + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.PhysicalVariance(action.SwingsExecuted)) * difference;
         }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
@@ -1414,7 +1409,8 @@ namespace DOL.GS
 
             if (blockChance > 0)
             {
-                double blockRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block(action == null ? (byte) 0 : action.StyleChainStage));
+                RandomContext randomContext = action == null ? RandomContextFactory.Block(0, 0) : RandomContextFactory.Block(action.SwingsExecuted, action.StyleChainStage);
+                double blockRoll = owner.RandomProvider.GetPseudoDouble(randomContext);
                 bool blockSucceeded = blockChance > blockRoll;
                 string message = $"block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}";
 
@@ -1482,7 +1478,8 @@ namespace DOL.GS
                 if (guardChance <= 0)
                     continue;
 
-                double guardRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block(action == null ? (byte) 0 : action.StyleChainStage));
+                RandomContext randomContext = action == null ? RandomContextFactory.Block(0, 0) : RandomContextFactory.Block(action.SwingsExecuted, action.StyleChainStage);
+                double guardRoll = owner.RandomProvider.GetPseudoDouble(randomContext);
 
                 if (source is GamePlayer guardSource && guardSource.UseDetailedCombatLog)
                     guardSource.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
@@ -1643,7 +1640,7 @@ namespace DOL.GS
 
                 double evadeChance = owner.TryEvade(ad, lastAttackData, attackerCount);
                 ad.EvadeChance = evadeChance * 100;
-                double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade(action.StyleChainStage));
+                double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade(action.SwingsExecuted, action.StyleChainStage));
 
                 if (evadeChance > 0)
                 {
@@ -1661,7 +1658,7 @@ namespace DOL.GS
                 {
                     double parryChance = owner.TryParry(ad, lastAttackData, attackerCount);
                     ad.ParryChance = parryChance * 100;
-                    double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry(action.StyleChainStage));
+                    double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry(action.SwingsExecuted, action.StyleChainStage));
 
                     if (parryChance > 0)
                     {
@@ -1709,7 +1706,7 @@ namespace DOL.GS
 
             if (missChance > 0)
             {
-                double missRoll = ad.Attacker.RandomProvider.GetPseudoDouble(RandomContextFactory.Miss(action.StyleChainStage));
+                double missRoll = ad.Attacker.RandomProvider.GetPseudoDouble(RandomContextFactory.Miss(action.SwingsExecuted, action.StyleChainStage));
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {
@@ -2090,9 +2087,13 @@ namespace DOL.GS
             }
         }
 
-        public int CalculateCriticalDamage(AttackData ad)
+        public int CalculateCriticalDamage(WeaponAction action, AttackData ad)
         {
-            if (!owner.RandomProvider.Chance(RandomContextFactory.PhysicalCriticalChance(), ad.CriticalChance))
+            // 'action' is null when called from Battlemaster.CalculateDamageToTarget.
+
+            RandomContext randomComtext = action == null ? RandomContextFactory.PhysicalCriticalChance(0) : RandomContextFactory.PhysicalCriticalChance(action.SwingsExecuted);
+
+            if (!owner.RandomProvider.Chance(randomComtext, ad.CriticalChance))
                 return 0;
 
             double min = 0.1;
@@ -2124,7 +2125,7 @@ namespace DOL.GS
             else
                 max = ad.Target is GamePlayer ? 0.5 : 1.0;
 
-            double criticalMod = min + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.PhysicalCriticalVariance()) * (max - min);
+            double criticalMod = min + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.PhysicalCriticalVariance(action.SwingsExecuted)) * (max - min);
             return (int) (ad.Damage * criticalMod);
         }
 
