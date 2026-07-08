@@ -77,7 +77,7 @@ namespace DOL.GS.Commands
             {
                 DbInventoryItem mainWeapon = target.ActiveWeapon;
                 DbInventoryItem leftWeapon = target.ActiveLeftWeapon;
-                WeaponAction weaponAction = new(client.Player, target, mainWeapon, leftWeapon, 1.0, 0, null);
+                WeaponAction weaponAction = new(client.Player, target, mainWeapon, leftWeapon, 1.0, 0, null, 0);
                 AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, weaponAction, target);
 
                 if (target is GameNPC || mainWeapon != null)

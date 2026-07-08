@@ -23,16 +23,17 @@ namespace DOL.GS
         public long AttackRoundEndTime { get; private set; }
         public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
 
-        // The active weapon slot, ranged attack type, and ammo at the time the ammo was released
         public eActiveWeaponSlot ActiveWeaponSlot { get; }
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
+        public byte StyleChainStage { get; }
+
         public bool HasConsumedBlockRound { get; set; } // Used to prevent multihit attacks from consuming multiple block rounds.
         public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
         public eDualWieldMechanic DualWieldMechanic { get; private set; }
         public int SwingsExecuted { get; private set; }
 
-        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
+        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle, byte styleChainStage)
         {
             _owner = owner;
             _target = target;
@@ -43,6 +44,7 @@ namespace DOL.GS
             _combatStyle = combatStyle;
             _extraSwings = CalculateExtraSwings();
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
+            StyleChainStage = styleChainStage;
         }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
@@ -530,7 +532,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 {
                     int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
-                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null);
+                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null, 0);
                     // Don't call `WeaponAction.Execute` here.
                     // It applies damage adds and shields, but Reflex Attack shouldn't trigger them.
                     // It would also cause a stack overflow if the target has Reflex Attack too.
