@@ -2020,11 +2020,11 @@ namespace DOL.GS.Spells
 
 		protected virtual double GetDebuffEffectivenessCriticalModifier()
 		{
-			if (Caster.Chance(RandomDeckEvent.CriticalChance, Caster.DebuffCriticalChance))
+			if (Caster.RandomProvider.Chance(RandomContextFactory.CriticalChance(), Caster.DebuffCriticalChance))
 			{
 				double min = 0.1;
 				double max = 1.0;
-				double criticalMod = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+				double criticalMod = min + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.CriticalVariance()) * (max - min);
 				(Caster as GamePlayer)?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {criticalMod * 100:0}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 				return 1.0 + criticalMod;
 			}
@@ -2324,7 +2324,7 @@ namespace DOL.GS.Spells
 			if (spellResistChance <= 0)
 				return false;
 
-			double spellResistRoll = Caster.GetPseudoDouble(RandomDeckEvent.Resist);
+			double spellResistRoll = Caster.RandomProvider.GetPseudoDouble(RandomContextFactory.Resist());
 			spellResistRoll *= 100;
 
 			if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
@@ -2943,7 +2943,7 @@ namespace DOL.GS.Spells
 			if (DistanceFallOff > 0)
 				spellDamage *= 1 - DistanceFallOff;
 
-			double variance = minVariance + Caster.GetPseudoDoubleIncl(RandomDeckEvent.Variance) * (maxVariance - minVariance);
+			double variance = minVariance + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.Variance()) * (maxVariance - minVariance);
 			double finalDamage = spellDamage * variance;
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
@@ -2992,11 +2992,11 @@ namespace DOL.GS.Spells
 			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
 				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | SpecMod: {variance:0.##} ({minVariance:0.00}~{maxVariance:0.00})", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
-			if (Caster.Chance(RandomDeckEvent.CriticalChance, criticalChance))
+			if (Caster.RandomProvider.Chance(RandomContextFactory.CriticalChance(), criticalChance))
 			{
 				double min = 0.1;
 				double max = ad.Target is GamePlayer ? 0.5 : 1.0;
-				double criticalMod = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+				double criticalMod = min + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.CriticalVariance()) * (max - min);
 				criticalDamage = (int) (finalDamage * criticalMod);
 			}
 

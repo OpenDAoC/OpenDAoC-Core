@@ -182,7 +182,7 @@ namespace DOL.GS
                 }
 
                 DualWieldMechanic = DualWieldMechanic.Classic;
-                double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
+                double random = _owner.RandomProvider.GetPseudoDouble(RandomContextFactory.DualWield()) * 100;
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
 
@@ -202,7 +202,7 @@ namespace DOL.GS
             if (leftHandSwingChance > 0)
             {
                 DualWieldMechanic = DualWieldMechanic.Classic;
-                return _owner.GetPseudoDouble(RandomDeckEvent.DualWield) < leftHandSwingChance ? 1 : 0;
+                return _owner.RandomProvider.GetPseudoDouble(RandomContextFactory.DualWield()) < leftHandSwingChance ? 1 : 0;
             }
 
             // H2H.
@@ -211,7 +211,7 @@ namespace DOL.GS
             if (doubleChance > 0)
             {
                 DualWieldMechanic = DualWieldMechanic.HandToHand;
-                double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield);
+                double random = _owner.RandomProvider.GetPseudoDouble(RandomContextFactory.DualWield());
 
                 if (random < doubleChance)
                     return 1;

@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 
             foreach (GameLiving healTarget in targets)
             {
-                double variance = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.Variance) * (max - min);
+                double variance = min + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.Variance()) * (max - min);
                 healed |= HealTarget(healTarget, spellValue * variance, true);
             }
 
@@ -146,11 +146,11 @@ namespace DOL.GS.Spells
             double preCriticalAmount = amount;
             int criticalChance = Caster.GetModified(eProperty.CriticalHealHitChance);
 
-            if (Caster.Chance(RandomDeckEvent.CriticalChance, criticalChance))
+            if (Caster.RandomProvider.Chance(RandomContextFactory.CriticalChance(), criticalChance))
             {
                 double min = 0.1;
                 double max = 1.0;
-                double criticalMod = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+                double criticalMod = min + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.CriticalVariance()) * (max - min);
                 criticalAmount = amount * criticalMod;
                 amount += criticalAmount;
             }

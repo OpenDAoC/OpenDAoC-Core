@@ -1334,7 +1334,7 @@ namespace DOL.GS
         {
             varianceRange = CalculateVarianceRange(target, spec);
             double difference = varianceRange.upperLimit - varianceRange.lowerLimit;
-            return varianceRange.lowerLimit + owner.GetPseudoDoubleIncl(RandomDeckEvent.Variance) * difference;
+            return varianceRange.lowerLimit + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.Variance()) * difference;
         }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
@@ -1412,7 +1412,7 @@ namespace DOL.GS
 
             if (blockChance > 0)
             {
-                double blockRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
+                double blockRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block());
                 bool blockSucceeded = blockChance > blockRoll;
                 string message = $"block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}";
 
@@ -1478,7 +1478,7 @@ namespace DOL.GS
                 if (guardChance <= 0)
                     continue;
 
-                double guardRoll = owner.GetPseudoDouble(RandomDeckEvent.Block);
+                double guardRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block());
 
                 if (source is GamePlayer guardSource && guardSource.UseDetailedCombatLog)
                     guardSource.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
@@ -1540,7 +1540,7 @@ namespace DOL.GS
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
-                    double interceptRoll = owner.GetPseudoDouble(RandomDeckEvent.Intercept);
+                    double interceptRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Intercept());
                     interceptRoll *= 100;
 
                     if (inter.InterceptChance > interceptRoll)
@@ -1639,7 +1639,7 @@ namespace DOL.GS
 
                 double evadeChance = owner.TryEvade(ad, lastAttackData, attackerCount);
                 ad.EvadeChance = evadeChance * 100;
-                double evadeRoll = owner.GetPseudoDouble(RandomDeckEvent.Evade);
+                double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade());
 
                 if (evadeChance > 0)
                 {
@@ -1657,7 +1657,7 @@ namespace DOL.GS
                 {
                     double parryChance = owner.TryParry(ad, lastAttackData, attackerCount);
                     ad.ParryChance = parryChance * 100;
-                    double parryRoll = owner.GetPseudoDouble(RandomDeckEvent.Parry);
+                    double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry());
 
                     if (parryChance > 0)
                     {
@@ -1705,7 +1705,7 @@ namespace DOL.GS
 
             if (missChance > 0)
             {
-                double missRoll = ad.Attacker.GetPseudoDouble(RandomDeckEvent.Miss);
+                double missRoll = ad.Attacker.RandomProvider.GetPseudoDouble(RandomContextFactory.Miss());
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {
@@ -2088,7 +2088,7 @@ namespace DOL.GS
 
         public int CalculateCriticalDamage(AttackData ad)
         {
-            if (!owner.Chance(RandomDeckEvent.CriticalChance, ad.CriticalChance))
+            if (!owner.RandomProvider.Chance(RandomContextFactory.CriticalChance(), ad.CriticalChance))
                 return 0;
 
             double min = 0.1;
@@ -2120,7 +2120,7 @@ namespace DOL.GS
             else
                 max = ad.Target is GamePlayer ? 0.5 : 1.0;
 
-            double criticalMod = min + owner.GetPseudoDoubleIncl(RandomDeckEvent.CriticalVariance) * (max - min);
+            double criticalMod = min + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.CriticalVariance()) * (max - min);
             return (int) (ad.Damage * criticalMod);
         }
 

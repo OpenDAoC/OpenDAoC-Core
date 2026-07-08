@@ -196,7 +196,7 @@ namespace DOL.GS.Spells
 
             int baseChance = Spell.Frequency / 100;
 
-            if (!Caster.Chance(RandomDeckEvent.OffensiveProcChance, baseChance))
+            if (!Caster.RandomProvider.Chance(RandomContextFactory.OffensiveProcChance(), baseChance))
                 return;
 
             ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Attacker, _procSpell, _procSpellLine);
@@ -246,7 +246,7 @@ namespace DOL.GS.Spells
 
             int baseChance = Spell.Frequency / 100;
 
-            if (!Caster.Chance(RandomDeckEvent.DefensiveProcChance, baseChance))
+            if (!Caster.RandomProvider.Chance(RandomContextFactory.DefensiveProcChance(), baseChance))
                 return;
 
             ISpellHandler handler = ScriptMgr.CreateSpellHandler(ad.Target, _procSpell, _procSpellLine);

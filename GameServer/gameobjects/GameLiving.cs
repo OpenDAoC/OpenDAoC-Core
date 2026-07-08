@@ -806,11 +806,11 @@ namespace DOL.GS
             }
 
             // Proc #1
-            if (procSpell != null && Chance(RandomDeckEvent.OffensiveProcChance, procChance))
+            if (procSpell != null && RandomProvider.Chance(RandomContextFactory.OffensiveProcChance(), procChance))
                 StartWeaponMagicalEffect(weapon, ad, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects), weapon.ProcSpellID, false);
 
             // Proc #2
-            if (procSpell1 != null && Chance(RandomDeckEvent.OffensiveProcChance, procChance))
+            if (procSpell1 != null && RandomProvider.Chance(RandomContextFactory.OffensiveProcChance(), procChance))
                 StartWeaponMagicalEffect(weapon, ad, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects), weapon.ProcSpellID1, false);
 
 			// Poison
@@ -903,10 +903,10 @@ namespace DOL.GS
 			int chance = armor.ProcChance > 0 ? armor.ProcChance : 10;
 			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
 
-			if (armor.ProcSpellID != 0 && Chance(RandomDeckEvent.DefensiveProcChance, chance))
+			if (armor.ProcSpellID != 0 && RandomProvider.Chance(RandomContextFactory.DefensiveProcChance(), chance))
 				StartArmorMagicalEffect(armor, ad.Attacker, SkillBase.FindSpell(armor.ProcSpellID, spellLine), spellLine);
 
-			if (armor.ProcSpellID1 != 0 && Chance(RandomDeckEvent.DefensiveProcChance, chance))
+			if (armor.ProcSpellID1 != 0 && RandomProvider.Chance(RandomContextFactory.DefensiveProcChance(), chance))
 				StartArmorMagicalEffect(armor, ad.Attacker, SkillBase.FindSpell(armor.ProcSpellID1, spellLine), spellLine);
 		}
 

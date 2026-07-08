@@ -11,7 +11,7 @@ namespace DOL.GS
         private const int CARD_MIN = 0;
         private const int CARD_MAX = 99;
         private const int CARD_RANGE = CARD_MAX - CARD_MIN + 1;
-        private const int STRATUM_SIZE = CARD_RANGE / NUM_STRATA; // Should be equal to NUM_BUCKETS for each bucket to receieve exactly one card per stratum.
+        private const int STRATUM_SIZE = CARD_RANGE / NUM_STRATA; // Should be equal to NUM_BUCKETS for each bucket to receive exactly one card per stratum.
 
         private readonly int[] _cards = new int[CARD_RANGE];
         private int _index = CARD_RANGE;                          // Forces initialization on first draw.
@@ -127,21 +127,5 @@ namespace DOL.GS
         }
 
         private readonly record struct CardAssignment(int Card, int BucketIndex);
-    }
-
-    public enum RandomDeckEvent : byte
-    {
-        Intercept,              // Primarily used by Spiritmaster pets.
-        Evade,
-        Parry,
-        Block,                  // Includes Guard.
-        Miss,
-        Resist,
-        DualWield,              // Off-hand attacks for CD/DW/H2H.
-        OffensiveProcChance,    // Weapon and spell based offensive procs.
-        DefensiveProcChance,    // Armor and spell based defensive procs.
-        Variance,               // Physical and magical attacks, heals.
-        CriticalChance,         // Physical and magical attacks, heals, DoTs, debuffs.
-        CriticalVariance        // Physical and magical attacks, heals, DoTs, debuffs.
     }
 }

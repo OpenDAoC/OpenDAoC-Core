@@ -137,39 +137,7 @@ namespace DOL.GS
 
         public override int TargetInViewAlwaysTrueMinRange => (TargetObject is GamePlayer targetPlayer && targetPlayer.IsMoving) ? 100 : 64;
 
-        private Dictionary<RandomDeckEvent, RandomDeck> _randomDecks = new();
-
-        public override bool Chance(RandomDeckEvent deckEvent, int chancePercent)
-        {
-            return !Properties.OVERRIDE_DECK_RNG && _randomDecks.TryGetValue(deckEvent, out RandomDeck deck) ?
-                deck.Draw() < chancePercent :
-                base.Chance(deckEvent, chancePercent);
-        }
-
-        public override bool Chance(RandomDeckEvent deckEvent, double chancePercent)
-        {
-            return GetPseudoDouble(deckEvent) < chancePercent;
-        }
-
-        public override double GetPseudoDouble(RandomDeckEvent deckEvent)
-        {
-            return !Properties.OVERRIDE_DECK_RNG && _randomDecks.TryGetValue(deckEvent, out RandomDeck deck) ?
-                (deck.Draw() + Util.RandomDouble()) / 100.0 :
-                base.GetPseudoDouble(deckEvent);
-        }
-
-        public override double GetPseudoDoubleIncl(RandomDeckEvent deckEvent)
-        {
-            return !Properties.OVERRIDE_DECK_RNG && _randomDecks.TryGetValue(deckEvent, out RandomDeck deck) ?
-                (deck.Draw() + Util.RandomDoubleIncl()) / 100.0 :
-                base.GetPseudoDoubleIncl(deckEvent);
-        }
-
-        public void InitializeRandomDecks()
-        {
-            foreach (RandomDeckEvent deckEvent in Enum.GetValues<RandomDeckEvent>())
-                _randomDecks[deckEvent] = new();
-        }
+        public override IRandomProvider RandomProvider { get; } = RandomProviderFactory.GetDeckRandomProvider();
 
         /// <summary>
         /// Gets or sets the GroundTargetObject's visibility
@@ -13717,20 +13685,19 @@ namespace DOL.GS
 
             CreateStatistics();
 
-            m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            m_combatTimer = new(this, _ =>
             {
                 Out.SendUpdateMaxSpeed();
                 return 0;
-            }));
+            });
 
-            m_holdBreathTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            m_holdBreathTimer = new(this, _ =>
             {
                 UpdateWaterBreathState(eWaterBreath.Drowning);
                 return 0;
-            }));
+            });
 
-            m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
-            InitializeRandomDecks();
+            m_drowningTimer = new(this, DrowningTimerCallback);
         }
 
         /// <summary>
@@ -13785,7 +13752,6 @@ namespace DOL.GS
         {
             return false;
         }
-
 
         ///// <summary>
         ///// Delve a weapon style for this player

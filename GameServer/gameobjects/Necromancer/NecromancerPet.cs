@@ -512,26 +512,14 @@ namespace DOL.GS
             Die(null);
         }
 
-        // Delegate RNG methods to owner.
-
-        public override bool Chance(RandomDeckEvent deckEvent, int chancePercent)
+        // Delegate RNG provider to owner.
+        public override IRandomProvider RandomProvider
         {
-            return Owner != null ? Owner.Chance(deckEvent, chancePercent) : base.Chance(deckEvent, chancePercent);
-        }
-
-        public override bool Chance(RandomDeckEvent deckEvent, double chancePercent)
-        {
-            return Owner != null ? Owner.Chance(deckEvent, chancePercent) : base.Chance(deckEvent, chancePercent);
-        }
-
-        public override double GetPseudoDouble(RandomDeckEvent deckEvent)
-        {
-            return Owner != null ? Owner.GetPseudoDouble(deckEvent) : base.GetPseudoDouble(deckEvent);
-        }
-
-        public override double GetPseudoDoubleIncl(RandomDeckEvent deckEvent)
-        {
-            return Owner != null ? Owner.GetPseudoDoubleIncl(deckEvent) : base.GetPseudoDoubleIncl(deckEvent);
+            get
+            {
+                GameLiving owner = Owner;
+                return owner != null ? owner.RandomProvider : base.RandomProvider;
+            }
         }
     }
 }
