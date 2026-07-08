@@ -78,7 +78,8 @@ namespace DOL.GS.Commands
                 DbInventoryItem mainWeapon = target.ActiveWeapon;
                 DbInventoryItem leftWeapon = target.ActiveLeftWeapon;
                 WeaponAction weaponAction = new(client.Player, target, mainWeapon, leftWeapon, 1.0, 0, null, 0);
-                AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, weaponAction, target);
+                weaponAction.DetermineDualWieldMechanic(); // Must be called manually since the attack is not actually being executed.
+                AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, weaponAction, client.Player);
 
                 if (target is GameNPC || mainWeapon != null)
                     AddMainHandInfo(info, client, target, mainWeapon, attackType);
@@ -155,6 +156,7 @@ namespace DOL.GS.Commands
                                     double leftHandSwingChance = target.attackComponent.CalculateDwCdLeftHandSwingChance();
                                     info.Add($"Swing:  {leftHandSwingChance * 100:0.00}%");
                                 }
+
                                 break;
                             }
                             case AttackData.eAttackType.MeleeHandToHand:

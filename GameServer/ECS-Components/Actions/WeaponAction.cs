@@ -163,7 +163,13 @@ namespace DOL.GS
             }
         }
 
-        private int CalculateExtraSwings()
+        public void DetermineDualWieldMechanic()
+        {
+            // Called externally to determine the dual wield mechanic for this attack without rolling for extra swings.
+            _ = CalculateExtraSwings(false);
+        }
+
+        private int CalculateExtraSwings(bool shouldRollExtraSwings = true)
         {
             DualWieldMechanic = DualWieldMechanic.None;
 
@@ -184,6 +190,10 @@ namespace DOL.GS
                 }
 
                 DualWieldMechanic = DualWieldMechanic.Classic;
+
+                if (!shouldRollExtraSwings)
+                    return 0;
+
                 double random = _owner.RandomProvider.GetPseudoDouble(RandomContextFactory.DualWield()) * 100;
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
@@ -204,6 +214,10 @@ namespace DOL.GS
             if (leftHandSwingChance > 0)
             {
                 DualWieldMechanic = DualWieldMechanic.Classic;
+
+                if (!shouldRollExtraSwings)
+                    return 0;
+
                 return _owner.RandomProvider.GetPseudoDouble(RandomContextFactory.DualWield()) < leftHandSwingChance ? 1 : 0;
             }
 
@@ -213,6 +227,10 @@ namespace DOL.GS
             if (doubleChance > 0)
             {
                 DualWieldMechanic = DualWieldMechanic.HandToHand;
+
+                if (!shouldRollExtraSwings)
+                    return 0;
+
                 double random = _owner.RandomProvider.GetPseudoDouble(RandomContextFactory.DualWield());
 
                 if (random < doubleChance)
