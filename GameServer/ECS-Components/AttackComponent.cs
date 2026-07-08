@@ -1334,7 +1334,7 @@ namespace DOL.GS
         {
             varianceRange = CalculateVarianceRange(target, spec);
             double difference = varianceRange.upperLimit - varianceRange.lowerLimit;
-            return varianceRange.lowerLimit + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.Variance()) * difference;
+            return varianceRange.lowerLimit + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.PhysicalVariance()) * difference;
         }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
@@ -2088,7 +2088,7 @@ namespace DOL.GS
 
         public int CalculateCriticalDamage(AttackData ad)
         {
-            if (!owner.RandomProvider.Chance(RandomContextFactory.CriticalChance(), ad.CriticalChance))
+            if (!owner.RandomProvider.Chance(RandomContextFactory.PhysicalCriticalChance(), ad.CriticalChance))
                 return 0;
 
             double min = 0.1;
@@ -2120,7 +2120,7 @@ namespace DOL.GS
             else
                 max = ad.Target is GamePlayer ? 0.5 : 1.0;
 
-            double criticalMod = min + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.CriticalVariance()) * (max - min);
+            double criticalMod = min + owner.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.PhysicalCriticalVariance()) * (max - min);
             return (int) (ad.Damage * criticalMod);
         }
 

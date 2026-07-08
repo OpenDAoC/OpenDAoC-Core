@@ -2,17 +2,20 @@
 {
     public enum RandomEvent : byte
     {
-        Intercept,              // Primarily used by Spiritmaster pets.
+        Intercept,                // Primarily used by Spiritmaster pets.
         Evade,
         Parry,
-        Block,                  // Includes Guard.
+        Block,                    // Includes Guard.
         Miss,
         Resist,
-        DualWield,              // Off-hand attacks for CD/DW/H2H.
-        OffensiveProcChance,    // Weapon and spell based offensive procs.
-        DefensiveProcChance,    // Armor and spell based defensive procs.
-        Variance,               // Physical and magical attacks, heals.
-        CriticalChance,         // Physical and magical attacks, heals, DoTs, debuffs.
-        CriticalVariance        // Physical and magical attacks, heals, DoTs, debuffs.
+        DualWield,                // Off-hand attacks for CD/DW/H2H.
+        OffensiveProcChance,      // Weapon and spell based offensive procs.
+        DefensiveProcChance,      // Armor and spell based defensive procs.
+        PhysicalVariance,
+        MagicVariance,
+        PhysicalCriticalChance,
+        MagicCriticalChance,
+        PhysicalCriticalVariance,
+        MagicCriticalVariance
     }
 }

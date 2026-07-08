@@ -178,11 +178,11 @@ namespace DOL.GS.Spells
         {
             ad.CriticalChance = Math.Min(50, Caster.DebuffCriticalChance);
 
-            if (!Caster.RandomProvider.Chance(RandomContextFactory.CriticalChance(), ad.CriticalChance))
+            if (!Caster.RandomProvider.Chance(RandomContextFactory.MagicCriticalChance(), ad.CriticalChance))
                 return 0;
 
             // Crit damage for DoTs is up to 100% against players too.
-            return 0.1 + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.CriticalVariance()) * 0.9;
+            return 0.1 + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.MagicCriticalVariance()) * 0.9;
         }
 
         protected override double CalculateBuffDebuffEffectiveness()

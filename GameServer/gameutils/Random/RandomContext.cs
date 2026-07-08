@@ -53,19 +53,34 @@
             return new(RandomEvent.DefensiveProcChance, RandomPolicy.Default);
         }
 
-        public static RandomContext Variance()
+        public static RandomContext PhysicalVariance()
         {
-            return new(RandomEvent.Variance, RandomPolicy.Default);
+            return new(RandomEvent.PhysicalVariance, RandomPolicy.Default);
         }
 
-        public static RandomContext CriticalChance()
+        public static RandomContext MagicVariance()
         {
-            return new(RandomEvent.CriticalChance, RandomPolicy.Default);
+            return new(RandomEvent.MagicVariance, RandomPolicy.Default);
         }
 
-        public static RandomContext CriticalVariance()
+        public static RandomContext PhysicalCriticalChance()
         {
-            return new(RandomEvent.CriticalVariance, RandomPolicy.Default);
+            return new(RandomEvent.PhysicalCriticalChance, RandomPolicy.Default);
+        }
+
+        public static RandomContext MagicCriticalChance()
+        {
+            return new(RandomEvent.MagicCriticalChance, RandomPolicy.Default);
+        }
+
+        public static RandomContext PhysicalCriticalVariance()
+        {
+            return new(RandomEvent.PhysicalCriticalVariance, RandomPolicy.Default);
+        }
+
+        public static RandomContext MagicCriticalVariance()
+        {
+            return new(RandomEvent.MagicCriticalVariance, RandomPolicy.Default);
         }
     }
 }
