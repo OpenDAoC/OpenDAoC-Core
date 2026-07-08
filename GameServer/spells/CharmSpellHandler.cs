@@ -79,12 +79,7 @@ namespace DOL.GS.Spells
             }
 
             target ??= Target;
-
-            if (Caster.RandomProvider.Chance(RandomContextFactory.Resist(), CalculateSpellResistChance(target)))
-                OnSpellNegated(target, SpellNegatedReason.Resisted);
-            else
-                ApplyEffectOnTarget(target);
-
+            ApplyEffectOnTarget(target);
             return true;
         }
 
