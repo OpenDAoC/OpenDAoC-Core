@@ -1407,12 +1407,14 @@ namespace DOL.GS
 
         public bool CheckBlock(WeaponAction action, AttackData ad)
         {
+            // 'action' is null if the attack is a bolt.
+
             double blockChance = owner.TryBlock(ad, false, out int shieldSize);
             ad.BlockChance = blockChance * 100;
 
             if (blockChance > 0)
             {
-                double blockRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block());
+                double blockRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block(action == null ? (byte) 0 : action.StyleChainStage));
                 bool blockSucceeded = blockChance > blockRoll;
                 string message = $"block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}";
 
@@ -1457,8 +1459,10 @@ namespace DOL.GS
             return false;
         }
 
-        public bool CheckGuard(AttackData ad, bool stealthStyle)
+        public bool CheckGuard(WeaponAction action, AttackData ad, bool stealthStyle)
         {
+            // 'action' is null if the attack is a bolt.
+
             foreach (GuardECSGameEffect guard in owner.effectListComponent.GetAbilityEffects(eEffect.Guard))
             {
                 if (guard.Target != owner)
@@ -1478,7 +1482,7 @@ namespace DOL.GS
                 if (guardChance <= 0)
                     continue;
 
-                double guardRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block());
+                double guardRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Block(action == null ? (byte) 0 : action.StyleChainStage));
 
                 if (source is GamePlayer guardSource && guardSource.UseDetailedCombatLog)
                     guardSource.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
@@ -1639,7 +1643,7 @@ namespace DOL.GS
 
                 double evadeChance = owner.TryEvade(ad, lastAttackData, attackerCount);
                 ad.EvadeChance = evadeChance * 100;
-                double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade());
+                double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade(action.StyleChainStage));
 
                 if (evadeChance > 0)
                 {
@@ -1657,7 +1661,7 @@ namespace DOL.GS
                 {
                     double parryChance = owner.TryParry(ad, lastAttackData, attackerCount);
                     ad.ParryChance = parryChance * 100;
-                    double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry());
+                    double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry(action.StyleChainStage));
 
                     if (parryChance > 0)
                     {
@@ -1676,7 +1680,7 @@ namespace DOL.GS
                     return eAttackResult.Blocked;
             }
 
-            if (CheckGuard(ad, stealthStyle))
+            if (CheckGuard(action, ad, stealthStyle))
                 return eAttackResult.Blocked;
 
             // Not implemented.
@@ -1705,7 +1709,7 @@ namespace DOL.GS
 
             if (missChance > 0)
             {
-                double missRoll = ad.Attacker.RandomProvider.GetPseudoDouble(RandomContextFactory.Miss());
+                double missRoll = ad.Attacker.RandomProvider.GetPseudoDouble(RandomContextFactory.Miss(action.StyleChainStage));
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {

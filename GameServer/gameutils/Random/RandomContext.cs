@@ -14,24 +14,24 @@
             return new(RandomEvent.Intercept, RandomPolicy.Default);
         }
 
-        public static RandomContext Evade()
+        public static RandomContext Evade(byte styleChainStage)
         {
-            return new(RandomEvent.Evade, RandomPolicy.Default);
+            return new(RandomEvent.Evade, RandomPolicy.Default, styleChainStage);
         }
 
-        public static RandomContext Parry()
+        public static RandomContext Parry(byte styleChainStage)
         {
-            return new(RandomEvent.Parry, RandomPolicy.Default);
+            return new(RandomEvent.Parry, RandomPolicy.Default, styleChainStage);
         }
 
-        public static RandomContext Block()
+        public static RandomContext Block(byte styleChainStage)
         {
-            return new(RandomEvent.Block, RandomPolicy.Default);
+            return new(RandomEvent.Block, RandomPolicy.Default, styleChainStage);
         }
 
-        public static RandomContext Miss()
+        public static RandomContext Miss(byte styleChainStage)
         {
-            return new(RandomEvent.Miss, RandomPolicy.Default);
+            return new(RandomEvent.Miss, RandomPolicy.Default, styleChainStage);
         }
 
         public static RandomContext Resist()
