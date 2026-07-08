@@ -75,9 +75,7 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		// Likely to be broken. It used to override 'CastSpell', but it no longer exists in 'SpellHanlder'.
-		// 'StartSpell' takes a target but we're not even using it.
-		// Can't be tested since Warlocks aren't functional.
+		// Chamber release uses StartSpell (ECS) instead of the legacy CastSpell override.
 		public override bool StartSpell(GameLiving target)
 		{
 			GamePlayer caster = (GamePlayer)m_caster;
@@ -91,6 +89,11 @@ namespace DOL.GS.Spells
 				GameSpellEffect PhaseShift = SpellHandler.FindEffectOnTarget(Target, "Phaseshift");
 				SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
 				spellhandler = ScriptMgr.CreateSpellHandler(caster, chamber.PrimarySpell, chamber.PrimarySpellLine);
+				if (spellhandler == null)
+				{
+					MessageToCaster("Chamber primary spell handler could not be created!", eChatType.CT_System);
+					return false;
+				}
 
 				#region Pre-checks
 				int duration = caster.GetSkillDisabledDuration(m_spell);
@@ -193,7 +196,8 @@ namespace DOL.GS.Spells
 				if (chamber.SecondarySpell != null)
 				{
 					spellhandler2 = ScriptMgr.CreateSpellHandler(caster, chamber.SecondarySpell, chamber.SecondarySpellLine);
-					spellhandler2.StartSpell(Target);
+					if (spellhandler2 != null)
+						spellhandler2.StartSpell(Target);
 				}
 				effect.Cancel(false);
 
