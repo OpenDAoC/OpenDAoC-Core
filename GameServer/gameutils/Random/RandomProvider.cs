@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS
@@ -41,19 +41,31 @@ namespace DOL.GS
 
     public sealed class DeckRandomProvider : IRandomProvider
     {
-        private readonly Dictionary<RandomEvent, RandomDeck> _randomDecks = new();
+        private readonly Dictionary<RandomDeckKey, RandomDeck> _randomDecks = new();
+        private readonly Lock _randomDecksLock = new();
 
-        public DeckRandomProvider()
+        private RandomDeck GetOrCreateDeck(RandomContext ctx)
         {
-            InitializeRandomDecks();
+            RandomDeckKey key = new(ctx.RandomEvent, ctx.SequenceIndex);
+
+            lock (_randomDecksLock)
+            {
+                if (!_randomDecks.TryGetValue(key, out RandomDeck deck))
+                {
+                    deck = new();
+                    _randomDecks[key] = deck;
+                }
+
+                return deck;
+            }
         }
 
         public bool Chance(RandomContext ctx, int chancePercent)
         {
-            if (ctx.RandomPolicy is RandomPolicy.ForceTrueRandom || !_randomDecks.TryGetValue(ctx.RandomEvent, out RandomDeck deck))
+            if (ctx.RandomPolicy is RandomPolicy.ForceTrueRandom)
                 return DefaultRandomProvider.Instance.Chance(ctx, chancePercent);
 
-            return deck.Draw() < chancePercent;
+            return GetOrCreateDeck(ctx).Draw() < chancePercent;
         }
 
         public bool Chance(RandomContext ctx, double chance)
@@ -63,25 +75,21 @@ namespace DOL.GS
 
         public double GetPseudoDouble(RandomContext ctx)
         {
-            if (ctx.RandomPolicy is RandomPolicy.ForceTrueRandom || !_randomDecks.TryGetValue(ctx.RandomEvent, out RandomDeck deck))
+            if (ctx.RandomPolicy is RandomPolicy.ForceTrueRandom)
                 return DefaultRandomProvider.Instance.GetPseudoDouble(ctx);
 
-            return (deck.Draw() + Util.RandomDouble()) * 0.01;
+            return (GetOrCreateDeck(ctx).Draw() + Util.RandomDouble()) * 0.01;
         }
 
         public double GetPseudoDoubleIncl(RandomContext ctx)
         {
-            if (ctx.RandomPolicy is RandomPolicy.ForceTrueRandom || !_randomDecks.TryGetValue(ctx.RandomEvent, out RandomDeck deck))
+            if (ctx.RandomPolicy is RandomPolicy.ForceTrueRandom)
                 return DefaultRandomProvider.Instance.GetPseudoDoubleIncl(ctx);
 
-            return (deck.Draw() + Util.RandomDoubleIncl()) * 0.01;
+            return (GetOrCreateDeck(ctx).Draw() + Util.RandomDoubleIncl()) * 0.01;
         }
 
-        public void InitializeRandomDecks()
-        {
-            foreach (RandomEvent deckEvent in Enum.GetValues<RandomEvent>())
-                _randomDecks[deckEvent] = new();
-        }
+        private readonly record struct RandomDeckKey(RandomEvent Event, byte SequenceIndex);
     }
 
     public static class RandomProviderFactory

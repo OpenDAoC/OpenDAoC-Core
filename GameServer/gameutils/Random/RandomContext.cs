@@ -1,9 +1,10 @@
 ﻿namespace DOL.GS
 {
-    public ref struct RandomContext(RandomEvent randomEvent, RandomPolicy randomPolicy)
+    public ref struct RandomContext(RandomEvent randomEvent, RandomPolicy randomPolicy, byte sequenceIndex = 0)
     {
         public readonly RandomEvent RandomEvent = randomEvent;
         public readonly RandomPolicy RandomPolicy = randomPolicy;
+        public readonly byte SequenceIndex = sequenceIndex;
     }
 
     public static class RandomContextFactory
