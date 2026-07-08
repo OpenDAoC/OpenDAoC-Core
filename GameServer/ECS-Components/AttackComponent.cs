@@ -1533,10 +1533,11 @@ namespace DOL.GS
 
                 double evadeChance = owner.TryEvade(ad, lastAttackData, attackerCount);
                 ad.EvadeChance = evadeChance * 100;
-                double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade(action.SwingsExecuted, action.StyleChainStage));
 
                 if (evadeChance > 0)
                 {
+                    double evadeRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Evade(action.SwingsExecuted, action.StyleChainStage));
+
                     if (ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
                         evadeAtk.Out.SendMessage($"target evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
@@ -1551,10 +1552,11 @@ namespace DOL.GS
                 {
                     double parryChance = owner.TryParry(ad, lastAttackData, attackerCount);
                     ad.ParryChance = parryChance * 100;
-                    double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry(action.SwingsExecuted, action.StyleChainStage));
 
                     if (parryChance > 0)
                     {
+                        double parryRoll = owner.RandomProvider.GetPseudoDouble(RandomContextFactory.Parry(action.SwingsExecuted, action.StyleChainStage));
+
                         if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
                             parryAtk.Out.SendMessage($"target parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);
 
