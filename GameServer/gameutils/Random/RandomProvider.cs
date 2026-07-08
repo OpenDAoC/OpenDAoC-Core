@@ -7,7 +7,7 @@ namespace DOL.GS
     public interface IRandomProvider
     {
         bool Chance(RandomContext ctx, int chancePercent);
-        bool Chance(RandomContext ctx, double chancePercent);
+        bool Chance(RandomContext ctx, double chance);
         double GetPseudoDouble(RandomContext ctx);
         double GetPseudoDoubleIncl(RandomContext ctx);
     }
@@ -23,7 +23,7 @@ namespace DOL.GS
             return Util.Chance(chancePercent);
         }
 
-        public bool Chance(RandomContext ctx, double chancePercent)
+        public bool Chance(RandomContext ctx, double chance)
         {
             return Util.Chance(chancePercent);
         }
