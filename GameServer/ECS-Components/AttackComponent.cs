@@ -805,7 +805,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public AttackData MakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
+        public void MakeAttack(WeaponAction action, AttackData ad, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -825,7 +825,7 @@ namespace DOL.GS
                     playerOwner.Out.SendCloseTimerWindow();
                 }
 
-                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness, interval);
+                LivingMakeAttack(action, ad, target, weapon, style, effectiveness, interval);
 
                 switch (ad.AttackResult)
                 {
@@ -950,8 +950,6 @@ namespace DOL.GS
                         break;
                     }
                 }
-
-                return ad;
             }
             else
             {
@@ -960,118 +958,14 @@ namespace DOL.GS
                 else
                     effectiveness = 1;
 
-                return LivingMakeAttack(action, target, weapon, style, effectiveness, interval);
+                LivingMakeAttack(action, ad, target, weapon, style, effectiveness, interval);
             }
         }
 
-        /// <summary>
-        /// This method is called to make an attack, it is called from the
-        /// attacktimer and should not be called manually
-        /// </summary>
-        /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool ignoreLOS = false)
+        public void LivingMakeAttack(WeaponAction action, AttackData ad, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool ignoreLos = false)
         {
-            AttackData ad = new()
-            {
-                Attacker = owner,
-                Target = target as GameLiving,
-                Style = style,
-                DamageType = AttackDamageType(weapon, action),
-                Weapon = weapon,
-                Interval = interval,
-                IsOffHand = weapon != null && weapon.SlotPosition is Slot.LEFTHAND
-            };
-
-            int attackRange = AttackRange;
-
-            if (style != null)
-            {
-                StyleProcInfo styleProcInfo = style?.Procs.FirstOrDefault(x => x.Spell.SpellType is eSpellType.StyleRange);
-
-                if (styleProcInfo != null)
-                    attackRange = (int) styleProcInfo.Spell.Value; // Fixed range for some reason, don't add to attack range.
-            }
-
-            ad.AttackType = AttackData.GetAttackType(weapon, action, ad.Attacker);
-
-            // No target.
             if (ad.Target == null)
-            {
-                ad.AttackResult = (target == null) ? eAttackResult.NoTarget : eAttackResult.NoValidTarget;
-                SendAttackingCombatMessages(action, ad);
-                return ad;
-            }
-
-            // Region / state check.
-            if (ad.Target.CurrentRegionID != owner.CurrentRegionID || ad.Target.ObjectState is not eObjectState.Active)
-            {
-                ad.AttackResult = eAttackResult.NoValidTarget;
-                SendAttackingCombatMessages(action, ad);
-                return ad;
-            }
-
-            // LoS / in front check.
-            if (!ignoreLOS && ad.AttackType is not AttackData.eAttackType.Ranged && owner is GamePlayer &&
-                ad.Target is not GameKeepComponent &&
-                !(owner.IsObjectInFront(ad.Target, 120) && owner.TargetInView))
-            {
-                ad.AttackResult = eAttackResult.TargetNotVisible;
-                SendAttackingCombatMessages(action, ad);
-                return ad;
-            }
-
-            // Target is already dead.
-            if (!ad.Target.IsAlive)
-            {
-                ad.AttackResult = eAttackResult.TargetDead;
-                SendAttackingCombatMessages(action, ad);
-                return ad;
-            }
-
-            // Melee range check (ranged is already done at this point).
-            if (ad.AttackType is not AttackData.eAttackType.Ranged)
-            {
-                if (!owner.IsWithinRadius(ad.Target, attackRange))
-                {
-                    ad.AttackResult = eAttackResult.OutOfRange;
-                    SendAttackingCombatMessages(action, ad);
-                    return ad;
-                }
-            }
-
-            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
-            {
-                ad.AttackResult = eAttackResult.NotAllowed_ServerRules;
-                SendAttackingCombatMessages(action, ad);
-                return ad;
-            }
-
-            // Apply Mentalist RA5L.
-            SelectiveBlindnessEffect SelectiveBlindness = owner.EffectList.GetOfType<SelectiveBlindnessEffect>();
-            if (SelectiveBlindness != null)
-            {
-                GameLiving EffectOwner = SelectiveBlindness.EffectSource;
-                if (EffectOwner == ad.Target)
-                {
-                    if (owner is GamePlayer)
-                        ((GamePlayer) owner).Out.SendMessage(
-                            string.Format(
-                                LanguageMgr.GetTranslation(((GamePlayer) owner).Client.Account.Language,
-                                    "GameLiving.AttackData.InvisibleToYou"), ad.Target.GetName(0, true)),
-                            eChatType.CT_Action, eChatLoc.CL_SystemWindow);
-                    ad.AttackResult = eAttackResult.NoValidTarget;
-                    SendAttackingCombatMessages(action, ad);
-                    return ad;
-                }
-            }
-
-            // DamageImmunity Ability.
-            if (ad.Target.HasAbility(Abilities.DamageImmunity))
-            {
-                ad.AttackResult = eAttackResult.NoValidTarget;
-                SendAttackingCombatMessages(action, ad);
-                return ad;
-            }
+                return;
 
             // Add ourselves to the target's attackers list before going further.
             ad.Target.attackComponent.AddAttacker(ad);
@@ -1242,7 +1136,7 @@ namespace DOL.GS
             // Attacked living may modify the attack data. Primarily used for keep doors and components.
             ad.Target.ModifyAttack(ad);
 
-            SendAttackingCombatMessages(action, ad);
+            SendValidAttackMessage(action, ad);
             SendDefendingCombatMessages(ad);
             BroadcastObserverMessage(ad);
 
@@ -1255,7 +1149,6 @@ namespace DOL.GS
 
             // Handles CC breaks, ablatives...
             owner.OnAttackEnemy(ad);
-            return ad;
         }
 
         public double CalculateDamageTypeModifier(DbInventoryItem weapon)
@@ -1829,18 +1722,30 @@ namespace DOL.GS
             [eAttackResult.NoValidTarget] = "GamePlayer.Attack.CantBeAttacked",
         };
 
-        private void SendAttackingCombatMessages(WeaponAction action, AttackData ad)
+        public void SendInvalidAttackMessage(GameObject target, eAttackResult attackResult)
         {
             if (owner is not GamePlayer player)
                 return;
 
-            if (ShouldSuppressSpamMessage(ad.AttackResult))
+            if (ShouldSuppressSpamMessage(attackResult))
             {
                 if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
                     return;
 
                 attackAction.RoundWithNoAttackTime = 0;
             }
+
+            if (!_simpleAttackMessageKeys.TryGetValue(attackResult, out var messageKey))
+                return;
+
+            string targetName = target?.GetName(0, true, player.Client.Account.Language, target as GameNPC);
+            SendLocalizedMessage(player, messageKey, targetName);
+        }
+
+        private void SendValidAttackMessage(WeaponAction action, AttackData ad)
+        {
+            if (owner is not GamePlayer player)
+                return;
 
             if (_simpleAttackMessageKeys.TryGetValue(ad.AttackResult, out var messageKey))
             {
@@ -1867,16 +1772,6 @@ namespace DOL.GS
                     SendHitMessages(player, action, ad);
                     break;
                 }
-            }
-
-            static bool ShouldSuppressSpamMessage(eAttackResult result)
-            {
-                return result is not eAttackResult.Missed
-                    and not eAttackResult.HitUnstyled
-                    and not eAttackResult.HitStyle
-                    and not eAttackResult.Evaded
-                    and not eAttackResult.Blocked
-                    and not eAttackResult.Parried;
             }
 
             static void SendMissMessage(GamePlayer player, AttackData ad)
@@ -1956,12 +1851,22 @@ namespace DOL.GS
                     return LanguageMgr.GetTranslation(player.Client.Account.Language, key);
                 }
             }
+        }
 
-            static void SendLocalizedMessage(GamePlayer player, string key, params ReadOnlySpan<object> args)
-            {
-                string message = LanguageMgr.GetTranslation(player.Client.Account.Language, key, args);
-                player.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-            }
+        private static bool ShouldSuppressSpamMessage(eAttackResult result)
+        {
+            return result is not eAttackResult.Missed
+                and not eAttackResult.HitUnstyled
+                and not eAttackResult.HitStyle
+                and not eAttackResult.Evaded
+                and not eAttackResult.Blocked
+                and not eAttackResult.Parried;
+        }
+
+        private static void SendLocalizedMessage(GamePlayer player, string key, params ReadOnlySpan<object> args)
+        {
+            string message = LanguageMgr.GetTranslation(player.Client.Account.Language, key, args);
+            player.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
         }
 
         private static void SendDefendingCombatMessages(AttackData ad)

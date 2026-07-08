@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
+using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
@@ -42,7 +45,6 @@ namespace DOL.GS
             _effectiveness = effectiveness;
             _interval = interval;
             _combatStyle = combatStyle;
-            _extraSwings = CalculateExtraSwings();
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
             StyleChainStage = styleChainStage;
         }
@@ -73,7 +75,7 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, DualWieldMechanic is not DualWieldMechanic.None, _extraSwings > 0, out AttackData mainHandAttackData))
+            if (!MakeMainHandAttack(out AttackData mainHandAttackData))
                 return;
 
             AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
@@ -355,52 +357,99 @@ namespace DOL.GS
             }
         }
 
-        private bool MakeMainHandAttack(
-            DbInventoryItem mainWeapon,
-            DbInventoryItem leftWeapon,
-            Style style,
-            bool isDualWieldAttack,
-            bool hasExtraSwings,
-            out AttackData attackData)
+        private eAttackResult? CheckAttackPrecondition()
         {
+            if (_target is not GameLiving livingTarget)
+                return _target == null ? eAttackResult.NoTarget : eAttackResult.NoValidTarget;
+
+            if (!livingTarget.IsAlive)
+                return eAttackResult.TargetDead;
+
+            if (livingTarget.CurrentRegionID != _owner.CurrentRegionID || livingTarget.ObjectState is not eObjectState.Active)
+                return eAttackResult.NoValidTarget;
+
+            bool isRangedAttack = ActiveWeaponSlot is eActiveWeaponSlot.Distance;
+
+            if (!isRangedAttack &&
+                _owner is GamePlayer &&
+                livingTarget is not GameKeepComponent &&
+                (!_owner.IsObjectInFront(livingTarget, 120) || !_owner.TargetInView))
+            {
+                return eAttackResult.TargetNotVisible;
+            }
+
+            if (!isRangedAttack)
+            {
+                int attackRange = _owner.attackComponent.AttackRange;
+
+                if (_combatStyle != null)
+                {
+                    StyleProcInfo styleProcInfo = _combatStyle.Procs.FirstOrDefault(static x => x.Spell.SpellType is eSpellType.StyleRange);
+
+                    if (styleProcInfo != null)
+                        attackRange = (int) styleProcInfo.Spell.Value;
+                }
+
+                if (!_owner.IsWithinRadius(livingTarget, attackRange))
+                    return eAttackResult.OutOfRange;
+            }
+
+            if (!GameServer.ServerRules.IsAllowedToAttack(_owner, livingTarget, GameLoop.GameLoopTime - _owner.attackComponent.attackAction.RoundWithNoAttackTime <= 1500))
+                return eAttackResult.NotAllowed_ServerRules;
+
+            // SelectiveBlindness check used to be here.
+
+            if (livingTarget.HasAbility(Abilities.DamageImmunity))
+                return eAttackResult.NoValidTarget;
+
+            return null;
+        }
+
+        private bool MakeMainHandAttack(out AttackData attackData)
+        {
+            eAttackResult? precondition = CheckAttackPrecondition();
+
+            if (precondition.HasValue)
+            {
+                attackData = CreateAttackData(_attackWeapon, _combatStyle);
+                attackData.AttackResult = precondition.Value;
+                _owner.attackComponent.attackAction.LastAttackData = attackData;
+                _owner.attackComponent.SendInvalidAttackMessage(_target, precondition.Value);
+                return false;
+            }
+
+            _extraSwings = CalculateExtraSwings();
+            bool isDualWieldAttack = DualWieldMechanic is not DualWieldMechanic.None;
+
             int animationId = 0;
-            _owner.attackComponent.UsedHandOnLastDualWieldAttack = 0;
+            byte usedHand = 0;
 
             // Determine the weapon and animation to use.
-            if (hasExtraSwings)
+            if (_extraSwings > 0)
             {
                 if (isDualWieldAttack)
-                    _owner.attackComponent.UsedHandOnLastDualWieldAttack = 2;
+                    usedHand = 2;
 
-                if (style == null)
+                if (_combatStyle == null)
                     animationId = -2; // Virtual code for both weapons swing animation.
             }
-            else if (mainWeapon != null)
+            else if (_attackWeapon != null)
             {
-                // One of two hands is used for attack if no style, treated as a main hand attack.
-                if (isDualWieldAttack && style == null && Util.Chance(50))
+                if (isDualWieldAttack && _combatStyle == null && Util.Chance(50))
                 {
-                    mainWeapon = leftWeapon;
-                    _owner.attackComponent.UsedHandOnLastDualWieldAttack = 1;
+                    _attackWeapon = _leftWeapon;
+                    usedHand = 1;
                     animationId = -1; // Virtual code for left weapon swing animation.
                 }
             }
 
-            attackData = InitiateAttack(mainWeapon, style);
-
-            if (style == null)
-                attackData.AnimationId = animationId;
+            attackData = InitiateAttack(_attackWeapon, _combatStyle);
 
             _owner.attackComponent.attackAction.LastAttackData = attackData;
+            _owner.attackComponent.UsedHandOnLastDualWieldAttack = attackData.IsHit ? usedHand : (byte) 0;
 
-            if (attackData.Target == null ||
-                attackData.AttackResult is eAttackResult.OutOfRange or
-                eAttackResult.TargetNotVisible or
-                eAttackResult.NotAllowed_ServerRules or
-                eAttackResult.TargetDead)
-            {
-                return false;
-            }
+            if (_combatStyle == null)
+                attackData.AnimationId = animationId;
 
             // 1.89:
             // - Characters who are attacked by stealthed archers will now target the attacking archer if the attacked player does not already have a target.
@@ -416,11 +465,27 @@ namespace DOL.GS
             return true;
         }
 
+        private AttackData CreateAttackData(DbInventoryItem weapon, Style style)
+        {
+            return new()
+            {
+                Attacker = _owner,
+                Target = _target as GameLiving,
+                Style = style,
+                DamageType = _owner.attackComponent.AttackDamageType(weapon, this),
+                AttackType = AttackData.GetAttackType(weapon, this, _owner),
+                Weapon = weapon,
+                Interval = _interval,
+                IsOffHand = weapon != null && weapon.SlotPosition is Slot.LEFTHAND
+            };
+        }
+
         private AttackData InitiateAttack(DbInventoryItem weapon, Style style)
         {
-            AttackData attackData = _owner.attackComponent.MakeAttack(this, _target, weapon, style, _effectiveness, _interval);
+            AttackData ad = CreateAttackData(weapon, style);
+            _owner.attackComponent.MakeAttack(this, ad, _target, weapon, style, _effectiveness, _interval);
             SwingsExecuted++;
-            return attackData;
+            return ad;
         }
 
         private void FinalizeAttack(AttackData attackData)
@@ -533,18 +598,14 @@ namespace DOL.GS
                 {
                     int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
                     WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null, 0);
-                    // Don't call `WeaponAction.Execute` here.
-                    // It applies damage adds and shields, but Reflex Attack shouldn't trigger them.
-                    // It would also cause a stack overflow if the target has Reflex Attack too.
-                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(weaponAction, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, true);
-                    target.DealDamage(ReflexAttackAD);
+                    AttackData ad = weaponAction.InitiateAttack(target.ActiveWeapon, null); // Don't call `WeaponAction.Execute` here.
 
                     // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually
                     // since it will not be done automatically as this attack is not processed by regular attacking code.
-                    if (ReflexAttackAD.AttackResult is eAttackResult.HitUnstyled)
+                    if (ad.AttackResult is eAttackResult.HitUnstyled)
                     {
                         GamePlayer playerAttacker = attacker as GamePlayer;
-                        playerAttacker?.Out.SendMessage($"{target.Name} counter-attacks you for {ReflexAttackAD.Damage} damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        playerAttacker?.Out.SendMessage($"{target.Name} counter-attacks you for {ad.Damage} damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     }
 
                     break;
