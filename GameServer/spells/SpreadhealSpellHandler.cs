@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
 
                 CalculateDamageVariance(null, out double min, out double max);
 
-                double variance = min + Caster.GetPseudoDoubleIncl(RandomDeckEvent.DamageVariance) * (max - min);
+                double variance = min + Caster.RandomProvider.GetPseudoDoubleIncl(RandomContextFactory.MagicVariance()) * (max - min);
                 int targetHealCap = (int) (m_spell.Value * variance);
                 int groupHealCap = targetHealCap;
                 Group group = target.Group;

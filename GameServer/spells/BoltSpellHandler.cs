@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
             double halfBaseDamage = damage * 0.5;
             damage = base.ModifyDamageWithTargetResist(ad, halfBaseDamage);
 
-            if (!ad.Target.attackComponent.CheckBlock(null, ad) || ad.Target.attackComponent.CheckGuard(ad, false))
+            if (!ad.Target.attackComponent.CheckBlock(null, ad) || ad.Target.attackComponent.CheckGuard(null, ad, false))
             {
                 // This is normally set in 'AttackComponent.CalculateEnemyAttackResult', but we don't call it.
                 if (ad.Target is GamePlayer playerTarget)

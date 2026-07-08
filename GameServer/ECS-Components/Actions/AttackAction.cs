@@ -23,10 +23,9 @@ namespace DOL.GS
         private long _nextMeleeTick;
         private long _nextRangedTick;
         private bool _firstTick = true;
+        private byte _styleChainStage; // Used to track the current stage of a style chain (0 = first style).
 
-        // Set to current time when a round doesn't result in an attack.
-        // Used to prevent combat log spam and kept until reset by AttackComponent.SendAttackingCombatMessages.
-        public long RoundWithNoAttackTime { get; set; }
+        public long RoundWithNoAttackTime { get; set; } // Used to prevent combat log spam and kept until reset by AttackComponent.SendAttackingCombatMessages.
 
         public AttackData LastAttackData { get; set; }
         protected AttackComponent AttackComponent => _owner.attackComponent;
@@ -346,6 +345,23 @@ namespace DOL.GS
 
         protected virtual void PerformMeleeAttack()
         {
+            AttackData lastAttackData = LastAttackData;
+
+            // If we've succesfully used a style during the previous attack, check if the next style is a follow-up.
+            // Reset or increment StyleChainStage based on the result.
+            if (LastAttackData != null &&
+                LastAttackData.AttackResult is eAttackResult.HitStyle &&
+                _combatStyle != null &&
+               _combatStyle.OpeningRequirementType is Style.eOpening.Offensive)
+            {
+                Style lastStyle = lastAttackData.Style;
+
+                if (lastStyle != null && lastStyle.ID == _combatStyle.OpeningRequirementValue)
+                    _styleChainStage++;
+            }
+            else
+                _styleChainStage = 0;
+
             // AttackAction ticks in a way that prevent drifting,
             // but we must pass the real interval to WeaponAction to ensure correct interrupt / block round durations.
             AttackComponent.weaponAction = new(
@@ -355,7 +371,8 @@ namespace DOL.GS
                 _leftWeapon,
                 _effectiveness,
                 (int) (_nextMeleeTick - GameLoop.GameLoopTime + _attackInterval),
-                _combatStyle);
+                _combatStyle,
+                _styleChainStage);
             AttackComponent.weaponAction.Execute();
         }
 
@@ -451,6 +468,7 @@ namespace DOL.GS
             LastAttackData = null;
             _target = null;
             _firstTick = true;
+            _styleChainStage = 0;
         }
     }
 }

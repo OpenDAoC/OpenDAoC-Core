@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
             if (criticalChance <= 0)
                 return 1.0;
 
-            if (!Caster.Chance(RandomDeckEvent.CriticalChance, Math.Min(50, criticalChance)))
+            if (!Caster.RandomProvider.Chance(RandomContextFactory.MagicCriticalChance(), Math.Min(50, criticalChance)))
                 return 1.0;
 
             (Caster as GamePlayer)?.Out.SendMessage($"Your snare is doubly effective!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);

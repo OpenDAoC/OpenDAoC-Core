@@ -2,7 +2,6 @@
 using DOL.Database;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
-using static DOL.GS.WeaponAction;
 
 namespace DOL.GS
 {
@@ -63,9 +62,9 @@ namespace DOL.GS
         {
             if (action != null)
             {
-                if (action.DualWieldMechanic is eDualWieldMechanic.Classic)
+                if (action.DualWieldMechanic is DualWieldMechanic.Classic)
                     return eAttackType.MeleeDualWield;
-                else if (action.DualWieldMechanic is eDualWieldMechanic.HandToHand)
+                else if (action.DualWieldMechanic is DualWieldMechanic.HandToHand)
                     return eAttackType.MeleeHandToHand;
             }
 
