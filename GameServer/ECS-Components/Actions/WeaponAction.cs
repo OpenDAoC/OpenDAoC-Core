@@ -30,7 +30,7 @@ namespace DOL.GS
 
         public bool HasConsumedBlockRound { get; set; } // Used to prevent multihit attacks from consuming multiple block rounds.
         public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
-        public eDualWieldMechanic DualWieldMechanic { get; private set; }
+        public DualWieldMechanic DualWieldMechanic { get; private set; }
         public int SwingsExecuted { get; private set; }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle, byte styleChainStage)
@@ -73,7 +73,7 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, DualWieldMechanic is not eDualWieldMechanic.None, _extraSwings > 0, out AttackData mainHandAttackData))
+            if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, DualWieldMechanic is not DualWieldMechanic.None, _extraSwings > 0, out AttackData mainHandAttackData))
                 return;
 
             AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
@@ -163,7 +163,7 @@ namespace DOL.GS
 
         private int CalculateExtraSwings()
         {
-            DualWieldMechanic = eDualWieldMechanic.None;
+            DualWieldMechanic = DualWieldMechanic.None;
 
             if (!_owner.attackComponent.CanUseLefthandedWeapon ||
                 _leftWeapon == null ||
@@ -181,7 +181,7 @@ namespace DOL.GS
                     return 0;
                 }
 
-                DualWieldMechanic = eDualWieldMechanic.Classic;
+                DualWieldMechanic = DualWieldMechanic.Classic;
                 double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield) * 100;
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
@@ -192,7 +192,7 @@ namespace DOL.GS
             // Left Axe.
             if (_owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
             {
-                DualWieldMechanic = eDualWieldMechanic.Classic;
+                DualWieldMechanic = DualWieldMechanic.Classic;
                 return 1;
             }
 
@@ -201,7 +201,7 @@ namespace DOL.GS
 
             if (leftHandSwingChance > 0)
             {
-                DualWieldMechanic = eDualWieldMechanic.Classic;
+                DualWieldMechanic = DualWieldMechanic.Classic;
                 return _owner.GetPseudoDouble(RandomDeckEvent.DualWield) < leftHandSwingChance ? 1 : 0;
             }
 
@@ -210,7 +210,7 @@ namespace DOL.GS
 
             if (doubleChance > 0)
             {
-                DualWieldMechanic = eDualWieldMechanic.HandToHand;
+                DualWieldMechanic = DualWieldMechanic.HandToHand;
                 double random = _owner.GetPseudoDouble(RandomDeckEvent.DualWield);
 
                 if (random < doubleChance)
@@ -551,12 +551,12 @@ namespace DOL.GS
                 }
             }
         }
+    }
 
-        public enum eDualWieldMechanic : byte
-        {
-            None,
-            Classic,
-            HandToHand
-        }
+    public enum DualWieldMechanic : byte
+    {
+        None,
+        Classic,
+        HandToHand
     }
 }
