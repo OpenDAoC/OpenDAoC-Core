@@ -3890,7 +3890,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(living.ManaPercent);
 
 				byte playerStatus = 0;
-				if (!living.IsAlive)
+				if (living.Health <=0)
 					playerStatus |= 0x01;
 				if (living.IsMezzed)
 					playerStatus |= 0x02;
