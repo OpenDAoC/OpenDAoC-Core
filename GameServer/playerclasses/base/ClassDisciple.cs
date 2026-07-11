@@ -98,7 +98,7 @@ namespace DOL.GS.PlayerClass
             get
             {
                 // Snapshot to prevent null reference if the pet is released mid-call.
-                // Seems to happen during EffectListService tick, via EffectListComponent.SendPlayerUpdates > PacketHandler.PacketLib1125.WriteGroupMemberUpdate.
+                // Seems to happen during EffectListService tick, via EffectListComponent.SendPlayerUpdates > PacketHandler.PacketLib1125.WriteGroupMemberIconsUpdate.
                 GameNPC pet = Player.ControlledBrain?.Body;
                 return pet == null ? Player.HealthPercent : pet.HealthPercent;
             }

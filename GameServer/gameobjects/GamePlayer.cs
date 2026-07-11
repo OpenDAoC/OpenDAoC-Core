@@ -859,7 +859,7 @@ namespace DOL.GS
 
             _linkDeathTimer = new(this); // Keep link-dead characters in game.
             TradeWindow?.CloseTrade();
-            Group?.UpdateMember(this, false, false);
+            Group?.UpdateMember(this, false);
 
             // Hard LD only.
             if (Client.ClientState is GameClient.eClientState.Linkdead)
@@ -2388,7 +2388,7 @@ namespace DOL.GS
 
                 if (oldPercent != HealthPercent)
                 {
-                    Group?.UpdateMember(this, false, false);
+                    Group?.UpdateMember(this, false);
                     UpdatePlayerStatus();
                 }
             }
@@ -2481,7 +2481,7 @@ namespace DOL.GS
 
                 if (oldPercent != ManaPercent)
                 {
-                    Group?.UpdateMember(this, false, false);
+                    Group?.UpdateMember(this, false);
                     UpdatePlayerStatus();
                 }
             }
@@ -2502,7 +2502,7 @@ namespace DOL.GS
 
                 if (oldPercent != EndurancePercent)
                 {
-                    Group?.UpdateMember(this, false, false);
+                    Group?.UpdateMember(this, false);
                     UpdatePlayerStatus();
                 }
             }
@@ -2618,7 +2618,7 @@ namespace DOL.GS
 
             if (Group != null)
             {
-                Group.UpdateMember(this, false, true);
+                Group.UpdateMember(this, true);
             }
             return true;
         }

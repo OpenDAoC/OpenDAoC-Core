@@ -55,8 +55,10 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (player.Group != null)
             {
                 player.Group.UpdateGroupWindow();
-                player.Group.UpdateAllToMember(player, true, true);
-                player.Group.UpdateMember(player, true, true);
+                player.Group.UpdateAllToMember(player, true);
+                player.Group.UpdateAllToMemberIcons(player, true);
+                player.Group.UpdateMember(player, true);
+                player.Group.UpdateMemberIcons(player, true);
             }
 
             player.Out.SendPlayerInitFinished(0);

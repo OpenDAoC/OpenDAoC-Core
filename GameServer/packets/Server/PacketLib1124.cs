@@ -768,7 +768,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, GameLiving living)
+		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, GameLiving living)
 		{
 			pak.WriteByte((byte)(living.GroupIndex + 1)); // From 1 to 8
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -777,11 +777,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00); // mana
 				pak.WriteByte(0x00); // endu
 				pak.WriteByte(0x20); // player state (0x20 = another region)
-				if (updateIcons)
-				{
-					pak.WriteByte((byte)(0x80 | living.GroupIndex));
-					pak.WriteByte(0);
-				}
 				return;
 			}
 			var player = living as GamePlayer;
@@ -806,28 +801,34 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte(playerStatus);
 			// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
 			// 0x08 = Poisoned , 0x10 = Link Dead , 0x20 = In Another Region, 0x40 - NS
+		}
 
-			if (updateIcons)
+		protected override void WriteGroupMemberIconsUpdate(GSTCPPacketOut pak, GameLiving living)
+		{
+			pak.WriteByte((byte)(0x80 | living.GroupIndex));
+
+			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
 			{
-				pak.WriteByte((byte)(0x80 | living.GroupIndex));
+				pak.WriteByte(0);
+				return;
+			}
 
-				byte i = 0;
-				var effects = living.effectListComponent.GetSortedEffects();
-				if (living is GamePlayer necro && necro.CharacterClass is ClassDisciple && necro.HasShadeModel)
-					effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetSortedEffects(static e => e.TriggersImmunity));
-				foreach (var effect in effects)
+			byte i = 0;
+			var effects = living.effectListComponent.GetSortedEffects();
+			if (living is GamePlayer necro && necro.CharacterClass is ClassDisciple && necro.HasShadeModel)
+				effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetSortedEffects(static e => e.TriggersImmunity));
+			foreach (var effect in effects)
+			{
+				if (effect is ECSGameEffect && !effect.IsDisabled)
+					i++;
+			}
+			pak.WriteByte(i);
+			foreach (var effect in effects)
+			{
+				if (effect is ECSGameEffect && !effect.IsDisabled)
 				{
-					if (effect is ECSGameEffect && !effect.IsDisabled)
-						i++;
-				}
-				pak.WriteByte(i);
-				foreach (var effect in effects)
-				{
-					if (effect is ECSGameEffect && !effect.IsDisabled)
-					{
-						pak.WriteByte(0);
-						pak.WriteShort(effect.Icon);
-					}
+					pak.WriteByte(0);
+					pak.WriteShort(effect.Icon);
 				}
 			}
 		}
@@ -1092,27 +1093,5 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		public override void SendGroupMembersUpdate(bool updateIcons, ReadOnlySpan<GameLiving> livings)
-		{
-			if (m_gameClient.Player?.Group == null)
-				return;
-
-			bool hasData = false;
-
-			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
-			{
-				foreach (GameLiving living in livings)
-				{
-					WriteGroupMemberUpdate(pak, updateIcons, living);
-					hasData = true;
-				}
-
-				if (!hasData)
-					return;
-
-				pak.WriteByte(0x00);
-				SendTCP(pak);
-			}
-		}
 	}
 }

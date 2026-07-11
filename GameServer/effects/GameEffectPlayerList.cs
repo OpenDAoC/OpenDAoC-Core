@@ -53,7 +53,7 @@ namespace DOL.GS.Effects
 				{
 					if (player.Group != null)
 					{
-						player.Group.UpdateMember(player, true, false);
+						player.Group.UpdateMemberIcons(player, false);
 					}
 				}
 				
@@ -77,7 +77,7 @@ namespace DOL.GS.Effects
 				{
 					if (player.Group != null)
 					{
-						player.Group.UpdateMember(player, true, false);
+						player.Group.UpdateMemberIcons(player, false);
 					}
 				}
 				

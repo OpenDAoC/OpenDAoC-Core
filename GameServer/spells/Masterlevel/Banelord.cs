@@ -259,7 +259,7 @@ namespace DOL.GS.Spells
             {
                 player.Client.Out.SendUpdateMaxSpeed();
                 if (player.Group != null)
-                    player.Group.UpdateMember(player, false, false);
+                    player.Group.UpdateMember(player, false);
             }
             else
             {
@@ -282,7 +282,7 @@ namespace DOL.GS.Spells
             {
                 player.Client.Out.SendUpdateMaxSpeed();
                 if (player.Group != null)
-                    player.Group.UpdateMember(player, false, false);
+                    player.Group.UpdateMember(player, false);
             }
 
             return 0;

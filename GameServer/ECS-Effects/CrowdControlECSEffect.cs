@@ -56,7 +56,7 @@ namespace DOL.GS
             {
                 OwnerPlayer.Client.Out.SendUpdateMaxSpeed();
                 if (OwnerPlayer.Group != null)
-                    OwnerPlayer.Group.UpdateMember(OwnerPlayer, false, false);
+                    OwnerPlayer.Group.UpdateMember(OwnerPlayer, false);
             }
         }
 

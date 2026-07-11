@@ -119,7 +119,9 @@ namespace DOL.GS
             if (living is GamePlayer player)
             {
                 player.Duel?.Stop();
-                player.Out.SendGroupMembersUpdate(true, CollectionsMarshal.AsSpan(GetMembersInTheGroup()));
+                ReadOnlySpan<GameLiving> membersInGroup = CollectionsMarshal.AsSpan(GetMembersInTheGroup());
+                player.Out.SendGroupMembersUpdate(membersInGroup);
+                player.Out.SendGroupMembersIconsUpdate(membersInGroup);
                 AbstractMission groupMission = Mission;
 
                 if (groupMission != null)
@@ -174,7 +176,8 @@ namespace DOL.GS
                 }
             }
 
-            UpdateMember(living, true, true);
+            UpdateMember(living, true);
+            UpdateMemberIcons(living, true);
             UpdateGroupWindow();
             GameEventMgr.Notify(GroupEvent.MemberJoined, this, new MemberJoinedEventArgs(living));
             return true;
@@ -371,7 +374,11 @@ namespace DOL.GS
             }
 
             if (shiftedMembers.Count > 0)
-                UpdateMembers(CollectionsMarshal.AsSpan(shiftedMembers), true, true);
+            {
+                ReadOnlySpan<GameLiving> shiftedMembersSpan = CollectionsMarshal.AsSpan(shiftedMembers);
+                UpdateMembers(shiftedMembersSpan, true);
+                UpdateMembersIcons(shiftedMembersSpan, true);
+            }
         }
 
         public bool MakeLeader(GameLiving living)
@@ -393,7 +400,8 @@ namespace DOL.GS
                 oldLeader.GroupIndex = index;
             }
 
-            UpdateMembers([oldLeader, living], true, true);
+            UpdateMembers([oldLeader, living], true);
+            UpdateMembersIcons([oldLeader, living], true);
             UpdateGroupWindow();
             SendMessageToGroupMembers($"{Leader.Name} is the new group leader.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return true;
@@ -415,7 +423,8 @@ namespace DOL.GS
                 _groupMembers[sourceIndex] = target;
             }
 
-            UpdateMembers([source, target], true, true);
+            UpdateMembers([source, target], true);
+            UpdateMembersIcons([source, target], true);
             UpdateGroupWindow();
             SendMessageToGroupMembers($"Switched group member {source.Name} with {target.Name}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return true;
@@ -445,12 +454,12 @@ namespace DOL.GS
                 player.Out.SendMessage(msg, type, loc);
         }
 
-        public void UpdateMember(GameLiving living, bool updateIcons, bool updateOtherRegions)
+        public void UpdateMember(GameLiving living, bool updateOtherRegions)
         {
-            UpdateMembers([living], updateIcons, updateOtherRegions);
+            UpdateMembers([living], updateOtherRegions);
         }
 
-        public void UpdateMembers(ReadOnlySpan<GameLiving> livings, bool updateIcons, bool updateOtherRegions)
+        public void UpdateMembers(ReadOnlySpan<GameLiving> livings, bool updateOtherRegions)
         {
             foreach (GamePlayer player in GetPlayersInTheGroup())
             {
@@ -466,11 +475,11 @@ namespace DOL.GS
                 }
 
                 if (updatesForPlayer.Count > 0)
-                    player.Out.SendGroupMembersUpdate(updateIcons, CollectionsMarshal.AsSpan(updatesForPlayer));
+                    player.Out.SendGroupMembersUpdate(CollectionsMarshal.AsSpan(updatesForPlayer));
             }
         }
 
-        public void UpdateAllToMember(GamePlayer player, bool updateIcons, bool updateOtherRegions)
+        public void UpdateAllToMember(GamePlayer player, bool updateOtherRegions)
         {
             if (player.Group != this)
                 return;
@@ -484,7 +493,49 @@ namespace DOL.GS
             }
 
             if (updatesForPlayer.Count > 0)
-                player.Out.SendGroupMembersUpdate(updateIcons, CollectionsMarshal.AsSpan(updatesForPlayer));
+                player.Out.SendGroupMembersUpdate(CollectionsMarshal.AsSpan(updatesForPlayer));
+        }
+
+        public void UpdateMemberIcons(GameLiving living, bool updateOtherRegions)
+        {
+            UpdateMembersIcons([living], updateOtherRegions);
+        }
+
+        public void UpdateMembersIcons(ReadOnlySpan<GameLiving> livings, bool updateOtherRegions)
+        {
+            foreach (GamePlayer player in GetPlayersInTheGroup())
+            {
+                List<GameLiving> updatesForPlayer = GameLoop.GetListForTick<GameLiving>();
+
+                foreach (GameLiving living in livings)
+                {
+                    if (living.Group != this)
+                        continue;
+
+                    if (updateOtherRegions || player.CurrentRegion == living.CurrentRegion)
+                        updatesForPlayer.Add(living);
+                }
+
+                if (updatesForPlayer.Count > 0)
+                    player.Out.SendGroupMembersIconsUpdate(CollectionsMarshal.AsSpan(updatesForPlayer));
+            }
+        }
+
+        public void UpdateAllToMemberIcons(GamePlayer player, bool updateOtherRegions)
+        {
+            if (player.Group != this)
+                return;
+
+            List<GameLiving> updatesForPlayer = GameLoop.GetListForTick<GameLiving>();
+
+            foreach (GameLiving living in GetMembersInTheGroup())
+            {
+                if (updateOtherRegions || living.CurrentRegion == player.CurrentRegion)
+                    updatesForPlayer.Add(living);
+            }
+
+            if (updatesForPlayer.Count > 0)
+                player.Out.SendGroupMembersIconsUpdate(CollectionsMarshal.AsSpan(updatesForPlayer));
         }
 
         public void UpdateGroupWindow()

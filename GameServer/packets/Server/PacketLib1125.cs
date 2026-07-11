@@ -415,7 +415,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, GameLiving living)
+		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, GameLiving living)
 		{
 			pak.WriteByte((byte)(0x20 | living.GroupIndex)); // From 1 to 8 // 0x20 is player status code
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -424,11 +424,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00); // mana
 				pak.WriteByte(0x00); // endu
 				pak.WriteByte(0x20); // player state (0x20 = another region)
-				if (updateIcons)
-				{
-					pak.WriteByte((byte)(0x80 | living.GroupIndex));
-					pak.WriteByte(0);
-				}
 				return;
 			}
 
@@ -454,30 +449,35 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte(playerStatus);
 			// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
 			// 0x08 = Poisoned , 0x10 = Link Dead , 0x20 = In Another Region, 0x40 - NS
+		}
 
-			if (updateIcons)
+		protected override void WriteGroupMemberIconsUpdate(GSTCPPacketOut pak, GameLiving living)
+		{
+			pak.WriteByte((byte)(0x80 | living.GroupIndex));
+
+			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
 			{
-				pak.WriteByte((byte)(0x80 | living.GroupIndex));
-
-				byte i = 0;
-				var effects = living.effectListComponent.GetSortedEffects();
-
-				if (player != null && player.ControlledBrain is NecromancerPet necromancerPet)
-					effects.AddRange(necromancerPet.effectListComponent.GetSortedEffects(static e => e.TriggersImmunity));
-
-				foreach (var effect in effects)//.Effects.Values)
-												//foreach (ECSGameEffect effect in effects)
-					if (effect is ECSGameEffect && !effect.IsDisabled)
-						i++;
-				pak.WriteByte(i);
-				foreach (var effect in effects)//.Effects.Values)
-												//foreach (ECSGameEffect effect in effects)
-					if (effect is ECSGameEffect && !effect.IsDisabled)
-					{
-						pak.WriteByte(0);
-						pak.WriteShort(effect.Icon);
-					}
+				pak.WriteByte(0);
+				return;
 			}
+
+			var player = living as GamePlayer;
+			byte i = 0;
+			var effects = living.effectListComponent.GetSortedEffects();
+
+			if (player != null && player.ControlledBrain is NecromancerPet necromancerPet)
+				effects.AddRange(necromancerPet.effectListComponent.GetSortedEffects(static e => e.TriggersImmunity));
+
+			foreach (var effect in effects)
+				if (effect is ECSGameEffect && !effect.IsDisabled)
+					i++;
+			pak.WriteByte(i);
+			foreach (var effect in effects)
+				if (effect is ECSGameEffect && !effect.IsDisabled)
+				{
+					pak.WriteByte(0);
+					pak.WriteShort(effect.Icon);
+				}
 		}
 
 		/// <summary>
