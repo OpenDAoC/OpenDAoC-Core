@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using DOL.AI.Brain;
@@ -355,11 +356,22 @@ namespace DOL.GS
 
         private void UpdateGroupIndexes()
         {
+            var shiftedMembers = GameLoop.GetListForTick<GameLiving>();
+
             lock (_groupMembersLock)
             {
                 for (int i = 0; i < _groupMembers.Count; i++)
+                {
+                    if (_groupMembers[i].GroupIndex == (byte) i)
+                        continue;
+
                     _groupMembers[i].GroupIndex = (byte) i;
+                    shiftedMembers.Add(_groupMembers[i]);
+                }
             }
+
+            if (shiftedMembers.Count > 0)
+                UpdateMembers(CollectionsMarshal.AsSpan(shiftedMembers), true, true);
         }
 
         public bool MakeLeader(GameLiving living)
