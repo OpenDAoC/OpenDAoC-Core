@@ -118,7 +118,7 @@ namespace DOL.GS
             if (living is GamePlayer player)
             {
                 player.Duel?.Stop();
-                player.Out.SendGroupMembersUpdate(true, true);
+                player.Out.SendGroupMembersUpdate(true, false);
                 AbstractMission groupMission = Mission;
 
                 if (groupMission != null)
@@ -448,7 +448,7 @@ namespace DOL.GS
                 foreach (GamePlayer player in GetPlayersInTheGroup())
                 {
                     if (updateOtherRegions || player.CurrentRegion == living.CurrentRegion)
-                        player.Out.SendGroupMemberUpdate(updateIcons, true, living);
+                        player.Out.SendGroupMemberUpdate(updateIcons, false, living);
                 }
             }
         }
@@ -461,7 +461,7 @@ namespace DOL.GS
             foreach (GameLiving living in GetMembersInTheGroup())
             {
                 if (updateOtherRegions || living.CurrentRegion == player.CurrentRegion)
-                    player.Out.SendGroupMemberUpdate(updateIcons, true, living);
+                    player.Out.SendGroupMemberUpdate(updateIcons, false, living);
             }
         }
 
