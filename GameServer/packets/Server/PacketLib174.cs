@@ -344,7 +344,7 @@ namespace DOL.GS.PacketHandler
 		{
 			GamePlayer player = m_gameClient.Player;
 
-			if (player == living || player.CurrentRegion != living.CurrentRegion)
+			if (player == living)
 				return;
 
 			Zone zone = living.CurrentZone;
@@ -352,10 +352,21 @@ namespace DOL.GS.PacketHandler
 			if (zone == null)
 				return;
 
-			pak.WriteByte((byte) (0x40 | living.GroupIndex));
-			pak.WriteShort(zone.ZoneSkinID);
-			pak.WriteShort((ushort) (living.X - zone.XOffset));
-			pak.WriteShort((ushort) (living.Y - zone.YOffset));
+			pak.WriteByte((byte) (0x40 | living.GroupIndex)); // No idea what 0x40 is.
+
+			if (player.CurrentRegion == living.CurrentRegion)
+			{
+				pak.WriteShort(zone.ZoneSkinID);
+				pak.WriteShort((ushort) (living.X - zone.XOffset));
+				pak.WriteShort((ushort) (living.Y - zone.YOffset));
+			}
+			else
+			{
+				// Seems to work to remove dots, but no idea if that's what Live does.
+				pak.WriteShort(0);
+				pak.WriteShort(0);
+				pak.WriteShort(0);
+			}
 		}
 
 		public override void SendRegionChanged()
