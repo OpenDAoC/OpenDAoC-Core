@@ -718,7 +718,7 @@ namespace DOL.GS
 
         private class GroupMemberPositionUpdateTimer : ECSGameTimerWrapperBase
         {
-            public const int POSITION_UPDATE_INTERVAL = 1000;
+            public const int POSITION_UPDATE_INTERVAL = 2500;
 
             private readonly Group _group;
 
