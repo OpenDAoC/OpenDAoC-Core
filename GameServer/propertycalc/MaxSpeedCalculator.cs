@@ -127,7 +127,6 @@ namespace DOL.GS.PropertyCalc
                             // Only increase the pet's speed, never decrease it, so take the max of the two.
                             // Overwrite whatever speed bonuses the pet has at this point.
                             maxSpeedBase = Math.Max(maxSpeedBase, owner.MaxSpeedBase);
-                            speedIncrease = Math.Max(1, (double) owner.MaxSpeed / owner.MaxSpeedBase);
                         }
 
                         // A pet following its owner moves at sprint speed (+30%),
