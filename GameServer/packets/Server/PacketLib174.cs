@@ -342,18 +342,20 @@ namespace DOL.GS.PacketHandler
 
 		protected virtual void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
 		{
-			bool sameRegion = living.CurrentRegion == m_gameClient.Player.CurrentRegion;
-			if (sameRegion)
-			{
-				Zone zone = living.CurrentZone;
-				if (zone == null)
-					return;
-				pak.WriteByte((byte)(0x40 | living.GroupIndex));
-                //Dinberg - ZoneSkinID for group members aswell.
-				pak.WriteShort(zone.ZoneSkinID);
-				pak.WriteShort((ushort)(living.X - zone.XOffset));
-				pak.WriteShort((ushort)(living.Y - zone.YOffset));
-			}
+			GamePlayer player = m_gameClient.Player;
+
+			if (player == living || player.CurrentRegion != living.CurrentRegion)
+				return;
+
+			Zone zone = living.CurrentZone;
+
+			if (zone == null)
+				return;
+
+			pak.WriteByte((byte) (0x40 | living.GroupIndex));
+			pak.WriteShort(zone.ZoneSkinID);
+			pak.WriteShort((ushort) (living.X - zone.XOffset));
+			pak.WriteShort((ushort) (living.Y - zone.YOffset));
 		}
 
 		public override void SendRegionChanged()
