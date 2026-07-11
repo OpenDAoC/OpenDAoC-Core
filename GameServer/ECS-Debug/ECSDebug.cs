@@ -25,7 +25,7 @@ namespace ECS.Debug
         private static readonly Lock _perfCountersLock = new();
 
         // GameEventMgr Notify profiling fields.
-        private static Dictionary<string, List<double>> _gameEventMgrNotifyTimes = new();
+        private static SortedDictionary<string, List<double>> _gameEventMgrNotifyTimes = new();
         private static bool _gameEventMgrNotifyProfilingEnabled;
         private static int _gameEventMgrNotifyTimerInterval;
         private static long _gameEventMgrNotifyTimerStartTick;
