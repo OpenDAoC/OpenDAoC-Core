@@ -334,38 +334,48 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, GameLiving living)
-		{
-			base.WriteGroupMemberUpdate(pak, updateIcons, living);
-			WriteGroupMemberMapUpdate(pak, living);
-		}
-
-		protected virtual void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
+		public override void SendGroupMembersMapUpdate(ReadOnlySpan<GameLiving> livings)
 		{
 			GamePlayer player = m_gameClient.Player;
 
-			if (player == living)
-				return;
+			bool hasData = false;
 
-			Zone zone = living.CurrentZone;
-
-			if (zone == null)
-				return;
-
-			pak.WriteByte((byte) (0x40 | living.GroupIndex)); // No idea what 0x40 is.
-
-			if (player.CurrentRegion == living.CurrentRegion)
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
-				pak.WriteShort(zone.ZoneSkinID);
-				pak.WriteShort((ushort) (living.X - zone.XOffset));
-				pak.WriteShort((ushort) (living.Y - zone.YOffset));
-			}
-			else
-			{
-				// Seems to work to remove dots, but no idea if that's what Live does.
-				pak.WriteShort(0);
-				pak.WriteShort(0);
-				pak.WriteShort(0);
+				foreach (GameLiving living in livings)
+				{
+					if (player == living)
+						continue;
+
+					Zone zone = living.CurrentZone;
+
+					if (zone == null)
+						continue;
+
+					pak.WriteByte((byte)(0x40 | living.GroupIndex));
+
+					if (player.CurrentRegion == living.CurrentRegion)
+					{
+						pak.WriteShort(zone.ZoneSkinID);
+						pak.WriteShort((ushort) (living.X - zone.XOffset));
+						pak.WriteShort((ushort) (living.Y - zone.YOffset));
+					}
+					else
+					{
+						// Seems to work to remove dots, but no idea if that's what Live does.
+						pak.WriteShort(0);
+						pak.WriteShort(0);
+						pak.WriteShort(0);
+					}
+
+					hasData = true;
+				}
+
+				if (!hasData)
+					return;
+
+				pak.WriteByte(0x00);
+				SendTCP(pak);
 			}
 		}
 

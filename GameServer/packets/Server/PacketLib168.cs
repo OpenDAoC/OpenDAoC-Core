@@ -1648,7 +1648,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendGroupMembersUpdate(bool updateIcons, bool updateMap, ReadOnlySpan<GameLiving> livings)
+		public virtual void SendGroupMembersUpdate(bool updateIcons, ReadOnlySpan<GameLiving> livings)
 		{
 			if (m_gameClient.Player?.Group == null)
 				return;
@@ -3934,6 +3934,8 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 		}
+
+		public virtual void SendGroupMembersMapUpdate(ReadOnlySpan<GameLiving> livings) { }
 
 		protected virtual void SendInventorySlotsUpdateRange(List<eInventorySlot> slots, eInventoryWindowType windowType)
 		{

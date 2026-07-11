@@ -69,7 +69,6 @@ namespace DOL.GS.PacketHandler
 							}
 					}
 				}
-				WriteGroupMemberMapUpdate(pak, living);
 			}
 			else
 			{

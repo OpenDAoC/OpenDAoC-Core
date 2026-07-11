@@ -768,7 +768,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
+		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, GameLiving living)
 		{
 			pak.WriteByte((byte)(living.GroupIndex + 1)); // From 1 to 8
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -830,8 +830,6 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 			}
-			if (updateMap)
-				WriteGroupMemberMapUpdate(pak, living);
 		}
 
 		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
@@ -1094,7 +1092,7 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		public override void SendGroupMembersUpdate(bool updateIcons, bool updateMap, ReadOnlySpan<GameLiving> livings)
+		public override void SendGroupMembersUpdate(bool updateIcons, ReadOnlySpan<GameLiving> livings)
 		{
 			if (m_gameClient.Player?.Group == null)
 				return;
@@ -1105,7 +1103,7 @@ namespace DOL.GS.PacketHandler
 			{
 				foreach (GameLiving living in livings)
 				{
-					WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);
+					WriteGroupMemberUpdate(pak, updateIcons, living);
 					hasData = true;
 				}
 
