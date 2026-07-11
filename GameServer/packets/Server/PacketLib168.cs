@@ -1648,36 +1648,24 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living)
+		public virtual void SendGroupMembersUpdate(bool updateIcons, bool updateMap, ReadOnlySpan<GameLiving> livings)
 		{
-			if (m_gameClient.Player == null)
+			if (m_gameClient.Player?.Group == null)
 				return;
-			Group group = m_gameClient.Player.Group;
-			if (group == null)
-				return;
+
+			bool hasData = false;
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
-				if (living.Group != group)
-					return;
-				WriteGroupMemberUpdate(pak, updateIcons, living);
-				pak.WriteByte(0x00);
-				SendTCP(pak);
-			}
-		}
-
-		public virtual void SendGroupMembersUpdate(bool updateIcons, bool updateMap)
-		{
-			if (m_gameClient.Player == null)
-				return;
-
-			Group group = m_gameClient.Player.Group;
-			if (group == null)
-				return;
-			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
-			{
-				foreach (GameLiving living in group.GetMembersInTheGroup())
+				foreach (GameLiving living in livings)
+				{
 					WriteGroupMemberUpdate(pak, updateIcons, living);
+					hasData = true;
+				}
+
+				if (!hasData)
+					return;
+
 				pak.WriteByte(0x00);
 				SendTCP(pak);
 			}

@@ -1094,31 +1094,24 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		public override void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living)
+		public override void SendGroupMembersUpdate(bool updateIcons, bool updateMap, ReadOnlySpan<GameLiving> livings)
 		{
 			if (m_gameClient.Player?.Group == null)
 				return;
 
-			var group = m_gameClient.Player.Group;
-			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
-			{
-				if (living.Group != group)
-					return;
-				WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);
-				pak.WriteByte(0x00);
-				SendTCP(pak);
-			}
-		}
-
-		public override void SendGroupMembersUpdate(bool updateIcons, bool updateMap)
-		{
-			if (m_gameClient.Player?.Group == null)
-				return;
+			bool hasData = false;
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
-				foreach (var living in m_gameClient.Player.Group.GetMembersInTheGroup())
+				foreach (GameLiving living in livings)
+				{
 					WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);
+					hasData = true;
+				}
+
+				if (!hasData)
+					return;
+
 				pak.WriteByte(0x00);
 				SendTCP(pak);
 			}

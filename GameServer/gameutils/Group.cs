@@ -119,7 +119,7 @@ namespace DOL.GS
             if (living is GamePlayer player)
             {
                 player.Duel?.Stop();
-                player.Out.SendGroupMembersUpdate(true, false);
+                player.Out.SendGroupMembersUpdate(true, false, CollectionsMarshal.AsSpan(GetMembersInTheGroup()));
                 AbstractMission groupMission = Mission;
 
                 if (groupMission != null)
@@ -452,16 +452,21 @@ namespace DOL.GS
 
         public void UpdateMembers(ReadOnlySpan<GameLiving> livings, bool updateIcons, bool updateOtherRegions)
         {
-            foreach (GameLiving living in livings)
+            foreach (GamePlayer player in GetPlayersInTheGroup())
             {
-                if (living.Group != this)
-                    continue;
+                List<GameLiving> updatesForPlayer = GameLoop.GetListForTick<GameLiving>();
 
-                foreach (GamePlayer player in GetPlayersInTheGroup())
+                foreach (GameLiving living in livings)
                 {
+                    if (living.Group != this)
+                        continue;
+
                     if (updateOtherRegions || player.CurrentRegion == living.CurrentRegion)
-                        player.Out.SendGroupMemberUpdate(updateIcons, false, living);
+                        updatesForPlayer.Add(living);
                 }
+
+                if (updatesForPlayer.Count > 0)
+                    player.Out.SendGroupMembersUpdate(updateIcons, false, CollectionsMarshal.AsSpan(updatesForPlayer));
             }
         }
 
@@ -470,11 +475,16 @@ namespace DOL.GS
             if (player.Group != this)
                 return;
 
+            List<GameLiving> updatesForPlayer = GameLoop.GetListForTick<GameLiving>();
+
             foreach (GameLiving living in GetMembersInTheGroup())
             {
                 if (updateOtherRegions || living.CurrentRegion == player.CurrentRegion)
-                    player.Out.SendGroupMemberUpdate(updateIcons, false, living);
+                    updatesForPlayer.Add(living);
             }
+
+            if (updatesForPlayer.Count > 0)
+                player.Out.SendGroupMembersUpdate(updateIcons, false, CollectionsMarshal.AsSpan(updatesForPlayer));
         }
 
         public void UpdateGroupWindow()
@@ -672,8 +682,10 @@ namespace DOL.GS
                 if (_group.LivingLeader == null)
                     return 0;
 
-                foreach (GamePlayer player in _group.GetPlayersInTheGroup())
-                    player.Out.SendGroupMembersUpdate(false, true);
+                var playersInGroup = _group.GetPlayersInTheGroup();
+
+                foreach (GamePlayer player in playersInGroup)
+                    player.Out.SendGroupMembersUpdate(false, true, CollectionsMarshal.AsSpan(playersInGroup));
 
                 return POSITION_UPDATE_INTERVAL;
             }
