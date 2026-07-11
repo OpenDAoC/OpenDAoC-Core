@@ -343,7 +343,7 @@ namespace DOL.GS.PacketHandler
 		protected virtual void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
 		{
 			bool sameRegion = living.CurrentRegion == m_gameClient.Player.CurrentRegion;
-			if (sameRegion && living.CurrentSpeed != 0)//todo : find a better way to detect when player change coord
+			if (sameRegion)
 			{
 				Zone zone = living.CurrentZone;
 				if (zone == null)

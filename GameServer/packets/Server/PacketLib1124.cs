@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using DOL.AI.Brain;
@@ -833,21 +832,6 @@ namespace DOL.GS.PacketHandler
 			}
 			if (updateMap)
 				WriteGroupMemberMapUpdate(pak, living);
-		}
-
-		protected override void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
-		{
-			if (living.CurrentSpeed != 0)
-			{
-				Zone zone = living.CurrentZone;
-				if (zone == null)
-					return;
-				pak.WriteByte((byte)(0x40 | living.GroupIndex));
-				//Dinberg - ZoneSkinID for group members aswell.
-				pak.WriteShort(zone.ZoneSkinID);
-				pak.WriteShort((ushort)(living.X - zone.XOffset));
-				pak.WriteShort((ushort)(living.Y - zone.YOffset));
-			}
 		}
 
 		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)

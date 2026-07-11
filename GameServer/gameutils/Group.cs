@@ -21,7 +21,7 @@ namespace DOL.GS
     {
         private readonly List<GameLiving> _groupMembers;
         private readonly Lock _groupMembersLock = new();
-        private AbstractMission _mission;
+        private GroupMemberPositionUpdateTimer _memberPositionUpdateTimer;
 
         public byte MemberCount
         {
@@ -48,27 +48,26 @@ namespace DOL.GS
 
         public AbstractMission Mission
         {
-            get => _mission;
+            get;
             set
             {
-                _mission = value;
+                field = value;
 
                 foreach (GamePlayer groupMember in GetPlayersInTheGroup())
                 {
                     groupMember.Out.SendQuestListUpdate();
 
                     if (value != null)
-                        groupMember.Out.SendMessage(_mission.Description, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        groupMember.Out.SendMessage(field.Description, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
             }
         }
-
-        public Group(GamePlayer leader) : this((GameLiving) leader) { }
 
         public Group(GameLiving leader)
         {
             LivingLeader = leader;
             _groupMembers = new(Properties.GROUP_MAX_MEMBER);
+            _memberPositionUpdateTimer = new(this);
         }
 
         public List<GameLiving> GetMembersInTheGroup()
@@ -340,6 +339,12 @@ namespace DOL.GS
         {
             _ = GroupMgr.RemoveGroup(this);
             Mission?.ExpireMission();
+
+            if (_memberPositionUpdateTimer != null)
+            {
+                _memberPositionUpdateTimer.Stop();
+                _memberPositionUpdateTimer = null;
+            }
 
             lock (_groupMembersLock)
             {
@@ -636,6 +641,30 @@ namespace DOL.GS
                 _ = text.Append($"{groupMember.Name} ({groupMember.CharacterClass.Name}) ");
 
             return text.ToString();
+        }
+
+        private class GroupMemberPositionUpdateTimer : ECSGameTimerWrapperBase
+        {
+            public const int POSITION_UPDATE_INTERVAL = 1000;
+
+            private readonly Group _group;
+
+            public GroupMemberPositionUpdateTimer(Group group) : base(null)
+            {
+                _group = group;
+                Start(POSITION_UPDATE_INTERVAL);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                if (_group.LivingLeader == null)
+                    return 0;
+
+                foreach (GamePlayer player in _group.GetPlayersInTheGroup())
+                    player.Out.SendGroupMembersUpdate(false, true);
+
+                return POSITION_UPDATE_INTERVAL;
+            }
         }
     }
 }
