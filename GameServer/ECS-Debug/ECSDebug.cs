@@ -29,7 +29,6 @@ namespace ECS.Debug
         private static bool _gameEventMgrNotifyProfilingEnabled;
         private static int _gameEventMgrNotifyTimerInterval;
         private static long _gameEventMgrNotifyTimerStartTick;
-        private static Stopwatch _gameEventMgrNotifyStopwatch;
         private static readonly Lock _gameEventMgrNotifyLock = new();
 
         // State management for delayed start/stop.
@@ -111,29 +110,29 @@ namespace ECS.Debug
             }
         }
 
-        public static void BeginGameEventMgrNotify()
+        public static long BeginGameEventMgrNotify()
         {
             if (!_gameEventMgrNotifyProfilingEnabled)
-                return;
+                return 0;
 
-            _gameEventMgrNotifyStopwatch = Stopwatch.StartNew();
+            return Stopwatch.GetTimestamp();
         }
 
-        public static void EndGameEventMgrNotify(DOLEvent e)
+        public static void EndGameEventMgrNotify(DOLEvent e, long startTimestamp)
         {
-            if (!_gameEventMgrNotifyProfilingEnabled)
+            if (!_gameEventMgrNotifyProfilingEnabled || startTimestamp == 0)
                 return;
 
-            _gameEventMgrNotifyStopwatch.Stop();
+            double elapsedMs = Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
 
             lock (_gameEventMgrNotifyLock)
             {
-                if (_gameEventMgrNotifyTimes.TryGetValue(e.Name, out List<double> EventTimeValues))
-                    EventTimeValues.Add(_gameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
+                if (_gameEventMgrNotifyTimes.TryGetValue(e.Name, out List<double> eventTimeValues))
+                    eventTimeValues.Add(elapsedMs);
                 else
                 {
-                    EventTimeValues = [_gameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds];
-                    _gameEventMgrNotifyTimes.TryAdd(e.Name, EventTimeValues);
+                    eventTimeValues = [elapsedMs];
+                    _gameEventMgrNotifyTimes[e.Name] = eventTimeValues;
                 }
             }
         }

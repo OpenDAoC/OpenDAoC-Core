@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using DOL.Logging;
+using ECS.Debug;
 
 namespace DOL.Events
 {
@@ -231,7 +232,7 @@ namespace DOL.Events
         {
             ArgumentNullException.ThrowIfNull(e);
 
-            ECS.Debug.Diagnostics.BeginGameEventMgrNotify();
+            long startTimestamp = Diagnostics.BeginGameEventMgrNotify();
 
             if (sender != null)
             {
@@ -251,7 +252,7 @@ namespace DOL.Events
             }
 
             GlobalHandlerCollection.Notify(e, sender, eArgs);
-            ECS.Debug.Diagnostics.EndGameEventMgrNotify(e);
+            Diagnostics.EndGameEventMgrNotify(e, startTimestamp);
         }
     }
 }
