@@ -149,7 +149,6 @@ namespace DOL.GS
             if (_owner.HasAbilityType(typeof(AtlasOF_PreventFlight)) &&
                 Util.Chance(35) &&
                 _target is GameLiving livingTarget &&
-                _owner.IsObjectInFront(livingTarget, 120) &&
                 livingTarget.IsMoving &&
                 livingTarget.GetAngle(_owner) is >= 150 and < 210)
             {
