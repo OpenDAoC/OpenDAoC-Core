@@ -5316,6 +5316,16 @@ namespace DOL.GS
             }
         }
 
+        private static readonly Dictionary<eArmorSlot, int> _armorHitLocationChances = new()
+        {
+            { eArmorSlot.TORSO, 40 },
+            { eArmorSlot.LEGS, 25 },
+            { eArmorSlot.ARMS, 15 },
+            { eArmorSlot.HEAD, 10 },
+            { eArmorSlot.FEET, 5 },
+            { eArmorSlot.HAND, 5 },
+        };
+
         /// <summary>
         /// Gets the effective AF of this living.  This is used for the overall AF display
         /// on the character but not used in any damage equations.
@@ -5324,137 +5334,99 @@ namespace DOL.GS
         {
             get
             {
-                int eaf = 0;
-                int abs = 0;
+                double armorLevel = 0;
+                double armorAbsorb = 0;
+
                 foreach (DbInventoryItem item in Inventory.VisibleItems)
                 {
-                    double factor = 0;
-                    switch (item.Item_Type)
-                    {
-                        case Slot.TORSO:
-                            factor = 2.2;
-                            break;
-                        case Slot.LEGS:
-                            factor = 1.3;
-                            break;
-                        case Slot.ARMS:
-                            factor = 0.75;
-                            break;
-                        case Slot.HELM:
-                            factor = 0.5;
-                            break;
-                        case Slot.HANDS:
-                            factor = 0.25;
-                            break;
-                        case Slot.FEET:
-                            factor = 0.25;
-                            break;
-                    }
+                    if (!GlobalConstants.IsArmor(item.Object_Type))
+                        continue;
 
-                    int itemAFCap = Level << 1;
-                    if (RealmLevel > 39)
-                        itemAFCap += 2;
-                    switch ((eObjectType)item.Object_Type)
+                    eArmorSlot armorSlot = item.Item_Type switch
                     {
-                        case eObjectType.Cloth:
-                            abs = 0;
-                            itemAFCap >>= 1;
-                            break;
-                        case eObjectType.Leather:
-                            abs = 10;
-                            break;
-                        case eObjectType.Reinforced:
-                            abs = 19;
-                            break;
-                        case eObjectType.Studded:
-                            abs = 19;
-                            break;
-                        case eObjectType.Scale:
-                            abs = 27;
-                            break;
-                        case eObjectType.Chain:
-                            abs = 27;
-                            break;
-                        case eObjectType.Plate:
-                            abs = 34;
-                            break;
-                    }
+                        Slot.TORSO => eArmorSlot.TORSO,
+                        Slot.LEGS => eArmorSlot.LEGS,
+                        Slot.ARMS => eArmorSlot.ARMS,
+                        Slot.HELM => eArmorSlot.HEAD,
+                        Slot.HANDS => eArmorSlot.HAND,
+                        Slot.FEET => eArmorSlot.FEET,
+                        _ => eArmorSlot.NOTSET,
+                    };
 
-                    if (factor > 0)
-                    {
-                        int af = item.DPS_AF;
-                        if (af > itemAFCap)
-                            af = itemAFCap;
-                        double piece_eaf = af * item.Quality / 100.0 * item.ConditionPercent / 100.0 * (1 + abs / 100.0);
-                        eaf += (int)(piece_eaf * factor);
-                    }
+                    if (!_armorHitLocationChances.TryGetValue(armorSlot, out int hitChancePercent) || hitChancePercent <= 0)
+                        continue;
+
+                    eObjectType armorType = (eObjectType) item.Object_Type;
+                    _ = GetArmorFactorCap(armorType, out int itemArmorFactorCap);
+                    double effectiveAF = Math.Min(item.DPS_AF, itemArmorFactorCap) * item.Quality * 0.01 * item.ConditionPercent * 0.01;
+                    double useableItemLevel = effectiveAF * 0.5;
+                    double itemAbsorb = item.SPD_ABS * 0.01;
+
+                    armorLevel += useableItemLevel * hitChancePercent * 0.01;
+                    armorAbsorb += itemAbsorb * hitChancePercent * 0.01;
                 }
 
-                // Overall AF CAP = 10 * level * (1 + abs%/100)
                 int bestLevel = -1;
                 bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.AlbArmor));
                 bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.HibArmor));
                 bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.MidArmor));
-                switch (bestLevel)
+
+                int abs = bestLevel switch
                 {
-                    default: abs = 0; break; // cloth etc
-                    case ArmorLevel.Leather: abs = 10; break;
-                    case ArmorLevel.Studded: abs = 19; break;
-                    case ArmorLevel.Chain: abs = 27; break;
-                    case ArmorLevel.Plate: abs = 34; break;
+                    ArmorLevel.Leather => GetArmorTypeAbsorbPercent(eObjectType.Leather),
+                    ArmorLevel.Studded => GetArmorTypeAbsorbPercent(eObjectType.Studded),
+                    ArmorLevel.Chain => GetArmorTypeAbsorbPercent(eObjectType.Chain),
+                    ArmorLevel.Plate => GetArmorTypeAbsorbPercent(eObjectType.Plate),
+                    _ => 0
+                };
+
+                double eaf = 10 * armorLevel * (1 + armorAbsorb);
+                int eafCap = (int) (10 * Level * (1 + abs * 0.01));
+
+                eaf += BaseBuffBonusCategory[eProperty.ArmorFactor]; // Base buff before cap.
+                eaf = Math.Min(eaf, eafCap);
+                eaf += Math.Min(Level * 1.875, SpecBuffBonusCategory[eProperty.ArmorFactor]) -
+                    DebuffCategory[eProperty.ArmorFactor] +
+                    OtherBonus[eProperty.ArmorFactor] +
+                    Math.Min(Level, ItemBonus[eProperty.ArmorFactor]);
+                eaf *= BuffBonusMultCategory1.Get((int) eProperty.ArmorFactor);
+                return (int) eaf;
+
+                static int GetArmorTypeAbsorbPercent(eObjectType armorType)
+                {
+                    return armorType switch
+                    {
+                        eObjectType.Cloth => 0,
+                        eObjectType.Leather => 10,
+                        eObjectType.Studded or eObjectType.Reinforced => 19,
+                        eObjectType.Chain or eObjectType.Scale => 27,
+                        eObjectType.Plate => 34,
+                        _ => 0,
+                    };
                 }
-
-                eaf += BaseBuffBonusCategory[eProperty.ArmorFactor]; // base buff before cap
-                int eafcap = (int)(10 * Level * (1 + abs * 0.01));
-                if (eaf > eafcap)
-                    eaf = eafcap;
-                eaf += (int)Math.Min(Level * 1.875, SpecBuffBonusCategory[eProperty.ArmorFactor])
-                       - DebuffCategory[eProperty.ArmorFactor]
-                       + OtherBonus[eProperty.ArmorFactor]
-                       + Math.Min(Level, ItemBonus[eProperty.ArmorFactor]);
-
-                eaf = (int)(eaf * BuffBonusMultCategory1.Get((int)eProperty.ArmorFactor));
-
-                return eaf;
             }
         }
-        /// <summary>
-        /// Calc Armor hit location when player is hit by enemy
-        /// </summary>
-        /// <returns>slotnumber where enemy hits</returns>
-        /// attackdata(ad) changed
+
         public virtual eArmorSlot CalculateArmorHitLocation(AttackData ad)
         {
             if (ad.Style != null)
             {
-                if (ad.Style.ArmorHitLocation != eArmorSlot.NOTSET)
+                if (ad.Style.ArmorHitLocation is not eArmorSlot.NOTSET)
                     return ad.Style.ArmorHitLocation;
             }
-            int chancehit = Util.Random(1, 100);
-            if (chancehit <= 40)
+
+            int roll = Util.Random(1, 100);
+            int cumulative = 0;
+
+            foreach (var pair in _armorHitLocationChances)
             {
-                return eArmorSlot.TORSO;
+                cumulative += pair.Value;
+
+                if (roll <= cumulative)
+                    return pair.Key;
             }
-            else if (chancehit <= 65)
-            {
-                return eArmorSlot.LEGS;
-            }
-            else if (chancehit <= 80)
-            {
-                return eArmorSlot.ARMS;
-            }
-            else if (chancehit <= 90)
-            {
-                return eArmorSlot.HEAD;
-            }
-            else if (chancehit <= 95)
-            {
-                return eArmorSlot.HAND;
-            }
-            else
-            {
-                return eArmorSlot.FEET;
-            }
+
+            return eArmorSlot.FEET;
         }
 
         public override int WeaponSpecLevel(eObjectType objectType, int slotPosition)
