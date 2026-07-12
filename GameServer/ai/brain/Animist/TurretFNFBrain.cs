@@ -15,7 +15,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            _aggroLosChecksThisTick = 0;
             CheckProximityAggro();
 
             if (!CheckSpells(eCheckSpellType.Offensive))
@@ -25,6 +24,8 @@ namespace DOL.AI.Brain
         public override bool CheckProximityAggro()
         {
             // FnF turrets need to add all players and NPCs to their aggro list to be able to switch target randomly and effectively.
+            _playerAggroLosChecksThisTick = 0;
+            _npcAggroLosChecksThisTick = 0;
             CheckPlayerAggro();
             CheckNpcAggro();
             return HasAggro;
@@ -46,7 +47,7 @@ namespace DOL.AI.Brain
                     continue;
 
                 if (Properties.CHECK_LOS_BEFORE_AGGRO_FNF)
-                    SendAggroLosCheck(player, player);
+                    SendPlayerAggroLosCheck(player, player);
                 else
                     AddToAggroList(player);
             }
@@ -68,12 +69,12 @@ namespace DOL.AI.Brain
                 {
                     if (npc.Brain is ControlledMobBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
-                        SendAggroLosCheck(theirOwner, npc);
+                        SendNpcAggroLosCheck(theirOwner, npc);
                         continue;
                     }
                     else if (GetPlayerOwner() is GamePlayer ourOwner)
                     {
-                        SendAggroLosCheck(ourOwner, npc);
+                        SendNpcAggroLosCheck(ourOwner, npc);
                         continue;
                     }
                 }

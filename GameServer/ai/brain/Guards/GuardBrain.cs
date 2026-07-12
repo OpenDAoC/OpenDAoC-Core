@@ -26,7 +26,7 @@ namespace DOL.AI.Brain
 				if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
 					continue;
 
-				SendAggroLosCheck(player, player);
+				SendPlayerAggroLosCheck(player, player);
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
 		}

@@ -52,26 +52,18 @@ namespace DOL.AI.Brain
 							PlayersSeen.SwapRemoveAt(i);
 					}
 				}
-				if (!Body.attackComponent.AttackState && AggroLevel > 0)
-				{
-					CheckPlayerAggro();
-					CheckNpcAggro();
-				}
-				if (HasAggro)
-				{
+
+				if (CheckProximityAggro())
 					AttackMostWanted();
-					return;
-				}
-				if (!HasAggro)
+				else
 				{
 					if (Body.attackComponent.AttackState)
-					{
 						Body.StopAttack();
-					}
 
 					Body.TargetObject = null;
 				}
 			}
+
 			if (!Body.attackComponent.AttackState && !Body.IsMoving && !Body.InCombat)
 			{
 				// loc range around the lake that Alluvian spanws.
