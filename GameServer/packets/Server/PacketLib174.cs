@@ -372,7 +372,10 @@ namespace DOL.GS.PacketHandler
 				}
 
 				if (!hasData)
+				{
+					pak.ReleasePooledObject();
 					return;
+				}
 
 				pak.WriteByte(0x00);
 				SendTCP(pak);
