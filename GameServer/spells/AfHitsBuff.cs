@@ -82,7 +82,6 @@ namespace DOL.GS.Spells
                 player.Out.SendUpdatePlayer();
                 player.Out.SendCharStatsUpdate();
                 player.Out.SendUpdateWeaponAndArmorStats();
-                player.UpdatePlayerStatus();
             }
         }
     }

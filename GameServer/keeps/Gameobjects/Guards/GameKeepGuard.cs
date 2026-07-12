@@ -111,12 +111,6 @@ namespace DOL.GS.Keeps
 			get { return 50000; }
 		}
 
-		public override int MaxHealth
-		{
-			// (base.Level * 4)
-			get { return GetModified(eProperty.MaxHealth) + (base.Level * 2); }
-		}
-
 		private bool m_changingPositions = false;
 
 		/// <summary>

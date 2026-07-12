@@ -178,7 +178,6 @@ namespace DOL.GS.RealmAbilities
 
             resurrectedPlayer.StopReleaseTimer();
 			resurrectedPlayer.Out.SendPlayerRevive(resurrectedPlayer);
-			resurrectedPlayer.UpdatePlayerStatus();
 
 			GameSpellEffect effect = SpellHandler.FindEffectOnTarget(resurrectedPlayer, "PveResurrectionIllness");
 			if (effect != null)

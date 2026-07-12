@@ -78,9 +78,6 @@ namespace DOL.GS
                 _owner.Out.SendUpdateIcons(ref _lastUpdateEffectsCount);
             }
 
-            if ((requestedUpdates & EffectHelper.PlayerUpdate.Status) != 0)
-                _owner.Out.SendStatusUpdate();
-
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Stats) != 0)
                 _owner.Out.SendCharStatsUpdate();
 

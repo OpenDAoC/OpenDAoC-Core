@@ -111,7 +111,6 @@ namespace DOL.GS.Spells
 
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
                 player.Out.SendUpdatePlayer();
             }
         }
@@ -139,7 +138,6 @@ namespace DOL.GS.Spells
 
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
                 player.Out.SendUpdatePlayer();
             }
 

@@ -21,7 +21,6 @@ namespace DOL.GS.Spells
             if (player != null)
             {
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendCharResistsUpdate();
             }
         }
@@ -41,7 +40,6 @@ namespace DOL.GS.Spells
             if (player != null)
             {
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendCharResistsUpdate();
             }
 

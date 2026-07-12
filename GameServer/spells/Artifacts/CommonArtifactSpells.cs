@@ -30,11 +30,10 @@ namespace DOL.GS.Spells
             
             if(effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;  
+            	GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();             	
+            	player.Out.SendUpdatePlayer();
             }
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -53,12 +52,11 @@ namespace DOL.GS.Spells
  
             if(effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;    
+                GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();  
-            }                       
+                player.Out.SendUpdatePlayer();
+            }
             return base.OnEffectExpires(effect, noMessages);
         }
 
@@ -99,13 +97,12 @@ namespace DOL.GS.Spells
             effect.Owner.DebuffCategory[eProperty.Resist_Matter] += (int)Spell.Value;
             effect.Owner.DebuffCategory[eProperty.Resist_Spirit] += (int)Spell.Value;
             effect.Owner.DebuffCategory[eProperty.Resist_Energy] += (int)Spell.Value;
-            
+
             if(effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;
-             	player.Out.SendCharResistsUpdate(); 
-             	player.UpdatePlayerStatus();
-            }                       
+                GamePlayer player = effect.Owner as GamePlayer;
+                 player.Out.SendCharResistsUpdate(); 
+            }
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
@@ -118,11 +115,10 @@ namespace DOL.GS.Spells
             
             if(effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;
-             	player.Out.SendCharResistsUpdate(); 
-             	player.UpdatePlayerStatus();
-            }           
-            
+                GamePlayer player = effect.Owner as GamePlayer;
+                player.Out.SendCharResistsUpdate();
+            }
+
             return base.OnEffectExpires(effect, noMessages);
         }
 
@@ -162,11 +158,10 @@ namespace DOL.GS.Spells
  
             if(Caster is GamePlayer)
             {
-            	GamePlayer player = Caster as GamePlayer;          	
-             	player.Out.SendCharStatsUpdate(); 
-             	player.UpdateEncumbrance();
-             	player.UpdatePlayerStatus();
-            } 
+                GamePlayer player = Caster as GamePlayer;
+                 player.Out.SendCharStatsUpdate(); 
+                 player.UpdateEncumbrance();
+            }
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -176,11 +171,10 @@ namespace DOL.GS.Spells
  
             if(Caster is GamePlayer)
             {
-            	GamePlayer player = Caster as GamePlayer;          	
-             	player.Out.SendCharStatsUpdate(); 
-             	player.UpdateEncumbrance();
-             	player.UpdatePlayerStatus();
-            } 
+                GamePlayer player = Caster as GamePlayer;
+                 player.Out.SendCharStatsUpdate(); 
+                 player.UpdateEncumbrance();
+            }
             return base.OnEffectExpires(effect,noMessages);
         } 
         

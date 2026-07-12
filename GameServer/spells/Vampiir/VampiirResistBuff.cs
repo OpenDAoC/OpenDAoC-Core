@@ -26,7 +26,6 @@ namespace DOL.GS.Spells
             if (player != null)
             {
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendCharResistsUpdate();
             }
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
@@ -45,7 +44,6 @@ namespace DOL.GS.Spells
             if (player != null)
             {
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendCharResistsUpdate();
             }
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_Spell);
@@ -114,7 +112,6 @@ namespace DOL.GS.Spells
             if(player != null)
             {
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendCharResistsUpdate();
             }
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
@@ -135,7 +132,6 @@ namespace DOL.GS.Spells
             if(player != null)
             {
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendCharResistsUpdate();
             }
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_Spell);

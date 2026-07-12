@@ -473,7 +473,6 @@ namespace DOL.GS
                 case eEffect.StrengthConBuff:
                 case eEffect.StrConDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.Status;
                     playerUpdate |= PlayerUpdate.Stats;
                     playerUpdate |= PlayerUpdate.Encumbrance;
                     break;
@@ -482,7 +481,6 @@ namespace DOL.GS
                 case eEffect.ConstitutionDebuff:
                 case eEffect.WsConDebuff:
                 {
-                    playerUpdate |= PlayerUpdate.Status;
                     playerUpdate |= PlayerUpdate.Stats;
                     break;
                 }
@@ -562,7 +560,6 @@ namespace DOL.GS
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler(player, spell, line);
                 handler.Spell.Duration = savedEffect.Duration;
                 handler.StartSpell(player);
-                player.Out.SendStatusUpdate();
             }
         }
 
@@ -595,9 +592,8 @@ namespace DOL.GS
         [Flags]
         public enum PlayerUpdate : ushort
         {
-            PetWindow =     1 << 8,
-            Icons =         1 << 7,
-            Status =        1 << 6,
+            PetWindow =     1 << 7,
+            Icons =         1 << 6,
             Stats =         1 << 5,
             Resists =       1 << 4,
             WeaponArmor =   1 << 3,

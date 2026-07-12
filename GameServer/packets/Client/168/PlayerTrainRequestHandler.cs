@@ -68,7 +68,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             client.Player.Out.SendUpdatePlayer();
             client.Player.Out.SendUpdatePoints();
             client.Player.Out.SendUpdatePlayerSkills(true);
-            client.Player.UpdatePlayerStatus();
             client.Player.Out.SendChampionTrainerWindow(idLine);
             return;
         }

@@ -340,9 +340,8 @@ namespace DOL.GS.Spells
              
             if (effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();       
+                GamePlayer player = effect.Owner as GamePlayer;
+                player.Out.SendUpdatePlayer();
             }
         }
 
@@ -354,9 +353,8 @@ namespace DOL.GS.Spells
             
             if (effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();  
+                GamePlayer player = effect.Owner as GamePlayer;
+                player.Out.SendUpdatePlayer();
             }
             return base.OnEffectExpires(effect,noMessages);
         }

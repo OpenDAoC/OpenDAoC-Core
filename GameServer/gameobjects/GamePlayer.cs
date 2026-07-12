@@ -211,7 +211,7 @@ namespace DOL.GS
         /// <summary>
         /// The character the player is based on
         /// </summary>
-        internal DbCoreCharacter DBCharacter
+        public DbCoreCharacter DBCharacter
         {
             get { return m_dbCharacter; }
         }
@@ -1671,7 +1671,6 @@ namespace DOL.GS
             StartPowerRegeneration();
             StartEnduranceRegeneration();
             LastDeathPvP = false;
-            UpdatePlayerStatus();
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.SurroundingChange"), eChatType.CT_YourDeath, eChatLoc.CL_SystemWindow);
 
@@ -1807,7 +1806,6 @@ namespace DOL.GS
             GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             m_deathtype = eDeathType.None;
             LastDeathPvP = false;
-            UpdatePlayerStatus();
             Out.SendPlayerRevive(this);
         }
 
@@ -2261,6 +2259,57 @@ namespace DOL.GS
 
         #region Health/Mana/Endurance/Regeneration
 
+        private byte _cachedHealthPercentGroupWindow;
+
+        public void RefreshCachedHealthPercentGroupWindow()
+        {
+            _cachedHealthPercentGroupWindow = CharacterClass.HealthPercentGroupWindow;
+        }
+
+        public bool RefreshCachedHealthPercentGroupWindowAndNotifyGroup()
+        {
+            byte old = _cachedHealthPercentGroupWindow;
+            RefreshCachedHealthPercentGroupWindow();
+
+            if (old == _cachedHealthPercentGroupWindow)
+                return false;
+
+            Group?.UpdateMember(this, false);
+            return true;
+        }
+
+        protected override void OnCachedHealthPercentChanged(byte oldPercent, byte newPercent)
+        {
+            RefreshCachedHealthPercentGroupWindow();
+            RequestResourceStatusUpdate(true);
+        }
+
+        protected override void OnCachedManaPercentChanged(byte oldPercent, byte newPercent)
+        {
+            RequestResourceStatusUpdate(true);
+        }
+
+        protected override void OnCachedEndurancePercentChanged(byte oldPercent, byte newPercent)
+        {
+            RequestResourceStatusUpdate(true);
+        }
+
+        protected override void OnCachedConcentrationPercentChanged(byte oldPercent, byte newPercent)
+        {
+            // Concentration isn't sent to group members.
+            RequestResourceStatusUpdate(false);
+        }
+
+        public override void OnUsedConcentrationChanged()
+        {
+            int maxConcentration = MaxConcentration;
+            byte oldPercent = _cachedConcentrationPercent;
+            UpdateCachedConcentrationPercent(maxConcentration, Concentration);
+
+            if (oldPercent != _cachedConcentrationPercent)
+                OnCachedConcentrationPercentChanged(oldPercent, _cachedConcentrationPercent);
+        }
+
         private int GetHealthAndPowerRegenerationInterval()
         {
             // From Uthgard.
@@ -2380,7 +2429,7 @@ namespace DOL.GS
             get => DBCharacter != null ? DBCharacter.Health : base.Health;
             set
             {
-                int oldPercent = HealthPercent;
+                byte oldPercent = HealthPercent;
                 base.Health = value;
 
                 if (DBCharacter != null)
@@ -2388,8 +2437,8 @@ namespace DOL.GS
 
                 if (oldPercent != HealthPercent)
                 {
-                    Group?.UpdateMember(this, false);
-                    UpdatePlayerStatus();
+                    RefreshCachedHealthPercentGroupWindow();
+                    RequestResourceStatusUpdate(true);
                 }
             }
         }
@@ -2421,7 +2470,7 @@ namespace DOL.GS
             return Math.Max(1, (int)hp4);
         }
 
-        public override byte HealthPercentGroupWindow => CharacterClass.HealthPercentGroupWindow;
+        public override byte HealthPercentGroupWindow => _cachedHealthPercentGroupWindow;
 
         /// <summary>
         /// Calculate max mana for this player based on level and mana stat level
@@ -2473,17 +2522,14 @@ namespace DOL.GS
             get => DBCharacter != null ? DBCharacter.Mana : base.Mana;
             set
             {
-                int oldPercent = ManaPercent;
+                byte oldPercent = ManaPercent;
                 base.Mana = value;
 
                 if (DBCharacter != null)
                     DBCharacter.Mana = base.Mana; // Base clamps between 0 and max value.
 
                 if (oldPercent != ManaPercent)
-                {
-                    Group?.UpdateMember(this, false);
-                    UpdatePlayerStatus();
-                }
+                    RequestResourceStatusUpdate(true);
             }
         }
 
@@ -2494,23 +2540,20 @@ namespace DOL.GS
             get => DBCharacter != null ? DBCharacter.Endurance : base.Endurance;
             set
             {
-                int oldPercent = EndurancePercent;
+                byte oldPercent = EndurancePercent;
                 base.Endurance = value;
 
                 if (DBCharacter != null)
                     DBCharacter.Endurance = base.Endurance; // Base clamps between 0 and max value.
 
                 if (oldPercent != EndurancePercent)
-                {
-                    Group?.UpdateMember(this, false);
-                    UpdatePlayerStatus();
-                }
+                    RequestResourceStatusUpdate(true);
             }
         }
 
         public override int MaxEndurance => base.MaxEndurance;
         public override int Concentration => MaxConcentration - effectListComponent.UsedConcentration;
-        public override int MaxConcentration => GetModified(eProperty.MaxConcentration);
+        public override int MaxConcentration => base.MaxConcentration;
 
         #region Calculate Fall Damage
 
@@ -4719,7 +4762,6 @@ namespace DOL.GS
             Out.SendCharResistsUpdate();
             Out.SendUpdatePlayerSkills(true);
             Out.SendUpdatePoints();
-            UpdatePlayerStatus();
 
             // not sure what package this is, but it triggers the mob color update
             Out.SendLevelUpSound();
@@ -4774,7 +4816,6 @@ namespace DOL.GS
             Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
             Out.SendUpdatePlayerSkills(true);
             Out.SendUpdatePoints();
-            UpdatePlayerStatus();
             // save player to database
             SaveIntoDatabase();
 
@@ -7751,6 +7792,7 @@ namespace DOL.GS
                 return false;
             }
 
+            RefreshCachedHealthPercentGroupWindow();
             movementComponent.ForceUpdatePosition();
             m_invulnerabilityTick = 0;
 
@@ -8710,10 +8752,6 @@ namespace DOL.GS
                     m_prayAction.Stop();
             }
 
-            // Update the client.
-            if (sit && !IsSitting)
-                Out.SendStatusUpdate(2);
-
             IsSitting = sit;
             UpdatePlayerStatus();
         }
@@ -8739,9 +8777,12 @@ namespace DOL.GS
         /// <summary>
         /// Updates Health, Mana, Sitting, Endurance, Concentration and Alive status to client
         /// </summary>
-        public void UpdatePlayerStatus()
+        public void UpdatePlayerStatus(bool notifyGroup = false)
         {
             Out.SendStatusUpdate();
+
+            if (notifyGroup)
+                Group?.UpdateMember(this, false);
         }
         #endregion
 
@@ -8823,7 +8864,6 @@ namespace DOL.GS
             Out.SendCharStatsUpdate();
             Out.SendUpdateWeaponAndArmorStats();
             UpdateEncumbrance();
-            UpdatePlayerStatus();
             base.UpdateHealthManaEndu();
         }
 
@@ -8994,7 +9034,7 @@ namespace DOL.GS
                     TempProperties.SetProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
             }
 
-            _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
+            _statsSenderOnEquipmentChange.Start(0);
             _statsSenderOnEquipmentChange.BroadcastEquipment |= GameLivingInventory.VisibleSlots.Contains((eInventorySlot) item.Template.Item_Type);
         }
 
@@ -9151,36 +9191,59 @@ namespace DOL.GS
             if (item is IGameInventoryItem inventoryItem)
                 inventoryItem.OnUnEquipped(this);
 
-            _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
+            _statsSenderOnEquipmentChange.Start(0);
             _statsSenderOnEquipmentChange.BroadcastEquipment |= GameLivingInventory.VisibleSlots.Contains((eInventorySlot) item.Template.Item_Type);
         }
 
-        private StatsSenderOnEquipmentChange _statsSenderOnEquipmentChange;
-
-        private int OnStatsSendCompletionAfterEquipmentChange()
+        private void RequestResourceStatusUpdate(bool notifyGroup)
         {
-            _statsSenderOnEquipmentChange = null;
-            return 0;
+            if (notifyGroup)
+                _statusSenderOnResourceChange.NotifyGroupOnTick = true;
+
+            _statusSenderOnResourceChange.Start(0);
         }
 
-        public class StatsSenderOnEquipmentChange : ECSGameTimerWrapperBase
+        private StatusSenderOnResourceChange _statusSenderOnResourceChange;
+        private StatsSenderOnEquipmentChange _statsSenderOnEquipmentChange;
+
+        public class StatusSenderOnResourceChange : ECSGameTimerWrapperBase
         {
             private new GamePlayer Owner { get; }
-            private Func<int> _onCompletion;
 
-            public bool BroadcastEquipment { get; set; }
+            public bool NotifyGroupOnTick { get; set; }
 
-            public StatsSenderOnEquipmentChange(GameObject owner, Func<int> OnCompletion) : base(owner)
+            public StatusSenderOnResourceChange(GameObject owner) : base(owner)
             {
                 Owner = owner as GamePlayer;
-                _onCompletion = OnCompletion;
-                Start(0);
             }
 
             protected override int OnTick(ECSGameTimer timer)
             {
                 if (Owner.ObjectState is not eObjectState.Active)
-                    return _onCompletion();
+                    return 0;
+
+                bool notifyGroup = NotifyGroupOnTick;
+                NotifyGroupOnTick = false;
+                Owner.UpdatePlayerStatus(notifyGroup);
+                return 0;
+            }
+        }
+
+        public class StatsSenderOnEquipmentChange : ECSGameTimerWrapperBase
+        {
+            private new GamePlayer Owner { get; }
+
+            public bool BroadcastEquipment { get; set; }
+
+            public StatsSenderOnEquipmentChange(GameObject owner) : base(owner)
+            {
+                Owner = owner as GamePlayer;
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                if (Owner.ObjectState is not eObjectState.Active)
+                    return 0;
 
                 Owner.Out.SendCharStatsUpdate();
                 Owner.Out.SendCharResistsUpdate();
@@ -9188,13 +9251,12 @@ namespace DOL.GS
                 Owner.Out.SendUpdateMaxSpeed();
                 Owner.Out.SendUpdatePlayerSkills(false);
                 Owner.UpdateEncumbrance(); // Currently also sent by GamePlayerInventory.UpdateChangedSlots, but too early.
-                Owner.UpdatePlayerStatus();
 
                 if (BroadcastEquipment)
                     Owner.BroadcastEquipmentUpdate();
 
                 if (!IsAlive)
-                    return _onCompletion();
+                    return 0;
 
                 int maxHealth = Owner.MaxHealth;
 
@@ -9217,7 +9279,7 @@ namespace DOL.GS
                 else if (Owner.Endurance > maxEndurance)
                     Owner.Endurance = maxEndurance;
 
-                return _onCompletion();
+                return 0;
             }
         }
 
@@ -9358,7 +9420,6 @@ namespace DOL.GS
                 Out.SendUpdateMaxSpeed();
                 Out.SendEncumbrance();
                 // Out.SendUpdatePlayerSkills();
-                UpdatePlayerStatus();
 
                 if (IsAlive)
                 {
@@ -11132,7 +11193,7 @@ namespace DOL.GS
             }
         }
 
-        internal bool TryGetQuestIndex(AbstractQuest quest, out byte index)
+        public bool TryGetQuestIndex(AbstractQuest quest, out byte index)
         {
             lock (_questListLock)
             {
@@ -11154,7 +11215,7 @@ namespace DOL.GS
             return null;
         }
 
-        internal bool NeedsQuestListRefreshAfterRemove(byte visibleQuestCount)
+        public bool NeedsQuestListRefreshAfterRemove(byte visibleQuestCount)
         {
             lock (_questListLock)
             {
@@ -11252,7 +11313,7 @@ namespace DOL.GS
             return handled;
         }
 
-        internal void SendQuestListUpdate(byte indexOffset, int visibleQuestCount, Action<AbstractQuest, byte> sendQuestPacket)
+        public void SendQuestListUpdate(byte indexOffset, int visibleQuestCount, Action<AbstractQuest, byte> sendQuestPacket)
         {
             lock (_questListLock)
             {
@@ -12133,6 +12194,7 @@ namespace DOL.GS
             try
             {
                 CharacterClass.SetControlledBrain(controlledBrain);
+                RefreshCachedHealthPercentGroupWindowAndNotifyGroup();
                 return true;
             }
             catch (Exception e)
@@ -13338,7 +13400,6 @@ namespace DOL.GS
             Out.SendUpdatePlayer();
             Out.SendUpdatePoints();
             Out.SendUpdatePlayerSkills(true);
-            UpdatePlayerStatus();
         }
 
         /// <summary>
@@ -13372,7 +13433,9 @@ namespace DOL.GS
             Out.SendMessage("You have gained one champion level!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             Out.SendUpdatePlayer();
             Out.SendUpdatePoints();
-            UpdatePlayerStatus();
+            _ = MaxHealth;
+            _ = MaxMana;
+            _ = MaxEndurance;
         }
 
         #endregion
@@ -13698,6 +13761,9 @@ namespace DOL.GS
             });
 
             m_drowningTimer = new(this, DrowningTimerCallback);
+
+            _statsSenderOnEquipmentChange = new(this);
+            _statusSenderOnResourceChange = new(this);
         }
 
         /// <summary>

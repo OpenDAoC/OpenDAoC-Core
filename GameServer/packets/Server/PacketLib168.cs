@@ -2904,8 +2904,6 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 
-			SendStatusUpdate();
-
 			static void WriteTruncatedName(GSTCPPacketOut pak, ReadOnlySpan<char> text)
 			{
 				const int MAX_LENGTH = 14;
@@ -3905,10 +3903,7 @@ namespace DOL.GS.PacketHandler
             {
                 player = living as GamePlayer;
 
-                if (player != null)
-                    pak.WriteByte(player.CharacterClass.HealthPercentGroupWindow);
-                else
-                    pak.WriteByte(living.HealthPercent);
+				pak.WriteByte(player != null ? player.HealthPercentGroupWindow : living.HealthPercent);
 
 				pak.WriteByte(living.ManaPercent);
 

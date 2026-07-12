@@ -54,8 +54,6 @@ namespace DOL.GS
         /// </summary>
         public NecromancerPet(INpcTemplate npcTemplate) : base(npcTemplate)
         {
-            // Update max health on summon.
-            GetModified(eProperty.MaxHealth);
             // Set immunities/load equipment/etc.
             switch (Name.ToLower())
             {
@@ -99,8 +97,7 @@ namespace DOL.GS
                 if (oldPercent != HealthPercent)
                 {
                     // Update pet health in group window.
-                    GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
-                    owner.Group?.UpdateMember(owner, false);
+                    (Brain as IControlledBrain).GetPlayerOwner()?.RefreshCachedHealthPercentGroupWindowAndNotifyGroup();
                 }
             }
         }

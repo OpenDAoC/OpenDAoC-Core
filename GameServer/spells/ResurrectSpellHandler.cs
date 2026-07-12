@@ -177,7 +177,6 @@ namespace DOL.GS.Spells
 			{
 				player.StopReleaseTimer();
 				player.Out.SendPlayerRevive(player);
-				player.UpdatePlayerStatus();
 				player.Out.SendMessage("You have been resurrected by " + m_caster.GetName(0, false) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				//player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
 

@@ -67,7 +67,6 @@ namespace DOL.GS.Spells
 			
 				player.Client.Out.SendInventoryItemsUpdate([item]);
 				player.Out.SendCharStatsUpdate();
-				player.UpdatePlayerStatus();
 				player.Out.SendUpdatePlayer();
 				player.Out.SendUpdateWeaponAndArmorStats();
 				player.Out.SendCharResistsUpdate();
@@ -105,7 +104,6 @@ namespace DOL.GS.Spells
 			
 			player.Client.Out.SendInventoryItemsUpdate([item]);
 			player.Out.SendCharStatsUpdate();
-			player.UpdatePlayerStatus();
 			player.Out.SendUpdatePlayer();
 			player.Out.SendUpdateWeaponAndArmorStats();
 			player.Out.SendCharResistsUpdate();

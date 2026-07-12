@@ -363,7 +363,6 @@ namespace DOL.GS.Spells
             {
                 player.Effectiveness -= Spell.Value * 0.01;
                 player.Out.SendUpdateWeaponAndArmorStats();
-                player.Out.SendStatusUpdate();
             }
         }
 
@@ -381,7 +380,6 @@ namespace DOL.GS.Spells
             {
                 player.Effectiveness += Spell.Value * 0.01;
                 player.Out.SendUpdateWeaponAndArmorStats();
-                player.Out.SendStatusUpdate();
             }
             return 0;
         }

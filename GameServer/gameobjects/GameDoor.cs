@@ -85,10 +85,10 @@ namespace DOL.GS
 
                 if (IsAlive && m_health < maxHealth)
                     StartHealthRegeneration();
+
+                UpdateCachedHealthPercent(maxHealth);
             }
         }
-
-        public override int MaxHealth => 5 * GetModified(eProperty.MaxHealth);
 
         public override void Die(GameObject killer)
         {

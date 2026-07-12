@@ -37,7 +37,6 @@ namespace DOL.GS.Spells.Atlantis
 				GamePlayer player = effect.Owner as GamePlayer;
 				player.Out.SendCharStatsUpdate();
 				player.UpdateEncumbrance();
-				player.UpdatePlayerStatus();
 				player.Out.SendUpdatePlayer();
 			}
 		}
@@ -60,7 +59,6 @@ namespace DOL.GS.Spells.Atlantis
 				GamePlayer player = effect.Owner as GamePlayer;
 				player.Out.SendCharStatsUpdate();
 				player.UpdateEncumbrance();
-				player.UpdatePlayerStatus();
 				player.Out.SendUpdatePlayer();
 			}
 			return base.OnEffectExpires(effect, noMessages);

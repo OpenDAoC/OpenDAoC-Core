@@ -28,7 +28,6 @@ namespace DOL.GS.Effects
 			{
 				player.Out.SendCharStatsUpdate();
 				player.Out.SendCharResistsUpdate();
-				player.Out.SendStatusUpdate();
 			}
 		}
 

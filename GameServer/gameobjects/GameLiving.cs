@@ -2647,6 +2647,124 @@ namespace DOL.GS
 		/// </summary>
 		protected int m_endurance;
 
+		protected byte _cachedHealthPercent;
+		protected byte _cachedManaPercent;
+		protected byte _cachedEndurancePercent;
+		protected byte _cachedConcentrationPercent;
+		protected int _cachedMaxHealthAtPercentCalc = int.MinValue;
+		protected int _cachedMaxManaAtPercentCalc = int.MinValue;
+		protected int _cachedMaxEnduranceAtPercentCalc = int.MinValue;
+		protected int _cachedMaxConcentrationAtPercentCalc = int.MinValue;
+
+		protected byte UpdateCachedHealthPercent(int maxHealth)
+		{
+			_cachedMaxHealthAtPercentCalc = maxHealth;
+			_cachedHealthPercent = (byte) (maxHealth <= 0 ? 0 : Math.Clamp(m_health * 100 / maxHealth, 0, 100));
+			return _cachedHealthPercent;
+		}
+
+		protected byte UpdateCachedManaPercent(int maxMana)
+		{
+			_cachedMaxManaAtPercentCalc = maxMana;
+			_cachedManaPercent = (byte) (maxMana <= 0 ? 0 : Math.Clamp(m_mana * 100 / maxMana, 0, 100));
+			return _cachedManaPercent;
+		}
+
+		protected byte UpdateCachedEndurancePercent(int maxEndurance)
+		{
+			_cachedMaxEnduranceAtPercentCalc = maxEndurance;
+			_cachedEndurancePercent = (byte) (maxEndurance <= 0 ? 0 : Math.Clamp(m_endurance * 100 / maxEndurance, 0, 100));
+			return _cachedEndurancePercent;
+		}
+
+		protected byte UpdateCachedConcentrationPercent(int maxConcentration, int concentration)
+		{
+			_cachedMaxConcentrationAtPercentCalc = maxConcentration;
+			_cachedConcentrationPercent = (byte) (maxConcentration <= 0 ? 0 : Math.Clamp(concentration * 100 / maxConcentration, 0, 100));
+			return _cachedConcentrationPercent;
+		}
+
+		protected int ResolveMaxHealthAndUpdateCache(int computedMaxHealth)
+		{
+			if (computedMaxHealth == _cachedMaxHealthAtPercentCalc)
+				return computedMaxHealth;
+
+			byte oldPercent = _cachedHealthPercent;
+			UpdateCachedHealthPercent(computedMaxHealth);
+
+			if (oldPercent != _cachedHealthPercent)
+				OnCachedHealthPercentChanged(oldPercent, _cachedHealthPercent);
+
+			return computedMaxHealth;
+		}
+
+		protected int ResolveMaxManaAndUpdateCache(int computedMaxMana)
+		{
+			if (computedMaxMana == _cachedMaxManaAtPercentCalc)
+				return computedMaxMana;
+
+			byte oldPercent = _cachedManaPercent;
+			UpdateCachedManaPercent(computedMaxMana);
+
+			if (oldPercent != _cachedManaPercent)
+				OnCachedManaPercentChanged(oldPercent, _cachedManaPercent);
+
+			return computedMaxMana;
+		}
+
+		protected int ResolveMaxEnduranceAndUpdateCache(int computedMaxEndurance)
+		{
+			if (computedMaxEndurance == _cachedMaxEnduranceAtPercentCalc)
+				return computedMaxEndurance;
+
+			byte oldPercent = _cachedEndurancePercent;
+			UpdateCachedEndurancePercent(computedMaxEndurance);
+
+			if (oldPercent != _cachedEndurancePercent)
+				OnCachedEndurancePercentChanged(oldPercent, _cachedEndurancePercent);
+
+			return computedMaxEndurance;
+		}
+
+		protected int ResolveMaxConcentrationAndUpdateCache(int computedMaxConcentration)
+		{
+			if (computedMaxConcentration == _cachedMaxConcentrationAtPercentCalc)
+				return computedMaxConcentration;
+
+			byte oldPercent = _cachedConcentrationPercent;
+			int concentration = Math.Max(0, computedMaxConcentration - effectListComponent.UsedConcentration);
+			UpdateCachedConcentrationPercent(computedMaxConcentration, concentration);
+
+			if (oldPercent != _cachedConcentrationPercent)
+				OnCachedConcentrationPercentChanged(oldPercent, _cachedConcentrationPercent);
+
+			return computedMaxConcentration;
+		}
+
+		protected virtual void OnCachedHealthPercentChanged(byte oldPercent, byte newPercent) { }
+
+		protected virtual void OnCachedManaPercentChanged(byte oldPercent, byte newPercent) { }
+
+		protected virtual void OnCachedEndurancePercentChanged(byte oldPercent, byte newPercent) { }
+
+		protected virtual void OnCachedConcentrationPercentChanged(byte oldPercent, byte newPercent) { }
+
+		public virtual void OnUsedConcentrationChanged() { }
+
+		protected void RefreshAllCachedResourcePercents()
+		{
+			// This method is only meant to be called by AddToWorld.
+
+			UpdateCachedHealthPercent(GetModified(eProperty.MaxHealth));
+			UpdateCachedManaPercent(GetModified(eProperty.MaxMana));
+			UpdateCachedEndurancePercent(GetModified(eProperty.Fatigue));
+
+			int maxConcentration = GetModified(eProperty.MaxConcentration);
+			UpdateCachedConcentrationPercent(maxConcentration, Math.Max(0, maxConcentration - effectListComponent.UsedConcentration));
+		}
+
+		public override byte HealthPercent => _cachedHealthPercent;
+
 		/// <summary>
 		/// Gets/sets the object health
 		/// </summary>
@@ -2676,10 +2794,12 @@ namespace DOL.GS
 
 				if (m_health < maxHealth)
 					StartHealthRegeneration();
+
+				UpdateCachedHealthPercent(maxHealth);
 			}
 		}
 
-		public override int MaxHealth => GetModified(eProperty.MaxHealth);
+		public override int MaxHealth => ResolveMaxHealthAndUpdateCache(GetModified(eProperty.MaxHealth));
 
 		public virtual int Mana
 		{
@@ -2700,11 +2820,13 @@ namespace DOL.GS
 					int classId = player.CharacterClass.ID;
 					return (eCharacterClass) classId is eCharacterClass.Vampiir || (classId > 59 && classId < 63);
 				}
+
+				UpdateCachedManaPercent(maxMana);
 			}
 		}
 
-		public virtual int MaxMana => GetModified(eProperty.MaxMana);
-		public virtual byte ManaPercent => (byte) (MaxMana <= 0 ? 0 : Math.Clamp(Mana * 100 / MaxMana, 0, 100));
+		public virtual int MaxMana => ResolveMaxManaAndUpdateCache(GetModified(eProperty.MaxMana));
+		public virtual byte ManaPercent => _cachedManaPercent;
 
 		public virtual int Endurance
 		{
@@ -2716,15 +2838,17 @@ namespace DOL.GS
 
 				if (m_endurance < maxEndurance)
 					StartEnduranceRegeneration();
+
+				UpdateCachedEndurancePercent(maxEndurance);
 			}
 		}
 
-		public virtual int MaxEndurance => GetModified(eProperty.Fatigue);
-		public virtual byte EndurancePercent => (byte) (MaxEndurance <= 0 ? 0 : Math.Clamp(Endurance * 100 / MaxEndurance, 0, 100));
+		public virtual int MaxEndurance => ResolveMaxEnduranceAndUpdateCache(GetModified(eProperty.Fatigue));
+		public virtual byte EndurancePercent => _cachedEndurancePercent;
 
 		public virtual int Concentration => 0;
-		public virtual int MaxConcentration => 0;
-		public virtual byte ConcentrationPercent => (byte) (MaxConcentration <= 0 ? 0 : Math.Clamp(Concentration * 100 / MaxConcentration, 0, 100));
+		public virtual int MaxConcentration => ResolveMaxConcentrationAndUpdateCache(GetModified(eProperty.MaxConcentration));
+		public virtual byte ConcentrationPercent => _cachedConcentrationPercent;
 
 		public void CancelAllConcentrationEffects()
 		{
@@ -3808,6 +3932,15 @@ namespace DOL.GS
 			set { m_groupIndex = value; }
 		}
 		#endregion
+
+		public override bool AddToWorld()
+		{
+			if (!base.AddToWorld())
+				return false;
+
+			RefreshAllCachedResourcePercents();
+			return true;
+		}
 
 		/// <summary>
 		/// Constructor to create a new GameLiving

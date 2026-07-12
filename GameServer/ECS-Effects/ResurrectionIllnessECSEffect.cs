@@ -25,7 +25,6 @@
             {
                 player.Effectiveness -= SpellHandler.Spell.Value * 0.01;
                 player.Out.SendUpdateWeaponAndArmorStats();
-                player.Out.SendStatusUpdate();
             }
         }
 
@@ -35,7 +34,6 @@
             {
                 player.Effectiveness += SpellHandler.Spell.Value * 0.01;
                 player.Out.SendUpdateWeaponAndArmorStats();
-                player.Out.SendStatusUpdate();
             }
         }
     }

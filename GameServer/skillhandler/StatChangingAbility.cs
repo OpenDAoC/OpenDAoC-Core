@@ -51,7 +51,6 @@ namespace DOL.GS.SkillHandler
 				player.Out.SendCharResistsUpdate();
 				player.Out.SendUpdateWeaponAndArmorStats();
 				player.UpdateEncumbrance();
-				player.UpdatePlayerStatus();
 			}
 
 			if (target.IsAlive)

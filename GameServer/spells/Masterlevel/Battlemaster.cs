@@ -679,7 +679,6 @@ namespace DOL.GS.Spells
                 GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
                 player.Out.SendUpdatePlayer();
             }
         }
@@ -692,7 +691,6 @@ namespace DOL.GS.Spells
             {
                 GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendUpdatePlayer();
             }
             return base.OnEffectExpires(effect, noMessages);
@@ -766,7 +764,6 @@ namespace DOL.GS.Spells
             {
                 GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendUpdatePlayer();
             }
         }
@@ -780,7 +777,6 @@ namespace DOL.GS.Spells
             {
                 GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
-                player.UpdatePlayerStatus();
                 player.Out.SendUpdatePlayer();
             }
             return base.OnEffectExpires(effect, noMessages);

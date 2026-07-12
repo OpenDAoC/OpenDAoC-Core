@@ -262,7 +262,6 @@ namespace DOL.GS.Commands
                             player.Out.SendUpdatePlayer();
                             player.Out.SendUpdatePoints();
                             player.Out.SendCharStatsUpdate();
-                            player.UpdatePlayerStatus();
                             player.SaveIntoDatabase();
                         }
 
@@ -1448,7 +1447,6 @@ namespace DOL.GS.Commands
                                 client.Out.SendMessage($"You resurrected {player.Name} successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 player.StopReleaseTimer();
                                 player.Out.SendPlayerRevive(player);
-                                player.Out.SendStatusUpdate();
                                 player.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 player.Notify(GamePlayerEvent.Revive, player);
                             }
@@ -1475,7 +1473,6 @@ namespace DOL.GS.Commands
                                                 albPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
                                                 albPlayer.StopReleaseTimer();
                                                 albPlayer.Out.SendPlayerRevive(albPlayer);
-                                                albPlayer.Out.SendStatusUpdate();
                                                 albPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                                 albPlayer.Notify(GamePlayerEvent.Revive, albPlayer);
                                             }
@@ -1495,7 +1492,6 @@ namespace DOL.GS.Commands
                                                 hibPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
                                                 hibPlayer.StopReleaseTimer();
                                                 hibPlayer.Out.SendPlayerRevive(hibPlayer);
-                                                hibPlayer.Out.SendStatusUpdate();
                                                 hibPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                                 hibPlayer.Notify(GamePlayerEvent.Revive, hibPlayer);
                                             }
@@ -1514,7 +1510,6 @@ namespace DOL.GS.Commands
                                                 midPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
                                                 midPlayer.StopReleaseTimer();
                                                 midPlayer.Out.SendPlayerRevive(midPlayer);
-                                                midPlayer.Out.SendStatusUpdate();
                                                 midPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                                 midPlayer.Notify(GamePlayerEvent.Revive, midPlayer);
                                             }
@@ -1535,7 +1530,6 @@ namespace DOL.GS.Commands
                                             self.Out.SendMessage("You revive yourself.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                             self.StopReleaseTimer();
                                             self.Out.SendPlayerRevive(self);
-                                            self.Out.SendStatusUpdate();
                                             self.Notify(GamePlayerEvent.Revive, self);
                                         }
                                         else
@@ -1556,7 +1550,6 @@ namespace DOL.GS.Commands
                                             otherPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
                                             otherPlayer.StopReleaseTimer();
                                             otherPlayer.Out.SendPlayerRevive(otherPlayer);
-                                            otherPlayer.Out.SendStatusUpdate();
                                             otherPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             otherPlayer.Notify(GamePlayerEvent.Revive, otherPlayer);
                                         }

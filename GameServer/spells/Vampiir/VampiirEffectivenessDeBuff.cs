@@ -62,12 +62,10 @@ namespace DOL.GS.Spells
 
 				// Added to fix?
 				player.Out.SendUpdateWeaponAndArmorStats();
-				player.Out.SendStatusUpdate();
 			}
 			
 		}
 
-		
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			if (effect.Owner is GamePlayer)
@@ -80,14 +78,10 @@ namespace DOL.GS.Spells
 
 				// Added to fix?
 				player.Out.SendUpdateWeaponAndArmorStats();
-				player.Out.SendStatusUpdate();
 			}
 			return 0;
 		}
 
-
-
-		
 		public override IList<string> DelveInfo 
 		{
 			get 

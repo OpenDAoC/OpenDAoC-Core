@@ -8,15 +8,15 @@ namespace DOL.GS.Spells.Atlantis
     [SpellHandler(eSpellType.Arrogance)]
     public class Arrogance : SpellHandler
     {
-    	GamePlayer playertarget = null;
-    	
+        GamePlayer playertarget = null;
+        
         /// <summary>
         /// The timer that will cancel the effect
         /// </summary>
         protected ECSGameTimer m_expireTimer;
         public override void OnEffectStart(GameSpellEffect effect)
         {
-        	base.OnEffectStart(effect);
+            base.OnEffectStart(effect);
             effect.Owner.BaseBuffBonusCategory[eProperty.Dexterity] += (int)m_spell.Value;
             effect.Owner.BaseBuffBonusCategory[eProperty.Strength] += (int)m_spell.Value;
             effect.Owner.BaseBuffBonusCategory[eProperty.Constitution] += (int)m_spell.Value;
@@ -27,14 +27,13 @@ namespace DOL.GS.Spells.Atlantis
             effect.Owner.BaseBuffBonusCategory[eProperty.Intelligence] += (int)m_spell.Value;
             effect.Owner.BaseBuffBonusCategory[eProperty.Charisma] += (int)m_spell.Value;
             effect.Owner.BaseBuffBonusCategory[eProperty.PhysicalAbsorption] += (int)m_spell.Value;                       
-            
+
             if (effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;
+                GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();       
+                player.Out.SendUpdatePlayer();
             }
         }
 
@@ -50,14 +49,13 @@ namespace DOL.GS.Spells.Atlantis
             effect.Owner.BaseBuffBonusCategory[eProperty.Intelligence] -= (int)m_spell.Value;
             effect.Owner.BaseBuffBonusCategory[eProperty.Charisma] -= (int)m_spell.Value;
             effect.Owner.BaseBuffBonusCategory[eProperty.PhysicalAbsorption] -= (int)m_spell.Value;
-             
+
             if (effect.Owner is GamePlayer)
             {
-            	GamePlayer player = effect.Owner as GamePlayer;
+                GamePlayer player = effect.Owner as GamePlayer;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
-            	player.Out.SendUpdatePlayer();  
+                player.Out.SendUpdatePlayer();
                 Start(player);
             }
             return base.OnEffectExpires(effect,noMessages);
@@ -65,7 +63,7 @@ namespace DOL.GS.Spells.Atlantis
 
         protected virtual void Start(GamePlayer player)
         {
-        	playertarget = player;
+            playertarget = player;
             StartTimers();
             player.DebuffCategory[eProperty.Dexterity] += (int)m_spell.Value;
             player.DebuffCategory[eProperty.Strength] += (int)m_spell.Value;
@@ -77,32 +75,30 @@ namespace DOL.GS.Spells.Atlantis
             player.DebuffCategory[eProperty.Intelligence] += (int)m_spell.Value;
             player.DebuffCategory[eProperty.Charisma] += (int)m_spell.Value;
             player.DebuffCategory[eProperty.PhysicalAbsorption] += (int)m_spell.Value;
-            
+
             player.Out.SendCharStatsUpdate();
             player.UpdateEncumbrance();
-            player.UpdatePlayerStatus();
-          	player.Out.SendUpdatePlayer(); 
+            player.Out.SendUpdatePlayer();
         }
 
         protected virtual void Stop()
         {
             if (playertarget != null)
-            {     
-	            playertarget.DebuffCategory[eProperty.Dexterity] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Strength] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Constitution] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Acuity] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Piety] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Empathy] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Quickness] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Intelligence] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.Charisma] -= (int)m_spell.Value;;
-	            playertarget.DebuffCategory[eProperty.PhysicalAbsorption] -= (int)m_spell.Value;;
-	            
-            	playertarget.Out.SendCharStatsUpdate();
-            	playertarget.UpdateEncumbrance();
-            	playertarget.UpdatePlayerStatus();
-          		playertarget.Out.SendUpdatePlayer(); 
+            {
+                playertarget.DebuffCategory[eProperty.Dexterity] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Strength] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Constitution] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Acuity] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Piety] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Empathy] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Quickness] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Intelligence] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.Charisma] -= (int)m_spell.Value;;
+                playertarget.DebuffCategory[eProperty.PhysicalAbsorption] -= (int)m_spell.Value;;
+
+                playertarget.Out.SendCharStatsUpdate();
+                playertarget.UpdateEncumbrance();
+                playertarget.Out.SendUpdatePlayer(); 
             }
             StopTimers();
         }

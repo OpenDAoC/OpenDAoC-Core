@@ -45,7 +45,6 @@ namespace DOL.GS {
             player.Endurance = player.MaxEndurance;
             player.Mana = player.MaxMana;
 
-            player.Out.SendStatusUpdate();
             return true;
 			
 			
@@ -141,7 +140,6 @@ namespace DOL.GS {
 
                     deadPlayer.StopReleaseTimer();
                     deadPlayer.Out.SendPlayerRevive(deadPlayer);
-                    deadPlayer.Out.SendStatusUpdate();
                     deadPlayer.Out.SendMessage("Mordred has found your soul worthy of resurrection!",
                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     deadPlayer.Notify(GamePlayerEvent.Revive, deadPlayer);

@@ -44,7 +44,7 @@ namespace DOL.GS
 			else m_amount = (int)(Owner.MaxHealth * m_amountPercent);
 
 			Owner.BaseBuffBonusCategory[eProperty.MaxHealth] += m_amount;
-			Owner.Health += (int)(Owner.GetModified(eProperty.MaxHealth) * m_amountPercent);
+			Owner.Health += (int)(Owner.MaxHealth * m_amountPercent);
 			if (Owner.Health > Owner.MaxHealth) Owner.Health = Owner.MaxHealth;
 
 			Owner.Emote(eEmote.StagFrenzy);

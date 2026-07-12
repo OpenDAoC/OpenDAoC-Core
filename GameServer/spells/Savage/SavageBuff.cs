@@ -89,7 +89,6 @@ namespace DOL.GS.Spells
                 player.Out.SendCharStatsUpdate();
                 player.Out.SendUpdateWeaponAndArmorStats();
                 player.UpdateEncumbrance();
-                player.UpdatePlayerStatus();
             }
         }
     }
@@ -105,7 +104,6 @@ namespace DOL.GS.Spells
             if (target is GamePlayer player)
             {
                 player.Out.SendCharResistsUpdate();
-                player.UpdatePlayerStatus();
             }
         }
     }

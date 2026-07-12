@@ -6695,11 +6695,9 @@ namespace DOL.GS
             //11L0
             if (rps is >= 8208750) { player.RealmLevel = 100; }
 
-
             player.Out.SendUpdatePlayer();
             player.Out.SendCharStatsUpdate();
             player.Out.SendUpdatePoints();
-            player.UpdatePlayerStatus();
         }
         #endregion
 

@@ -997,6 +997,7 @@ namespace DOL.GS
             }
 
             RequestPlayerUpdate(EffectHelper.PlayerUpdate.Concentration);
+            Owner.OnUsedConcentrationChanged();
         }
 
         private void RemoveFromConcentrationEffectList(ECSGameSpellEffect spellEffect)
@@ -1008,6 +1009,7 @@ namespace DOL.GS
             }
 
             RequestPlayerUpdate(EffectHelper.PlayerUpdate.Concentration);
+            Owner.OnUsedConcentrationChanged();
         }
 
         public enum AddEffectResult
