@@ -661,14 +661,20 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "check_los_before_npc_ranged_attack", "Should we perform LoS checks before allowing archer NPCs to attack.", true)]
 		public static bool CHECK_LOS_BEFORE_NPC_RANGED_ATTACK;
 
-		[ServerProperty("world", "check_los_during_ranged_attack_minimum_interval", "The minimum interval (milliseconds) between two LoS checks performed during a ranged attack.", 200)]
+		[ServerProperty("world", "check_los_during_ranged_attack_minimum_interval", "The minimum interval (milliseconds) between two LoS checks performed during a ranged attack. Used by NPCs only.", 200)]
 		public static int CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
 
-		[ServerProperty("world", "check_los_during_cast", "Should we perform LoS checks during spell casts.", true)]
-		public static bool CHECK_LOS_DURING_CAST;
+		[ServerProperty("world", "check_los_during_player_cast", "Should players perform LoS checks during spell casts.", true)]
+		public static bool CHECK_LOS_DURING_PLAYER_CAST;
+
+		[ServerProperty("world", "check_los_during_npc_cast", "Should NPCs perform LoS checks during spell casts.", false)]
+		public static bool CHECK_LOS_DURING_NPC_CAST;
 
 		[ServerProperty("world", "check_los_during_cast_minimum_interval", "The minimum interval (milliseconds) between two LoS checks performed during a spell cast.", 200)]
 		public static int CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
+
+		[ServerProperty("world", "check_range_at_npc_cast_end", "Should NPCs check range at the end of a spell cast.", false)]
+		public static bool CHECK_RANGE_AT_NPC_CAST_END;
 
 		[ServerProperty("world", "los_check_timeout", "After how long (milliseconds) should a los check timeout. If less than 0, the default ECS timer interval will be used.", 1500)]
 		public static int LOS_CHECK_TIMEOUT;

@@ -891,12 +891,15 @@ namespace DOL.GS.Spells
 					}
 				}
 
-				if (!m_caster.IsWithinRadius(target, Spell.CalculateEffectiveRange(m_caster)))
+				if (m_caster is not GameNPC || Properties.CHECK_RANGE_AT_NPC_CAST_END)
 				{
-					if (verbose)
-						MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+					if (!m_caster.IsWithinRadius(target, Spell.CalculateEffectiveRange(m_caster)))
+					{
+						if (verbose)
+							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 
-					return false;
+						return false;
+					}
 				}
 
 				switch (m_spell.Target)
@@ -966,6 +969,8 @@ namespace DOL.GS.Spells
 			if (m_interrupted)
 				return false;
 
+			bool checkLos = false;
+
 			if (Caster is GameNPC npcOwner)
 			{
 				if (Spell.CastTime > 0)
@@ -976,9 +981,13 @@ namespace DOL.GS.Spells
 
 				if (npcOwner != Target)
 					npcOwner.TurnTo(Target);
-			}
 
-			if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
+				checkLos = Properties.CHECK_LOS_DURING_NPC_CAST;
+			}
+			else if (Caster is GamePlayer)
+				checkLos = Properties.CHECK_LOS_DURING_PLAYER_CAST;
+
+			if (checkLos && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 			{
 				_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
 
