@@ -3356,17 +3356,6 @@ namespace DOL.GS
 			return base.CastSpell(spell, line, null, checkLos);
 		}
 
-		public virtual void OnCastSpellLosCheckFail(GameObject target)
-		{
-			// In case the NPC changes target while casting on the current one and the first LoS check was positive.
-			if (castingComponent.QueuedSpellHandler?.Target == target)
-				castingComponent.ClearUpQueuedSpellHandler();
-
-			// Start following the target if there is no LoS.
-			if (TargetObject == target)
-				Follow(target, StickMinimumRange, StickMaximumRange);
-		}
-
 		#endregion
 
 		#region Styles

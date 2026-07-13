@@ -197,6 +197,8 @@ namespace DOL.GS
             SpellHandler = null;
         }
 
+        public virtual void OnOutOfRangeOrNoLos(GameObject target) { }
+
         public void ClearUpQueuedSpellHandler()
         {
             QueuedSpellHandler = null;

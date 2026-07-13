@@ -45,15 +45,5 @@ namespace DOL.GS
             // Don't interrupt turrets (1.90 EU).
             return;
         }
-
-        public override void OnCastSpellLosCheckFail(GameObject target)
-        {
-            base.OnCastSpellLosCheckFail(target);
-
-            // This is where FnF turrets with LoS check on aggro enabled clear their list of hidden targets.
-            // This can create a delay between attacks in some cases because turrets only ask one target at a time.
-            if (Brain is TurretFNFBrain fnfBrain)
-                fnfBrain.RemoveFromAggroList(target as GameLiving);
-        }
     }
 }

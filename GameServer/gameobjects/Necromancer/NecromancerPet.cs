@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
@@ -288,12 +287,6 @@ namespace DOL.GS
 
             if (tauntSpell != null && GetSkillDisabledDuration(tauntSpell) == 0)
                 CastSpell(tauntSpell, chantsLine);
-        }
-
-        public override void OnCastSpellLosCheckFail(GameObject target)
-        {
-            base.OnCastSpellLosCheckFail(target);
-            Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
         }
 
         // Necromancer pets shouldn't delay their instant spells.

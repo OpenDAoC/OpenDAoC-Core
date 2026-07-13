@@ -2,6 +2,8 @@
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -86,6 +88,18 @@ namespace DOL.GS
             base.ClearSpellHandlers();
         }
 
+        public override void OnOutOfRangeOrNoLos(GameObject target)
+        {
+            if (QueuedSpellHandler?.Target == target)
+                ClearUpQueuedSpellHandler();
+
+            // Immobile NPCs and caster guards forget about the target, other NPCs will try to move into range and line of sight.
+            if (IsCasterGuardOrImmobile)
+                (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(target as GameLiving);
+            else if (_npcOwner.TargetObject == target)
+                _npcOwner.Follow(target, _npcOwner.StickMinimumRange, _npcOwner.StickMaximumRange);
+        }
+
         public bool IsAllowedToFollow(GameObject target)
         {
             if (!IsCasterGuardOrImmobile)
@@ -109,20 +123,28 @@ namespace DOL.GS
                 if (!_spellsWaitingForLosCheck.TryGetValue(target, out var list))
                     return;
 
-                bool success = response is LosCheckResponse.True;
-
-                foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
+                if (response is LosCheckResponse.True)
                 {
-                    Spell spell = spellWaitingForLosCheck.Spell;
-                    SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
+                    foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
+                    {
+                        Spell spell = spellWaitingForLosCheck.Spell;
+                        SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
 
-                    if (success && spellLine != null && spell != null)
-                        base.RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
-                    else
-                        _npcOwner.OnCastSpellLosCheckFail(target);
+                        if (spellLine != null && spell != null)
+                            base.RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
+                    }
+
+                    return;
                 }
 
                 list.Clear();
+                OnOutOfRangeOrNoLos(target);
+
+                if (_npcOwner is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
+                {
+                    string message = LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "AI.Brain.Necromancer.PetCantSeeTarget", _npcOwner.Name);
+                    NecromancerPetBrain.MessageToOwner(message, eChatType.CT_SpellResisted, playerOwner);
+                }
             }
         }
 

@@ -898,6 +898,7 @@ namespace DOL.GS.Spells
 						if (verbose)
 							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 
+						m_caster.castingComponent.OnOutOfRangeOrNoLos(target);
 						return false;
 					}
 				}

@@ -83,11 +83,6 @@ namespace DOL.AI.Brain
                             "AI.Brain.Necromancer.ServantFarAwayToCast"), eChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
-                    case CastFailedEventArgs.Reasons.TargetNotInView:
-                        MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
-                            "AI.Brain.Necromancer.PetCantSeeTarget", Body.Name), eChatType.CT_SpellResisted, Owner as GamePlayer);
-                        break;
-
                     case CastFailedEventArgs.Reasons.NotEnoughPower:
                         RemoveSpellFromQueue();
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
