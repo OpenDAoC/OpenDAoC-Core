@@ -118,7 +118,7 @@ namespace DOL.GS
             {
                 // But only if there is no timer running or if it has LoS on its current target.
                 // If the timer is running, it'll check for LoS continuously.
-                if (!Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK || _checkLosTimer == null || !_checkLosTimer.IsAlive)
+                if (_checkLosTimer == null || !_checkLosTimer.IsAlive)
                 {
                     SwitchToRangedAndTick();
                     return false;
@@ -160,24 +160,19 @@ namespace DOL.GS
 
         protected override bool PrepareRangedAttack()
         {
-            if (Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK)
+            if (_checkLosTimer == null)
+                _checkLosTimer = new(_npcOwner, this, _target);
+            else if (_losCheckTarget != _target)
             {
-                if (_checkLosTimer == null)
-                    _checkLosTimer = new(_npcOwner, this, _target);
-                else if (_losCheckTarget != _target)
-                {
-                    _hasLos = false;
-                    _checkLosTimer.ChangeTarget(_target);
-                }
-
-                if (!_hasLos)
-                {
-                    _interval = TICK_INTERVAL_FOR_NON_ATTACK;
-                    return false;
-                }
+                _hasLos = false;
+                _checkLosTimer.ChangeTarget(_target);
             }
-            else
-                _hasLos = true;
+
+            if (!_hasLos)
+            {
+                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                return false;
+            }
 
             return base.PrepareRangedAttack();
         }
