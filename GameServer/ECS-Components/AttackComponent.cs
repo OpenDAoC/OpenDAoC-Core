@@ -718,41 +718,19 @@ namespace DOL.GS
             GameNPC npc = owner as GameNPC;
             npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, _startAttackTarget);
 
-            // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
-            // If we have a running `AttackAction`, let it decide what to do. Not every NPC should start following their target and this allows us to react faster.
-            if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+            if (!LivingStartAttack())
+                return;
+
+            npc.TargetObject = _startAttackTarget;
+            npc.TurnTo(_startAttackTarget);
+
+            if (_startAttackTarget != npc.FollowTarget)
             {
-                if (!npc.IsWithinRadius(_startAttackTarget, AttackRange - 30))
-                {
-                    if (attackAction == null || !attackAction.OnOutOfRangeOrNoLosRangedAttack())
-                    {
-                        // Default behavior. If `AttackAction` doesn't handle it, tell the NPC to get closer to its target.
-                        StopAttack();
-                        npc.Follow(_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
-                    }
-
-                    return;
-                }
-
                 if (npc.IsMoving)
                     npc.StopMoving();
+
+                npc.Follow(_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
             }
-
-            if (LivingStartAttack())
-            {
-                npc.TargetObject = _startAttackTarget;
-
-                if (_startAttackTarget != npc.FollowTarget)
-                {
-                    if (npc.IsMoving)
-                        npc.StopMoving();
-
-                    npc.TurnTo(_startAttackTarget);
-                    npc.Follow(_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
-                }
-            }
-            else if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
-                npc.TurnTo(_startAttackTarget);
         }
 
         public void StopAttack()

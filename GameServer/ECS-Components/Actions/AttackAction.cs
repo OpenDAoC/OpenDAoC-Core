@@ -157,11 +157,6 @@ namespace DOL.GS
 
         public virtual void OnForcedWeaponSwitch() { }
 
-        public virtual bool OnOutOfRangeOrNoLosRangedAttack()
-        {
-            return true;
-        }
-
         private bool ShouldTick()
         {
             if (!IsTickDue())
@@ -451,7 +446,6 @@ namespace DOL.GS
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             else
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-
 
             // Must be done after changing `RangedAttackType`.
             _interval = AttackComponent.AttackSpeed(_weapon);

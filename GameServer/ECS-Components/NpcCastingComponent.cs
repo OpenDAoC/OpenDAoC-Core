@@ -100,17 +100,6 @@ namespace DOL.GS
                 _npcOwner.Follow(target, _npcOwner.StickMinimumRange, _npcOwner.StickMaximumRange);
         }
 
-        public bool IsAllowedToFollow(GameObject target)
-        {
-            if (!IsCasterGuardOrImmobile)
-                return true;
-
-            if (target is not GameLiving livingTarget)
-                return false;
-
-            return livingTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingTarget.IsWithinRadius(_npcOwner, livingTarget.attackComponent.AttackRange);
-        }
-
         public void HandleLosCheckResponse(GamePlayer losChecker, LosCheckResponse response, ushort targetId)
         {
             GameObject target = _npcOwner.CurrentRegion.GetObject(targetId);

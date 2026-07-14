@@ -12,6 +12,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Housing;
+using DOL.GS.Keeps;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
@@ -887,6 +888,19 @@ namespace DOL.GS
 		public virtual void TurnTo(GameObject target, int duration = 0)
 		{
 			movementComponent.TurnTo(target, duration);
+		}
+
+		public bool IsAllowedToFollow(GameObject target)
+		{
+			if (MaxSpeedBase <= 0)
+				return false;
+
+			if (this is not GuardArcher and not GuardCaster)
+				return true;
+
+			return target is GameLiving livingTarget &&
+				livingTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance &&
+				livingTarget.IsWithinRadius(this, livingTarget.attackComponent.AttackRange);
 		}
 
 		#endregion
@@ -2658,8 +2672,6 @@ namespace DOL.GS
 		{
 			if (ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
 			{
-				StopFollowing();
-
 				if (attackComponent.AttackState)
 					attackComponent.StopAttack();
 

@@ -185,7 +185,7 @@ namespace DOL.GS
 
         public void Follow(GameLiving target, int minDistance, int maxDistance)
         {
-            if (target == null || target.ObjectState is not eObjectState.Active || !Owner.castingComponent.IsAllowedToFollow(target))
+            if (target == null || target.ObjectState is not eObjectState.Active || !Owner.IsAllowedToFollow(target))
                 return;
 
             if (target != FollowTarget)
@@ -613,7 +613,7 @@ namespace DOL.GS
         private int FollowTick()
         {
             // Stop moving if the NPC is casting or using ranged weapons.
-            if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance))
+            if (Owner.IsCasting || Owner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.None)
             {
                 StopMoving();
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
