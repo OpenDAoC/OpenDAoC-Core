@@ -391,8 +391,8 @@ namespace DOL.GS.ServerRules
                 }
             }
 
-            // GMs can't be attacked
-            if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
+            // GMs can't be attacked unless they explicitly enable the attackable power.
+            if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1 && !playerDefender.GMPowers.AttackableEnabled)
                 return false;
 
             //flame - Commenting out Safe Area check as it was causing lots of lock contention in the GetAreasOfSpot() code. We currently dont have safe-areas so this doesnt affect anything
