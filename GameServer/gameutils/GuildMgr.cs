@@ -338,6 +338,27 @@ namespace DOL.GS
                         guild = new Guild(DOLDB<DbGuild>.SelectObjects(DB.Column("GuildID").IsEqualTo(dbGuild.GuildID)).FirstOrDefault());
                     }
 
+                    // Ensure guild houses have the correct emblem.
+                    House guildHouse = HouseMgr.GetHouse(guild.GuildHouseNumber);
+
+                    if (guildHouse != null)
+                    {
+                        int houseEmblem = guildHouse.Emblem;
+                        int guildEmblem = guild.Emblem;
+
+                        if (houseEmblem != guildEmblem)
+                        {
+                            if (log.IsWarnEnabled)
+                            {
+                                log.Warn($"Guild house emblem for '{guild.Name}' was incorrect. Fixing it. " +
+                                    $"(Previous:{houseEmblem}) (New: {guildEmblem}) (House: {guildHouse.HouseNumber})");
+                            }
+
+                            guildHouse.Emblem = guild.Emblem;
+                            guildHouse.SaveIntoDatabase();
+                        }
+                    }
+
                     AddGuild(guild);
 
                     static void RepairRanks(Guild guild)
