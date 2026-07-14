@@ -219,18 +219,18 @@ namespace DOL.GS
                 {
                     player.RemoveMoney(COST_RE_EMBLEM, null);
                     InventoryLogging.LogInventoryAction(player, $"(GUILD;{guild.Name})", eInventoryActionType.Other, COST_RE_EMBLEM);
+                }
 
-                    // Update guild house emblem.
-                    if (guild.GuildOwnsHouse && guild.GuildHouseNumber > 0)
+                // Update guild house emblem.
+                if (guild.GuildOwnsHouse && guild.GuildHouseNumber > 0)
+                {
+                    House guildHouse = HouseMgr.GetHouse(guild.GuildHouseNumber);
+
+                    if (guildHouse != null)
                     {
-                        House guildHouse = HouseMgr.GetHouse(guild.GuildHouseNumber);
-
-                        if (guildHouse != null)
-                        {
-                            guildHouse.Emblem = guild.Emblem;
-                            guildHouse.SaveIntoDatabase();
-                            guildHouse.SendUpdate();
-                        }
+                        guildHouse.Emblem = guild.Emblem;
+                        guildHouse.SaveIntoDatabase();
+                        guildHouse.SendUpdate();
                     }
                 }
 
