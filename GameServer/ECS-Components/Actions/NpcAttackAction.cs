@@ -119,7 +119,10 @@ namespace DOL.GS
                 _npcOwner.Brain is not IControlledBrain &&
                 _npcOwner.Brain is StandardMobBrain npcBrain)
             {
-                _target = npcBrain.LastHighestThreatInAttackRange;
+                GameLiving lastHighestThreatInAttackRange = npcBrain.LastHighestThreatInAttackRange;
+
+                if (lastHighestThreatInAttackRange != null)
+                    _target = lastHighestThreatInAttackRange;
 
                 if (_target == null || !_npcOwner.IsWithinRadius(_target, meleeAttackRange))
                 {

@@ -535,6 +535,8 @@ namespace DOL.AI.Brain
             // It isn't built here because ordering all entities in the aggro list can be expensive, and we typically don't need it.
             // It's built on demand, when `GetOrderedAggroList` is called.
             OrderedAggroList.Clear();
+            LastHighestThreatInAttackRange = null;
+
             int attackRange = Body.attackComponent.AttackRange;
             GameLiving highestThreat = null;
             KeyValuePair<GameLiving, AggroAmount> currentTarget = default;
