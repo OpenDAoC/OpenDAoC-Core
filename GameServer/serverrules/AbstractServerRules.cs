@@ -298,11 +298,10 @@ namespace DOL.GS.ServerRules
             if (player.ObjectState != GameObject.eObjectState.Active) return;
             if (player.Client.IsPlaying == false) return;
 
-            player.Out.SendMessage("Your temporary invulnerability timer has expired.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("Your temporary PvP invulnerability timer has expired.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             return;
         }
-
 
         public abstract bool IsSameRealm(GameLiving source, GameLiving target, bool quiet);
         public abstract bool IsAllowedCharsInAllRealms(GameClient client);
