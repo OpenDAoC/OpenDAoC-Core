@@ -1,81 +1,42 @@
-﻿using DOL.AI.Brain;
+﻿using DOL.AI;
+using DOL.AI.Brain;
 using DOL.GS;
 
 namespace DOL.GS
 {
-	public class Cronker : GameNPC
-	{
-		public Cronker() : base() { }
+    public class Cronker : TimeDependentSpawnNpc
+    {
+        public Cronker() : base() { }
 
-		public override bool AddToWorld()
-		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12329);
-			LoadTemplate(npcTemplate);
-			//RespawnInterval = Util.Random(3600000, 7200000);
-
-			CronkerBrain sbrain = new CronkerBrain();
-			SetOwnBrain(sbrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
-		}
-	}
+        protected override ABrain CreateBrain()
+        {
+            return new CronkerBrain();
+        }
+    }
 }
+
 namespace DOL.AI.Brain
 {
-	public class CronkerBrain : StandardMobBrain
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public CronkerBrain() : base()
-		{
-			AggroLevel = 100;
-			AggroRange = 400;
-			ThinkInterval = 1000;
-		}
-		ushort oldModel;
-		GameNPC.eFlags oldFlags;
-		bool changed;
-		public override void Think()
-		{
-			uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
-			//uint minute = WorldMgr.GetCurrentGameTime() / 1000 / 60 % 60;
-			//log.Warn("Current time: " + hour + ":" + minute);
-			if (hour >= 8 && hour < 14)
-			{
-				if (changed)
-				{
-					Body.Flags = oldFlags;
-					Body.Model = oldModel;
-					changed = false;
-				}
-			}
-			else
-			{
-				if (changed == false)
-				{
-					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+    public class CronkerBrain : TimeDependentSpawnBrain
+    {
+        public override void Think()
+        {
+            base.Think();
 
-					if (oldModel == 0)
-						oldModel = Body.Model;
+            if (HasAggro && Body.TargetObject != null)
+            {
+                foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+                {
+                    if (npc.IsAlive && npc.Name == "giant frog")
+                        AddAggroListTo(npc.Brain as StandardMobBrain);
+                }
+            }
+        }
 
-					Body.Model = 1;
-					changed = true;
-				}
-			}
-			if (HasAggro && Body.TargetObject != null)
-			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-				{
-					if (npc != null && npc.IsAlive && npc.PackageID == "CronkerBaf")
-						AddAggroListTo(npc.Brain as StandardMobBrain);
-				}
-			}
-			base.Think();
-		}
-	}
+        protected override bool ShouldBeVisible()
+        {
+            uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
+            return hour is >= 8 and < 14;
+        }
+    }
 }
-
