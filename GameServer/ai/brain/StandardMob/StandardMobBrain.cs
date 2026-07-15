@@ -289,7 +289,12 @@ namespace DOL.AI.Brain
                 return;
 
             foreach (var pair in AggroList)
+            {
+                if (brain.AggroList.ContainsKey(pair.Key))
+                    continue;
+
                 brain.AddToAggroList(pair.Key, pair.Value.Base);
+            }
         }
 
         public virtual void AddToAggroList(GameLiving living, long aggroAmount = 0)
