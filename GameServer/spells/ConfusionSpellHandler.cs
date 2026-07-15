@@ -12,9 +12,9 @@ namespace DOL.GS.Spells
             get
             {
                 if (Spell.Value >= 0)
-                    return $"Monster target has a {Spell.Value}% chance to switch which target they are fighting.";
+                    return $"Monster target has a {Spell.Value}% chance to switch which target they are fighting{GetFrequencyAndDurationSuffix()}.";
                 else
-                    return $"Monster target has a 100% chance to switch which target they are fighting and a {Math.Abs(Spell.Value)}% chance to attack an ally.";
+                    return $"Monster target has a 100% chance to switch which target they are fighting and a {Math.Abs(Spell.Value)}% chance to attack an ally{GetFrequencyAndDurationSuffix()}.";
             }
         }
 

@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.SpeedEnhancement)]
 	public class SpeedEnhancementSpellHandler : SpellHandler
 	{
-		public override string ShortDescription => $"The target's speed is increased to {Spell.Value}% of normal.";
+		public override string ShortDescription => $"The target's speed is increased to {Spell.Value}% of normal{GetFrequencyAndDurationSuffix()}.";
 
 		public SpeedEnhancementSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

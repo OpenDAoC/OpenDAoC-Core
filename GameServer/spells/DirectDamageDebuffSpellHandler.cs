@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 	{
 		private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override string ShortDescription => $"Inflicts {Spell.Damage} {PropertyToString(Property1)} damage to the target and decreases its resistance by {Spell.Value}%.";
+		public override string ShortDescription => $"Inflicts {Spell.Damage} {PropertyToString(Property1)} damage to the target and decreases its resistance by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 		public override eProperty Property1 => GameLiving.GetResistTypeForDamage(Spell.DamageType);
 		public override string DebuffTypeName => GlobalConstants.DamageTypeToName(Spell.DamageType);
 		protected override bool IsDualComponentSpell => true;

@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.PowerTransfer)]
 	class PowerTransfer : SpellHandler
 	{
-		public override string ShortDescription => $"Transfers {Spell.Value} power from the caster to the target.";
+		public override string ShortDescription => $"Transfers {Spell.Value} power from the caster to the target{GetFrequencyAndDurationSuffix()}.";
 
 		public PowerTransfer(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

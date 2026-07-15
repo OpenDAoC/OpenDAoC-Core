@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
         protected int ChaDebuff = 0;
         protected int PieDebuff = 0;
 
-		public override string ShortDescription => $"Decreases the target's stats by {Spell.Value}%.";
+		public override string ShortDescription => $"Decreases the target's stats by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 
 		public AllStatsPercentDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

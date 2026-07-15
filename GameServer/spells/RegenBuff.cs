@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.HealthRegenBuff)]
     public class HealthRegenSpellHandler : PropertyChangingSpell
     {
-        public override string ShortDescription => $"The target regenerates {Spell.Value} extra health.";
+        public override string ShortDescription => $"The target regenerates {Spell.Value} extra health{GetFrequencyAndDurationSuffix()}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eProperty Property1 => eProperty.HealthRegenerationAmount;
 
@@ -19,7 +19,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.PowerRegenBuff)]
     public class PowerRegenSpellHandler : PropertyChangingSpell
     {
-        public override string ShortDescription => $"The target regenerates {Spell.Value} extra power.";
+        public override string ShortDescription => $"The target regenerates {Spell.Value} extra power{GetFrequencyAndDurationSuffix()}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eProperty Property1 => eProperty.PowerRegenerationAmount;
 
@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.EnduranceRegenBuff)]
     public class EnduranceRegenSpellHandler : PropertyChangingSpell
     {
-        public override string ShortDescription => $"The target regenerates {Spell.Value} extra endurance.";
+        public override string ShortDescription => $"The target regenerates {Spell.Value} extra endurance{GetFrequencyAndDurationSuffix()}.";
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
         public override eProperty Property1 => eProperty.EnduranceRegenerationAmount;
 

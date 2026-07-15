@@ -10,8 +10,8 @@ namespace DOL.GS.Spells
     {
         public override string ShortDescription =>
             Spell.Value > 0 ?
-            $"Heals the target for {Spell.Value} hit points." :
-            $"Heals the target for {Math.Abs(Spell.Value)}% hit points.";
+            $"Heals the target for {Spell.Value} hit points{GetFrequencyAndDurationSuffix()}." :
+            $"Heals the target for {Math.Abs(Spell.Value)}% hit points{GetFrequencyAndDurationSuffix()}.";
 
         public HealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

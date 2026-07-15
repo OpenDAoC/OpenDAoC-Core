@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.LifeTransfer)]
     public class LifeTransferSpellHandler : SpellHandler
     {
-        public override string ShortDescription => $"Transfers {Spell.Value} health from the caster to the target.";
+        public override string ShortDescription => $"Transfers {Spell.Value} health from the caster to the target{GetFrequencyAndDurationSuffix()}.";
 
         public LifeTransferSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

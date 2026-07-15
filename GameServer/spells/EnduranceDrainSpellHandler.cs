@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.EnduranceDrain)]
 	public class EnduranceDrainSpellHandler : SpellHandler
 	{
-		public override string ShortDescription => $"{Spell.Damage}% endurance is stolen from the target and given to the caster.";
+		public override string ShortDescription => $"{Spell.Damage}% endurance is stolen from the target and given to the caster{GetFrequencyAndDurationSuffix()}.";
 
 		public EnduranceDrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 		

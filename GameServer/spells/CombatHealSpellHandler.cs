@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.CombatHeal)]
     public class CombatHealSpellHandler : HealSpellHandler
     {
-        public override string ShortDescription => $"Heals the target for {Spell.Value} hit points every {Spell.Frequency / 1000.0} seconds. Only effective in combat.";
+        public override string ShortDescription => $"Heals the target for {Spell.Value} hit points{GetFrequencyAndDurationSuffix()}. Only effective in combat.";
 
         public CombatHealSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 

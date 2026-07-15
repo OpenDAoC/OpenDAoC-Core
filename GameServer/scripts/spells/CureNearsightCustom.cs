@@ -7,7 +7,7 @@ namespace DOL.GS.Scripts
     {
         private Spell _spell;
 
-        public override string ShortDescription => "All nearsight effects are removed from the target. This spell's cast time is not influenced by stats.";
+        public override string ShortDescription => $"All nearsight effects are removed from the target. This spell's cast time is not influenced by stats{GetFrequencyAndDurationSuffix()}.";
 
         public CureNearsightCustomSpellHandler(GameLiving caster, Spell spell, SpellLine line): base(caster, spell, line)
         {

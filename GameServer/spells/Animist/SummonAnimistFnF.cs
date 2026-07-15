@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SummonAnimistFnF)]
     public class SummonAnimistFnF : SummonAnimistPet
     {
-        public override string ShortDescription => "Summons an elemental spirit to attack the target.";
+        public override string ShortDescription => $"Summons an elemental spirit to attack the target{GetFrequencyAndDurationSuffix()};";
 
         public SummonAnimistFnF(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

@@ -14,7 +14,7 @@ namespace DOL.GS.Spells
 
         private Dictionary<GameLiving, double> _criticalDamagePercentByTarget = new();
 
-        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage every {Spell.Frequency / 1000.0} seconds for {Spell.Duration / 1000.0} seconds.";
+        public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage{GetFrequencyAndDurationSuffix()}.";
 
         public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

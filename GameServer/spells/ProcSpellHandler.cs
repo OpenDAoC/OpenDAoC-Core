@@ -11,6 +11,8 @@ namespace DOL.GS.Spells
 {
     public abstract class BaseProcSpellHandler : SpellHandler
     {
+        protected override bool ShortDescriptionIncludesFrequency => false;
+
         protected readonly SpellLine _buffSpellLine;
         protected readonly Spell _procSpell;
         protected SpellLine _procSpellLine;
@@ -178,7 +180,7 @@ namespace DOL.GS.Spells
             get
             {
                 ISpellHandler subSpell = ScriptMgr.CreateSpellHandler(m_caster, SkillBase.GetSpellByID((int)Spell.Value), null);
-                return $"Triggers the following spell with a {Spell.Frequency / 100}% chance on own melee attacks:\n\n" +
+                return $"Triggers the following spell with a {Spell.Frequency / 100}% chance on own melee attacks{GetFrequencyAndDurationSuffix()}:\n\n" +
                     (subSpell != null ? subSpell.ShortDescription : $"Spell with ID {Spell.Value} not found.");
             }
         }
@@ -230,7 +232,7 @@ namespace DOL.GS.Spells
             get
             {
                 ISpellHandler subSpell = ScriptMgr.CreateSpellHandler(m_caster, SkillBase.GetSpellByID((int)Spell.Value), null);
-                return $"Triggers the following spell with a {Spell.Frequency / 100}% chance when being hit by melee attacks:\n\n" +
+                return $"Triggers the following spell with a {Spell.Frequency / 100}% chance when being hit by melee attacks{GetFrequencyAndDurationSuffix()}:\n\n" +
                     (subSpell != null ? subSpell.ShortDescription : $"Spell with ID {Spell.Value} not found.");
             }
         }

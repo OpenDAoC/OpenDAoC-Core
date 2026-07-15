@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SpreadHeal)]
     public class SpreadhealSpellHandler : HealSpellHandler
     {
-        public override string ShortDescription => $"Heals group members for {Spell.Value}, prioritizing the most injured ones.";
+        public override string ShortDescription => $"Heals group members for {Spell.Value}, prioritizing the most injured ones{GetFrequencyAndDurationSuffix()}.";
 
         public SpreadhealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

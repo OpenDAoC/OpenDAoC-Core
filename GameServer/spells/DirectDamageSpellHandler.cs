@@ -3,7 +3,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.DirectDamage)]
 	public class DirectDamageSpellHandler : SpellHandler
 	{
-		public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage to the target.";
+		public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage to the target{GetFrequencyAndDurationSuffix()}.";
 
 		public DirectDamageSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

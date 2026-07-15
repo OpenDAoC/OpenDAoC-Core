@@ -8,8 +8,8 @@ namespace DOL.GS.Spells
 	{
 		public override string ShortDescription =>
 			Spell.Value > 0 ?
-			$"Replenishes {Spell.Value} endurance." :
-			$"Replenishes {Math.Abs(Spell.Value)}% endurance.";
+			$"Replenishes {Spell.Value} endurance{GetFrequencyAndDurationSuffix()}." :
+			$"Replenishes {Math.Abs(Spell.Value)}% endurance{GetFrequencyAndDurationSuffix()}.";
 
 		public EnduranceHealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

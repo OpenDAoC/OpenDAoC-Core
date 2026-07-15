@@ -339,7 +339,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.EffectivenessDebuff)]
     public class EffectivenessDeBuff : MasterlevelHandling
     {
-        public override string ShortDescription => $"Point blank area effect shout that reduces effective spec of enemies by {Spell.Value}% for determining variance for spell and melee damage.";
+        public override string ShortDescription => $"Point blank area effect shout that reduces effective spec of enemies by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 
         /// <summary>
         /// called after normal spell cast is completed and effect has to be started

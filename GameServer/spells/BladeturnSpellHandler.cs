@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.Bladeturn)]
 	public class BladeturnSpellHandler : SpellHandler
 	{
-        public override string ShortDescription => "Creates a 'bubble' that absorbs the damage of a single melee hit.";
+        public override string ShortDescription => $"Creates a 'bubble' that absorbs the damage of a single melee hit{GetFrequencyAndDurationSuffix()}.";
 
         public BladeturnSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 

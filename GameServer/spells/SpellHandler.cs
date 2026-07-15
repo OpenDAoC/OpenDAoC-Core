@@ -32,6 +32,38 @@ namespace DOL.GS.Spells
 		private const int PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL = 2000;
 
 		public virtual string ShortDescription => Spell.Description;
+
+		// Prevent the frequency from being shown in the short description in case it's used for a different purpose.
+		protected virtual bool ShortDescriptionIncludesFrequency => true;
+
+		protected string GetFrequencyAndDurationSuffix()
+		{
+			bool hasFrequency = Spell.Frequency > 0;
+
+			if (hasFrequency)
+			{
+				// Appending duration and / or frequency to chants / focus spells other than DoTs would be confusing for many spells.
+				// For example, Minstrel's flute mez, Paladin's heal chant.
+				if (Spell.IsPulsing)
+					return string.Empty;
+			}
+
+			bool showDuration = Spell.Duration is > 0 and < (ushort.MaxValue * 1000);
+
+			if (hasFrequency && ShortDescriptionIncludesFrequency)
+			{
+				if (showDuration)
+					return $" every {Spell.Frequency / 1000.0} seconds for {Util.FormatSeconds(Spell.Duration / 1000)}";
+
+				return $" every {Spell.Frequency / 1000.0} seconds";
+			}
+
+			if (showDuration)
+				return $" for {Util.FormatSeconds(Spell.Duration / 1000)}";
+
+			return string.Empty;
+		}
+
 		protected string TargetPronoun => Spell.Target is eSpellTarget.SELF ? "your" : "the target's";
 		protected string TargetPronounCapitalized => Spell.Target is eSpellTarget.SELF ? "Your" : "The target's";
 

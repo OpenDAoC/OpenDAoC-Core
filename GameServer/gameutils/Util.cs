@@ -128,6 +128,20 @@ namespace DOL.GS
             return new string(array);
         }
 
+        public static string FormatSeconds(int totalSeconds)
+        {
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+
+            if (minutes == 0)
+                return $"{seconds} second{(seconds == 1 ? string.Empty : "s")}";
+
+            if (seconds == 0)
+                return $"{minutes} minute{(minutes == 1 ? string.Empty : "s")}";
+
+            return $"{minutes} minute{(minutes == 1 ? string.Empty : "s")} {seconds} second{(seconds == 1 ? string.Empty : "s")}";
+        }
+
         #endregion
     }
 

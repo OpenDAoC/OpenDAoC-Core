@@ -5,7 +5,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageToPower)]
     public class DamageToPowerSpellHandler : LifedrainSpellHandler
     {
-        public override string ShortDescription => $"{Spell.Value}% of any spell damage done to the target is converted to power instead.";
+        public override string ShortDescription => $"{Spell.Value}% of any spell damage done to the target is converted to power instead{GetFrequencyAndDurationSuffix()}.";
 
         public DamageToPowerSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

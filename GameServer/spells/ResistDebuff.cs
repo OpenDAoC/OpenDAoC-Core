@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
         // Inherits `SingleStatDebuff` so that resist debuffs can get the 25% effectiveness bonus from specialization.
         // Resist buffs don't.
 
-        public override string ShortDescription => $"Decreases the target's resistance to {PropertyToString(Property1)} damage by {Spell.Value}%.";
+        public override string ShortDescription => $"Decreases the target's resistance to {PropertyToString(Property1)} damage by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
         public abstract string DebuffTypeName { get; }
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
 
@@ -195,7 +195,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.CrushSlashThrustDebuff)]
     public class CrushSlashThrustDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
     {
-        public override string ShortDescription => $"Decreases the target's resistance to melee damage by {Spell.Value}%.";
+        public override string ShortDescription => $"Decreases the target's resistance to melee damage by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
         public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.Debuff;

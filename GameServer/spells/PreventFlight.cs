@@ -5,7 +5,7 @@
     {
         public PreventFlightSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        public override string ShortDescription => $"The target is slowed by {Spell.Value}%.";
+        public override string ShortDescription => $"The target is slowed by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {

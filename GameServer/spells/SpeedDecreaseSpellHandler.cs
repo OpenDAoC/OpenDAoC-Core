@@ -9,8 +9,8 @@ namespace DOL.GS.Spells
     {
         public override string ShortDescription =>
             Spell.Value >= 99 ?
-            "The target is rooted in place." :
-            $"The target is slowed by {Spell.Value}%.";
+            $"The target is rooted in place{GetFrequencyAndDurationSuffix()}." :
+            $"The target is slowed by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 
         public SpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

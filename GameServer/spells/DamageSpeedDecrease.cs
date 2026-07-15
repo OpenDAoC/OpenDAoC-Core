@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 	public class DamageSpeedDecreaseSpellHandler : SpeedDecreaseSpellHandler
 	{
 		protected override bool IsDualComponentSpell => true;
-		public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage to the target and slows it by {Spell.Value}%.";
+		public override string ShortDescription => $"Inflicts {Spell.Damage} {Spell.DamageTypeToString()} damage to the target and slows it by {Spell.Value}%{GetFrequencyAndDurationSuffix()}.";
 
 		public DamageSpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

@@ -660,7 +660,7 @@ namespace DOL.GS
         {
         	get
         	{
-        		return Pulse != 0 && !IsFocus;
+        		return IsPulsing && !IsFocus;
         	}
         }
 

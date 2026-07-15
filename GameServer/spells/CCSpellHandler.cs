@@ -139,7 +139,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Mesmerize)]
     public class MesmerizeSpellHandler : AbstractCCSpellHandler
     {
-        public override string ShortDescription => "The target is mesmerized and cannot take any actions.";
+        public override string ShortDescription => $"The target is mesmerized and cannot take any actions{GetFrequencyAndDurationSuffix()}.";
 
         public MesmerizeSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
@@ -224,7 +224,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Stun)]
     public class StunSpellHandler : AbstractCCSpellHandler
     {
-        public override string ShortDescription => $"The target is stunned and cannot take any actions for {Spell.Duration / 1000.0} seconds.";
+        public override string ShortDescription => $"The target is stunned and cannot take any actions{GetFrequencyAndDurationSuffix()}.";
 
         public StunSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 

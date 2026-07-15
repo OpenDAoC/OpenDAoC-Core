@@ -7,7 +7,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.AfHitsBuff)]
     public class AfHitsBuffSpellHandler : SpellHandler
     {
-        public override string ShortDescription => $"The target's armor and health are improved by {Math.Abs(Spell.Value)}% while within range of this aura.";
+        public override string ShortDescription => $"The target's armor and health are improved by {Math.Abs(Spell.Value)}% while within range of this aura{GetFrequencyAndDurationSuffix()}.";
 
         public AfHitsBuffSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 

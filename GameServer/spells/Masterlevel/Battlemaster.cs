@@ -83,7 +83,7 @@ namespace DOL.GS.Spells
     {
         private int check = 0;
 
-        public override string ShortDescription => "You are stunned and cannot take any actions.";
+        public override string ShortDescription => $"You are stunned and cannot take any actions{GetFrequencyAndDurationSuffix()}.";
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
