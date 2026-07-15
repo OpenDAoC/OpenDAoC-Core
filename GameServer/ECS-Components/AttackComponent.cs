@@ -280,19 +280,15 @@ namespace DOL.GS
                     eObjectType.Crossbow or
                     eObjectType.RecurvedBow or
                     eObjectType.CompositeBow;
-                int quickness = Math.Min(250, player.Quickness); //250 soft cap on quickness
+
+                int quickness = Math.Min(250, player.Quickness); // 250 soft cap on quickness.
+                double quicknessMultiplier = GetQuicknessMultiplier(quickness);
 
                 if (bowWeapon)
                 {
                     if (Properties.ALLOW_OLD_ARCHERY)
                     {
-                        //Draw Time formulas, there are very many ...
-                        //Formula 2: y = iBowDelay * ((100 - ((iQuickness - 50) / 5 + iMasteryofArcheryLevel * 3)) / 100)
-                        //Formula 1: x = (1 - ((iQuickness - 60) / 500 + (iMasteryofArcheryLevel * 3) / 100)) * iBowDelay
-                        //Table a: Formula used: drawspeed = bowspeed * (1-(quickness - 50)*0.002) * ((1-MoA*0.03) - (archeryspeedbonus/100))
-                        //Table b: Formula used: drawspeed = bowspeed * (1-(quickness - 50)*0.002) * (1-MoA*0.03) - ((archeryspeedbonus/100 * basebowspeed))
-
-                        speed *= 1.0 - (quickness - 60) * 0.002;
+                        speed *= quicknessMultiplier;
                         double percent;
                         percent = speed * 0.01 * player.GetModified(eProperty.ArcherySpeed);
                         speed -= percent;
@@ -306,17 +302,17 @@ namespace DOL.GS
                         }
                     }
                     else
-                        speed *= 1.0 - (quickness - 60) * 0.002;
+                        speed *= quicknessMultiplier;
                 }
                 else
-                    speed *= (1.0 - (quickness - 60) * 0.002) * 0.01 * player.GetModified(eProperty.MeleeSpeed);
+                    speed *= quicknessMultiplier * 0.01 * player.GetModified(eProperty.MeleeSpeed);
 
                 return (int) Math.Max(minimum, speed * 100);
             }
             else
             {
                 minimum = 500;
-                double speed = NpcWeaponSpeed(mainWeapon) * 100 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
+                double speed = NpcWeaponSpeed(mainWeapon) * 100 * GetQuicknessMultiplier(owner.GetModified(eProperty.Quickness));
 
                 if (owner is GameSummonedPet pet)
                 {
@@ -365,6 +361,11 @@ namespace DOL.GS
                 }
 
                 return (int) Math.Max(minimum, speed);
+            }
+
+            static double GetQuicknessMultiplier(int quickness)
+            {
+                return 1.0 - (quickness - 50) * 0.002;
             }
         }
 
