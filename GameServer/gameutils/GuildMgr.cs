@@ -351,7 +351,7 @@ namespace DOL.GS
                             if (log.IsWarnEnabled)
                             {
                                 log.Warn($"Guild house emblem for '{guild.Name}' was incorrect. Fixing it. " +
-                                    $"(Previous:{houseEmblem}) (New: {guildEmblem}) (House: {guildHouse.HouseNumber})");
+                                    $"(Previous: {houseEmblem}) (New: {guildEmblem}) (House: {guildHouse.HouseNumber})");
                             }
 
                             guildHouse.Emblem = guild.Emblem;

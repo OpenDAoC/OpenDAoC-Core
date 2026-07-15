@@ -4,21 +4,12 @@ using DOL.Language;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Class for the Relic Guard
-	/// </summary>
+    /// <summary>
+    /// Class for the Relic Guard
+    /// </summary>
     public class GuardFighterRK : GameKeepGuard
-	{
-		/// <summary>
-        /// Relic Guard needs more health
-		/// </summary>
-		public override int MaxHealth
-		{
-			get
-			{
-				return base.MaxHealth * 3;
-			}
-		}
+    {
+        public override double MaxHealthScalingFactor => 3.0;
 
         /// <summary>
         /// When Relic Guard Die and it isnt a keep reset (this killer) we call GuardRelicSpam function

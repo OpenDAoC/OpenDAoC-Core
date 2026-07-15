@@ -8,7 +8,7 @@ namespace DOL.GS.Keeps
     {
         private static int RESPAWN_INTERVAL = 60000;
 
-        public override int MaxHealth => base.MaxHealth * 3;
+        public override double MaxHealthScalingFactor => 3.0;
 
         public override void StartRespawn()
         {

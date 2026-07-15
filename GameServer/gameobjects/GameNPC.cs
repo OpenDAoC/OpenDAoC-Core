@@ -3981,7 +3981,6 @@ namespace DOL.GS
 		private double m_campBonus = 1;
 
 		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
-		public virtual double MaxHealthScalingFactor => 1.0;
 		public double DamageFactor { get => damageFactor; set => damageFactor = value; }
 	}
 }

@@ -29,15 +29,7 @@ namespace DOL.GS.Scripts
             }
         }
 
-        public override int MaxHealth
-        {
-            get
-            {
-                return base.MaxHealth * 2;
-            }
-        }
-
-
+        public override double MaxHealthScalingFactor => 2.0;
 
         /// <summary>
         /// Gets or sets the base maxspeed of this living

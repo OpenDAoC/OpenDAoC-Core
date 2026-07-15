@@ -2533,8 +2533,6 @@ namespace DOL.GS
             }
         }
 
-        public override int MaxMana => base.MaxMana;
-
         public override int Endurance
         {
             get => DBCharacter != null ? DBCharacter.Endurance : base.Endurance;
@@ -2551,9 +2549,7 @@ namespace DOL.GS
             }
         }
 
-        public override int MaxEndurance => base.MaxEndurance;
         public override int Concentration => MaxConcentration - effectListComponent.UsedConcentration;
-        public override int MaxConcentration => base.MaxConcentration;
 
         #region Calculate Fall Damage
 

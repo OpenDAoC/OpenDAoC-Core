@@ -2755,11 +2755,11 @@ namespace DOL.GS
 		{
 			// This method is only meant to be called by AddToWorld.
 
-			UpdateCachedHealthPercent(GetModified(eProperty.MaxHealth));
-			UpdateCachedManaPercent(GetModified(eProperty.MaxMana));
-			UpdateCachedEndurancePercent(GetModified(eProperty.Fatigue));
+			UpdateCachedHealthPercent(MaxHealth);
+			UpdateCachedManaPercent(MaxMana);
+			UpdateCachedEndurancePercent(MaxEndurance);
 
-			int maxConcentration = GetModified(eProperty.MaxConcentration);
+			int maxConcentration = MaxConcentration;
 			UpdateCachedConcentrationPercent(maxConcentration, Math.Max(0, maxConcentration - effectListComponent.UsedConcentration));
 		}
 
@@ -2798,6 +2798,8 @@ namespace DOL.GS
 				UpdateCachedHealthPercent(maxHealth);
 			}
 		}
+
+		public virtual double MaxHealthScalingFactor => 1.0;
 
 		public override int MaxHealth => ResolveMaxHealthAndUpdateCache(GetModified(eProperty.MaxHealth));
 
