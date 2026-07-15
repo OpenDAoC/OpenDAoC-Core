@@ -124,6 +124,8 @@ namespace DOL.GS
                 long _nextDelayedMeleeTick = GameLoop.GameLoopTime + MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK;
                 _nextMeleeTick = Math.Max(_nextMeleeTick, _nextDelayedMeleeTick);
             }
+            else
+                _nextMeleeTick = Math.Max(_nextMeleeTick, GameLoop.GameLoopTime);
 
             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;

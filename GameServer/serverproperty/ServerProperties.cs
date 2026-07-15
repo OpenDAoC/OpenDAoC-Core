@@ -658,8 +658,14 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "check_los_before_aggro_fnf", "Should we perform LoS checks before allowing FnF turrets to aggro from proximity. If false, they will attempt to cast behind walls.", true)]
 		public static bool CHECK_LOS_BEFORE_AGGRO_FNF;
 
+		[ServerProperty("world", "check_los_during_npc_ranged_attack", "Should NPCs perform LoS checks during ranged attacks.", false)]
+		public static bool CHECK_LOS_DURING_NPC_RANGED_ATTACK;
+
 		[ServerProperty("world", "check_los_during_ranged_attack_minimum_interval", "The minimum interval (milliseconds) between two LoS checks performed during a ranged attack. Used by NPCs only.", 200)]
 		public static int CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
+
+		[ServerProperty("world", "check_range_at_npc_ranged_attack_end", "Should NPCs check range at the end of a ranged attack.", false)]
+		public static bool CHECK_RANGE_AT_NPC_RANGED_ATTACK_END;
 
 		[ServerProperty("world", "check_los_during_player_cast", "Should players perform LoS checks during spell casts.", true)]
 		public static bool CHECK_LOS_DURING_PLAYER_CAST;

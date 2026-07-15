@@ -146,23 +146,47 @@ namespace DOL.GS
                 return false;
             }
 
-            if (!_hasLos)
+            bool isAiming = _npcOwner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.None;
+            bool shouldCheckLos = !isAiming || Properties.CHECK_LOS_DURING_NPC_RANGED_ATTACK;
+
+            if (shouldCheckLos && !_hasLos)
             {
-                // If this is a failed LoS check and we reached the end of our current bow draw time (or FinalizeRangedAttack pre-prepared).
-                if (_npcOwner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.None && _losCheckTarget == _target)
+                if (isAiming && _losCheckTarget == _target)
                     OnOutOfRangeOrNoLosRangedAttack();
 
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                 return false;
             }
 
-            if (!_npcOwner.IsWithinRadius(_target, _npcOwner.attackComponent.AttackRange - 30))
+            bool shouldCheckDistance = !isAiming || Properties.CHECK_RANGE_AT_NPC_RANGED_ATTACK_END;
+
+            if (shouldCheckDistance && !_npcOwner.IsWithinRadius(_target, _npcOwner.attackComponent.AttackRange))
             {
                 OnOutOfRangeOrNoLosRangedAttack();
                 return false;
             }
 
             return base.PrepareRangedAttack();
+        }
+
+        protected override bool FinalizeRangedAttack()
+        {
+            bool lostLos = !_hasLos && _losCheckTarget == _target;
+
+            // If we've lost LoS against our current target, or if we're out of attack range.
+            if (lostLos || !_npcOwner.IsWithinRadius(_target, _npcOwner.attackComponent.AttackRange))
+            {
+                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+
+                // Keep RangedAttackState as Aim for mobile NPCs so StopAttack applies the melee switch delay and resets state.
+                if (IsArcherGuardOrImmobile)
+                    _npcOwner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+
+                OnOutOfRangeOrNoLosRangedAttack();
+                return false;
+            }
+
+            return base.FinalizeRangedAttack();
         }
 
         public override void CleanUp()

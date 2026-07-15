@@ -1,6 +1,7 @@
 ﻿using System;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.Language;
 
 namespace DOL.GS
@@ -88,7 +89,8 @@ namespace DOL.GS
 
             if (_owner is GamePlayer playerOwner)
             {
-                if ((GameLoop.GameLoopTime - AttackStartTime) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if (GameLoop.GameLoopTime - AttackStartTime > MAX_DRAW_DURATION &&
+                    (eObjectType) playerOwner.ActiveWeapon.Object_Type is not eObjectType.Crossbow)
                 {
                     playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return eCheckRangeAttackStateResult.Stop;
@@ -159,7 +161,7 @@ namespace DOL.GS
                     return eCheckRangeAttackStateResult.Hold;
                 }
 
-                if (RangedAttackState == eRangedAttackState.Aim)
+                if (RangedAttackState is eRangedAttackState.Aim)
                 {
                     ECSGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);//volley check to avoid spam
                     if (volley == null)
@@ -169,18 +171,13 @@ namespace DOL.GS
                         return eCheckRangeAttackStateResult.Hold;
                     }
                 }
-                else if (RangedAttackState == eRangedAttackState.ReadyToFire)
+                else if (RangedAttackState is eRangedAttackState.ReadyToFire)
                     return eCheckRangeAttackStateResult.Hold;
-
-                return eCheckRangeAttackStateResult.Fire;
             }
-            else
-            {
-                if (!_owner.IsWithinRadius(target, _owner.attackComponent.AttackRange))
-                    return eCheckRangeAttackStateResult.Stop;
+            else if (Properties.CHECK_RANGE_AT_NPC_RANGED_ATTACK_END && !_owner.IsWithinRadius(target, _owner.attackComponent.AttackRange))
+                return eCheckRangeAttackStateResult.Stop;
 
-                return eCheckRangeAttackStateResult.Fire;
-            }
+            return eCheckRangeAttackStateResult.Fire;
         }
 
         public void RemoveEnduranceAndAmmoOnShot()
