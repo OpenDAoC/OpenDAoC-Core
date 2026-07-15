@@ -14,8 +14,6 @@ namespace DOL.GS
     public class GameInventoryItem : DbInventoryItem, IGameInventoryItem, ITranslatableObject {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected GamePlayer m_owner = null;
-
         public GameInventoryItem()
             : base()
         {
@@ -64,7 +62,6 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual bool CheckValid(GamePlayer player)
         {
-            m_owner = player;
             return true;
         }
 
@@ -181,19 +178,13 @@ namespace DOL.GS
         /// Player receives this item (added to players inventory)
         /// </summary>
         /// <param name="player"></param>
-        public virtual void OnReceive(GamePlayer player)
-        {
-            m_owner = player;
-        }
+        public virtual void OnReceive(GamePlayer player) { }
 
         /// <summary>
         /// Player loses this item (removed from inventory)
         /// </summary>
         /// <param name="player"></param>
-        public virtual void OnLose(GamePlayer player)
-        {
-            m_owner = null;
-        }
+        public virtual void OnLose(GamePlayer player) { }
 
         /// <summary>
         /// Drop this item on the ground
