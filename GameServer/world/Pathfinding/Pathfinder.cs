@@ -235,8 +235,19 @@ namespace DOL.GS
         private void ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
         {
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
-            if (_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE) && !ForceReplot && zone == _lastZone)
-                return;
+            if (!ForceReplot && zone == _lastZone)
+            {
+                if (_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
+                    return;
+
+                // If we are currently pathing to a zone border and the target is still outside the zone, suppress recalculation.
+                // This stops the exit point from shifting constantly, which can cause the NPC to stutter / spin indefinitely.
+                if (_crossZoneEntryPoint.HasValue && !zone.IsPointInZone(target))
+                {
+                    _lastTarget = target;
+                    return;
+                }
+            }
 
             // Find a crossing point to the next zone if its outside the current zone.
             if (!zone.IsPointInZone(target) &&
