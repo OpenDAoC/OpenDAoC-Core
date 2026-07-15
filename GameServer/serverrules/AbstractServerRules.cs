@@ -334,17 +334,18 @@ namespace DOL.GS.ServerRules
             if (attacker == null || defender == null)
                 return false;
 
-            //dead things can't attack
             if (!defender.IsAlive || !attacker.IsAlive)
                 return false;
 
             GamePlayer playerAttacker = attacker as GamePlayer;
             GamePlayer playerDefender = defender as GamePlayer;
+            GameNPC npcAttacker = attacker as GameNPC;
+            GameNPC npcDefender = defender as GameNPC;
 
-            if (defender is GameNPC defenderNpc && defenderNpc.Brain is IControlledBrain defenderBrain)
+            if (npcDefender != null && npcDefender.Brain is IControlledBrain defenderBrain)
                 playerDefender = defenderBrain.GetPlayerOwner();
 
-            if (attacker is GameNPC attackerNpc && attackerNpc.Brain is IControlledBrain attackerBrain)
+            if (npcAttacker != null && npcAttacker.Brain is IControlledBrain attackerBrain)
                 playerAttacker = attackerBrain.GetPlayerOwner();
 
             // Loading screen protection. Invulnerable to everything.
@@ -376,22 +377,12 @@ namespace DOL.GS.ServerRules
                 }
             }
 
-            // PEACE NPCs can't be attacked/attack
-            if (attacker is GameNPC)
-                if ((((GameNPC)attacker).Flags & GameNPC.eFlags.PEACE) != 0)
-                    return false;
-            if (defender is GameNPC)
-                if ((((GameNPC)defender).Flags & GameNPC.eFlags.PEACE) != 0)
-                    return false;
-            // Players can't attack mobs while they have immunity
-            if (playerAttacker != null && defender != null)
-            {
-                if ((defender is GameNPC) && (playerAttacker.IsInvulnerableToAttack))
-                {
-                    if (quiet == false) MessageToLiving(attacker, "You can't attack until your PvP invulnerability timer wears off!");
-                    return false;
-                }
-            }
+            // Peace flag.
+            if (npcAttacker != null && (npcAttacker.Flags & GameNPC.eFlags.PEACE) != 0)
+                return false;
+
+            if (npcDefender != null && (npcDefender.Flags & GameNPC.eFlags.PEACE) != 0)
+                return false;
 
             // GMs can't be attacked
             if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
@@ -433,7 +424,7 @@ namespace DOL.GS.ServerRules
             // 	}
             // }
 
-            if (attacker is GameNPC npcAttacker && defender is GameNPC npcDefender)
+            if (npcAttacker != null && npcDefender != null)
             {
                 // Mobs can't attack keep guards or training dummies.
                 if (npcAttacker.Realm is eRealm.None && npcDefender is GameKeepGuard or GameTrainingDummy)
