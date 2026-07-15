@@ -341,35 +341,37 @@ namespace DOL.GS.ServerRules
             GamePlayer playerAttacker = attacker as GamePlayer;
             GamePlayer playerDefender = defender as GamePlayer;
 
-            // if Pet, let's define the controller once
-            if (defender is GameNPC)
-                if ((defender as GameNPC).Brain is IControlledBrain)
-                    playerDefender = ((defender as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+            if (defender is GameNPC defenderNpc && defenderNpc.Brain is IControlledBrain defenderBrain)
+                playerDefender = defenderBrain.GetPlayerOwner();
 
-            if (attacker is GameNPC)
-                if ((attacker as GameNPC).Brain is IControlledBrain)
-                    playerAttacker = ((attacker as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+            if (attacker is GameNPC attackerNpc && attackerNpc.Brain is IControlledBrain attackerBrain)
+                playerAttacker = attackerBrain.GetPlayerOwner();
 
-            if (playerDefender != null && (playerDefender.Client.ClientState == GameClient.eClientState.WorldEnter || playerDefender.IsInvulnerableToAttack))
+            // Loading screen protection. Invulnerable to everything.
+            if (playerDefender != null && playerDefender.Client?.ClientState is GameClient.eClientState.WorldEnter)
             {
                 if (!quiet)
-                    MessageToLiving(attacker, defender.Name + " is entering the game and is temporarily immune to PvP attacks!");
+                    MessageToLiving(attacker, $"{defender.Name} is entering the game and cannot be attacked!");
+
                 return false;
             }
 
+            // PvP timer protection.
             if (playerAttacker != null && playerDefender != null)
             {
-                // Attacker immunity
                 if (playerAttacker.IsInvulnerableToAttack)
                 {
-                    if (quiet == false) MessageToLiving(attacker, "You can't attack players until your PvP invulnerability timer wears off!");
+                    if (!quiet)
+                        MessageToLiving(attacker, "You can't attack players until your PvP invulnerability timer wears off!");
+
                     return false;
                 }
 
-                // Defender immunity
                 if (playerDefender.IsInvulnerableToAttack)
                 {
-                    if (quiet == false) MessageToLiving(attacker, defender.Name + " is temporarily immune to PvP attacks!");
+                    if (!quiet)
+                        MessageToLiving(attacker, $"{defender.Name} is temporarily immune to PvP attacks!");
+
                     return false;
                 }
             }
