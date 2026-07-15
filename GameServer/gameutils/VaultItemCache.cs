@@ -418,7 +418,7 @@ namespace DOL.GS
             {
                 int slotPosition = GetClientSlotPosition(vault, item.SlotPosition);
 
-                if (!_items.TryAdd(slotPosition, item))
+                if (!_items.TryAdd(slotPosition, GameInventoryItem.Create(item)))
                 {
                     if (log.IsErrorEnabled)
                         log.Error($"Error during cache validation. Slot already taken. (Added: {_items[slotPosition]}) (Rejected: {item})");
