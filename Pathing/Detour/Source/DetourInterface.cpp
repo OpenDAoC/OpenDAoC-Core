@@ -230,7 +230,7 @@ DLLEXPORT dtStatus FindClosestPoint(dtNavMeshQuery *query, float center[], float
 
 DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[], float boxExtents[], float referencePos[], dtPolyFlags queryFilter[], float *outputVector)
 {
-	const int MAX_POLYS = 32; // This limit can easily be reached, but this function shouldn't be used for large boxes.
+	constexpr int MAX_POLYS = 32; // This limit can easily be reached, but this function shouldn't be used for large boxes.
 
 	dtQueryFilter filter;
 	filter.setIncludeFlags(queryFilter[0]);
@@ -250,23 +250,26 @@ DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[
 		float minDistSq = FLT_MAX;
 		bool found = false;
 		float tempVec[3];
+		float boxMin[3];
+		float boxMax[3];
 
-		// Small tolerance to handle potential floating point errors on the edges.
-		const float EPSILON = 1e-4f;
+		for (int axis = 0; axis < 3; ++axis)
+		{
+			// Small tolerance to handle potential floating point errors on the edges.
+			constexpr float BOX_TOLERANCE = 1e-4f;
+			boxMin[axis] = boxCenter[axis] - boxExtents[axis] - BOX_TOLERANCE;
+			boxMax[axis] = boxCenter[axis] + boxExtents[axis] + BOX_TOLERANCE;
+		}
 
 		for (int i = 0; i < polyCount; ++i)
 		{
 			// Find closest point on this specific polygon.
 			query->closestPointOnPoly(polys[i], referencePos, tempVec, nullptr);
 
-			// Ensure point is actually inside the box.
 			bool isInsideBox = true;
 			for (int axis = 0; axis < 3; ++axis)
 			{
-				float minBound = boxCenter[axis] - boxExtents[axis] - EPSILON;
-				float maxBound = boxCenter[axis] + boxExtents[axis] + EPSILON;
-
-				if (tempVec[axis] < minBound || tempVec[axis] > maxBound)
+				if (tempVec[axis] < boxMin[axis] || tempVec[axis] > boxMax[axis])
 				{
 					isInsideBox = false;
 					break;
@@ -285,9 +288,7 @@ DLLEXPORT dtStatus FindClosestPointInBox(dtNavMeshQuery *query, float boxCenter[
 			if (dSq < minDistSq)
 			{
 				minDistSq = dSq;
-				outputVector[0] = tempVec[0];
-				outputVector[1] = tempVec[1];
-				outputVector[2] = tempVec[2];
+				dtVcopy(outputVector, tempVec);
 				found = true;
 			}
 		}

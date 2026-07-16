@@ -291,7 +291,7 @@ namespace DOL.GS
             Vector3 crossing = outside - inside;
             float distance = crossing.Length();
 
-            if (distance <= float.Epsilon)
+            if (distance <= 0)
             {
                 inZonePoint = inside;
                 neighborZonePoint = outside;
