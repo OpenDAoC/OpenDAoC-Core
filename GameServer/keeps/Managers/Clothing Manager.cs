@@ -125,7 +125,7 @@ namespace DOL.GS.Keeps
                 Albion_Caster.AddNPCEquipment(eInventorySlot.HandsArmor, 142);
                 Albion_Caster.AddNPCEquipment(eInventorySlot.FeetArmor, 143);
                 Albion_Caster.AddNPCEquipment(eInventorySlot.RightHandWeapon, 13);
-                Albion_Caster.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1170);
+                Albion_Caster.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19);
                 Albion_Caster = Albion_Caster.CloseTemplate();
                 Albion_Caster.GetItem(eInventorySlot.TwoHandWeapon).Hand = (int)eHandFlag.Two;
             }
