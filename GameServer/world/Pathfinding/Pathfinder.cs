@@ -23,6 +23,11 @@ namespace DOL.GS
         private PathVisualization _pathVisualization;
         private bool _allowedToPath;
 
+        // Off-mesh connections.
+        private Vector3 _pendingTarget;
+        private bool _replotDeferred;
+        private Vector3? _offMeshCommitEnd;
+
         // Cross-zone bridging.
         private Zone _lastZone;
         private Vector3 _localTarget;
@@ -48,6 +53,9 @@ namespace DOL.GS
             _activePath.Clear();
             _calculationBuffer.Clear();
             _lastTarget = Vector3.Zero;
+            _pendingTarget = Vector3.Zero;
+            _replotDeferred = false;
+            _offMeshCommitEnd = null;
             _lastZone = null;
             _localTarget = Vector3.Zero;
             _crossZoneEntryPoint = null;
@@ -114,9 +122,10 @@ namespace DOL.GS
 
             ReplotIfNeeded(zone, position, target);
 
+            // Never replot while on an off-mesh link; the agent is off the walkable mesh.
             // Check if any doors on the path have become closed and can't be opened via interaction.
             // If so, try to replot with door avoidance filters.
-            if (PathContainsBlockingDoor())
+            if (!_offMeshCommitEnd.HasValue && PathContainsBlockingDoor())
                 TryApplyAlternativePath(zone, position, target);
 
             if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode current))
@@ -136,12 +145,13 @@ namespace DOL.GS
             Vector3? snapPosition = null;
 
             // Look ahead to find the furthest node we can walk straight to.
-            // This stops at the first door, at any node we don't have LoS to, or at any node that would require a big jump in height compared to the current node.
+            // Stop at doors, missing LoS, unsafe height changes, or Jump nodes.
             for (int i = 0; i < maxLookahead; i++)
             {
                 WrappedPathfindingNode candidateNode = _activePath.Nodes.Peek(i);
 
-                if (NodeContainsDoor(candidateNode, false) ||
+                if (IsJumpNode(candidateNode) ||
+                    NodeContainsDoor(candidateNode, false) ||
                     !PathfindingProvider.Instance.HasLineOfSight(zone, position, candidateNode.Position, DefaultFilters) ||
                     !IsStraightLineHeightSafe(position, candidateNode.Position, i))
                 {
@@ -235,6 +245,34 @@ namespace DOL.GS
 
         private void ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
         {
+            // Keep the latest order so we can replot toward it after an off-mesh link.
+            _pendingTarget = target;
+
+            UpdateOffMeshLinkState(position);
+
+            // While moving from a mesh to another, the NPC is not on a walkable poly.
+            // Replanning during off-mesh links can yield NoPathFound and leaves them stuck.
+            if (_offMeshCommitEnd.HasValue)
+            {
+                if (ForceReplot ||
+                    zone != _lastZone ||
+                    !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
+                {
+                    _replotDeferred = true;
+                }
+
+                ForceReplot = false;
+                return;
+            }
+
+            // Honor any order received mid-link.
+            if (_replotDeferred)
+            {
+                ForceReplot = true;
+                _replotDeferred = false;
+                target = _pendingTarget;
+            }
+
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
             if (!ForceReplot && zone == _lastZone)
             {
@@ -263,9 +301,53 @@ namespace DOL.GS
                 _crossZoneEntryPoint = null;
             }
 
+            _offMeshCommitEnd = null;
+
             PathfindingStatus status = CalculatePath(_activePath, zone, position, _localTarget, DefaultFilters);
             _lastZone = zone;
             UpdatePathState(status, target);
+        }
+
+        private void UpdateOffMeshLinkState(Vector3 position)
+        {
+            if (_offMeshCommitEnd.HasValue)
+            {
+                float distSq = (_offMeshCommitEnd.Value - position).LengthSquared();
+
+                if (distSq <= NODE_REACHED_DISTANCE * NODE_REACHED_DISTANCE)
+                    _offMeshCommitEnd = null;
+
+                return;
+            }
+
+            if (!_activePath.Nodes.TryPeek(0, out WrappedPathfindingNode next))
+                return;
+
+            if (!IsJumpNode(next))
+                return;
+
+            int endIndex = ResolveOffMeshLinkEndIndex();
+            _offMeshCommitEnd = _activePath.Nodes.Peek(endIndex).Position;
+        }
+
+        private int ResolveOffMeshLinkEndIndex()
+        {
+            int count = _activePath.Nodes.Count;
+
+            if (count <= 0)
+                return 0;
+
+            int firstNonJump = 0;
+
+            while (firstNonJump < count && IsJumpNode(_activePath.Nodes.Peek(firstNonJump)))
+                firstNonJump++;
+
+            return firstNonJump < count ? firstNonJump : count - 1;
+        }
+
+        private static bool IsJumpNode(WrappedPathfindingNode node)
+        {
+            return (node.Flags & EDtPolyFlags.Jump) != 0;
         }
 
         private bool TryGetZoneExitPoint(Zone zone, Vector3 position, Vector3 target, out Vector3 inZonePoint, out Vector3 neighborZonePoint)
