@@ -8,6 +8,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.Language;
+using OpenDAoC.Pathing;
 
 namespace DOL.GS.Effects
 {

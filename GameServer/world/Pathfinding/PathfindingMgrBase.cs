@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using System.Numerics;
+using OpenDAoC.Pathing;
 
 namespace DOL.GS
 {
     public abstract class PathfindingMgrBase : IPathfindingMgr
     {
-        protected const float CONVERSION_FACTOR = 1.0f / 32f;
-        protected const float INV_FACTOR = 1f / CONVERSION_FACTOR;
-
         public PathfindingMgrBase()
         {
             DefaultFilters = [EDtPolyFlags.All ^ EDtPolyFlags.Disabled, 0];
@@ -94,22 +92,5 @@ namespace DOL.GS
         public virtual bool IsAvailable => false;
         public virtual EDtPolyFlags[] DefaultFilters { get; }
         public virtual EDtPolyFlags[] BlockingDoorAvoidanceFilters { get; }
-
-        protected static void FillRecastFloats(Vector3 value, Span<float> destination)
-        {
-            destination[0] = value.X * CONVERSION_FACTOR;
-            destination[1] = value.Z * CONVERSION_FACTOR;
-            destination[2] = value.Y * CONVERSION_FACTOR;
-        }
-
-        protected static float[] GetRecastFloats(Vector3 source)
-        {
-            return
-            [
-                source[0] * CONVERSION_FACTOR,
-                source[2] * CONVERSION_FACTOR,
-                source[1] * CONVERSION_FACTOR,
-            ];
-        }
     }
 }

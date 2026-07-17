@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OpenDAoC.Pathing;
 
 namespace DOL.GS.Movement
 {

@@ -7,6 +7,7 @@ using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Logging;
+using OpenDAoC.Pathing;
 
 namespace DOL.GS.Spells
 {

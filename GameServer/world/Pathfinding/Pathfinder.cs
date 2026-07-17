@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Reflection;
 using DOL.GS.Movement;
 using DOL.Logging;
+using OpenDAoC.Pathing;
 using static DOL.GS.GameNPC;
 
 namespace DOL.GS

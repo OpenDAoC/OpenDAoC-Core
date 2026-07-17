@@ -5,6 +5,7 @@ using DOL.Database;
 using DOL.GS.Movement;
 using DOL.GS.ServerProperties;
 using DOL.Logging;
+using OpenDAoC.Pathing;
 using static DOL.GS.GameObject;
 using static DOL.GS.Pathfinder;
 

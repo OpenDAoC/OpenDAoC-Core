@@ -1,18 +1,9 @@
 Pathing with Detour
 ===================
 
-Recast is accompanied by Detour, a path-finding and spatial reasoning toolkit. You can use any navigation mesh with Detour, but of course the data generated with Recast fits perfectly.
-
-Detour offers a simple static navmesh data representation which is suitable for many simple cases. It also provides a tiled navigation mesh representation, which allows you to stream of navigation data in and out as the player progresses through the world and regenerate sections of the navmesh data as the world changes.
-
 This project is based on [recastnavigation](https://github.com/recastnavigation/recastnavigation).
 
-## How to use with OpenDAoC
-We recommend generating navmeshes (navigation meshes) with [our own fork of it](https://github.com/OpenDAoC/OpenDAoC-BuildNav). Navmeshes are expected to be generated with DT_POLYREF64 enabled.
-
-Create a "pathing" folder in your server's folder (where you have CoreServer.exe) and copy the navmeshes (*.nav) in it.
-
-Caution: if you use all navmeshes, you will need at least 5GB of RAM and the server will be take some time to load.
+Recast is accompanied by Detour, a path-finding and spatial reasoning toolkit.
 
 ## Build (Windows)
 This guide will use Visual Studio 2022.
@@ -42,3 +33,13 @@ About Linux, you can use your package manager to install theses tools: cmake, g+
 2. `mkdir build && cd build`
 3. `cmake -DCMAKE_BUILD_TYPE=Release .. && make`
 4. Copy `Detour.so` to your server's `/lib` folder
+
+## How to use
+We recommend generating navmeshes (navigation meshes) with [OpenDAoC-BuildNav](https://github.com/OpenDAoC/OpenDAoC-BuildNav). Navmeshes are expected to be generated with DT_POLYREF64 enabled.
+
+Create a "pathing" folder in your server's folder (where you have CoreServer.exe) and copy the navmeshes (*.nav) in it.
+
+Caution: if you use all navmeshes, you will need at least 5GB of RAM.
+
+## Managed wrapper
+`../Detour.Managed` is a game-agnostic C# P/Invoke library over Detour. It is used by OpenDAoC-Core (`LocalPathfindingMgr`) and OpenDAoC-BuildNav (ladder off-mesh second pass).
