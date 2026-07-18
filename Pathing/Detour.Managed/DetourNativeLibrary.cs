@@ -42,16 +42,13 @@ namespace OpenDAoC.Pathing
 
             // LibraryImport name, bare name, or platform-suffixed variants.
             string name = libraryName.Replace('\\', '/');
-            return name.Equals(LibraryName, StringComparison.OrdinalIgnoreCase)
-                   || name.Equals("Detour", StringComparison.OrdinalIgnoreCase)
-                   || name.Equals("lib/Detour.dll", StringComparison.OrdinalIgnoreCase)
-                   || name.EndsWith("/Detour", StringComparison.OrdinalIgnoreCase)
-                   || name.EndsWith("/Detour.dll", StringComparison.OrdinalIgnoreCase);
+            return name.Equals(LibraryName, StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("Detour", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("lib/Detour.dll", StringComparison.OrdinalIgnoreCase) ||
+                name.EndsWith("/Detour", StringComparison.OrdinalIgnoreCase) ||
+                name.EndsWith("/Detour.dll", StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>
-        /// Candidate absolute paths, most specific first.
-        /// </summary>
         internal static IEnumerable<string> EnumerateCandidatePaths()
         {
             string fileName = OperatingSystem.IsWindows() ? "Detour.dll" : "libDetour.so";
