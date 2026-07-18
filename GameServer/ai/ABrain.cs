@@ -79,23 +79,41 @@ namespace DOL.AI
 
             GamePlayer losChecker = target as GamePlayer;
 
-            if (losChecker != null)
+            if (CanReplyToLosCheckRequests(losChecker))
                 return losChecker;
 
             if (this is IControlledBrain controlledBrain)
             {
                 losChecker = controlledBrain.GetPlayerOwner();
 
-                if (losChecker != null)
+                if (CanReplyToLosCheckRequests(losChecker))
                     return losChecker;
             }
 
             List<GamePlayer> playersInRadius = Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
-            if (playersInRadius.Count > 0)
-                losChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
+            if (playersInRadius.Count == 0)
+                return null;
 
-            return losChecker;
+            int start = Util.Random(playersInRadius.Count - 1);
+
+            for (int i = 0; i < playersInRadius.Count; i++)
+            {
+                GamePlayer player = playersInRadius[(start + i) % playersInRadius.Count];
+
+                if (CanReplyToLosCheckRequests(player))
+                    return player;
+            }
+
+            return null;
+
+            static bool CanReplyToLosCheckRequests(GamePlayer player)
+            {
+                // Currently allows players with a soft linkdeath timer running.
+                return player != null &&
+                    player.ObjectState is GameObject.eObjectState.Active &&
+                    player.Client.ClientState is GameClient.eClientState.Playing;
+            }
         }
 
         public virtual bool OnPathPointReached(PathPoint pathPoint)
