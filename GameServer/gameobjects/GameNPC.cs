@@ -2893,10 +2893,6 @@ namespace DOL.GS
 
 		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
 		{
-			// Immobile NPCs can only be interrupted by their own target, and in melee range.
-			if (MaxSpeedBase == 0 && (attacker != TargetObject || !IsWithinRadius(attacker, MeleeAttackRange)))
-				return false;
-
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
 
 			if (interrupted)

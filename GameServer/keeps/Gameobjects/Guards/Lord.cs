@@ -236,7 +236,6 @@ namespace DOL.GS.Keeps
             return false;
         }
 
-
         /// <summary>
         /// From a great distance, damage does not harm lord
         /// </summary>
@@ -319,6 +318,15 @@ namespace DOL.GS.Keeps
             return true;
         }
 
+        protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
+        {
+            // Lords can only be interrupted by their own target, and in melee range.
+            if (MaxSpeedBase == 0 && (attacker != TargetObject || !IsWithinRadius(attacker, MeleeAttackRange)))
+               return false;
+
+            return base.CheckRangedAttackInterrupt(attacker, attackType);
+        }
+
         protected override ICharacterClass GetClass()
         {
             if (ModelRealm == eRealm.Albion) return new ClassArmsman();
@@ -384,7 +392,7 @@ namespace DOL.GS.Keeps
             }
         }
 
-        private string GetKeepShortName(string KeepName)
+        private static string GetKeepShortName(string KeepName)
         {
             string ShortName;
             if (KeepName.StartsWith("Caer"))//Albion
