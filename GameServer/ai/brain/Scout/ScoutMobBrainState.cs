@@ -11,6 +11,7 @@ namespace DOL.AI.Brain
         private const int REPORT_RANGE = 150;                 // Minimum distance before we can communicate with our friendly target.
         private const int ADDS_RADIUS = 400;                  // Radius at which friendlies around our friendly target are allowed to join.
         private const int MAX_ADDS = 4;                       // Maximum amount of adds. This doesn't include our friendly target, but includes us.
+
         private ScoutMobState _state;
         private GameLiving _target;
         private StandardMobBrain _friend;
@@ -37,23 +38,6 @@ namespace DOL.AI.Brain
 
             FaceTarget();
             base.Enter();
-
-            void FaceTarget()
-            {
-                _state = ScoutMobState.FACING_TARGET;
-                _brain.Body.StopMoving();
-                _brain.Body.TurnTo(_target);
-
-                GamePlayer playerToNotify = null;
-
-                if (_target is GameNPC targetNpc && targetNpc.Brain is ControlledMobBrain targetBrain)
-                    targetBrain.GetPlayerOwner();
-                else
-                    playerToNotify = _target as GamePlayer;
-
-                playerToNotify?.Out.SendMessage($"{_brain.Body.GetName(0, true)} is alerted by your presence.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_SystemWindow);
-                _staringEndTime = GameLoop.GameLoopTime + STARE_DURATION;
-            }
         }
 
         public override void Exit()
@@ -77,62 +61,79 @@ namespace DOL.AI.Brain
             }
             else if (_state is ScoutMobState.REPORTING_TARGET)
                 ReportToFriends();
+        }
 
-            void StareAtTarget()
+        private void FaceTarget()
+        {
+            _state = ScoutMobState.FACING_TARGET;
+            _brain.Body.StopMoving();
+            _brain.Body.TurnTo(_target);
+
+            GamePlayer playerToNotify = null;
+
+            if (_target is GameNPC targetNpc && targetNpc.Brain is ControlledMobBrain targetBrain)
+                playerToNotify = targetBrain.GetPlayerOwner();
+            else
+                playerToNotify = _target as GamePlayer;
+
+            playerToNotify?.Out.SendMessage($"{_brain.Body.GetName(0, true)} is alerted by your presence.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_SystemWindow);
+            _staringEndTime = GameLoop.GameLoopTime + STARE_DURATION;
+        }
+
+        private void StareAtTarget()
+        {
+            if (!_target.IsAlive || _target.ObjectState != GameObject.eObjectState.Active)
             {
-                if (!_target.IsAlive || _target.ObjectState != GameObject.eObjectState.Active)
-                {
-                    _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-                    return;
-                }
-
-                _brain.Body.TurnTo(_target);
+                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+                return;
             }
 
-            void LookForFriends()
+            _brain.Body.TurnTo(_target);
+        }
+
+        private void LookForFriends()
+        {
+            _friend = _brain.GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(FRIENDLY_TO_LOOK_FOR_RADIUS, 1).FirstOrDefault()?.Brain as StandardMobBrain;
+
+            if (_friend == null)
             {
-                _friend = _brain.GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(FRIENDLY_TO_LOOK_FOR_RADIUS, 1).FirstOrDefault()?.Brain as StandardMobBrain;
-
-                if (_friend == null)
-                {
-                    _state = ScoutMobState.FIGHTING;
-                    base.Think();
-                    return;
-                }
-
-                // This may not be enough if the target is moving too fast or if we're thinking too slowly.
-                _brain.Body.Follow(_friend.Body, Math.Max(0, REPORT_RANGE - 50), int.MaxValue);
-                _state = ScoutMobState.REPORTING_TARGET;
+                _state = ScoutMobState.FIGHTING;
+                base.Think();
+                return;
             }
 
-            void ReportToFriends()
+            // This may not be enough if the target is moving too fast or if we're thinking too slowly.
+            _brain.Body.Follow(_friend.Body, Math.Max(0, REPORT_RANGE - 50), int.MaxValue);
+            _state = ScoutMobState.REPORTING_TARGET;
+        }
+
+        private void ReportToFriends()
+        {
+            // If we stopped moving for some reason, simply switch state.
+            if (!_brain.Body.IsMoving)
             {
-                // If we stopped moving for some reason, simply switch state.
-                if (!_brain.Body.IsMoving)
-                {
-                    _friend = null;
-                    _state = ScoutMobState.FIGHTING;
-                    return;
-                }
-
-                // Our friend may die before we reach it, but it should be fine.
-                if (!_brain.Body.IsWithinRadius(_friend.Body, REPORT_RANGE))
-                    return;
-
-                _brain.AddAggroListTo(_friend);
-
-                // This includes us.
-                foreach (GameNPC otherFriend in _friend.GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(ADDS_RADIUS, MAX_ADDS))
-                {
-                    StandardMobBrain brain = otherFriend.Brain as StandardMobBrain;
-
-                    if (brain != null)
-                        _brain.AddAggroListTo(brain);
-                }
-
                 _friend = null;
                 _state = ScoutMobState.FIGHTING;
+                return;
             }
+
+            // Our friend may die before we reach it, but it should be fine.
+            if (!_brain.Body.IsWithinRadius(_friend.Body, REPORT_RANGE))
+                return;
+
+            _brain.AddAggroListTo(_friend);
+
+            // This includes us.
+            foreach (GameNPC otherFriend in _friend.GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(ADDS_RADIUS, MAX_ADDS))
+            {
+                StandardMobBrain brain = otherFriend.Brain as StandardMobBrain;
+
+                if (brain != null)
+                    _brain.AddAggroListTo(brain);
+            }
+
+            _friend = null;
+            _state = ScoutMobState.FIGHTING;
         }
 
         private enum ScoutMobState
