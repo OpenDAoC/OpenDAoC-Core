@@ -93,16 +93,16 @@ namespace DOL.GS
                 !_npcOwner.IsWithinRadius(_target, meleeAttackRange) &&
                 !_wasMeleeWeaponSwitchForced)
             {
-                bool timerInactive = _checkLosTimer == null || !_checkLosTimer.IsAlive;
+                bool timerActive = _checkLosTimer != null && _checkLosTimer.IsAlive;
                 bool targetChanged = _losCheckTarget != _target;
 
-                if (!timerInactive && targetChanged)
+                if (timerActive && targetChanged)
                 {
                     _hasLos = false;
                     _checkLosTimer.ChangeTarget(_target);
                 }
 
-                if (timerInactive || targetChanged || _hasLos)
+                if (!timerActive || targetChanged || _hasLos)
                 {
                     SwitchToRangedAndTick();
                     return false;
@@ -217,6 +217,13 @@ namespace DOL.GS
                 return;
             }
 
+            // Refresh the LoS checker if the current one stops responding, and wait for a reply.
+            if (response is LosCheckResponse.Timeout && _checkLosTimer != null && _checkLosTimer.IsAlive)
+            {
+                _checkLosTimer.RefreshLosCheckerForCurrentTarget();
+                return;
+            }
+
             _hasLos = response is LosCheckResponse.True;
 
             // Only react immediately if we aren't currently waiting for a bow draw completion.
@@ -284,14 +291,15 @@ namespace DOL.GS
                     return;
                 }
 
-                if (_target != newTarget)
-                {
-                    _target = newTarget;
-                    _losChecker = _npcOwner.Brain.GetLosChecker(_target);
-                }
-
+                _target = newTarget;
+                RefreshLosCheckerForCurrentTarget();
                 Start(0);
                 Interval = LosCheckInterval;
+            }
+
+            public void RefreshLosCheckerForCurrentTarget()
+            {
+                _losChecker = _npcOwner.Brain.GetLosChecker(_target);
             }
 
             protected override int OnTick(ECSGameTimer timer)
