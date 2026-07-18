@@ -240,12 +240,6 @@ namespace DOL.GS
             _npcOwner.StartAttackWithRangedWeapon(_target);
         }
 
-        private void ForceLos()
-        {
-            _hasLos = true;
-            _npcOwner.TurnTo(_losCheckTarget);
-        }
-
         private void OnOutOfRangeOrNoLosRangedAttack()
         {
             // If we're a guard or an immobile NPC, let's forget about our target so that we can attack another one and not stare at the wall.
@@ -293,23 +287,7 @@ namespace DOL.GS
                 if (_target != newTarget)
                 {
                     _target = newTarget;
-
-                    if (_npcOwner.Brain is IControlledBrain brain)
-                        _losChecker = brain.GetPlayerOwner();
-                    else if (_target is GamePlayer targetPlayer)
-                        _losChecker = targetPlayer;
-                    else if (_target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain targetBrain)
-                        _losChecker = targetBrain.GetPlayerOwner();
-                    else
-                        _losChecker = null;
-                }
-
-                // If there's no LoS checker, stop the timer and force LoS.
-                if (_losChecker == null)
-                {
-                    _attackAction.ForceLos();
-                    Stop();
-                    return;
+                    _losChecker = _npcOwner.Brain.GetLosChecker(_target);
                 }
 
                 Start(0);

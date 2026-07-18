@@ -37,6 +37,7 @@ namespace DOL.AI.Brain
 			{
 				if (!CanAggroTarget(npc))
 					continue;
+
 				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
 					continue;
 

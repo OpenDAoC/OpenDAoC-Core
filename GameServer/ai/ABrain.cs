@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
+using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.Movement;
@@ -66,6 +68,34 @@ namespace DOL.AI
             Body.ClearObjectsInRadiusCache();
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
             return ServiceObjectStore.Remove(this);
+        }
+
+        public GamePlayer GetLosChecker(GameObject target)
+        {
+            // Returns the GamePlayer that should perform LoS checks on behalf of this entity.
+
+            if (target == null || target == Body)
+                return null;
+
+            GamePlayer losChecker = target as GamePlayer;
+
+            if (losChecker != null)
+                return losChecker;
+
+            if (this is IControlledBrain controlledBrain)
+            {
+                losChecker = controlledBrain.GetPlayerOwner();
+
+                if (losChecker != null)
+                    return losChecker;
+            }
+
+            List<GamePlayer> playersInRadius = Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+
+            if (playersInRadius.Count > 0)
+                losChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
+
+            return losChecker;
         }
 
         public virtual bool OnPathPointReached(PathPoint pathPoint)

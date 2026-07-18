@@ -46,23 +46,7 @@ namespace DOL.GS
 
         protected override GamePlayer GetLosChecker(GameLiving target)
         {
-            if (target == Owner || target == null)
-                return null;
-
-            GamePlayer losChecker = target as GamePlayer;
-
-            if (losChecker == null && _npcOwner.Brain is IControlledBrain controlledBrain)
-                losChecker = controlledBrain.GetPlayerOwner();
-
-            if (losChecker == null && _npcOwner.Brain is StandardMobBrain)
-            {
-                List<GamePlayer> playersInRadius = _npcOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
-
-                if (playersInRadius.Count > 0)
-                    losChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
-            }
-
-            return losChecker;
+            return _npcOwner.Brain.GetLosChecker(target);
         }
 
         public override void OnSpellCast(Spell spell)
