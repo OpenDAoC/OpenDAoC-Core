@@ -62,10 +62,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        protected virtual bool ShouldBeVisible()
-        {
-            throw new NotImplementedException();
-        }
+        protected abstract bool ShouldBeVisible();
     }
 
     public class DaySpawnBrain : TimeDependentSpawnBrain
