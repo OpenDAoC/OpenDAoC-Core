@@ -107,6 +107,14 @@ namespace DOL.AI.Brain
 
             void ReportToFriends()
             {
+                // If we stopped moving for some reason, simply switch state.
+                if (!_brain.Body.IsMoving)
+                {
+                    _friend = null;
+                    _state = ScoutMobState.FIGHTING;
+                    return;
+                }
+
                 // Our friend may die before we reach it, but it should be fine.
                 if (!_brain.Body.IsWithinRadius(_friend.Body, REPORT_RANGE))
                     return;
@@ -122,6 +130,7 @@ namespace DOL.AI.Brain
                         _brain.AddAggroListTo(brain);
                 }
 
+                _friend = null;
                 _state = ScoutMobState.FIGHTING;
             }
         }
