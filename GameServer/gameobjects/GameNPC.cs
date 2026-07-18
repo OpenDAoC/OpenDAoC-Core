@@ -833,7 +833,7 @@ namespace DOL.GS
 			movementComponent.StopMoving();
 		}
 
-		public virtual void Follow(GameObject target, int minDistance, int maxDistance)
+		public virtual void Follow(GameObject target, long minDistance, long maxDistance)
 		{
 			movementComponent.Follow(target as GameLiving, minDistance, maxDistance);
 		}

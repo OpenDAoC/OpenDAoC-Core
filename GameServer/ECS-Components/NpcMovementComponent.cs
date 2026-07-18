@@ -42,8 +42,8 @@ namespace DOL.GS
         public ref Vector3 Velocity => ref _velocity;
         public ref Vector3 Destination => ref _destination;
         public GameLiving FollowTarget { get; private set; }
-        public int MinFollowDistance { get; private set; }
-        public int MaxFollowDistance { get; private set; }
+        public long MinFollowDistance { get; private set; }
+        public long MaxFollowDistance { get; private set; }
         public int RoamingRange { get; set; }
         public long MovementStartTick { get; set; }
         public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
@@ -184,7 +184,7 @@ namespace DOL.GS
                 UpdateMovement(0);
         }
 
-        public void Follow(GameLiving target, int minDistance, int maxDistance)
+        public void Follow(GameLiving target, long minDistance, long maxDistance)
         {
             if (target == null || target.ObjectState is not eObjectState.Active || !Owner.IsAllowedToFollow(target))
                 return;

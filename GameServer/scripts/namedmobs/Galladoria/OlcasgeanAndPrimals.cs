@@ -1145,7 +1145,7 @@ namespace DOL.GS
                 return;
             base.ReturnToSpawnPoint(speed);
         }
-        public override void Follow(GameObject target, int minDistance, int maxDistance)
+        public override void Follow(GameObject target, long minDistance, long maxDistance)
         {
         }
         public override void StopFollowing()

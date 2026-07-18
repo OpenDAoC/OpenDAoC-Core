@@ -699,7 +699,7 @@ namespace DOL.GS
                 return;
             base.StopFollowing();
         }
-        public override void Follow(GameObject target, int minDistance, int maxDistance)
+        public override void Follow(GameObject target, long minDistance, long maxDistance)
         {
             if (IsAlive)
                 return;
