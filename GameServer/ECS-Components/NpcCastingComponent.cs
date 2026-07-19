@@ -106,18 +106,19 @@ namespace DOL.GS
                         if (spellLine != null && spell != null)
                             base.RequestCastSpellInternal(spell, spellLine, null, target as GameLiving, losChecker);
                     }
+                }
+                else
+                {
+                    OnOutOfRangeOrNoLos(target);
 
-                    return;
+                    if (_npcOwner is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
+                    {
+                        string message = LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "AI.Brain.Necromancer.PetCantSeeTarget", _npcOwner.Name);
+                        NecromancerPetBrain.MessageToOwner(message, eChatType.CT_SpellResisted, playerOwner);
+                    }
                 }
 
                 list.Clear();
-                OnOutOfRangeOrNoLos(target);
-
-                if (_npcOwner is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
-                {
-                    string message = LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "AI.Brain.Necromancer.PetCantSeeTarget", _npcOwner.Name);
-                    NecromancerPetBrain.MessageToOwner(message, eChatType.CT_SpellResisted, playerOwner);
-                }
             }
         }
 
