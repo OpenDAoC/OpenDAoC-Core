@@ -62,7 +62,7 @@ namespace DOL.AI
                 return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.
-            if (!Body.IsNearSpawn && !IsActive)
+            if (!Body.IsAtSpawn && !IsActive)
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
 
             Body.ClearObjectsInRadiusCache();

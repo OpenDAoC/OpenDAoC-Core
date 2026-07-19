@@ -802,7 +802,7 @@ namespace DOL.GS
 			set => movementComponent.RoamingRange = value;
 		}
 		public bool IsMovingOnPath => movementComponent.IsMovingOnPath;
-		public bool IsNearSpawn => movementComponent.IsNearSpawn;
+		public bool IsAtSpawn => IsWithinRadius(SpawnPoint, 0);
 		public bool IsDestinationValid => movementComponent.IsDestinationValid;
 		public bool IsAtDestination => movementComponent.IsAtDestination;
 		public bool CanRoam => movementComponent.CanRoam;

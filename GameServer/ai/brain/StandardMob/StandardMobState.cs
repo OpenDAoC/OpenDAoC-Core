@@ -61,13 +61,15 @@ namespace DOL.AI.Brain
             if (_brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
                 return;
 
-            if (_brain.Body.CanMoveOnPath)
+            GameNPC npc = _brain.Body;
+
+            if (npc.CanMoveOnPath)
                 _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
-            else if (!_brain.Body.IsNearSpawn)
+            else if (!npc.IsAtSpawn || npc.Heading != npc.SpawnHeading)
                 _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             else if (_brain.CheckProximityAggro())
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-            else if (_brain.Body.CanRoam)
+            else if (npc.CanRoam)
                 _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
 
             base.Think();
@@ -187,7 +189,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (_brain.Body.IsNearSpawn)
+            if (_brain.Body.IsAtSpawn)
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
                 _brain.Body.TurnTo(_brain.Body.SpawnHeading);
