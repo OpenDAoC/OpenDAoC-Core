@@ -318,15 +318,6 @@ namespace DOL.GS.Keeps
             return true;
         }
 
-        protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
-        {
-            // Lords can only be interrupted by their own target, and in melee range.
-            if (MaxSpeedBase == 0 && (attacker != TargetObject || !IsWithinRadius(attacker, MeleeAttackRange)))
-               return false;
-
-            return base.CheckRangedAttackInterrupt(attacker, attackType);
-        }
-
         protected override ICharacterClass GetClass()
         {
             if (ModelRealm == eRealm.Albion) return new ClassArmsman();

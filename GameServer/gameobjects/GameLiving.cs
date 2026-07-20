@@ -693,6 +693,16 @@ namespace DOL.GS
 				return;
 			}
 
+			if (rangeAttackComponent.RangedAttackType is eRangedAttackType.SureShot)
+			{
+				if (attackType is not eAttackType.MeleeOneHand and
+					not eAttackType.MeleeTwoHand and
+					not eAttackType.MeleeDualWield)
+				{
+					return;
+				}
+			}
+
 			// 3% reduced interrupt chance per level difference.
 			if (!Util.Chance(100 + (attacker.EffectiveLevel - EffectiveLevel) * 3))
 				return;
@@ -721,7 +731,7 @@ namespace DOL.GS
 			if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
 			{
 				if (attackComponent.AttackState)
-					CheckRangedAttackInterrupt(attacker, attackType);
+					attackComponent.attackAction.PerformOnAttackedInterruptCheck(attacker);
 				else
 				{
 					AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
@@ -751,31 +761,6 @@ namespace DOL.GS
 
 		public int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
 		public int SpellSelfInterruptDuration => Properties.SPELL_SELF_INTERRUPT_DURATION;
-
-		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, eAttackType attackType)
-		{
-			if (rangeAttackComponent.RangedAttackType == eRangedAttackType.SureShot)
-			{
-				if (attackType is not eAttackType.MeleeOneHand
-					and not eAttackType.MeleeTwoHand
-					and not eAttackType.MeleeDualWield)
-					return false;
-			}
-
-			long rangeAttackHoldStart = rangeAttackComponent.AttackStartTime;
-
-			if (rangeAttackHoldStart > 0)
-			{
-				long elapsedTime = GameLoop.GameLoopTime - rangeAttackHoldStart;
-				long halfwayPoint = attackComponent.AttackSpeed(ActiveWeapon) / 2;
-				
-				if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.ReadyToFire and not eRangedAttackState.None && elapsedTime > halfwayPoint)
-					return false;
-			}
-
-			attackComponent.StopAttack();
-			return true;
-		}
 
 		/// <summary>
 		/// Check if we can make a proc on a weapon go off.  Weapon Procs

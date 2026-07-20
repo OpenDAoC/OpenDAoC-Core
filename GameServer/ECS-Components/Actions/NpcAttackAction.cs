@@ -23,42 +23,6 @@ namespace DOL.GS
             _npcOwner = owner;
         }
 
-        public override void OnAimInterrupt(GameLiving attacker)
-        {
-            // Use the follow target or current target (maybe redundant) instead of the interrupter.
-            // We really don't want guards to move because a pet attacked them in melee.
-            GameObject target = _npcOwner.TargetObject ?? _npcOwner.FollowTarget;
-
-            if (target is not GameLiving livingFollowTarget)
-                return;
-
-            if (!_npcOwner.IsAllowedToFollow(livingFollowTarget))
-            {
-                _npcOwner.StopFollowing();
-                return;
-            }
-
-            SwitchToMeleeAndTick();
-        }
-
-        public override void OnForcedWeaponSwitch()
-        {
-            switch (_npcOwner.ActiveWeaponSlot)
-            {
-                case eActiveWeaponSlot.Standard:
-                case eActiveWeaponSlot.TwoHanded:
-                {
-                    _wasMeleeWeaponSwitchForced = true;
-                    break;
-                }
-                case eActiveWeaponSlot.Distance:
-                {
-                    _wasMeleeWeaponSwitchForced = false;
-                    break;
-                }
-            }
-        }
-
         protected override bool PrepareMeleeAttack()
         {
             // Check spells before attacking to allow spell casting opportunity.
@@ -187,6 +151,49 @@ namespace DOL.GS
             }
 
             return base.FinalizeRangedAttack();
+        }
+
+        public override void OnForcedWeaponSwitch()
+        {
+            switch (_npcOwner.ActiveWeaponSlot)
+            {
+                case eActiveWeaponSlot.Standard:
+                case eActiveWeaponSlot.TwoHanded:
+                {
+                    _wasMeleeWeaponSwitchForced = true;
+                    break;
+                }
+                case eActiveWeaponSlot.Distance:
+                {
+                    _wasMeleeWeaponSwitchForced = false;
+                    break;
+                }
+            }
+        }
+
+        protected override void InterruptAim(GameLiving attacker)
+        {
+            // Lords can only be interrupted by their own target, and in melee range.
+            if (_npcOwner is GuardLord &&
+                _npcOwner.MaxSpeedBase == 0 &&
+                (attacker != _npcOwner.TargetObject || !_npcOwner.IsWithinRadius(attacker, _npcOwner.MeleeAttackRange)))
+            {
+               return;
+            }
+
+            _npcOwner.StopAttack();
+            GameObject target = _npcOwner.TargetObject ?? _npcOwner.FollowTarget;
+
+            if (target is not GameLiving livingFollowTarget)
+                return;
+
+            if (!_npcOwner.IsAllowedToFollow(livingFollowTarget))
+            {
+                _npcOwner.StopFollowing();
+                return;
+            }
+
+            SwitchToMeleeAndTick();
         }
 
         public override void CleanUp()
