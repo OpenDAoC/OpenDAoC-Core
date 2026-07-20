@@ -23,7 +23,7 @@ namespace DOL.GS
             _npcOwner = owner;
         }
 
-        public override void OnAimInterrupt(GameObject attacker)
+        public override void OnAimInterrupt(GameLiving attacker)
         {
             // Use the follow target or current target (maybe redundant) instead of the interrupter.
             // We really don't want guards to move because a pet attacked them in melee.

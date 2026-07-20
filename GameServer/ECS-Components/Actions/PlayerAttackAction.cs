@@ -14,7 +14,7 @@ namespace DOL.GS
             _playerOwner = owner;
         }
 
-        public override void OnAimInterrupt(GameObject attacker)
+        public override void OnAimInterrupt(GameLiving attacker)
         {
             string attackTypeMsg;
 

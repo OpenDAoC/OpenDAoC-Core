@@ -733,7 +733,7 @@ namespace DOL.GS
 		private long _interruptTime; // Represents a soft interrupt timer inflicted by attackers.
 		private long _selfInterruptTime; // Represents a hard interrupt timer inflicted by self.
 
-		public GameObject LastInterrupter { get; private set; }
+		public GameLiving LastInterrupter { get; private set; }
 		public long InterruptRemainingDuration => Math.Max(0, Math.Max(_interruptTime, _selfInterruptTime) - GameLoop.GameLoopTime);
 		public virtual bool SelfInterruptsOnMeleeAttack => true;
 		public virtual bool IsBeingInterrupted => IsInterrupted || IsSelfInterrupted;

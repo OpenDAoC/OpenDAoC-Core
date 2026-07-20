@@ -155,7 +155,7 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual void OnAimInterrupt(GameObject attacker) { }
+        public virtual void OnAimInterrupt(GameLiving attacker) { }
 
         public virtual void OnForcedWeaponSwitch() { }
 
