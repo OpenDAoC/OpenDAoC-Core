@@ -715,10 +715,10 @@ namespace DOL.GS
 					return;
 			}
 
-			// Perform the actual interrupt.
-			if (castingComponent.SpellHandler?.CasterIsAttacked(attacker) == true)
+			if (castingComponent.SpellHandler?.PerformOnAttackedInterruptCheck(attacker) == true)
 				return;
-			else if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+
+			if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
 			{
 				if (attackComponent.AttackState)
 					CheckRangedAttackInterrupt(attacker, attackType);
@@ -734,16 +734,23 @@ namespace DOL.GS
 		private long _selfInterruptTime; // Represents a hard interrupt timer inflicted by self.
 
 		public GameLiving LastInterrupter { get; private set; }
-		public long InterruptRemainingDuration => Math.Max(0, Math.Max(_interruptTime, _selfInterruptTime) - GameLoop.GameLoopTime);
 		public virtual bool SelfInterruptsOnMeleeAttack => true;
 		public virtual bool IsBeingInterrupted => IsInterrupted || IsSelfInterrupted;
 		public bool IsInterrupted => _interruptTime > GameLoop.GameLoopTime;
 		public bool IsSelfInterrupted => _selfInterruptTime > GameLoop.GameLoopTime;
 
-		/// <summary>
-		/// How long does an interrupt last?
-		/// </summary>
-		public virtual int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
+		public long InterruptRemainingDuration
+		{
+			get
+			{
+				// If HARD_INTERRUPT_ON_ATTACKED is true, there is no distinction between _selfInterruptTime and _interruptTime.
+				long interruptTime = Properties.HARD_INTERRUPT_ON_ATTACKED ? Math.Max(_selfInterruptTime, _interruptTime) : _selfInterruptTime;
+				return Math.Max(0, interruptTime - GameLoop.GameLoopTime);
+			}
+		}
+
+		public int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
+		public int SpellSelfInterruptDuration => Properties.SPELL_SELF_INTERRUPT_DURATION;
 
 		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, eAttackType attackType)
 		{

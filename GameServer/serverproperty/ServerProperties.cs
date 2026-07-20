@@ -2212,11 +2212,14 @@ namespace DOL.GS.ServerProperties
 
 		#region SPELLS
 
-		/// <summary>
-		/// Spells-related properties
-		/// </summary>
-		[ServerProperty("spells", "spell_interrupt_duration", "", 3000)]
+		[ServerProperty("spells", "hard_interrupt_on_attacked", "Should the interrupt mechanic be replaced with immediate interrupts", false)]
+		public static bool HARD_INTERRUPT_ON_ATTACKED;
+
+		[ServerProperty("spells", "spell_interrupt_duration", "How long does an interrupt last", 3000)]
 		public static int SPELL_INTERRUPT_DURATION;
+
+		[ServerProperty("spells", "spell_self_interrupt_duration", "How long does a self interrupt lasts", 2200)]
+		public static int SPELL_SELF_INTERRUPT_DURATION;
 
 		[ServerProperty("spells", "spell_charm_named_check", "Prevents charm spell to work on Named Mobs, 0 = disable, 1 = enable", 1)]
 		public static int SPELL_CHARM_NAMED_CHECK;

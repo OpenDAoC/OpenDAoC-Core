@@ -22,7 +22,7 @@ namespace DOL.GS.Spells
             return 100;
         }
 
-        public override bool CasterIsAttacked(GameLiving attacker)
+        protected override bool TryInterruptCaster(GameLiving attacker)
         {
             return false;
         }
