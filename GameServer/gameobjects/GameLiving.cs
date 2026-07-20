@@ -689,7 +689,7 @@ namespace DOL.GS
 
 			if (attacker == this)
 			{
-				SelfInterruptTime = newInterruptTime;
+				_selfInterruptTime = newInterruptTime;
 				return;
 			}
 
@@ -703,10 +703,10 @@ namespace DOL.GS
 
 				// Don't update the interrupt time if it's shorter than the current one.
 				// If that's the case, we can assume the target is still being interrupted and isn't able to attack.
-				if (InterruptTime >= newInterruptTime)
+				if (_interruptTime >= newInterruptTime)
 					return;
 
-				InterruptTime = newInterruptTime;
+				_interruptTime = newInterruptTime;
 				LastInterrupter = attacker;
 
 				// If the time is updated, we also check if the target was already interrupted.
@@ -730,14 +730,15 @@ namespace DOL.GS
 			}
 		}
 
+		private long _interruptTime; // Represents a soft interrupt timer inflicted by attackers.
+		private long _selfInterruptTime; // Represents a hard interrupt timer inflicted by self.
+
 		public GameObject LastInterrupter { get; private set; }
-		public long InterruptTime { get; private set; }
-		public long SelfInterruptTime { get; private set; }
-		public long InterruptRemainingDuration => Math.Max(0, Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime);
+		public long InterruptRemainingDuration => Math.Max(0, Math.Max(_interruptTime, _selfInterruptTime) - GameLoop.GameLoopTime);
 		public virtual bool SelfInterruptsOnMeleeAttack => true;
-		public virtual bool IsBeingInterrupted => IsBeingInterruptedByOther || IsBeingSelfInterrupted;
-		public bool IsBeingInterruptedByOther => InterruptTime > GameLoop.GameLoopTime;
-		public bool IsBeingSelfInterrupted => SelfInterruptTime > GameLoop.GameLoopTime;
+		public virtual bool IsBeingInterrupted => IsInterrupted || IsSelfInterrupted;
+		public bool IsInterrupted => _interruptTime > GameLoop.GameLoopTime;
+		public bool IsSelfInterrupted => _selfInterruptTime > GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// How long does an interrupt last?
