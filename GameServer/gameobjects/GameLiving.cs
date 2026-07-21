@@ -693,8 +693,8 @@ namespace DOL.GS
 				return;
 			}
 
-			// 3% reduced interrupt chance per level difference.
-			if (!Util.Chance(100 + (attacker.EffectiveLevel - EffectiveLevel) * 3))
+			// 5% reduced interrupt chance per level difference.
+			if (!Util.Chance(100 + (attacker.EffectiveLevel - EffectiveLevel) * 5))
 				return;
 
 			lock (_interruptTimerLock)
