@@ -174,7 +174,7 @@ namespace DOL.GS
         public void OnEffectStartsMsg(bool msgTarget, bool msgSelf, bool msgArea)
         {
             if (!IsBeingReplaced)
-                SendMessages(msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message1, SpellHandler.Spell.Message2);
+                SendMessages(msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message1, SpellHandler.Spell.Message2, eChatType.CT_Spell);
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace DOL.GS
         public void OnEffectExpiresMsg(bool msgTarget, bool msgSelf, bool msgArea)
         {
             if (!IsBeingReplaced)
-                SendMessages(msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message3, SpellHandler.Spell.Message4);
+                SendMessages(msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message3, SpellHandler.Spell.Message4, eChatType.CT_SpellExpires);
         }
 
         public virtual long GetRemainingTimeForClient()
@@ -296,19 +296,19 @@ namespace DOL.GS
             }
         }
 
-        private void SendMessages(bool msgTarget, bool msgSelf, bool msgArea, string firstPersonMessage, string thirdPersonMessage)
+        private void SendMessages(bool msgTarget, bool msgSelf, bool msgArea, string firstPersonMessage, string thirdPersonMessage, eChatType chatType)
         {
             // Sends a first-person message directly to the caster's target, if they are a player.
             if (msgTarget && Owner is GamePlayer playerTarget)
                 // "You feel more dexterous!"
-                ((SpellHandler) SpellHandler).MessageToLiving(playerTarget, firstPersonMessage, eChatType.CT_Spell);
+                ((SpellHandler) SpellHandler).MessageToLiving(playerTarget, firstPersonMessage, chatType);
 
             GameLiving toExclude = null; // Either the caster or the owner if it's a pet.
 
             // Sends a third-person message directly to the caster to indicate the spell had landed, regardless of range.
             if (msgSelf && SpellHandler.Caster != Owner)
             {
-                ((SpellHandler) SpellHandler).MessageToCaster(Util.MakeSentence(thirdPersonMessage, Owner.GetName(0, true)), eChatType.CT_Spell);
+                ((SpellHandler) SpellHandler).MessageToCaster(Util.MakeSentence(thirdPersonMessage, Owner.GetName(0, true)), chatType);
 
                 if (SpellHandler.Caster is GamePlayer)
                     toExclude = SpellHandler.Caster;
@@ -328,7 +328,7 @@ namespace DOL.GS
                     toExclude = SpellHandler.Caster;
 
                 // "{0} looks more agile!"
-                Message.SystemToArea(Owner, Util.MakeSentence(thirdPersonMessage, Owner.GetName(0, thirdPersonMessage.StartsWith("{0}"))), eChatType.CT_Spell, Owner, toExclude);
+                Message.SystemToArea(Owner, Util.MakeSentence(thirdPersonMessage, Owner.GetName(0, thirdPersonMessage.StartsWith("{0}"))), chatType, Owner, toExclude);
             }
         }
 
