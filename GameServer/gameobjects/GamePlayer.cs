@@ -11818,43 +11818,31 @@ namespace DOL.GS
             get
             {
                 double speed = Properties.CRAFTING_SPEED;
-                var craftSpeedBonus = false;
-                ushort[] keepIDs = {50, 75, 100, 57, 111, 198}; // beno bled crauch and the strength relic keeps in each realm
-
-                ushort[] strRelicKeepIDs = {};
-
 
                 if (speed <= 0)
-                    speed = 1.0;
+                    speed = 1;
 
                 if (Guild != null && Guild.BonusType == Guild.eBonusType.CraftingHaste)
-                {
-                    speed *= (1.0 + Properties.GUILD_BUFF_CRAFTING * .01);
-                }
+                    speed *= 1 + Properties.GUILD_BUFF_CRAFTING * 0.01;
 
                 if (CurrentRegion.IsCapitalCity && Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS > 0)
-                {
                     return speed * Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS;
-                } 
-                else if (CurrentZone.IsOF && _currentAreas.Count > 0)
+
+                if (CurrentZone.IsOF && _currentAreas.Count > 0)
                 {
                     foreach (var area in _currentAreas)
                     {
-                        if (area is KeepArea kA)
+                        if (area is not KeepArea keepArea)
+                            continue;
+
+                        if (keepArea.Keep.KeepID is 50 or 75 or 100 or 57 or 111 or 198 &&
+                            keepArea.Keep.Realm == Realm)
                         {
-                            if (keepIDs.Contains(kA.Keep.KeepID) && kA.Keep.Realm == Realm)
-                            {
-                                craftSpeedBonus = true;
-                                break;
-                            }
+                            speed *= Properties.KEEP_CRAFTING_SPEED_BONUS;
+                            break;
                         }
                     }
-                    if (craftSpeedBonus)
-                    {
-                        speed = speed * Properties.KEEP_CRAFTING_SPEED_BONUS;
-                    }
                 }
-                //log.Warn($"Crafting speed bonus {craftSpeedBonus} for {Name} in {CurrentZone.Description} - crafting speed {Math.Round(speed*100)}%");
 
                 return speed;
             }
