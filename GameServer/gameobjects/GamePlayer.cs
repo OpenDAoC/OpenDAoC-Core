@@ -11822,13 +11822,15 @@ namespace DOL.GS
                 if (speed <= 0)
                     speed = 1;
 
-                if (Guild != null && Guild.BonusType == Guild.eBonusType.CraftingHaste)
+                if (Guild != null && Guild.BonusType is Guild.eBonusType.CraftingHaste)
                     speed *= 1 + Properties.GUILD_BUFF_CRAFTING * 0.01;
 
-                if (CurrentRegion.IsCapitalCity && Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS > 0)
-                    return speed * Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS;
-
-                if (CurrentZone.IsOF && _currentAreas.Count > 0)
+                if (CurrentRegion.IsCapitalCity)
+                {
+                    if (Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS > 0)
+                        speed *= Properties.CAPITAL_CITY_CRAFTING_SPEED_BONUS;
+                }
+                else if (CurrentZone.IsOF && _currentAreas.Count > 0)
                 {
                     foreach (var area in _currentAreas)
                     {
