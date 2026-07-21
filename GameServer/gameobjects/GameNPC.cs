@@ -2891,18 +2891,6 @@ namespace DOL.GS
 			base.StartInterruptTimer(duration, attackType, attacker);
 		}
 
-		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
-		{
-			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
-
-			if (interrupted)
-				attackComponent.attackAction.OnAimInterrupt(attacker);
-
-			return interrupted;
-		}
-
-		public override int SelfInterruptDurationOnMeleeAttack => AttackSpeed(ActiveWeapon);
-
 		/// <summary>
 		/// The time to wait before each mob respawn
 		/// </summary>

@@ -122,11 +122,6 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected AttackData m_lastAttackData = null;
 
-		/// <summary>
-		/// The property key for the interrupt timeout
-		/// </summary>
-		public const string INTERRUPT_TIMEOUT_PROPERTY = "CAST_INTERRUPT_TIMEOUT";
-
 		private long _lastDuringCastLosCheckTime;
 
 		/// <summary>
@@ -343,7 +338,44 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public virtual bool CasterIsAttacked(GameLiving attacker)
+		private bool _halfwayCastChecked;
+
+		private bool HasPassedHalfCastTime => _castStartTick + _calculatedCastTime * 0.5 <= GameLoop.GameLoopTime;
+
+		public bool PerformOnAttackedInterruptCheck(GameLiving attacker)
+		{
+			if (!Properties.HARD_INTERRUPT_ON_ATTACKED)
+				return false;
+
+			if (CastState is not eCastState.Focusing)
+			{
+				if (!IsInCastingPhase || HasPassedHalfCastTime)
+					return false;
+			}
+
+			return TryInterruptCaster(attacker);
+		}
+
+		private bool PerformDuringCastInterruptCheck(GameLiving attacker)
+		{
+			// If we reach the half cast time while an interrupt timer is running, initiate a self interrupt.
+
+			if (Properties.HARD_INTERRUPT_ON_ATTACKED)
+				return false;
+
+			if (_halfwayCastChecked || !HasPassedHalfCastTime)
+				return false;
+
+			_halfwayCastChecked = true;
+
+			if (!Caster.IsInterrupted || !TryInterruptCaster(attacker))
+				return false;
+
+			Caster.StartInterruptTimer(Caster.SpellSelfInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			return true;
+		}
+
+		protected virtual bool TryInterruptCaster(GameLiving attacker)
 		{
 			if (Spell.Uninterruptible)
 				return false;
@@ -357,16 +389,11 @@ namespace DOL.GS.Spells
 					return false;
 			}
 
-			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
-				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
-				|| IsQuickCasting)
-				return false;
-
-			if (CastState is not eCastState.Focusing)
+			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration) ||
+				Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking) ||
+				IsQuickCasting)
 			{
-				// Only interrupt if we're under 50% of the way through the cast.
-				if (!IsInCastingPhase || GameLoop.GameLoopTime >= _castStartTick + _calculatedCastTime * 0.5)
-					return false;
+				return false;
 			}
 
 			if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
@@ -495,7 +522,7 @@ namespace DOL.GS.Spells
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.GetProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
-				if (nextSpellAvailTime > m_caster.CurrentRegion.Time && Spell.CastTime > 0) // instant spells ignore the potion cast delay
+				if (nextSpellAvailTime > GameLoop.GameLoopTime && Spell.CastTime > 0) // instant spells ignore the potion cast delay
 				{
 					playerCaster.Out.SendMessage(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
@@ -576,7 +603,8 @@ namespace DOL.GS.Spells
 
 				if (interruptRemainingDuration > 0)
 				{
-					interruptRemainingDuration /= 1000 + 1;
+					interruptRemainingDuration /= 1000;
+					interruptRemainingDuration++;
 
 					if (playerCaster != null)
 					{
@@ -999,7 +1027,7 @@ namespace DOL.GS.Spells
 
 		public virtual bool CheckDuringCast(GameLiving target, bool quiet)
 		{
-			if (m_interrupted)
+			if (PerformDuringCastInterruptCheck(Caster.LastInterrupter))
 				return false;
 
 			bool checkLos = false;
@@ -1067,18 +1095,16 @@ namespace DOL.GS.Spells
 						}
 						else
 						{
+							_calculatedCastTime = CalculateCastingTime();
+							_castEndTick = _castStartTick + _calculatedCastTime;
+
 							SendSpellMessages();
-							SendCastAnimation();
+							SendCastAnimation((ushort) (_calculatedCastTime * 0.01));
 							CastState = eCastState.Casting;
 						}
 					}
 					else
-					{
-						if (Caster.IsBeingInterrupted)
-							CastState = eCastState.Interrupted;
-						else
-							CastState = eCastState.Cleanup;
-					}
+						CastState = Caster.IsBeingInterrupted ? eCastState.Interrupted : eCastState.Cleanup;
 
 					break;
 				}
@@ -1264,23 +1290,9 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Sends the cast animation
 		/// </summary>
-		public virtual void SendCastAnimation()
-		{
-			if (Spell.CastTime == 0)
-				SendCastAnimation(0);
-			else
-				SendCastAnimation((ushort)(CalculateCastingTime() / 100));
-		}
-
-		/// <summary>
-		/// Sends the cast animation
-		/// </summary>
 		/// <param name="castTime">The cast time</param>
 		public virtual void SendCastAnimation(ushort castTime)
 		{
-			_calculatedCastTime = castTime * 100;
-			_castEndTick = _castStartTick + _calculatedCastTime;
-
 			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player == null)

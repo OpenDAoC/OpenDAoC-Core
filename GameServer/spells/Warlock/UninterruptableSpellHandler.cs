@@ -47,10 +47,11 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-		public override bool CasterIsAttacked(GameLiving attacker)
-		{
-			return false;
-		}
+        protected override bool TryInterruptCaster(GameLiving attacker)
+        {
+            return false;
+        }
+
         #region Devle Info
         public override IList<string> DelveInfo
         {

@@ -703,12 +703,7 @@ namespace DOL.GS
                 owner.CancelEngageEffect();
 
             if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
-            {
-                if (owner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.Aim && attackAction.CheckInterruptTimer())
-                    return false;
-
                 owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
-            }
 
             AttackState = true;
             return true;
@@ -1120,11 +1115,11 @@ namespace DOL.GS
             BroadcastObserverMessage(ad);
 
             // Interrupt the target of the attack.
-            ad.Target.StartInterruptTimer(interval, ad.AttackType, ad.Attacker);
+            ad.Target.StartInterruptTimer(interval, ad.AttackType, owner);
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
-            if (ad.IsMeleeAttack)
-                owner.StartInterruptTimer(owner.SelfInterruptDurationOnMeleeAttack, ad.AttackType, ad.Attacker);
+            if (ad.IsMeleeAttack && owner.SelfInterruptsOnMeleeAttack)
+                owner.StartInterruptTimer(interval, ad.AttackType, owner);
 
             // Handles CC breaks, ablatives...
             owner.OnAttackEnemy(ad);

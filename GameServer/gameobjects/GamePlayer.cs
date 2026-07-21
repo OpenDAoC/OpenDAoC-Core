@@ -5263,22 +5263,6 @@ namespace DOL.GS
                 Out.SendCloseTimerWindow();
             }
         }
-        /// <summary>
-        /// Does needed interrupt checks and interrupts if needed
-        /// </summary>
-        /// <param name="attacker">the attacker that is interrupting</param>
-        /// <param name="attackType">The attack type</param>
-        /// <returns>true if interrupted successfully</returns>
-        protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
-        {
-            if (base.CheckRangedAttackInterrupt(attacker, attackType))
-            {
-                attackComponent.attackAction.OnAimInterrupt(attacker);
-                return true;
-            }
-
-            return false;
-        }
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {

@@ -25,8 +25,6 @@ namespace DOL.GS
         {
             if (Owner is GamePlayer player)
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-            Owner.TempProperties.RemoveProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
         }
 
         public override void OnStopEffect() { }

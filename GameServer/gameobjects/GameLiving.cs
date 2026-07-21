@@ -679,6 +679,7 @@ namespace DOL.GS
 		}
 
 		private readonly Lock _interruptTimerLock = new();
+		private readonly Lock _interruptCallbackLock = new();
 
 		/// <summary>
 		/// Starts the interrupt timer on this living.
@@ -689,8 +690,18 @@ namespace DOL.GS
 
 			if (attacker == this)
 			{
-				SelfInterruptTime = newInterruptTime;
+				_selfInterruptTime = newInterruptTime;
 				return;
+			}
+
+			if (rangeAttackComponent.RangedAttackType is eRangedAttackType.SureShot)
+			{
+				if (attackType is not eAttackType.MeleeOneHand and
+					not eAttackType.MeleeTwoHand and
+					not eAttackType.MeleeDualWield)
+				{
+					return;
+				}
 			}
 
 			// 5% reduced interrupt chance per level difference.
@@ -699,75 +710,60 @@ namespace DOL.GS
 
 			lock (_interruptTimerLock)
 			{
-				bool wasAlreadyInterrupted = IsBeingInterrupted;
-
 				// Don't update the interrupt time if it's shorter than the current one.
-				// If that's the case, we can assume the target is still being interrupted and isn't able to attack.
-				if (InterruptTime >= newInterruptTime)
-					return;
-
-				InterruptTime = newInterruptTime;
-				LastInterrupter = attacker;
-
-				// If the time is updated, we also check if the target was already interrupted.
-				// This should prevent multiple threads from executing the interrupt code, without expanding the lock.
-				if (wasAlreadyInterrupted)
-					return;
+				if (_interruptTime < newInterruptTime)
+				{
+					_interruptTime = newInterruptTime;
+					LastInterrupter = attacker;
+				}
 			}
 
-			// Perform the actual interrupt.
-			if (castingComponent.SpellHandler?.CasterIsAttacked(attacker) == true)
-				return;
-			else if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+			if (_interruptCallbackLock.TryEnter())
 			{
-				if (attackComponent.AttackState)
-					CheckRangedAttackInterrupt(attacker, attackType);
-				else
+				try
 				{
-					AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
-					volley?.OnAttacked();
+					if (castingComponent.SpellHandler?.PerformOnAttackedInterruptCheck(attacker) == true)
+						return;
+
+					if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+					{
+						if (attackComponent.AttackState)
+							attackComponent.attackAction.PerformOnAttackedInterruptCheck(attacker);
+						else
+						{
+							AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
+							volley?.OnAttacked();
+						}
+					}
+				}
+				finally
+				{
+					_interruptCallbackLock.Exit();
 				}
 			}
 		}
 
-		public GameObject LastInterrupter { get; private set; }
-		public long InterruptTime { get; private set; }
-		public long SelfInterruptTime { get; private set; }
-		public long InterruptRemainingDuration => Math.Max(0, Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime);
-		public virtual int SelfInterruptDurationOnMeleeAttack => 3000;
-		public virtual bool IsBeingInterrupted => IsBeingInterruptedByOther || IsBeingSelfInterrupted;
-		public bool IsBeingInterruptedByOther => InterruptTime > GameLoop.GameLoopTime;
-		public bool IsBeingSelfInterrupted => SelfInterruptTime > GameLoop.GameLoopTime;
+		private long _interruptTime; // Represents a soft interrupt timer inflicted by attackers.
+		private long _selfInterruptTime; // Represents a hard interrupt timer inflicted by self.
 
-		/// <summary>
-		/// How long does an interrupt last?
-		/// </summary>
-		public virtual int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
+		public GameLiving LastInterrupter { get; private set; }
+		public virtual bool SelfInterruptsOnMeleeAttack => true;
+		public virtual bool IsBeingInterrupted => IsInterrupted || IsSelfInterrupted;
+		public bool IsInterrupted => _interruptTime > GameLoop.GameLoopTime;
+		public bool IsSelfInterrupted => _selfInterruptTime > GameLoop.GameLoopTime;
 
-		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, eAttackType attackType)
+		public long InterruptRemainingDuration
 		{
-			if (rangeAttackComponent.RangedAttackType == eRangedAttackType.SureShot)
+			get
 			{
-				if (attackType is not eAttackType.MeleeOneHand
-					and not eAttackType.MeleeTwoHand
-					and not eAttackType.MeleeDualWield)
-					return false;
+				// If HARD_INTERRUPT_ON_ATTACKED is true, there is no distinction between _selfInterruptTime and _interruptTime.
+				long interruptTime = Properties.HARD_INTERRUPT_ON_ATTACKED ? Math.Max(_selfInterruptTime, _interruptTime) : _selfInterruptTime;
+				return Math.Max(0, interruptTime - GameLoop.GameLoopTime);
 			}
-
-			long rangeAttackHoldStart = rangeAttackComponent.AttackStartTime;
-
-			if (rangeAttackHoldStart > 0)
-			{
-				long elapsedTime = GameLoop.GameLoopTime - rangeAttackHoldStart;
-				long halfwayPoint = attackComponent.AttackSpeed(ActiveWeapon) / 2;
-				
-				if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.ReadyToFire and not eRangedAttackState.None && elapsedTime > halfwayPoint)
-					return false;
-			}
-
-			attackComponent.StopAttack();
-			return true;
 		}
+
+		public int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
+		public int SpellSelfInterruptDuration => Properties.SPELL_SELF_INTERRUPT_DURATION;
 
 		/// <summary>
 		/// Check if we can make a proc on a weapon go off.  Weapon Procs

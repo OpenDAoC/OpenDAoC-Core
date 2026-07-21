@@ -168,9 +168,9 @@ namespace DOL.GS.RealmAbilities
                 }
             }
 
-            if (_player.IsBeingInterruptedByOther)
+            if (_player.IsInterrupted)
             {
-                GameObject attacker = _player.LastInterrupter;
+                GameLiving attacker = _player.LastInterrupter;
 
                 if (attacker is GameNPC npcAttacker)
                     _player.Out.SendMessage(LanguageMgr.GetTranslation(_player.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, _player.Client.Account.Language, npcAttacker), "volley"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
