@@ -75,7 +75,7 @@ namespace DOL.GS.Keeps
             {
                 Point2D point;
                 //calculate x y
-                if (IsObjectInFront(player, 180) )
+                if (IsObjectInFront(player, 180, 0))
                     point = this.GetPointFromHeading(this.Heading, -500);
                 else
                     point = this.GetPointFromHeading(this.Heading, 500);
