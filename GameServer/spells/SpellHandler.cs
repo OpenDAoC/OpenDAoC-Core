@@ -344,11 +344,11 @@ namespace DOL.GS.Spells
 
 		public bool PerformOnAttackedInterruptCheck(GameLiving attacker)
 		{
-			if (!Properties.HARD_INTERRUPT_ON_ATTACKED)
-				return false;
-
 			if (CastState is not eCastState.Focusing)
 			{
+				if (!Properties.HARD_INTERRUPT_ON_ATTACKED)
+					return false;
+
 				if (!IsInCastingPhase || HasPassedHalfCastTime)
 					return false;
 			}
