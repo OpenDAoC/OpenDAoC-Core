@@ -679,6 +679,7 @@ namespace DOL.GS
 		}
 
 		private readonly Lock _interruptTimerLock = new();
+		private readonly Lock _interruptCallbackLock = new();
 
 		/// <summary>
 		/// Starts the interrupt timer on this living.
@@ -709,33 +710,35 @@ namespace DOL.GS
 
 			lock (_interruptTimerLock)
 			{
-				bool wasAlreadyInterrupted = IsBeingInterrupted;
-
 				// Don't update the interrupt time if it's shorter than the current one.
-				// If that's the case, we can assume the target is still being interrupted and isn't able to attack.
-				if (_interruptTime >= newInterruptTime)
-					return;
-
-				_interruptTime = newInterruptTime;
-				LastInterrupter = attacker;
-
-				// If the time is updated, we also check if the target was already interrupted.
-				// This should prevent multiple threads from executing the interrupt code, without expanding the lock.
-				if (wasAlreadyInterrupted)
-					return;
+				if (_interruptTime < newInterruptTime)
+				{
+					_interruptTime = newInterruptTime;
+					LastInterrupter = attacker;
+				}
 			}
 
-			if (castingComponent.SpellHandler?.PerformOnAttackedInterruptCheck(attacker) == true)
-				return;
-
-			if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+			if (_interruptCallbackLock.TryEnter())
 			{
-				if (attackComponent.AttackState)
-					attackComponent.attackAction.PerformOnAttackedInterruptCheck(attacker);
-				else
+				try
 				{
-					AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
-					volley?.OnAttacked();
+					if (castingComponent.SpellHandler?.PerformOnAttackedInterruptCheck(attacker) == true)
+						return;
+
+					if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+					{
+						if (attackComponent.AttackState)
+							attackComponent.attackAction.PerformOnAttackedInterruptCheck(attacker);
+						else
+						{
+							AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
+							volley?.OnAttacked();
+						}
+					}
+				}
+				finally
+				{
+					_interruptCallbackLock.Exit();
 				}
 			}
 		}
