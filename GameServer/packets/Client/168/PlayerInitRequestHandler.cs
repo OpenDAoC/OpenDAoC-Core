@@ -80,11 +80,14 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (ServerProperties.Properties.ENABLE_DEBUG)
                 player.Out.SendMessage("Server is running in DEBUG mode!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-            if (player.PreviousLoginDate.AddMinutes(ServerProperties.Properties.NEAR_KEEP_RELOG_GRACE_PERIOD) < DateTime.Now)
-                CheckNearbyKeepAndMoveIfUnsafe(player);
+            if ((ePrivLevel) player.Client.Account.PrivLevel < ePrivLevel.GM)
+            {
+                if (player.PreviousLoginDate.AddMinutes(ServerProperties.Properties.NEAR_KEEP_RELOG_GRACE_PERIOD) < DateTime.Now)
+                    CheckNearbyKeepAndMoveIfUnsafe(player);
 
-            if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
-                CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
+                if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
+                    CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
+            }
 
             if (checkInstanceLogin)
             {
