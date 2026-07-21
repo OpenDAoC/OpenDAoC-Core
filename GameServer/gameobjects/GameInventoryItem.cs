@@ -1278,7 +1278,7 @@ namespace DOL.GS
                 delve.Add("   Sell Price: " + SellPrice);
             }
             delve.Add("");
-            delve.Add("        Level: " + Level);
+            delve.Add($"        Level: {Level} ({ItemConLevelGrid.GetConColor(ItemConLevelGrid.GetConLevel(client.Player.Level, Level))})");
             delve.Add("       Object: " + GlobalConstants.ObjectTypeToName(Object_Type) + " (" + Object_Type + ")");
             delve.Add("         Type: " + GlobalConstants.SlotToName(Item_Type) + " (" + Item_Type + ")");
             delve.Add("");

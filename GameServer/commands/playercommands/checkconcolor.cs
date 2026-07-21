@@ -19,7 +19,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            client.Out.SendMessage($"{ConLevels.GetConColor(ConLevels.GetConLevel(player.EffectiveLevel, target.EffectiveLevel))}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage($"{CharacterConLevelGrid.GetConColor(CharacterConLevelGrid.GetConLevel(player.EffectiveLevel, target.EffectiveLevel))}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
     }
 }

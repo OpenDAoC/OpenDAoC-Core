@@ -893,12 +893,12 @@ namespace DOL.GS
 
 		public int GetConLevel(GameObject compare)
 		{
-			return ConLevels.GetConLevel(EffectiveLevel, compare.EffectiveLevel);
+			return CharacterConLevelGrid.GetConLevel(EffectiveLevel, compare.EffectiveLevel);
 		}
 
 		public static int GetConLevel(int level, int compareLevel)
 		{
-			return ConLevels.GetConLevel(level, compareLevel);
+			return CharacterConLevelGrid.GetConLevel(level, compareLevel);
 		}
 
 		#endregion

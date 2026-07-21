@@ -645,7 +645,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsObjectGreyCon(GameObject obj)
 		{
-			return (ConColor) GetConLevel(obj) <= ConColor.GREY;
+			return (ConColor) GetConLevel(obj) <= ConColor.Grey;
 		}
 
 		/// <summary>
