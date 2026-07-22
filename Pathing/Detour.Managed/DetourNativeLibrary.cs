@@ -22,7 +22,7 @@ namespace OpenDAoC.Pathing
 
         private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
-            if (!IsDetourLibraryName(libraryName))
+            if (!string.Equals(libraryName, LIBRARY_NAME, StringComparison.OrdinalIgnoreCase))
                 return IntPtr.Zero;
 
             foreach (string candidate in EnumerateCandidatePaths())
@@ -36,20 +36,6 @@ namespace OpenDAoC.Pathing
 
             // Let the default resolver try.
             return IntPtr.Zero;
-        }
-
-        private static bool IsDetourLibraryName(string libraryName)
-        {
-            if (string.IsNullOrEmpty(libraryName))
-                return false;
-
-            // LibraryImport name, bare name, or platform-suffixed variants.
-            string name = libraryName.Replace('\\', '/');
-            return name.Equals(LIBRARY_NAME, StringComparison.OrdinalIgnoreCase) ||
-                name.Equals("Detour", StringComparison.OrdinalIgnoreCase) ||
-                name.Equals("lib/Detour.dll", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith("/Detour", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith("/Detour.dll", StringComparison.OrdinalIgnoreCase);
         }
 
         internal static IEnumerable<string> EnumerateCandidatePaths()
