@@ -52,7 +52,12 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            _brain.Body.StopMoving();
+            GameNPC npc = _brain.Body;
+            npc.StopMoving();
+
+            if (npc.IsAtSpawn && npc.Heading != npc.SpawnHeading)
+                npc.TurnTo(npc.SpawnHeading);
+
             base.Enter();
         }
 
@@ -65,7 +70,7 @@ namespace DOL.AI.Brain
 
             if (npc.CanMoveOnPath)
                 _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
-            else if (!npc.IsAtSpawn || npc.Heading != npc.SpawnHeading)
+            else if (!npc.IsAtSpawn)
                 _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             else if (_brain.CheckProximityAggro())
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
