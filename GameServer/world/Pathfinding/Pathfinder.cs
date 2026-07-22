@@ -35,6 +35,7 @@ namespace DOL.GS
 
         public GameNPC Owner { get; }
         public bool ShouldPath => _allowedToPath && (Owner.Flags & (eFlags.FLYING | eFlags.SWIMMING)) == 0;
+        public bool IsJumping => _offMeshCommitEnd.HasValue;
         public bool ForceReplot { get; set; }
         public PathfindingStatus PathfindingStatus { get; private set; }
 

@@ -57,6 +57,7 @@ namespace DOL.GS
         public double HorizontalVelocityForClient { get; private set; }
         public bool HasActiveResetHeadingTimer => _resetHeadingTimer?.IsAlive == true;
         public bool IsPathVisualizationActive => _pathVisualization != null;
+        public bool ShouldForceFlyingFlag => _pathfinder.IsJumping || IsPathVisualizationActive;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
         public ref Vector3 PositionForClient => ref _positionForClientTick == GameLoop.GameLoopTime ? ref _positionForClient : ref _ownerPosition;
 
