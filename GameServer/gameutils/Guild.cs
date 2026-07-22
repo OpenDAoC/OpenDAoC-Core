@@ -584,13 +584,13 @@ namespace DOL.GS
 				if (!m_onlineGuildPlayers.Remove(player.InternalID))
 					return false;
 
-				// now update the all member list to display lastonline time instead of zone
-				Dictionary<string, GuildMgr.GuildMemberView> memberList = GuildMgr.GetGuildMemberViews(player.Guild);
+				// Update the all member list to display lastonline time instead of zone.
+				Dictionary<string, GuildMgr.GuildMemberView> memberList = GuildMgr.GetGuildMemberViews(this);
 
 				if (memberList != null && memberList.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView guildMemberDisplay))
 					guildMemberDisplay.ZoneOrOnline = DateTime.Now.ToShortDateString();
 
-				GuildMgr.RefreshPersonalHouseEmblem(player, null);
+				GuildMgr.RefreshPersonalHouseEmblem(player);
 			}
 
 			return true;
