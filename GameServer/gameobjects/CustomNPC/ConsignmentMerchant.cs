@@ -458,7 +458,7 @@ namespace DOL.GS
             Inventory = template.CloseTemplate();
         }
 
-        private void SetEmblem()
+        public void SetEmblem()
         {
             if (Inventory == null)
                 return;
@@ -468,18 +468,13 @@ namespace DOL.GS
             if (house == null)
                 return;
 
-            if (house.DatabaseItem.GuildHouse)
-            {
-                DbGuild guild = DOLDB<DbGuild>.SelectObject(DB.Column("GuildName").IsEqualTo(house.DatabaseItem.GuildName));
-                int emblem = guild.Emblem;
-                DbInventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
+            DbInventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
 
-                if (cloak != null)
-                {
-                    cloak.Emblem = emblem;
-                    BroadcastLivingEquipmentUpdate();
-                }
-            }
+            if (cloak == null)
+                return;
+
+            cloak.Emblem = house.Emblem;
+            BroadcastLivingEquipmentUpdate();
         }
 
         private ConsignmentState GetState()

@@ -72,6 +72,7 @@ namespace DOL.GS.Housing
         public abstract bool AddHouseVault(int key, GameHouseVault vault);
         public abstract bool RemoveHouseVault(int key);
         public abstract void ClearHouseVaults();
+        public abstract void SetEmblem(int emblem);
 
         // Required implementations that depend on db context.
         public abstract void InitializePermissionLevels();
@@ -668,6 +669,17 @@ namespace DOL.GS.Housing
         public override void ClearHouseVaults()
         {
             _houseVaults.Clear();
+        }
+
+        public override void SetEmblem(int emblem)
+        {
+            if (Emblem == emblem)
+                return;
+
+            Emblem = emblem;
+            ConsignmentMerchant?.SetEmblem();
+            SaveIntoDatabase();
+            SendUpdate();
         }
 
         private int GetOpenPermissionSlot()
@@ -1348,5 +1360,7 @@ namespace DOL.GS.Housing
         {
             return -1;
         }
+
+        public override void SetEmblem(int emblem) { }
     }
 }

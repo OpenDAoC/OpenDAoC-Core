@@ -225,13 +225,7 @@ namespace DOL.GS
                 if (guild.GuildOwnsHouse && guild.GuildHouseNumber > 0)
                 {
                     House guildHouse = HouseMgr.GetHouse(guild.GuildHouseNumber);
-
-                    if (guildHouse != null)
-                    {
-                        guildHouse.Emblem = guild.Emblem;
-                        guildHouse.SaveIntoDatabase();
-                        guildHouse.SendUpdate();
-                    }
+                    guildHouse?.SetEmblem(guild.Emblem);
                 }
 
                 // Update the guild emblem of every personal house.
@@ -263,9 +257,7 @@ namespace DOL.GS
             if (personalHouse == null || personalHouse.Emblem == newEmblem)
                 return;
 
-            personalHouse.Emblem = newEmblem;
-            personalHouse.SaveIntoDatabase();
-            personalHouse.SendUpdate();
+            personalHouse.SetEmblem(newEmblem);
         }
 
         public static Guild GetGuildByName(string guildName)
@@ -354,8 +346,7 @@ namespace DOL.GS
                                     $"(Previous: {houseEmblem}) (New: {guildEmblem}) (House: {guildHouse.HouseNumber})");
                             }
 
-                            guildHouse.Emblem = guild.Emblem;
-                            guildHouse.SaveIntoDatabase();
+                            guildHouse.SetEmblem(houseEmblem);
                         }
                     }
 
