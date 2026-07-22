@@ -8,34 +8,34 @@ namespace OpenDAoC.Pathing
     // Library resolution is handled by DetourNativeLibrary (absolute paths).
     public static partial class DetourNative
     {
-        private const string LibraryName = DetourNativeLibrary.LibraryName;
+        private const string LIBRARY_NAME = DetourNativeLibrary.LIBRARY_NAME;
 
         static DetourNative()
         {
             DetourNativeLibrary.EnsureResolverRegistered();
         }
 
-        [LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+        [LibraryImport(LIBRARY_NAME, StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool LoadNavMesh(string file, ref IntPtr meshPtr);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool FreeNavMesh(IntPtr meshPtr);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool FreeNavMeshQuery(IntPtr queryPtr);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus PathStraight(
             IntPtr queryPtr,
@@ -48,7 +48,7 @@ namespace OpenDAoC.Pathing
             Span<float> pointBuffer,
             Span<EDtPolyFlags> pointFlags);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus MoveAlongSurface(
             IntPtr query,
@@ -58,7 +58,7 @@ namespace OpenDAoC.Pathing
             ReadOnlySpan<EDtPolyFlags> filter,
             Span<float> outputVector);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus FindRandomPointAroundCircle(
             IntPtr queryPtr,
@@ -68,7 +68,7 @@ namespace OpenDAoC.Pathing
             ReadOnlySpan<EDtPolyFlags> queryFilter,
             Span<float> outputVector);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus FindClosestPoint(
             IntPtr queryPtr,
@@ -77,7 +77,7 @@ namespace OpenDAoC.Pathing
             ReadOnlySpan<EDtPolyFlags> queryFilter,
             Span<float> outputVector);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus FindClosestPointInBox(
             IntPtr queryPtr,
@@ -87,7 +87,7 @@ namespace OpenDAoC.Pathing
             ReadOnlySpan<EDtPolyFlags> filter,
             Span<float> outputVector);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus HasLineOfSight(
             IntPtr query,
@@ -98,7 +98,7 @@ namespace OpenDAoC.Pathing
             [MarshalAs(UnmanagedType.I1)] out bool hasLos,
             Span<float> outputVector);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus UpdateFlags(
             IntPtr meshPtr,
@@ -107,7 +107,7 @@ namespace OpenDAoC.Pathing
             EDtPolyFlags flagsToRemove,
             EDtPolyFlags flagsToAdd);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus GetPolyAt(
             IntPtr queryPtr,
@@ -117,7 +117,7 @@ namespace OpenDAoC.Pathing
             out ulong outputPolyRef,
             Span<float> outputVector);
 
-        [LibraryImport(LibraryName)]
+        [LibraryImport(LIBRARY_NAME)]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
         public static partial EDtStatus GetPolysInBox(
             IntPtr queryPtr,
