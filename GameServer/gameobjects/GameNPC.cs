@@ -3026,22 +3026,6 @@ namespace DOL.GS
 			return 0;
 		}
 
-		/// <summary>
-		/// The chance for a critical hit
-		/// </summary>
-		public int AttackCriticalChance(DbInventoryItem weapon)
-		{
-			if (m_activeWeaponSlot == eActiveWeaponSlot.Distance)
-			{
-				if (rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
-					return 0; // no crit damage for crit shots
-				else
-					return GetModified(eProperty.CriticalArcheryHitChance);
-			}
-
-			return GetModified(eProperty.CriticalMeleeHitChance);
-		}
-
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
 			Flags &= ~eFlags.STEALTH;
