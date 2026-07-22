@@ -244,8 +244,6 @@ namespace DOL.GS
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
                 else if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.TrueShot))
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-                else
-                    _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
                 // Must be done after changing RangedAttackType to account for RapidFire.
                 attackSpeed = AttackComponent.AttackSpeed(_weapon);
@@ -400,10 +398,10 @@ namespace DOL.GS
                 _owner.rangeAttackComponent.RangedAttackType,
                 _owner.rangeAttackComponent.Ammo);
 
-            if (_owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
-                _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-            else if (_owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Long)
+            if (_owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Long)
                 (EffectListService.GetEffectOnTarget(_owner, eEffect.TrueShot) as TrueShotECSGameEffect)?.Cancel(true);
+
+            _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
             if (_ticksToTarget > 0)
