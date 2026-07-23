@@ -79,7 +79,12 @@ namespace DOL.GS
 
             // Immobile NPCs and caster guards forget about the target, other NPCs will try to move into range and line of sight.
             if (IsCasterGuardOrImmobile)
-                (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(target as GameLiving);
+            {
+                // Keep the target in the aggro list while the NPC is still casting.
+                // This ensures that the NPC doesn't enter an idle state, potentially interfering with spell casting.
+                if (!_npcOwner.IsCasting)
+                    (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(target as GameLiving);
+            }
             else if (_npcOwner.TargetObject == target)
                 _npcOwner.Follow(target, _npcOwner.StickMinimumRange, _npcOwner.StickMaximumRange);
         }

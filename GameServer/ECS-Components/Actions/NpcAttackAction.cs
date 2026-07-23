@@ -261,10 +261,8 @@ namespace DOL.GS
 
             if (IsArcherGuardOrImmobile)
             {
-                StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
-
                 if (_losCheckTarget is GameLiving livingLosCheckTarget)
-                    brain.RemoveFromAggroList(livingLosCheckTarget);
+                    (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(livingLosCheckTarget);
 
                 // We could not return here. This would force the NPC to draw its bow again.
                 return;
