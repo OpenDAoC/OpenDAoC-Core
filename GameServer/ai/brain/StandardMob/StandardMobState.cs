@@ -99,6 +99,8 @@ namespace DOL.AI.Brain
 
         public override void Exit()
         {
+            _brain.ClearAggroList();
+
             if (_brain.Body.attackComponent.AttackState)
                 _brain.Body.StopAttack();
 
@@ -186,12 +188,6 @@ namespace DOL.AI.Brain
 
         public StandardMobState_RETURN_TO_SPAWN(StandardMobBrain brain) : base(brain) { }
 
-        public override void Enter()
-        {
-            _brain.ClearAggroList();
-            base.Enter();
-        }
-
         public override void Think()
         {
             if (_brain.Body.IsAtSpawn)
@@ -215,7 +211,6 @@ namespace DOL.AI.Brain
         public override void Enter()
         {
             _brain.Body.MoveOnPath(_brain.Body.MaxSpeed);
-            _brain.ClearAggroList();
             base.Enter();
         }
 
