@@ -61,7 +61,7 @@ namespace DOL.AI
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.
             if (!Body.IsAtSpawn && !IsActive)
-                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
+                Body.MoveInRegion(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading, true);
 
             Body.ClearObjectsInRadiusCache();
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
