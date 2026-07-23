@@ -254,10 +254,28 @@ namespace DOL.GS
             }
         }
 
+        private GMPowers m_gmPowers;
+
+        /// <summary>
+        /// Gets this player's enabled GM powers, or a shared null object when none are enabled.
+        /// </summary>
+        public GMPowers GMPowers
+        {
+            get { return m_gmPowers ?? DOL.GS.GMPowers.None; }
+            internal set { m_gmPowers = ReferenceEquals(value, DOL.GS.GMPowers.None) ? null : value; }
+        }
+
         /// <summary>
         /// Whether or not the player can be attacked.
         /// </summary>
-        public override bool IsAttackable { get { return (Client.Account.PrivLevel <= (uint)ePrivLevel.Player && base.IsAttackable); }}
+        public override bool IsAttackable
+        {
+            get
+            {
+                bool privilegeAllowsAttacks = Client.Account.PrivLevel <= (uint)ePrivLevel.Player || GMPowers.AttackableEnabled;
+                return privilegeAllowsAttacks && base.IsAttackable;
+            }
+        }
 
         /// <summary>
         /// Can this player use cross realm items
@@ -5269,7 +5287,14 @@ namespace DOL.GS
             if (Duel != null && !IsDuelPartner(source as GameLiving))
                 Duel.Stop();
 
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+            if (GMPowers.GodModeEnabled)
+            {
+                // Combat messages are sent by OnAttackedByEnemy before this method is called.
+                // Still publish the damage event for scripts and effects, but do not change health.
+                Notify(GameObjectEvent.TakeDamage, this, new TakeDamageEventArgs(source, damageType, damageAmount, criticalAmount));
+            }
+            else
+                base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 
             if (HasAbility(Abilities.DefensiveCombatPowerRegeneration))
                 Mana += (int)((damageAmount + criticalAmount) * 0.25);
