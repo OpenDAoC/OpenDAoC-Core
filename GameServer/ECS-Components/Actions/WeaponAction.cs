@@ -613,16 +613,18 @@ namespace DOL.GS
                 case eAttackResult.HitStyle:
                 case eAttackResult.HitUnstyled:
                 {
+                    // Don't use regular attacking code to avoid Reflex Attack triggering itself.
+                    // Currently Reflex Attack simply does damage and doesn't trigger procs or damage adds / shields.
+
                     int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
                     WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null, 0);
-                    AttackData ad = weaponAction.InitiateAttack(target.ActiveWeapon, null); // Don't call `WeaponAction.Execute` here.
+                    AttackData attackData = weaponAction.InitiateAttack(target.ActiveWeapon, null);
+                    attacker.DealDamage(attackData);
 
-                    // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually
-                    // since it will not be done automatically as this attack is not processed by regular attacking code.
-                    if (ad.AttackResult is eAttackResult.HitUnstyled)
+                    if (attackData.AttackResult is eAttackResult.HitUnstyled)
                     {
                         GamePlayer playerAttacker = attacker as GamePlayer;
-                        playerAttacker?.Out.SendMessage($"{target.Name} counter-attacks you for {ad.Damage} damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        playerAttacker?.Out.SendMessage($"{target.Name} counter-attacks you for {attackData.Damage} damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     }
 
                     break;
