@@ -41,15 +41,13 @@ namespace DOL.AI
         /// <returns>true if started</returns>
         public virtual bool Start()
         {
-            if (ServiceObjectStore.Add(this))
-            {
-                // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
-                // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
-                NextThinkTick = GameLoop.GameLoopTime + ThinkOffsetOnStart;
-                return true;
-            }
+            if (!ServiceObjectStore.Add(this))
+                return false;
 
-            return false;
+            // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
+            // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
+            NextThinkTick = GameLoop.GameLoopTime + ThinkOffsetOnStart;
+            return true;
         }
 
         /// <summary>
@@ -58,8 +56,8 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
-            if (ServiceObjectId.PeekAction() is ServiceObjectId.PendingAction.Remove)
-                return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
+            if (!ServiceObjectStore.Remove(this))
+                return false;
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.
             if (!Body.IsAtSpawn && !IsActive)
@@ -67,7 +65,7 @@ namespace DOL.AI
 
             Body.ClearObjectsInRadiusCache();
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
-            return ServiceObjectStore.Remove(this);
+            return true;
         }
 
         public GamePlayer GetLosChecker(GameObject target)
