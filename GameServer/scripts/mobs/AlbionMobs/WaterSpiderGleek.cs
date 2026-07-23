@@ -1,19 +1,14 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.GS;
 
 namespace DOL.GS
 {
     public class WaterSpiderGleek : TimeDependentSpawnNpc
     {
-        public WaterSpiderGleek() : base() { }
-
-        protected override ABrain CreateBrain()
-        {
-            return new WaterSpiderGleekBrain();
-        }
+        public WaterSpiderGleek() : base(new WaterSpiderGleekBrain()) { }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class WaterSpiderGleekBrain : TimeDependentSpawnBrain

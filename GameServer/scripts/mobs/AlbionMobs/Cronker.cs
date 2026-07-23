@@ -1,17 +1,11 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.GS;
 
 namespace DOL.GS
 {
     public class Cronker : TimeDependentSpawnNpc
     {
-        public Cronker() : base() { }
-
-        protected override ABrain CreateBrain()
-        {
-            return new CronkerBrain();
-        }
+        public Cronker() : base(new CronkerBrain()) { }
     }
 }
 

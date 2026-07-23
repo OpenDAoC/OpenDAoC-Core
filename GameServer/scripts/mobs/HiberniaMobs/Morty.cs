@@ -1,15 +1,11 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.GS;
 
 namespace DOL.GS
 {
     public class Morty : TimeDependentSpawnNpc
     {
-        protected override ABrain CreateBrain()
-        {
-            return new MortyBrain();
-        }
+        public Morty() : base(new MortyBrain()) { }
     }
 }
 

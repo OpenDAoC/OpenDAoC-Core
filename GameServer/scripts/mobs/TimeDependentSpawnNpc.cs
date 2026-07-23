@@ -1,6 +1,4 @@
-﻿using System;
-using DOL.AI;
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.GS;
 
 namespace DOL.GS
@@ -13,32 +11,17 @@ namespace DOL.GS
         public override eFlags Flags => TimeDependentBrain == null || TimeDependentBrain.IsVisible ? base.Flags : base.Flags | INACTIVE_FLAGS;
         public override ushort Model => TimeDependentBrain == null || TimeDependentBrain.IsVisible ? base.Model : (ushort) 1;
 
-        public override bool AddToWorld()
-        {
-            SetOwnBrain(CreateBrain());
-            return base.AddToWorld();
-        }
-
-        protected virtual ABrain CreateBrain()
-        {
-            throw new NotImplementedException();
-        }
+        public TimeDependentSpawnNpc(TimeDependentSpawnBrain brain) : base(brain) { }
     }
 
     public class DaySpawn : TimeDependentSpawnNpc
     {
-        protected override ABrain CreateBrain()
-        {
-            return new DaySpawnBrain();
-        }
+        public DaySpawn() : base(new DaySpawnBrain()) { }
     }
 
     public class NightSpawn : TimeDependentSpawnNpc
     {
-        protected override ABrain CreateBrain()
-        {
-            return new NightSpawnBrain();
-        }
+        public NightSpawn() : base(new NightSpawnBrain()) { }
     }
 }
 
