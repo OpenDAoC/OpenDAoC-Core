@@ -158,7 +158,7 @@ namespace DOL.GS
                         {
                             // Update how the group member sees the added player's pet and themself.
                             SendControlledBodyGuildID(groupMember, groupMemberGuild, controlledBrain.Body);
-                            groupMember.Out.SendObjectGuildID(groupMember, groupMemberGuild ?? Guild.DummyGuild);
+                            groupMember.Out.SendObjectGuildID(groupMember, groupMemberGuild ?? GuildMgr.DummyGuild);
                         }
 
                         IControlledBrain groupMemberControlledBrain = groupMember.ControlledBrain;
@@ -172,7 +172,7 @@ namespace DOL.GS
                     }
 
                     if (updateOneself)
-                        player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+                        player.Out.SendObjectGuildID(player, playerGuild ?? GuildMgr.DummyGuild);
                 }
             }
 
@@ -294,7 +294,7 @@ namespace DOL.GS
                     }
 
                     if (updateOneself)
-                        player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+                        player.Out.SendObjectGuildID(player, playerGuild ?? GuildMgr.DummyGuild);
                 }
 
                 player.Out.SendMessage("You leave your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -336,7 +336,7 @@ namespace DOL.GS
                     SendControlledBodyGuildID(player, playerGuild, npcControlledBrain.Body);
             }
 
-            player.Out.SendObjectGuildID(controlledBody, playerGuild ?? Guild.DummyGuild);
+            player.Out.SendObjectGuildID(controlledBody, playerGuild ?? GuildMgr.DummyGuild);
         }
 
         public void DisbandGroup()
