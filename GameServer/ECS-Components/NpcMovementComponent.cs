@@ -695,6 +695,9 @@ namespace DOL.GS
         {
             // Non-pet NPCs are teleported to the closest reachable node from a reverse-path.
             // The teleport can cover a large distance in some cases, for example when both the NPC and the player are on a mesh island.
+
+            // NPCs attempting to return to their spawn point are simply teleported there.
+
             // NPCs that are in combat and can't be teleported receive a damage immunity ability and start regenerating HP.
             // This helps against exploits and misplaced NPCs.
 
@@ -706,6 +709,13 @@ namespace DOL.GS
             {
                 if (JumpToClosestReachableNode(this, destination))
                     return;
+
+                if (Owner.Brain.FSM?.GetCurrentState().StateType is eFSMStateType.RETURN_TO_SPAWN)
+                {
+                    Owner.MoveInRegion(Owner.CurrentRegionID, Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z, Owner.SpawnHeading, true);
+                    Owner.Brain.FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
+                    return;
+                }
 
                 if (Owner.InCombat || Owner.Brain is StandardMobBrain { HasAggro: true })
                     StartAntiExploitImmunity();
