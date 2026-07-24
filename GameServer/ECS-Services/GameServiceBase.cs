@@ -12,7 +12,6 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public int EntityCount; // Used for diagnostics.
-        private readonly ConcurrentBag<PostedAction> _actionPool = new();
         private readonly ConcurrentQueue<PostedAction> _actions = new();
         private readonly List<PostedAction> _work = new();
         private bool _hasActions;
@@ -31,10 +30,10 @@ namespace DOL.GS
             // service waits for it to complete. Since the target service cannot process posted
             // actions until it ticks, neither side can make progress.
 
-            if (!_actionPool.TryTake(out PostedAction pooledAction))
+            if (!ActionPool<TState>.Pool.TryTake(out var pooledAction))
                 pooledAction = new();
 
-            pooledAction.Init(this, action, state, Invoker<TState>.Invoke);
+            pooledAction.Init(this, action, state);
             _actions.Enqueue(pooledAction);
             Volatile.Write(ref _hasActions, true);
         }
@@ -76,9 +75,7 @@ namespace DOL.GS
             }
             finally
             {
-                GameServiceBase service = action.Service;
-                action.Reset();
-                service._actionPool.Add(action);
+                action.ReturnToPool();
             }
         }
 
@@ -86,38 +83,41 @@ namespace DOL.GS
         public virtual void Tick() { }
         public virtual void EndTick() { }
 
-        private static class Invoker<T>
+        private static class ActionPool<TState>
         {
-            public static readonly Action<object, object> Invoke = static (action, state) => ((Action<T>) action)((T) state);
+            public static ConcurrentBag<PostedAction<TState>> Pool { get; } = new();
         }
 
-        private sealed class PostedAction
+        private abstract class PostedAction
         {
-            private object _action;
-            private object _state;
-            private Action<object, object> _invoker;
+            public GameServiceBase Service { get; protected set; }
+            public abstract void Invoke();
+            public abstract void ReturnToPool();
+        }
 
-            public GameServiceBase Service { get; private set; }
+        private sealed class PostedAction<TState> : PostedAction
+        {
+            private Action<TState> _action;
+            private TState _state;
 
-            public void Init<TState>(GameServiceBase service, Action<TState> action, TState state, Action<object, object> invoker)
+            public void Init(GameServiceBase service, Action<TState> action, TState state)
             {
                 Service = service;
                 _action = action;
                 _state = state;
-                _invoker = invoker;
             }
 
-            public void Invoke()
+            public override void Invoke()
             {
-                _invoker(_action, _state);
+                _action(_state);
             }
 
-            public void Reset()
+            public override void ReturnToPool()
             {
                 Service = null;
                 _action = null;
-                _state = null;
-                _invoker = null;
+                _state = default;
+                ActionPool<TState>.Pool.Add(this);
             }
         }
     }
