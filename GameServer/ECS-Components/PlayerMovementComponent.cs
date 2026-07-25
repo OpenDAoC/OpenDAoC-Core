@@ -105,7 +105,7 @@ namespace DOL.GS
             {
                 Owner.OnPlayerMove();
                 UpdateLastMovementTick();
-                _playerMovementMonitor.RecordPosition();
+                _playerMovementMonitor.RecordPosition(_ownerPosition);
                 _validateMovementOnNextTick = true;
                 Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
             }

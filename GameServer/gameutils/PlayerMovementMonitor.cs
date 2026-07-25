@@ -48,7 +48,7 @@ namespace DOL.GS
             _violationTimestamps = new();
         }
 
-        public void RecordPosition()
+        public void RecordPosition(Vector3 position)
         {
             long timestamp = MonotonicTime.NowMs;
 
@@ -64,7 +64,7 @@ namespace DOL.GS
                 _previousMaxSpeed = _current.MaxSpeed;
             }
 
-            PositionSample sample = new(_player.X, _player.Y, _player.Z, GameLoop.GameLoopTime, timestamp, currentMaxSpeed);
+            PositionSample sample = new(position, GameLoop.GameLoopTime, timestamp, currentMaxSpeed);
 
             // Check if more than one position sample is being recorded in the same game loop tick.
             if (_current.GameLoopTime == GameLoop.GameLoopTime)
@@ -83,21 +83,18 @@ namespace DOL.GS
 
         public void ValidateMovement()
         {
-            // We don't know when the position update was actually received, only when it was processed by the game loop.
-            // We account for processing delay uncertainty by adding a small buffer to the time difference, equal to one game loop tick.
-            // Ad a side effect, if the server is lagging, the speed hack detection becomes more lenient.
-
             double timeDiff = _current.Timestamp - _previous.Timestamp;
 
             // Skip if timestamps are invalid (should not happen).
             if (timeDiff <= 0)
                 return;
 
+            // We don't know when the position update was actually received, only when it was processed by the game loop.
+            // We account for processing delay uncertainty by adding a small buffer to the time difference, equal to one game loop tick.
             timeDiff += GameLoop.TickDuration;
+
             bool distancedViolationDetected = false;
-            long dx = _current.X - _previous.X;
-            long dy = _current.Y - _previous.Y;
-            long squaredDistance = dx * dx + dy * dy;
+            float squaredDistance = (_current.Position.AsVector2() - _previous.Position.AsVector2()).LengthSquared();
             double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) * MaxSpeedToleranceFactor;
             double allowedMaxDistance = allowedMaxSpeed * timeDiff / 1000.0;
             double allowedMaxDistanceSquared = allowedMaxDistance * allowedMaxDistance;
@@ -169,7 +166,7 @@ namespace DOL.GS
                 return false;
             }
 
-            safePosition = new(_safePosition.X, _safePosition.Y, _safePosition.Z);
+            safePosition = _safePosition.Position;
             return true;
         }
 
@@ -213,7 +210,8 @@ namespace DOL.GS
             {
                 _previous = _current;
                 _current = _teleport;
-                _player.MoveTo(_player.CurrentRegionID, _teleport.X, _teleport.Y, _teleport.Z, _player.Heading); // Will call `OnTeleport`.
+                Vector3 position = _teleport.Position;
+                _player.MoveTo(_player.CurrentRegionID, (int) position.X, (int) position.Y, (int) position.Z, _player.Heading); // Will call `OnTeleport`.
                 _teleportCount++;
             }
 
@@ -259,9 +257,7 @@ namespace DOL.GS
                 return;
             }
 
-            long dx = currentSample.X - _candidateSafePosition.X;
-            long dy = currentSample.Y - _candidateSafePosition.Y;
-            long squaredDistance = dx * dx + dy * dy;
+            float squaredDistance = (currentSample.Position.AsVector2() - _candidateSafePosition.Position.AsVector2()).LengthSquared();
 
             if (squaredDistance > SafePositionMinDistance * SafePositionMinDistance)
             {
@@ -270,6 +266,6 @@ namespace DOL.GS
             }
         }
 
-        private readonly record struct PositionSample(int X, int Y, int Z, long GameLoopTime, long Timestamp, short MaxSpeed);
+        private readonly record struct PositionSample(Vector3 Position, long GameLoopTime, long Timestamp, short MaxSpeed);
     }
 }
