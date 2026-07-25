@@ -895,7 +895,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				case 24://SpellsNew
 					if (client.CanSendTooltip(24, objectId))
 					{
-						var spell = SkillBase.GetSpellByTooltipID(objectId);
+						Spell spell = FindPlayerSpellForTooltip(objectId, snapSkills, snapLists);
 
 						if (spell == null)
 						{
@@ -932,8 +932,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 				case 26://SongsNew
 					{
 						if (client.CanSendTooltip(26, objectId))
-							client.Out.SendDelveInfo(DelveSong(client, objectId));
-						var spell = SkillBase.GetSpellByTooltipID(objectId);
+						{
+							Spell song = FindPlayerSpellForTooltip(objectId, snapSkills, snapLists);
+							client.Out.SendDelveInfo(DelveSong(client, song));
+						}
+						Spell spell = FindPlayerSpellForTooltip(objectId, snapSkills, snapLists);
 						client.Out.SendDelveInfo(DelveSpell(client, spell));
 					}
 					break;
@@ -1002,6 +1005,31 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.Out.SendCustomTextWindow(caption, objectInfo);
 			else if ((objectType < 24 || objectType > 28) && objectType < 150) // only warn for non v1.110+ objects
 				log.Warn($"DetailDisplayHandler no info for objectID {objectId} of type {objectType}. Item: {item?.Id_nb ?? (invItem?.Id_nb ?? "null")}, client: {client}");
+		}
+
+		private static Spell FindPlayerSpellForTooltip(
+			ushort tooltipId,
+			List<(Skill, Skill)> usableSkills,
+			List<(SpellLine, List<Skill>)> usableSpellLists)
+		{
+			foreach ((SpellLine _, List<Skill> skills) in usableSpellLists)
+			{
+				foreach (Skill skill in skills)
+				{
+					if (skill is Spell spell && spell.InternalID == tooltipId)
+						return spell;
+				}
+			}
+
+			foreach ((Skill skill, Skill _) in usableSkills)
+			{
+				if (skill is Spell spell && spell.InternalID == tooltipId)
+					return spell;
+			}
+
+			// Global spell templates intentionally have level 1. They are only a fallback for
+			// effect and scripted spell tooltips that are not present in the player's skill lists.
+			return SkillBase.GetSpellByTooltipID(tooltipId);
 		}
 
 		public static void WriteStyleInfo(List<string> objectInfo, Style style, GameClient client)
@@ -2000,7 +2028,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public static string DelveSong(GameClient client, int id)
 		{
-			Spell spell = SkillBase.GetSpellByTooltipID((ushort) id);
+			return DelveSong(client, SkillBase.GetSpellByTooltipID((ushort) id));
+		}
+
+		public static string DelveSong(GameClient client, Spell spell)
+		{
+			if (spell == null)
+				return "(Song (Index \"0\") (Name \"(not found)\"))";
+
 			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
 
 			if (spellHandler == null)
