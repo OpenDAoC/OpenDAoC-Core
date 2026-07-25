@@ -23,10 +23,16 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            movementComponent.UseSafePosition = true; // Will be reset if the quit timer is interrupted.
+            // Flip UseSafePosition first in case the player is allowed to quit immediately.
+            // UseSafePosition will also be reset if the quit timer is interrupted.
+            movementComponent.UseSafePosition = true;
+            DisplayMessage(client, "Your position will be adjusted to your last known safe point when you exit the game.");
 
             if (!player.Quit(false))
+            {
+                movementComponent.UseSafePosition = false;
                 return;
+            }
         }
     }
 }
