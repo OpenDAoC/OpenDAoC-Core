@@ -191,7 +191,7 @@ namespace DOL.GS.PacketHandler
 					if (spell is Song || spell.NeedInstrument)
 					{
 						if (m_gameClient.CanSendTooltip(26, spell.InternalID))
-							SendDelveInfo(DetailDisplayHandler.DelveSong(m_gameClient, spell.InternalID));
+							SendDelveInfo(DetailDisplayHandler.DelveSong(m_gameClient, spell));
 					}
 
 					if (m_gameClient.CanSendTooltip(24, spell.InternalID))
