@@ -215,9 +215,9 @@ namespace DOL.GS
             if (candidateIndex == 0)
                 return true;
 
-            float targetDx = target.X - start.X;
-            float targetDy = target.Y - start.Y;
-            float sqrTotalDistance2D = targetDx * targetDx + targetDy * targetDy;
+            Vector2 start2D = start.AsVector2();
+            Vector2 targetDiff2D = target.AsVector2() - start2D;
+            float sqrTotalDistance2D = targetDiff2D.LengthSquared();
 
             if (sqrTotalDistance2D <= 0f)
                 return Math.Abs(start.Z - target.Z) <= MAX_SAFE_HEIGHT_DEVIATION;
@@ -227,12 +227,11 @@ namespace DOL.GS
             for (int i = 0; i < candidateIndex; i++)
             {
                 Vector3 node = _activePath.Nodes.Peek(i).Position;
-                float nodeDx = node.X - start.X;
-                float nodeDy = node.Y - start.Y;
+                Vector2 nodeDiff2D = node.AsVector2() - start2D;
 
                 // Project the intermediate node onto the line segment.
                 // This calculates the 't' progression (0.0 to 1.0) along the segment.
-                float t = (nodeDx * targetDx + nodeDy * targetDy) * invSqrTotalDistance2D;
+                float t = Vector2.Dot(nodeDiff2D, targetDiff2D) * invSqrTotalDistance2D;
                 t = Math.Clamp(t, 0f, 1f);
 
                 float expectedZ = float.Lerp(start.Z, target.Z, t);
