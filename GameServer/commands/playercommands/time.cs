@@ -15,7 +15,7 @@ namespace DOL.GS.Commands
             if (IsSpammingCommand(client.Player, "time", 1000))
                 return;
 
-            if ((ePrivLevel) client.Account.PrivLevel == ePrivLevel.Admin) // admins only
+            if ((ePrivLevel) client.Account.PrivLevel >= ePrivLevel.Admin)
             {
                 try
                 {
