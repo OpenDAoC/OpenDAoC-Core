@@ -459,16 +459,26 @@ namespace DOL.GS
             if (!IsDestinationValid)
             {
                 double heading = Owner.Heading * Point2D.HEADING_TO_RADIAN;
-                _velocity = new((float) -Math.Sin(heading), (float) Math.Cos(heading), 0.0f);
+                _velocity = new((float) -Math.Sin(heading), (float) Math.Cos(heading), 0f);
             }
             else
             {
                 Vector3 direction = _destination - _ownerPosition;
-                float scale = CurrentSpeed / distanceToTarget;
+                float horizontalDistance = direction.AsVector2().Length();
+
+                // Base the scale on horizontal distance to maintain consistent X/Y movement speed on slopes.
+                // Without this, NPCs move considerably slower than players on hilly terrain.
+                float scale;
+
+                if (horizontalDistance > 0.01f && (Owner.Flags & GameNPC.eFlags.FLYING) == 0 && !_pathfinder.IsJumping)
+                    scale = CurrentSpeed / horizontalDistance;
+                else
+                    scale = CurrentSpeed / distanceToTarget;
+
                 _velocity = direction * scale;
             }
 
-            HorizontalVelocityForClient =  new Vector2(_velocity.X, _velocity.Y).Length();
+            HorizontalVelocityForClient = _velocity.AsVector2().Length();
             return;
         }
 
@@ -518,7 +528,7 @@ namespace DOL.GS
             if (IsFlagSet(MovementState.Pathfinding) || (IsFlagSet(MovementState.OnPath) && CurrentPathPoint?.WaitTime == 0))
                 distanceToTarget = Math.Max(0, distanceToTarget - NODE_REACHED_DISTANCE);
 
-            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + (long) (distanceToTarget * 1000 / speed);
+            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + (long) (distanceToTarget * 1000 / _velocity.Length());
         }
 
         private void PathToInternal(Vector3 destination, short speed)
@@ -876,6 +886,7 @@ namespace DOL.GS
             // Use slightly modified object position and target position to smooth movement out client-side.
             // The real target position makes NPCs stop before it. The real object position makes NPCs teleport a bit ahead when initiating movement.
             // The reasons why it happens and the expected values by the client are unknown.
+
             _positionForClientTick = GameLoop.GameLoopTime;
 
             if (!IsDestinationValid)
