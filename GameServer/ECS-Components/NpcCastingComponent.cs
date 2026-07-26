@@ -3,21 +3,37 @@ using System.Threading;
 using DOL.AI.Brain;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
 using DOL.Language;
 
 namespace DOL.GS
 {
     public class NpcCastingComponent : CastingComponent, ILosCheckListener
     {
-        private GameNPC _npcOwner;
-        private Dictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
-        private Lock _spellsWaitingForLosCheckLock = new();
+        private readonly GameNPC _npcOwner;
+        private readonly Dictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
+        private readonly Lock _spellsWaitingForLosCheckLock = new();
+        private readonly QueuedCastLosCheckListener _queuedCastLosCheckListener;
 
+        public override SpellHandler QueuedSpellHandler
+        {
+            get => base.QueuedSpellHandler;
+            protected set
+            {
+                base.QueuedSpellHandler = value;
+
+                if (base.QueuedSpellHandler != null)
+                    StartQueuedCastLosCheck();
+            }
+        }
+
+        public GameLiving LastNegativeLosCheckTarget { get; private set; }
         private bool IsCasterGuardOrImmobile => _npcOwner is GuardCaster || _npcOwner.MaxSpeedBase == 0;
 
         public NpcCastingComponent(GameNPC npcOwner) : base(npcOwner)
         {
             _npcOwner = npcOwner;
+            _queuedCastLosCheckListener = new(this);
         }
 
         protected override bool RequestCastSpellInternal(
@@ -41,20 +57,15 @@ namespace DOL.GS
             }
 
             losChecker.Out.SendLosCheckRequest(_npcOwner, target, this);
-            return true; // Consider the NPC is casting while waiting for the reply to prevent it from moving.
+
+            // Consider the NPC is casting until we know it doesn't have LoS against this target.
+            // This prevents it from moving while waiting for a LoS check.
+            return LastNegativeLosCheckTarget != target;
         }
 
         protected override GamePlayer GetLosChecker(GameLiving target)
         {
             return _npcOwner.Brain.GetLosChecker(target);
-        }
-
-        public override void OnSpellCast(Spell spell)
-        {
-            if (!spell.IsHarmful || !spell.IsInstantCast)
-                return;
-
-            _npcOwner.ApplyInstantHarmfulSpellDelay();
         }
 
         public override void ClearSpellHandlers()
@@ -69,24 +80,42 @@ namespace DOL.GS
             if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
                 necromancerPetBrain.ClearSpellQueue();
 
+            LastNegativeLosCheckTarget = null;
             base.ClearSpellHandlers();
         }
 
         public override void OnOutOfRangeOrNoLos(GameObject target)
         {
             if (QueuedSpellHandler?.Target == target)
-                ClearUpQueuedSpellHandler();
+                ClearQueuedSpellHandler();
 
-            // Immobile NPCs and caster guards forget about the target, other NPCs will try to move into range and line of sight.
+            // Immobile NPCs and caster guards forget about the target.
             if (IsCasterGuardOrImmobile)
             {
                 // Keep the target in the aggro list while the NPC is still casting.
                 // This ensures that the NPC doesn't enter an idle state, potentially interfering with spell casting.
                 if (!_npcOwner.IsCasting)
                     (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(target as GameLiving);
+
+                return;
             }
-            else if (_npcOwner.TargetObject == target)
-                _npcOwner.Follow(target, _npcOwner.StickMinimumRange, _npcOwner.StickMaximumRange);
+
+            if (_npcOwner.TargetObject == target)
+                LastNegativeLosCheckTarget = target as GameLiving;
+        }
+
+        public override void OnSpellCast(Spell spell)
+        {
+            if (!spell.IsHarmful || !spell.IsInstantCast)
+                return;
+
+            _npcOwner.ApplyInstantHarmfulSpellDelay();
+        }
+
+        protected override void Stop()
+        {
+            LastNegativeLosCheckTarget = null;
+            base.Stop();
         }
 
         public void HandleLosCheckResponse(GamePlayer losChecker, LosCheckResponse response, ushort targetId)
@@ -124,6 +153,58 @@ namespace DOL.GS
                 }
 
                 list.Clear();
+            }
+        }
+
+        private void StartQueuedCastLosCheck()
+        {
+            if (QueuedSpellHandler.LosChecker == null)
+            {
+                QueuedSpellHandler.HasLos = true;
+                return;
+            }
+
+            GameLiving target = QueuedSpellHandler.Target;
+
+            if (target == null || target == Owner)
+            {
+                QueuedSpellHandler.HasLos = true;
+                return;
+            }
+
+            _queuedCastLosCheckListener.QueuedSpellHandler = QueuedSpellHandler;
+
+            if (!_queuedCastLosCheckListener.IsAlive)
+                _queuedCastLosCheckListener.Start();
+        }
+
+        private class QueuedCastLosCheckListener : ECSGameTimerWrapperBase, ILosCheckListener
+        {
+            private CastingComponent _castingComponent;
+
+            public SpellHandler QueuedSpellHandler { get; set; }
+
+            public QueuedCastLosCheckListener(CastingComponent castingComponent) : base(castingComponent.Owner)
+            {
+                _castingComponent = castingComponent;
+                Interval = ServerProperties.Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
+            }
+
+            public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
+            {
+                if (QueuedSpellHandler == null || QueuedSpellHandler != _castingComponent.QueuedSpellHandler)
+                    return;
+
+                QueuedSpellHandler.HasLos = response is LosCheckResponse.True;
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                if (QueuedSpellHandler == null || QueuedSpellHandler != _castingComponent.QueuedSpellHandler)
+                    return 0;
+
+                QueuedSpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, QueuedSpellHandler.Target, this);
+                return Interval;
             }
         }
 

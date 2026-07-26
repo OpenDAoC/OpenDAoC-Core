@@ -11,7 +11,7 @@ namespace DOL.AI.Brain
             // Ice pets don't check for spells if their target is close, and attack instead.
             if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange + 50))
             {
-                Body.castingComponent?.ClearUpQueuedSpellHandler();
+                Body.castingComponent?.ClearQueuedSpellHandler();
                 return false;
             }
 

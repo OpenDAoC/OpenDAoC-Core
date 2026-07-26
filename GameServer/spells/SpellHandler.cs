@@ -69,7 +69,7 @@ namespace DOL.GS.Spells
 
 		public GameLiving Target { get; set; }
 		public eCastState CastState { get; private set; }
-		public bool HasLos { get; set; } // Modified by CastingComponent during LoS checks.
+		public bool HasLos { private get; set; } = true; // Modified by CastingComponent during LoS checks.
 		protected double DistanceFallOff { get; private set; }
 		protected double CasterEffectiveness { get; private set; } = 1.0; // Needs to default to 1 since some spell handlers override `StartSpell`, preventing it from being set.
 		protected virtual bool IsDualComponentSpell => false; // Dual component spells have a higher chance to be resisted.
@@ -121,8 +121,6 @@ namespace DOL.GS.Spells
 		/// AttackData result for this spell, if any
 		/// </summary>
 		protected AttackData m_lastAttackData = null;
-
-		private long _lastDuringCastLosCheckTime;
 
 		/// <summary>
 		/// Can this SpellHandler Coexist with other Overwritable Spell Effect
@@ -475,18 +473,15 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			// Initial LoS state.
 			if (playerCaster != null)
 			{
-				// This may be wrong. This is the LoS state at the time the player used the spell, not necessarily for the target the spell is being cast on, assuming it can change.
-				// It should be fine since it's updated at the same time as `TargetObject`, and the spell handler doesn't receive a target explicitly. But it needs more testing.
+				// This is the LoS state at the time the spell was started by CastingComponent, not necessarily for the target the spell is being cast on (see above).
+				// TargetInView is only updated when the player clicks on a skill, selects a target, moves around, or every two seconds when standing still.
+				// Long story short, this isn't very reliable, and there is no simple solution (can't snapshot TargetObject and TarvetInView on skill use for queued spells).
 				HasLos = Caster.TargetInView;
 			}
 			else if (Caster is GameNPC npcOwner)
 			{
-				// NPCs initial LoS checks are handled by the casting component before ticking the spell handler.
-				HasLos = true;
-
 				if (!Spell.IsInstantCast)
 				{
 					if (npcOwner.IsMoving)
@@ -722,7 +717,6 @@ namespace DOL.GS.Spells
 						if (!quiet)
 							MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
 
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
 						return false;
 					}
 
@@ -759,7 +753,6 @@ namespace DOL.GS.Spells
 								if (!quiet)
 									MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 
-								Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
 								return false;
 							}
 
@@ -1030,8 +1023,6 @@ namespace DOL.GS.Spells
 			if (PerformDuringCastInterruptCheck(Caster.LastInterrupter))
 				return false;
 
-			bool checkLos = false;
-
 			if (Caster is GameNPC npcOwner)
 			{
 				if (Spell.CastTime > 0)
@@ -1042,18 +1033,6 @@ namespace DOL.GS.Spells
 
 				if (npcOwner != Target)
 					npcOwner.TurnTo(Target);
-
-				checkLos = Properties.CHECK_LOS_DURING_NPC_CAST;
-			}
-			else if (Caster is GamePlayer)
-				checkLos = Properties.CHECK_LOS_DURING_PLAYER_CAST;
-
-			if (checkLos && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
-			{
-				_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
-
-				if (!m_caster.castingComponent.StartDuringCastLosCheck(target))
-					HasLos = true;
 			}
 
 			return true;

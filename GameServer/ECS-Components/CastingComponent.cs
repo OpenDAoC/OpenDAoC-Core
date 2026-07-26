@@ -4,6 +4,7 @@ using System.Threading;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
 using DOL.Language;
 using DOL.Logging;
@@ -27,7 +28,8 @@ namespace DOL.GS
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
-        public SpellHandler QueuedSpellHandler { get; private set; }
+        public virtual SpellHandler QueuedSpellHandler { get; protected set; }
+
         public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.CastingComponent);
         public bool IsCasting => SpellHandler != null; // May not be actually casting yet.
 
@@ -52,11 +54,9 @@ namespace DOL.GS
         {
             if (Owner.ObjectState is not eObjectState.Active)
             {
-                ServiceObjectStore.Remove(this);
+                Stop();
                 return;
             }
-
-            SpellHandler?.Tick();
 
             // Only process up to count per tick to avoid infinite loops caused by some scripted NPCs able to call CastSpell recursively.
             int count = _startSkillRequests.Count;
@@ -67,8 +67,16 @@ namespace DOL.GS
                 startSkillRequest.ResetAndReturn();
             }
 
+            if (SpellHandler != null)
+            {
+                SpellHandler.Tick();
+
+                if (SpellHandler?.CastState is eCastState.Casting or eCastState.CastingRetry)
+                    StartDuringCastLosCheck();
+            }
+
             if (SpellHandler == null && QueuedSpellHandler == null && _startSkillRequests.Count == 0)
-                ServiceObjectStore.Remove(this);
+                Stop();
         }
 
         public bool RequestCastSpell(
@@ -113,16 +121,34 @@ namespace DOL.GS
             return null;
         }
 
-        public bool StartDuringCastLosCheck(GameLiving target)
+        private void StartDuringCastLosCheck()
         {
-            // Target check may appear redundant since CastingComponent is supposed to set LosChecker to null when no LoS check is required.
-            // But for player casted spells, the target is determined by SpellHandler.
-            if (SpellHandler.LosChecker == null || target == null || target == Owner)
-                return false;
+            bool checkLos = false;
+
+            if (Owner is GameNPC)
+                checkLos = Properties.CHECK_LOS_DURING_NPC_CAST;
+            else if (Owner is GamePlayer)
+                checkLos = Properties.CHECK_LOS_DURING_PLAYER_CAST;
+
+            if (!checkLos || SpellHandler.LosChecker == null)
+            {
+                SpellHandler.HasLos = true;
+                return;
+            }
+
+            GameLiving target = SpellHandler.Target;
+
+            if (target == null || target == Owner)
+            {
+                SpellHandler.HasLos = true;
+                return;
+            }
+
+            if (_duringCastLosCheckListener.IsAlive)
+                return;
 
             _duringCastLosCheckListener.SpellHandler = SpellHandler;
-            SpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, target, _duringCastLosCheckListener);
-            return true;
+            _duringCastLosCheckListener.Start();
         }
 
         public bool StartEndOfCastLosCheck(GameLiving target, SpellHandler spellHandler)
@@ -199,7 +225,7 @@ namespace DOL.GS
 
         public virtual void OnOutOfRangeOrNoLos(GameObject target) { }
 
-        public void ClearUpQueuedSpellHandler()
+        public void ClearQueuedSpellHandler()
         {
             QueuedSpellHandler = null;
         }
@@ -223,6 +249,11 @@ namespace DOL.GS
         protected virtual bool CanCastSpell()
         {
             return !Owner.IsCrowdControlled && !Owner.IsSilenced;
+        }
+
+        protected virtual void Stop()
+        {
+            ServiceObjectStore.Remove(this);
         }
 
         public void ReturnToPool(CastSpellRequest request)
@@ -280,29 +311,29 @@ namespace DOL.GS
 
         public class CastSpellRequest : StartSkillRequest
         {
-            public Spell Spell { get; private set; }
-            public SpellLine SpellLine { get; private set ; }
-            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; private set; }
-            public GameLiving Target { get; private set; }
-            public GamePlayer LosChecker { get; private set; } // Only used by NPCs.
+            private Spell _spell;
+            private SpellLine _spellLine;
+            private ISpellCastingAbilityHandler _spellCastingAbilityHandler;
+            private GameLiving _target;
+            private GamePlayer _losChecker; // Only used by NPCs.
 
             public void Init(CastingComponent castingComponent, Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target, GamePlayer losChecker)
             {
                 Init(castingComponent);
-                Spell = spell;
-                SpellLine = spellLine;
-                SpellCastingAbilityHandler = spellCastingAbilityHandler;
-                Target = target;
-                LosChecker = losChecker;
+                _spell = spell;
+                _spellLine = spellLine;
+                _spellCastingAbilityHandler = spellCastingAbilityHandler;
+                _target = target;
+                _losChecker = losChecker;
             }
 
             public override void ResetAndReturn()
             {
-                Spell = null;
-                SpellLine = null;
-                SpellCastingAbilityHandler = null;
-                Target = null;
-                LosChecker = null;
+                _spell = null;
+                _spellLine = null;
+                _spellCastingAbilityHandler = null;
+                _target = null;
+                _losChecker = null;
                 CastingComponent.ReturnToPool(this);
                 base.ResetAndReturn();
             }
@@ -310,15 +341,15 @@ namespace DOL.GS
             public override void StartSkill()
             {
                 // Cancel pulsing spell if already active.
-                if (Spell.IsPulsing && CastingComponent.Owner.ActivePulseSpells.ContainsKey(Spell.SpellType))
+                if (_spell.IsPulsing && CastingComponent.Owner.ActivePulseSpells.ContainsKey(_spell.SpellType))
                 {
-                    ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(CastingComponent.Owner, Spell);
+                    ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(CastingComponent.Owner, _spell);
 
                     if (effect != null)
                     {
                         if (effect.End() && CastingComponent.Owner is GamePlayer player)
                         {
-                            if (Spell.InstrumentRequirement == 0)
+                            if (_spell.InstrumentRequirement == 0)
                                 player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                             else
                                 player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
@@ -328,10 +359,10 @@ namespace DOL.GS
                     }
                 }
 
-                SpellHandler newSpellHandler = ScriptMgr.CreateSpellHandler(CastingComponent.Owner, Spell, SpellLine) as SpellHandler;
-                newSpellHandler.Target = Target;
-                newSpellHandler.LosChecker = LosChecker;
-                newSpellHandler.Ability = SpellCastingAbilityHandler;
+                SpellHandler newSpellHandler = ScriptMgr.CreateSpellHandler(CastingComponent.Owner, _spell, _spellLine) as SpellHandler;
+                newSpellHandler.Ability = _spellCastingAbilityHandler;
+                newSpellHandler.Target = _target;
+                newSpellHandler.LosChecker = _losChecker;
                 Spell newSpell = newSpellHandler.Spell;
 
                 SpellHandler currentSpellHandler = CastingComponent.SpellHandler;
@@ -466,25 +497,33 @@ namespace DOL.GS
             public virtual void StartSkill() { }
         }
 
-        private class DuringCastLosCheckListener : ILosCheckListener
+        private class DuringCastLosCheckListener : ECSGameTimerWrapperBase, ILosCheckListener
         {
             private CastingComponent _castingComponent;
 
             public SpellHandler SpellHandler { get; set; }
 
-            public DuringCastLosCheckListener(CastingComponent castingComponent)
+            public DuringCastLosCheckListener(CastingComponent castingComponent) : base(castingComponent.Owner)
             {
                 _castingComponent = castingComponent;
+                Interval = ServerProperties.Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
             }
 
             public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
             {
-                // Ensure the spell handler is still relevant.
                 if (SpellHandler == null || SpellHandler != _castingComponent.SpellHandler)
                     return;
 
-                // Let the spell handler handle the response on its next tick.
                 SpellHandler.HasLos = response is LosCheckResponse.True;
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                if (SpellHandler == null || SpellHandler != _castingComponent.SpellHandler)
+                    return 0;
+
+                SpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, SpellHandler.Target, this);
+                return Interval;
             }
         }
 
