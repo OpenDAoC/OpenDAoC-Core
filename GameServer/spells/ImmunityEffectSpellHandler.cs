@@ -1,4 +1,5 @@
 using DOL.GS.Effects;
+using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
 {
@@ -27,15 +28,10 @@ namespace DOL.GS.Spells
 
 		protected override int CalculateEffectDuration(GameLiving target)
 		{
-			// http://support.darkageofcamelot.com/kb/article.php?id=423
-			// Patch Notes: Version 1.52
-			// The duration is 100% at the middle of the area, and it tails off to 50%
-			// duration at the edges. This does NOT change the way area effect spells
-			// work against monsters, only realm enemies (i.e. enemy players and enemy realm guards).
 			double duration = base.CalculateEffectDuration(target);
 
-			if (!(target is GamePlayer) && !(target is Keeps.GameKeepGuard))
-				return (int)duration;
+			if (target is not GamePlayer and not GameKeepGuard)
+				return (int) duration;
 
 			duration -= duration * target.GetResistBase(Spell.DamageType) * 0.01;
 

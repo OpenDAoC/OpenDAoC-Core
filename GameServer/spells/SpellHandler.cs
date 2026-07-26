@@ -2070,13 +2070,19 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected virtual int CalculateEffectDuration(GameLiving target)
 		{
+			// http://support.darkageofcamelot.com/kb/article.php?id=423
+			// Patch Notes: Version 1.52
+			// The duration is 100% at the middle of the area, and it tails off to 50%
+			// duration at the edges. This does NOT change the way area effect spells
+			// work against monsters, only realm enemies (i.e. enemy players and enemy realm guards).
+
 			if (Spell.Duration == 0)
 				return 0;
 
 			double effectiveness = CasterEffectiveness;
 
 			// Duration is reduced for AoE spells based on the distance from the center, but only in RvR combat and if the spell doesn't have a damage component.
-			if (DistanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain)))
+			if (DistanceFallOff > 0 && Spell.Damage == 0 && target is GamePlayer or GameKeepGuard)
 				effectiveness *= 1 - DistanceFallOff / 2;
 
 			double duration = Spell.Duration * (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
