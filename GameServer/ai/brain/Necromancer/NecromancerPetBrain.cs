@@ -137,7 +137,7 @@ namespace DOL.AI.Brain
             {
                 SpellQueueEntry entry = GetSpellFromAttackQueue();
 
-                if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, false))
+                if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
                     continue;
 
                 RemoveSpellFromAttackQueue();
