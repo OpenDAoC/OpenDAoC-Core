@@ -45,8 +45,8 @@ namespace DOL.GS.Commands
             }
 
             string scope = subCommand;
-            float snapDown = 512f;
-            float snapUp = 512f;
+            float snapDown = 4096f;
+            float snapUp = 4096f;
             bool dryRun = true;
 
             if (args.Length > 2)
