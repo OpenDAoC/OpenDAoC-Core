@@ -11,23 +11,19 @@ namespace DOL.Database
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public CompositeFormat FormattableText;
-        private string _text = string.Empty;
-
-        public DbLanguageSystem(): base() { }
-
+        public CompositeFormat FormattableText { get; private set; }
         public override eTranslationIdentifier TranslationIdentifier => eTranslationIdentifier.eSystem;
 
         [DataElement(AllowDbNull = false)]
         public string Text
         {
-            get => _text;
+            get;
             set
             {
                 Dirty = true;
-                _text = value;
+                field = value;
             }
-        }
+        } = string.Empty;
 
         public void PrepareForFormatting()
         {
