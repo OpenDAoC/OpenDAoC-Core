@@ -12,7 +12,7 @@ namespace DOL.GS.Commands
         "&fixnpcspawn",
         ePrivLevel.Admin,
         "Fix NPC positions and spawn points using navmesh.",
-        "/fixnpcspawn [target|zone|region|world] <SnapDown> <SnapUp> <DryRun(true(default)/false)>",
+        "/fixnpcspawn [target|visible|zone|region|world] <SnapDown> <SnapUp> <DryRun(true(default)/false)>",
         "/fixnpcspawn goto <index> - Teleport to a fixed NPC from the last run",
         "/fixnpcspawn result <page|clear> - Print results (2k per page) or clear memory")]
     public class FixNpcSpawnCommandHandler : AbstractCommandHandler, ICommandHandler
@@ -148,31 +148,39 @@ namespace DOL.GS.Commands
 
         private List<GameNPC> GetNpcsByScope(GameClient client, string scope)
         {
+            GamePlayer player = client.Player;
             List<GameNPC> list = GameLoop.GetListForTick<GameNPC>();
 
             switch (scope)
             {
                 case "target":
                 {
-                    if (client.Player.TargetObject is GameNPC targetNpc)
+                    if (player.TargetObject is GameNPC targetNpc)
                         list.Add(targetNpc);
                     else
                         DisplayMessage(client, "Your target is not an NPC.");
 
                     break;
                 }
+                case "visible":
+                {
+                    foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        list.Add(npc);
+
+                    break;
+                }
                 case "zone":
                 {
-                    if (client.Player.CurrentZone != null)
-                        list.AddRange(GetZoneNpcs(client.Player.CurrentZone));
+                    if (player.CurrentZone != null)
+                        list.AddRange(GetZoneNpcs(player.CurrentZone));
 
                     break;
                 }
                 case "region":
                 {
-                    if (client.Player.CurrentRegion != null)
+                    if (player.CurrentRegion != null)
                     {
-                        foreach (Zone zone in client.Player.CurrentRegion.Zones)
+                        foreach (Zone zone in player.CurrentRegion.Zones)
                             list.AddRange(GetZoneNpcs(zone));
                     }
 
@@ -190,7 +198,7 @@ namespace DOL.GS.Commands
                 }
                 default:
                 {
-                    DisplayMessage(client, $"Unknown scope '{scope}'. Use: target, zone, region, world.");
+                    DisplayMessage(client, $"Unknown scope '{scope}'.");
                     return null;
                 }
             }
