@@ -12,6 +12,13 @@ namespace DOL.GS
         public override ushort Model => TimeDependentBrain == null || TimeDependentBrain.IsVisible ? base.Model : (ushort) 1;
 
         public TimeDependentSpawnNpc(TimeDependentSpawnBrain brain) : base(brain) { }
+
+        protected override int RespawnTimerCallback(ECSGameTimer respawnTimer)
+        {
+            // Ideally this should be done in AddToWorld, but WorldMgr isn't initialized when NPCs are created during server start up.
+            TimeDependentBrain?.CheckVisibility();
+            return base.RespawnTimerCallback(respawnTimer);
+        }
     }
 
     public class DaySpawn : TimeDependentSpawnNpc
@@ -34,15 +41,18 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             if (!Body.InCombat)
-            {
-                bool previousVisibility = IsVisible;
-                IsVisible = ShouldBeVisible();
-
-                if (previousVisibility != IsVisible)
-                    ClientService.CreateObjectForPlayers(Body);
-            }
+                CheckVisibility();
 
             base.Think();
+        }
+
+        public void CheckVisibility()
+        {
+            bool previousVisibility = IsVisible;
+            IsVisible = ShouldBeVisible();
+
+            if (previousVisibility != IsVisible)
+                ClientService.CreateObjectForPlayers(Body);
         }
 
         protected abstract bool ShouldBeVisible();
