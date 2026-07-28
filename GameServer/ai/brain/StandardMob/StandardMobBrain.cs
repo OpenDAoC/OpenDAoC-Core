@@ -259,9 +259,9 @@ namespace DOL.AI.Brain
         public virtual int AggroLevel { get; set; }
 
         private ConcurrentDictionary<GameLiving, AggroAmount> _tempAggroList;
+        private readonly List<OrderedAggroListElement> _orderedAggroList = new();
+        private readonly Lock _orderedAggroListLock = new();
         protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
-        protected List<OrderedAggroListElement> OrderedAggroList { get; private set; } = new();
-        protected readonly Lock _orderedAggroListLock = new();
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 
         public class AggroAmount
@@ -377,10 +377,10 @@ namespace DOL.AI.Brain
             // Potentially slow, so we cache the result.
             lock (_orderedAggroListLock)
             {
-                if (OrderedAggroList.Count == 0)
-                    OrderedAggroList = AggroList.OrderByDescending(x => x.Value.Effective).Select(x => new OrderedAggroListElement(x.Key, x.Value.Effective)).ToList();
+                if (_orderedAggroList.Count == 0)
+                    _orderedAggroList.AddRange(AggroList.OrderByDescending(x => x.Value.Effective).Select(x => new OrderedAggroListElement(x.Key, x.Value.Effective)));
 
-                return OrderedAggroList.ToList();
+                return _orderedAggroList.ToList();
             }
         }
 
@@ -431,7 +431,7 @@ namespace DOL.AI.Brain
 
             lock (_orderedAggroListLock)
             {
-                OrderedAggroList.Clear();
+                _orderedAggroList.Clear();
             }
 
             LastHighestThreatInAttackRange = null;
@@ -539,7 +539,7 @@ namespace DOL.AI.Brain
             // Clear cached ordered aggro list.
             // It isn't built here because ordering all entities in the aggro list can be expensive, and we typically don't need it.
             // It's built on demand, when `GetOrderedAggroList` is called.
-            OrderedAggroList.Clear();
+            _orderedAggroList.Clear();
             LastHighestThreatInAttackRange = null;
 
             int attackRange = Body.attackComponent.AttackRange;
