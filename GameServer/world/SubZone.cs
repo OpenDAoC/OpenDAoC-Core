@@ -29,11 +29,11 @@ namespace DOL.GS
             if (node.Value.SubZoneObject.CurrentSubZone == this)
                 throw new ArgumentException("Object already in this subzone", nameof(node));
 
-            _objects[(int) node.Value.GameObjectType].AddLast(node, OnAddObject);
+            _objects[(int) node.Value.GameObjectType].AddLast(node, OnAddObject, this);
 
-            void OnAddObject(LinkedListNode<GameObject> node)
+            static void OnAddObject(LinkedListNode<GameObject> node, SubZone subZone)
             {
-                node.Value.SubZoneObject.CurrentSubZone = this;
+                node.Value.SubZoneObject.CurrentSubZone = subZone;
             }
         }
 
@@ -62,7 +62,7 @@ namespace DOL.GS
                 throw new ArgumentException("Cannot move object to the same subzone", nameof(otherSubZone));
 
             eGameObjectType objectType = node.Value.GameObjectType;
-            WriteLockedLinkedList<GameObject>.Move(node, otherSubZone._objects[(int) objectType], _objects[(int) objectType], otherSubZone._id, _id, this, OnMoveObject);
+            WriteLockedLinkedList<GameObject>.Move(node, otherSubZone._objects[(int) objectType], _objects[(int) objectType], otherSubZone._id, _id, OnMoveObject, this);
 
             static void OnMoveObject(LinkedListNode<GameObject> node, SubZone subZone)
             {

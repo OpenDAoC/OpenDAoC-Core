@@ -16,12 +16,12 @@ namespace DOL.GS
 
         public int Count => _list.Count;
 
-        public void AddLast(LinkedListNode<T> node, Action<LinkedListNode<T>> callback)
+        public void AddLast<TState>(LinkedListNode<T> node, Action<LinkedListNode<T>, TState> callback, TState state)
         {
             lock (_writeLock)
             {
                 AddLastUnsafe(node);
-                callback(node);
+                callback(node, state);
             }
         }
 
@@ -34,7 +34,7 @@ namespace DOL.GS
             }
         }
 
-        public static void Move<TState>(LinkedListNode<T> node, WriteLockedLinkedList<T> from, WriteLockedLinkedList<T> to, int fromId, int toId, TState state, Action<LinkedListNode<T>, TState> callback)
+        public static void Move<TState>(LinkedListNode<T> node, WriteLockedLinkedList<T> from, WriteLockedLinkedList<T> to, int fromId, int toId, Action<LinkedListNode<T>, TState> callback, TState state)
         {
             WriteLockedLinkedList<T> first;
             WriteLockedLinkedList<T> second;
