@@ -10,9 +10,9 @@ namespace DOL.GS
     public abstract class GameServiceBase : IGameService
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        [ThreadStatic] private static Stack<List<PostedAction>> _spareLists;
 
         private List<PostedAction> _actions = new();
-        [ThreadStatic] private static Stack<List<PostedAction>> _spareLists;
         private readonly Lock _lock = new();
 
         public int EntityCount; // Used for diagnostics.
@@ -36,7 +36,9 @@ namespace DOL.GS
             pooledAction.Init(this, action, state);
 
             lock (_lock)
+            {
                 _actions.Add(pooledAction);
+            }
         }
 
         public void ProcessPostedActions()
