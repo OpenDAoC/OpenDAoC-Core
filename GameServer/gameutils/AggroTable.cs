@@ -238,14 +238,6 @@ namespace DOL.GS
                 if (_tempTable == null)
                     return false;
 
-                // Keep the current aggro table if the previous one is empty.
-                // This can happen when amnesia is used during confusion.
-                if (_tempTable.Count == 0)
-                {
-                    _tempTable = null;
-                    return false;
-                }
-
                 _table = _tempTable;
                 _tempTable = null;
                 return true;
@@ -322,8 +314,8 @@ namespace DOL.GS
         {
             lock (_lock)
             {
+                // Don't clear _tempTable here.
                 _table.Clear();
-                _tempTable = null;
                 LastHighestThreatInAttackRange = null;
             }
         }
