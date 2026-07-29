@@ -10,7 +10,6 @@ using DOL.GS.Housing;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-using static DOL.AI.Brain.StandardMobBrain;
 
 namespace DOL.GS.Commands
 {
@@ -2944,6 +2943,7 @@ namespace DOL.GS.Commands
 
 			List<string> text = new();
 			ABrain brain = targetMob.Brain;
+			StandardMobBrain standardBrain = brain as StandardMobBrain;
 
 			if (brain != null)
 			{
@@ -2975,22 +2975,22 @@ namespace DOL.GS.Commands
 				text.Add("InView: " + targetMob.TargetInView);
 			}
 
-			if (targetMob.Brain is StandardMobBrain standardBrain)
+			if (standardBrain != null)
 			{
 				int pendingAggroLosCheckCount = standardBrain.PendingAggroLosCheckCount;
 
 				if (pendingAggroLosCheckCount != 0)
 					text.Add($"PendingAggroLosCheckCount: {pendingAggroLosCheckCount}");
 
-				List<OrderedAggroListElement> aggroList = standardBrain.GetOrderedAggroList();
+				var aggroList = standardBrain.GetAggroListDebug();
 
 				if (aggroList.Count > 0)
 				{
 					text.Add("");
 					text.Add("Aggro List:");
 
-					foreach (OrderedAggroListElement orderedAggroListElement in aggroList)
-						text.Add($"{orderedAggroListElement.Living.Name}: {orderedAggroListElement.AggroAmount}");
+					foreach ((GameLiving living, long amount) in aggroList)
+						text.Add($"{living.Name}: {amount}");
 				}
 			}
 

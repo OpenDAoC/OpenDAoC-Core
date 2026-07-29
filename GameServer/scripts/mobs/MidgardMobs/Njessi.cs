@@ -154,12 +154,12 @@ namespace DOL.AI.Brain
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
                 {
                     if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        AggroList.TryAdd(player, new(10));
+                        AddToAggroList(player);
                 }
                 foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
                 {
                     if (npc != null && npc.IsAlive && npc.Realm != Body.Realm)
-                        AggroList.TryAdd(npc, new(10));
+                        AddToAggroList(npc);
                 }
             }
             base.Think();

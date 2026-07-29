@@ -484,16 +484,10 @@ namespace DOL.AI.Brain
                     if (player.CharacterClass.ID is 48 or 47 or 42 or 46) //bard,druid,menta,warden
                     {
                         if (Body.TargetObject != player)
-                        {
-                            if (!AggroList.ContainsKey(player))
-                                AddToAggroList(player, 400);
-                        }
+                            AddToAggroList(player);
                     }
                     else
-                    {
-                        if (!AggroList.ContainsKey(player))
-                            AddToAggroList(player, 10);
-                    }
+                        AddToAggroList(player);
                 }
             }
 

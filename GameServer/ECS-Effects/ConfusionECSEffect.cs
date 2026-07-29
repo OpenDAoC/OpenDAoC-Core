@@ -95,7 +95,7 @@ namespace DOL.GS
 
             brain.Disengage();
             GameLiving randomTarget = targetList[Util.Random(targetList.Count - 1)];
-            brain.ForceAddToAggroList(randomTarget);
+            brain.AddToAggroList(randomTarget, 0, true);
         }
     }
 }

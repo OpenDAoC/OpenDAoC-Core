@@ -770,19 +770,6 @@ namespace DOL.AI.Brain
 			return AggroLevel > 0 && !ownerToCheck.IsObjectGreyCon(target) && GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
 		}
 
-		protected override bool ShouldBeRemovedFromAggroList(GameLiving living)
-		{
-			if (base.ShouldBeRemovedFromAggroList(living))
-				return true;
-
-			// Pets forget about mezzed and rooted players.
-			if (living.IsMezzed)
-				return true;
-
-			ECSGameEffect root = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
-			return root != null && root.SpellHandler.Spell.Value == 99;
-		}
-
 		/// <summary>
 		/// Perform some checks on 'm_orderAttackTarget'. Returns it if it's still a valid target, sets it to null otherwise.
 		/// </summary>
@@ -800,6 +787,11 @@ namespace DOL.AI.Brain
 			}
 
 			return m_orderAttackTarget;
+		}
+
+		protected override AggroTable BuildAggroTable()
+		{
+			return new(new ControlledNpcThreatStrategy(this));
 		}
 
 		protected override GameLiving CalculateNextAttackTarget()
@@ -958,5 +950,23 @@ namespace DOL.AI.Brain
 		public override bool CheckFormation(ref int x, ref int y, ref int z) { return false; }
 
 		#endregion
+
+		protected class ControlledNpcThreatStrategy : ThreatStrategy
+		{
+			public ControlledNpcThreatStrategy(StandardMobBrain owner) : base(owner) { }
+
+			public override bool ShouldBeRemoved(GameLiving target)
+			{
+				if (base.ShouldBeRemoved(target))
+					return true;
+
+				// Pets forget about mezzed and rooted players.
+				if (target.IsMezzed)
+					return true;
+
+				ECSGameEffect root = EffectListService.GetEffectOnTarget(target, eEffect.MovementSpeedDebuff);
+				return root != null && root.SpellHandler.Spell.Value == 99;
+			}
+		}
 	}
 }

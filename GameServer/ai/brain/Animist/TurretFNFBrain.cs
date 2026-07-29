@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using DOL.GS;
 using DOL.GS.ServerProperties;
 
@@ -6,8 +6,6 @@ namespace DOL.AI.Brain
 {
     public class TurretFNFBrain : TurretBrain
     {
-        private List<GameLiving> _filteredAggroList = new();
-
         protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.CHECK_LOS_BEFORE_AGGRO_FNF;
         protected override bool CanAddToAggroListFromMultipleLosChecks => true;
 
@@ -83,48 +81,64 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected override bool ShouldBeIgnoredFromAggroList(GameLiving living)
+        protected override AggroTable BuildAggroTable()
         {
-            // We always return true because we don't care about what `CleanUpAggroListAndGetHighestModifiedThreat` returns.
-            // This is just an opportunity to build a filtered aggro list, to be used by `CalculateNextAttackTarget`.
-            if (LivingHasEffect(living, ((TurretPet) Body).TurretSpell) ||
-                living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) ||
-                base.ShouldBeIgnoredFromAggroList(living))
-            {
-                return true;
-            }
-
-            _filteredAggroList.Add(living);
-            return true;
-        }
-
-        protected override GameLiving CleanUpAggroListAndGetHighestModifiedThreat()
-        {
-            _filteredAggroList.Clear();
-            return base.CleanUpAggroListAndGetHighestModifiedThreat();
+            return new(new FnfTurretThreatStrategy(this));
         }
 
         protected override GameLiving CalculateNextAttackTarget()
         {
-            CleanUpAggroListAndGetHighestModifiedThreat();
+            return CleanUpAggroListAndGetHighestModifiedThreat();
 
-            // Prioritize targets that don't already have our effect and aren't immune to it.
-            // If there's none, allow them to be attacked again but only if our spell does damage.
-            if (_filteredAggroList.Count > 0)
-                return _filteredAggroList[Util.Random(_filteredAggroList.Count - 1)];
-            else if ((Body as TurretPet).TurretSpell.Damage > 0)
-            {
-                List<GameLiving> tempAggroList = GameLoop.GetListForTick<GameLiving>();
-                tempAggroList.AddRange(AggroList.Keys); // Wasteful, but we don't expect this to be called often.
-
-                if (tempAggroList.Count != 0)
-                    return tempAggroList[Util.Random(tempAggroList.Count - 1)];
-            }
-
-            return null;
         }
 
         public override void UpdatePetWindow() { }
         public override void OnAttackedByEnemy(AttackData ad) { }
+
+        protected class FnfTurretThreatStrategy : ControlledNpcThreatStrategy
+        {
+            public FnfTurretThreatStrategy(StandardMobBrain owner) : base(owner) { }
+
+            public override GameLiving SelectTarget(ReadOnlySpan<TargetCandidate> candidates)
+            {
+                if (candidates.Length == 0 ||
+                    _owner.Body is not TurretPet turretPet ||
+                    turretPet.Brain is not StandardMobBrain brain)
+                {
+                    return null;
+                }
+
+                Spell turretSpell = turretPet.TurretSpell;
+                int randomIndex = Util.Random(candidates.Length - 1);
+                GameLiving selectedFallback = candidates[randomIndex].Living;
+                GameLiving selectedPrimary = null;
+
+                // Prioritize targets that don't already have our effect and aren't immune to it.
+                // If there's none, allow them to be attacked again but only if our spell does damage.
+                if (turretSpell != null)
+                {
+                    for (int i = 0; i < candidates.Length; i++)
+                    {
+                        int index = (randomIndex + i) % candidates.Length;
+                        GameLiving living = candidates[index].Living;
+
+                        if (!brain.LivingHasEffect(living, turretSpell) &&
+                            !living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
+                        {
+                            selectedPrimary = living;
+                            break;
+                        }
+                    }
+                }
+
+                if (selectedPrimary != null)
+                    return selectedPrimary;
+
+                if (turretSpell != null && turretSpell.Damage > 0)
+                    return selectedFallback;
+
+                return null;
+            }
+        }
     }
 }

@@ -1,6 +1,5 @@
 using DOL.GS;
 using DOL.GS.Spells;
-using DOL.GS.Effects;
 
 namespace DOL.AI.Brain
 {
@@ -20,7 +19,7 @@ namespace DOL.AI.Brain
 
 			foreach (var player in BuildPlayerAggroCandidateLoop())
 			{
-				if (AggroList.ContainsKey(player))
+				if (IsInAggroList(player))
 					continue; // add only new players
 				if (!player.IsAlive || player.ObjectState != GameObject.eObjectState.Active || player.IsStealthed)
 					continue;

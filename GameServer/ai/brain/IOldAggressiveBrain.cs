@@ -18,12 +18,12 @@ namespace DOL.AI.Brain
 		/// Add living to the aggrolist
 		/// aggroAmount can be negative to lower amount of aggro
 		/// </summary>
-		void AddToAggroList(GameLiving living, long aggroAmount = 0);
+		void AddToAggroList(GameLiving living, long aggroAmount = 0, bool ignoreConfusion = false);
 
 		/// <summary>
 		/// Remove one living from aggro list
 		/// </summary>
-		void RemoveFromAggroList(GameLiving living);
+		bool RemoveFromAggroList(GameLiving living);
 
 		/// <summary>
 		/// Get current amount of aggro on aggrotable

@@ -23,7 +23,7 @@ namespace DOL.AI.Brain
 		/// Add living to the aggrolist
 		/// save path of player before attack to walk back to way point after fight
 		/// </summary>
-		public override void AddToAggroList(GameLiving living, long aggroAmount)
+		public override void AddToAggroList(GameLiving living, long aggroAmount, bool ignoreConfusion)
 		{
 			//save current position in path go to here and reload path point
 			//insert path in pathpoint

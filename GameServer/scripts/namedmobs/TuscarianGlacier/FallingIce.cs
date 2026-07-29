@@ -92,13 +92,12 @@ namespace DOL.AI.Brain
                 if (ppls == null || !ppls.IsAlive || ppls.Client.Account.PrivLevel != 1 || isDisabled)
                     continue;
 
-                AggroList.TryAdd(ppls, new(100));
+                AddToAggroList(ppls);
 
                 if (ppls.IsWithinRadius(Body, 200))
                 {
-
-                        BroadcastMessage($"A terrifying cracking sound echoes in the caves! Falling ice slams into {ppls.Name}'s head!");
-                        Announcetext = true;
+                    BroadcastMessage($"A terrifying cracking sound echoes in the caves! Falling ice slams into {ppls.Name}'s head!");
+                    Announcetext = true;
                 }
             }
 

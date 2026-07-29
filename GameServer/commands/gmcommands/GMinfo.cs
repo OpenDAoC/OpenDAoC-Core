@@ -8,7 +8,6 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler.Client.v168;
 using DOL.Language;
-using static DOL.AI.Brain.StandardMobBrain;
 
 namespace DOL.GS.Commands
 {
@@ -220,15 +219,15 @@ namespace DOL.GS.Commands
 
 					if (target.Brain is StandardMobBrain brain)
 					{
-						List<OrderedAggroListElement> aggroList = brain.GetOrderedAggroList();
+						var aggroList = brain.GetAggroListDebug();
 
 						if (aggroList.Count > 0)
 						{
 							info.Add("");
 							info.Add("Aggro List:");
 
-							foreach (OrderedAggroListElement orderedAggroListElement in aggroList)
-								info.Add($"{orderedAggroListElement.Living.Name}: {orderedAggroListElement.AggroAmount}");
+							foreach ((GameLiving living, long amount) in aggroList)
+								info.Add($"{living.Name}: {amount}");
 						}
 					}
 

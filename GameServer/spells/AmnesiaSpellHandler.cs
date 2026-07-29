@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
                 if (Util.Chance(Spell.AmnesiaChance) && npc.TargetObject is GameLiving living)
                 {
                     brain.ClearAggroList();
-                    brain.ForceAddToAggroList(living); // Ensure we keep the current target even during confusion.
+                    brain.AddToAggroList(living, 0, true); // Ensure we keep the current target even during confusion.
                 }
             }
 

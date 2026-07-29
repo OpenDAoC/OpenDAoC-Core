@@ -28,7 +28,7 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            _target = _brain.GetOrderedAggroList().FirstOrDefault().Living;
+            _target = _brain.GetUnorderedAggroList(0, 1).FirstOrDefault();
 
             if (_target == null)
             {

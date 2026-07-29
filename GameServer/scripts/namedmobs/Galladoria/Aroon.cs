@@ -698,18 +698,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -885,18 +881,15 @@ namespace DOL.AI.Brain
         public List<GamePlayer> PlayersToAttack = new List<GamePlayer>();
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
+
             return 0;
         }
         public static bool Message2 = false;
@@ -1071,18 +1064,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -1260,18 +1249,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -1450,18 +1435,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -1641,18 +1622,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -1832,18 +1809,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -2024,18 +1997,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }
@@ -2216,18 +2185,14 @@ namespace DOL.AI.Brain
 
         public int RandomAttackTarget(ECSGameTimer timer)
         {
-            //IList enemies = new ArrayList(AggroTable.Keys);
-            if (PlayersToAttack.Count == 0)
-            {
-                //do nothing
-            }
-            else
+            if (PlayersToAttack.Count > 0)
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroList.Clear();
-                AggroList.TryAdd(RandomTarget, new(500));
+                ClearAggroList();
+                AddToAggroList(RandomTarget);
                 switch_target = false;
             }
+
 
             return 0;
         }

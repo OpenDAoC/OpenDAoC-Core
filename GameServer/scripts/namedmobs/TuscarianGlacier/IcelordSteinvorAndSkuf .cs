@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -226,13 +225,13 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                List<GameLiving> enemies = AggroList.Keys.ToList();
+                List<GameLiving> enemies = GetUnorderedAggroList();
                 foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
                 {
                     if (player != null)
                     {
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                            AggroList.TryAdd(player, new());
+                            AddToAggroList(player);
                     }
                 }
                 if (enemies.Count == 0)
@@ -691,29 +690,12 @@ namespace DOL.AI.Brain
 {
     public class EffectMobBrain : StandardMobBrain
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public EffectMobBrain()
             : base()
         {
-            AggroLevel = 0;
-            AggroRange = 0;
+            AggroLevel = 100;
+            AggroRange = 2500;
             ThinkInterval = 1500;
-        }
-        public override void Think()
-        {
-            if (Body.IsAlive)
-            {
-                foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
-                {
-                    if (player != null)
-                    {
-                        if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                            AggroList.TryAdd(player, new(100));
-                    }
-                }
-            }
-            base.Think();
         }
     }
 }

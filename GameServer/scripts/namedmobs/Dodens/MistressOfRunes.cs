@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
 
@@ -161,32 +160,6 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 
-		protected override void CheckNpcAggro()
-		{
-			if (Body.attackComponent.AttackState)
-				return;
-
-			foreach (var npc in BuildNpcAggroCandidateLoop())
-			{
-				if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
-					continue;
-
-				if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
-					continue;
-
-				if (AggroList.ContainsKey(npc))
-					continue; // add only new NPCs
-
-				if (npc.Brain != null && npc.Brain is IControlledBrain)
-				{
-					if (CanAggroTarget(npc))
-					{
-						AddToAggroList(npc, (npc.Level + 1) << 1);
-					}
-				}
-			}
-		}
-
 		/// <summary>
 		/// Broadcast relevant messages to the raid.
 		/// </summary>
@@ -205,26 +178,19 @@ namespace DOL.AI.Brain
 		/// <returns>Whether or not a target was picked.</returns>
 		public bool PickNearsightTarget()
 		{
-			MistressOfRunes mistress = Body as MistressOfRunes;
-
-			if (mistress == null)
+			if (Body is not MistressOfRunes mistress)
 				return false;
 
-			ArrayList inRangeLiving = new ArrayList();
+			List<GameLiving> inRangeLivings = GameLoop.GetListForTick<GameLiving>();
 
-			foreach (GameLiving living in AggroList.Keys)
+			foreach (GameLiving living in GetUnorderedAggroList())
 			{
-				if (living != null &&
-					living.IsAlive &&
-					living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
-					!mistress.IsWithinRadius(living, mistress.attackComponent.AttackRange))
-				{
-					inRangeLiving.Add(living);
-				}
+				if (!mistress.IsWithinRadius(living, mistress.attackComponent.AttackRange))
+					inRangeLivings.Add(living);
 			}
 
-			if (inRangeLiving.Count > 0)
-				return CheckNearsight((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+			if (inRangeLivings.Count > 0)
+				return CheckNearsight(inRangeLivings[Util.Random(0, inRangeLivings.Count - 1)]);
 
 			return false;
 		}

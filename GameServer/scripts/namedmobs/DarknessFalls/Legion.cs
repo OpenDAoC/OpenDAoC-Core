@@ -359,8 +359,6 @@ namespace DOL.AI.Brain
                 adds19 = false;
                 #endregion
 
-                if (Port_Enemys.Count > 0)//clear port players
-                    Port_Enemys.Clear();
                 if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
                     randomlyPickedPlayers.Clear();
 
@@ -627,7 +625,6 @@ namespace DOL.AI.Brain
             }
         }
         #region Legion Port
-        List<GamePlayer> Port_Enemys = new List<GamePlayer>();
         List<GamePlayer> randomlyPickedPlayers = new List<GamePlayer>();
         public void BroadcastMessage(String message)
         {
@@ -636,49 +633,21 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
             }
         }
-        public static List<T> GetRandomElements<T>(IEnumerable<T> list, int elementsCount)//pick X elements from list
-        {
-            return list.OrderBy(x => Guid.NewGuid()).Take(elementsCount).ToList();
-        }
-        private static int topPlayersToIngore = 5;//we determine here how many players from top aggro table will be ignored in teleporting
-        private static Random random = new Random();
+
         private int ThrowPlayer(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {
-                IDictionary<GameLiving, AggroAmount> aggroList = (Body.Brain as LegionBrain).AggroList;
-                IOrderedEnumerable<KeyValuePair<GameLiving, AggroAmount>> tempAggroTable = aggroList.OrderByDescending(x => x.Value.Effective).Skip(topPlayersToIngore).OrderBy(x => random.Next());
-                foreach(KeyValuePair<GameLiving, AggroAmount> items in tempAggroTable)
+                // From an ordered aggro list, ignore the first 5 entities. Then take 8~16 random players
+                var randomlyPickedPlayers = GetOrderedAggroList(5).OfType<GamePlayer>().Where(x =>
                 {
-                    if (items.Key != null && items.Key.IsAlive && items.Key is GamePlayer player)
-                    {
-                        if (!Port_Enemys.Contains(player))
-                        {
-                            Port_Enemys.Add(player);
-                            //log.Debug($"Adding player: Name = {player.Name}");
-                        }
-                    }
-                }
+                    return x.Client.Account.PrivLevel == 1 && HasAggro && x.IsWithinRadius(Body, 2500);
+                }).OrderBy(static x => Util.Random(int.MaxValue - 1)).Take(Util.Random(8, 16));
 
-                if (Port_Enemys.Count > 0)
-                {
-                    randomlyPickedPlayers = GetRandomElements(Port_Enemys, Util.Random(8, 16));//pick 5-8players from list to new list
+                foreach (GamePlayer player in randomlyPickedPlayers)
+                    player.MoveTo(249, 48200, 49566, 20833, 1028);
 
-                    if (randomlyPickedPlayers.Count > 0)
-                    {
-                        foreach (GamePlayer player in randomlyPickedPlayers)
-                        {
-                            if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && HasAggro && player.IsWithinRadius(Body, 2500))
-                            {
-                                player.MoveTo(249, 48200, 49566, 20833, 1028);
-                                //player.BroadcastUpdate();
-                            }
-                        }
-                        randomlyPickedPlayers.Clear();//clear list after port
-                    }
-                }
                 CanThrow = false;// set to false, so can throw again
-                Port_Enemys.Clear();
             }
             return 0;
         }

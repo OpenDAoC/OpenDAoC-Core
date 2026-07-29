@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -19,11 +18,6 @@ namespace DOL.AI.Brain
     public class StandardMobBrain : APlayerVicinityBrain, IOldAggressiveBrain
     {
         public const int MAX_AGGRO_DISTANCE = 3600;
-        public const int MAX_AGGRO_LIST_DISTANCE = 6000;
-
-        // Effective aggro reduction is calculated using an exponential decay function, starting from the distance threshold. A reduction of 2/3rd is ensured at 1500.
-        private const int EFFECTIVE_AGGRO_DISTANCE_THRESHOLD = 250; // Should be higher than players' melee range.
-        private static readonly double EFFECTIVE_AGGRO_EXPONENT = Math.Log(1 / 3.0) / (1500 - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD);
 
         // Used for AmbientBehaviour "Seeing" - maintains a list of GamePlayer in range
         public List<GamePlayer> PlayersSeen = new();
@@ -41,6 +35,7 @@ namespace DOL.AI.Brain
             FSM.Add(new StandardMobState_PATROLLING(this));
             FSM.Add(new StandardMobState_ROAMING(this));
             _aggroLosCheckListener = new(this);
+            _aggroTable = BuildAggroTable();
         }
 
         /// <summary>
@@ -258,55 +253,29 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual int AggroLevel { get; set; }
 
-        private ConcurrentDictionary<GameLiving, AggroAmount> _tempAggroList;
-        private readonly List<OrderedAggroListElement> _orderedAggroList = new();
-        private readonly Lock _orderedAggroListLock = new();
-        protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
-        public GameLiving LastHighestThreatInAttackRange { get; private set; }
+        private readonly AggroTable _aggroTable;
 
-        public class AggroAmount
+        public bool HasAggro => !_aggroTable.IsEmpty();
+        public GameLiving LastHighestThreatInAttackRange => _aggroTable.LastHighestThreatInAttackRange;
+
+        protected virtual AggroTable BuildAggroTable()
         {
-            public AggroAmount(long baseAggro = 0)
-            {
-                Base = baseAggro;
-            }
-
-            public long Base { get; set; }
-            public long Effective { get; set; }
+            return new(new ThreatStrategy(this));
         }
 
-        /// <summary>
-        /// Checks whether living has someone on its aggrolist
-        /// </summary>
-        public virtual bool HasAggro => !AggroList.IsEmpty;
-
-        /// <summary>
-        /// Add aggro table of this brain to that of another living.
-        /// </summary>
         public void AddAggroListTo(StandardMobBrain brain)
         {
-            if (!brain.Body.IsAlive)
-                return;
-
-            foreach (var pair in AggroList)
-            {
-                if (brain.AggroList.ContainsKey(pair.Key))
-                    continue;
-
-                brain.AddToAggroList(pair.Key, pair.Value.Base);
-            }
+            _aggroTable.AddTo(brain._aggroTable);
         }
 
-        public virtual void AddToAggroList(GameLiving living, long aggroAmount = 0)
+        public virtual void AddToAggroList(GameLiving living, long aggroAmount = 0, bool ignoreConfusion = false)
         {
-            if (Body.IsConfused || !Body.IsAlive || living == null)
+            if (living == null || !Body.IsAlive)
                 return;
 
-            ForceAddToAggroList(living, aggroAmount);
-        }
+            if (!ignoreConfusion && Body.IsConfused)
+                return;
 
-        public void ForceAddToAggroList(GameLiving living, long aggroAmount = 0)
-        {
             if (aggroAmount > 0)
             {
                 foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects(eEffect.Protect))
@@ -335,16 +304,20 @@ namespace DOL.AI.Brain
 
                         if (protectSource is GamePlayer playerProtectSource)
                         {
-                            playerProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(playerProtectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", living.GetName(0, false),
-                                Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            string message = LanguageMgr.GetTranslation(
+                                playerProtectSource.Client.Account.Language,
+                                "AI.Brain.StandardMobBrain.YouProtDist",
+                                living.GetName(0, false),
+                                Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body));
+                            playerProtectSource.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
 
-                        AggroList.AddOrUpdate(protectSource, Add, Update, protectAmount);
+                        _aggroTable.AddOrUpdate(protectSource, protectAmount);
                     }
                 }
             }
 
-            AggroList.AddOrUpdate(living, Add, Update, aggroAmount);
+            _aggroTable.AddOrUpdate(living, aggroAmount);
 
             // Change state and reschedule the next think tick to improve responsiveness.
             if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
@@ -352,62 +325,47 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
                 NextThinkTick = GameLoop.GameLoopTime;
             }
-
-            static AggroAmount Add(GameLiving key, long arg)
-            {
-                // Always add at least 1 if the key is not present to ensure the NPC goes to the puller and not a group member.
-                // It's still technically possible for two group members to pull at the exact same time, but this should be fine.
-                return new(Math.Max(1, arg));
-            }
-
-            static AggroAmount Update(GameLiving key, AggroAmount oldValue, long arg)
-            {
-                oldValue.Base = Math.Max(0, oldValue.Base + arg);
-                return oldValue;
-            }
         }
 
-        public virtual void RemoveFromAggroList(GameLiving living)
+        public virtual bool RemoveFromAggroList(GameLiving living)
         {
-            AggroList.TryRemove(living, out _);
+            return _aggroTable.Remove(living);
         }
 
-        public List<OrderedAggroListElement> GetOrderedAggroList()
+        public virtual bool IsInAggroList(GameLiving living)
         {
-            // Potentially slow, so we cache the result.
-            lock (_orderedAggroListLock)
-            {
-                if (_orderedAggroList.Count == 0)
-                    _orderedAggroList.AddRange(AggroList.OrderByDescending(x => x.Value.Effective).Select(x => new OrderedAggroListElement(x.Key, x.Value.Effective)));
+            return _aggroTable.IsIn(living);
+        }
 
-                return _orderedAggroList.ToList();
-            }
+        public List<GameLiving> GetUnorderedAggroList(int skip = 0, int take = int.MaxValue)
+        {
+            return _aggroTable.GetUnordered(skip, take);
+        }
+
+        public List<GameLiving> GetOrderedAggroList(int skip = 0, int take = int.MaxValue)
+        {
+            return _aggroTable.GetOrdered(skip, take);
+        }
+
+        public List<(GameLiving, long)> GetAggroListDebug()
+        {
+            return _aggroTable.GetDebug();
         }
 
         public long GetBaseAggroAmount(GameLiving living)
         {
-            return AggroList.TryGetValue(living, out AggroAmount aggroAmount) ? aggroAmount.Base : 0;
+            return _aggroTable.GetBaseAggroAmount(living);
         }
 
         public bool SetTemporaryAggroList()
         {
-            if (_tempAggroList != null)
-                return false;
-
-            _tempAggroList = AggroList;
-            AggroList = new();
-            return true;
+            return _aggroTable.SetTemporaryAggroTable();
         }
 
         public bool UnsetTemporaryAggroList()
         {
-            // Keep the current aggro list if the previous one is empty.
-            // This can happen when amnesia is used during confusion.
-            if (_tempAggroList == null || _tempAggroList.IsEmpty)
+            if (!_aggroTable.UnsetTemporaryAggroTable())
                 return false;
-
-            AggroList = _tempAggroList;
-            _tempAggroList = null;
 
             if (HasAggro)
             {
@@ -420,21 +378,10 @@ namespace DOL.AI.Brain
             return true;
         }
 
-        /// <summary>
-        /// Remove all livings from the aggrolist.
-        /// </summary>
         public virtual void ClearAggroList()
         {
             CanBaf = true; // Mobs that drop out of combat can BAF again.
-            AggroList.Clear();
-            _tempAggroList = null;
-
-            lock (_orderedAggroListLock)
-            {
-                _orderedAggroList.Clear();
-            }
-
-            LastHighestThreatInAttackRange = null;
+            _aggroTable.Clear();
         }
 
         /// <summary>
@@ -519,94 +466,9 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected virtual bool ShouldBeRemovedFromAggroList(GameLiving living)
-        {
-            // Keep Necromancer shades so that we can attack them if their pets die.
-            return !living.IsAlive ||
-                   living.CurrentRegion != Body.CurrentRegion ||
-                   (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade));
-        }
-
-        protected virtual bool ShouldBeIgnoredFromAggroList(GameLiving living)
-        {
-            // We're keeping shades in the aggro list so that mobs attack them after their pet dies, so they need to be filtered out here.
-            // We also keep entities outside MAX_AGGRO_LIST_DISTANCE in case they come back.
-            return living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade) || !Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE);
-        }
-
         protected virtual GameLiving CleanUpAggroListAndGetHighestModifiedThreat()
         {
-            // Clear cached ordered aggro list.
-            // It isn't built here because ordering all entities in the aggro list can be expensive, and we typically don't need it.
-            // It's built on demand, when `GetOrderedAggroList` is called.
-            _orderedAggroList.Clear();
-            LastHighestThreatInAttackRange = null;
-
-            int attackRange = Body.attackComponent.AttackRange;
-            GameLiving highestThreat = null;
-            KeyValuePair<GameLiving, AggroAmount> currentTarget = default;
-            long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the list.
-            long highestEffectiveAggroInAttackRange = -1; // Assumes that negative aggro amounts aren't allowed in the list.
-
-            foreach (var pair in AggroList)
-            {
-                GameLiving living = pair.Key;
-
-                if (Body.TargetObject == living)
-                    currentTarget = pair;
-
-                if (ShouldBeRemovedFromAggroList(living))
-                {
-                    AggroList.TryRemove(living, out _);
-                    continue;
-                }
-
-                if (ShouldBeIgnoredFromAggroList(living))
-                    continue;
-
-                // Livings further than `EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD` units away have a reduced effective aggro amount.
-                // Using `Math.Ceiling` helps differentiate between 0 and 1 base aggro amount.
-                AggroAmount aggroAmount = pair.Value;
-                double distance = Body.GetDistanceTo(living);
-                double distanceOverThreshold = distance - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD;
-
-                if (distanceOverThreshold <= 0)
-                    aggroAmount.Effective = aggroAmount.Base;
-                else
-                    aggroAmount.Effective = (long) Math.Ceiling(aggroAmount.Base * Math.Exp(EFFECTIVE_AGGRO_EXPONENT * distanceOverThreshold));
-
-                if (aggroAmount.Effective > highestEffectiveAggroInAttackRange)
-                {
-                    if (distance <= attackRange)
-                    {
-                        highestEffectiveAggroInAttackRange = aggroAmount.Effective;
-                        LastHighestThreatInAttackRange = living;
-                    }
-
-                    if (aggroAmount.Effective > highestEffectiveAggro)
-                    {
-                        highestEffectiveAggro = aggroAmount.Effective;
-                        highestThreat = living;
-                    }
-                }
-            }
-
-            if (highestThreat != null)
-            {
-                // Don't change target if our new found highest threat has the same effective aggro.
-                // This helps with BAF code to make mobs actually go to their intended target.
-                if (currentTarget.Key != null && currentTarget.Key != highestThreat && currentTarget.Value.Effective >= highestEffectiveAggro)
-                    highestThreat = currentTarget.Key;
-            }
-            else
-            {
-                // The list seems to be full of shades. It could mean we added a shade to the aggro list instead of its pet.
-                // Ideally, this should never happen, but it currently can be caused by the way `AddToAggroList` propagates aggro to group members.
-                // When that happens, don't bother checking aggro amount and simply return the first pet in the list.
-                return AggroList.FirstOrDefault().Key?.ControlledBrain?.Body;
-            }
-
-            return highestThreat;
+            return _aggroTable.UpdateAndGetHighestThreat(Body.attackComponent.AttackRange);
         }
 
         /// <summary>
@@ -701,9 +563,7 @@ namespace DOL.AI.Brain
                         if (playerInGroup == attacker)
                             continue;
 
-                        if (!AggroList.ContainsKey(playerInGroup))
-                            AggroList.TryAdd(playerInGroup, new(0));
-
+                        _aggroTable.AddIfAbsent(playerInGroup, 0);
                         AddPetAndSubPetsToAggroList(playerInGroup);
                     }
                 }
@@ -714,8 +574,8 @@ namespace DOL.AI.Brain
                 // this prevents both receiving an aggro amount of 1 if the attack is a debuff for example, ensuring the NPC attacks the pet first.
                 GamePlayer owner = brain.GetPlayerOwner();
 
-                if (!AggroList.ContainsKey(owner))
-                    AggroList.TryAdd(owner, new(0));
+                if (owner != null)
+                    _aggroTable.AddIfAbsent(owner, 0);
             }
         }
 
@@ -726,9 +586,7 @@ namespace DOL.AI.Brain
             if (pet == null)
                 return;
 
-            if (!AggroList.ContainsKey(pet))
-                AggroList.TryAdd(pet, new(0));
-
+            _aggroTable.AddIfAbsent(pet, 0);
             IControlledBrain[] controlledBrains = pet.ControlledNpcList;
 
             if (controlledBrains == null)
@@ -744,8 +602,7 @@ namespace DOL.AI.Brain
                 if (subPet == null)
                     continue;
 
-                if (!AggroList.ContainsKey(subPet))
-                    AggroList.TryAdd(subPet, new(0));
+                _aggroTable.AddIfAbsent(subPet, 0);
             }
         }
 
@@ -1465,15 +1322,74 @@ namespace DOL.AI.Brain
 
         #endregion
 
-        public class OrderedAggroListElement
+        protected class ThreatStrategy : IThreatStrategy
         {
-            public GameLiving Living { get; }
-            public long AggroAmount { get; }
+            private const int EFFECTIVE_AGGRO_DISTANCE_THRESHOLD = 250; // Should be higher than players' melee range.
+            private static readonly double EFFECTIVE_AGGRO_EXPONENT = Math.Log(1 / 3.0) / (1500 - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD);
 
-            public OrderedAggroListElement(GameLiving living, long aggroAmount)
+            protected readonly ABrain _owner;
+
+            public ThreatStrategy(ABrain owner)
             {
-                Living = living;
-                AggroAmount = aggroAmount;
+                _owner = owner;
+            }
+
+            public virtual long CalculateEffectiveAggro(long baseAggro, GameLiving target, out double distance)
+            {
+                // Livings further than EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD units away have a reduced effective aggro amount.
+                // Using `Math.Ceiling` helps differentiate between 0 and 1 base aggro amount.
+                distance = _owner.Body.GetDistanceTo(target);
+                double distanceOverThreshold = distance - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD;
+                return distanceOverThreshold <= 0 ?
+                    baseAggro :
+                    (long) Math.Ceiling(baseAggro * Math.Exp(EFFECTIVE_AGGRO_EXPONENT * distanceOverThreshold));
+            }
+
+            public virtual bool IsHigherThreat(long incumbentEffectiveAggro, long challengerEffectiveAggro)
+            {
+                return challengerEffectiveAggro > incumbentEffectiveAggro;
+            }
+
+            public virtual GameLiving SelectTarget(ReadOnlySpan<TargetCandidate> candidates)
+            {
+                GameLiving highestThreat = null;
+                long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the table.
+                long currentTargetEffectiveAggro = 0;
+                GameLiving currentTarget = _owner.Body.TargetObject as GameLiving;
+
+                foreach (TargetCandidate candidate in candidates)
+                {
+                    if (candidate.Living == currentTarget)
+                        currentTargetEffectiveAggro = candidate.EffectiveAggro;
+
+                    if (candidate.EffectiveAggro > highestEffectiveAggro)
+                    {
+                        highestEffectiveAggro = candidate.EffectiveAggro;
+                        highestThreat = candidate.Living;
+                    }
+                }
+
+                // Don't change target if the current one is still at least as threatening as whatever we just found.
+                // Avoids flapping between targets with equal aggro.
+                return currentTarget != null && currentTarget != highestThreat && currentTargetEffectiveAggro >= highestEffectiveAggro ?
+                    currentTarget :
+                    highestThreat;
+            }
+
+            public virtual bool ShouldBeRemoved(GameLiving target)
+            {
+                // Keep Necromancer shades so that we can attack them if their pets die.
+                return !target.IsAlive ||
+                    target.CurrentRegion != _owner.Body.CurrentRegion ||
+                    (!GameServer.ServerRules.IsAllowedToAttack(_owner.Body, target, true) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Shade));
+            }
+
+            public virtual bool ShouldBeIgnored(GameLiving target)
+            {
+                // We're keeping shades in the aggro list so that mobs attack them after their pet dies, so they need to be filtered out here.
+                // We also keep entities outside MAX_AGGRO_LIST_DISTANCE in case they come back.
+                const int MAX_AGGRO_LIST_DISTANCE = 6000;
+                return target.effectListComponent.ContainsEffectForEffectType(eEffect.Shade) || !_owner.Body.IsWithinRadius(target, MAX_AGGRO_LIST_DISTANCE);
             }
         }
     }

@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.Effects;
 using DOL.GS.Scripts;
 
 namespace DOL.AI.Brain
@@ -125,32 +124,6 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected override void CheckNpcAggro()
-        {
-            if (Body.attackComponent.AttackState)
-                return;
-
-            foreach (var npc in BuildNpcAggroCandidateLoop())
-            {
-                if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
-                    continue;
-
-                if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
-                    continue;
-
-                if (AggroList.ContainsKey(npc))
-                    continue; // add only new NPCs
-
-                if (npc.Brain != null && npc.Brain is IControlledBrain)
-                {
-                    if (CanAggroTarget(npc))
-                    {
-                        AddToAggroList(npc, (npc.Level + 1) << 1);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Called whenever Aros the Spiritmaster's body sends something to its brain.
         /// </summary>
@@ -195,28 +168,19 @@ namespace DOL.AI.Brain
         /// <returns>Whether or not a target was picked.</returns>
         public bool PickDebuffTarget()
         {
-            GameEpicAros aros = Body as GameEpicAros;
-
-            if (aros == null)
+            if (Body is not GameEpicAros aros)
                 return false;
 
-            ArrayList inRangeLiving = new ArrayList();
+            List<GameLiving> inRangeLivings = GameLoop.GetListForTick<GameLiving>();
 
-            foreach (var pair in AggroList)
+            foreach (GameLiving living in GetUnorderedAggroList())
             {
-                GameLiving living = pair.Key;
-
-                if (living != null &&
-                    living.IsAlive &&
-                    living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
-                    !aros.IsWithinRadius(living, aros.attackComponent.AttackRange))
-                {
-                    inRangeLiving.Add(living);
-                }
+                if (!aros.IsWithinRadius(living, aros.attackComponent.AttackRange))
+                    inRangeLivings.Add(living);
             }
 
-            if (inRangeLiving.Count > 0)
-                return aros.CheckDebuff((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
+            if (inRangeLivings.Count > 0)
+                return aros.CheckDebuff(inRangeLivings[Util.Random(0, inRangeLivings.Count - 1)]);
 
             return false;
         }

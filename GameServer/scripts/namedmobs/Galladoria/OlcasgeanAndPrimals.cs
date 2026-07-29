@@ -1271,7 +1271,7 @@ namespace DOL.AI.Brain
                 if (player != null)
                 {
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        AggroList.TryAdd(player, new(100));
+                        AddToAggroList(player);
                 }
             }
             Point3D point1 = new Point3D();
@@ -1906,7 +1906,7 @@ namespace DOL.AI.Brain
                     if (player != null)
                     {
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                            AggroList.TryAdd(player, new(100));
+                            AddToAggroList(player);
                     }
                 }
                 if (CanSpawnFire == false)
@@ -2263,7 +2263,7 @@ namespace DOL.AI.Brain
                     GameLiving target = Body.TargetObject as GameLiving;
                     if (!target.IsWithinRadius(spawn, 900) && target != null && target.IsAlive)
                     {
-                        if (AggroList.TryRemove(target, out _))
+                        if (RemoveFromAggroList(target))
                         {
                             CalculateNextAttackTarget();
                             CanSwitchTarget = false;

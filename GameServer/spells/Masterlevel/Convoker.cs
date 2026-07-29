@@ -858,7 +858,7 @@ public class MLBrain : GuardBrain
 
 		foreach (var npc in BuildNpcAggroCandidateLoop())
 		{
-			if (AggroList.ContainsKey(npc))
+			if (IsInAggroList(npc))
 				continue; // add only new npcs
 			if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
 				continue; // let's not try to attack flying mobs

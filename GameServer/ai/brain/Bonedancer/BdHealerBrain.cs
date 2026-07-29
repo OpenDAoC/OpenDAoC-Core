@@ -135,9 +135,12 @@ namespace DOL.AI.Brain
             return target;
         }
 
-        public override void AddToAggroList(GameLiving living, long aggroAmount) { }
+        public override void AddToAggroList(GameLiving living, long aggroAmount, bool ignoreConfusion) { }
 
-        public override void RemoveFromAggroList(GameLiving living) { }
+        public override bool RemoveFromAggroList(GameLiving living)
+        {
+            return false;
+        }
 
         protected override GameLiving CalculateNextAttackTarget()
         {

@@ -229,10 +229,10 @@ namespace DOL.AI.Brain
 				{
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
-						if (!Enemys_To_DD.Contains(player) && !AggroList.ContainsKey(player))
+						if (!Enemys_To_DD.Contains(player) && !IsInAggroList(player))
 						{
 							Enemys_To_DD.Add(player);
-							AddToAggroList(player, 10);//make sure it will cast spell
+							AddToAggroList(player);
 						}
 					}
 				}

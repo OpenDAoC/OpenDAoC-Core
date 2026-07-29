@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Timers;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.ServerProperties;
-using Timer = System.Timers.Timer;
 
 //Mob with packageid="HostBaf" in same region as bosss will come if he is pulled/aggroed
 //Make sure to add that packageid to Host rooms, unless it will not bring a friends!
@@ -4040,8 +4038,8 @@ namespace DOL.AI.Brain
                 {
                     if (player != null)
                     {
-                        if (player.IsAlive && player.Client.Account.PrivLevel == 1 && !AggroList.ContainsKey(player))
-                            AddToAggroList(player, 10);
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1 && !IsInAggroList(player))
+                            AddToAggroList(player);
                     }
                 }
             }
@@ -4059,7 +4057,7 @@ namespace DOL.AI.Brain
                                 HostBrain brain = (HostBrain)npc.Brain;
                                 if (target != null)
                                 {
-                                    brain.AddToAggroList(target, 10);
+                                    brain.AddToAggroList(target);
                                     npc.StartAttack(target);
                                 }
                                 BafHost = true;
