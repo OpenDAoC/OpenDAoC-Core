@@ -11,11 +11,11 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public int EntityCount; // Used for diagnostics.
-        private readonly ConcurrentQueue<PostedAction> _actions = new();
-        private readonly List<PostedAction> _work = new();
-        private bool _hasActions;
+        private List<PostedAction> _actions = new();
+        [ThreadStatic] private static Stack<List<PostedAction>> _spareLists;
+        private readonly Lock _lock = new();
 
+        public int EntityCount; // Used for diagnostics.
         public string ServiceName { get; }
 
         protected GameServiceBase()
@@ -34,32 +34,69 @@ namespace DOL.GS
                 pooledAction = new();
 
             pooledAction.Init(this, action, state);
-            _actions.Enqueue(pooledAction);
-            Volatile.Write(ref _hasActions, true);
+
+            lock (_lock)
+                _actions.Add(pooledAction);
         }
 
         public void ProcessPostedActions()
         {
-            if (!Interlocked.Exchange(ref _hasActions, false))
+            List<PostedAction> batch = TakeBatch();
+
+            if (batch == null)
                 return;
 
-            while (_actions.TryDequeue(out PostedAction action))
-                ProcessPostedActionInternal(action);
+            try
+            {
+                foreach (PostedAction action in batch)
+                    ProcessPostedActionInternal(action);
+            }
+            finally
+            {
+                ReturnList(batch);
+            }
         }
 
         protected void ProcessPostedActionsParallel()
         {
-            if (!Interlocked.Exchange(ref _hasActions, false))
+            List<PostedAction> batch = TakeBatch();
+
+            if (batch == null)
                 return;
 
-            while (_actions.TryDequeue(out PostedAction action))
-                _work.Add(action);
+            try
+            {
+                GameLoop.ExecuteForEach(batch, batch.Count, ProcessPostedActionInternal);
+            }
+            finally
+            {
+                ReturnList(batch);
+            }
+        }
 
-            if (_work.Count <= 0)
-                return;
+        private List<PostedAction> TakeBatch()
+        {
+            lock (_lock)
+            {
+                if (_actions.Count == 0)
+                    return null;
 
-            GameLoop.ExecuteForEach(_work, _work.Count, ProcessPostedActionInternal);
-            _work.Clear();
+                List<PostedAction> batch = _actions;
+                _actions = RentList();
+                return batch;
+            }
+        }
+
+        private static List<PostedAction> RentList()
+        {
+            var stack = _spareLists ??= new();
+            return stack.Count > 0 ? stack.Pop() : new();
+        }
+
+        private static void ReturnList(List<PostedAction> list)
+        {
+            list.Clear();
+            (_spareLists ??= new()).Push(list);
         }
 
         private static void ProcessPostedActionInternal(PostedAction action)
