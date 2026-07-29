@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
 
         public virtual void AddToAggroList(GameLiving living, long aggroAmount = 0, bool ignoreConfusion = false)
         {
-            if (living == null || !Body.IsAlive)
+            if (living == null || !living.IsAlive || !Body.IsAlive)
                 return;
 
             if (!ignoreConfusion && Body.IsConfused)
