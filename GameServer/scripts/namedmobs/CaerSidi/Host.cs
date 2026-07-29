@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Timers;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -22,15 +23,17 @@ namespace DOL.GS
 
         public void StartTimer()
         {
-            Timer myTimer = new Timer();
-            myTimer.Elapsed += new ElapsedEventHandler(DisplayTimeEvent);
-            myTimer.Interval = 1000; // 1000 ms is one second
+            ECSGameTimer myTimer = new(this, DisplayTimeEvent);
             myTimer.Start();
         }
 
-        public void DisplayTimeEvent(object source, ElapsedEventArgs e)
+        public int DisplayTimeEvent(ECSGameTimer timer)
         {
+            if (!IsAlive)
+                return 0;
+
             DoStuff();
+            return 10000;
         }
 
         public static bool Spawnhost = false;
@@ -38,35 +41,31 @@ namespace DOL.GS
 
         public void DoStuff()
         {
-            if (this.IsAlive)
+            if (Host.HostCount == 0)
             {
-                if (Host.HostCount == 0)
+                pickhostcheck = false;
+                set_realhost = false;
+                if (ChooseHost.Count > 0)
                 {
-                    pickhostcheck = false;
-                    set_realhost = false;
-                    if (ChooseHost.Count > 0)
-                    {
-                        ChooseHost.Clear();
-                    }
+                    ChooseHost.Clear();
                 }
+            }
 
-                if (Spawnhost == false && Host.HostCount == 0)
-                {
-                    SpawnHostCopy();
-                    Spawnhost = true;
-                }
+            if (Spawnhost == false && Host.HostCount == 0)
+            {
+                SpawnHostCopy();
+                Spawnhost = true;
+            }
 
-                if (pickhostcheck == false && Host.HostCount > 0)
-                {
-                    PickHost();
-                    pickhostcheck = true;
-                }
+            if (pickhostcheck == false && Host.HostCount > 0)
+            {
+                pickhostcheck = PickHost();
+            }
 
-                if (Host.HostCount == 0 && DoRespawnTimer == false)
-                {
-                    RespawnChecker();
-                    DoRespawnTimer = true;
-                }
+            if (Host.HostCount == 0 && DoRespawnTimer == false)
+            {
+                RespawnChecker();
+                DoRespawnTimer = true;
             }
         }
 
@@ -94,7 +93,7 @@ namespace DOL.GS
         public static bool set_realhost = false;
         public static bool pickhostcheck = false;
 
-        public void PickHost()
+        public bool PickHost()
         {
             foreach (GameNPC host in GetNPCsInRadius(8000))
             {
@@ -117,8 +116,11 @@ namespace DOL.GS
                     GameNPC RealHost = ChooseHost[Util.Random(0, ChooseHost.Count - 1)];
                     RealHost.PackageID = "HostReal";
                     set_realhost = true;
+                    return true;
                 }
             }
+
+            return false;
         }
 
         #endregion
@@ -268,15 +270,10 @@ namespace DOL.GS
                         }
                     }
                 }
+            }
 
-                HostCount = 0; //reset host count to 0
-                base.Die(killer);
-            }
-            else
-            {
-                --HostCount;
-                base.Die(killer);
-            }
+            Interlocked.Decrement(ref HostCount);
+            base.Die(killer);
         }
 
         public override void ReturnToSpawnPoint(short speed)
