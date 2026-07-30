@@ -91,7 +91,6 @@ namespace DOL.GS
 
                             // Since the `DbInventoryItem` has just been loaded and we had to recreate one because of poo poo design, we need to take a new snapshot.
                             // The snapshot is used to ensure we're not saving every column on the next save.
-                            // We also flip Dirty back to false, otherwise LastTimeRowUpdated will return a different time.
                             playerItem.Dirty = false;
                             playerItem.TakeSnapshot();
 
