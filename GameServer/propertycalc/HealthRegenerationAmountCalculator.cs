@@ -41,12 +41,17 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GameNPC npc)
             {
-                // Halved regeneration amount for NPCs in combat.
-                // NPCs (necromancer pets excluded) out of combat and without anything in their aggro list (so that it doesn't trigger when NPCs are being kited) get a huge bonus.
                 if (npc.InCombat)
                     regen /= 2.0;
                 else if (npc is not NecromancerPet && (npc.Brain is not StandardMobBrain brain || !brain.HasAggro))
-                    regen = npc.MaxHealth * 0.125;
+                {
+                    // NPCs that are out of combat and with an empty aggro list regen much faster.
+                    // This behavior is meant to be part of the "run away, regen, re-aggro" mechanic.
+                    // Live (July 2026) uses about 5% every 2.5~3 seconds.
+                    // Uthgard uses 10% every 6 seconds.
+                    // We apply it to most pets out of convenience for classes that cannot heal theirs.
+                    regen = npc.MaxHealth * 0.1;
+                }
             }
 
             regen *= ServerProperties.Properties.HEALTH_REGEN_AMOUNT_MODIFIER;
