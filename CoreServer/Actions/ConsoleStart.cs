@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using DOL.GameServerConsole;
 using DOL.GS;
 using DOL.GS.ServerProperties;
