@@ -12,7 +12,6 @@ namespace DOL.Database
         private DataObject _snapshot;
         private bool _allowAdd = true;
         private bool _allowDelete = true;
-        private DateTime _lastTimeRowUpdated;
         private string _objectId;
         private int? _cachedHash;
 
@@ -56,11 +55,7 @@ namespace DOL.Database
         public virtual bool IsDeleted { get; set; }
 
         [DataElement(AllowDbNull = false, Index = false)]
-        public DateTime LastTimeRowUpdated
-        {
-            get => Dirty ? DateTime.UtcNow : _lastTimeRowUpdated;
-            set => _lastTimeRowUpdated = value;
-        }
+        public DateTime LastTimeRowUpdated { get; set; }
 
         protected DataObject()
         {
@@ -83,19 +78,26 @@ namespace DOL.Database
         {
             // If there's no snapshot, we can't know what changed.
             if (_snapshot == null)
+            {
+                LastTimeRowUpdated = DateTime.UtcNow;
                 return tableHandler.UpdateElementBindings.ToList();
+            }
 
             List<ElementBinding> dirtyBindings = new();
 
-            // Iterate through all columns that can be part of an UPDATE statement.
             foreach (ElementBinding binding in tableHandler.UpdateElementBindings)
             {
                 object currentValue = binding.GetValue(this);
                 object originalValue = binding.GetValue(_snapshot);
 
-                // If the values are not equal, this property is dirty.
                 if (!Equals(currentValue, originalValue))
                     dirtyBindings.Add(binding);
+            }
+
+            if (dirtyBindings.Count > 0 && tableHandler.LastUpdatedBinding != null)
+            {
+                LastTimeRowUpdated = DateTime.UtcNow;
+                dirtyBindings.Add(tableHandler.LastUpdatedBinding);
             }
 
             return dirtyBindings;

@@ -46,6 +46,10 @@ namespace DOL.Database
 		/// </summary>
 		public ElementBinding[] UpdateElementBindings { get; }
 		/// <summary>
+		/// Element Binding representing the LastTimeRowUpdated column, if present
+		/// </summary>
+		public ElementBinding LastUpdatedBinding { get; }
+		/// <summary>
 		/// Data Table Handled
 		/// </summary>
 		public DataTable Table { get; }
@@ -101,6 +105,7 @@ namespace DOL.Database
 
 			FieldElementBindings = ElementBindings.Where(static bind => bind.Relation == null).ToArray();
 			UpdateElementBindings = FieldElementBindings.Where(static bind => bind.PrimaryKey == null && bind.ReadOnly == null).ToArray();
+			LastUpdatedBinding = UpdateElementBindings.FirstOrDefault(static bind => bind.ColumnName == nameof(DataObject.LastTimeRowUpdated));
 
 			// Prepare Table
 			Table = new DataTable(TableName);
