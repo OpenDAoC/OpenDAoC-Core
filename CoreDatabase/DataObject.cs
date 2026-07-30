@@ -73,7 +73,7 @@ namespace DOL.Database
 
         public void TakeSnapshot()
         {
-            // Called when an object as been created and its properties initialized.
+            // Called when an object has been created and its properties initialized.
             // Creates a copy of itself to be able to keep track of dirty properties.
             _snapshot = (DataObject) MemberwiseClone();
             _snapshot.Dirty = false;
@@ -83,16 +83,13 @@ namespace DOL.Database
         {
             // If there's no snapshot, we can't know what changed.
             if (_snapshot == null)
-                return tableHandler.FieldElementBindings.Where(Predicate).ToList();
+                return tableHandler.UpdateElementBindings.ToList();
 
             List<ElementBinding> dirtyBindings = new();
 
             // Iterate through all columns that can be part of an UPDATE statement.
-            foreach (ElementBinding binding in tableHandler.FieldElementBindings.Where(bind => bind.PrimaryKey == null && bind.ReadOnly == null))
+            foreach (ElementBinding binding in tableHandler.UpdateElementBindings)
             {
-                if (!Predicate(binding))
-                    continue;
-
                 object currentValue = binding.GetValue(this);
                 object originalValue = binding.GetValue(_snapshot);
 
@@ -102,11 +99,6 @@ namespace DOL.Database
             }
 
             return dirtyBindings;
-
-            static bool Predicate(ElementBinding binding)
-            {
-                return binding.PrimaryKey == null && binding.ReadOnly == null;
-            }
         }
 
         public object Clone()

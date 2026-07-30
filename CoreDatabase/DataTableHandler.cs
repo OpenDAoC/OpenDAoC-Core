@@ -38,9 +38,13 @@ namespace DOL.Database
 		/// </summary>
 		public ElementBinding[] ElementBindings { get; }
 		/// <summary>
-		/// Retrieve Element Bindings for DataTable Fields Only
+		/// Element Bindings for DataTable Fields Only
 		/// </summary>
 		public ElementBinding[] FieldElementBindings { get; }
+		/// <summary>
+		/// Element Bindings that can be part of an UPDATE statement
+		/// </summary>
+		public ElementBinding[] UpdateElementBindings { get; }
 		/// <summary>
 		/// Data Table Handled
 		/// </summary>
@@ -95,7 +99,8 @@ namespace DOL.Database
 					                                         }).ToArray();
 			}
 
-			FieldElementBindings = ElementBindings.Where(bind => bind.Relation == null).ToArray();
+			FieldElementBindings = ElementBindings.Where(static bind => bind.Relation == null).ToArray();
+			UpdateElementBindings = FieldElementBindings.Where(static bind => bind.PrimaryKey == null && bind.ReadOnly == null).ToArray();
 
 			// Prepare Table
 			Table = new DataTable(TableName);
