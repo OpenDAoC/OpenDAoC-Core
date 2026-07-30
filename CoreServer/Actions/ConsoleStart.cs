@@ -99,7 +99,15 @@ namespace DOL.DOLServer.Actions
             {
                 string line = Console.ReadLine();
 
-                if (string.IsNullOrEmpty(line))
+                if (line is null)
+                {
+                    // Service deployments may redirect stdin to /dev/null. Back off on EOF instead of
+                    // spinning continuously, while still allowing input to resume if it becomes available.
+                    Thread.Sleep(1000);
+                    continue;
+                }
+
+                if (line.Length == 0)
                     continue;
 
                 switch (line.ToLower())
