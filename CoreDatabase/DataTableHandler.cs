@@ -40,10 +40,7 @@ namespace DOL.Database
 		/// <summary>
 		/// Retrieve Element Bindings for DataTable Fields Only
 		/// </summary>
-		public IEnumerable<ElementBinding> FieldElementBindings 
-		{
-			get { return ElementBindings.Where(bind => bind.Relation == null); }
-		}
+		public ElementBinding[] FieldElementBindings { get; }
 		/// <summary>
 		/// Data Table Handled
 		/// </summary>
@@ -97,7 +94,9 @@ namespace DOL.Database
 					                                         	                   string.Format("{0}_ID", TableName))
 					                                         }).ToArray();
 			}
-			
+
+			FieldElementBindings = ElementBindings.Where(bind => bind.Relation == null).ToArray();
+
 			// Prepare Table
 			Table = new DataTable(TableName);
 			var multipleUnique = new List<ElementBinding>();
