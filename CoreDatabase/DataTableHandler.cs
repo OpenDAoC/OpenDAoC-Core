@@ -81,28 +81,37 @@ namespace DOL.Database
 			UsesPreCaching = AttributeUtil.GetPreCachedFlag(ObjectType);
 			if (UsesPreCaching)
 				_precache = new ConcurrentDictionary<object, DataObject>();
-			
+
 			// Parse Table Type
 			ElementBindings = ObjectType.GetMembers().Select(member => new ElementBinding(member)).Where(bind => bind.IsDataElementBinding).ToArray();
-			
-			// Views Can't Handle Auto GUID Key
+
+			// Snapshot of non-relation bindings *before* any synthetic key column is added.
+			ElementBinding[] preKeyFieldBindings = ElementBindings.Where(static bind => bind.Relation == null).ToArray();
+
+			// Views can't handle auto GUID key.
 			if (!isView)
 			{
-				// If no Primary Key AutoIncrement add GUID
-				if (FieldElementBindings.Any(bind => bind.PrimaryKey != null && !bind.PrimaryKey.AutoIncrement))
-					ElementBindings = ElementBindings.Concat(new [] {
-					                                         	new ElementBinding(ObjectType.GetProperty("ObjectId"),
-					                                         	                   new DataElement(){ Unique = true },
-					                                         	                   string.Format("{0}_ID", TableName))
-					                                         }).ToArray();
-				else if (FieldElementBindings.All(bind => bind.PrimaryKey == null))
-					ElementBindings = ElementBindings.Concat(new [] {
-					                                         	new ElementBinding(ObjectType.GetProperty("ObjectId"),
-					                                         	                   new PrimaryKey(),
-					                                         	                   string.Format("{0}_ID", TableName))
-					                                         }).ToArray();
+				if (preKeyFieldBindings.Any(bind => bind.PrimaryKey != null && !bind.PrimaryKey.AutoIncrement))
+				{
+					ElementBindings = ElementBindings.Concat(
+					[
+						new ElementBinding(ObjectType.GetProperty("ObjectId"),
+						new DataElement(){ Unique = true },
+						string.Format("{0}_ID", TableName))
+					]).ToArray();
+				}
+				else if (preKeyFieldBindings.All(bind => bind.PrimaryKey == null))
+				{
+					ElementBindings = ElementBindings.Concat(
+					[
+						new ElementBinding(ObjectType.GetProperty("ObjectId"),
+						new PrimaryKey(),
+						string.Format("{0}_ID", TableName))
+					]).ToArray();
+				}
 			}
 
+			// Cache final derived collections once ElementBindings is settled.
 			FieldElementBindings = ElementBindings.Where(static bind => bind.Relation == null).ToArray();
 			UpdateElementBindings = FieldElementBindings.Where(static bind => bind.PrimaryKey == null && bind.ReadOnly == null).ToArray();
 			LastUpdatedBinding = UpdateElementBindings.FirstOrDefault(static bind => bind.ColumnName == nameof(DataObject.LastTimeRowUpdated));
