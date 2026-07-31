@@ -718,13 +718,13 @@ namespace DOL.GS
                 return;
 
             npc.TargetObject = _startAttackTarget;
-            npc.TurnTo(_startAttackTarget);
 
             if (_startAttackTarget != npc.FollowTarget)
             {
                 if (npc.IsMoving)
                     npc.StopMoving();
 
+                npc.TurnTo(_startAttackTarget);
                 npc.Follow(_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
             }
         }
