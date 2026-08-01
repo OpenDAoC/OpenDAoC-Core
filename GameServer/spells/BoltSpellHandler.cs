@@ -62,25 +62,23 @@ namespace DOL.GS.Spells
             double halfBaseDamage = damage * 0.5;
             damage = base.ModifyDamageWithTargetResist(ad, halfBaseDamage);
 
-            if (!ad.Target.attackComponent.CheckBlock(null, ad) || ad.Target.attackComponent.CheckGuard(null, ad, false))
-            {
-                // This is normally set in 'AttackComponent.CalculateEnemyAttackResult', but we don't call it.
-                if (ad.Target is GamePlayer playerTarget)
-                    ad.ArmorHitLocation = playerTarget.CalculateArmorHitLocation(ad);
-
-                // We need a fake weapon skill for the target's armor to have something to be compared with.
-                // Since 'damage' is already modified by intelligence, power relics, spell variance, and everything else; we can use a constant only modified by the caster's level.
-                double weaponSkill = Caster.Level * 2.5;
-                double targetArmor = AttackComponent.CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out _, out _);
-                damage += weaponSkill / targetArmor * halfBaseDamage;
-            }
-            else
+            if (ad.Target.attackComponent.CheckBlock(null, ad) || ad.Target.attackComponent.CheckGuard(null, ad, false))
             {
                 ad.AttackResult = eAttackResult.Blocked;
                 MessageToLiving(ad.Target, $"You partially block {Caster.GetName(0, false)}'s spell!", eChatType.CT_Action);
                 MessageToCaster($"{ad.Target.GetName(0, true)} blocks!", eChatType.CT_YouHit);
+                return damage;
             }
 
+            // This is normally set in 'AttackComponent.CalculateEnemyAttackResult', but we don't call it.
+            if (ad.Target is GamePlayer playerTarget)
+                ad.ArmorHitLocation = playerTarget.CalculateArmorHitLocation(ad);
+
+            // We need a fake weapon skill for the target's armor to have something to be compared with.
+            // Since 'damage' is already modified by intelligence, power relics, spell variance, and everything else; we can use a constant only modified by the caster's level.
+            double weaponSkill = Caster.Level * 2.5;
+            double targetArmor = AttackComponent.CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out _, out _);
+            damage += weaponSkill / targetArmor * halfBaseDamage;
             return damage;
         }
 
