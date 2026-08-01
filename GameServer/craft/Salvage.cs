@@ -20,17 +20,11 @@ namespace DOL.GS
 
 		#region Declaration
 
-		/// <summary>
-		/// The SalvageYield entry for the item being salvaged
-		/// </summary>
 		protected const string SALVAGE_YIELD = "SALVAGE_YIELD";
-
-		/// <summary>
-		/// The item being salvaged
-		/// </summary>
 		protected const string SALVAGED_ITEM = "SALVAGED_ITEM";
-		
 		protected const string SALVAGE_QUEUE = "SALVAGE_QUEUE";
+		protected const string SALVAGED_SIEGE_WEAPON = "SALVAGED_SIEGE_WEAPON";
+		protected const string SIEGE_SALVAGE_MATERIALS = "SIEGE_SALVAGE_MATERIALS";
 
 		#endregion
 
@@ -44,83 +38,66 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static int BeginWork(GamePlayer player, DbInventoryItem item)
 		{
-            DbSalvageYield salvageYield = null;
+			DbSalvageYield salvageYield = null;
 
 			if (!IsAllowedToBeginWork(player, item))
 			{
 				return 0;
 			}
 
-			// int salvageLevel = CraftingMgr.GetItemCraftLevel(item) / 100;
-			// if(salvageLevel > 9) salvageLevel = 9; // max 9
+			WhereClause whereClause = WhereClause.Empty;
 
-			var whereClause = WhereClause.Empty;
-
-			// if (item.SalvageYieldID == 0)
-			// {
-			// 	whereClause = DB.Column("ObjectType").IsEqualTo(item.Object_Type).And(DB.Column("SalvageLevel").IsEqualTo(salvageLevel));
-			// }
-			// else
-			// {
-			// 	whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
-			// }
-			//
-			// if (ServerProperties.Properties.USE_SALVAGE_PER_REALM)
-			// {
-			// 	whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)eRealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
-			// }
 			if (item.SalvageYieldID > 0)
 			{
-				// salvageYield = new SalvageYield();
 				whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
-				
 				salvageYield = DOLDB<DbSalvageYield>.SelectObject(whereClause);
 				DbItemTemplate material = null;
-   
+
 				if (salvageYield != null && string.IsNullOrEmpty(salvageYield.MaterialId_nb) == false)
 				{
 					material = GameServer.Database.FindObjectByKey<DbItemTemplate>(salvageYield.MaterialId_nb);
-   
+
 					if (material == null)
 					{
-						player.Out.SendMessage("Can't find material (" + material.Id_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						log.ErrorFormat("Salvage Error for ID: {0}:  Material not found: {1}", salvageYield.ID, material.Id_nb);
+						if (log.IsErrorEnabled)
+							log.Error($"Salvage Error for ID: {salvageYield.ID}:  Material not found: {salvageYield.MaterialId_nb}");
 					}
 				}
-   
+
 				if (material == null)
 				{
 					if (salvageYield == null && item.SalvageYieldID > 0)
 					{
-						player.Out.SendMessage("This items salvage recipe (" + item.SalvageYieldID + ") not implemented yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						log.ErrorFormat("SalvageYield ID {0} not found for item: {1}", item.SalvageYieldID, item.Name);
+						if (log.IsErrorEnabled)
+							log.Error($"SalvageYield ID {item.SalvageYieldID} not found for item: {item.Name}");
 					}
 					else if (salvageYield == null)
 					{
-						player.Out.SendMessage("Salvage recipe not found for this item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						log.ErrorFormat("Salvage Lookup Error: ObjectType: {0}, Item: {1}", item.Object_Type, item.Name);
+						if (log.IsErrorEnabled)
+							log.Error($"Salvage Lookup Error: ObjectType: {item.Object_Type}, Item: {item.Name}");
 					}
+
 					return 0;
 				}
-				// if (salvageYield == null)
-				// {
-				// 	player.Out.SendMessage("Can't find database entry (" + item.SalvageYieldID + ") for salvage ID, bypassing database value!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				// 	log.ErrorFormat("Salvage Error for salvageYield ID: {0}:  Entry not found, bypassing database entry", item.SalvageYieldID);
-				// 	item.SalvageYieldID = 0;
-				// }
+
 				if (string.IsNullOrEmpty(salvageYield.MaterialId_nb))
 				{
-					player.Out.SendMessage("MaterialId_nb is null for (" + item.Name + ") salvageYield ID!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					log.ErrorFormat("Salvage Error for item: {0}:  MaterialId_nb is null", salvageYield.ID);
+					if (log.IsErrorEnabled)
+						log.Error($"Salvage Error for item: {salvageYield.ID}: MaterialId_nb is null");
+
 					return 0;
 				}
+
 				material = GameServer.Database.FindObjectByKey<DbItemTemplate>(salvageYield.MaterialId_nb);
+
 				if (material == null)
 				{
-					player.Out.SendMessage("Can't find material (" + salvageYield.MaterialId_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					log.ErrorFormat("Salvage Error for ID: {0}:  Material not found", salvageYield.ID);
+					if (log.IsErrorEnabled)
+						log.Error($"Salvage Error for ID: {salvageYield.ID}:  Material not found");
+
 					return 0;
 				}
+
 				if (player.Client.Account.PrivLevel != 1)
 				{
 					player.Out.SendDebugMessage("DATABASE: SALVAGEYIELD ID " + salvageYield.ID);
@@ -128,20 +105,20 @@ namespace DOL.GS
 			}
 			else
 			{
-				var sCalc = new SalvageCalculator();
-				var ReturnSalvage = sCalc.GetSalvage(player, item);
-				salvageYield = new DbSalvageYield();
-				salvageYield.Count = ReturnSalvage.Count;
-				salvageYield.MaterialId_nb = (string) ReturnSalvage.ID;
+				SalvageCalculator salvageCalculator = new();
+				SalvageReturn salvageReturn = salvageCalculator.GetSalvage(player, item);
+
+				salvageYield = new()
+				{
+					Count = salvageReturn.Count,
+					MaterialId_nb = salvageReturn.ID
+				};
 			}
 
-			if (salvageYield.MaterialId_nb == string.Empty)
-			{
-				player.Out.SendMessage("No material set for this item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (string.IsNullOrEmpty(salvageYield.MaterialId_nb))
 				return 0;
-			}
-			
-			//Calculate a penalty based on players secondary crafting skill level
+
+			// Calculate a penalty based on players secondary crafting skill level.
 			salvageYield.Count = salvageYield.Count < 1 ? 0 : GetYieldPenalty(player, item, salvageYield.Count);
 
 			if (player.IsMoving || player.IsStrafing)
@@ -160,158 +137,146 @@ namespace DOL.GS
 			}
 
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.Salvaging", item.Name), salvageYield.Count);
-			player.CraftTimer = new ECSGameTimer(player)
-			{
-				Callback = new ECSGameTimer.ECSTimerCallback(Proceed)
-			};
+			player.CraftTimer = new(player, Proceed);
 			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
 			player.CraftTimer.Properties.SetProperty(SALVAGED_ITEM, item);
 			player.CraftTimer.Properties.SetProperty(SALVAGE_YIELD, salvageYield);
-
 			player.CraftTimer.Start(salvageYield.Count * 1000);
 			return 1;
 		}
-		
-		 public static int GetYieldPenalty(GamePlayer player, DbInventoryItem item, int SalvageCount)
-        {
-            int Multiplier = 0;
-            int ReturnCount = SalvageCount;
 
-            string iType = string.Empty;
+		public static int GetYieldPenalty(GamePlayer player, DbInventoryItem item, int salvageCount)
+		{
+			int percent = player.GetCraftingSkillValue(CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item)) * 100 / CraftingMgr.GetItemCraftLevel(item);
 
-            // if (item.IsCrafted)
-            // {
-            //     Multiplier = ServerProperties.Properties.SALVAGE_CRAFT_ITEM_MULTIPLIER;
-            //     iType = "SALVAGE_CRAFT_ITEM_MULTIPLIER= %";
-            // }
-            // else
-            // {
-            //     Multiplier = ServerProperties.Properties.SALVAGE_ITEM_MULTIPLIER;
-            //     iType = "SALVAGE_ITEM_MULTIPLIER= %";
-            // }
+			if (percent > 99)
+				percent = 100;
 
-            //The percentage of material to return if player does not meet the requirments
-            Multiplier = Multiplier < 1 ? 1 : Multiplier;//Not less then 0
-            Multiplier = Multiplier > 99 ? 100 : Multiplier;//Not more then 100
+			int returnCount = Math.Max(1, salvageCount * percent / 100);
 
-            //Magic items cannot be salvaged so give them cloth value
-            item.Object_Type = item.Object_Type == 41 ? 32 : item.Object_Type;
-            
-            int Percent = (int) player.GetCraftingSkillValue(CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item)) * 100 / CraftingMgr.GetItemCraftLevel(item);
-            Percent = Percent > 99 ? 100 : Percent;
+			if ((ePrivLevel) player.Client.Account.PrivLevel >= ePrivLevel.GM)
+				player.Out.SendDebugMessage($"PlayerSkill={percent}% Returning {returnCount} of {salvageCount}");
 
-            if (Percent < Multiplier) //Multiplier will never be below 0%
-            {
-                ReturnCount = (int)(ReturnCount * Multiplier) / 100 < 1 ? 1 : (ReturnCount * Multiplier / 100);
-                if (player.Client.Account.PrivLevel != 1)
-                {
-                    player.Out.SendDebugMessage("SkillBelow = true " + iType + Multiplier + " PlayerSkill= %" + Percent + " Returning " + ReturnCount + " of " + SalvageCount);
-                }
-                return ReturnCount;
-            }
+			return returnCount;
+		}
 
-            ReturnCount = (int)(ReturnCount * Percent) / 100 < 1 ? 1 : (ReturnCount * Percent) / 100;
-            if (player.Client.Account.PrivLevel != 1)
-            {
-                player.Out.SendDebugMessage("SkillBelow = false " + iType + Multiplier + " PlayerSkill= %" + Percent + " Returning " + ReturnCount + " of " + SalvageCount);
-            }
-            return ReturnCount;
-        }
-		
 		public static int BeginWorkList(GamePlayer player, List<DbInventoryItem> itemList)
 		{
 			player.TempProperties.SetProperty(SALVAGE_QUEUE,itemList);
 			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
-			if (itemList == null || itemList.Count == 0) return 0;
+
+			if (itemList == null || itemList.Count == 0)
+				return 0;
+
 			return BeginWork(player, itemList[0]);
 		}
 
-		/// <summary>
-		/// Begin salvaging a siege weapon
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="siegeWeapon"></param>
-		/// <returns></returns>
-		public static int BeginWork(GamePlayer player, GameSiegeWeapon siegeWeapon)
+		public static void BeginWork(GamePlayer player, GameSiegeWeapon siegeWeapon)
 		{
 			if (siegeWeapon == null)
-				return 0;
-			// Galenas
-			siegeWeapon.ReleaseControl();
-			siegeWeapon.RemoveFromWorld();
-			bool error = false;
-			var recipe = DOLDB<DbCraftedItem>.SelectObject(DB.Column("Id_nb").IsEqualTo(siegeWeapon.ItemId));
+				return;
 
-			if (recipe == null)
-            {
-				player.Out.SendMessage("Error retrieving salvage data!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Error("Salvage Siege Error: DBCraftedItem is null for" + siegeWeapon.ItemId);
-				return 1;
-            }
+			GameSiegeWeapon currentSalvage = player.CraftTimer?.Properties.GetProperty<GameSiegeWeapon>(SALVAGED_SIEGE_WEAPON);
 
-			var rawMaterials = DOLDB<DbCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(recipe.Id_nb));
-
-			if (rawMaterials == null || rawMaterials.Count == 0)
-            {
-				player.Out.SendMessage("No raw materials provided for this siege weapon!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Error("Salvage Siege Error: No Raw Materials found for " + siegeWeapon.ItemId);
-				return 1;
-            }
-
-            if (player.IsCrafting || player.IsSalvagingOrRepairing)
-            {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return 0;
-            }
-			DbInventoryItem item;
-			DbItemTemplate template;
-			foreach (DbCraftedXItem material in rawMaterials)
+			if (currentSalvage != null)
 			{
-				template = GameServer.Database.FindObjectByKey<DbItemTemplate>(material.IngredientId_nb);
-
-				if (template == null)
-				{
-					player.Out.SendMessage("Missing raw material " + material.IngredientId_nb + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					log.Error("Salvage Siege Error: Raw Material not found " + material.IngredientId_nb);
-					return 1;
-				}
-
-				item = GameInventoryItem.Create(template);
-				item.Count = material.Count;
-				if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
-				{
-					error = true;
-					break;
-				}
-				InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, item.Template, item.Count);
+				StopSiegeSalvage(player, true);
+				return;
 			}
 
-			if (error)
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoRoom"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (player.GetCraftingSkillValue(eCraftingSkill.SiegeCrafting) == -1)
+			{
+				player.Out.SendMessage("You must be a siege weapon crafter to salvage one.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
 
-			return 1;
+			if (player.Realm != siegeWeapon.Realm)
+			{
+				player.Out.SendMessage("You cannot salvage another realm's siege weapon!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (player.IsCrafting || player.IsSalvagingOrRepairing)
+			{
+				string message = LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction");
+				player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			if (string.IsNullOrEmpty(siegeWeapon.ItemId))
+			{
+				SendNotWorthMessage(player);
+				return;
+			}
+
+			var recipe = DOLDB<DbCraftedItem>.SelectObject(DB.Column("Id_nb").IsEqualTo(siegeWeapon.ItemId));
+			List<DbCraftedXItem> rawMaterials = null;
+
+			if (recipe == null)
+			{
+				if (log.IsDebugEnabled)
+					log.Debug($"{nameof(DbCraftedItem)} is null for '{siegeWeapon.ItemId}'");
+
+				SendNotWorthMessage(player);
+				return;
+			}
+
+			rawMaterials = DOLDB<DbCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(recipe.Id_nb));
+
+			if (rawMaterials == null || rawMaterials.Count == 0)
+			{
+				if (log.IsDebugEnabled)
+					log.Debug($"No raw materials found for '{siegeWeapon.ItemId}'");
+
+				SendNotWorthMessage(player);
+				return;
+			}
+
+			// Fixed 10 seconds duration for now.
+			const int DURATION = 10;
+
+			player.Out.SendMessage("You begin to salvage the siege weapon.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendTimerWindow("Salvaging Siege Weapon", DURATION);
+
+			player.CraftTimer = new(player, ProceedSiege);
+			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
+			player.CraftTimer.Properties.SetProperty(SALVAGED_SIEGE_WEAPON, siegeWeapon);
+			player.CraftTimer.Properties.SetProperty(SIEGE_SALVAGE_MATERIALS, rawMaterials);
+			player.CraftTimer.Start(DURATION * 1000);
+
+			static void SendNotWorthMessage(GamePlayer player)
+			{
+				player.Out.SendMessage("This salvage would not yield any material.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
 		}
 
-		/// <summary>
-		/// Called when craft time is finished
-		/// </summary>
-		/// <param name="timer"></param>
-		/// <returns></returns>
-		protected static int Proceed(ECSGameTimer timer)
+		private static void StopSiegeSalvage(GamePlayer player, bool sendMessage)
+		{
+			if (player == null)
+				return;
+
+			player.CraftTimer?.Stop();
+			player.CraftTimer = null;
+			player.Out.SendCloseTimerWindow();
+
+			if (sendMessage)
+				player.Out.SendMessage("You stop salvaging the siege weapon.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		}
+
+		private static int Proceed(ECSGameTimer timer)
 		{
 			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER);
 			DbInventoryItem itemToSalvage = timer.Properties.GetProperty<DbInventoryItem>(SALVAGED_ITEM);
 			DbSalvageYield yield = timer.Properties.GetProperty<DbSalvageYield>(SALVAGE_YIELD);
-			List<DbInventoryItem> itemList = player.TempProperties.GetProperty<List<DbInventoryItem>>(SALVAGE_QUEUE);
+
+			if (player == null || itemToSalvage == null || yield == null)
+				return 0;
+
 			int materialCount = yield.Count;
 
-			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)
-			{
-				player.Out.SendMessage("Error retrieving salvage data for this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Error("Salvage: There was a problem getting back salvage info from the craft timer.");
+			if (materialCount == 0)
 				return 0;
-			}
 
 			DbItemTemplate rawMaterial = null;
 
@@ -322,83 +287,36 @@ namespace DOL.GS
 
 			if (rawMaterial == null)
 			{
-				player.Out.SendMessage("Error finding the raw material needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Error("Salvage: Error finding raw material " + yield.MaterialId_nb);
+				if (log.IsErrorEnabled)
+					log.Error($"Raw material not found: '{yield.MaterialId_nb}'");
+
 				return 0;
 			}
 
 			player.CraftTimer?.Stop();
 			player.Out.SendCloseTimerWindow();
 
-			if (!player.Inventory.RemoveItem(itemToSalvage)) // clean the free of the item to salvage
+			if (!player.Inventory.RemoveItem(itemToSalvage))
 			{
-				player.Out.SendMessage("Error finding the item to salvage!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Couldn't find the item to salvage.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				return 0;
 			}
 
 			InventoryLogging.LogInventoryAction(player, "(salvage)", eInventoryActionType.Craft, itemToSalvage.Template, itemToSalvage.Count);
 
-			Dictionary<int, int> changedSlots = new Dictionary<int, int>(5); // value: < 0 = new item count; > 0 = add to old
-			lock (player.Inventory.Lock)
-			{
-				int count = materialCount;
-				foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-				{
-					if (item == null) continue;
-					if (item.Id_nb != rawMaterial.Id_nb) continue;
-					if (item.Count >= item.MaxCount) continue;
+			int granted = GrantSalvageMaterial(player, rawMaterial, materialCount);
 
-					int countFree = item.MaxCount - item.Count;
-					if (count > countFree)
-					{
-						changedSlots.Add(item.SlotPosition, countFree); // existing item should be changed
-						count -= countFree;
-					}
-					else
-					{
-						changedSlots.Add(item.SlotPosition, count); // existing item should be changed
-						count = 0;
-						break;
-					}
-				}
+			if (granted > 0)
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", granted, rawMaterial.Name, itemToSalvage.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-				if(count > 0) // Add new object
-				{
-					eInventorySlot firstEmptySlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-					changedSlots.Add((int)firstEmptySlot, -count); // Create the item in the free slot (always at least one)
-				}
-				
-			}
+			List<DbInventoryItem> itemList = player.TempProperties.GetProperty<List<DbInventoryItem>>(SALVAGE_QUEUE);
 
-			DbInventoryItem newItem;
+			if (itemList == null)
+				return 0;
 
-			player.Inventory.BeginChanges();
-			Dictionary<int, int>.Enumerator enumerator = changedSlots.GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				KeyValuePair<int, int> de = enumerator.Current;
-				int countToAdd = de.Value;
-				if(countToAdd > 0)	// Add to exiting item
-				{
-					newItem = player.Inventory.GetItem((eInventorySlot)de.Key);
-					player.Inventory.AddCountToStack(newItem, countToAdd);
-					InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, newItem.Template, countToAdd);
-				}
-				else
-				{
-					newItem = GameInventoryItem.Create(rawMaterial);
-					newItem.Count = -countToAdd;
-					player.Inventory.AddItem((eInventorySlot)de.Key, newItem);
-					InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, newItem.Template, newItem.Count);
-				}
-			}
-
-			player.Inventory.CommitChanges();
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", materialCount, rawMaterial.Name, itemToSalvage.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-			if (itemList == null) return 0;
 			player.CraftTimer?.Stop();
 			player.CraftTimer = null;
+
 			if (itemList.Count > 0)
 			{
 				itemList.RemoveAt(0);
@@ -407,7 +325,113 @@ namespace DOL.GS
 
 			return 1;
 		}
-		
+
+		protected static int ProceedSiege(ECSGameTimer timer)
+		{
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER);
+			GameSiegeWeapon siegeWeapon = timer.Properties.GetProperty<GameSiegeWeapon>(SALVAGED_SIEGE_WEAPON);
+			List<DbCraftedXItem> rawMaterials = timer.Properties.GetProperty<List<DbCraftedXItem>>(SIEGE_SALVAGE_MATERIALS);
+
+			StopSiegeSalvage(player, false);
+
+			if (player == null || siegeWeapon == null)
+				return 0;
+
+			// Guard against the weapon having been destroyed/removed by other means while the salvage timer was running.
+			if (siegeWeapon.ObjectState is not GameObject.eObjectState.Active)
+			{
+				player.Out.SendMessage("The siege weapon is no longer available to salvage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return 0;
+			}
+
+			siegeWeapon.ReleaseControl();
+			siegeWeapon.RemoveFromWorld();
+
+			if (rawMaterials != null)
+			{
+				foreach (DbCraftedXItem craftedMaterial in rawMaterials)
+				{
+					if (craftedMaterial == null || craftedMaterial.Count < 1)
+						continue;
+
+					DbItemTemplate rawMaterial = GameServer.Database.FindObjectByKey<DbItemTemplate>(craftedMaterial.IngredientId_nb);
+
+					if (rawMaterial == null)
+					{
+						if (log.IsErrorEnabled)
+							log.Error($"Raw material '{craftedMaterial.IngredientId_nb}' not found for '{craftedMaterial.CraftedItemId_nb}'");
+
+						continue;
+					}
+
+					int granted = GrantSalvageMaterial(player, rawMaterial, craftedMaterial.Count);
+
+					if (granted > 0)
+					{
+						string message = LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", granted, rawMaterial.Name, siegeWeapon.Name);
+						player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					}
+
+					int remaining = craftedMaterial.Count - granted;
+
+					if (remaining > 0)
+					{
+						GameInventoryItem item = GameInventoryItem.Create(rawMaterial);
+						item.Count = remaining;
+						_ = player.CreateItemOnTheGround(item);
+						InventoryLogging.LogInventoryAction(siegeWeapon, "(ground)", eInventoryActionType.Other, rawMaterial, item.Count);
+					}
+				}
+			}
+
+			return 0;
+		}
+
+		protected static int GrantSalvageMaterial(GamePlayer player, DbItemTemplate rawMaterial, int materialCount)
+		{
+			if (player == null || rawMaterial == null || materialCount < 1)
+				return 0;
+
+			int count = materialCount;
+			int granted = materialCount;
+
+			lock (player.Inventory.Lock)
+			{
+				// Try to fill existing partial stacks.
+				foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				{
+					if (item == null || item.Id_nb != rawMaterial.Id_nb || item.Count >= item.MaxCount)
+						continue;
+
+					int countFree = item.MaxCount - item.Count;
+					int amountToAdd = Math.Min(count, countFree);
+
+					if (player.Inventory.AddCountToStack(item, amountToAdd))
+					{
+						InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, item.Template, amountToAdd);
+						count -= amountToAdd;
+
+						if (count <= 0)
+							return granted;
+					}
+				}
+
+				// If we still have materials left, place them in an empty slot.
+				if (count > 0)
+				{
+					GameInventoryItem newItem = GameInventoryItem.Create(rawMaterial);
+					newItem.Count = count;
+				
+					if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newItem))
+						InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, newItem.Template, count);
+					else
+						return materialCount - count;
+				}
+			}
+
+			return granted;
+		}
+
 		#endregion
 		
 		#region Requirement check
@@ -430,7 +454,7 @@ namespace DOL.GS
 			if (item.IsNotLosingDur || item.IsIndestructible)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ". This item is indestructible."), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -460,7 +484,7 @@ namespace DOL.GS
 			if(skill == eCraftingSkill.NoCrafting)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ". You do not have the required secondary skill."), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -491,7 +515,7 @@ namespace DOL.GS
 
 			if (item.IsNotLosingDur || item.IsIndestructible)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ". This item is indestructible."), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -511,7 +535,7 @@ namespace DOL.GS
 			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
 			if(skill == eCraftingSkill.NoCrafting)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ". You do not have the required secondary skill."), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 

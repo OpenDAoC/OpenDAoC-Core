@@ -480,15 +480,11 @@ namespace DOL.GS
 			}
 		}
 
-		public void salvage()
+		public void Salvage()
 		{
-			if (Owner.GetCraftingSkillValue(eCraftingSkill.SiegeCrafting) == -1)
-			{
-				Owner.Out.SendMessage("You must be a Siege weapon crafter to salvage it.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-				return;
-			}
-			Owner.SalvageSiegeWeapon(this);
+			GS.Salvage.BeginWork(Owner, this);
 		}
+
 		#endregion
 		#region private methods
 		private void BroadcastAnimation()

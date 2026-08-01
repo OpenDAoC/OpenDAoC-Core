@@ -12380,15 +12380,7 @@ namespace DOL.GS
             get { return m_siegeWeapon; }
             set { m_siegeWeapon = value; }
         }
-        public void SalvageSiegeWeapon(GameSiegeWeapon siegeWeapon)
-        {
-            if (siegeWeapon.Realm != this.Realm)
-            {
-                this.Out.SendMessage("You cannot salvage another realm's siege weapon!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-                return;
-            }
-            Salvage.BeginWork(this, siegeWeapon);
-        }
+
         #endregion
 
         #region Invulnerability
