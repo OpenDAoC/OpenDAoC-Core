@@ -771,6 +771,7 @@ namespace DOL.Database
 			where TObject : DataObject
 		{
 			if (whereClauseBatch == null) throw new ArgumentNullException("Parameter whereClauseBatch may not be null.");
+			WhereClause[] whereClauses = whereClauseBatch.ToArray();
 
 			var tableHandler = GetTableOrViewHandler(typeof(TObject));
 			if (tableHandler == null)
@@ -781,7 +782,9 @@ namespace DOL.Database
 				throw new DatabaseException(string.Format("Table {0} is not registered for Database Connection...", typeof(TObject).FullName));
 			}
 
-			var objs = MultipleSelectObjectsImpl(tableHandler, whereClauseBatch).Select(res => res.OfType<TObject>().ToList()).ToList();
+			var objs = tableHandler.UsesPreCaching
+				? whereClauses.Select(whereClause => tableHandler.SelectPreCachedObjects(whereClause).OfType<TObject>().ToList()).ToList()
+				: MultipleSelectObjectsImpl(tableHandler, whereClauses).Select(res => res.OfType<TObject>().ToList()).ToList();
 
 			FillObjectRelations(objs.SelectMany(obj => obj), false);
 

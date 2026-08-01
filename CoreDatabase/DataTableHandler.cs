@@ -25,6 +25,7 @@ namespace DOL.Database
 		/// Pre Cache Directory Handler
 		/// </summary>
 		private readonly ConcurrentDictionary<object, DataObject> _precache;
+		private readonly Dictionary<string, ElementBinding> _fieldBindingsByColumn;
 		/// <summary>
 		/// Uses Precaching
 		/// </summary>
@@ -113,6 +114,7 @@ namespace DOL.Database
 
 			// Cache final derived collections once ElementBindings is settled.
 			FieldElementBindings = ElementBindings.Where(static bind => bind.Relation == null).ToArray();
+			_fieldBindingsByColumn = FieldElementBindings.ToDictionary(bind => bind.ColumnName, StringComparer.OrdinalIgnoreCase);
 			UpdateElementBindings = FieldElementBindings.Where(static bind => bind.PrimaryKey == null && bind.ReadOnly == null).ToArray();
 			LastUpdatedBinding = UpdateElementBindings.FirstOrDefault(static bind => bind.ColumnName == nameof(DataObject.LastTimeRowUpdated));
 
@@ -183,6 +185,13 @@ namespace DOL.Database
 		}
 		
 		#region PreCache Handling
+		internal ElementBinding GetFieldBinding(string columnName)
+		{
+			return _fieldBindingsByColumn.TryGetValue(columnName, out ElementBinding binding)
+				? binding
+				: throw new DatabaseException($"Column {columnName} is not mapped on table {TableName}.");
+		}
+
 		/// <summary>
 		/// Set Pre-Cached Object
 		/// </summary>
@@ -238,6 +247,14 @@ namespace DOL.Database
 		public IEnumerable<DataObject> SearchPreCachedObjects(Func<DataObject, bool> whereClause)
 		{
 			return _precache.Where(kv => whereClause(kv.Value)).Select(kv => kv.Value);
+		}
+
+		/// <summary>
+		/// Query the pre-cache using the same structured query used by SelectObjects.
+		/// </summary>
+		public IEnumerable<DataObject> SelectPreCachedObjects(WhereClause whereClause)
+		{
+			return whereClause.ApplyToPreCache(this, _precache.Values);
 		}
 		#endregion
 	}

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Text;
 
 namespace DOL.Database
@@ -11,6 +13,46 @@ namespace DOL.Database
         private QueryParameter[] _parameters;
 
         internal abstract List<IAtom> IntermediateRepresentation { get; }
+        internal abstract bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject);
+
+        internal virtual IEnumerable<DataObject> ApplyToPreCache(DataTableHandler tableHandler, IEnumerable<DataObject> source)
+        {
+            return source.Where(dataObject => MatchesPreCachedObject(tableHandler, dataObject));
+        }
+
+        protected static ElementBinding GetBinding(DataTableHandler tableHandler, string columnName)
+        {
+            return tableHandler.GetFieldBinding(columnName);
+        }
+
+        protected static object ConvertValue(object value, Type targetType)
+        {
+            if (value == null)
+                return null;
+
+            Type effectiveType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+            if (effectiveType.IsInstanceOfType(value))
+                return value;
+
+            if (effectiveType.IsEnum)
+                return value is string text ? Enum.Parse(effectiveType, text, true) : Enum.ToObject(effectiveType, value);
+
+            return Convert.ChangeType(value, effectiveType, CultureInfo.InvariantCulture);
+        }
+
+        protected static bool ValuesEqual(object left, object right, Type valueType)
+        {
+            if (left == null || right == null)
+                return false;
+
+            right = ConvertValue(right, valueType);
+
+            if (left is string leftString && right is string rightString)
+                return leftString.Equals(rightString, StringComparison.OrdinalIgnoreCase);
+
+            return left.Equals(right);
+        }
         public static WhereClause Empty => EmptyWhereClause.Instance;
 
         public virtual string ParameterizedText
@@ -115,6 +157,8 @@ namespace DOL.Database
 
         private EmptyWhereClause() { }
 
+        internal override bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject) => true;
+
         public override WhereClause And(WhereClause rightExpression)
         {
             return rightExpression;
@@ -141,6 +185,7 @@ namespace DOL.Database
         private readonly string _columnName;
         private readonly string _op;
         private readonly T _val;
+        private Regex _likeRegex;
 
         internal override List<IAtom> IntermediateRepresentation =>
         [
@@ -154,6 +199,44 @@ namespace DOL.Database
             _columnName = columnName;
             _op = op;
             _val = val;
+        }
+
+        internal override bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject)
+        {
+            ElementBinding binding = GetBinding(tableHandler, _columnName);
+            object left = binding.GetValue(dataObject);
+            object right = _val;
+
+            if (left == null || right == null)
+                return false;
+
+            right = ConvertValue(right, binding.ValueType);
+
+            if (_op == "=")
+                return ValuesEqual(left, right, binding.ValueType);
+
+            if (_op == "!=")
+                return !ValuesEqual(left, right, binding.ValueType);
+
+            if (_op == "LIKE")
+            {
+                _likeRegex ??= new Regex("^" + Regex.Escape(right.ToString()).Replace("%", ".*").Replace("_", ".") + "$",
+                    RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                return _likeRegex.IsMatch(left.ToString());
+            }
+
+            if (left is not IComparable comparable)
+                throw new DatabaseException($"Column {_columnName} cannot be compared with operator {_op}.");
+
+            int comparison = comparable.CompareTo(right);
+            return _op switch
+            {
+                ">" => comparison > 0,
+                ">=" => comparison >= 0,
+                "<" => comparison < 0,
+                "<=" => comparison <= 0,
+                _ => throw new DatabaseException($"Unsupported pre-cache query operator {_op}.")
+            };
         }
 
         public override bool Equals(object obj)
@@ -183,6 +266,12 @@ namespace DOL.Database
         {
             _columnName = columnName;
             _op = op;
+        }
+
+        internal override bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject)
+        {
+            object value = GetBinding(tableHandler, _columnName).GetValue(dataObject);
+            return _op == "IS NULL" ? value == null : value != null;
         }
 
         public override bool Equals(object obj)
@@ -243,6 +332,14 @@ namespace DOL.Database
             }
         }
 
+        internal override bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject)
+        {
+            ElementBinding binding = GetBinding(tableHandler, _columnName);
+            object value = binding.GetValue(dataObject);
+            _valueList ??= _val.ToList();
+            return value != null && _valueList.Any(candidate => ValuesEqual(value, candidate, binding.ValueType));
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is not InExpression<T> other)
@@ -288,6 +385,13 @@ namespace DOL.Database
             _left = left;
             _right = right;
             _chainingOperator = chainingOperator;
+        }
+
+        internal override bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject)
+        {
+            return _chainingOperator == "AND"
+                ? _left.MatchesPreCachedObject(tableHandler, dataObject) && _right.MatchesPreCachedObject(tableHandler, dataObject)
+                : _left.MatchesPreCachedObject(tableHandler, dataObject) || _right.MatchesPreCachedObject(tableHandler, dataObject);
         }
 
         public override bool Equals(object obj)
@@ -340,6 +444,22 @@ namespace DOL.Database
             _limit = limit;
         }
 
+        internal override bool MatchesPreCachedObject(DataTableHandler tableHandler, DataObject dataObject)
+        {
+            return _left.MatchesPreCachedObject(tableHandler, dataObject);
+        }
+
+        internal override IEnumerable<DataObject> ApplyToPreCache(DataTableHandler tableHandler, IEnumerable<DataObject> source)
+        {
+            ElementBinding binding = GetBinding(tableHandler, _column.Name);
+            IEnumerable<DataObject> filtered = source.Where(dataObject => _left.MatchesPreCachedObject(tableHandler, dataObject));
+            IEnumerable<DataObject> ordered = _descending
+                ? filtered.OrderByDescending(binding.GetValue, PreCacheValueComparer.Instance)
+                : filtered.OrderBy(binding.GetValue, PreCacheValueComparer.Instance);
+
+            return _limit > 0 ? ordered.Take(_limit) : ordered;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is not OrderLimitExpression other)
@@ -354,6 +474,21 @@ namespace DOL.Database
         public override int GetHashCode()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    internal sealed class PreCacheValueComparer : IComparer<object>
+    {
+        public static readonly PreCacheValueComparer Instance = new();
+
+        public int Compare(object left, object right)
+        {
+            if (ReferenceEquals(left, right)) return 0;
+            if (left == null) return -1;
+            if (right == null) return 1;
+            if (left is string leftString && right is string rightString)
+                return StringComparer.OrdinalIgnoreCase.Compare(leftString, rightString);
+            return ((IComparable)left).CompareTo(right);
         }
     }
 
