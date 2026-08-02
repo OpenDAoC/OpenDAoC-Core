@@ -37,20 +37,19 @@ namespace DOL.GS
             }
         }
 
-        public void AddOrUpdate(GameLiving living, long amount)
+        public AddResult AddOrUpdate(GameLiving living, long amount)
         {
             lock (_lock)
             {
-                AddOrUpdateInternal(living, amount);
+                return AddOrUpdateInternal(living, amount);
             }
         }
 
-        public void AddIfAbsent(GameLiving living, long aggroAmount)
+        public AddResult AddIfAbsent(GameLiving living, long aggroAmount)
         {
             lock (_lock)
             {
-                if (!IsInInternal(living))
-                    AddOrUpdateInternal(living, aggroAmount);
+                return IsInInternal(living) ? AddResult.Ignored : AddOrUpdateInternal(living, aggroAmount);
             }
         }
 
@@ -82,7 +81,7 @@ namespace DOL.GS
                         GameLiving living = pair.Key;
 
                         if (!other.IsInInternal(living))
-                            other.AddOrUpdateInternal(living, pair.Value.Base);
+                            _ = other.AddOrUpdateInternal(living, pair.Value.Base);
                     }
                 }
             }
@@ -320,20 +319,35 @@ namespace DOL.GS
             }
         }
 
-        private void AddOrUpdateInternal(GameLiving living, long amount)
+        private AddResult AddOrUpdateInternal(GameLiving living, long amount)
         {
+            bool isFirst = _table.Count == 0;
+
             // Always add at least 1 if the key is not present to ensure the NPC goes to the puller and not a group member.
-            // It's still technically possible for two group members to pull at the exact same time, but this should be fine.
             if (_table.TryGetValue(living, out AggroAmount aggroAmount))
+            {
                 aggroAmount.Base = Math.Max(0, aggroAmount.Base + amount);
-            else
-                _table[living] = new(Math.Max(1, amount));
+                return AddResult.Updated;
+            }
+
+            _table[living] = new(Math.Max(1, amount));
+            return isFirst ? AddResult.First : AddResult.New;
         }
 
         private bool IsInInternal(GameLiving living)
         {
             return _table.ContainsKey(living);
         }
+
+        public enum AddResult
+        {
+            Ignored,
+            First,
+            New,
+            Updated
+        }
+
+        public readonly record struct TargetCandidate(GameLiving Living, long EffectiveAggro);
 
         private class AggroAmount(long baseAggro = 0)
         {
@@ -342,13 +356,11 @@ namespace DOL.GS
         }
     }
 
-    public readonly record struct TargetCandidate(GameLiving Living, long EffectiveAggro);
-
     public interface IThreatStrategy
     {
         long CalculateEffectiveAggro(long baseAggro, GameLiving target, out double distance);
         bool IsHigherThreat(long incumbentEffectiveAggro, long challengerEffectiveAggro);
-        GameLiving SelectTarget(ReadOnlySpan<TargetCandidate> candidates);
+        GameLiving SelectTarget(ReadOnlySpan<AggroTable.TargetCandidate> candidates);
         bool ShouldBeRemoved(GameLiving target);
         bool ShouldBeIgnored(GameLiving target);
     }

@@ -1350,14 +1350,14 @@ namespace DOL.AI.Brain
                 return challengerEffectiveAggro > incumbentEffectiveAggro;
             }
 
-            public virtual GameLiving SelectTarget(ReadOnlySpan<TargetCandidate> candidates)
+            public virtual GameLiving SelectTarget(ReadOnlySpan<AggroTable.TargetCandidate> candidates)
             {
                 GameLiving highestThreat = null;
                 long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the table.
                 long currentTargetEffectiveAggro = 0;
                 GameLiving currentTarget = _owner.Body.TargetObject as GameLiving;
 
-                foreach (TargetCandidate candidate in candidates)
+                foreach (var candidate in candidates)
                 {
                     if (candidate.Living == currentTarget)
                         currentTargetEffectiveAggro = candidate.EffectiveAggro;

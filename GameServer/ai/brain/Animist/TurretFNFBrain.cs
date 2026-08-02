@@ -99,7 +99,7 @@ namespace DOL.AI.Brain
         {
             public FnfTurretThreatStrategy(StandardMobBrain owner) : base(owner) { }
 
-            public override GameLiving SelectTarget(ReadOnlySpan<TargetCandidate> candidates)
+            public override GameLiving SelectTarget(ReadOnlySpan<AggroTable.TargetCandidate> candidates)
             {
                 if (candidates.Length == 0 ||
                     _owner.Body is not TurretPet turretPet ||
