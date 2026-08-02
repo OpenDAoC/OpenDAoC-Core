@@ -317,10 +317,8 @@ namespace DOL.AI.Brain
                 }
             }
 
-            _aggroTable.AddOrUpdate(living, aggroAmount);
-
-            // Change state and reschedule the next think tick to improve responsiveness.
-            if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
+            // Reschedule the next think tick to improve responsiveness if this was a pull.
+            if (_aggroTable.AddOrUpdate(living, aggroAmount) is AggroTable.AddResult.First)
             {
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
                 NextThinkTick = GameLoop.GameLoopTime;
