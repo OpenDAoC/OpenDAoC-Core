@@ -1,5 +1,6 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -16,8 +17,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -25,28 +25,16 @@ namespace DOL.AI.Brain
 {
 	public class SirGerenthBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SirGerenthBrain() : base()
 		{
 			AggroLevel = 40;
 			AggroRange = 400;
-			ThinkInterval = 1000;
 		}
 		public override void Think()
 		{
-			if (HasAggro && Body.TargetObject != null)
-			{
-				if (Body.HealthPercent <= 66)
-				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-					{
-						if (npc != null && npc.IsAlive && npc.PackageID == "SirGerenthBaf")
-							AddAggroListTo(npc.Brain as StandardMobBrain);
-					}
-				}
-			}
+			if (Body.HealthPercent <= 66 && PullFriends("SirGerenthBaf", 1500) > 0)
+				Message.MessageToArea(Body, "Sir Gerenth shouts, 'Rally to me, soldiers of Albion!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			base.Think();
 		}
 	}
 }
-

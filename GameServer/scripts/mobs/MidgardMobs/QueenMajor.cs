@@ -1,9 +1,10 @@
-﻿using DOL.AI.Brain;
+using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class QueenMajor : GameNPC
+	public class QueenMajor : HideableNpc
 	{
 		public QueenMajor() : base() { }
 
@@ -11,9 +12,8 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157467);
 			LoadTemplate(npcTemplate);
-			//RespawnInterval = Util.Random(3600000, 7200000);
 
-			QueenMajorAdd.QueenMajorAddCount = 0;
+			SetHidden(true);
 			QueenMajorBrain sbrain = new QueenMajorBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -25,65 +25,36 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class QueenMajorBrain : StandardMobBrain
+	public class QueenMajorBrain : StandardMobBrain, IEncounterGateOwner
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public QueenMajorBrain() : base()
 		{
 			AggroLevel = 80;
 			AggroRange = 400;
 			ThinkInterval = 1000;
+			GateCounter = new("QueenMajorGate", 20, (kills, required) =>
+			{
+				if (kills == required / 2)
+					Message.MessageToArea(Body, "An angry buzz rises from the nest below.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+				else if (kills == required - 1)
+					Message.MessageToArea(Body, "The ground trembles as something vast stirs in the nest.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+			});
 		}
-		ushort oldModel;
-		GameNPC.eFlags oldFlags;
-		bool changed;
+
+		public EncounterKillCounter GateCounter { get; }
+
 		public override void Think()
 		{
-			//uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
-			//uint minute = WorldMgr.GetCurrentGameTime() / 1000 / 60 % 60;
-			//log.Warn("Current time: " + hour + ":" + minute);
-			if (QueenMajorAdd.QueenMajorAddCount >= 20)
-			{
-				if (changed)
-				{
-					Body.Flags = oldFlags;
-					Body.Model = oldModel;
-					changed = false;
-				}
-			}
-			else
-			{
-				if (changed == false)
-				{
-					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+			HideableNpc body = (HideableNpc)Body;
 
-					if (oldModel == 0)
-						oldModel = Body.Model;
+			if (body.SetHidden(!GateCounter.IsOpen) && !body.IsHidden)
+				Message.MessageToArea(Body, "Queen Major hauls herself up from the nest, mandibles wide!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
 
-					Body.Model = 1;
-					changed = true;
-				}
-			}
-			if (HasAggro && Body.TargetObject != null)
-			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is QueenMajorAddBrain brain)
-					{
-						GameLiving target = Body.TargetObject as GameLiving;
-						if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
-							brain.AddToAggroList(target, 10);
-					}
-				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-				{
-					if (npc != null && npc.IsAlive && npc.PackageID == "QueenMajorBaf")
-						AddAggroListTo(npc.Brain as StandardMobBrain);
-				}
-			}
+			int pulledFriends = PullFriends(npc => npc.Brain is QueenMajorAddBrain, 1000);
+			pulledFriends += PullFriends("QueenMajorBaf", 1000);
+
+			if (pulledFriends > 0)
+				Message.MessageToArea(Body, "Queen Major emits a shrill chittering, and her brood scuttles to her defense!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			base.Think();
 		}
 	}
@@ -91,9 +62,11 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-	public class QueenMajorAdd : GameNPC
+	public class QueenMajorAdd : EncounterGateAdd
 	{
 		public QueenMajorAdd() : base() { }
+
+		public override string GateId => "QueenMajorGate";
 
 		public override bool AddToWorld()
 		{
@@ -107,28 +80,17 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public static int QueenMajorAddCount = 0;
-		public override void Die(GameObject killer)
-		{
-			++QueenMajorAddCount;
-			base.Die(killer);
-		}
 	}
 }
 namespace DOL.AI.Brain
 {
 	public class QueenMajorAddBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public QueenMajorAddBrain() : base()
 		{
 			AggroLevel = 0;
 			AggroRange = 400;
 			ThinkInterval = 1500;
-		}
-		public override void Think()
-		{
-			base.Think();
 		}
 	}
 }

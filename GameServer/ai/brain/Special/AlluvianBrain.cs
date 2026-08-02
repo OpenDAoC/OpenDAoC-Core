@@ -1,4 +1,5 @@
-﻿using DOL.GS;
+﻿using System.Collections.Generic;
+using DOL.GS;
 
 namespace DOL.AI.Brain
 {
@@ -8,16 +9,18 @@ namespace DOL.AI.Brain
 	/// </summary>
 	public class AlluvianBrain : StandardMobBrain
 	{
-		/// <summary>
-		/// Determine if we have less than 12, if not, spawn one.
-		/// </summary>
+		public List<AlluvianGlobule> Globules { get; } = new();
+
 		public override void Think()
 		{
-			Alluvian mob = Body as Alluvian;
-			if (Alluvian.GlobuleNumber < 12)
+			if (Body is Alluvian mob)
 			{
-				mob.SpawnGlobule();
+				Globules.RemoveAll(globule => globule == null || !globule.IsAlive);
+
+				if (Globules.Count < 12)
+					Globules.Add(mob.SpawnGlobule());
 			}
+
 			base.Think();
 		}
 	}

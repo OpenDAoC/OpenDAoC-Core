@@ -1,5 +1,6 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -16,8 +17,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -25,27 +25,15 @@ namespace DOL.AI.Brain
 {
 	public class DramacusBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DramacusBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
-			ThinkInterval = 1500;
 		}
 		public override void Think()
 		{
-			if (HasAggro && Body.TargetObject != null)
-			{
-				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is YaddaBrain brian)
-					{
-						if (!brian.HasAggro && brian != null && target != null && target.IsAlive)
-							brian.AddToAggroList(target, 10);
-					}
-				}
-			}
+			if (PullFriends(npc => npc.Brain is YaddaBrain, 4000) > 0)
+				Message.MessageToArea(Body, "Dramacus shrieks, 'Yadda! Yadda! Come quick!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			base.Think();
 		}
 	}
@@ -66,8 +54,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -75,27 +62,15 @@ namespace DOL.AI.Brain
 {
 	public class YaddaBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public YaddaBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
-			ThinkInterval = 1500;
 		}
 		public override void Think()
 		{
-			if (HasAggro && Body.TargetObject != null)
-			{
-				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is DramacusBrain brian)
-					{
-						if (!brian.HasAggro && brian != null && target != null && target.IsAlive)
-							brian.AddToAggroList(target, 10);
-					}
-				}
-			}
+			if (PullFriends(npc => npc.Brain is DramacusBrain, 4000) > 0)
+				Message.MessageToArea(Body, "Yadda squeals, 'Dramacus! Help help help!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			base.Think();
 		}
 	}

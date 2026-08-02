@@ -151,5 +151,27 @@ namespace DOL.GS
 				}
 			}
 		}
+
+		/// <summary>
+		/// Sends a message to GamePlayers within a specific zone
+		/// </summary>
+		/// <param name="zone">The zone whose players should receive the message</param>
+		/// <param name="message">The message string being sent</param>
+		/// <param name="chatType">The chat type (e.g., CT_Say)</param>
+		/// <param name="chatLoc">The UI location to display the message (i.e., chat, combat, popup windows)</param>
+		public static void MessageToZone(Zone zone, string message, eChatType chatType, eChatLoc chatLoc)
+		{
+			if (string.IsNullOrEmpty(message)) return; // Don't send blank messages
+
+			if (zone != null)
+			{
+				var newList = ClientService.Instance.GetPlayersOfZone(zone);
+				if (newList == null) return;
+				foreach (GamePlayer player in newList) // Send message to each GamePlayer in the zone
+				{
+					player?.Out.SendMessage(message, chatType, chatLoc);
+				}
+			}
+		}
 	}
 }

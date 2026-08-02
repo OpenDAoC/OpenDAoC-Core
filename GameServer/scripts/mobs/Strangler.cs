@@ -21,18 +21,8 @@ namespace DOL.GS.Scripts
 
 namespace DOL.AI.Brain
 {
-    public class StranglerBrain : StandardMobBrain
+    public class StranglerBrain : AmbientEffectBrain
     {
-        public override int ThinkInterval
-        {
-            get { return 3000; }
-        }
-
-        public override void Think()
-        {
-            base.Think();
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                player.Out.SendSpellEffectAnimation(Body, Body, 5206, 0, false, 1);
-        }
+        protected override ushort AmbientEffectId => 5206;
     }
 }

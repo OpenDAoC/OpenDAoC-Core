@@ -1,10 +1,10 @@
-﻿using DOL.AI.Brain;
+using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class GiantLemer : GameNPC
+	public class GiantLemer : HideableNpc
 	{
 		public GiantLemer() : base() { }
 
@@ -13,88 +13,59 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50014);
 			LoadTemplate(npcTemplate);
 
+			SetHidden(!CurrentRegion.IsNightTime);
 			GiantLemerBrain sbrain = new GiantLemerBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
-        public override void Die(GameObject killer)
-        {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
-			{
-				if (npc != null && npc.IsAlive && npc.Brain is GiantLemerAddBrain)
-					npc.RemoveFromWorld();
-			}
+
+		public override void Die(GameObject killer)
+		{
+			(Brain as GiantLemerBrain)?.ClearAdds();
 			base.Die(killer);
-        }
-    }
+		}
+	}
 }
 
 namespace DOL.AI.Brain
 {
 	public class GiantLemerBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GiantLemerBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 300;
-			ThinkInterval = 1000;
 		}
 
-		ushort oldModel;
-		GameNPC.eFlags oldFlags;
-		bool changed;
 		bool spawnRats = false;
 		private bool RemoveAdds = false;
 
-		public void BroadcastMessage(string message)
+		public void ClearAdds()
 		{
-			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfZone(Body.CurrentZone))
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			{
+				if (npc != null && npc.IsAlive && npc.Brain is GiantLemerAddBrain)
+					npc.RemoveFromWorld();
+			}
 		}
 
 		public override void Think()
 		{
-			if (Body.CurrentRegion.IsNightTime == false)
-			{
-				if (changed == false)
-				{
-					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+			HideableNpc body = (HideableNpc) Body;
+			bool wasHidden = body.IsHidden;
+			body.SetHidden(!Body.CurrentRegion.IsNightTime && !Body.InCombat);
 
-					if (oldModel == 0)
-						oldModel = Body.Model;
+			if (wasHidden && !body.IsHidden)
+				Message.MessageToZone(Body.CurrentZone, "A great growl goes through the woods.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
 
-					Body.Model = 1;
-					changed = true;
-				}
-			}
-			if (Body.CurrentRegion.IsNightTime)
-			{
-				if (changed)
-				{
-					Body.Flags = oldFlags;
-					Body.Model = oldModel;
-					BroadcastMessage("A great growl goes through the woods.");
-					changed = false;
-				}
-
-			}
-			if (!CheckProximityAggro())
+			if (!HasAggro)
 			{
 				spawnRats = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
-					{
-						if (npc != null && npc.IsAlive && npc.Brain is GiantLemerAddBrain)
-							npc.RemoveFromWorld();
-					}
+					ClearAdds();
 					RemoveAdds = true;
 				}
 			}
@@ -121,6 +92,7 @@ namespace DOL.AI.Brain
 		}
 		private void SpawnRats()
 		{
+			Message.MessageToArea(Body, "Squealing rats boil out of the underbrush at the giant lemer's call!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
 			for (int i = 0; i < Util.Random(2,4); i++)
 			{
 				GiantLemerAdd npc = new GiantLemerAdd();
@@ -155,8 +127,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -164,16 +135,10 @@ namespace DOL.AI.Brain
 {
 	public class GiantLemerAddBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GiantLemerAddBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
-			ThinkInterval = 1500;
-		}
-		public override void Think()
-		{
-			base.Think();
 		}
 	}
 }

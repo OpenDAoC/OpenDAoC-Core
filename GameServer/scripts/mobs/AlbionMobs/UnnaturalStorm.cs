@@ -1,224 +1,134 @@
-﻿using System;
+using System.Collections.Generic;
+using DOL.AI;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class UnnaturalStorm : GameNPC
+	public abstract class UnnaturalStormCloud : GameNPC
 	{
-		public UnnaturalStorm() : base() { }
-        #region Stats
-        public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
-        public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
-		#endregion
+		protected abstract byte SpawnLevel { get; }
+		protected abstract eFlags SpawnFlags { get; }
+
+		protected UnnaturalStormCloud(ABrain defaultBrain) : base(defaultBrain) { }
+
 		public override bool AddToWorld()
 		{
 			Name = "Unnatural Storm";
 			Model = 665;
-			Level = (byte)Util.Random(65, 70);
 			Size = 100;
+			Level = SpawnLevel;
 			MeleeDamageType = eDamageType.Crush;
 			Race = 2003;
-			Flags = (GameNPC.eFlags)44;//notarget noname flying
+			Flags = SpawnFlags;
 			MaxSpeedBase = 0;
 			RespawnInterval = -1;
-			SpawnAdditionalStorms();
-
-			UnnaturalStormBrain sbrain = new UnnaturalStormBrain();
-			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
-			bool success = base.AddToWorld();
-			if (success)
-			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-			}
-			return success;
+
+			if (!base.AddToWorld())
+				return false;
+
+			_ = new ECSGameTimer(this, ShowEffect, 500);
+			return true;
 		}
 
-		protected int Show_Effect(ECSGameTimer timer)
+		public override void StartAttack(GameObject target) { }
+
+		private int ShowEffect(ECSGameTimer timer)
 		{
-			if (IsAlive)
-			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					player.Out.SendSpellCastAnimation(this, 14323, 1);
-					player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
-				}
+			if (!IsAlive)
+				return 0;
 
-				return 3000;
-			}
-
-			return 0;
-		}
-
-		public void BroadcastMessage(String message)
-		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				player.Out.SendSpellCastAnimation(this, 14323, 1);
+				player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
 			}
-		}
-        public override void StartAttack(GameObject target)
-        {
-        }
-		private void SpawnAdditionalStorms()
-        {
-			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfZone(CurrentZone))
-				player.Out.SendMessage("An intense supernatural storm explodes in the sky over the northeastern expanse of Lyonesse!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 
-			for (int i = 0; i < Util.Random(4, 5); i++)
-			{
-				UnnaturalStormAdds Add = new UnnaturalStormAdds();
-				Add.X = X + Util.Random(-1000, 1000);
-				Add.Y = Y + Util.Random(-1000, 800);
-				Add.Z = Z + Util.Random(-400, 400);
-				Add.CurrentRegion = CurrentRegion;
-				Add.Heading = Heading;
-				Add.AddToWorld();
-			}
+			return 3000;
 		}
-    }
-}
-namespace DOL.AI.Brain
-{
-    public class UnnaturalStormBrain : StandardMobBrain
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public UnnaturalStormBrain() : base()
-		{
-			AggroLevel = 100;
-			AggroRange = 2500;
-			ThinkInterval = 1500;
-		}
-		public override void Think()
-		{
-			if(HasAggro && Body.TargetObject != null)
-            {
-				if (!Body.IsCasting)
-					Body.CastSpell(StormDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-			}
-			base.Think();
-		}
-		#region Spell
-		private Spell m_StormDD;
-		private Spell StormDD
-		{
-			get
-			{
-				if (m_StormDD == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.RecastDelay = 3;
-					spell.Power = 0;
-					spell.ClientEffect = 3508;
-					spell.Icon = 3508;
-					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Energy;
-					spell.Name = "Storm Lightning";
-					spell.Range = 2500;
-					spell.SpellID = 11947;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					m_StormDD = new Spell(spell, 50);
-				}
-				return m_StormDD;
-			}
-		}
-		#endregion
 	}
-}
 
-#region Additional Storm effect mobs
-namespace DOL.GS
-{
-    public class UnnaturalStormAdds : GameNPC
+	public class UnnaturalStorm : UnnaturalStormCloud
 	{
-		public UnnaturalStormAdds() : base() { }
+		private readonly List<UnnaturalStormAdds> _adds = new();
+
+		protected override byte SpawnLevel => (byte) Util.Random(65, 70);
+		protected override eFlags SpawnFlags => eFlags.DONTSHOWNAME | eFlags.CANTTARGET | eFlags.FLYING;
+
+		public UnnaturalStorm() : base(new UnnaturalStormBrain()) { }
+
 		public override bool AddToWorld()
 		{
-			Name = "Unnatural Storm";
-			Model = 665;
-			Level = (byte)Util.Random(40, 42);
-			Size = 100;
-			MeleeDamageType = eDamageType.Crush;
-			Race = 2003;
-			Flags = (GameNPC.eFlags)60;//notarget noname flying
-			MaxSpeedBase = 0;
-			RespawnInterval = -1;
+			if (!base.AddToWorld())
+				return false;
 
-			UnnaturalStormAddsBrain sbrain = new UnnaturalStormAddsBrain();
-			SetOwnBrain(sbrain);
-			LoadedFromScript = true;
-			bool success = base.AddToWorld();
-			if (success)
-			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-			}
-			return success;
+			Intelligence = 200;
+			Dexterity = 200;
+
+			Message.MessageToZone(CurrentZone, "An intense supernatural storm explodes in the sky over the northeastern expanse of Lyonesse!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+
+			SpawnAdds();
+			return true;
 		}
 
-		private protected int Show_Effect(ECSGameTimer timer)
+		public override void Die(GameObject killer)
 		{
-			if (IsAlive)
+			RemoveAdds();
+
+			Message.MessageToZone(CurrentZone, "The unnatural storm over the northeastern expanse of Lyonesse breaks apart, its fury spent!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+
+			base.Die(killer);
+		}
+
+		public void Dismiss()
+		{
+			RemoveAdds();
+			RemoveFromWorld();
+		}
+
+		private void RemoveAdds()
+		{
+			foreach (UnnaturalStormAdds add in _adds)
+				add.RemoveFromWorld();
+
+			_adds.Clear();
+		}
+
+		private void SpawnAdds()
+		{
+			int count = Util.Random(4, 5);
+
+			for (int i = 0; i < count; i++)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				UnnaturalStormAdds add = new()
 				{
-					player.Out.SendSpellCastAnimation(this, 14323, 1);
-					player.Out.SendSpellEffectAnimation(this, this, 3508, 0, false, 0x01);
-				}
+					X = X + Util.Random(-1000, 1000),
+					Y = Y + Util.Random(-1000, 800),
+					Z = Z + Util.Random(-400, 400),
+					Heading = Heading,
+					CurrentRegion = CurrentRegion
+				};
 
-				return 3000;
-			}
-
-			return 0;
-		}
-
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				if (add.AddToWorld())
+					_adds.Add(add);
 			}
 		}
-		public override void StartAttack(GameObject target)
-		{
-		}
 	}
-}
-namespace DOL.AI.Brain
-{
-    public class UnnaturalStormAddsBrain : StandardMobBrain
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public UnnaturalStormAddsBrain() : base()
-		{
-			AggroLevel = 0;
-			AggroRange = 0;
-			ThinkInterval = 1500;
-		}
-		public override void Think()
-		{
-			base.Think();
-		}
-	}
-}
-#endregion
 
-#region Unnatural Storm Controller - controll when storm will appear
-namespace DOL.GS
-{
-    public class UnnaturalStormController : GameNPC
+	public class UnnaturalStormAdds : UnnaturalStormCloud
 	{
-		public UnnaturalStormController() : base()
-		{
-		}
+		protected override byte SpawnLevel => (byte) Util.Random(40, 42);
+		protected override eFlags SpawnFlags => eFlags.DONTSHOWNAME | eFlags.CANTTARGET | eFlags.PEACE | eFlags.FLYING;
+
+		public UnnaturalStormAdds() : base(new StandardMobBrain { AggroLevel = 0, AggroRange = 0 }) { }
+	}
+
+	public class UnnaturalStormController : GameNPC
+	{
 		public override bool IsVisibleToPlayers => true;
+
 		public override bool AddToWorld()
 		{
 			Name = "Unnatural Storm Controller";
@@ -226,70 +136,122 @@ namespace DOL.GS
 			Level = 50;
 			Model = 665;
 			RespawnInterval = 5000;
-			Flags = (GameNPC.eFlags)60;
-
-			UnnaturalStormControllerBrain sbrain = new UnnaturalStormControllerBrain();
-			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			Flags = eFlags.DONTSHOWNAME | eFlags.CANTTARGET | eFlags.PEACE | eFlags.FLYING;
+			SetOwnBrain(new UnnaturalStormControllerBrain());
+			return base.AddToWorld();
 		}
 	}
 }
 
 namespace DOL.AI.Brain
 {
-    public class UnnaturalStormControllerBrain : APlayerVicinityBrain
+	public class UnnaturalStormBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private bool _engaged;
 
-		public UnnaturalStormControllerBrain()
-			: base()
+		public UnnaturalStormBrain() : base()
+		{
+			AggroLevel = 100;
+			AggroRange = 2500;
+			ThinkInterval = 1500;
+		}
+
+		public override void Think()
+		{
+			if (HasAggro)
+			{
+				if (!_engaged)
+				{
+					_engaged = true;
+
+					Message.MessageToArea(Body, "The unnatural storm rumbles violently as bolts of lightning lash the ground below!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
+				}
+
+				if (Body.TargetObject != null && !Body.IsCasting)
+					Body.CastSpell(StormLightning, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+			}
+			else
+				_engaged = false;
+
+			base.Think();
+		}
+
+		private static Spell StormLightning => ScriptSpells.GetOrCreate("UnnaturalStormLightning", 50, db =>
+		{
+			db.CastTime = 0;
+			db.RecastDelay = 3;
+			db.Power = 0;
+			db.ClientEffect = 3508;
+			db.Icon = 3508;
+			db.Damage = 200;
+			db.DamageType = (int) eDamageType.Energy;
+			db.Name = "Storm Lightning";
+			db.Range = 2500;
+			db.SpellID = 11947;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.DirectDamageNoVariance.ToString();
+			db.Uninterruptible = true;
+			db.MoveCast = true;
+		});
+	}
+
+	public class UnnaturalStormControllerBrain : APlayerVicinityBrain
+	{
+		private UnnaturalStorm _storm;
+		private bool _spawnedThisNight;
+
+		public UnnaturalStormControllerBrain() : base()
 		{
 			ThinkInterval = 1000;
 		}
+
 		public override void Think()
 		{
-			uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
-			uint minute = WorldMgr.GetCurrentGameTime() / 1000 / 60 % 60;
+			if (_storm != null && (!_storm.IsAlive || _storm.ObjectState is not GameObject.eObjectState.Active))
+				_storm = null;
 
-			if (hour >= 7 && hour < 18)
+			uint gameTime = WorldMgr.GetCurrentGameTime();
+			uint hour = gameTime / 1000 / 60 / 60;
+			uint minute = gameTime / 1000 / 60 % 60;
+			bool isDay = hour is >= 7 and < 18;
+			bool isNight = hour < 7 || hour > 18 || (hour is 18 && minute >= 30);
+
+			if (isDay)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					if (npc.IsAlive && npc.Brain is UnnaturalStormBrain brain)
-					{
-						if (!brain.HasAggro)
-						{
-							npc.RemoveFromWorld();
-
-							foreach (GameNPC adds in Body.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
-							{
-								if (adds.IsAlive && adds.Brain is UnnaturalStormAddsBrain)
-									adds.RemoveFromWorld();
-							}
-						}
-					}
-				}
+				_spawnedThisNight = false;
+				DismissStorm();
 			}
-			else if (hour == 18 && minute == 30)
-				SpawnUnnaturalStorm();
+			else if (isNight && !_spawnedThisNight)
+				SpawnStorm();
 		}
 
-		public void SpawnUnnaturalStorm()
+		private void DismissStorm()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			if (_storm == null || _storm.Brain is not StandardMobBrain brain || brain.HasAggro)
+				return;
+
+			Message.MessageToZone(_storm.CurrentZone, "The unnatural storm over the northeastern expanse of Lyonesse dissipates with the morning light.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+
+			_storm.Dismiss();
+			_storm = null;
+		}
+
+		private void SpawnStorm()
+		{
+			UnnaturalStorm storm = new()
 			{
-				if (npc.Brain is UnnaturalStormBrain)
-					return;
-			}
-			UnnaturalStorm boss = new UnnaturalStorm();
-			boss.X = Body.X;
-			boss.Y = Body.Y;
-			boss.Z = Body.Z;
-			boss.Heading = Body.Heading;
-			boss.CurrentRegion = Body.CurrentRegion;
-			boss.AddToWorld();
+				X = Body.X,
+				Y = Body.Y,
+				Z = Body.Z,
+				Heading = Body.Heading,
+				CurrentRegion = Body.CurrentRegion
+			};
+
+			if (!storm.AddToWorld())
+				return;
+
+			_storm = storm;
+			_spawnedThisNight = true;
 		}
 	}
 }
-#endregion

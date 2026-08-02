@@ -1,9 +1,10 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class Throatripper : GameNPC
+	public class Throatripper : HideableNpc
 	{
 		public Throatripper() : base() { }
 
@@ -11,9 +12,8 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12233);
 			LoadTemplate(npcTemplate);
-			//RespawnInterval = Util.Random(3600000, 7200000);
 
-			ThroatripperAdd.ThroatripperAddCount = 0;
+			SetHidden(true);
 			ThroatripperBrain sbrain = new ThroatripperBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -25,57 +25,42 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class ThroatripperBrain : StandardMobBrain
+	public class ThroatripperBrain : StandardMobBrain, IEncounterGateOwner
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ThroatripperBrain() : base()
 		{
 			AggroLevel = 80;
 			AggroRange = 400;
 			ThinkInterval = 1000;
+			GateCounter = new("ThroatripperGate", 10, (kills, required) =>
+			{
+				if (kills == required / 2)
+					Message.MessageToArea(Body, "Distant howls answer one another in the dark.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+				else if (kills == required - 1)
+					Message.MessageToArea(Body, "The howling stops, and the forest falls into an eerie silence...", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+			});
 		}
-		ushort oldModel;
-		GameNPC.eFlags oldFlags;
-		bool changed;
+
+		public EncounterKillCounter GateCounter { get; }
+
 		public override void Think()
 		{
-			if (ThroatripperAdd.ThroatripperAddCount >= 10 && Body.CurrentRegion.IsNightTime)
-			{
-				if (changed)
-				{
-					Body.Flags = oldFlags;
-					Body.Model = oldModel;
-					changed = false;
-				}
-			}
-			else
-			{
-				if (changed == false)
-				{
-					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+			bool isNight = Body.CurrentRegion.IsNightTime;
 
-					if (oldModel == 0)
-						oldModel = Body.Model;
-
-					Body.Model = 1;
-					changed = true;
-				}
-			}
-			if (HasAggro && Body.TargetObject != null)
+			if (!isNight)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is ThroatripperAddBrain brain)
-					{
-						GameLiving target = Body.TargetObject as GameLiving;
-						if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
-							brain.AddToAggroList(target, 10);
-					}
-				}
+				if (GateCounter.Kills > 0)
+					Message.MessageToArea(Body, "The pack scatters as the sky pales; the hunt is over for tonight.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+				GateCounter.Reset();
 			}
+
+			HideableNpc body = (HideableNpc)Body;
+
+			if (body.SetHidden(!(GateCounter.IsOpen && isNight) && !Body.InCombat) && !body.IsHidden)
+				Message.MessageToArea(Body, "A shape detaches itself from the treeline. Throatripper has come.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+
+			if (PullFriends(npc => npc.Brain is ThroatripperAddBrain, 1000) > 0)
+				Message.MessageToArea(Body, "Throatripper's chilling howl echoes through the night!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			base.Think();
 		}
 	}
@@ -83,9 +68,12 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-	public class ThroatripperAdd : GameNPC
+	public class ThroatripperAdd : EncounterGateAdd
 	{
 		public ThroatripperAdd() : base() { }
+
+		public override string GateId => "ThroatripperGate";
+		protected override bool CountsTowardGate => CurrentRegion.IsNightTime;
 
 		public override bool AddToWorld()
 		{
@@ -99,29 +87,17 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public static int ThroatripperAddCount = 0;
-		public override void Die(GameObject killer)
-		{
-			if (CurrentRegion.IsNightTime)
-				++ThroatripperAddCount;
-			base.Die(killer);
-		}
 	}
 }
 namespace DOL.AI.Brain
 {
 	public class ThroatripperAddBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ThroatripperAddBrain() : base()
 		{
 			AggroLevel = 0;
 			AggroRange = 400;
 			ThinkInterval = 1500;
-		}
-		public override void Think()
-		{
-			base.Think();
 		}
 	}
 }

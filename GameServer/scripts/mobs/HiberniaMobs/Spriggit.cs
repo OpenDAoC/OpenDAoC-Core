@@ -37,13 +37,6 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool mobHasAggro = false;
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-			}
-		}
 		public override void Think()
 		{
 			if(!CheckProximityAggro())
@@ -54,7 +47,7 @@ namespace DOL.AI.Brain
 			{
 				if(!mobHasAggro)
                 {
-					BroadcastMessage(String.Format("Spriggit crackles as he attacks {0}!",Body.TargetObject.Name));
+					Message.MessageToArea(Body, String.Format("Spriggit crackles as he attacks {0}!",Body.TargetObject.Name), eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 					mobHasAggro = true;
                 }
 				GameLiving target = Body.TargetObject as GameLiving;

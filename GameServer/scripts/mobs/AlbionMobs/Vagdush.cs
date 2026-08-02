@@ -1,8 +1,6 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
 
 namespace DOL.GS
 {
@@ -22,8 +20,7 @@ namespace DOL.GS
 				sbrain.AggroRange = NPCTemplate.AggroRange;
 			}
 			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 		public override void Die(GameObject killer)
 		{
@@ -50,26 +47,19 @@ namespace DOL.AI.Brain
 {
 	public class VagdushBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public VagdushBrain() : base()
 		{
 			ThinkInterval = 1500;
 		}
 		private bool CallforHelp = false;
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius(3000))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-			}
-		}
+		private bool Rooted = false;
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
 			{
 				CallforHelp = false;
-				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12742);
-				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
+				Body.MaxSpeedBase = Body.NPCTemplate.MaxSpeed;
+				Rooted = false;
 			}
 
 			if (HasAggro && Body.TargetObject != null)
@@ -78,92 +68,67 @@ namespace DOL.AI.Brain
 				{
 					if (Body.HealthPercent <= 10)
 					{
-						BroadcastMessage("The " + Body.Name + " calls for help!");
-						foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-						{
-							if (npc != null && npc.IsAlive && npc.PackageID == "VagdushBaf")
-								AddAggroListTo(npc.Brain as StandardMobBrain);
-						}
+						if (PullFriends("VagdushBaf", 1500) > 0)
+							Message.MessageToArea(Body, "Vagdush snarls, 'Kill them all! Attack!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow, 3000);
 						CallforHelp = true;
-					}				
-				}
-				GameLiving target = Body.TargetObject as GameLiving;
-				if(!target.IsWithinRadius(Body,Body.attackComponent.AttackRange) && target.IsAlive && target != null)
-                {
-					Body.MaxSpeedBase = 0;
-					if (!Body.IsCasting && Util.Chance(100))
-					{
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
-							Body.CastSpell(VagdushDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-						else
-							Body.CastSpell(VagdushDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
 				}
+				if (Body.TargetObject is GameLiving target && target.IsAlive && !target.IsWithinRadius(Body, Body.attackComponent.AttackRange))
+				{
+					if (!Rooted)
+					{
+						Message.MessageToArea(Body, "Vagdush plants his feet and snarls, channeling a powerful curse!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, 3000);
+						Rooted = true;
+					}
+					Body.MaxSpeedBase = 0;
+					if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+						TryCastSpell(VagdushDisease, 100);
+					else
+						TryCastSpell(VagdushDD, 100);
+				}
 				else
-                {
-					INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12742);
-					Body.MaxSpeedBase = npcTemplate.MaxSpeed;
+				{
+					Body.MaxSpeedBase = Body.NPCTemplate.MaxSpeed;
+					Rooted = false;
 				}
 			}
 			base.Think();
 		}
 		#region Spells
-		private Spell m_VagdushDisease;
-		private Spell VagdushDisease
+		private static Spell VagdushDisease => ScriptSpells.GetOrCreate("VagdushDisease", 10, db =>
 		{
-			get
-			{
-				if (m_VagdushDisease == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 2;
-					spell.RecastDelay = 0;
-					spell.ClientEffect = 731;
-					spell.Icon = 731;
-					spell.TooltipId = 731;
-					spell.Name = "Persistent Disease";
-					spell.Description = "Inflicts a wasting disease on the target that slows it, weakens it, and inhibits heal spells.";
-					spell.Message1 = "You are diseased!";
-					spell.Message2 = "{0} is diseased!";
-					spell.Message3 = "You look healthy.";
-					spell.Message4 = "{0} looks healthy again.";
-					spell.Range = 1500;
-					spell.Duration = 60;
-					spell.SpellID = 11986;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = "Disease";
-					spell.DamageType = (int)eDamageType.Body; //Energy DMG Type
-					m_VagdushDisease = new Spell(spell, 10);
-				}
-				return m_VagdushDisease;
-			}
-		}
-		private Spell m_VagdushDD;
-		private Spell VagdushDD
+			db.CastTime = 2;
+			db.RecastDelay = 0;
+			db.ClientEffect = 731;
+			db.Icon = 731;
+			db.TooltipId = 731;
+			db.Name = "Persistent Disease";
+			db.Description = "Inflicts a wasting disease on the target that slows it, weakens it, and inhibits heal spells.";
+			db.Message1 = "You are diseased!";
+			db.Message2 = "{0} is diseased!";
+			db.Message3 = "You look healthy.";
+			db.Message4 = "{0} looks healthy again.";
+			db.Range = 1500;
+			db.Duration = 60;
+			db.SpellID = 11986;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = "Disease";
+			db.DamageType = (int)eDamageType.Body; //Energy DMG Type
+		});
+		private static Spell VagdushDD => ScriptSpells.GetOrCreate("VagdushDD", 10, db =>
 		{
-			get
-			{
-				if (m_VagdushDD == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3;
-					spell.RecastDelay = 0;
-					spell.ClientEffect = 754;
-					spell.Icon = 754;
-					spell.Name = "Vagdush Blast";
-					spell.Damage = 50;
-					spell.Range = 1500;
-					spell.SpellID = 11987;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Matter;
-					m_VagdushDD = new Spell(spell, 10);
-				}
-				return m_VagdushDD;
-			}
-		}
+			db.CastTime = 3;
+			db.RecastDelay = 0;
+			db.ClientEffect = 754;
+			db.Icon = 754;
+			db.Name = "Vagdush Blast";
+			db.Damage = 50;
+			db.Range = 1500;
+			db.SpellID = 11987;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.DirectDamageNoVariance.ToString();
+			db.DamageType = (int)eDamageType.Matter;
+		});
 		#endregion
 	}
 }

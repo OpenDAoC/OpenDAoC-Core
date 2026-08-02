@@ -1,154 +1,223 @@
-﻿using System;
-using System.Reflection;
-using DOL.AI;
+using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
-    public class SplitMob : GameNPC
-    {
-        public bool m_First = true;
-        public SplitMob()
-        {
-        }
-        public static bool AnyMinions(GameNPC checker)
-        {
-            foreach (GameNPC npc in checker.GetNPCsInRadius(10000))
-            {
-                if (npc.Name.Contains("Minion"))
-                {
-                    return true;
-                }
-            }
-            if (checker.Name.Contains("Minion"))
-            {
-                return true;
-            }
-            return false;
-        }
-        public void Split(GamePlayer player)
-        {
-            bool check = false;
-            if (this.Level < 45)
-            {
-                if (!AnyMinions(this))
-                {
-                    check = true;
-                }
-            }
-            if (check == true)
-                return;
-            this.Level -= 2;
-            this.Health = this.MaxHealth;
-            this.Size = ((byte)Math.Max(this.Size - 5, 20));
-            SplitMob mob = new SplitMob();
-            SetVariables(mob);
-            mob.AddToWorld();
+	public class SplitMob : GameNPC
+	{
+		private const byte SPLIT_HEALTH_PERCENT = 50;
+		private const byte LEVELS_LOST_PER_SPLIT = 2;
+		private const byte MIN_SPLIT_LEVEL = 45;
+		private const byte SIZE_LOST_PER_SPLIT = 5;
+		private const byte MIN_SIZE = 20;
+		private const long BOUNTY_POINT_REWARD = 5000;
+		private const ushort REWARD_RADIUS = 3000;
+		private const string MINION_NAME = "Split's Minion";
 
-            mob.StartAttack(player);
+		private readonly List<SplitMobMinion> _minions = new();
 
+		private byte _spawnLevel;
+		private byte _spawnSize;
+		private bool _spawnStatsCaptured;
+		private bool _splitExhaustedAnnounced;
 
-        }
-        public void SetVariables(GameNPC mob)
-        {
-            mob.X = this.X + 10;
-            mob.Y = this.Y + 10;
-			mob.Z = this.Z;
-			mob.CurrentRegion = this.CurrentRegion;
-			mob.Heading = this.Heading;
-			mob.Level = this.Level;
-			mob.Realm = this.Realm;
-			mob.Name = "Split's Minion";
-			mob.Model = this.Model;
-			mob.Flags = this.Flags;
-			mob.MeleeDamageType = this.MeleeDamageType;
-            mob.RespawnInterval = -1; // dont respawn
-			mob.RoamingRange = this.RoamingRange;
+		public override bool AddToWorld()
+		{
+			if (!base.AddToWorld())
+				return false;
 
-			// also copies the stats
-
-			mob.Strength = this.Strength;
-			mob.Constitution = this.Constitution;
-			mob.Dexterity = this.Dexterity;
-			mob.Quickness = this.Quickness;
-			mob.Intelligence = this.Intelligence;
-			mob.Empathy = this.Empathy;
-			mob.Piety = this.Piety;
-			mob.Charisma = this.Charisma;
-
-			//Fill the living variables
-			mob.MaxSpeedBase = this.MaxSpeedBase;
-			mob.Size = this.Size;
-			mob.NPCTemplate = this.NPCTemplate;
-			mob.Inventory = this.Inventory;
-			mob.EquipmentTemplateID = this.EquipmentTemplateID;
-			if (mob.Inventory != null)
-				mob.SwitchWeapon(this.ActiveWeaponSlot);
-
-			ABrain brain = null;
-			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+			if (!_spawnStatsCaptured)
 			{
-				brain = (ABrain)assembly.CreateInstance(this.Brain.GetType().FullName, true);
-				if (brain != null)
-					break;
+				_spawnLevel = Level;
+				_spawnSize = Size;
+				_spawnStatsCaptured = true;
 			}
 
-			if (brain == null)
-			{
-				mob.SetOwnBrain(new StandardMobBrain());
-			}
-			else if (brain is StandardMobBrain)
-			{
-				StandardMobBrain sbrain = (StandardMobBrain)brain;
-				StandardMobBrain tsbrain = (StandardMobBrain)this.Brain;
-				sbrain.AggroLevel = tsbrain.AggroLevel;
-				sbrain.AggroRange = tsbrain.AggroRange;
-                mob.SetOwnBrain(sbrain);
-            }
-        }
-        public void ResetToOriginal(GameNPC npc)
-        {
-            npc.Level = 70;
-            npc.Health = this.MaxHealth;
-        }
-        public override void Die(GameObject killer)
-        {
-            this.Level = 60;
-            this.Size = 100;
-            base.Die(killer);
-            if (this.Name == "Split")
-            {
-                foreach (GamePlayer player in this.GetPlayersInRadius(3000))
-                {
-                    SendReply(player, "You have defeated " + this.Name + " and you gain 5000 bounty points");
-                    player.GainBountyPoints(5000, false);
+			return true;
+		}
 
-                }
-                foreach (GameNPC npc in this.GetNPCsInRadius(5000))
-                {
-                    if (npc.Name.Contains("Minion"))
-                    {
-                        npc.RemoveFromWorld();
-                    }
-                }
-            }
-        }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
-        {
-            GamePlayer player = source as GamePlayer;
-            if (player != null)
-            {
-                if (this.HealthPercent < 50)
-                {
-                    Split(player);
-                }
-            }
-            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-        }
-        public void SendReply(GamePlayer player, string msg)
-        {
-            player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
-        }
-    }
+		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		{
+			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+
+			if (!IsAlive)
+				return;
+
+			if (HealthPercent > SPLIT_HEALTH_PERCENT)
+			{
+				_splitExhaustedAnnounced = false;
+				return;
+			}
+
+			if (Level >= MIN_SPLIT_LEVEL + LEVELS_LOST_PER_SPLIT)
+				Split(source);
+			else if (!_splitExhaustedAnnounced)
+			{
+				_splitExhaustedAnnounced = true;
+				Message.MessageToArea(this, $"{Name} shudders, but holds together. It is too small to split any further.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+			}
+		}
+
+		public override void Die(GameObject killer)
+		{
+			RewardParticipants(killer);
+			RemoveMinions();
+			Level = _spawnLevel;
+			Size = _spawnSize;
+			base.Die(killer);
+		}
+
+		public void OnMinionDied(SplitMobMinion minion)
+		{
+			_minions.Remove(minion);
+		}
+
+		private void Split(GameObject source)
+		{
+			Level -= LEVELS_LOST_PER_SPLIT;
+			Health = MaxHealth;
+			Size = (byte) Math.Max(Size - SIZE_LOST_PER_SPLIT, MIN_SIZE);
+
+			SplitMobMinion minion = new() { Owner = this };
+			CopyTo(minion);
+
+			if (!minion.AddToWorld())
+				return;
+
+			_minions.Add(minion);
+
+			Message.MessageToArea(this, $"{Name} convulses and tears itself in two!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+
+			GameLiving target = source as GameLiving;
+
+			if (target == null || !target.IsAlive)
+				target = TargetObject as GameLiving;
+
+			if (target == null)
+				return;
+
+			if (minion.Brain is StandardMobBrain minionBrain)
+				minionBrain.AddToAggroList(target, 1);
+
+			minion.StartAttack(target);
+		}
+
+		private void CopyTo(SplitMobMinion minion)
+		{
+			minion.X = X + 10;
+			minion.Y = Y + 10;
+			minion.Z = Z;
+			minion.CurrentRegion = CurrentRegion;
+			minion.Heading = Heading;
+			minion.Name = MINION_NAME;
+			minion.Level = Level;
+			minion.Realm = Realm;
+			minion.Model = Model;
+			minion.Size = Size;
+			minion.Flags = Flags;
+			minion.MeleeDamageType = MeleeDamageType;
+			minion.RoamingRange = RoamingRange;
+			minion.RespawnInterval = -1;
+
+			minion.Strength = Strength;
+			minion.Constitution = Constitution;
+			minion.Dexterity = Dexterity;
+			minion.Quickness = Quickness;
+			minion.Intelligence = Intelligence;
+			minion.Empathy = Empathy;
+			minion.Piety = Piety;
+			minion.Charisma = Charisma;
+
+			minion.MaxSpeedBase = MaxSpeedBase;
+			minion.NPCTemplate = NPCTemplate;
+			minion.Inventory = Inventory;
+			minion.EquipmentTemplateID = EquipmentTemplateID;
+
+			if (minion.Inventory != null)
+				minion.SwitchWeapon(ActiveWeaponSlot);
+
+			StandardMobBrain minionBrain = new();
+
+			if (Brain is StandardMobBrain brain)
+			{
+				minionBrain.AggroLevel = brain.AggroLevel;
+				minionBrain.AggroRange = brain.AggroRange;
+			}
+
+			minion.SetOwnBrain(minionBrain);
+		}
+
+		private void RemoveMinions()
+		{
+			foreach (SplitMobMinion minion in _minions)
+				minion.RemoveFromWorld();
+
+			_minions.Clear();
+		}
+
+		private void RewardParticipants(GameObject killer)
+		{
+			HashSet<GamePlayer> contributors = new();
+
+			lock (XpGainersLock)
+			{
+				foreach (KeyValuePair<GameLiving, double> pair in XPGainers)
+				{
+					GamePlayer contributor = ResolvePlayer(pair.Key);
+
+					if (contributor != null)
+						contributors.Add(contributor);
+				}
+			}
+
+			GamePlayer killerPlayer = ResolvePlayer(killer);
+
+			if (killerPlayer != null)
+				contributors.Add(killerPlayer);
+
+			HashSet<GamePlayer> eligible = new(contributors);
+
+			foreach (GamePlayer contributor in contributors)
+			{
+				if (contributor.Group == null)
+					continue;
+
+				foreach (GamePlayer member in contributor.Group.GetPlayersInTheGroup())
+					eligible.Add(member);
+			}
+
+			foreach (GamePlayer player in GetPlayersInRadius(REWARD_RADIUS))
+			{
+				if (!eligible.Contains(player))
+					continue;
+
+				player.GainBountyPoints(BOUNTY_POINT_REWARD, true);
+				player.Out.SendMessage($"You have defeated {Name} and gain {BOUNTY_POINT_REWARD} bounty points!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			}
+		}
+
+		private static GamePlayer ResolvePlayer(GameObject source)
+		{
+			if (source is GamePlayer player)
+				return player;
+
+			if (source is GameNPC npc && npc.Brain is IControlledBrain controlledBrain)
+				return controlledBrain.GetPlayerOwner();
+
+			return null;
+		}
+	}
+
+	public class SplitMobMinion : GameNPC
+	{
+		public SplitMob Owner { get; init; }
+
+		public override void Die(GameObject killer)
+		{
+			Owner?.OnMinionDied(this);
+			base.Die(killer);
+		}
+	}
 }

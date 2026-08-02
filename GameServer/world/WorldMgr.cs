@@ -426,6 +426,9 @@ namespace DOL.GS
 			{
 				LootMgr.Init();
 
+				_dayNightCycleTimer ??= new(null);
+				_dayNightCycleTimer.Initialize();
+
 				long mobs = 0;
 				long merchants = 0;
 				long items = 0;
@@ -444,9 +447,6 @@ namespace DOL.GS
 					log.Info("Total Items: " + items);
 					log.Info("Total Bind Points: " + bindpoints);
 				}
-
-				_dayNightCycleTimer ??= new(null);
-				_dayNightCycleTimer.Initialize();
 			}
 			catch (Exception e)
 			{

@@ -1,116 +1,114 @@
-﻿using System;
 using DOL.AI.Brain;
-using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
 	public class CrusaderAntithesis : GameEpicDungeonNPC
 	{
-		public CrusaderAntithesis() : base()
-		{
-		}
+		private const ushort DISGUISED_MODEL = 667;
+		private const ushort REVEALED_MODEL = 927;
+		private const eFlags DISGUISE_FLAGS = eFlags.DONTSHOWNAME | eFlags.CANTTARGET;
+
+		private bool _disguised;
+
+		public CrusaderAntithesis() : base() { }
+
+		public bool IsDisguised => _disguised;
+
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50041);
 			LoadTemplate(npcTemplate);
 
-			CrusaderAntithesisBrain sbrain = new CrusaderAntithesisBrain();
-			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			SetOwnBrain(new CrusaderAntithesisBrain());
+			return base.AddToWorld();
 		}
-		public override void OnAttackEnemy(AttackData ad) //on enemy actions
+
+		public void SetDisguised(bool disguised)
 		{
-			if (Util.Chance(35) && ad != null)
+			if (_disguised == disguised)
+				return;
+
+			_disguised = disguised;
+
+			if (disguised)
 			{
-				CastSpell(CrusaderDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				Model = DISGUISED_MODEL;
+				Flags |= DISGUISE_FLAGS;
+
+				if (ObjectState == eObjectState.Active)
+					Message.MessageToArea(this, "Crusader's Antithesis collapses into a gleaming sword, its blade sharp and biting!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
 			}
+			else
+			{
+				Model = REVEALED_MODEL;
+				Flags = (Flags & ~DISGUISE_FLAGS) | eFlags.GHOST;
+
+				if (ObjectState == eObjectState.Active)
+					Message.MessageToArea(this, "The sword twists apart in midair and regains its true form!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+			}
+
+			BroadcastLivingEquipmentUpdate();
+		}
+
+		public override void OnAttackEnemy(AttackData ad)
+		{
+			if (ad != null && ad.Target != null && ad.Target.IsAlive && !IsCasting && Util.Chance(35))
+				CastSpell(CrusaderDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+
 			base.OnAttackEnemy(ad);
 		}
-		private Spell m_CrusaderDD;
-		private Spell CrusaderDD
+
+		private static Spell CrusaderDD => ScriptSpells.GetOrCreate("CrusaderAntithesisDD", 60, db =>
 		{
-			get
-			{
-				if (m_CrusaderDD == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Power = 0;
-					spell.RecastDelay = 3;
-					spell.ClientEffect = 0;
-					spell.Icon = 0;
-					spell.Damage = Util.Random(350,450);
-					spell.DamageType = (int)eDamageType.Slash;
-					spell.Name = "Melee Swing";
-					spell.Range = 400;
-					spell.SpellID = 12016;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					m_CrusaderDD = new Spell(spell, 60);
-				}
-				return m_CrusaderDD;
-			}
-		}
+			db.CastTime = 0;
+			db.Power = 0;
+			db.RecastDelay = 3;
+			db.ClientEffect = 14352;
+			db.Icon = 14352;
+			db.Damage = Util.Random(350, 450);
+			db.DamageType = (int)eDamageType.Slash;
+			db.Name = "Antithetical Strike";
+			db.Range = 400;
+			db.SpellID = 12016;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.DirectDamageNoVariance.ToString();
+		});
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class CrusaderAntithesisBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private long _swordFormUntil;
+
 		public CrusaderAntithesisBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 600;
-			ThinkInterval = 1500;
 		}
 
 		public override void Think()
 		{
-			if (Util.Chance(20))
+			if (Body is CrusaderAntithesis crusader)
 			{
-				SetFlags();
+				if (!HasAggro)
+					crusader.SetDisguised(false);
+				else if (!crusader.IsDisguised)
+				{
+					if (Util.Chance(20) && Body.LastAttackedByEnemyTick < GameLoop.GameLoopTime - 4000)
+					{
+						crusader.SetDisguised(true);
+						_swordFormUntil = GameLoop.GameLoopTime + Util.Random(3000, 6000);
+					}
+				}
+				else if (GameLoop.GameLoopTime >= _swordFormUntil)
+					crusader.SetDisguised(false);
 			}
+
 			base.Think();
-		}
-		private protected void SetFlags()
-        {
-			if (HasAggro)
-			{
-				switch (Util.Random(8))
-				{
-					case 0:
-						if (Body.Model != 667)
-						{
-							Body.Model = 667;
-							Body.Flags = (GameNPC.eFlags)12;//NONAME + NOTARGET
-							Body.BroadcastLivingEquipmentUpdate();
-						}
-						break;
-					case 1:
-						if (Body.Model != 927)
-						{
-							Body.Model = 927;
-							Body.Flags = (GameNPC.eFlags)1;
-							Body.BroadcastLivingEquipmentUpdate();
-						}
-						break;
-				}
-			}
-			else
-            {
-				if (Body.Model != 927)
-				{
-					Body.Model = 927;
-					Body.Flags = (GameNPC.eFlags)1;
-					Body.BroadcastLivingEquipmentUpdate();
-				}
-			}
 		}
 	}
 }
-
-

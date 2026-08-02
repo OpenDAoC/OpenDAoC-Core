@@ -1,6 +1,4 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
+using DOL.AI.Brain;
 
 namespace DOL.GS
 {
@@ -12,7 +10,6 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12676);
 			LoadTemplate(npcTemplate);
-			//RespawnInterval = Util.Random(3600000, 7200000);
 
 			DoobenBrain sbrain = new DoobenBrain();
 			if (NPCTemplate != null)
@@ -21,86 +18,41 @@ namespace DOL.GS
 				sbrain.AggroRange = NPCTemplate.AggroRange;
 			}
 			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
-		
-		public override void OnAttackEnemy(AttackData ad) //on enemy actions
+
+		public override void OnAttackEnemy(AttackData ad)
 		{
-			if (Util.Chance(45))
-			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
-					CastSpell(DoobenDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
+			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && Util.Chance(45))
+				CastSpell(DoobenDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+
 			base.OnAttackEnemy(ad);
 		}
-		private Spell m_DoobenDD;
-		public Spell DoobenDD
+
+		private static Spell DoobenDD => ScriptSpells.GetOrCreate("DoobenSandStrike", 10, db =>
 		{
-			get
-			{
-				if (m_DoobenDD == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Power = 0;
-					spell.RecastDelay = 2;
-					spell.ClientEffect = 127;
-					spell.Icon = 127;
-					spell.Damage = 25;
-					spell.DamageType = (int)eDamageType.Spirit;
-					spell.Name = "Sand Strike";
-					spell.Range = 350;
-					spell.SpellID = 11988;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					m_DoobenDD = new Spell(spell, 10);
-				}
-				return m_DoobenDD;
-			}
-		}
+			db.CastTime = 0;
+			db.Power = 0;
+			db.RecastDelay = 2;
+			db.ClientEffect = 127;
+			db.Icon = 127;
+			db.Damage = 25;
+			db.DamageType = (int) eDamageType.Spirit;
+			db.Name = "Sand Strike";
+			db.Range = 350;
+			db.SpellID = 11988;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.DirectDamageNoVariance.ToString();
+		});
 	}
 }
 namespace DOL.AI.Brain
 {
-    public class DoobenBrain : StandardMobBrain
+	public class DoobenBrain : AmbientEffectBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public DoobenBrain() : base()
-		{
-			ThinkInterval = 1500;
-		}
-		private bool NotInCombat = false;
-		public override void Think()
-		{
-			if (!CheckProximityAggro())
-            {
-				if (NotInCombat == false)
-				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-					NotInCombat = true;
-				}
-			}
-			if (HasAggro && Body.TargetObject != null)
-				NotInCombat = false;
-
-			base.Think();
-		}
-		#region Show Effects
-		protected int Show_Effect(ECSGameTimer timer)
-		{
-			if (Body.IsAlive && !HasAggro)
-			{
-				foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					player.Out.SendSpellEffectAnimation(Body, Body, 479, 0, false, 0x01);
-
-				return 1600;
-			}
-
-			return 0;
-		}
-		
-		#endregion
+		protected override ushort AmbientEffectId => 479;
+		protected override int AmbientMinIntervalMs => 1600;
+		protected override int AmbientMaxIntervalMs => 1600;
+		protected override bool ShouldPlayAmbientEffect => !HasAggro;
 	}
 }

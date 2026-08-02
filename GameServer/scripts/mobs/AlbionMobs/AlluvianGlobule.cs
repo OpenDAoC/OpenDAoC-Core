@@ -1,15 +1,19 @@
 ﻿namespace DOL.GS
 {
-    /// <summary>
-    /// Alluvian is a mob that spawns Alluvian Globules mobs. With a maximum of 12
-    /// Remove the existing Alluvian in the water by Caifelle
-    /// </summary>
     public class AlluvianGlobule : GameNPC
 	{
 		/// <summary>
 		/// Don't allow respawn, these are spawned from the globule
 		/// </summary>
 		public override void StartRespawn() { }
+
+		/// <summary>
+		/// Roam the lake that Alluvian spawns in, at varying depths
+		/// </summary>
+		public override void Roam(short speed)
+		{
+			WalkTo(new Point3D(544196 + Util.Random(1, 3919), 514980 + Util.Random(1, 3200), 3140 + Util.Random(1, 540)), 80);
+		}
 
 		/// <summary>
 		/// Don't allow saving to the DB. Otherwise, we make way too many

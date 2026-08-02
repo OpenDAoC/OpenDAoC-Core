@@ -268,6 +268,38 @@ namespace DOL.AI.Brain
             _aggroTable.AddTo(brain._aggroTable);
         }
 
+        /// <summary>
+        /// Share our aggro table with every nearby idle NPC sharing the given package ID.
+        /// </summary>
+        /// <returns>The number of friends newly added.</returns>
+        public int PullFriends(string packageId, ushort radius = 1500)
+        {
+            return PullFriends(npc => npc.PackageID == packageId, radius);
+        }
+
+        /// <summary>
+        /// Share our aggro table with every nearby idle NPC matching the given filter.
+        /// </summary>
+        /// <returns>The number of friends newly added.</returns>
+        public int PullFriends(Predicate<GameNPC> filter, ushort radius = 1500)
+        {
+            if (!HasAggro || Body.TargetObject == null)
+                return 0;
+
+            int addedCount = 0;
+
+            foreach (GameNPC npc in Body.GetNPCsInRadius(radius))
+            {
+                if (npc.IsAlive && npc != Body && filter(npc) && npc.Brain is StandardMobBrain friend && !friend.HasAggro)
+                {
+                    AddAggroListTo(friend);
+                    addedCount++;
+                }
+            }
+
+            return addedCount;
+        }
+
         public virtual void AddToAggroList(GameLiving living, long aggroAmount = 0, bool ignoreConfusion = false)
         {
             if (living == null || !living.IsAlive || !Body.IsAlive)
@@ -1246,6 +1278,30 @@ namespace DOL.AI.Brain
         }
 
         protected static SpellLine m_mobSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
+
+        /// <summary>
+        /// Casts a spell at our current target, optionally on a chance and unless the target already has an effect.
+        /// </summary>
+        public bool TryCastSpell(Spell spell, int chancePercent = 100, eEffect? skipIfTargetHas = null)
+        {
+            if (spell == null || Body.IsCasting || !Util.Chance(chancePercent))
+                return false;
+
+            GameLiving target = Body;
+
+            if (spell.Target is not eSpellTarget.SELF)
+            {
+                if (Body.TargetObject is not GameLiving enemy || !enemy.IsAlive)
+                    return false;
+
+                target = enemy;
+            }
+
+            if (skipIfTargetHas.HasValue && target.effectListComponent.ContainsEffectForEffectType(skipIfTargetHas.Value))
+                return false;
+
+            return Body.CastSpell(spell, m_mobSpellLine);
+        }
 
         /// <summary>
         /// Checks if the living target has a spell effect.

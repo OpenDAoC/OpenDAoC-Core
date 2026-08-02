@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using DOL.AI.Brain;
@@ -24,6 +24,8 @@ namespace DOL.GS
         public override int MaxHealth => 3000;
 
         private ParthananFarmState FarmState => ParthananFarmRegistry.GetByBossPackageId(PackageID);
+
+        private bool _ritualAnnounced;
 
         public AmalgamateParthanan() : base(new AmalgamateParthananBrain())
         {
@@ -97,12 +99,14 @@ namespace DOL.GS
             if (!base.AddToWorld())
                 return false;
 
+            Message.MessageToArea(this, "The gathered parthanan press together into a single heaving mass and an amalgamate parthanan forms!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
             _ = new ECSGameTimer(this, RitualEffectLoop, 500);
             return true;
         }
 
         public override void ProcessDeath(GameObject killer)
         {
+            Message.MessageToArea(this, "The amalgamate parthanan collapses into a heap, and the surviving parthanan drift back to the fields.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
             ParthananFarmRegistry.GetByBossPackageId(PackageID)?.OnBossDeath();
             base.ProcessDeath(killer);
         }
@@ -116,6 +120,12 @@ namespace DOL.GS
 
             if (state != null && state.BossIsImmuneToDamage)
             {
+                if (!_ritualAnnounced)
+                {
+                    _ritualAnnounced = true;
+                    Message.MessageToArea(this, "The amalgamate parthanan drinks in the sacrifice. Steel and spell alike slide off its hide.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+                }
+
                 foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     player.Out.SendSpellCastAnimation(this, 2909, 1);
 
@@ -207,6 +217,7 @@ namespace DOL.AI.Brain
         private int _sacrificeThreshold;
         private bool _canMarchAndDie;
         private bool _bossSpawned;
+        private AmalgamateParthanan _boss;
 
         private volatile bool _trashVisible = true;
         private volatile bool _sacrificing;
@@ -240,6 +251,7 @@ namespace DOL.AI.Brain
             Phase = ParthananFarmPhase.Farming;
             _canMarchAndDie = false;
             _bossSpawned = false;
+            _boss = null;
             _gatheringMinions.Clear();
             _trashVisible = true;
             _sacrificing = false;
@@ -247,6 +259,9 @@ namespace DOL.AI.Brain
 
         public void OnTrashDeath(Parthanan npc)
         {
+            bool sacrificeBegan = false;
+            AmalgamateParthanan activatedBoss = null;
+
             lock (_lock)
             {
                 if (Phase is ParthananFarmPhase.Farming)
@@ -257,6 +272,7 @@ namespace DOL.AI.Brain
                     {
                         Phase = ParthananFarmPhase.Sacrificing;
                         _sacrificing = true;
+                        sacrificeBegan = true;
                     }
                 }
                 else if (Phase is ParthananFarmPhase.Sacrificing)
@@ -267,9 +283,15 @@ namespace DOL.AI.Brain
                         _canMarchAndDie = false;
                         _sacrificing = false;
                         _trashVisible = false;
+                        activatedBoss = _boss;
                     }
                 }
             }
+
+            if (sacrificeBegan)
+                Message.MessageToArea(ControllerBody, "The parthanan cease their braying. One by one they turn toward the standing stone.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+            else if (activatedBoss != null)
+                Message.MessageToArea(activatedBoss, "The last of the offering falls, and the amalgamate parthanan turns its attention outward!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
         }
 
         public void ScanForMinions()
@@ -308,10 +330,13 @@ namespace DOL.AI.Brain
             foreach (GameNPC npc in ControllerBody.GetNPCsInRadius(Config.BossDuplicateCheckRadius))
             {
                 if (npc is AmalgamateParthanan existing && existing.PackageID == Config.BossPackageId)
+                {
+                    _boss = existing;
                     return;
+                }
             }
 
-            new AmalgamateParthanan()
+            AmalgamateParthanan boss = new()
             {
                 X = ControllerBody.X,
                 Y = ControllerBody.Y,
@@ -319,7 +344,10 @@ namespace DOL.AI.Brain
                 Heading = ControllerBody.Heading,
                 CurrentRegion = ControllerBody.CurrentRegion,
                 PackageID = Config.BossPackageId
-            }.AddToWorld();
+            };
+
+            _boss = boss;
+            boss.AddToWorld();
         }
 
         public void OnBossDeath()

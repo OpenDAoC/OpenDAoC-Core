@@ -1,11 +1,10 @@
-﻿using DOL.AI.Brain;
+using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
 
 namespace DOL.GS
 {
-	public class Daewain : GameNPC
+	public class Daewain : HideableNpc
 	{
 		public Daewain() : base() { }
 
@@ -27,71 +26,37 @@ namespace DOL.AI.Brain
 {
 	public class DaewainBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DaewainBrain() : base()
 		{
 			AggroLevel = 0;
 			AggroRange = 400;
 			ThinkInterval = 1000;
 		}
-		ushort oldModel;
-		GameNPC.eFlags oldFlags;
-		bool changed;
-		bool playerOnBridge = false;
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-			}
-		}
 		public override void Think()
 		{
-			if(Body.IsAlive)
-            {
+			if (Body.IsAlive)
+			{
+				bool playerNear = false;
+
 				foreach (GamePlayer player in Body.GetPlayersInRadius(800))
 				{
 					if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
-						playerOnBridge = true;
+						playerNear = true;
 				}
-				if (playerOnBridge)
-				{
-					if (changed)
-					{
-						Body.Flags = oldFlags;
-						Body.Model = oldModel;
-						BroadcastMessage("Daewain croaks softly as he rests in the shade under the bridge.");
-						changed = false;
-					}
-				}
-				else
-				{
-					if (changed == false)
-					{
-						oldFlags = Body.Flags;
-						Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-						Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-						Body.Flags ^= GameNPC.eFlags.PEACE;
 
-						if (oldModel == 0)
-							oldModel = Body.Model;
+				HideableNpc body = (HideableNpc)Body;
+				bool wasHidden = body.IsHidden;
+				body.SetHidden(!playerNear);
 
-						Body.Model = 1;
-						changed = true;
-					}
-				}
+				if (wasHidden && playerNear)
+					Message.MessageToArea(Body, "A deep croak echoes from beneath the bridge as Daewain stirs from the shade.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, 2500);
 			}
-			if (HasAggro && Body.TargetObject != null)
-			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-				{
-					if (npc != null && npc.IsAlive && npc.PackageID == "DaewainBaf")
-						AddAggroListTo(npc.Brain as StandardMobBrain);
-				}
-			}
+
+			if (PullFriends("DaewainBaf", 1500) > 0)
+				Message.MessageToArea(Body, "Daewain croaks out a deep bellow, and his kin lumber to his aid!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
+
 			base.Think();
 		}
 	}
 }
-
 

@@ -1,7 +1,7 @@
 ﻿using DOL.AI;
 using DOL.AI.Brain;
+using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.DOL.AI.Brain;
 
 namespace DOL.GS.Scripts
 {
@@ -37,66 +37,66 @@ namespace DOL.GS.Scripts
             //1.30min
             RespawnInterval = 90000;
 
-            base.AddToWorld();
-            return true;
-
-            // 818 scaled to 9
+            return base.AddToWorld();
         }
     }
+}
 
-    namespace DOL.AI.Brain
+namespace DOL.AI.Brain
+{
+    public class BotonidBrain : StandardMobBrain
     {
-        public class BotonidBrain : StandardMobBrain
+        public BotonidBrain() : base()
         {
-            public BotonidBrain() : base()
+            AggroLevel = 100;
+            AggroRange = 500;
+        }
+
+        private bool isScourgin;
+
+        public override int ThinkInterval => 1000;
+
+        public override void Think()
+        {
+            if (HasAggro)
             {
-                AggroLevel = 100;
-                AggroRange = 500;
+                if (!Body.IsWithinRadius(Body.TargetObject, 150)) return;
+                if (!isScourgin)
+                {
+                    Transform(true);
+                    isScourgin = true;
+
+                    if (Body.TargetObject != null)
+                        Message.MessageToArea(Body, $"The lure disappears and a scourgin lunges at {Body.TargetObject.Name}!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, 400);
+                    else
+                        Message.MessageToArea(Body, "The lure disappears and a scourgin springs out!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, 400);
+                }
+            }
+            else if (!Body.InCombatInLast(30 * 1000) && !HasAggro)
+            {
+                if (isScourgin)
+                {
+                    Transform(false);
+                    isScourgin = false;
+                }
             }
 
-            private bool transformed;
+            base.Think();
+        }
 
-            public override int ThinkInterval => 1000;
-
-            public override void Think()
+        private void Transform(bool toScourgin)
+        {
+            if (toScourgin)
             {
-                if (HasAggro)
-                {
-                    if (!Body.IsWithinRadius(Body.TargetObject, 150)) return;
-                    if (transformed) return;
-                    foreach (GamePlayer player in Body.GetPlayersInRadius(400))
-                    {
-                        player.Out.SendMessage("The lure dissapears and a scourgin jumps out at " + player.Name + ".",
-                            eChatType.CT_Say,
-                            eChatLoc.CL_ChatWindow);
-                        Transform(transformed); // scourgin
-                        transformed = true;
-                    }
-                }
-                else if (!Body.InCombatInLast(30 * 1000) && !HasAggro)
-                {
-                    if (!transformed) return;
-                    Transform(transformed); //seedling
-                    transformed = false;
-                }
-
-                base.Think();
+                Body.Size = 50;
+                Body.Model = 914;
+                Body.Name = "scourgin";
             }
-
-            private void Transform(bool transformed)
+            else
             {
-                if (transformed)
-                {
-                    Body.Size = 9;
-                    Body.Model = 818;
-                    Body.Name = "botonid seedling";
-                }
-                else
-                {
-                    Body.Size = 50;
-                    Body.Model = 914;
-                    Body.Name = "scourgin";
-                }
+                Body.Size = 9;
+                Body.Model = 818;
+                Body.Name = "botonid seedling";
             }
         }
     }
