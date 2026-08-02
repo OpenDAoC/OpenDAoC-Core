@@ -1,6 +1,7 @@
 ﻿using DOL.AI.Brain;
-using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
+using System.Collections.Generic;
 
 namespace DOL.GS
 {
@@ -18,8 +19,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -27,96 +27,61 @@ namespace DOL.AI.Brain
 {
     public class QuillanMuireBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public QuillanMuireBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
-			ThinkInterval = 1500;
 		}
 		public override void Think()
 		{
-			if(HasAggro && Body.TargetObject != null)
-            {
-				if(!Body.IsCasting && Util.Chance(25))
-					Body.CastSpell(QuillanMuire_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				if (!Body.IsCasting && Util.Chance(25))
-					Body.CastSpell(QuillanMuire_DD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+			if (HasAggro && Body.TargetObject != null)
+			{
+				TryCastSpell(QuillanMuire_DD, 25);
+				TryCastSpell(QuillanMuire_DD2, 25);
 
-				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is MuireHerbalistBrain brian)
-					{
-						if (!brian.HasAggro && brian != null && target != null && target.IsAlive)
-							brian.AddToAggroList(target, 10);
-					}
-				}
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
-				{
-					if (npc != null && npc.IsAlive && npc.PackageID == "QuillanBaf")
-						AddAggroListTo(npc.Brain as StandardMobBrain); 
-				}
+				int pulledFriends = PullFriends("QuillanBaf", 4000);
+				pulledFriends += PullFriends(npc => npc.Brain is MuireHerbalistBrain, 4000);
+
+				if (pulledFriends > 0)
+					Message.MessageToArea(Body, "Quillan Muire calls out, 'Family! Rise and defend our tomb!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			}
 			base.Think();
 		}
 		#region Spells
-		private Spell m_QuillanMuire_DD;
-		private Spell QuillanMuire_DD
+		private static Spell QuillanMuire_DD => ScriptSpells.GetOrCreate("QuillanMuireDD", 20, spell =>
 		{
-			get
-			{
-				if (m_QuillanMuire_DD == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3.5;
-					spell.RecastDelay = Util.Random(10, 15);
-					spell.ClientEffect = 14353;
-					spell.Icon = 14353;
-					spell.TooltipId = 14353;
-					spell.Damage = 80;
-					spell.Name = "Energy Blast";
-					spell.Range = 1500;
-					spell.SpellID = 11948;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy;
-					m_QuillanMuire_DD = new Spell(spell, 20);
-				}
-				return m_QuillanMuire_DD;
-			}
-		}
-		private Spell m_QuillanMuire_DD2;
-		private Spell QuillanMuire_DD2
+			spell.CastTime = 3.5;
+			spell.RecastDelay = Util.Random(10, 15);
+			spell.ClientEffect = 14353;
+			spell.Icon = 14353;
+			spell.TooltipId = 14353;
+			spell.Damage = 80;
+			spell.Name = "Energy Blast";
+			spell.Range = 1500;
+			spell.SpellID = 11948;
+			spell.Target = eSpellTarget.ENEMY.ToString();
+			spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+			spell.Uninterruptible = true;
+			spell.MoveCast = true;
+			spell.DamageType = (int)eDamageType.Energy;
+		});
+		private static Spell QuillanMuire_DD2 => ScriptSpells.GetOrCreate("QuillanMuireDD2", 20, spell =>
 		{
-			get
-			{
-				if (m_QuillanMuire_DD2 == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3.5;
-					spell.RecastDelay = Util.Random(8, 12);
-					spell.ClientEffect = 4356;
-					spell.Icon = 4356;
-					spell.TooltipId = 4356;
-					spell.Damage = 70;
-					spell.Name = "Energy Blast";
-					spell.Range = 1500;
-					spell.SpellID = 11949;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy;
-					m_QuillanMuire_DD2 = new Spell(spell, 20);
-				}
-				return m_QuillanMuire_DD2;
-			}
-		}
+			spell.CastTime = 3.5;
+			spell.RecastDelay = Util.Random(8, 12);
+			spell.ClientEffect = 4356;
+			spell.Icon = 4356;
+			spell.TooltipId = 4356;
+			spell.Damage = 70;
+			spell.Name = "Energy Blast";
+			spell.Range = 1500;
+			spell.SpellID = 11949;
+			spell.Target = eSpellTarget.ENEMY.ToString();
+			spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+			spell.Uninterruptible = true;
+			spell.MoveCast = true;
+			spell.DamageType = (int)eDamageType.Energy;
+		});
 		#endregion
 	}
 }
@@ -144,8 +109,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
     }
 }
@@ -153,151 +117,124 @@ namespace DOL.AI.Brain
 {
     public class MuireHerbalistBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MuireHerbalistBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
-			ThinkInterval = 1500;
 		}
-        public override void AttackMostWanted()
-        {
-			if (Ishealing || IsBuffing || IsBuffingSelf)
-				return;
-			else
-				base.AttackMostWanted();
-        }
-        private protected bool Ishealing = false;
-		private protected bool IsBuffing = false;
-		private protected bool IsBuffingSelf = false;
-		private protected void HealAndBuff()
-        {
-			foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-			{
-				if (npc.IsAlive && npc != null && npc.Faction == Body.Faction)
-				{
-					foreach (Spell spell in Body.Spells)
-					{
-						if (spell != null)
-						{
-							if (npc.HealthPercent < 50)
-							{
-								Ishealing = true;
-								if (!Body.IsCasting)
-								{
-									if (Body.TargetObject != npc)
-										Body.TargetObject = npc;
+		private GameNPC HealNpc;
+		private GameNPC BuffNpc;
+		private bool _healAnnounced;
+		private void HealAndBuff()
+		{
+			if (HealNpc != null && (!HealNpc.IsAlive || HealNpc.HealthPercent >= 50 || !HealNpc.IsWithinRadius(Body, 1500)))
+				HealNpc = null;
 
-									Body.CastSpell(MuireHerbalistHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-								}
-							}
-							if(Body.GetSkillDisabledDuration(MuireHerbalistHeal) > 0)
-							{
-								Ishealing = false;
-								Body.TargetObject = null;
-							}
-						}
+			if (HealNpc == null && Body.Faction != null)
+			{
+				List<GameNPC> npcToHeal = new List<GameNPC>();
+
+				foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+				{
+					if (npc.IsAlive && npc.Faction == Body.Faction && npc.HealthPercent < 50)
+						npcToHeal.Add(npc);
+				}
+
+				if (npcToHeal.Count > 0)
+					HealNpc = npcToHeal[Util.Random(0, npcToHeal.Count - 1)];
+			}
+
+			if (HealNpc != null)
+			{
+				if (!Body.IsCasting)
+				{
+					GameObject oldTarget = Body.TargetObject;
+					Body.TargetObject = HealNpc;
+					Body.CastSpell(MuireHerbalistHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+					Body.TargetObject = oldTarget;
+
+					if (!_healAnnounced)
+					{
+						Message.MessageToArea(Body, "The Muire herbalist chants over the wounded, and torn flesh knits closed!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+						_healAnnounced = true;
 					}
 				}
+
+				return;
 			}
-			if (!Ishealing)
+
+			if (BuffNpc != null && (!BuffNpc.IsAlive || !BuffNpc.IsWithinRadius(Body, 500) || BuffNpc.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff)))
+				BuffNpc = null;
+
+			if (BuffNpc == null)
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius(500))
 				{
-					if (npc != null && npc.IsAlive && (npc.Name == "Muire Hero" || npc.Name == "Muire Champion" || npc.Name == "Quillan Muire"))
+					if (npc.IsAlive && (npc.Name == "Muire Hero" || npc.Name == "Muire Champion" || npc.Name == "Quillan Muire")
+						&& !npc.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
 					{
-						if (!Body.IsCasting && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
-						{
-							IsBuffing = true;
-							Body.TargetObject = npc;
-							Body.CastSpell(MuireHerbalist_Buff_STR, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-						}
-						else
-						{
-							Body.TargetObject = null;
-							IsBuffing = false;
-							if (!Body.IsCasting && !Body.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
-							{
-								IsBuffingSelf = true;
-								Body.TargetObject = Body;
-								Body.CastSpell(MuireHerbalist_Buff_STR, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-							}
-							else
-							{
-								IsBuffingSelf = false;
-								Body.TargetObject = null;
-							}
-						}
+						BuffNpc = npc;
+						break;
 					}
 				}
+
+				if (BuffNpc == null && !Body.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
+					BuffNpc = Body;
+			}
+
+			if (BuffNpc != null && !Body.IsCasting)
+			{
+				GameObject oldTarget = Body.TargetObject;
+				Body.TargetObject = BuffNpc;
+				Body.CastSpell(MuireHerbalist_Buff_STR, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+				Body.TargetObject = oldTarget;
 			}
 		}
 
         public override void Think()
 		{
-			if(Body.IsAlive)
-            {
-				if (!Body.Spells.Contains(MuireHerbalistHeal))
-					Body.Spells.Add(MuireHerbalistHeal);
+			if (!HasAggro)
+				_healAnnounced = false;
 
-			}
-			HealAndBuff();
+			if (Body.IsAlive)
+				HealAndBuff();
+
 			base.Think();
         }
         #region Spells
-        private Spell m_MuireHerbalistHeal;
-		private Spell MuireHerbalistHeal
+        private static Spell MuireHerbalistHeal => ScriptSpells.GetOrCreate("MuireHerbalistHeal", 15, spell =>
 		{
-			get
-			{
-				if (m_MuireHerbalistHeal == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3;
-					spell.RecastDelay = 3;
-					spell.ClientEffect = 1340;
-					spell.Icon = 1340;
-					spell.TooltipId = 1340;
-					spell.Value = 150;
-					spell.Name = "Heal";
-					spell.Range = 1500;
-					spell.SpellID = 11949;
-					spell.Target = eSpellTarget.REALM.ToString();
-					spell.Type = eSpellType.Heal.ToString();
-					spell.Uninterruptible = true;
-					m_MuireHerbalistHeal = new Spell(spell, 15);
-				}
-				return m_MuireHerbalistHeal;
-			}
-		}
-		private Spell m_MuireHerbalist_Buff_STR;
-		private Spell MuireHerbalist_Buff_STR
+			spell.CastTime = 3;
+			spell.RecastDelay = 3;
+			spell.ClientEffect = 1340;
+			spell.Icon = 1340;
+			spell.TooltipId = 1340;
+			spell.Value = 150;
+			spell.Name = "Heal";
+			spell.Range = 1500;
+			spell.SpellID = 11949;
+			spell.Target = eSpellTarget.REALM.ToString();
+			spell.Type = eSpellType.Heal.ToString();
+			spell.Uninterruptible = false;
+			spell.MoveCast = false;
+		});
+		private static Spell MuireHerbalist_Buff_STR => ScriptSpells.GetOrCreate("MuireHerbalistBuffSTR", 15, spell =>
 		{
-			get
-			{
-				if (m_MuireHerbalist_Buff_STR == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3;
-					spell.RecastDelay = 0;
-					spell.ClientEffect = 1451;
-					spell.Duration = 1200;
-					spell.Icon = 1451;
-					spell.TooltipId = 5003;
-					spell.Value = 20;
-					spell.Name = "Herbalist Strength";
-					spell.Range = 1500;
-					spell.SpellID = 11950;
-					spell.Target = eSpellTarget.REALM.ToString();
-					spell.Type = eSpellType.StrengthBuff.ToString();
-					spell.Uninterruptible = true;
-					m_MuireHerbalist_Buff_STR = new Spell(spell, 15);
-				}
-				return m_MuireHerbalist_Buff_STR;
-			}
-		}
+			spell.CastTime = 3;
+			spell.RecastDelay = 0;
+			spell.ClientEffect = 1451;
+			spell.Duration = 1200;
+			spell.Icon = 1451;
+			spell.TooltipId = 5003;
+			spell.Value = 20;
+			spell.Name = "Herbalist Strength";
+			spell.Range = 1500;
+			spell.SpellID = 11950;
+			spell.Target = eSpellTarget.REALM.ToString();
+			spell.Type = eSpellType.StrengthBuff.ToString();
+			spell.Uninterruptible = false;
+			spell.MoveCast = false;
+		});
 		#endregion
 	}
 }

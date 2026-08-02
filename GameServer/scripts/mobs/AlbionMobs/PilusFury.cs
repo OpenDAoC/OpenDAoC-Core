@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS;
@@ -30,13 +29,6 @@ namespace DOL.GS
 			LoadedFromScript = true;
 			base.AddToWorld();
 			return true;
-		}
-		public void BroadcastMessage(String message)
-		{
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-			}
 		}
 		public override void StartAttack(GameObject target)
 		{

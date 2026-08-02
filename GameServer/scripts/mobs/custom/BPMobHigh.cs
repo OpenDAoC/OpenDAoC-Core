@@ -13,14 +13,6 @@ namespace DOL.GS.Scripts
                 player.GainBountyPoints((this.Level * 5));
 
             base.Die(killer);
-
-            if ((Faction != null) && (killer is GamePlayer))
-            {
-                GamePlayer player3 = killer as GamePlayer;
-                Faction.OnMemberKilled(player3);
-            }
-
-            StartRespawn();
         }
     }
 }

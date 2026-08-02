@@ -1,289 +1,214 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
-#region Tan pixie
 namespace DOL.GS
 {
-	public class RainbowSpriteTan : GameNPC
+	public abstract class RainbowSprite : GameNPC
 	{
-		public RainbowSpriteTan() : base() { }
+		protected abstract int TemplateId { get; }
+
+		protected abstract RainbowSpriteBrain CreateBrain();
 
 		public override bool AddToWorld()
 		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165135);
+			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(TemplateId);
 			LoadTemplate(npcTemplate);
 
-			RainbowSpriteTanBrain sbrain = new RainbowSpriteTanBrain();
+			RainbowSpriteBrain sbrain = CreateBrain();
+
 			if (NPCTemplate != null)
 			{
 				sbrain.AggroLevel = NPCTemplate.AggroLevel;
 				sbrain.AggroRange = NPCTemplate.AggroRange;
 			}
+
 			SetOwnBrain(sbrain);
 			base.AddToWorld();
 			return true;
 		}
 	}
+
+	public class RainbowSpriteTan : RainbowSprite
+	{
+		protected override int TemplateId => 60165135;
+
+		protected override RainbowSpriteBrain CreateBrain() => new RainbowSpriteTanBrain();
+	}
+
+	public class RainbowSpriteWhite : RainbowSprite
+	{
+		protected override int TemplateId => 50024;
+
+		protected override RainbowSpriteBrain CreateBrain() => new RainbowSpriteWhiteBrain();
+	}
+
+	public class RainbowSpriteBlue : RainbowSprite
+	{
+		protected override int TemplateId => 60165136;
+
+		protected override RainbowSpriteBrain CreateBrain() => new RainbowSpriteBlueBrain();
+	}
+
+	public class RainbowSpriteGreen : RainbowSprite
+	{
+		protected override int TemplateId => 50018;
+
+		protected override RainbowSpriteBrain CreateBrain() => new RainbowSpriteGreenBrain();
+	}
 }
+
 namespace DOL.AI.Brain
 {
-	public class RainbowSpriteTanBrain : StandardMobBrain
+	public abstract class RainbowSpriteBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public RainbowSpriteTanBrain() : base()
+		public RainbowSpriteBrain() : base()
 		{
 			ThinkInterval = 1500;
 		}
-		private bool CallforHelp = false;
+
 		public override void Think()
 		{
-			if (!CheckProximityAggro())
-				CallforHelp = false;
+			if (Body.HealthPercent <= 20 && PullFriends(npc => npc.Brain is RainbowSpriteBrain, 1000) > 0)
+				Message.MessageToArea(Body, $"The {Body.Name} chimes a tinkling call, and nearby sprites flit to its aid!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 
-			if (HasAggro && Body.TargetObject != null)
-			{
-				if (!CallforHelp)
-				{
-					if (Body.HealthPercent <= 20)
-					{
-						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-						{
-							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteTanBrain brain && npc != Body)
-							{
-								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
-									brain.AddToAggroList(target, 10);
-							}
-						}
-						CallforHelp = true;
-					}
-				}
-			}
 			base.Think();
 		}
 	}
-}
-#endregion
 
-#region White pixie
-namespace DOL.GS
-{
-	public class RainbowSpriteWhite : GameNPC
+	public class RainbowSpriteTanBrain : RainbowSpriteBrain
 	{
-		public RainbowSpriteWhite() : base() { }
-
-		public override bool AddToWorld()
-		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50024);
-			LoadTemplate(npcTemplate);
-
-			RainbowSpriteWhiteBrain sbrain = new RainbowSpriteWhiteBrain();
-			if (NPCTemplate != null)
-			{
-				sbrain.AggroLevel = NPCTemplate.AggroLevel;
-				sbrain.AggroRange = NPCTemplate.AggroRange;
-			}
-			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
-		}
-	}
-}
-namespace DOL.AI.Brain
-{
-	public class RainbowSpriteWhiteBrain : StandardMobBrain
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public RainbowSpriteWhiteBrain() : base()
-		{
-			ThinkInterval = 1500;
-		}
-		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!CheckProximityAggro())
-				CallforHelp = false;
-
 			if (HasAggro && Body.TargetObject != null)
-			{
-				if (!CallforHelp)
-				{
-					if (Body.HealthPercent <= 20)
-					{
-						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-						{
-							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteWhiteBrain brain && npc != Body)
-							{
-								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
-									brain.AddToAggroList(target, 10);
-							}
-						}
-						CallforHelp = true;
-					}
-				}
-			}
+				TryCastSpell(EarthenGrasp, 20, eEffect.MovementSpeedDebuff);
+
 			base.Think();
 		}
-	}
-}
-#endregion
 
-#region Blue pixie
-namespace DOL.GS
-{
-	public class RainbowSpriteBlue : GameNPC
-	{
-		public RainbowSpriteBlue() : base() { }
-
-		public override bool AddToWorld()
+		#region Spells
+		private static Spell EarthenGrasp => ScriptSpells.GetOrCreate("RainbowSpriteEarthenGrasp", 30, db =>
 		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165136);
-			LoadTemplate(npcTemplate);
-
-			RainbowSpriteBlueBrain sbrain = new RainbowSpriteBlueBrain();
-			if (NPCTemplate != null)
-			{
-				sbrain.AggroLevel = NPCTemplate.AggroLevel;
-				sbrain.AggroRange = NPCTemplate.AggroRange;
-			}
-			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
-		}
+			db.CastTime = 3;
+			db.RecastDelay = 25;
+			db.ClientEffect = 5204;
+			db.Icon = 5204;
+			db.TooltipId = 5204;
+			db.Duration = 8;
+			db.Value = 99;
+			db.Name = "Earthen Grasp";
+			db.Description = "Target is rooted in place and unable to move for the duration of the spell.";
+			db.Message1 = "Roots coil around your legs!";
+			db.Message2 = "{0} is caught fast by grasping roots!";
+			db.Message3 = "The roots crumble away.";
+			db.Message4 = "{0} pulls free of the roots.";
+			db.Range = 1500;
+			db.SpellID = 11989;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.SpeedDecrease.ToString();
+			db.Uninterruptible = false;
+			db.DamageType = (int) eDamageType.Matter;
+		});
+		#endregion
 	}
-}
-namespace DOL.AI.Brain
-{
-	public class RainbowSpriteBlueBrain : StandardMobBrain
+
+	public class RainbowSpriteWhiteBrain : RainbowSpriteBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public RainbowSpriteBlueBrain() : base()
-		{
-			ThinkInterval = 1500;
-		}
-		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!CheckProximityAggro())
-				CallforHelp = false;
+			if (HasAggro && Body.TargetObject != null && TryCastSpell(DazzlingFlash, 15, eEffect.Mez))
+				Message.MessageToArea(Body, "The white sprite's wings flare with blinding light!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, 1000);
 
-			if (HasAggro && Body.TargetObject != null)
-			{
-				if (!CallforHelp)
-				{
-					if (Body.HealthPercent <= 20)
-					{
-						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-						{
-							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteBlueBrain brain && npc != Body)
-							{
-								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
-									brain.AddToAggroList(target, 10);
-							}
-						}
-						CallforHelp = true;
-					}
-				}
-			}
 			base.Think();
 		}
-	}
-}
-#endregion
 
-#region Green pixie
-namespace DOL.GS
-{
-	public class RainbowSpriteGreen : GameNPC
-	{
-		public RainbowSpriteGreen() : base() { }
-
-		public override bool AddToWorld()
+		#region Spells
+		private static Spell DazzlingFlash => ScriptSpells.GetOrCreate("RainbowSpriteDazzlingFlash", 30, db =>
 		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50018);
-			LoadTemplate(npcTemplate);
-
-			RainbowSpriteGreenBrain sbrain = new RainbowSpriteGreenBrain();
-			if (NPCTemplate != null)
-			{
-				sbrain.AggroLevel = NPCTemplate.AggroLevel;
-				sbrain.AggroRange = NPCTemplate.AggroRange;
-			}
-			SetOwnBrain(sbrain);
-			base.AddToWorld();
-			return true;
-		}
+			db.CastTime = 3;
+			db.RecastDelay = 30;
+			db.ClientEffect = 5318;
+			db.Icon = 5318;
+			db.TooltipId = 5318;
+			db.Damage = 0;
+			db.Duration = 6;
+			db.Name = "Dazzling Flash";
+			db.Description = "Targets around the caster are mesmerized and cannot move or take any other action for the duration of the spell.";
+			db.Message1 = "You are mesmerized!";
+			db.Message2 = "{0} is mesmerized!";
+			db.Message3 = "You recover from the mesmerize.";
+			db.Message4 = "{0} recovers from the mesmerize.";
+			db.Radius = 350;
+			db.Range = 0;
+			db.SpellID = 11991;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.Mesmerize.ToString();
+			db.Uninterruptible = false;
+			db.DamageType = (int) eDamageType.Spirit;
+		});
+		#endregion
 	}
-}
-namespace DOL.AI.Brain
-{
-	public class RainbowSpriteGreenBrain : StandardMobBrain
+
+	public class RainbowSpriteBlueBrain : RainbowSpriteBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public RainbowSpriteGreenBrain() : base()
-		{
-			ThinkInterval = 1500;
-		}
-		private bool CallforHelp = false;
 		public override void Think()
 		{
-			if (!CheckProximityAggro())
-				CallforHelp = false;
-
-			if(Body.HealthPercent <= 50 && !Body.IsCasting && Util.Chance(100))
-				Body.CastSpell(GreenSpriteHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-
 			if (HasAggro && Body.TargetObject != null)
-			{
-				if (!CallforHelp)
-				{
-					if (Body.HealthPercent <= 20)
-					{
-						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-						{
-							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteGreenBrain brain && npc != Body)
-							{
-								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
-									brain.AddToAggroList(target, 10);
-							}
-						}
-						CallforHelp = true;
-					}
-				}
-			}
+				TryCastSpell(ChillingMist, 20, eEffect.MovementSpeedDebuff);
+
 			base.Think();
 		}
-		private Spell m_GreenSpriteHeal;
-		private Spell GreenSpriteHeal
+
+		#region Spells
+		private static Spell ChillingMist => ScriptSpells.GetOrCreate("RainbowSpriteChillingMist", 30, db =>
 		{
-			get
-			{
-				if (m_GreenSpriteHeal == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3;
-					spell.RecastDelay = 8;
-					spell.ClientEffect = 1340;
-					spell.Icon = 1340;
-					spell.TooltipId = 1340;
-					spell.Value = 180;
-					spell.Name = "GreenSprite's Heal";
-					spell.Range = 1500;
-					spell.SpellID = 11988;
-					spell.Target = eSpellTarget.SELF.ToString();
-					spell.Type = eSpellType.Heal.ToString();
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					m_GreenSpriteHeal = new Spell(spell, 30);
-				}
-				return m_GreenSpriteHeal;
-			}
+			db.CastTime = 3;
+			db.RecastDelay = 12;
+			db.ClientEffect = 161;
+			db.Icon = 161;
+			db.TooltipId = 161;
+			db.Damage = 70;
+			db.Value = 40;
+			db.Duration = 10;
+			db.Name = "Chilling Mist";
+			db.Description = "Inflicts cold damage to the target and reduces its movement speed for the duration of the spell.";
+			db.Range = 1500;
+			db.SpellID = 11990;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.DamageSpeedDecrease.ToString();
+			db.Uninterruptible = false;
+			db.DamageType = (int) eDamageType.Cold;
+		});
+		#endregion
+	}
+
+	public class RainbowSpriteGreenBrain : RainbowSpriteBrain
+	{
+		public override void Think()
+		{
+			if (Body.HealthPercent <= 50)
+				TryCastSpell(GreenSpriteHeal, 100);
+
+			base.Think();
 		}
+
+		#region Spells
+		private static Spell GreenSpriteHeal => ScriptSpells.GetOrCreate("RainbowSpriteGreenHeal", 30, db =>
+		{
+			db.CastTime = 3;
+			db.RecastDelay = 8;
+			db.ClientEffect = 1340;
+			db.Icon = 1340;
+			db.TooltipId = 1340;
+			db.Value = 180;
+			db.Name = "GreenSprite's Heal";
+			db.Range = 1500;
+			db.SpellID = 11988;
+			db.Target = eSpellTarget.SELF.ToString();
+			db.Type = eSpellType.Heal.ToString();
+			db.Uninterruptible = true;
+			db.MoveCast = true;
+		});
+		#endregion
 	}
 }
-#endregion

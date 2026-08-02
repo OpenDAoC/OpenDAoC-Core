@@ -1,6 +1,3 @@
-﻿using DOL.AI.Brain;
-using DOL.GS;
-
 namespace DOL.GS
 {
 	public class Jari : GameNPC
@@ -11,17 +8,11 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(12188);
 			LoadTemplate(npcTemplate);
-			//RespawnInterval = Util.Random(3600000, 7200000);
 
-			JariBrain sbrain = new JariBrain();
-			SetOwnBrain(sbrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
-        public override void Die(GameObject killer)
-        {
+		public override void Die(GameObject killer)
+		{
 			switch (Util.Random(1, 2))
 			{
 				case 1:
@@ -38,23 +29,6 @@ namespace DOL.GS
 					break;
 			}
 			base.Die(killer);
-        }
-    }
-}
-namespace DOL.AI.Brain
-{
-	public class JariBrain : StandardMobBrain
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public JariBrain() : base()
-		{
-			ThinkInterval = 1000;
-		}
-		public override void Think()
-		{
-			base.Think();
 		}
 	}
 }
-
-

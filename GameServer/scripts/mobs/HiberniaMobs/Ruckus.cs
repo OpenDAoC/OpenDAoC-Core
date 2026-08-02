@@ -1,8 +1,7 @@
-﻿using DOL.AI.Brain;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
 
 namespace DOL.GS
 {
@@ -19,8 +18,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -28,7 +26,6 @@ namespace DOL.AI.Brain
 {
 	public class RuckusBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RuckusBrain() : base()
 		{
 			AggroLevel = 100;
@@ -39,93 +36,58 @@ namespace DOL.AI.Brain
 
 		public override void Think()
 		{
-			if(HasAggro && Body.TargetObject != null)
+			if (HasAggro && Body.TargetObject != null)
             {
-				GameLiving target = Body.TargetObject as GameLiving;
-				if (Util.Chance(25) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) 
-					&& !target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && target.IsAlive && target != null && !PrepareStun)
+				if (!PrepareStun && Body.TargetObject is GameLiving target && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity)
+					&& TryCastSpell(Ruckus_stun, 25, eEffect.Stun))
                 {
-					foreach(GamePlayer player in Body.GetPlayersInRadius(1500))
-                    {
-						if (player != null)
-							player.Out.SendMessage("Ruckus begins saving energy for a stunning blow.\nRuckus attacks begin to stun his opponent with next blow.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-                    }
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStun), 2000);
+					Message.MessageToArea(Body, "Ruckus channels his pent-up fury into a single stunning blow!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, 1500);
 					PrepareStun = true;
+					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetStun), 20000);
                 }
-				if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageAdd) && !Body.IsCasting)
-					Body.CastSpell(RuckusDA, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				if (TryCastSpell(RuckusDA, 100, eEffect.DamageAdd))
+					Message.MessageToArea(Body, "Ruckus's fists take on an earthen sheen.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, 1500);
 			}
 			base.Think();
 		}
-		private int CastStun(ECSGameTimer timer)
-        {
-			if (HasAggro && Body.TargetObject != null)		
-				Body.CastSpell(Ruckus_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetStun), 20000);
-			return 0;
-        }
 		private int ResetStun(ECSGameTimer timer)
 		{
 			PrepareStun = false;
 			return 0;
 		}
 		#region Spells
-		private Spell m_RuckusDA;
-		private Spell RuckusDA
+		private static Spell RuckusDA => ScriptSpells.GetOrCreate("RuckusDA", 20, db =>
 		{
-			get
-			{
-				if (m_RuckusDA == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Power = 0;
-					spell.RecastDelay = 10;
-					spell.ClientEffect = 18;
-					spell.Icon = 18;
-					spell.Damage = 10;
-					spell.Duration = 10;
-					spell.DamageType = (int)eDamageType.Matter;
-					spell.Name = "Earthen Fury";
-					spell.Range = 1000;
-					spell.SpellID = 11942;
-					spell.Target = eSpellTarget.SELF.ToString();
-					spell.Type = eSpellType.DamageAdd.ToString();
-					spell.Uninterruptible = true;
-					m_RuckusDA = new Spell(spell, 20);
-				}
-				return m_RuckusDA;
-			}
-		}
-		private Spell m_Ruckus_stun;
-		private Spell Ruckus_stun
+			db.CastTime = 0;
+			db.Power = 0;
+			db.RecastDelay = 10;
+			db.ClientEffect = 18;
+			db.Icon = 18;
+			db.Damage = 10;
+			db.Duration = 10;
+			db.DamageType = (int)eDamageType.Matter;
+			db.Name = "Earthen Fury";
+			db.Range = 1000;
+			db.SpellID = 11942;
+			db.Target = eSpellTarget.SELF.ToString();
+			db.Type = eSpellType.DamageAdd.ToString();
+			db.Uninterruptible = true;
+		});
+		private static Spell Ruckus_stun => ScriptSpells.GetOrCreate("RuckusStun", 20, db =>
 		{
-			get
-			{
-				if (m_Ruckus_stun == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.RecastDelay = 2;
-					spell.ClientEffect = 2165;
-					spell.Icon = 2132;
-					spell.TooltipId = 2132;
-					spell.Duration = 4;
-					spell.Description = "Target is stunned and cannot move or take any other action for the duration of the spell.";
-					spell.Name = "Stun";
-					spell.Range = 400;
-					spell.SpellID = 11943;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.Stun.ToString();
-					m_Ruckus_stun = new Spell(spell, 20);
-				}
-				return m_Ruckus_stun;
-			}
-		}
+			db.CastTime = 0;
+			db.RecastDelay = 2;
+			db.ClientEffect = 2165;
+			db.Icon = 2132;
+			db.TooltipId = 2132;
+			db.Duration = 4;
+			db.Description = "Target is stunned and cannot move or take any other action for the duration of the spell.";
+			db.Name = "Stun";
+			db.Range = 400;
+			db.SpellID = 11943;
+			db.Target = eSpellTarget.ENEMY.ToString();
+			db.Type = eSpellType.Stun.ToString();
+		});
         #endregion
     }
 }
-

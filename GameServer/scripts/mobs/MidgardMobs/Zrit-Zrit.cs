@@ -1,9 +1,10 @@
-﻿using DOL.AI.Brain;
+using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class ZritZrit : GameNPC
+	public class ZritZrit : HideableNpc
 	{
 		public ZritZrit() : base() { }
 
@@ -12,7 +13,7 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157491);
 			LoadTemplate(npcTemplate);
 
-			ZritZritAdd.ZritZritAddCount = 0;
+			SetHidden(true);
 			ZritZritBrain sbrain = new ZritZritBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -24,45 +25,31 @@ namespace DOL.GS
 }
 namespace DOL.AI.Brain
 {
-	public class ZritZritBrain : StandardMobBrain
+	public class ZritZritBrain : StandardMobBrain, IEncounterGateOwner
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ZritZritBrain() : base()
 		{
 			AggroLevel = 50;
 			AggroRange = 300;
 			ThinkInterval = 1000;
+			GateCounter = new("ZritZritGate", 20, (kills, required) =>
+			{
+				if (kills == required / 2)
+					Message.MessageToArea(Body, "Furious chittering echoes from the cracks in the rock.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+				else if (kills == required - 1)
+					Message.MessageToArea(Body, "Pebbles rattle loose. Something is forcing its way out.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+			});
 		}
-		ushort oldModel;
-		GameNPC.eFlags oldFlags;
-		bool changed;
+
+		public EncounterKillCounter GateCounter { get; }
+
 		public override void Think()
 		{
-			if (ZritZritAdd.ZritZritAddCount >= 20)
-			{
-				if (changed)
-				{
-					Body.Flags = oldFlags;
-					Body.Model = oldModel;
-					changed = false;
-				}
-			}
-			else
-			{
-				if (changed == false)
-				{
-					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+			HideableNpc body = (HideableNpc)Body;
 
-					if (oldModel == 0)
-						oldModel = Body.Model;
+			if (body.SetHidden(!GateCounter.IsOpen) && !body.IsHidden)
+				Message.MessageToArea(Body, "Zrit-Zrit squeezes out of a crack in the rock, chittering furiously!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
 
-					Body.Model = 1;
-					changed = true;
-				}
-			}
 			base.Think();
 		}
 	}
@@ -70,9 +57,11 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-	public class ZritZritAdd : GameNPC
+	public class ZritZritAdd : EncounterGateAdd
 	{
 		public ZritZritAdd() : base() { }
+
+		public override string GateId => "ZritZritGate";
 
 		public override bool AddToWorld()
 		{
@@ -86,28 +75,15 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public static int ZritZritAddCount = 0;
-		public override void Die(GameObject killer)
-		{
-			++ZritZritAddCount;
-			base.Die(killer);
-		}
 	}
 }
 namespace DOL.AI.Brain
 {
 	public class ZritZritAddBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ZritZritAddBrain() : base()
 		{
 			ThinkInterval = 1500;
 		}
-		public override void Think()
-		{
-			base.Think();
-		}
 	}
 }
-
-

@@ -1,49 +1,43 @@
-﻿using DOL.AI;
+﻿using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
     public class Myling : GameNPC
     {
-        
-        public Myling() : base() { }
-        public Myling(ABrain defaultBrain) : base(defaultBrain) { }
-        public Myling(INpcTemplate template) : base(template) { }
-        
-        public bool IsRevealed = false;
-
         protected const ushort mylingModel = 929;
 
-        /// <summary>
-        /// Starts a melee or ranged attack on a given target.
-        /// </summary>
-        /// <param name="attackTarget">The object to attack.</param>
+        private bool _revealed;
+
+        public Myling() : base() { }
+
+        public override bool AddToWorld()
+        {
+            _revealed = false;
+            Model = mylingModel;
+            Flags &= ~eFlags.GHOST;
+            return base.AddToWorld();
+        }
+
         public override void StartAttack(GameObject attackTarget)
         {
-            Reveal();
+            SetRevealed(true);
             attackComponent.RequestStartAttack(attackTarget);
         }
-        
+
         public override void StopAttack()
         {
-            Flags = 0;
-            if (Model != mylingModel)
-            {
-                Model = mylingModel;
-                IsRevealed = false;
-                BroadcastLivingEquipmentUpdate();
-            }
+            SetRevealed(false);
             base.StopAttack();
         }
 
-        /// <summary>
-        /// Reveal the true Myling form.
-        /// </summary>
-        protected void Reveal()
+        protected void SetRevealed(bool revealed)
         {
+            if (_revealed == revealed)
+                return;
 
-            Flags = eFlags.GHOST;
+            _revealed = revealed;
 
-            if (!IsRevealed)
+            if (revealed)
             {
                 switch (Util.Random(8))
                 {
@@ -75,8 +69,18 @@ namespace DOL.GS.Scripts
                         Model = 24; // skeleton
                         break;
                 }
-                IsRevealed = true;
+
+                Flags |= eFlags.GHOST;
+                Message.MessageToArea(this, "The myling's shape runs like wax and settles into a face you almost recognize.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
             }
+            else
+            {
+                Model = mylingModel;
+                Flags &= ~eFlags.GHOST;
+                Message.MessageToArea(this, "The stolen face sloughs away, and the myling fades back into the murk.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+            }
+
+            BroadcastLivingEquipmentUpdate();
         }
     }
 }

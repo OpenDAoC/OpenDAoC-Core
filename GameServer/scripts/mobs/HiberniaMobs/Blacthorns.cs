@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+using DOL.AI.Brain;
 using DOL.GS;
-using System.Collections.Generic;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -26,97 +26,17 @@ namespace DOL.AI.Brain
 {
 	public class BlackthornBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BlackthornBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
 			ThinkInterval = 500;
 		}
-		private protected List<GameNPC> npcs_to_call = new List<GameNPC>();
-		private protected List<GameNPC> BafNpcs = new List<GameNPC>();
-		private protected static GameNPC randomnpc = null;
-		private protected static GameNPC RandomNpc
-		{
-			get { return randomnpc; }
-			set { randomnpc = value; }
-		}
-		private protected static GameNPC npcbaf = null;
-		private protected static GameNPC NpcBaf
-		{
-			get { return npcbaf; }
-			set { npcbaf = value; }
-		}
-		private protected bool PickedNpc = false;
-		private protected void PickRandomMob()
-        {
-			foreach(GameNPC npc in Body.GetNPCsInRadius(1000))
-            {
-				if (npc != null && npc.IsAlive && npc.Name.ToLower() == "lunantishee" && !npcs_to_call.Contains(npc) && !npc.IsControlledNPC(npc))
-					npcs_to_call.Add(npc);
-			}
-			if(npcs_to_call.Count > 0)
-            {
-				if(!PickedNpc)
-                {
-					GameNPC mob = npcs_to_call[Util.Random(0, npcs_to_call.Count - 1)];//picking randomly mob from list
-					RandomNpc = mob;
-					PickedNpc = true;
-                }
 
-				foreach (GameNPC mob in Body.GetNPCsInRadius(1000))
-				{
-					if (RandomNpc != null && RandomNpc.IsAlive)
-					{
-						if (mob == RandomNpc)
-							AddAggroListTo(mob.Brain as StandardMobBrain);
-					}
-				}
-            }
-        }
-		private bool CanAddNpcs = false;
-		private bool CanPullAditional = false;
 		public override void Think()
 		{
-			if(!CheckProximityAggro())//clear all checks and list
-            {
-				npcbaf = null;
-				RandomNpc = null;
-				PickedNpc = false;
-				CanPullAditional = false;
-				if (npcs_to_call.Count > 0)
-					npcs_to_call.Clear();
-			}
-			if(Body.IsAlive && !HasAggro && !CanAddNpcs)
-            {
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-				{
-					if (npc != null && npc.IsAlive)//found baf mobs
-					{
-						if (npc.PackageID == Body.PackageID && npc != Body && npc.Name.ToLower() == "lunantishee" && !BafNpcs.Contains(npc) && !npc.IsControlledNPC(npc))
-							BafNpcs.Add(npc);
-					}
-				}
-				CanAddNpcs = true;
-			}
-			if(HasAggro)
-            {
-				// CanAddNpcs = false;
-				// if (BafNpcs.Count > 0)
-				// {
-				// 	foreach (GameNPC mobs in BafNpcs)
-				// 	{
-				// 		if (mobs != null && mobs.IsAlive)
-				// 			if (mobs.Brain is StandardMobBrain)
-				// 				AddAggroListTo(mobs.Brain as StandardMobBrain);
-				// 		if (!mobs.IsAlive && !CanPullAditional)//check if any of baf mobs are killed
-				// 		{
-				// 			PickRandomMob();
-				// 			CanPullAditional = true;
-				// 		}
-				// 	}
-				// }				
-			}
+			if (PullFriends(npc => npc.PackageID == Body.PackageID && npc.Name.ToLower() == "lunantishee", 1000) > 0)
+				Message.MessageToArea(Body, "The blackthorn rustles menacingly, and lunantishee swarm to its defense!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			base.Think();
 		}
 	}

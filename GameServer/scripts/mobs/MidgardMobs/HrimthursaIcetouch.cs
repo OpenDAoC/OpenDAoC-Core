@@ -1,5 +1,4 @@
 ﻿using DOL.AI.Brain;
-using DOL.Database;
 using DOL.GS;
 using System.Collections.Generic;
 
@@ -18,8 +17,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -27,196 +25,112 @@ namespace DOL.AI.Brain
 {
 	public class HrimthursaIcetouchBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public HrimthursaIcetouchBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
 			ThinkInterval = 1500;
 		}
-        public override void AttackMostWanted()
-        {
-			if (CanHeal)
-				return;
-			else
-				base.AttackMostWanted();
-        }
-		private bool CanHeal = false;
-		private bool LockNpc = false;
-		private bool ResetNoTarget;
-		private GameNPC healnpc = null;
-		private GameNPC HealNpc
-		{
-			get { return healnpc; }
-			set { healnpc = value; }
-		}
+		private GameNPC HealNpc;
 		public override void Think()
 		{
-			if(Body.IsAlive)
-            {
-				#region Heal mobs				
-				List<GameNPC> NpcToHeal = new List<GameNPC>();
-				GameLiving target = Body.TargetObject as GameLiving;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
-                {
-					if (npc != null && npc.IsAlive && npc.Faction == Body.Faction )
-					{
-						if (!NpcToHeal.Contains(npc) && npc.HealthPercent < 80)//add here mobs to heal
-							NpcToHeal.Add(npc);
-					}
-                }
-				if (NpcToHeal.Count > 0)
-				{
-					if (!LockNpc)
-					{
-						GameNPC mob = NpcToHeal[Util.Random(0, NpcToHeal.Count - 1)];//pick randomly mob that need to be healed
-						HealNpc = mob;
-						LockNpc = true;
-					}
-				}
-				if(HealNpc != null && HealNpc.IsAlive)//start heal
-                {
-					if (HealNpc.HealthPercent < 80)
-					{
-						if (HealNpc.IsWithinRadius(Body, 1000))
-						{
-							CanHeal = true;
-							ClearAggroList();
-							Body.attackComponent.StopAttack();
-							Body.TargetObject = HealNpc;
-							Body.CastSpell(IcetouchHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-							ResetNoTarget = false;
-						}
-					}
-					else
-                    {
-						//HealNpc = null;
-						LockNpc = false;
-						CanHeal = false;
-						if (!HasAggro)
-						{
-							if (!ResetNoTarget)
-							{
-								Body.TargetObject = null;
-								ResetNoTarget = true;
-							}
-							FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-						}
-					}
-				}
-				if (Body.InCombatInLast(20 * 1000) == false && this.Body.InCombatInLast(25 * 1000))//reset checks if not in aggro after x sec
-                {
-					CanHeal = false;
+			if (Body.IsAlive)
+			{
+				#region Heal mobs
+				if (HealNpc != null && (!HealNpc.IsAlive || HealNpc.HealthPercent >= 80 || !HealNpc.IsWithinRadius(Body, 1000)))
 					HealNpc = null;
-					LockNpc = false;
-					if (NpcToHeal.Count > 0)
-						NpcToHeal.Clear();
+
+				if (HealNpc == null && Body.Faction != null)
+				{
+					List<GameNPC> npcToHeal = new List<GameNPC>();
+
+					foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
+					{
+						if (npc.IsAlive && npc.Faction == Body.Faction && npc.HealthPercent < 80)//add here mobs to heal
+							npcToHeal.Add(npc);
+					}
+
+					if (npcToHeal.Count > 0)
+						HealNpc = npcToHeal[Util.Random(0, npcToHeal.Count - 1)];//pick randomly mob that need to be healed
+				}
+
+				if (HealNpc != null && !Body.IsCasting)//start heal
+				{
+					GameObject oldTarget = Body.TargetObject;
+					Body.TargetObject = HealNpc;
+					Body.CastSpell(IcetouchHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
+					Body.TargetObject = oldTarget;
 				}
 				#endregion
+
 				if (HasAggro && Body.TargetObject != null)
-                {
-					ResetNoTarget = false;
-					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) && !Body.IsCasting && Util.Chance(30))
-						Body.CastSpell(IcetouchMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-					if (!Body.IsCasting && Util.Chance(30))
-						Body.CastSpell(IcetouchRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+				{
+					TryCastSpell(IcetouchMezz, 30, eEffect.Mez);
+					TryCastSpell(IcetouchRoot, 30);
 				}
-            }
+			}
 			base.Think();
 		}
 		#region Spells
-		private Spell m_IcetouchHeal;
-		private Spell IcetouchHeal
+		private static Spell IcetouchHeal => ScriptSpells.GetOrCreate("HrimthursaHeal", 60, spell =>
 		{
-			get
-			{
-				if (m_IcetouchHeal == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 4;
-					spell.Power = 0;
-					spell.RecastDelay = 0;
-					spell.ClientEffect = 4659;
-					spell.Icon = 4659;
-					spell.Value = 500;
-					spell.Name = "Glacier Healing";
-					spell.Range = 1500;
-					spell.SpellID = 11966;
-					spell.Target = eSpellTarget.REALM.ToString();
-					spell.Type = eSpellType.Heal.ToString();
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					m_IcetouchHeal = new Spell(spell, 60);
-				}
-				return m_IcetouchHeal;
-			}
-		}
-		private protected Spell m_IcetouchMezz;
-		private protected Spell IcetouchMezz
+			spell.CastTime = 4;
+			spell.Power = 0;
+			spell.RecastDelay = 0;
+			spell.ClientEffect = 4659;
+			spell.Icon = 4659;
+			spell.Value = 500;
+			spell.Name = "Glacier Healing";
+			spell.Range = 1500;
+			spell.SpellID = 11966;
+			spell.Target = eSpellTarget.REALM.ToString();
+			spell.Type = eSpellType.Heal.ToString();
+			spell.Uninterruptible = true;
+			spell.MoveCast = true;
+		});
+		private static Spell IcetouchMezz => ScriptSpells.GetOrCreate("HrimthursaMezz", 60, spell =>
 		{
-			get
-			{
-				if (m_IcetouchMezz == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 3;
-					spell.Power = 0;
-					spell.RecastDelay = 0;
-					spell.ClientEffect = 4678;
-					spell.Icon = 4678;
-					spell.TooltipId = 4678;
-					spell.Duration = 80;
-					spell.Name = "Unmake Mind";
-					spell.Message1 = "You are mesmerized!";
-					spell.Message2 = "{0} is mesmerized!";
-					spell.Message3 = "You recover from the mesmerize.";
-					spell.Message4 = "{0} recovers from the mesmerize.";
-					spell.Range = 1500;
-					spell.SpellID = 11967;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = "Mesmerize";
-					spell.DamageType = (int)eDamageType.Energy;
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					m_IcetouchMezz = new Spell(spell, 60);
-				}
-				return m_IcetouchMezz;
-			}
-		}
-		private protected Spell m_IcetouchRoot;
-		private protected Spell IcetouchRoot
+			spell.CastTime = 3;
+			spell.Power = 0;
+			spell.RecastDelay = 0;
+			spell.ClientEffect = 4678;
+			spell.Icon = 4678;
+			spell.TooltipId = 4678;
+			spell.Duration = 80;
+			spell.Name = "Unmake Mind";
+			spell.Message1 = "You are mesmerized!";
+			spell.Message2 = "{0} is mesmerized!";
+			spell.Message3 = "You recover from the mesmerize.";
+			spell.Message4 = "{0} recovers from the mesmerize.";
+			spell.Range = 1500;
+			spell.SpellID = 11967;
+			spell.Target = eSpellTarget.ENEMY.ToString();
+			spell.Type = eSpellType.Mesmerize.ToString();
+			spell.DamageType = (int)eDamageType.Energy;
+			spell.Uninterruptible = true;
+			spell.MoveCast = true;
+		});
+		private static Spell IcetouchRoot => ScriptSpells.GetOrCreate("HrimthursaRoot", 60, spell =>
 		{
-			get
-			{
-				if (m_IcetouchRoot == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Power = 0;
-					spell.RecastDelay = 30;
-					spell.ClientEffect = 177;
-					spell.Icon = 177;
-					spell.TooltipId = 177;
-					spell.Duration = 80;
-					spell.Value = 99;
-					spell.Name = "Anchor Of Ice";
-					spell.Message1 = "Your feet are frozen to the ground!";
-					spell.Message2 = "{0}'s feet are frozen to the ground!";
-					spell.Range = 1500;
-					spell.SpellID = 11968;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = "SpeedDecrease";
-					spell.DamageType = (int)eDamageType.Cold;
-					spell.Uninterruptible = true;
-					spell.MoveCast = true;
-					m_IcetouchRoot = new Spell(spell, 60);
-				}
-				return m_IcetouchRoot;
-			}
-		}
+			spell.CastTime = 0;
+			spell.Power = 0;
+			spell.RecastDelay = 30;
+			spell.ClientEffect = 177;
+			spell.Icon = 177;
+			spell.TooltipId = 177;
+			spell.Duration = 80;
+			spell.Value = 99;
+			spell.Name = "Anchor Of Ice";
+			spell.Message1 = "Your feet are frozen to the ground!";
+			spell.Message2 = "{0}'s feet are frozen to the ground!";
+			spell.Range = 1500;
+			spell.SpellID = 11968;
+			spell.Target = eSpellTarget.ENEMY.ToString();
+			spell.Type = eSpellType.SpeedDecrease.ToString();
+			spell.DamageType = (int)eDamageType.Cold;
+			spell.Uninterruptible = true;
+			spell.MoveCast = true;
+		});
 		#endregion
 	}
 }

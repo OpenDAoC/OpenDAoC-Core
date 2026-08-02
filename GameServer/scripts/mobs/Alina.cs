@@ -1,25 +1,48 @@
-﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
     public class Alina : GameNPC
     {
+        private bool _werewolf;
+
         public override bool AddToWorld()
         {
             AlinaModelBrain sBrain = new AlinaModelBrain();
             SetOwnBrain(sBrain);
-            base.AddToWorld();
-            return true;
+            return base.AddToWorld();
         }
 
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public void SetWerewolfForm(bool werewolf)
         {
-            if (log.IsInfoEnabled)
-                log.Info("Alina initialising...");
+            if (_werewolf == werewolf)
+                return;
+
+            _werewolf = werewolf;
+
+            if (werewolf)
+            {
+                Model = 395;
+                Name = "Noble Werewolf Alina";
+                Level = 22;
+                Realm = eRealm.None;
+                EquipmentTemplateID = null;
+                Inventory = null;
+                Message.MessageToArea(this, "Alina doubles over with a strangled cry, 'No, not again! Get away from me!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
+            }
+            else
+            {
+                Model = 220;
+                Name = "Alina";
+                Level = 19;
+                Realm = eRealm.Midgard;
+                LoadEquipmentTemplateFromDatabase("Alina");
+                Message.MessageToArea(this, "The werewolf's snarl softens into a woman's ragged breathing. Alina is herself again.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+            }
+
+            BroadcastLivingEquipmentUpdate();
         }
     }
 }
@@ -28,36 +51,11 @@ namespace DOL.AI.Brain
 {
     public class AlinaModelBrain : StandardMobBrain
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private bool changed;
-        
         public override void Think()
         {
-            if (Body.CurrentRegion.IsNightTime == false)
-            {
-                if (changed == false)
-                {
-                    Body.Model = 220;
-                    Body.Name = "Alina";
-                    Body.Level = 19;
-                    Body.Realm = eRealm.Midgard;
-                    Body.LoadEquipmentTemplateFromDatabase("Alina");
-                    changed = true;
-                }
-            }
-            if (Body.CurrentRegion.IsNightTime)
-            {
-                if (changed)
-                {
-                    Body.Model = 395;
-                    Body.Name = "Noble Werewolf Alina";
-                    Body.Level = 22;
-                    Body.Realm = eRealm.None;
-                    Body.LoadEquipmentTemplateFromDatabase("");
-                    changed = false;
-                }
-            }
+            if (!Body.InCombat)
+                ((Alina)Body).SetWerewolfForm(Body.CurrentRegion.IsNightTime);
+
             base.Think();
         }
     }

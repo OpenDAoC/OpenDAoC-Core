@@ -1,85 +1,25 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+using DOL.AI.Brain;
 using DOL.GS;
 
 namespace DOL.GS
 {
-	public class KoalinthCastellan : GameNPC
+	public class KoalinthCastellan : KoalinthNpc
 	{
 		public KoalinthCastellan() : base() { }
 
-		public override bool AddToWorld()
-		{
-			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162941);
-			LoadTemplate(npcTemplate);
-
-			KoalinthCastellanBrain sbrain = new KoalinthCastellanBrain();
-			SetOwnBrain(sbrain);
-			LoadedFromScript = false;//load from database
-			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
-		}
+		protected override int TemplateId => 60162941;
+		protected override StandardMobBrain CreateBrain() => new KoalinthCastellanBrain();
 	}
 }
 namespace DOL.AI.Brain
 {
-	public class KoalinthCastellanBrain : StandardMobBrain
+	public class KoalinthCastellanBrain : KoalinthBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public KoalinthCastellanBrain() : base()
-		{
-			AggroLevel = 100;
-			AggroRange = 300;
-			ThinkInterval = 1000;
-		}
-		public override void Think()
-		{
-			if (HasAggro && Body.TargetObject != null)
-			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-				{
-					if (npc != null && npc.IsAlive && npc.PackageID == "KoalinthCastellanBaf")
-						AddAggroListTo(npc.Brain as StandardMobBrain);
-				}
-				GameLiving target = Body.TargetObject as GameLiving;
-				if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteDebuff))
-					Body.CastSpell(KoalinthElder_HasteDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			}
-			base.Think();
-		}
-		#region Spells		
-		private Spell m_KoalinthElder_HasteDebuff;
-		private Spell KoalinthElder_HasteDebuff
-		{
-			get
-			{
-				if (m_KoalinthElder_HasteDebuff == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.RecastDelay = 7;
-					spell.Power = 6;
-					spell.Duration = 45;
-					spell.ClientEffect = 723;
-					spell.Icon = 723;
-					spell.Name = "Inflict Suffering";
-					spell.Description = "Target's attack speed reduced by 17%.";
-					spell.Range = 1500;
-					spell.Value = 17;
-					spell.SpellID = 11972;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.CombatSpeedDebuff.ToString();
-					spell.DamageType = (int)eDamageType.Body;
-					m_KoalinthElder_HasteDebuff = new Spell(spell, 13);
-				}
-				return m_KoalinthElder_HasteDebuff;
-			}
-		}
-		#endregion
+		public KoalinthCastellanBrain() : base() { }
+
+		protected override string BafPackageId => "KoalinthCastellanBaf";
+		protected override Spell HasteDebuff => KoalinthCastellan_HasteDebuff;
+
+		private static Spell KoalinthCastellan_HasteDebuff => CreateHasteDebuff("KoalinthCastellanHaste", 11972);
 	}
 }
-
-
-

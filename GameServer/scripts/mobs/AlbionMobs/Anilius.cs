@@ -1,5 +1,7 @@
-﻿using DOL.AI.Brain;
+using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -16,15 +18,18 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;
 			SaveIntoDatabase();
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			if (Brain is AniliusBrain brain)
 			{
-				if (npc.IsAlive && npc != null && npc.Brain is AniliusAddBrain)
-					npc.RemoveFromWorld();
+				foreach (AniliusAdd add in brain.Adds)
+				{
+					if (add != null && add.IsAlive)
+						add.RemoveFromWorld();
+				}
+				brain.Adds.Clear();
 			}
 			base.Die(killer);
 		}
@@ -34,7 +39,6 @@ namespace DOL.AI.Brain
 {
 	public class AniliusBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AniliusBrain() : base()
 		{
 			AggroLevel = 100;
@@ -43,6 +47,7 @@ namespace DOL.AI.Brain
 		}
 		private bool SpawnAdds = false;
 		private bool RemoveAdds = false;
+		public List<AniliusAdd> Adds { get; } = new();
 
 		public override void Think()
 		{
@@ -50,11 +55,12 @@ namespace DOL.AI.Brain
 			{
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (AniliusAdd add in Adds)
 					{
-						if (npc.IsAlive && npc != null && npc.Brain is AniliusAddBrain)
-							npc.RemoveFromWorld();
+						if (add != null && add.IsAlive)
+							add.RemoveFromWorld();
 					}
+					Adds.Clear();
 					RemoveAdds = true;
 				}
 				SpawnAdds = false;
@@ -67,15 +73,10 @@ namespace DOL.AI.Brain
 					SpawnAniliusAdds();
 					SpawnAdds = true;
 				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-				{
-					if (npc != null && npc.IsAlive && npc.Brain is AniliusAddBrain brain)
-					{
-						GameLiving target = Body.TargetObject as GameLiving;
-						if (!brain.HasAggro && target.IsAlive && target != null)
-							brain.AddToAggroList(target, 10);
-					}
-				}
+				Adds.RemoveAll(add => add == null || !add.IsAlive);
+
+				if (PullFriends(npc => npc.Brain is AniliusAddBrain && Adds.Contains(npc as AniliusAdd), 1500) > 0)
+					Message.MessageToArea(Body, "Anilius lets out a piercing hiss, and serpents slither from the shadows!", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			}
 			base.Think();
 		}
@@ -90,6 +91,7 @@ namespace DOL.AI.Brain
 				npc.Heading = Body.Heading;
 				npc.CurrentRegion = Body.CurrentRegion;
 				npc.AddToWorld();
+				Adds.Add(npc);
 			}
 		}
 	}
@@ -109,8 +111,7 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
-			base.AddToWorld();
-			return true;
+			return base.AddToWorld();
 		}
 	}
 }
@@ -118,16 +119,11 @@ namespace DOL.AI.Brain
 {
 	public class AniliusAddBrain : StandardMobBrain
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AniliusAddBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
 			ThinkInterval = 1500;
-		}
-		public override void Think()
-		{
-			base.Think();
 		}
 	}
 }

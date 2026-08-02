@@ -1,141 +1,109 @@
-﻿using DOL.GS.PacketHandler;
+using System;
+using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
-/// <summary>
-/// Represents an in-game GameHealer NPC
-/// </summary>
-public class BPMob : GameNPC
-{
+	public class BPMob : GameNPC
+	{
+		private const ushort FARM_REGION_ID = 249;
+		private const long RR7_REALM_POINTS = 1755250;
+		private const int POPULATION_LIMIT = 50;
+		private const int MAX_GROUP_SHARE = 8;
 
-    public override void Die(GameObject killer)
+		public override void Die(GameObject killer)
+		{
+			GamePlayer player = GetPlayerSource(killer);
 
-    {
+			if (player != null && RewardStatus is RewardEligibility.Eligible)
+				DistributeReward(player);
 
-        GamePlayer player = killer as GamePlayer;
-        int basebp = 0;
-        if (Level <= 44) { basebp = 5; }
-        if (Level == 45) { basebp = 10; }
-        if (Level == 46) { basebp = 15; }
-        if (Level == 47) { basebp = 20; }
-        if (Level == 48) { basebp = 25; }
-        if (Level == 49) { basebp = 30; }
-        if (Level == 50) { basebp = 35; }
+			base.Die(killer);
+		}
 
-        int rewardbp;
-        bool isjackpot;
+		private static GamePlayer GetPlayerSource(GameObject killer)
+		{
+			if (killer is GamePlayer player)
+				return player;
 
-        int multiplier = Util.Random(2, 3);
-        int bonus = Util.Random(1, 3);
-        int chance = Util.Random(1, 25);
-        
-        if (chance == 25)
-        {
-            isjackpot = true;
-        }
-        else
-        {
-            isjackpot = false;
-        }
-        if (isjackpot)
-        {
-            rewardbp = ((basebp + bonus) * multiplier);
-        }
-        else
-        {
-            rewardbp = (basebp + bonus);
-        }
+			if (killer is GameNPC npc && npc.Brain is IControlledBrain brain)
+				return brain.GetPlayerOwner();
 
-        int playersonline = ClientService.Instance.GetNonGmPlayers().Count;
+			return null;
+		}
 
-        if (player != null && RewardStatus is RewardEligibility.Eligible)
-        {
-            if (player.Group != null)
-            {
-                if (player.Group.MemberCount  == 1) { rewardbp = (rewardbp); }
-                if (player.Group.MemberCount  == 2) { rewardbp = (rewardbp / 2); }
-                if (player.Group.MemberCount  == 3) { rewardbp = (rewardbp / 3); }
-                if (player.Group.MemberCount  == 4) { rewardbp = (rewardbp / 4); }
-                if (player.Group.MemberCount  == 5) { rewardbp = (rewardbp / 5); }
-                if (player.Group.MemberCount  == 6) { rewardbp = (rewardbp / 6); }
-                if (player.Group.MemberCount  == 7) { rewardbp = (rewardbp / 7); }
-                if (player.Group.MemberCount  >= 8) { rewardbp = (rewardbp / 8); }
-                              
-                foreach (GamePlayer player2 in player.Group.GetMembersInTheGroup())
-                {
+		private void DistributeReward(GamePlayer player)
+		{
+			int multiplier = Util.Random(2, 3);
+			bool isJackpot = Util.Random(1, 25) == 25;
+			int reward = GetBaseBountyPoints() + Util.Random(1, 3);
 
-                    if (player2.RealmPoints >= 1755250)
-                    {
-                        player2.Out.SendMessage("You are RR7 or higher, you will not be rewarded here anymore!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        player2.MoveTo(79, 32401, 12245, 17413, 1902);
+			if (isJackpot)
+				reward *= multiplier;
 
-                    }
-                    if (playersonline >= 50)
-                    {
-                        if ((player2.Client.Account.PrivLevel == 1) && (player2.CurrentRegionID == 249))
-                        {
-                            player2.Out.SendMessage("There are " + playersonline + " players online and your in the farmzone, why don't you go play with them!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                            player2.MoveTo(79, 32401, 12245, 17413, 1902);
-                        }
-                    }
+			int playersOnline = ClientService.Instance.GetNonGmPlayers().Count;
+			Group group = player.Group;
 
-                    if (player2.CurrentRegionID == 249) { player2.BountyPoints += rewardbp; }
-                    if (isjackpot) { player2.Out.SendMessage("JACKPOT!!!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow); player2.Out.SendPlaySound(eSoundType.Craft, 0x04); player2.Out.SendMessage("You just got " + multiplier + "x multiplier bonus points!  Woot!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow); }
-                    player2.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player2.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+			if (group == null)
+			{
+				GiveReward(player, reward, isJackpot, multiplier, playersOnline);
+				return;
+			}
 
-                }
+			int share = reward / Math.Min((int) group.MemberCount, MAX_GROUP_SHARE);
 
+			foreach (GameLiving member in group.GetMembersInTheGroup())
+			{
+				if (member is GamePlayer recipient)
+					GiveReward(recipient, share, isJackpot, multiplier, playersOnline);
+			}
+		}
 
-            }
+		private int GetBaseBountyPoints()
+		{
+			return Level switch
+			{
+				<= 44 => 5,
+				45 => 10,
+				46 => 15,
+				47 => 20,
+				48 => 25,
+				49 => 30,
+				_ => 35
+			};
+		}
 
-            else
-            {
-                if (player.RealmPoints >= 1755250)
-                {
-                    player.Out.SendMessage("You are RR7 or higher, you will not be rewarded here anymore!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player.MoveTo(79, 32401, 12245, 17413, 1902);
+		private static void GiveReward(GamePlayer player, int amount, bool isJackpot, int multiplier, int playersOnline)
+		{
+			if (player.CurrentRegionID != FARM_REGION_ID)
+				return;
 
-                }
-                else
-                {
-                    if (playersonline >= 50)
-                    {
-                        if ((player.Client.Account.PrivLevel == 1) && (player.CurrentRegionID == 249))
-                        {
-                            player.Out.SendMessage("There are " + playersonline + " players online and your in the farmzone, why don't you go play with them!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                            player.MoveTo(79, 32401, 12245, 17413, 1902);
-                        }
-                    }
+			if (player.RealmPoints >= RR7_REALM_POINTS)
+			{
+				KickFromFarmZone(player, "You are RR7 or higher, you will not be rewarded here anymore!");
+				return;
+			}
 
-                    if (player.CurrentRegionID == 249) { player.BountyPoints += rewardbp; }
-                    if (isjackpot) { player.Out.SendMessage("JACKPOT!!!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow); player.Out.SendPlaySound(eSoundType.Craft, 0x04); player.Out.SendMessage("You just got " + multiplier + "x multiplier bonus points!  Woot!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow); }
-                    player.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+			if (playersOnline >= POPULATION_LIMIT && player.Client.Account.PrivLevel == 1)
+			{
+				KickFromFarmZone(player, $"There are {playersOnline} players online and you're in the farm zone, why don't you go play with them!");
+				return;
+			}
 
-                }
-            }
+			player.GainBountyPoints(amount);
 
-            //DropLoot(killer);
+			if (isJackpot)
+			{
+				player.Out.SendMessage("JACKPOT!!!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendPlaySound(eSoundType.Craft, 0x04);
+				player.Out.SendMessage($"You just got {multiplier}x multiplier bonus points!  Woot!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+			}
+		}
 
-        }
-
-        base.Die(killer);
-
-        if ((Faction != null) && (killer is GamePlayer))
-
-        {
-
-            GamePlayer player3 = killer as GamePlayer;
-
-            Faction.OnMemberKilled(player3);
-
-        }
-
-        StartRespawn();
-
-    }
-
-}
-
+		private static void KickFromFarmZone(GamePlayer player, string message)
+		{
+			player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			player.MoveTo(79, 32401, 12245, 17413, 1902);
+		}
+	}
 }
