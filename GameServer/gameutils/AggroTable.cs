@@ -196,7 +196,6 @@ namespace DOL.GS
             }
             finally
             {
-                // Clear to drop references to GameLiving. This method isn't expected to be called often.
                 if (buffer != null)
                     ArrayPool<KeyValuePair<GameLiving, AggroAmount>>.Shared.Return(buffer, true);
             }
@@ -300,7 +299,7 @@ namespace DOL.GS
                 }
                 finally
                 {
-                    ArrayPool<TargetCandidate>.Shared.Return(validCandidates);
+                    ArrayPool<TargetCandidate>.Shared.Return(validCandidates, true);
                 }
             }
             finally
