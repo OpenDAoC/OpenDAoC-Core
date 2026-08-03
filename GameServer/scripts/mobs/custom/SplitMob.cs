@@ -60,13 +60,13 @@ namespace DOL.GS.Scripts
 			}
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			RewardParticipants(killer);
 			RemoveMinions();
 			Level = _spawnLevel;
 			Size = _spawnSize;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 
 		public void OnMinionDied(SplitMobMinion minion)
@@ -214,10 +214,10 @@ namespace DOL.GS.Scripts
 	{
 		public SplitMob Owner { get; init; }
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			Owner?.OnMinionDied(this);
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

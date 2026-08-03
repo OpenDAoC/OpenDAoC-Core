@@ -110,11 +110,11 @@ namespace DOL.GS
 			return 0;
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
         {
 			int respawnTime = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
 			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnFireBlight), respawnTime);
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 		private int SpawnFireBlight(ECSGameTimer timer)
         {
@@ -298,10 +298,10 @@ namespace DOL.GS
 		}
 		
 		#endregion
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
         {
 			++FireBlightCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
     }
 }
@@ -404,10 +404,10 @@ namespace DOL.GS
 		}
 		
 		#endregion
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			++LateBlightCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }
@@ -510,10 +510,10 @@ namespace DOL.GS
 			return 0;
 		}
 		#endregion
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			++FleshBlightCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

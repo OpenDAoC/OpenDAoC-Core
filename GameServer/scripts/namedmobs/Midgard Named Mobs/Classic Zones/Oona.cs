@@ -88,14 +88,14 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
 		{
 			foreach (GameNPC npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is OonaUndeadAddBrain)
 					npc.Die(this);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public void BroadcastMessage(String message)
 		{
@@ -320,6 +320,9 @@ namespace DOL.GS
 {
 	public class OonaUndeadAdd: GameNPC
 	{
+		private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+		private const int DESPAWN_RETRY_INTERVAL = 30000;
+
 		public OonaUndeadAdd() : base() { }
 		public override bool AddToWorld()
 		{
@@ -332,8 +335,22 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
+			new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
 			base.AddToWorld();
 			return true;
+		}
+
+		private int Despawn(ECSGameTimer timer)
+		{
+			if (!IsAlive)
+				return 0;
+
+			// Don't despawn mid fight.
+			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+				return DESPAWN_RETRY_INTERVAL;
+
+			RemoveFromWorld();
+			return 0;
 		}
 	}
 }

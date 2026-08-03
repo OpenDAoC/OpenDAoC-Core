@@ -62,7 +62,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
 			{
@@ -74,7 +74,7 @@ namespace DOL.GS
 				if (npc != null && npc.IsAlive && npc.Brain is BeomarbhanBrain)
 					npc.Die(this);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
     }
 }

@@ -12,7 +12,7 @@
 			base.AddToWorld();
 			return true;
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			switch (Util.Random(1, 4))
 			{
@@ -41,7 +41,7 @@
 					Heading = 3711;
 					break;
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

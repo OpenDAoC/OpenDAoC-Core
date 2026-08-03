@@ -127,14 +127,14 @@ namespace DOL.GS
 			return success;
 		}
 		private static bool SpawnMoP=false;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			if (SpawnMoP == false)
 			{
 				SpawnMasterOfPain();
 				SpawnMoP = true;
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public void SpawnMasterOfPain()
 		{

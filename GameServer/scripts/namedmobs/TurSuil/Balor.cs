@@ -291,10 +291,10 @@ namespace DOL.GS
         {
         }
 		public static int EyeCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--EyeCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{

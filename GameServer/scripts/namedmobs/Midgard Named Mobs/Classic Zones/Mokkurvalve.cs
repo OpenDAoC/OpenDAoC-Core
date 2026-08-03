@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -69,20 +72,30 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			BroadcastMessage("Part of " + Name + "'s body falls to the ground.");
 			SpawnShardsAfterDeath();
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 		private void SpawnShardsAfterDeath()
         {
+			Vector3 position = new(X, Y, Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < 20; i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that shards can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 200, filters) ?? position :
+					new(X + Util.Random(-200, 200), Y + Util.Random(-200, 200), Z);
+
 				MokkurvalveAdds add = new MokkurvalveAdds();
-				add.X = X + Util.Random(-200, 200);
-				add.Y = Y + Util.Random(-200, 200);
-				add.Z = Z;
+				add.X = (int) spawnPoint.X;
+				add.Y = (int) spawnPoint.Y;
+				add.Z = (int) spawnPoint.Z;
 				add.Heading = Heading;
 				add.CurrentRegion = CurrentRegion;
 				add.AddToWorld();
@@ -162,6 +175,9 @@ namespace DOL.GS
 {
 	public class MokkurvalveAdds : GameNPC
 	{
+		private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+		private const int DESPAWN_RETRY_INTERVAL = 30000;
+
 		public MokkurvalveAdds() : base() { }
 		public override int GetResist(eDamageType damageType)
 		{
@@ -201,9 +217,24 @@ namespace DOL.GS
 			MokkurvalveAddsBrain sbrain = new MokkurvalveAddsBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
+			new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
 			base.AddToWorld();
 			return true;
 		}
+
+		private int Despawn(ECSGameTimer timer)
+		{
+			if (!IsAlive)
+				return 0;
+
+			// Don't despawn mid fight.
+			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+				return DESPAWN_RETRY_INTERVAL;
+
+			RemoveFromWorld();
+			return 0;
+		}
+
 		public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;
 	}

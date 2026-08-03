@@ -74,7 +74,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(5000))
             {
@@ -83,7 +83,7 @@ namespace DOL.GS
                     npc.Die(killer);
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

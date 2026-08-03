@@ -223,10 +223,10 @@ namespace DOL.GS
 			get { return 5000; }
 		}
 		public static int AddsCount= 0;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			--AddsCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;

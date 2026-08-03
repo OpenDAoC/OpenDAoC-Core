@@ -110,7 +110,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
             {
@@ -119,7 +119,7 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }
@@ -258,10 +258,10 @@ namespace DOL.GS
             return 0.15;
         }
         public static int SwordCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --SwordCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override long ExperienceValue => 0;
         public override bool CanDropLoot => false;
@@ -321,10 +321,10 @@ namespace DOL.GS
             return 0.15;
         }
         public static int AxeCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --AxeCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override long ExperienceValue => 0;
         public override bool CanDropLoot => false;

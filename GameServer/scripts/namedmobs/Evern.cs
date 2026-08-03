@@ -138,7 +138,7 @@ namespace DOL.GS
             else
                 log.Warn("Evern exist ingame, remove it and restart server if you want to add by script code.");
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
@@ -149,7 +149,7 @@ namespace DOL.GS
                         npc.Die(npc); //we kill all fairys if boss die
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

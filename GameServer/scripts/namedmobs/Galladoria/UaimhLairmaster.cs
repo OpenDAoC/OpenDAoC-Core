@@ -151,10 +151,10 @@ namespace DOL.GS.Scripts
 
         #endregion
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             IsFleeing = true;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 

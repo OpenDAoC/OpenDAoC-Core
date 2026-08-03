@@ -139,9 +139,9 @@ namespace DOL.GS.Scripts
 			}
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
-			base.Die(killer);
+			base.ProcessDeath(killer);
 			foreach (GameNPC npc in this.GetNPCsInRadius(5000))
 			{
 				if (npc.Name.Contains("ancient treant"))

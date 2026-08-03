@@ -11,14 +11,14 @@ namespace DOL.GS.Scripts
 		private const int POPULATION_LIMIT = 50;
 		private const int MAX_GROUP_SHARE = 8;
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			GamePlayer player = GetPlayerSource(killer);
 
 			if (player != null && RewardStatus is RewardEligibility.Eligible)
 				DistributeReward(player);
 
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 
 		private static GamePlayer GetPlayerSource(GameObject killer)

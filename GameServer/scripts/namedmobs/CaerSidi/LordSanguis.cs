@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -77,7 +80,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             if (Spawn_Lich_Lord == false)
             {
@@ -87,7 +90,7 @@ namespace DOL.GS
                 Spawn_Lich_Lord = true;
             }
 
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public static bool Spawn_Lich_Lord = false;
@@ -106,12 +109,22 @@ namespace DOL.GS
 
         public void SpawnMages()
         {
+            Vector3 position = new(X, Y, Z);
+            Zone zone = CurrentZone;
+            bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+            EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
             for (int i = 0; i < Util.Random(2, 4); i++) // Spawn 2-4 mages
             {
+                // Pick positions on the navmesh whenever possible, so that mages can't spawn inside walls.
+                Vector3 spawnPoint = usePathfinding ?
+                    PathfindingProvider.Instance.GetRandomPoint(zone, position, 80, filters) ?? position :
+                    new(X + Util.Random(-50, 80), Y + Util.Random(-50, 80), Z);
+
                 BloodMage Add = new BloodMage();
-                Add.X = X + Util.Random(-50, 80);
-                Add.Y = Y + Util.Random(-50, 80);
-                Add.Z = Z;
+                Add.X = (int) spawnPoint.X;
+                Add.Y = (int) spawnPoint.Y;
+                Add.Z = (int) spawnPoint.Z;
                 Add.CurrentRegion = CurrentRegion;
                 Add.Heading = Heading;
                 Add.AddToWorld();
@@ -351,6 +364,9 @@ namespace DOL.GS
 {
     public class BloodMage : GameNPC //thrust resist
     {
+        private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+        private const int DESPAWN_RETRY_INTERVAL = 30000;
+
         public BloodMage() : base()
         {
         }
@@ -375,10 +391,10 @@ namespace DOL.GS
             get { return 8000; }
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --MageCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public static int MageCount = 0;
@@ -417,8 +433,25 @@ namespace DOL.GS
 
             BloodMageBrain adds = new BloodMageBrain();
             SetOwnBrain(adds);
+            new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
             base.AddToWorld();
             return true;
+        }
+
+        private int Despawn(ECSGameTimer timer)
+        {
+            if (!IsAlive)
+                return 0;
+
+            // Don't despawn mid fight.
+            if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+                return DESPAWN_RETRY_INTERVAL;
+
+            // RemoveFromWorld skips ProcessDeath, so the counter must be decremented here.
+            if (RemoveFromWorld())
+                --MageCount;
+
+            return 0;
         }
     }
 }

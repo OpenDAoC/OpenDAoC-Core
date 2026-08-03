@@ -406,10 +406,10 @@ namespace DOL.GS
 			get { return 10000; }
 		}
 		public static int FireCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--FireCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{

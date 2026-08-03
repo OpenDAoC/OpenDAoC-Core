@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -54,10 +57,10 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             SpawnAfterDead();
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public override bool AddToWorld()
@@ -85,12 +88,22 @@ namespace DOL.GS
 
         public void SpawnAfterDead()
         {
+            Vector3 position = new(X, Y, Z);
+            Zone zone = CurrentZone;
+            bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+            EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
             for (int i = 0; i < Util.Random(20, 25); i++) // Spawn 20-25 adds
             {
+                // Pick positions on the navmesh whenever possible, so that adds can't spawn inside walls.
+                Vector3 spawnPoint = usePathfinding ?
+                    PathfindingProvider.Instance.GetRandomPoint(zone, position, 80, filters) ?? position :
+                    new(X + Util.Random(-50, 80), Y + Util.Random(-50, 80), Z);
+
                 SBDeadAdds Add = new SBDeadAdds();
-                Add.X = X + Util.Random(-50, 80);
-                Add.Y = Y + Util.Random(-50, 80);
-                Add.Z = Z;
+                Add.X = (int) spawnPoint.X;
+                Add.Y = (int) spawnPoint.Y;
+                Add.Z = (int) spawnPoint.Z;
                 Add.CurrentRegion = CurrentRegion;
                 Add.Heading = Heading;
                 Add.AddToWorld();
@@ -501,6 +514,9 @@ namespace DOL.GS
 {
     public class SBDeadAdds : GameNPC
     {
+        private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+        private const int DESPAWN_RETRY_INTERVAL = 30000;
+
         public SBDeadAdds() : base()
         {
         }
@@ -543,8 +559,22 @@ namespace DOL.GS
             SBDeadAddsBrain adds = new SBDeadAddsBrain();
             LoadedFromScript = true;
             SetOwnBrain(adds);
+            new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
             base.AddToWorld();
             return true;
+        }
+
+        private int Despawn(ECSGameTimer timer)
+        {
+            if (!IsAlive)
+                return 0;
+
+            // Don't despawn mid fight.
+            if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+                return DESPAWN_RETRY_INTERVAL;
+
+            RemoveFromWorld();
+            return 0;
         }
     }
 }

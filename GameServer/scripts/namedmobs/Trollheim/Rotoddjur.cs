@@ -41,7 +41,7 @@ namespace DOL.GS
 		{
 			get { return 10000; }
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
@@ -53,7 +53,7 @@ namespace DOL.GS
 					}
 				}
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{

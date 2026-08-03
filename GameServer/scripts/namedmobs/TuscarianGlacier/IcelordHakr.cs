@@ -45,11 +45,11 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override void Die(GameObject killer) //on kill generate orbs
+        public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
             Spawn_Snakes = false;
             HakrBrain.spam_message1 = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public static bool Spawn_Snakes = false;
         public override bool AddToWorld()
@@ -298,10 +298,10 @@ namespace DOL.GS
             get { return 20000; }
         }
         public static int IceweaverCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --IceweaverCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 250; }

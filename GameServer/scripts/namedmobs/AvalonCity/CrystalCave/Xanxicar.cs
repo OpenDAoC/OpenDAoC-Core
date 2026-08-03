@@ -68,7 +68,7 @@ namespace DOL.GS
 			return true;
 		}
         #region Die/Boradcast/ReportNews/AwardDragonKillPoints
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
 		{
 			// debug
 			if (killer == null)
@@ -93,8 +93,6 @@ namespace DOL.GS
 
 			AwardDragonKillPoint();
 
-			base.Die(killer);
-
 			foreach (String message in m_deathAnnounce)
 			{
 				BroadcastMessage(String.Format(message, Name));
@@ -104,6 +102,8 @@ namespace DOL.GS
 			{
 				ReportNews(killer);
 			}
+
+			base.ProcessDeath(killer);
 		}
 		public void BroadcastMessage(String message)
 		{
@@ -501,10 +501,10 @@ namespace DOL.GS
 		}
 
 		public static int XanxicarianChampionCount = 0;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			--XanxicarianChampionCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public override bool AddToWorld()
 		{

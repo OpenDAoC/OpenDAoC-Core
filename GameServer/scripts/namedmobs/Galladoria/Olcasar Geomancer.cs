@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -59,7 +62,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
@@ -68,7 +71,7 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {
@@ -515,17 +518,53 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
+        private GameObject _realKiller;
+
         public override void Die(GameObject killer)
         {
-            BroadcastMessage(String.Format("As Olcasar minion falls to the ground, he begins to mutter some strange words and his slain minion rises back from the dead."));
-            OGAdds Add = new OGAdds();
-            Add.X = killer.X + Util.Random(-50, 80);
-            Add.Y = killer.Y + Util.Random(-50, 80);
-            Add.Z = killer.Z;
-            Add.CurrentRegion = killer.CurrentRegion;
-            Add.Heading = killer.Heading;
-            Add.AddToWorld();
+            _realKiller = killer;
             base.Die(null); // null to not gain experience
+        }
+
+        public override void ProcessDeath(GameObject killer)
+        {
+            // Only spawn a replacement add while the boss is still alive, otherwise the resurrect chain would go on forever.
+            bool bossAlive = false;
+
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            {
+                if (npc.IsAlive && npc.Brain is OlcasarGeomancerBrain)
+                {
+                    bossAlive = true;
+                    break;
+                }
+            }
+
+            GameObject realKiller = _realKiller;
+
+            if (bossAlive && realKiller != null)
+            {
+                BroadcastMessage(String.Format("As Olcasar minion falls to the ground, he begins to mutter some strange words and his slain minion rises back from the dead."));
+                Vector3 position = new(realKiller.X, realKiller.Y, realKiller.Z);
+                Zone zone = realKiller.CurrentZone;
+                bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+                EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
+                // Pick positions on the navmesh whenever possible, so that adds can't spawn inside walls.
+                Vector3 spawnPoint = usePathfinding ?
+                    PathfindingProvider.Instance.GetRandomPoint(zone, position, 80, filters) ?? position :
+                    new(realKiller.X + Util.Random(-50, 80), realKiller.Y + Util.Random(-50, 80), realKiller.Z);
+
+                OGAdds Add = new OGAdds();
+                Add.X = (int) spawnPoint.X;
+                Add.Y = (int) spawnPoint.Y;
+                Add.Z = (int) spawnPoint.Z;
+                Add.CurrentRegion = realKiller.CurrentRegion;
+                Add.Heading = realKiller.Heading;
+                Add.AddToWorld();
+            }
+
+            base.ProcessDeath(killer);
         }
         public override short Strength { get => base.Strength; set => base.Strength = 300; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; } 

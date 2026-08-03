@@ -21,10 +21,10 @@ namespace DOL.GS
 			return base.AddToWorld();
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			Message.MessageToArea(this, $"{Name} cries out and vanishes, his final words lingering in the air, 'You may have defeated us here, but we shall meet again someday!'", eChatType.CT_Say, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

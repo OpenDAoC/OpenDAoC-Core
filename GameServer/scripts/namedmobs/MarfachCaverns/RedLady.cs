@@ -105,9 +105,9 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
-            base.Die(killer);
+            base.ProcessDeath(killer);
 
             foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
@@ -272,10 +272,10 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --InnocentCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {

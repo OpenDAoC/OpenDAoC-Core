@@ -73,13 +73,13 @@ namespace DOL.GS
 			return true;
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			RemoveAdds();
 
 			Message.MessageToZone(CurrentZone, "The unnatural storm over the northeastern expanse of Lyonesse breaks apart, its fury spent!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 
 		public void Dismiss()

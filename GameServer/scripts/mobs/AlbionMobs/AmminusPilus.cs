@@ -39,7 +39,7 @@ namespace DOL.GS
 			return 0;
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
         {
 			foreach(GameNPC npc in GetNPCsInRadius(5000))
             {
@@ -51,7 +51,7 @@ namespace DOL.GS
 				if (npc.IsAlive && npc != null && npc.Brain is PilusAddBrain)
 					npc.RemoveFromWorld();
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
 		private void SpawnPilusFury()
         {

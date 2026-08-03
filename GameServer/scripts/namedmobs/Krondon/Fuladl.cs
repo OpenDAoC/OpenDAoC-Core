@@ -190,10 +190,10 @@ namespace DOL.GS
 			get { return 3000; }
 		}
 		public static int PartsCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--PartsCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 150; }		

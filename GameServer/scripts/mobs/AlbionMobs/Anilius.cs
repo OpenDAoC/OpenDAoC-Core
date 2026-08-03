@@ -20,7 +20,7 @@ namespace DOL.GS
 			SaveIntoDatabase();
 			return base.AddToWorld();
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			if (Brain is AniliusBrain brain)
 			{
@@ -31,7 +31,7 @@ namespace DOL.GS
 				}
 				brain.Adds.Clear();
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }
