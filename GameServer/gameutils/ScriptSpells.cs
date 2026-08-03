@@ -15,14 +15,14 @@ namespace DOL.GS
             Spell spell = SkillBase.GetSpellByID(spellId);
 
             if (spell == null && log.IsWarnEnabled)
-                log.Warn($"ScriptSpells: no DbSpell with SpellID {spellId}");
+                log.Warn($"No {nameof(DbSpell)} with {nameof(DbSpell.SpellID)} {spellId}");
 
             return spell;
         }
 
         public static Spell GetOrCreate(string key, int level, Action<DbSpell> configure)
         {
-            return GetOrCreate(key, level, static (db, action) => action(db), configure);
+            return GetOrCreate(key, level, static (db, cfg) => cfg(db), configure);
         }
 
         public static Spell GetOrCreate<TState>(string key, int level, Action<DbSpell, TState> configure, TState state)
@@ -31,7 +31,7 @@ namespace DOL.GS
             {
                 DbSpell db = new() { AllowAdd = false };
                 s.configure(db, s.state);
-                return new Spell(db, s.level);
+                return new(db, s.level);
             }, (level, configure, state));
         }
     }
