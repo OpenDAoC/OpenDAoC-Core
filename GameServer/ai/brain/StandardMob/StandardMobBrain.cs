@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
         protected AggroCandidateLoop<GamePlayer> BuildPlayerAggroCandidateLoop()
         {
             var players = Body.GetPlayersInRadius((ushort) AggroRange);
-            return new(players, 1, ref _playerAggroLosChecksThisTick, ref _playerAggroIndex);
+            return new(players, MAX_PLAYER_AGGRO_LOS_CHECK_PER_TICK, ref _playerAggroLosChecksThisTick, ref _playerAggroIndex);
         }
 
         protected virtual void CheckNpcAggro()
@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
         protected AggroCandidateLoop<GameNPC> BuildNpcAggroCandidateLoop()
         {
             var npcs = Body.GetNPCsInRadius((ushort) AggroRange);
-            return new(npcs, 1, ref _npcAggroLosChecksThisTick, ref _npcAggroIndex);
+            return new(npcs, MAX_NPC_AGGRO_LOS_CHECK_PER_TICK, ref _npcAggroLosChecksThisTick, ref _npcAggroIndex);
         }
 
         private void SendAggroLosCheck(GamePlayer losChecker, GameLiving target)
