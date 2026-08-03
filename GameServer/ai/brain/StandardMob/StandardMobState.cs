@@ -188,6 +188,12 @@ namespace DOL.AI.Brain
 
         public StandardMobState_RETURN_TO_SPAWN(StandardMobBrain brain) : base(brain) { }
 
+        public override void Enter()
+        {
+            _brain.Body.ReturnToSpawnPoint(Speed);
+            base.Enter();
+        }
+
         public override void Think()
         {
             if (_brain.Body.IsAtSpawn)

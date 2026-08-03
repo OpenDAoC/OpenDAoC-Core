@@ -60,6 +60,7 @@ namespace DOL.GS
             if (oldBrain != null)
             {
                 oldBrain.ClearAggroList();
+                charmNpc.StopMoving();
                 charmNpc.StopAttack();
                 charmNpc.StopCurrentSpellcast();
                 charmNpc.RemoveBrain(oldBrain);
