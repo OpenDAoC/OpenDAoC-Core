@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
 
@@ -12,6 +13,20 @@ namespace DOL.GS.Scripts
 	{
 	public SpectralProvisioner()
 		: base() { }
+		// The old script randomized the speed of each waypoint-to-waypoint walk between 195 and 300.
+		private const short PATROL_SPEED = 250;
+
+		private static readonly (int X, int Y, int Z)[] _patrolPoints =
+		[
+			(30050, 39425, 17004),
+			(30940, 39418, 17004),
+			(32065, 40205, 17004),
+			(32075, 42378, 17004),
+			(32072, 40376, 17006),
+			(32967, 39369, 17007),
+			(32057, 38494, 17007),
+			(31022, 39382, 17006)
+		];
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -80,14 +95,7 @@ namespace DOL.GS.Scripts
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
 			LoadTemplate(npcTemplate);
-			SpectralProvisionerBrain.point1check = false;
-			SpectralProvisionerBrain.point2check = false;
-			SpectralProvisionerBrain.point3check = false;
-			SpectralProvisionerBrain.point4check = false;
-			SpectralProvisionerBrain.point5check = false;
-			SpectralProvisionerBrain.point6check = false;
-			SpectralProvisionerBrain.point7check = false;
-			SpectralProvisionerBrain.point8check = false;
+			CurrentPathPoint = MovementMgr.CreatePath(EPathType.Loop, PATROL_SPEED, _patrolPoints);
 			SpectralProvisionerBrain sBrain = new SpectralProvisionerBrain();
 			SetOwnBrain(sBrain);
 			LoadedFromScript = true;
@@ -100,12 +108,6 @@ namespace DOL.GS.Scripts
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Spectral Provisioner NPC Initializing...");
-		}
-		public override void ReturnToSpawnPoint(short speed)
-		{
-			if (IsAlive)
-				return;
-			base.ReturnToSpawnPoint(speed);
 		}
 		public override void StartAttack(GameObject target)
         {
@@ -154,27 +156,10 @@ namespace DOL.AI.Brain
 			//CanAddJunk = false;
 			//return 0;
         //}
-		public static bool point1check = false;
-		public static bool point2check = false;
-		public static bool point3check = false;
-		public static bool point4check = false;
-		public static bool point5check = false;
-		public static bool point6check = false;
-		public static bool point7check = false;
-		public static bool point8check = false;
-		private Point3D point1 = new Point3D(30050, 39425, 17004);
-		private Point3D point2 = new Point3D(30940, 39418, 17004);
-		private Point3D point3 = new Point3D(32065, 40205, 17004);
-		private Point3D point4 = new Point3D(32075, 42378, 17004);
-		private Point3D point5 = new Point3D(32072, 40376, 17006);
-		private Point3D point6 = new Point3D(32967, 39369, 17007);
-		private Point3D point7 = new Point3D(32057, 38494, 17007);
-		private Point3D point8 = new Point3D(31022, 39382, 17006);
 		public override void Think()
 		{
 			if (Body.IsAlive)
 			{
-				//Point3D spawn = new Point3D(30049, 40799, 17004);
 				Body.MaxSpeedBase = 300;
 
 				// if (HasAggro && Body.TargetObject != null)
@@ -186,97 +171,7 @@ namespace DOL.AI.Brain
 				// 	}
 				// }
 
-				#region Walk path
-				if (!Body.IsWithinRadius(point1, 30) && point1check == false)
-				{
-					Body.WalkTo(point1, (short)Util.Random(195, 300));
-					//log.Warn("Moving to point1, " + point1+"Corrent Pos: "+Body.X+", "+Body.Y+", "+Body.Z);
-				}
-				else
-				{
-					point1check = true;
-					point8check = false;
-					if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
-					{
-						Body.WalkTo(point2, (short)Util.Random(195, 300));
-						//log.Warn("Arrived at point1,Moving to point2, " + point2);
-					}
-					else
-					{
-						point2check = true;
-						if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-							point3check == false)
-						{
-							Body.WalkTo(point3, (short)Util.Random(195, 300));
-							//log.Warn("Arrived at point2,Moving to point3, " + point3);
-						}
-						else
-						{
-							point3check = true;
-							if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-								point3check == true && point4check == false)
-							{
-								Body.WalkTo(point4, (short)Util.Random(195, 300));
-								//log.Warn("Arrived at point3,Moving to point4, " + point4);
-							}
-							else
-							{
-								point4check = true;
-								if (!Body.IsWithinRadius(point5, 30) && point1check == true && point2check == true &&
-									point3check == true && point4check == true && point5check == false)
-								{
-									Body.WalkTo(point5, (short)Util.Random(195, 300));
-									//log.Warn("Arrived at point4,Moving to point5, " + point4);
-								}
-								else
-								{
-									point5check = true;
-									if (!Body.IsWithinRadius(point6, 30) && point1check == true && point2check == true &&
-									point3check == true && point4check == true && point5check == true && point6check == false)
-									{
-										Body.WalkTo(point6, (short)Util.Random(195, 300));
-										//log.Warn("Arrived at point5,Moving to point6, " + point6);
-									}
-									else
-									{
-										point6check = true;
-										if (!Body.IsWithinRadius(point7, 30) && point1check == true && point2check == true &&
-										point3check == true && point4check == true && point5check == true && point6check == true && point7check == false)
-										{
-											Body.WalkTo(point7, (short)Util.Random(195, 300));
-											//log.Warn("Arrived at point6,Moving to point7, " + point7);
-										}
-										else
-										{
-											point7check = true;
-											if (!Body.IsWithinRadius(point8, 30) && point1check == true && point2check == true &&
-											point3check == true && point4check == true && point5check == true && point6check == true && point7check == true && !point8check)
-											{
-												Body.WalkTo(point8, (short)Util.Random(195, 300));
-												//log.Warn("Arrived at point7,Moving to point8, " + point8);
-											}
-											else
-											{
-												point8check = true;
-												point7check = false;
-												point1check = false;
-												point2check = false;
-												point3check = false;
-												point4check = false;
-												point5check = false;
-												point6check = false;
-												//log.Warn("Clearing flags");
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-                #endregion
-
-                if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
+				if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
 				{
 					ClearAggroList();
 					Body.Health = Body.MaxHealth;
