@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -27,30 +28,20 @@ namespace DOL.GS
         }
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (source is GamePlayer || source is GameSummonedPet)
+            // Only players and their pets can damage Xaga.
+            if (source is not GamePlayer and not GameSummonedPet)
+                return;
+
+            // Take no damage while too far away from the spawn point.
+            if (IsOutOfTetherRange)
             {
-                if (this.IsOutOfTetherRange)//dont take any dmg if is too far away from spawn point
-                {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
-                    {
-                        GamePlayer truc;
-                        if (source is GamePlayer)
-                            truc = (source as GamePlayer);
-                        else
-                            truc = ((source as GameSummonedPet).Owner as GamePlayer);
-                        if (truc != null)
-                            truc.Out.SendMessage(this.Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
-                        base.TakeDamage(source, damageType, 0, 0);
-                        return;
-                    }
-                }
-                else//take dmg
-                {
-                    base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-                }
+                GamePlayer player = source as GamePlayer ?? (source as GameSummonedPet).Owner as GamePlayer;
+                player?.Out.SendMessage($"{Name} is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                base.TakeDamage(source, damageType, 0, 0);
+                return;
             }
+
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
 
         public override int MaxHealth
@@ -74,42 +65,46 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.20;
         }
-        public void SpawnTineBeatha()
+        public Tine Tine { get; private set; }
+        public Beatha Beatha { get; private set; }
+
+        private void SpawnTineBeatha()
         {
-            if (Tine.TineCount == 0)
+            if (Tine == null || !Tine.IsAlive)
             {
-                Tine tine = new Tine();
-                tine.X = 27211;
-                tine.Y = 54902;
-                tine.Z = 13213;
-                tine.CurrentRegion = CurrentRegion;
-                tine.Heading = 2157;
-                tine.RespawnInterval = -1;
-                tine.AddToWorld();
+                Tine = new Tine
+                {
+                    X = 27211,
+                    Y = 54902,
+                    Z = 13213,
+                    CurrentRegion = CurrentRegion,
+                    Heading = 2157,
+                    RespawnInterval = -1,
+                    Xaga = this
+                };
+                Tine.AddToWorld();
             }
-            if (Beatha.BeathaCount == 0)
+            if (Beatha == null || !Beatha.IsAlive)
             {
-                Beatha beatha = new Beatha();
-                beatha.X = 27614;
-                beatha.Y = 54866;
-                beatha.Z = 13213;
-                beatha.CurrentRegion = CurrentRegion;
-                beatha.Heading = 2038;
-                beatha.RespawnInterval = -1;
-                beatha.AddToWorld();
+                Beatha = new Beatha
+                {
+                    X = 27614,
+                    Y = 54866,
+                    Z = 13213,
+                    CurrentRegion = CurrentRegion,
+                    Heading = 2038,
+                    RespawnInterval = -1,
+                    Xaga = this
+                };
+                Beatha.AddToWorld();
             }
         }
-        public static bool spawn_lights = false;
         public override void Die(GameObject killer)
         {
-            foreach(GameNPC lights in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
-            {
-                if(lights != null)
-                {
-                    if(lights.IsAlive && (lights.Brain is TineBrain || lights.Brain is BeathaBrain))
-                        lights.Die(lights);
-                }
-            }
+            if (Tine != null && Tine.IsAlive)
+                Tine.Die(Tine);
+            if (Beatha != null && Beatha.IsAlive)
+                Beatha.Die(Beatha);
             base.Die(killer);
         }
         public override bool AddToWorld()
@@ -123,16 +118,9 @@ namespace DOL.GS
             SetOwnBrain(sBrain);
             SaveIntoDatabase();
             LoadedFromScript = false;
-            spawn_lights = false;
             bool success = base.AddToWorld();
             if (success)
-            {
-                if (spawn_lights == false)
-                {
-                    SpawnTineBeatha();
-                    spawn_lights = true;
-                }
-            }
+                SpawnTineBeatha();
             return success;
         }
         [ScriptLoadedEvent]
@@ -193,7 +181,7 @@ namespace DOL.AI.Brain
 {
     public class XagaBrain : StandardMobBrain
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private bool _lightsAggroCleared;
 
         public XagaBrain()
             : base()
@@ -201,50 +189,47 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-        private bool RemoveAdds = false;
+
         public override void Think()
         {
-            if (!CheckProximityAggro())
+            if (!HasAggro)
             {
-                //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                if (!RemoveAdds)
+
+                if (!_lightsAggroCleared && Body is Xaga xaga)
                 {
-                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
-                    {
-                        if (mob_c != null)
-                        {
-                            if (mob_c?.Brain is BeathaBrain brain1 && mob_c.IsAlive && brain1.HasAggro)
-                                brain1.ClearAggroList();
-                            if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && brain2.HasAggro)
-                                brain2.ClearAggroList();
-                        }
-                    }
-                    RemoveAdds = true;
+                    _lightsAggroCleared = true;
+                    ClearLightAggro(xaga.Tine);
+                    ClearLightAggro(xaga.Beatha);
                 }
             }
-            if (HasAggro && Body.TargetObject != null)
-                RemoveAdds = false;
+            else if (Body.TargetObject != null)
+                _lightsAggroCleared = false;
+
             base.Think();
         }
-        
+
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (Body.IsAlive)
+            if (Body.IsAlive && Body is Xaga xaga)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
-                {
-                    if (mob_c != null)
-                    {
-                        if (mob_c?.Brain is BeathaBrain brain1 && mob_c.IsAlive && !brain1.HasAggro)
-                            AddAggroListTo(brain1);
-                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && !brain2.HasAggro)
-                            AddAggroListTo(brain2);
-                    }
-                }
+                PullLight(xaga.Tine);
+                PullLight(xaga.Beatha);
             }
+
             base.OnAttackedByEnemy(ad);
+        }
+
+        private static void ClearLightAggro(GameNPC light)
+        {
+            if (light != null && light.IsAlive && light.Brain is StandardMobBrain brain && brain.HasAggro)
+                brain.ClearAggroList();
+        }
+
+        private void PullLight(GameNPC light)
+        {
+            if (light != null && light.IsAlive && light.Brain is StandardMobBrain brain && !brain.HasAggro)
+                AddAggroListTo(brain);
         }
     }
 }
@@ -254,7 +239,17 @@ namespace DOL.GS
 {
     public class Beatha : GameEpicBoss
     {
-        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public const short PATROL_SPEED = 250;
+
+        private static readonly (int X, int Y, int Z)[] _patrolPoints =
+        [
+            (27572, 54473, 13213),
+            (27183, 54530, 13213),
+            (27213, 55106, 13213),
+            (27581, 55079, 13213)
+        ];
+
+        public Xaga Xaga { get; set; }
 
         public Beatha()
             : base()
@@ -263,23 +258,12 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public override void ReturnToSpawnPoint(short speed)
-        {
-            return;
-        }
         public override void DealDamage(AttackData ad)
         {
-            if (ad != null)
-            {
-                foreach (GameNPC xaga in GetNPCsInRadius(8000))
-                {
-                    if (xaga != null)
-                    {
-                        if (xaga.IsAlive && xaga.Brain is XagaBrain)
-                            xaga.Health += ad.Damage*2;//dmg heals xaga
-                    }
-                }
-            }
+            // Beatha's damage heals Xaga.
+            if (ad != null && Xaga != null && Xaga.IsAlive)
+                Xaga.Health += ad.Damage * 2;
+
             base.DealDamage(ad);
         }
         public override int MaxHealth
@@ -302,22 +286,13 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.20;
         }
-        public static int BeathaCount = 0;
-        public override void Die(GameObject killer)
-        {
-            --BeathaCount;
-            base.Die(killer);
-        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158330);
             LoadTemplate(npcTemplate);
 
             Flags = eFlags.FLYING;
-            BeathaBrain.path4 = false;
-            BeathaBrain.path1 = false;
-            BeathaBrain.path2 = false;
-            BeathaBrain.path3 = false;
+            CurrentPathPoint = MovementMgr.CreatePath(EPathType.Loop, PATROL_SPEED, _patrolPoints);
 
             AbilityBonus[eProperty.Resist_Body] = 60;
             AbilityBonus[eProperty.Resist_Heat] = -20;//weak to heat
@@ -329,12 +304,10 @@ namespace DOL.GS
             AbilityBonus[eProperty.Resist_Crush] = 40;
             AbilityBonus[eProperty.Resist_Thrust] = 40;
 
-            ++BeathaCount;
             Faction = FactionMgr.GetFactionByID(96);
             BeathaBrain sBrain = new BeathaBrain();
             SetOwnBrain(sBrain);
-            base.AddToWorld();
-            return true;
+            return base.AddToWorld();
         }
     }
 }
@@ -342,124 +315,66 @@ namespace DOL.AI.Brain
 {
     public class BeathaBrain : StandardMobBrain
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public BeathaBrain()
             : base()
         {
             AggroLevel = 100;
             AggroRange = 500;
-        }       
+        }
+
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (Body.IsAlive)
+            if (Body.IsAlive && Body is Beatha beatha && beatha.Xaga != null)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
-                {
-                    if (mob_c != null)
-                    {
-                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.IsAvailableToJoinFight)
-                            AddAggroListTo(brain1);
-                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && mob_c.IsAvailableToJoinFight)
-                            AddAggroListTo(brain2);
-                    }
-                }
+                PullFriend(beatha.Xaga);
+                PullFriend(beatha.Xaga.Tine);
             }
+
             base.OnAttackedByEnemy(ad);
         }
-        public static bool path1 = false;
-        public static bool path2 = false;
-        public static bool path3 = false;
-        public static bool path4 = false;
+
         public override void Think()
         {
-            if(Body.IsAlive)
-            {
-                Point3D point1 = new Point3D(27572,54473,13213);
-                Point3D point2 = new Point3D(27183, 54530, 13213);
-                Point3D point3 = new Point3D(27213, 55106, 13213);
-                Point3D point4 = new Point3D(27581, 55079, 13213);
-                if (!Body.IsWithinRadius(point1, 20) && path1 == false)
-                {
-                    Body.WalkTo(point1, 250);
-                }
-                else
-                {
-                    path1 = true;
-                    path4 = false;
-                    if (!Body.IsWithinRadius(point2, 20) && path1 == true && path2 == false)
-                    {
-                        Body.WalkTo(point2, 250);
-                    }
-                    else
-                    {
-                        path2 = true;
-                        if (!Body.IsWithinRadius(point3, 20) && path1 == true && path2 == true && path3 == false)
-                        {
-                            Body.WalkTo(point3, 250);
-                        }
-                        else
-                        {
-                            path3 = true;
-                            if (!Body.IsWithinRadius(point4, 20) && path1 == true && path2 == true && path3 == true && path4 == false)
-                            {
-                                Body.WalkTo(point4, 250);
-                            }
-                            else
-                            {
-                                path4 = true;
-                                path1 = false;
-                                path2 = false;
-                                path3 = false;
-                            }
-                        }
-                    }
-                }
-            }
-            if(!CheckProximityAggro())
-            {
+            // Beatha never attacks directly and endlessly circles the room, even while in combat.
+            // The aggro state stops path movement, so restart it whenever it's interrupted.
+            if (Body.IsAlive && !Body.IsMovingOnPath)
+                Body.MoveOnPath(Beatha.PATROL_SPEED);
+
+            if (!HasAggro)
                 Body.Health = Body.MaxHealth;
-            }
-            if (HasAggro && Body.IsAlive)
+            else if (Body.IsAlive && Body.TargetObject is GameLiving target)
             {
-                GameLiving target = Body.TargetObject as GameLiving;
-                if (target != null)
-                {
-                    Body.SetGroundTarget(target.X, target.Y, target.Z);
-                    Body.CastSpell(BeathaAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-                }
+                Body.SetGroundTarget(target.X, target.Y, target.Z);
+                Body.CastSpell(BeathaAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             }
+
             base.Think();
         }
-        private Spell m_BeathaAoe;
-        private Spell BeathaAoe
+
+        private void PullFriend(GameNPC friend)
         {
-            get
-            {
-                if (m_BeathaAoe == null)
-                {
-                    DbSpell spell = new DbSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(4,8);
-                    spell.ClientEffect = 4568;
-                    spell.Icon = 4568;
-                    spell.Damage = 450;
-                    spell.Name = "Beatha's Void";
-                    spell.TooltipId = 4568;
-                    spell.Range = 3000;
-                    spell.Radius = 450;
-                    spell.SpellID = 11707;
-                    spell.Target = eSpellTarget.AREA.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Cold;
-                    m_BeathaAoe = new Spell(spell, 70);
-                }
-                return m_BeathaAoe;
-            }
+            if (friend != null && friend.IsAlive && friend.IsAvailableToJoinFight && friend.Brain is StandardMobBrain brain)
+                AddAggroListTo(brain);
         }
+
+        private static Spell BeathaAoe => ScriptSpells.GetOrCreate("beatha-aoe", 70, static db =>
+        {
+            db.CastTime = 0;
+            db.RecastDelay = Util.Random(4, 8);
+            db.ClientEffect = 4568;
+            db.Icon = 4568;
+            db.Damage = 450;
+            db.Name = "Beatha's Void";
+            db.TooltipId = 4568;
+            db.Range = 3000;
+            db.Radius = 450;
+            db.SpellID = 11707;
+            db.Target = eSpellTarget.AREA.ToString();
+            db.Type = eSpellType.DirectDamageNoVariance.ToString();
+            db.Uninterruptible = true;
+            db.MoveCast = true;
+            db.DamageType = (int) eDamageType.Cold;
+        });
     }
 }
 #endregion
@@ -469,7 +384,17 @@ namespace DOL.GS
 {
     public class Tine : GameEpicBoss
     {
-        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public const short PATROL_SPEED = 250;
+
+        private static readonly (int X, int Y, int Z)[] _patrolPoints =
+        [
+            (27168, 54598, 13213),
+            (27597, 54579, 13213),
+            (27606, 55086, 13213),
+            (27208, 55133, 13213)
+        ];
+
+        public Xaga Xaga { get; set; }
 
         public Tine()
             : base()
@@ -477,10 +402,6 @@ namespace DOL.GS
         }
         public override void StartAttack(GameObject target)
         {
-        }
-        public override void ReturnToSpawnPoint(short speed)
-        {
-            return;
         }
         public override int MaxHealth
         {
@@ -502,12 +423,6 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.20;
         }
-        public static int TineCount = 0;
-        public override void Die(GameObject killer)
-        {
-            --TineCount;
-            base.Die(killer);
-        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167084);
@@ -515,10 +430,7 @@ namespace DOL.GS
 
             Faction = FactionMgr.GetFactionByID(96);
             Flags = eFlags.FLYING;
-            TineBrain.path4_2 = false;
-            TineBrain.path1_2 = false;
-            TineBrain.path2_2 = false;
-            TineBrain.path3_2 = false;
+            CurrentPathPoint = MovementMgr.CreatePath(EPathType.Loop, PATROL_SPEED, _patrolPoints);
 
             AbilityBonus[eProperty.Resist_Body] = 60;
             AbilityBonus[eProperty.Resist_Heat] = 99;//resi to heat
@@ -530,11 +442,9 @@ namespace DOL.GS
             AbilityBonus[eProperty.Resist_Crush] = 40;
             AbilityBonus[eProperty.Resist_Thrust] = 40;
 
-            ++TineCount;
             TineBrain sBrain = new TineBrain();
             SetOwnBrain(sBrain);
-            base.AddToWorld();
-            return true;
+            return base.AddToWorld();
         }
     }
 }
@@ -542,8 +452,6 @@ namespace DOL.AI.Brain
 {
     public class TineBrain : StandardMobBrain
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public TineBrain()
             : base()
         {
@@ -553,114 +461,57 @@ namespace DOL.AI.Brain
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            if (Body.IsAlive)
+            if (Body.IsAlive && Body is Tine tine && tine.Xaga != null)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
-                {
-                    if (mob_c != null)
-                    {
-                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.IsAvailableToJoinFight)
-                            AddAggroListTo(brain1);
-                        if (mob_c?.Brain is BeathaBrain brain2 && mob_c.IsAlive && mob_c.IsAvailableToJoinFight)
-                            AddAggroListTo(brain2);
-                    }
-                }
+                PullFriend(tine.Xaga);
+                PullFriend(tine.Xaga.Beatha);
             }
+
             base.OnAttackedByEnemy(ad);
         }
-        public static bool path1_2 = false;
-        public static bool path2_2 = false;
-        public static bool path3_2 = false;
-        public static bool path4_2 = false;
+
         public override void Think()
         {
-            if (Body.IsAlive)
-            {
-                Point3D point1 = new Point3D(27168, 54598, 13213);
-                Point3D point2 = new Point3D(27597, 54579, 13213);
-                Point3D point3 = new Point3D(27606, 55086, 13213);
-                Point3D point4 = new Point3D(27208, 55133, 13213);
-                if (!Body.IsWithinRadius(point1, 20) && path1_2 == false)
-                {
-                    Body.WalkTo(point1, 250);
-                }
-                else
-                {
-                    path1_2 = true;
-                    path4_2 = false;
-                    if (!Body.IsWithinRadius(point2, 20) && path1_2 == true && path2_2 == false)
-                    {
-                        Body.WalkTo(point2, 250);
-                    }
-                    else
-                    {
-                        path2_2 = true;
-                        if (!Body.IsWithinRadius(point3, 20) && path1_2 == true && path2_2 == true && path3_2 == false)
-                        {
-                            Body.WalkTo(point3, 250);
-                        }
-                        else
-                        {
-                            path3_2 = true;
-                            if (!Body.IsWithinRadius(point4, 20) && path1_2 == true && path2_2 == true && path3_2 == true && path4_2 == false)
-                            {
-                                Body.WalkTo(point4, 250);
-                            }
-                            else
-                            {
-                                path4_2 = true;
-                                path1_2 = false;
-                                path2_2 = false;
-                                path3_2 = false;
-                            }
-                        }
-                    }
-                }
-            }
-            if (!CheckProximityAggro())
-            {
+            // Tine never attacks directly and endlessly circles the room, even while in combat.
+            // The aggro state stops path movement, so restart it whenever it's interrupted.
+            if (Body.IsAlive && !Body.IsMovingOnPath)
+                Body.MoveOnPath(Tine.PATROL_SPEED);
+
+            if (!HasAggro)
                 Body.Health = Body.MaxHealth;
-            }
-            if (HasAggro && Body.IsAlive)
+            else if (Body.IsAlive && Body.TargetObject is GameLiving target)
             {
-                GameLiving target = Body.TargetObject as GameLiving;
-                if (target != null)
-                {
-                    Body.SetGroundTarget(target.X, target.Y, target.Z);
-                    Body.CastSpell(TineAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-                }
+                Body.SetGroundTarget(target.X, target.Y, target.Z);
+                Body.CastSpell(TineAoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             }
+
             base.Think();
         }
-        private Spell m_TineAoe;
-        private Spell TineAoe
+
+        private void PullFriend(GameNPC friend)
         {
-            get
-            {
-                if (m_TineAoe == null)
-                {
-                    DbSpell spell = new DbSpell();
-                    spell.AllowAdd = false;
-                    spell.CastTime = 0;
-                    spell.RecastDelay = Util.Random(4,8);
-                    spell.ClientEffect = 4227;
-                    spell.Icon = 4227;
-                    spell.Damage = 450;
-                    spell.Name = "Tine's Fire";
-                    spell.TooltipId = 4227;
-                    spell.Range = 3000;
-                    spell.Radius = 450;
-                    spell.SpellID = 11708;
-                    spell.Target = eSpellTarget.AREA.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.Uninterruptible = true;
-                    spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Heat;
-                    m_TineAoe = new Spell(spell, 70);
-                }
-                return m_TineAoe;
-            }
+            if (friend != null && friend.IsAlive && friend.IsAvailableToJoinFight && friend.Brain is StandardMobBrain brain)
+                AddAggroListTo(brain);
         }
+
+        private static Spell TineAoe => ScriptSpells.GetOrCreate("tine-aoe", 70, static db =>
+        {
+            db.CastTime = 0;
+            db.RecastDelay = Util.Random(4, 8);
+            db.ClientEffect = 4227;
+            db.Icon = 4227;
+            db.Damage = 450;
+            db.Name = "Tine's Fire";
+            db.TooltipId = 4227;
+            db.Range = 3000;
+            db.Radius = 450;
+            db.SpellID = 11708;
+            db.Target = eSpellTarget.AREA.ToString();
+            db.Type = eSpellType.DirectDamageNoVariance.ToString();
+            db.Uninterruptible = true;
+            db.MoveCast = true;
+            db.DamageType = (int) eDamageType.Heat;
+        });
     }
 }
 #endregion
