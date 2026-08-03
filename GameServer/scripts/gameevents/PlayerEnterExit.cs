@@ -38,6 +38,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="arguments"></param>
 		private static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
 		{
+			if (sender is GamePlayer enteringPlayer)
+				RaidEncounter.OnPlayerEnterWorld(enteringPlayer);
+
 			if (!ServerProperties.Properties.SHOW_LOGINS || sender is not GamePlayer player || player.IsAnonymous)
 				return;
 
