@@ -2,6 +2,7 @@ using System;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerRules;
 
 namespace DOL.GS.Spells
 {
@@ -72,6 +73,12 @@ namespace DOL.GS.Spells
 
             if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
                 return false;
+
+            if (!GameServer.ServerRules.IsAllowedToHelp(Caster, target, true))
+                return false;
+
+            if (RaidEncounter.HasActiveEncounters && AbstractServerRules.TryGetPlayerOwner(Caster, out GamePlayer raidCaster) && AbstractServerRules.TryGetPlayerOwner(target, out GamePlayer raidTarget))
+                RaidEncounter.RecordHelpActivity(raidCaster, raidTarget);
 
             if (!target.IsAlive)
             {

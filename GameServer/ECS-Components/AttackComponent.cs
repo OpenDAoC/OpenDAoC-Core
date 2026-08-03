@@ -10,6 +10,7 @@ using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
+using DOL.GS.ServerRules;
 using DOL.GS.SkillHandler;
 using DOL.GS.Styles;
 using DOL.Language;
@@ -61,6 +62,13 @@ namespace DOL.GS
         {
             long expireTime = GameLoop.GameLoopTime + (attackData.Interval > 0 ? attackData.Interval : Properties.SPELL_INTERRUPT_DURATION);
             AttackerTracker.AddOrUpdate(attackData.Attacker, attackData.IsMeleeAttack, expireTime);
+
+            if (RaidEncounter.HasActiveEncounters &&
+                ((owner as GameNPC)?.Brain as StandardMobBrain)?.RaidEncounter is { Active: true } raidEncounter &&
+                AbstractServerRules.TryGetPlayerOwner(attackData.Attacker, out GamePlayer raidAttacker))
+            {
+                raidEncounter.RecordActivity(raidAttacker);
+            }
         }
 
         /// <summary>
