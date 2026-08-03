@@ -9,6 +9,7 @@ using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using DOL.GS.ServerRules;
 using DOL.GS.SkillHandler;
 using DOL.GS.Styles;
 using DOL.Language;
@@ -2119,6 +2120,20 @@ namespace DOL.GS.Spells
 
 		public virtual void ApplyEffectOnTarget(GameLiving target)
 		{
+			if ((HasPositiveEffect || Spell.IsHelpful) && target != Caster && !GameServer.ServerRules.IsAllowedToHelp(Caster, target, true))
+				return;
+
+			if (RaidEncounter.HasActiveEncounters && AbstractServerRules.TryGetPlayerOwner(Caster, out GamePlayer raidCaster))
+			{
+				if (HasPositiveEffect || Spell.IsHelpful)
+				{
+					if (AbstractServerRules.TryGetPlayerOwner(target, out GamePlayer raidTarget))
+						RaidEncounter.RecordHelpActivity(raidCaster, raidTarget);
+				}
+				else
+					RaidEncounter.RecordHostileSupportActivity(raidCaster, target as GameNPC);
+			}
+
 			// Potion and item effects aren't character abilities and so shouldn't be affected by effectiveness.
 			if (m_spellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects)
 				CasterEffectiveness = 1.0;

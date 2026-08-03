@@ -1,5 +1,6 @@
 using System;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerRules;
 
 namespace DOL.GS.Spells
 {
@@ -93,7 +94,13 @@ namespace DOL.GS.Spells
             if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
                 return false;
 
-            if (!target.IsAlive) 
+            if (!GameServer.ServerRules.IsAllowedToHelp(Caster, target, true))
+                return false;
+
+            if (RaidEncounter.HasActiveEncounters && AbstractServerRules.TryGetPlayerOwner(Caster, out GamePlayer raidCaster) && AbstractServerRules.TryGetPlayerOwner(target, out GamePlayer raidTarget))
+                RaidEncounter.RecordHelpActivity(raidCaster, raidTarget);
+
+            if (!target.IsAlive)
             {
                 MessageToCaster(target.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
                 return false;
