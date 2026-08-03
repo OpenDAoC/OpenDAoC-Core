@@ -6,6 +6,12 @@ namespace DOL.GS
     public class Cronker : TimeDependentSpawnNpc
     {
         public Cronker() : base(new CronkerBrain()) { }
+
+        protected override bool ShouldBeVisible()
+        {
+            uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
+            return hour is >= 8 and < 14;
+        }
     }
 }
 
@@ -25,12 +31,6 @@ namespace DOL.AI.Brain
                         AddAggroListTo(npc.Brain as StandardMobBrain);
                 }
             }
-        }
-
-        protected override bool ShouldBeVisible()
-        {
-            uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;
-            return hour is >= 8 and < 14;
         }
     }
 }

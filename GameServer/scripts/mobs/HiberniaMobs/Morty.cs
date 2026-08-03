@@ -1,18 +1,11 @@
 ﻿using DOL.AI.Brain;
-using DOL.GS;
 
 namespace DOL.GS
 {
     public class Morty : TimeDependentSpawnNpc
     {
-        public Morty() : base(new MortyBrain()) { }
-    }
-}
+        public Morty() : base(new TimeDependentSpawnBrain()) { }
 
-namespace DOL.AI.Brain
-{
-    public class MortyBrain : TimeDependentSpawnBrain
-    {
         protected override bool ShouldBeVisible()
         {
             uint hour = WorldMgr.GetCurrentGameTime() / 1000 / 60 / 60;

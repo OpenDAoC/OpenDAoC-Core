@@ -1155,7 +1155,7 @@ namespace DOL.GS
 			mob.Speed = MaxSpeedBase;
 			mob.Region = CurrentRegionID;
 			mob.Realm = (byte)Realm;
-			mob.Model = Model;
+			mob.Model = m_model;
 			mob.Size = Size;
 			mob.Level = Level;
 
@@ -1170,7 +1170,7 @@ namespace DOL.GS
 			mob.Charisma = Charisma;
 
 			mob.ClassType = GetType().ToString();
-			mob.Flags = (uint) Flags;
+			mob.Flags = (uint) m_flags;
 			mob.Speed = MaxSpeedBase;
 			mob.RespawnInterval = m_respawnInterval / 1000;
 			mob.HouseNumber = HouseNumber;

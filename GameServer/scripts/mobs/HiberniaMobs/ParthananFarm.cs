@@ -10,12 +10,20 @@ namespace DOL.GS
 {
     public class Parthanan : TimeDependentSpawnNpc
     {
+        private ParthananFarmState FarmState => ParthananFarmRegistry.GetByTrashPackageId(PackageID);
+
         public Parthanan() : base(new ParthananBrain()) { }
 
         public override void ProcessDeath(GameObject killer)
         {
             ParthananFarmRegistry.GetByTrashPackageId(PackageID)?.OnTrashDeath(this);
             base.ProcessDeath(killer);
+        }
+
+        protected override bool ShouldBeVisible()
+        {
+            ParthananFarmState state = FarmState;
+            return state == null || state.TrashIsVisible;
         }
     }
 
@@ -437,12 +445,6 @@ namespace DOL.AI.Brain
             }
 
             base.Think();
-        }
-
-        protected override bool ShouldBeVisible()
-        {
-            ParthananFarmState state = FarmState;
-            return state == null || state.TrashIsVisible;
         }
 
         public override void AttackMostWanted()
