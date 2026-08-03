@@ -176,6 +176,34 @@ namespace DOL.GS.Movement
         }
 
         /// <summary>
+        /// Builds a path from points defined in code, for scripted NPCs that don't use database paths.
+        /// Path points are mutable, so the chain shouldn't be shared between NPCs.
+        /// </summary>
+        /// <returns>The first pathpoint of the path</returns>
+        public static PathPoint CreatePath(EPathType type, short maxSpeed, params (int X, int Y, int Z)[] points)
+        {
+            PathPoint first = null;
+            PathPoint prev = null;
+
+            foreach ((int x, int y, int z) in points)
+            {
+                PathPoint point = new(x, y, z, maxSpeed, type)
+                {
+                    Prev = prev
+                };
+
+                first ??= point;
+
+                if (prev != null)
+                    prev.Next = point;
+
+                prev = point;
+            }
+
+            return first;
+        }
+
+        /// <summary>
         /// Searches for the first point in the waypoints chain
         /// </summary>
         /// <param name="path">One of the pathpoints</param>
