@@ -1,4 +1,5 @@
 using System;
+using DOL.AI.Brain;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.PropertyCalc
@@ -27,7 +28,7 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
                 case IGameEpicNpc epicNpc:
-                    return CalculateLivingArmorFactor(living, property, 12.5 * epicNpc.ArmorFactorScalingFactor, 50);
+                    return CalculateLivingArmorFactor(living, property, 12.5 * GetEpicNpcArmorFactorScalingFactor(living, epicNpc), 50);
                 case NecromancerPet:
                     return CalculateLivingArmorFactor(living, property, 12.5, 121);
                 case GameSummonedPet:
@@ -46,6 +47,15 @@ namespace DOL.GS.PropertyCalc
                 armorFactor += Math.Min(living.Level, living.ItemBonus[property]);
                 armorFactor += living.OtherBonus[property];
                 return armorFactor;
+            }
+
+            // An active raid encounter drives the factor from its own activity window; the stored property stays
+            // owned by the legacy per-attacker loop and is the fallback for everything else.
+            static double GetEpicNpcArmorFactorScalingFactor(GameLiving living, IGameEpicNpc epicNpc)
+            {
+                return ((living as GameNPC)?.Brain as StandardMobBrain)?.RaidEncounter is { Active: true } raidEncounter
+                    ? raidEncounter.CalculateArmorFactorScalingFactor(epicNpc.DefaultArmorFactorScalingFactor, raidEncounter.GetActiveAttackerCount())
+                    : epicNpc.ArmorFactorScalingFactor;
             }
 
             static int CalculateLivingArmorFactor(GameLiving living, eProperty property, double factor, double divisor)

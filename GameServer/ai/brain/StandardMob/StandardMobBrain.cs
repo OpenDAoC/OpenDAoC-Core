@@ -48,6 +48,9 @@ namespace DOL.AI.Brain
 
         public override bool Stop()
         {
+            if (RaidEncounter?.Owner == this)
+                RaidEncounter.Clear();
+
             // tolakram - when the brain stops, due to either death or no players in the vicinity, clear the aggro list
             if (!base.Stop())
                 return false;
@@ -234,6 +237,49 @@ namespace DOL.AI.Brain
         }
 
         #endregion
+
+        private bool _hasLeashReset;
+
+        /// <summary>
+        /// Scaling and roster state of the raid encounter this body is part of. Null unless the body opts in.
+        /// Linked adds share the encounter of the body that owns it, and only the owner drives its lifecycle.
+        /// </summary>
+        public RaidEncounter RaidEncounter { get; set; }
+
+        /// <summary>
+        /// Opts a linked add's MaxHealth into the encounter's HpMultiplier, for thematically fixed-count adds. Count-scaled
+        /// adds must leave this off. Default false.
+        /// </summary>
+        public bool RaidEncounterScalesHealth { get; set; }
+
+        /// <summary>
+        /// Sends the body back to its spawn point at full health and without aggro if it was dragged out of its tether range.
+        /// Fires once per pull, and is re-armed once we have aggro and a target again.
+        /// </summary>
+        /// <returns>True if the body was reset.</returns>
+        public bool TryLeashReset()
+        {
+            if (!_hasLeashReset && Body.IsAlive && HasAggro && Body.IsOutOfTetherRange)
+            {
+                Body.MoveInRegion(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading, true);
+                Body.Health = Body.MaxHealth;
+
+                foreach (ECSGameEffect effect in Body.effectListComponent.GetEffects())
+                {
+                    if (effect.SpellHandler.Spell.IsHarmful)
+                        effect.End();
+                }
+
+                FSM.SetCurrentState(eFSMStateType.IDLE);
+                _hasLeashReset = true;
+                return true;
+            }
+
+            if (HasAggro && Body.TargetObject != null)
+                _hasLeashReset = false;
+
+            return false;
+        }
 
         #region Aggro
 
