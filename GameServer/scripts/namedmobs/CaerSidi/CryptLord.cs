@@ -1,11 +1,25 @@
 ﻿using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS;
+using DOL.GS.Movement;
 
 namespace DOL.GS
 {
     public class CryptLord : GameEpicBoss
     {
         private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private const short PATROL_SPEED = 100;
+
+        // Patrol route, starting at the spawn point.
+        private static readonly (int X, int Y, int Z)[] _patrolPoints =
+        [
+            (24891, 40139, 15372),
+            (28461, 40166, 15373),
+            (28494, 43144, 15373),
+            (26751, 43111, 15373),
+            (26741, 40147, 15373)
+        ];
 
         public CryptLord()
             : base()
@@ -54,17 +68,13 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public override void ReturnToSpawnPoint(short speed)
-        {
-            return;
-        }
-
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159518);
             LoadTemplate(npcTemplate);
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(64);
+            CurrentPathPoint = MovementMgr.CreatePath(EPathType.Loop, PATROL_SPEED, _patrolPoints);
 
             CryptLordBrain adds = new CryptLordBrain();
             SetOwnBrain(adds);
@@ -86,89 +96,6 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 400;
-        }
-
-        public static bool BafMobs = false;
-        public static bool point1check = false;
-        public static bool point2check = false;
-        public static bool point3check = false;
-        public static bool point4check = false;
-        public static bool walkback = false;
-
-        public void LordPath()
-        {
-            Point3D point1 = new Point3D();
-            point1.X = 28461;
-            point1.Y = 40166;
-            point1.Z = 15373;
-            Point3D point2 = new Point3D();
-            point2.X = 28494;
-            point2.Y = 43144;
-            point2.Z = 15373;
-            Point3D point3 = new Point3D();
-            point3.X = 26751;
-            point3.Y = 43111;
-            point3.Z = 15373;
-            Point3D point4 = new Point3D();
-            point4.X = 26741;
-            point4.Y = 40147;
-            point4.Z = 15373;
-            Point3D spawn = new Point3D();
-            spawn.X = 24891;
-            spawn.Y = 40139;
-            spawn.Z = 15372;
-
-            if (!Body.InCombat && !HasAggro)
-            {
-                if (!Body.IsWithinRadius(point1, 30) && point1check == false)
-                {
-                    Body.WalkTo(point1, 100);
-                }
-                else
-                {
-                    point1check = true;
-                    walkback = false;
-                    if (!Body.IsWithinRadius(point2, 30) && point1check == true && point2check == false)
-                    {
-                        Body.WalkTo(point2, 100);
-                    }
-                    else
-                    {
-                        point2check = true;
-                        if (!Body.IsWithinRadius(point3, 30) && point1check == true && point2check == true &&
-                            point3check == false)
-                        {
-                            Body.WalkTo(point3, 100);
-                        }
-                        else
-                        {
-                            point3check = true;
-                            if (!Body.IsWithinRadius(point4, 30) && point1check == true && point2check == true &&
-                                point3check == true && point4check == false)
-                            {
-                                Body.WalkTo(point4, 100);
-                            }
-                            else
-                            {
-                                point4check = true;
-                                if (!Body.IsWithinRadius(spawn, 30) && point1check == true && point2check == true &&
-                                    point3check == true && point4check == true && walkback == false)
-                                {
-                                    Body.WalkTo(spawn, 100);
-                                }
-                                else
-                                {
-                                    walkback = true;
-                                    point1check = false;
-                                    point2check = false;
-                                    point3check = false;
-                                    point4check = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         public void BafMobAggro() //if baf mob aggro and boss is near it will pull boss+ rest of mobs
@@ -275,7 +202,6 @@ namespace DOL.AI.Brain
             }
 
             SetMobstats(); //setting mob distance+tether+speed
-            LordPath(); //boss path
             BafMobAggro(); //if npc with set packageid aggro near boss, then boss will aggro + his friends
             base.Think();
         }
