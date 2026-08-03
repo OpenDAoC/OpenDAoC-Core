@@ -614,6 +614,54 @@ namespace DOL.GS.ServerProperties
 		public static int SET_DIFFICULTY_ON_EPIC_ENCOUNTERS;
 
 		/// <summary>
+		/// Raid size a raid encounter is balanced around, and below which it isn't scaled up
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_baseline_size", "Raid encounter scaling: roster size the encounter is balanced around. Smaller rosters fight the unscaled encounter.", 8)]
+		public static int RAID_SCALING_BASELINE_SIZE;
+
+		/// <summary>
+		/// Raid size above which a raid encounter isn't scaled up anymore
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_max_size", "Raid encounter scaling: roster size cap. Larger raids fight the capped version of the encounter.", 80)]
+		public static int RAID_SCALING_MAX_SIZE;
+
+		/// <summary>
+		/// Health added per roster member above the baseline, as a fraction of the baseline health pool
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_hp_per_extra_player", "Raid encounter scaling: health added per roster member above the baseline, as a fraction of the baseline health pool.", 0.10)]
+		public static double RAID_SCALING_HP_PER_EXTRA_PLAYER;
+
+		/// <summary>
+		/// Fraction of the roster expected to be registered as active at any given time
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_active_fraction", "Raid encounter scaling: fraction of the roster expected to be active at any given time. Attacking, healing, buffing and debuffing the encounter all register, so support roles count too.", 0.75)]
+		public static double RAID_SCALING_ACTIVE_FRACTION;
+
+		/// <summary>
+		/// Armor factor increase applied when none of the expected attackers is attacking
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_af_idle_weight", "Raid encounter scaling: armor factor increase applied when none of the expected attackers is attacking.", 0.75)]
+		public static double RAID_SCALING_AF_IDLE_WEIGHT;
+
+		/// <summary>
+		/// Sliding window during which a roster member who landed an attack still counts as active for armor scaling
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_activity_window_seconds", "Raid encounter scaling: sliding window, in seconds, during which a roster member who landed an attack still counts as active for armor scaling.", 30)]
+		public static int RAID_SCALING_ACTIVITY_WINDOW_SECONDS;
+
+		/// <summary>
+		/// Roster members above the baseline needed for one bonus loot roll
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_item_share_size", "Raid encounter scaling: roster members above the baseline needed for one bonus loot roll.", 5)]
+		public static int RAID_SCALING_ITEM_SHARE_SIZE;
+
+		/// <summary>
+		/// Minutes a participant who logged out stays eligible for encounter rewards
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_quit_grace_minutes", "Raid encounter scaling: minutes a participant who logged out stays eligible for the encounter's personal rewards. Rewards earned while logged out are handed over on the next login.", 20)]
+		public static int RAID_SCALING_QUIT_GRACE_MINUTES;
+
+		/// <summary>
 		/// A serialised list of disabled RegionIDs
 		/// </summary>
 		[ServerProperty("world", "disabled_regions", "Serialized list of disabled region IDs, separated by semi-colon or a range with a dash (ie 1-5;7;9)", "")]
