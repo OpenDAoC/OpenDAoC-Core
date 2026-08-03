@@ -43,7 +43,7 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
@@ -54,7 +54,7 @@ namespace DOL.GS
                     npc.Die(this);
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {
@@ -189,10 +189,10 @@ namespace DOL.GS
         {
             get { return 10000; }
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             PetsCount--;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool CanDropLoot => false;
         public static int PetsCount = 0;

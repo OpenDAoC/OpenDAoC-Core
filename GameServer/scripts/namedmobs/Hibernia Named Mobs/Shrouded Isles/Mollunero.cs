@@ -62,14 +62,14 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			foreach (GameNPC npc in GetNPCsInRadius(2500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is MolluneroAddBrain)
 					npc.RemoveFromWorld();
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{

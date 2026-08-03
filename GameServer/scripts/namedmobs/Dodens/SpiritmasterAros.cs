@@ -76,7 +76,7 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)//Aros is Caster so he will not use melee attacks
         {
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
 			{
@@ -91,8 +91,8 @@ namespace DOL.GS
 			{
 				case 1: BroadcastMessage("'You will remember my name! " + Name + "!'"); break;
 				case 2: BroadcastMessage(Name + " trips and falls on the hard stone floor."); break;
-			}					
-			base.Die(killer);
+			}
+			base.ProcessDeath(killer);
         }
         public override void DealDamage(AttackData ad)
         {
@@ -442,10 +442,10 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--ArosPetCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;

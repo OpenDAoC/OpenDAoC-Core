@@ -49,7 +49,7 @@ namespace DOL.GS
 				return true;
 			return base.HasAbility(keyName);
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
@@ -61,7 +61,7 @@ namespace DOL.GS
                     }
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{
@@ -359,10 +359,10 @@ namespace DOL.GS
 			base.OnAttackEnemy(ad);
 		}
 		public static int PitMonsterCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--PitMonsterCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{

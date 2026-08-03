@@ -88,11 +88,11 @@ namespace DOL.GS.Scripts
 		/// Invoked when Mistress of Runes dies.
 		/// </summary>
 		/// <param name="killer">The living that got the killing blow.</param>
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			BroadcastMessage(String.Format(m_DeathAnnounce, Name));
 			base.StopCurrentSpellcast();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)

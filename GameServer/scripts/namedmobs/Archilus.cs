@@ -112,12 +112,12 @@ namespace DOL.GS.Scripts
 			}
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
-			
+
 			this.Level = 60;
 			this.Size = 100;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 			foreach (GameNPC npc in this.GetNPCsInRadius(5000))
 			{
 				if (npc.Name.Contains("young death shroud"))

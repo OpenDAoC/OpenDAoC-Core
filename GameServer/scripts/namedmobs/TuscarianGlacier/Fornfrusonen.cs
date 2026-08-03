@@ -50,7 +50,7 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public override void Die(GameObject killer) //on kill generate orbs
+        public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
             foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
@@ -58,7 +58,7 @@ namespace DOL.GS
                     npc.RemoveFromWorld();
             }
             BroadcastMessage(String.Format("The frosty glows in {0}'s eyes abruptly blinks out. {0}'s form slowly fades into the ice. The shard swiftly evaporate leaving no trace of their corporeal existence behind!", Name));
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {
@@ -279,7 +279,7 @@ namespace DOL.GS
             get { return 50000; }
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC boss in GetNPCsInRadius(3000))
             {
@@ -289,7 +289,7 @@ namespace DOL.GS
                         boss.Health -= boss.MaxHealth / 4; //deal dmg to boss if this is killed
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         #region Stats
         public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }

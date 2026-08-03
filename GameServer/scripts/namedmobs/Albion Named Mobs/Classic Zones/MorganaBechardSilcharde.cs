@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 #region Morgana
 namespace DOL.GS
@@ -298,22 +301,32 @@ namespace DOL.GS
 			return true;
 		}
 		public static bool BechardKilled = false;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			--Morgana.BechardCount;
 			BechardKilled = true;
 			SpawnDemonic();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		private void SpawnDemonic()
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
+			Vector3 position = new(spawn.X, spawn.Y, spawn.Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < Morgana.BechardMinionCount + Util.Random(4, 6); i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that minions can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 150, filters) ?? position :
+					new(spawn.X + Util.Random(-150, 150), spawn.Y + Util.Random(-150, 150), spawn.Z);
+
 				DemonicMinion npc = new DemonicMinion();
-				npc.X = spawn.X + Util.Random(-150, 150);
-				npc.Y = spawn.Y + Util.Random(-150, 150);
-				npc.Z = spawn.Z;
+				npc.X = (int) spawnPoint.X;
+				npc.Y = (int) spawnPoint.Y;
+				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = 3148;
 				npc.CurrentRegion = CurrentRegion;
 				npc.PackageID = "BechardMinion";
@@ -450,22 +463,32 @@ namespace DOL.GS
 		}
 
 		public static bool SilchardeKilled = false;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			SilchardeKilled = true;
 			--Morgana.SilchardeCount;
 			SpawnDemonic();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		private void SpawnDemonic()
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
+			Vector3 position = new(spawn.X, spawn.Y, spawn.Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < Morgana.SilchardeMinionCount + Util.Random(4, 6); i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that minions can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 150, filters) ?? position :
+					new(spawn.X + Util.Random(-150, 150), spawn.Y + Util.Random(-150, 150), spawn.Z);
+
 				DemonicMinion npc = new DemonicMinion();
-				npc.X = spawn.X + Util.Random(-150, 150);
-				npc.Y = spawn.Y + Util.Random(-150, 150); 
-				npc.Z = spawn.Z;
+				npc.X = (int) spawnPoint.X;
+				npc.Y = (int) spawnPoint.Y;
+				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = 3148;
 				npc.CurrentRegion = CurrentRegion;
 				npc.PackageID = "SilchardeMinion";
@@ -534,13 +557,13 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			if (PackageID == "BechardMinion")
 				++Morgana.BechardDemonicMinionsCount;
 			if (PackageID == "SilchardeMinion")
 				++Morgana.SilchardeDemonicMinionsCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

@@ -87,10 +87,10 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
         public static int OakCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             OakCount=0;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {

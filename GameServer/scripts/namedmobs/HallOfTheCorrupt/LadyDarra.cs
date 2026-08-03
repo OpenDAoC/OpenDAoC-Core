@@ -323,10 +323,10 @@ namespace DOL.GS
             get { return 5000; }
         }
         public static int paladins_count = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --paladins_count;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {

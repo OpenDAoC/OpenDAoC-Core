@@ -76,10 +76,10 @@ namespace DOL.GS
             return true;
         }
         public static int SuttungCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             SuttungCount = 0;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {
@@ -331,10 +331,10 @@ namespace DOL.GS
             get { return 100000; }
         }
         public static int HjalmarCount = 0;
-        public override void Die(GameObject killer) //on kill generate orbs
+        public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
             HjalmarCount = 0;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public override void OnAttackEnemy(AttackData ad)

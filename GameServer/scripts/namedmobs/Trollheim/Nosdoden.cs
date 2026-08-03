@@ -59,7 +59,7 @@ namespace DOL.GS
 			}
 			return count;
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			// debug
 			if (killer == null)
@@ -82,7 +82,7 @@ namespace DOL.GS
 
 			AwardDragonKillPoint();
 
-			base.Die(killer);
+			base.ProcessDeath(killer);
 			foreach (String message in m_deathAnnounce)
 			{
 				BroadcastMessage(String.Format(message, Name));
@@ -2551,7 +2551,7 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.20;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             #region Kill pet Hunter
             if (PackageID == "NosdodenGhostHunter")
@@ -2593,7 +2593,7 @@ namespace DOL.GS
 				}
 			}
 			#endregion
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
         public override int MaxHealth
 		{
@@ -2853,14 +2853,14 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
 			{
 				if (npc.IsAlive && npc.RespawnInterval == -1 && npc.Brain is SkeletalCommanderHealerBrain && npc.PackageID == PackageID)
 					npc.Die(npc);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
         public override bool CanDropLoot => false;
         public override long ExperienceValue => 0;

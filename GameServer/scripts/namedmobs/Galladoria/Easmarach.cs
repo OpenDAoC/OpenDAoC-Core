@@ -83,7 +83,7 @@ namespace DOL.GS
             speed = 300;
             base.ReturnToSpawnPoint(speed);
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach(GamePlayer player in GetPlayersInRadius(10000))
             {
@@ -92,7 +92,7 @@ namespace DOL.GS
                     player.Out.SendMessage("With the death of the Easmarach, the current of the falls reduces significantly.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
                 }
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {

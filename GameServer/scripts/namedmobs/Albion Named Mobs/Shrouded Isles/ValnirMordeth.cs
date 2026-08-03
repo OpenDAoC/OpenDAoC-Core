@@ -68,14 +68,14 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is ValnirMordethAddBrain)
 					npc.Die(this);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
         private bool canSpawnAdds = false;
 		private void SpawnAdds()
@@ -372,10 +372,10 @@ namespace DOL.GS
 		}
         public override long ExperienceValue => 0;
         public override bool CanDropLoot => false;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--EssenceGhoulCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override void DealDamage(AttackData ad)
 		{

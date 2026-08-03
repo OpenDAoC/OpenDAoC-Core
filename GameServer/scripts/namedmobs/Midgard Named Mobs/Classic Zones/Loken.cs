@@ -85,14 +85,14 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach(GameNPC npc in GetNPCsInRadius(8000))
             {
 				if (npc != null && npc.IsAlive && npc.Brain is LokenWolfBrain)
 					npc.Die(this);
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         private void SpawnWolfs()
 		{
@@ -311,10 +311,10 @@ namespace DOL.GS
 			return true;
 		}
 		public static int WolfsCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--WolfsCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

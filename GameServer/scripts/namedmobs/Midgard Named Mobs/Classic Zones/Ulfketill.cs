@@ -173,10 +173,10 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--JotunsCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 		public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;

@@ -34,11 +34,11 @@ namespace DOL.GS
 			return true;
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			Message.MessageToArea(this, $"As {Name} falls to the ground, you feel a breeze in the air.\nA swirl of dirt covers the area.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 			SpawnSwirlDirt();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 
 		private void SpawnSwirlDirt()
@@ -82,12 +82,12 @@ namespace DOL.GS
 			return true;
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			if (killer != null)
 				Message.MessageToArea(this, $"{Name} says, \"I will return some day.Be warned!\"", eChatType.CT_Say, eChatLoc.CL_ChatWindow, WorldMgr.VISIBILITY_DISTANCE);
 
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 

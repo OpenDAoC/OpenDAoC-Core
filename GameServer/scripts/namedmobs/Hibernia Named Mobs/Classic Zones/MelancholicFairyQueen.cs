@@ -78,7 +78,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			IsKilled = true;
 			foreach (GameNPC adds in GetNPCsInRadius(8000))
@@ -86,8 +86,8 @@ namespace DOL.GS
 				if (adds != null && adds.IsAlive && adds.Brain is MFQGuardsBrain)
 					adds.RemoveFromWorld();
 			}
-			base.Die(killer);
-        }      
+			base.ProcessDeath(killer);
+        }
 	}
 }
 namespace DOL.AI.Brain

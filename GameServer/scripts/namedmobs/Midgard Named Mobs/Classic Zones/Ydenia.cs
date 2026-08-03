@@ -52,7 +52,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
 			if (throwPlayer != null)
@@ -60,7 +60,7 @@ namespace DOL.GS
 				throwPlayer.Stop();
 				TempProperties.RemoveProperty("ydenia_teleport");
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
 		public override void DealDamage(AttackData ad)
 		{

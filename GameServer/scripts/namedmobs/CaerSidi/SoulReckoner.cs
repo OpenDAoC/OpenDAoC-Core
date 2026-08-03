@@ -100,7 +100,7 @@ namespace DOL.GS
             }
         }
 
-        public override void Die(GameObject killer) //on kill generate orbs
+        public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
             {
@@ -111,7 +111,7 @@ namespace DOL.GS
                 }
             }
             spawn_souls = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public void BroadcastMessage(String message)
@@ -348,10 +348,10 @@ namespace DOL.GS
             get { return 20000; }
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --SoulCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool CanDropLoot => false;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }

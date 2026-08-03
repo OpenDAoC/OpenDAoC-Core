@@ -91,7 +91,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             SpawnAnnouncer();
             if (killer is GamePlayer)
@@ -106,7 +106,7 @@ namespace DOL.GS
                 prepareMezz.Stop();
                 TempProperties.RemoveProperty("kvasir_prepareMezz");
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         private void SpawnAnnouncer()
         {

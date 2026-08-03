@@ -68,15 +68,15 @@ namespace DOL.GS.Scripts
             return true;
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
-            base.Die(killer);
-
             foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
                 if (npc.Brain is IlronImagesBrain)
                     npc.RemoveFromWorld();
             }
+
+            base.ProcessDeath(killer);
         }
 
         [ScriptLoadedEvent]

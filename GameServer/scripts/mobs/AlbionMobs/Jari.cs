@@ -11,7 +11,7 @@ namespace DOL.GS
 
 			return base.AddToWorld();
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			switch (Util.Random(1, 2))
 			{
@@ -28,7 +28,7 @@ namespace DOL.GS
 					Heading = 2646;
 					break;
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

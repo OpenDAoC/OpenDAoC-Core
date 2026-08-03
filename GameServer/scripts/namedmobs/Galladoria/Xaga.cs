@@ -99,13 +99,13 @@ namespace DOL.GS
                 Beatha.AddToWorld();
             }
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             if (Tine != null && Tine.IsAlive)
                 Tine.Die(Tine);
             if (Beatha != null && Beatha.IsAlive)
                 Beatha.Die(Beatha);
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {
