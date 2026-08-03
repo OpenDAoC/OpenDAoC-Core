@@ -47,6 +47,15 @@ namespace DOL.GS.ServerRules
 		bool IsAllowedToAttack(GameLiving attacker, GameLiving defender, bool quiet);
 
 		/// <summary>
+		/// Is caster allowed to perform a beneficial action on target
+		/// </summary>
+		/// <param name="caster">living that performs the action</param>
+		/// <param name="target">target of the action</param>
+		/// <param name="quiet">should messages be sent</param>
+		/// <returns>true if helping is allowed</returns>
+		bool IsAllowedToHelp(GameLiving caster, GameLiving target, bool quiet);
+
+		/// <summary>
 		/// Should the target be considered the same realm as the source?
 		/// Do not use this for attack decisions, use IsAllowedToAttack instead.  This should be used
 		/// to determine things like Can join a guild? Can invite to a battlegroup?  Can rez?
