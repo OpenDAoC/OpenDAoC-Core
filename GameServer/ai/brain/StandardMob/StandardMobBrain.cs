@@ -1408,7 +1408,7 @@ namespace DOL.AI.Brain
             {
                 GameLiving highestThreat = null;
                 long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the table.
-                long currentTargetEffectiveAggro = 0;
+                long currentTargetEffectiveAggro = -1;
                 GameLiving currentTarget = _owner.Body.TargetObject as GameLiving;
 
                 foreach (var candidate in candidates)
@@ -1425,9 +1425,11 @@ namespace DOL.AI.Brain
 
                 // Don't change target if the current one is still at least as threatening as whatever we just found.
                 // Avoids flapping between targets with equal aggro.
-                return currentTarget != null && currentTarget != highestThreat && currentTargetEffectiveAggro >= highestEffectiveAggro ?
-                    currentTarget :
-                    highestThreat;
+                bool stayOnCurrentTarget = currentTarget != null &&
+                    currentTargetEffectiveAggro > -1 &&
+                    currentTarget != highestThreat &&
+                    currentTargetEffectiveAggro >= highestEffectiveAggro;
+                return stayOnCurrentTarget ? currentTarget : highestThreat;
             }
 
             public virtual bool ShouldBeRemoved(GameLiving target)
