@@ -1,14 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.Movement;
 
 namespace DOL.GS.Scripts
 {
     public class SkeletalSacristan : GameEpicBoss
     {
+        private const short PATROL_SPEED = 220;
+
+        private static readonly (int X, int Y, int Z)[] _patrolPoints =
+        [
+            (31826, 32256, 16750),
+            (32846, 32250, 16750),
+            (35357, 32243, 16494),
+            (35408, 35788, 16494),
+            (33112, 35808, 16750),
+            (30259, 35800, 16750),
+            (30238, 32269, 16750)
+        ];
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
@@ -57,6 +70,7 @@ namespace DOL.GS.Scripts
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166180);
 			LoadTemplate(npcTemplate);
+            CurrentPathPoint = MovementMgr.CreatePath(EPathType.Loop, PATROL_SPEED, _patrolPoints);
 			SkeletalSacristanBrain sBrain = new SkeletalSacristanBrain();
 			SetOwnBrain(sBrain);
 			base.AddToWorld();
@@ -71,12 +85,6 @@ namespace DOL.GS.Scripts
 				log.Info("Skeletal Sacristan NPC Initializing...");
 		}
 
-        public override void ReturnToSpawnPoint(short speed)
-        {
-            if (IsAlive)
-                return;
-            base.ReturnToSpawnPoint(speed);
-        }
         public override void StartAttack(GameObject target)
         {
         }
@@ -88,38 +96,8 @@ namespace DOL.AI.Brain
 {
 	public class SkeletalSacristanBrain : StandardMobBrain
 	{
-        public SkeletalSacristanBrain()
-        {
-            _roamingPathPoints.Add(new Point3D(31826, 32256, 16750));
-            _roamingPathPoints.Add(new Point3D(32846, 32250, 16750));
-            _roamingPathPoints.Add(new Point3D(35357, 32243, 16494));
-            _roamingPathPoints.Add(new Point3D(35408, 35788, 16494));
-            _roamingPathPoints.Add(new Point3D(33112, 35808, 16750));
-            _roamingPathPoints.Add(new Point3D(30259, 35800, 16750));
-            _roamingPathPoints.Add(new Point3D(30238, 32269, 16750));
-        }
-
-        private List<Point3D> _roamingPathPoints = new List<Point3D>();
-        private int _lastRoamIndex = 0;
-
         public override void Think()
 		{
-            if (Body.IsAlive)
-            {
-                if (Body.IsWithinRadius(_roamingPathPoints[_lastRoamIndex], 100))
-                {
-                    _lastRoamIndex++;
-                }
-
-                if(_lastRoamIndex >= _roamingPathPoints.Count)
-                {
-                    _lastRoamIndex = 0;
-                    Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
-                }
-                else if(!Body.IsMoving)
-                    Body.WalkTo(_roamingPathPoints[_lastRoamIndex], (short)Util.Random(195, 250));
-            }
-
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 ClearAggroList();
