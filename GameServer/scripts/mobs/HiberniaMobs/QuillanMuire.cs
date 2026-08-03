@@ -48,7 +48,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Spells
-		private static Spell QuillanMuire_DD => ScriptSpells.GetOrCreate("QuillanMuireDD", 20, spell =>
+		private static Spell QuillanMuire_DD => ScriptSpells.GetOrCreate("QuillanMuireDD", 20, static spell =>
 		{
 			spell.CastTime = 3.5;
 			spell.RecastDelay = Util.Random(10, 15);
@@ -65,7 +65,7 @@ namespace DOL.AI.Brain
 			spell.MoveCast = true;
 			spell.DamageType = (int)eDamageType.Energy;
 		});
-		private static Spell QuillanMuire_DD2 => ScriptSpells.GetOrCreate("QuillanMuireDD2", 20, spell =>
+		private static Spell QuillanMuire_DD2 => ScriptSpells.GetOrCreate("QuillanMuireDD2", 20, static spell =>
 		{
 			spell.CastTime = 3.5;
 			spell.RecastDelay = Util.Random(8, 12);
@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
 			base.Think();
         }
         #region Spells
-        private static Spell MuireHerbalistHeal => ScriptSpells.GetOrCreate("MuireHerbalistHeal", 15, spell =>
+        private static Spell MuireHerbalistHeal => ScriptSpells.GetOrCreate("MuireHerbalistHeal", 15, static spell =>
 		{
 			spell.CastTime = 3;
 			spell.RecastDelay = 3;
@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
 			spell.Uninterruptible = false;
 			spell.MoveCast = false;
 		});
-		private static Spell MuireHerbalist_Buff_STR => ScriptSpells.GetOrCreate("MuireHerbalistBuffSTR", 15, spell =>
+		private static Spell MuireHerbalist_Buff_STR => ScriptSpells.GetOrCreate("MuireHerbalistBuffSTR", 15, static spell =>
 		{
 			spell.CastTime = 3;
 			spell.RecastDelay = 0;

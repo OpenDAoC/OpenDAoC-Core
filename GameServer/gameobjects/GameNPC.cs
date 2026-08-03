@@ -1538,7 +1538,7 @@ namespace DOL.GS
 
 				try
 				{
-					newQuest = _abstractQuestConstructorCache.GetOrAdd(questType, (key) => CompiledConstructorFactory.CompileConstructor(key, []) as Func<AbstractQuest>)();
+					newQuest = _abstractQuestConstructorCache.GetOrAdd(questType, key => CompiledConstructorFactory.CompileConstructor(key, []) as Func<AbstractQuest>)();
 				}
 				catch (Exception e)
 				{

@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 			Body.Size = _normalSize;
 		}
 
-		private static Spell IckDD => ScriptSpells.GetOrCreate("IckLifeDrain", 20, db =>
+		private static Spell IckDD => ScriptSpells.GetOrCreate("IckLifeDrain", 20, static db =>
 		{
 			db.CastTime = 0;
 			db.Power = 0;

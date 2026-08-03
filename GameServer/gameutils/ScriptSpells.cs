@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Concurrent;
 using DOL.Database;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// Spell lookup and synthetic spell caching for mob scripts.
-    /// </summary>
     public static class ScriptSpells
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly ConcurrentDictionary<string, Spell> _synthetic = new();
+        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ConcurrentDictionary<string, Spell> _cache = new();
 
         public static Spell FromDatabase(int spellId)
         {
@@ -24,12 +22,17 @@ namespace DOL.GS
 
         public static Spell GetOrCreate(string key, int level, Action<DbSpell> configure)
         {
-            return _synthetic.GetOrAdd(key, _ =>
+            return GetOrCreate(key, level, static (db, action) => action(db), configure);
+        }
+
+        public static Spell GetOrCreate<TState>(string key, int level, Action<DbSpell, TState> configure, TState state)
+        {
+            return _cache.GetOrAdd(key, static (key, s) =>
             {
                 DbSpell db = new() { AllowAdd = false };
-                configure(db);
-                return new Spell(db, level);
-            });
+                s.configure(db, s.state);
+                return new Spell(db, s.level);
+            }, (level, configure, state));
         }
     }
 }

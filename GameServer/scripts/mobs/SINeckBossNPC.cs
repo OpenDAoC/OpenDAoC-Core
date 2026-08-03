@@ -41,7 +41,7 @@ namespace DOL.GS {
 			}
             base.OnAttackEnemy(ad);
         }
-		public Spell SINeckBossDD => ScriptSpells.GetOrCreate("SINeckBossDD", 50, spell =>
+		public Spell SINeckBossDD => ScriptSpells.GetOrCreate("SINeckBossDD", 50, static spell =>
 		{
 			spell.CastTime = 0;
 			spell.Power = 0;

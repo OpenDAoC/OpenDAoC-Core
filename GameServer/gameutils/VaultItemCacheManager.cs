@@ -17,7 +17,7 @@ namespace DOL.GS
 
         public static VaultItemCache GetCache(VaultItemCacheKey key)
         {
-            return _caches.GetOrAdd(key, id => new(id));
+            return _caches.GetOrAdd(key, static id => new(id));
         }
 
         public static void RemoveCache(VaultItemCacheKey key, VaultItemCache cache)

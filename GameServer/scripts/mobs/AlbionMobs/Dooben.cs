@@ -29,7 +29,7 @@ namespace DOL.GS
 			base.OnAttackEnemy(ad);
 		}
 
-		private static Spell DoobenDD => ScriptSpells.GetOrCreate("DoobenSandStrike", 10, db =>
+		private static Spell DoobenDD => ScriptSpells.GetOrCreate("DoobenSandStrike", 10, static db =>
 		{
 			db.CastTime = 0;
 			db.Power = 0;
