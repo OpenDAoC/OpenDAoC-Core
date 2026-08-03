@@ -387,6 +387,17 @@ namespace DOL.GS.ServerRules
             if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
                 return false;
 
+            if (playerAttacker != null &&
+                npcDefender != null &&
+                (npcDefender.Brain as StandardMobBrain)?.RaidEncounter is { Active: true } raidEncounter &&
+                !raidEncounter.IsOnRoster(playerAttacker))
+            {
+                if (!quiet)
+                    MessageToLiving(attacker, "You are not part of this encounter!");
+
+                return false;
+            }
+
             //flame - Commenting out Safe Area check as it was causing lots of lock contention in the GetAreasOfSpot() code. We currently dont have safe-areas so this doesnt affect anything
 
             // // Safe area support for defender
@@ -455,6 +466,48 @@ namespace DOL.GS.ServerRules
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Whether the caster is allowed to perform a beneficial action on the target.
+        /// </summary>
+        /// <returns>true if helping is allowed</returns>
+        public virtual bool IsAllowedToHelp(GameLiving caster, GameLiving target, bool quiet)
+        {
+            if (caster == null || target == null || caster == target)
+                return true;
+
+            if (!TryGetPlayerOwner(caster, out GamePlayer playerCaster) || !TryGetPlayerOwner(target, out GamePlayer playerTarget))
+                return true;
+
+            if (RaidEncounter.IsBlockedFromHelping(playerCaster, playerTarget))
+            {
+                if (!quiet)
+                    MessageToLiving(caster, "You are not part of this encounter!");
+
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Resolves a living to the player controlling it, either itself or the owner of a controlled NPC.
+        /// </summary>
+        public static bool TryGetPlayerOwner(GameLiving living, out GamePlayer player)
+        {
+            player = living as GamePlayer;
+
+            if (player != null)
+                return true;
+
+            if (living is GameNPC npc && npc.Brain is IControlledBrain controlledBrain)
+            {
+                player = controlledBrain.GetPlayerOwner();
+                return player != null;
+            }
+
+            return false;
         }
 
         public virtual bool IsAllowedToSpeak(GamePlayer source, string communicationType)
@@ -1075,6 +1128,9 @@ namespace DOL.GS.ServerRules
                 DropLoot(killedNpc, killer, itemOwners);
             }
 
+            if (killedNpc.Brain is StandardMobBrain killedNpcBrain && killedNpcBrain.RaidEncounter is { } raidEncounter && raidEncounter.Owner == killedNpcBrain)
+                raidEncounter.GrantPersonalRewards(killedNpc);
+
             static void SendNotWorthRewardMessage(GameNPC killedNpc, GameNPC.RewardEligibility rewardEligibility)
             {
                 string message;
@@ -1210,12 +1266,22 @@ namespace DOL.GS.ServerRules
         {
             List<GamePlayer> playersInRadius = killedNpc.GetPlayersInRadius(WorldMgr.INFO_DISTANCE);
 
-            foreach (DbItemTemplate itemTemplate in LootMgr.GetLoot(killedNpc, killer))
+            // A raid encounter rolls the mob's loot tables once more per share of roster members above the baseline.
+            // Bonus rolls go through the regular drop path, so they're indistinguishable from the base drop.
+            int lootPasses = 1;
+
+            if (killedNpc.Brain is StandardMobBrain killedNpcBrain && killedNpcBrain.RaidEncounter is { Active: true } raidEncounter && raidEncounter.Owner == killedNpcBrain)
+                lootPasses += raidEncounter.BonusLootRolls;
+
+            for (int lootPass = 0; lootPass < lootPasses; lootPass++)
             {
-                if (GameMoney.IsItemMoney(itemTemplate.Name))
-                    CreateMoney(killedNpc, itemTemplate, itemOwners, playersInRadius);
-                else
-                    CreateItem(killedNpc, itemTemplate, itemOwners, playersInRadius);
+                foreach (DbItemTemplate itemTemplate in LootMgr.GetLoot(killedNpc, killer))
+                {
+                    if (GameMoney.IsItemMoney(itemTemplate.Name))
+                        CreateMoney(killedNpc, itemTemplate, itemOwners, playersInRadius);
+                    else
+                        CreateItem(killedNpc, itemTemplate, itemOwners, playersInRadius);
+                }
             }
 
             static void CreateMoney(GameNPC killedNpc, DbItemTemplate itemTemplate, SortedSet<ItemOwnerTotalDamagePair> itemOwners, List<GamePlayer> playersInRadius)
