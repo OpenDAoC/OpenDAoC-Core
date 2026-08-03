@@ -3949,6 +3949,8 @@ namespace DOL.GS
 		private double m_campBonus = 1;
 
 		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
+		public override double MaxHealthScalingFactor => base.MaxHealthScalingFactor * RaidEncounterHealthScalingFactor;
+		protected double RaidEncounterHealthScalingFactor => Brain is StandardMobBrain brain && brain.RaidEncounter is { Active: true } raidEncounter && (raidEncounter.Owner == brain || brain.RaidEncounterScalesHealth) ? raidEncounter.HpMultiplier : 1.0;
 		public double DamageFactor { get => damageFactor; set => damageFactor = value; }
 	}
 }

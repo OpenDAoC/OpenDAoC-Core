@@ -94,11 +94,18 @@ namespace DOL.AI.Brain
         {
             _brain.Body.Flags &= ~GameNPC.eFlags.STEALTH;
             _aggroEndTime = GameLoop.GameLoopTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR;
+
+            if (_brain.RaidEncounter is { Active: false } raidEncounter && raidEncounter.Owner == _brain && raidEncounter.Snapshot(_brain.Body, _brain))
+                _brain.Body.Health = _brain.Body.MaxHealth;
+
             base.Enter();
         }
 
         public override void Exit()
         {
+            if (_brain.RaidEncounter?.Owner == _brain)
+                _brain.RaidEncounter.Clear();
+
             _brain.ClearAggroList();
 
             if (_brain.Body.attackComponent.AttackState)
