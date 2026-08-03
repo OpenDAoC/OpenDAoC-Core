@@ -3139,7 +3139,7 @@ namespace DOL.GS
 			if (string.IsNullOrEmpty(typeName))
 				return null;
 
-			return _typeResolutionCache.GetOrAdd(typeName, name =>
+			return _typeResolutionCache.GetOrAdd(typeName, static name =>
 			{
 				// Try standard Type.GetType (fastest if assembly qualified).
 				Type type = Type.GetType(name, false, true);

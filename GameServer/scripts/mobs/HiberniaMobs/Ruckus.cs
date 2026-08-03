@@ -56,7 +56,7 @@ namespace DOL.AI.Brain
 			return 0;
 		}
 		#region Spells
-		private static Spell RuckusDA => ScriptSpells.GetOrCreate("RuckusDA", 20, db =>
+		private static Spell RuckusDA => ScriptSpells.GetOrCreate("RuckusDA", 20, static db =>
 		{
 			db.CastTime = 0;
 			db.Power = 0;
@@ -73,7 +73,7 @@ namespace DOL.AI.Brain
 			db.Type = eSpellType.DamageAdd.ToString();
 			db.Uninterruptible = true;
 		});
-		private static Spell Ruckus_stun => ScriptSpells.GetOrCreate("RuckusStun", 20, db =>
+		private static Spell Ruckus_stun => ScriptSpells.GetOrCreate("RuckusStun", 20, static db =>
 		{
 			db.CastTime = 0;
 			db.RecastDelay = 2;

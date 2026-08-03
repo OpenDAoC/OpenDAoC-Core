@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 
-		private static Spell StormLightning => ScriptSpells.GetOrCreate("UnnaturalStormLightning", 50, db =>
+		private static Spell StormLightning => ScriptSpells.GetOrCreate("UnnaturalStormLightning", 50, static db =>
 		{
 			db.CastTime = 0;
 			db.RecastDelay = 3;

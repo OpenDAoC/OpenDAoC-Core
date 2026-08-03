@@ -55,7 +55,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
         #region Spells
-        private static Spell RylieDD => ScriptSpells.GetOrCreate("RylieDD", 15, spell =>
+        private static Spell RylieDD => ScriptSpells.GetOrCreate("RylieDD", 15, static spell =>
 		{
 			spell.CastTime = 3;
 			spell.Power = 0;
@@ -71,7 +71,7 @@ namespace DOL.AI.Brain
 			spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 			spell.Uninterruptible = true;
 		});
-		private static Spell Rylie_stun => ScriptSpells.GetOrCreate("RylieStun", 15, spell =>
+		private static Spell Rylie_stun => ScriptSpells.GetOrCreate("RylieStun", 15, static spell =>
 		{
 			spell.CastTime = 2;
 			spell.RecastDelay = 0;

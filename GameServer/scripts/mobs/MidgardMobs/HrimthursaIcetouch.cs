@@ -72,7 +72,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Spells
-		private static Spell IcetouchHeal => ScriptSpells.GetOrCreate("HrimthursaHeal", 60, spell =>
+		private static Spell IcetouchHeal => ScriptSpells.GetOrCreate("HrimthursaHeal", 60, static spell =>
 		{
 			spell.CastTime = 4;
 			spell.Power = 0;
@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 			spell.Uninterruptible = true;
 			spell.MoveCast = true;
 		});
-		private static Spell IcetouchMezz => ScriptSpells.GetOrCreate("HrimthursaMezz", 60, spell =>
+		private static Spell IcetouchMezz => ScriptSpells.GetOrCreate("HrimthursaMezz", 60, static spell =>
 		{
 			spell.CastTime = 3;
 			spell.Power = 0;
@@ -110,7 +110,7 @@ namespace DOL.AI.Brain
 			spell.Uninterruptible = true;
 			spell.MoveCast = true;
 		});
-		private static Spell IcetouchRoot => ScriptSpells.GetOrCreate("HrimthursaRoot", 60, spell =>
+		private static Spell IcetouchRoot => ScriptSpells.GetOrCreate("HrimthursaRoot", 60, static spell =>
 		{
 			spell.CastTime = 0;
 			spell.Power = 0;

@@ -60,7 +60,7 @@ namespace DOL.GS
 			base.OnAttackEnemy(ad);
 		}
 
-		private static Spell CrusaderDD => ScriptSpells.GetOrCreate("CrusaderAntithesisDD", 60, db =>
+		private static Spell CrusaderDD => ScriptSpells.GetOrCreate("CrusaderAntithesisDD", 60, static db =>
 		{
 			db.CastTime = 0;
 			db.Power = 0;

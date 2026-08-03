@@ -51,7 +51,7 @@ namespace DOL.AI.Brain
 
 		protected static Spell CreateHasteDebuff(string cacheKey, int spellId)
 		{
-			return ScriptSpells.GetOrCreate(cacheKey, 13, db =>
+			return ScriptSpells.GetOrCreate(cacheKey, 13, static (db, spellId) =>
 			{
 				db.CastTime = 0;
 				db.RecastDelay = 7;
@@ -71,7 +71,7 @@ namespace DOL.AI.Brain
 				db.Target = eSpellTarget.ENEMY.ToString();
 				db.Type = eSpellType.CombatSpeedDebuff.ToString();
 				db.DamageType = (int)eDamageType.Body;
-			});
+			}, spellId);
 		}
 	}
 }

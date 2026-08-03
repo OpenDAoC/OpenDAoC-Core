@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Spells
-		private static Spell VagdushDisease => ScriptSpells.GetOrCreate("VagdushDisease", 10, db =>
+		private static Spell VagdushDisease => ScriptSpells.GetOrCreate("VagdushDisease", 10, static db =>
 		{
 			db.CastTime = 2;
 			db.RecastDelay = 0;
@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 			db.Type = "Disease";
 			db.DamageType = (int)eDamageType.Body; //Energy DMG Type
 		});
-		private static Spell VagdushDD => ScriptSpells.GetOrCreate("VagdushDD", 10, db =>
+		private static Spell VagdushDD => ScriptSpells.GetOrCreate("VagdushDD", 10, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 0;

@@ -87,7 +87,7 @@ namespace DOL.AI.Brain
 		}
 
 		#region Spells
-		private static Spell EarthenGrasp => ScriptSpells.GetOrCreate("RainbowSpriteEarthenGrasp", 30, db =>
+		private static Spell EarthenGrasp => ScriptSpells.GetOrCreate("RainbowSpriteEarthenGrasp", 30, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 25;
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 		}
 
 		#region Spells
-		private static Spell DazzlingFlash => ScriptSpells.GetOrCreate("RainbowSpriteDazzlingFlash", 30, db =>
+		private static Spell DazzlingFlash => ScriptSpells.GetOrCreate("RainbowSpriteDazzlingFlash", 30, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 30;
@@ -160,7 +160,7 @@ namespace DOL.AI.Brain
 		}
 
 		#region Spells
-		private static Spell ChillingMist => ScriptSpells.GetOrCreate("RainbowSpriteChillingMist", 30, db =>
+		private static Spell ChillingMist => ScriptSpells.GetOrCreate("RainbowSpriteChillingMist", 30, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 12;
@@ -193,7 +193,7 @@ namespace DOL.AI.Brain
 		}
 
 		#region Spells
-		private static Spell GreenSpriteHeal => ScriptSpells.GetOrCreate("RainbowSpriteGreenHeal", 30, db =>
+		private static Spell GreenSpriteHeal => ScriptSpells.GetOrCreate("RainbowSpriteGreenHeal", 30, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 8;

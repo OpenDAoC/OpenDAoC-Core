@@ -186,7 +186,7 @@ namespace DOL.AI.Brain
 		}
 
 		#region Spells
-		private static Spell Tabor_DD => ScriptSpells.GetOrCreate("TaborEarthBlast", 20, db =>
+		private static Spell Tabor_DD => ScriptSpells.GetOrCreate("TaborEarthBlast", 20, static db =>
 		{
 			db.CastTime = 3.5;
 			db.RecastDelay = Util.Random(10, 15);
@@ -203,7 +203,7 @@ namespace DOL.AI.Brain
 			db.DamageType = (int)eDamageType.Matter;
 		});
 
-		private static Spell Tabor_DD2 => ScriptSpells.GetOrCreate("TaborEarthBlastAoe", 20, db =>
+		private static Spell Tabor_DD2 => ScriptSpells.GetOrCreate("TaborEarthBlastAoe", 20, static db =>
 		{
 			db.CastTime = 3.5;
 			db.RecastDelay = Util.Random(15, 20);
@@ -221,7 +221,7 @@ namespace DOL.AI.Brain
 			db.DamageType = (int)eDamageType.Matter;
 		});
 
-		private static Spell Tabor_Dot => ScriptSpells.GetOrCreate("TaborPoison", 20, db =>
+		private static Spell Tabor_Dot => ScriptSpells.GetOrCreate("TaborPoison", 20, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 20;
@@ -247,7 +247,7 @@ namespace DOL.AI.Brain
 			db.DamageType = (int)eDamageType.Matter;
 		});
 
-		private static Spell Tabor_Dot2 => ScriptSpells.GetOrCreate("TaborAcid", 20, db =>
+		private static Spell Tabor_Dot2 => ScriptSpells.GetOrCreate("TaborAcid", 20, static db =>
 		{
 			db.CastTime = 3;
 			db.RecastDelay = 20;

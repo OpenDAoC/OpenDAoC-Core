@@ -676,7 +676,7 @@ namespace DOL.GS
                         foreach (CharacterClassAttribute attrib in objs)
                         {
                             if (attrib.ID == id)
-                                return _characterClassConstructorCache.GetOrAdd(id, (key) => CompiledConstructorFactory.CompileConstructor(type, []) as Func<ICharacterClass>)();
+                                return _characterClassConstructorCache.GetOrAdd(id, key => CompiledConstructorFactory.CompileConstructor(type, []) as Func<ICharacterClass>)();
                         }
                     }
                     catch (Exception e)
