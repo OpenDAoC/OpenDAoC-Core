@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -83,19 +86,29 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			SpawnCopies();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		private void SpawnCopies()
 		{
+			Vector3 position = new(X, Y, Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < 3; i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that copies can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 50, filters) ?? position :
+					new(X + Util.Random(-50, 50), Y + Util.Random(-50, 50), Z);
+
 				GreenMawAdd npc = new GreenMawAdd();
-				npc.X = X + Util.Random(-50, 50);
-				npc.Y = Y + Util.Random(-50, 50);
-				npc.Z = Z;
+				npc.X = (int) spawnPoint.X;
+				npc.Y = (int) spawnPoint.Y;
+				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
 				npc.AddToWorld();
@@ -133,6 +146,9 @@ namespace DOL.GS
 {
 	public class GreenMawAdd : GameNPC
 	{
+		private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+		private const int DESPAWN_RETRY_INTERVAL = 30000;
+
 		public GreenMawAdd() : base() { }
 		public override int GetResist(eDamageType damageType)
 		{
@@ -174,26 +190,51 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
+			new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
 			base.AddToWorld();
 			return true;
 		}
+
+		private int Despawn(ECSGameTimer timer)
+		{
+			if (!IsAlive)
+				return 0;
+
+			// Don't despawn mid fight.
+			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+				return DESPAWN_RETRY_INTERVAL;
+
+			RemoveFromWorld();
+			return 0;
+		}
+
 		public static int GreenMawRedCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			++GreenMawRedCount;
 			if (GreenMawRedCount >= 3)
 				SpawnCopies();
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
 		public override bool CanDropLoot => false;
 		private void SpawnCopies()
 		{
+			Vector3 position = new(X, Y, Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < 4; i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that copies can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 50, filters) ?? position :
+					new(X + Util.Random(-50, 50), Y + Util.Random(-50, 50), Z);
+
 				GreenMawAdd2 npc = new GreenMawAdd2();
-				npc.X = X + Util.Random(-50, 50);
-				npc.Y = Y + Util.Random(-50, 50);
-				npc.Z = Z;
+				npc.X = (int) spawnPoint.X;
+				npc.Y = (int) spawnPoint.Y;
+				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
 				npc.AddToWorld();
@@ -225,6 +266,9 @@ namespace DOL.GS
 {
 	public class GreenMawAdd2 : GameNPC
 	{
+		private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+		private const int DESPAWN_RETRY_INTERVAL = 30000;
+
 		public GreenMawAdd2() : base() { }
 		public override int GetResist(eDamageType damageType)
 		{
@@ -266,26 +310,51 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
+			new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
 			base.AddToWorld();
 			return true;
 		}
+
+		private int Despawn(ECSGameTimer timer)
+		{
+			if (!IsAlive)
+				return 0;
+
+			// Don't despawn mid fight.
+			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+				return DESPAWN_RETRY_INTERVAL;
+
+			RemoveFromWorld();
+			return 0;
+		}
+
 		public static int GreenMawOrangeCount = 0;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			++GreenMawOrangeCount;
 			if (GreenMawOrangeCount >= 4)
 				SpawnCopies();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public override bool CanDropLoot => false;
 		private void SpawnCopies()
 		{
+			Vector3 position = new(X, Y, Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < 2; i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that copies can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 50, filters) ?? position :
+					new(X + Util.Random(-50, 50), Y + Util.Random(-50, 50), Z);
+
 				GreenMawAdd3 npc = new GreenMawAdd3();
-				npc.X = X + Util.Random(-50, 50);
-				npc.Y = Y + Util.Random(-50, 50);
-				npc.Z = Z;
+				npc.X = (int) spawnPoint.X;
+				npc.Y = (int) spawnPoint.Y;
+				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
 				npc.AddToWorld();
@@ -317,6 +386,9 @@ namespace DOL.GS
 {
 	public class GreenMawAdd3 : GameNPC
 	{
+		private const int DESPAWN_DELAY = 180000; // Death-spawned adds despawn if they're left alone.
+		private const int DESPAWN_RETRY_INTERVAL = 30000;
+
 		public GreenMawAdd3() : base() { }
 		public override int GetResist(eDamageType damageType)
 		{
@@ -359,9 +431,24 @@ namespace DOL.GS
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
+			new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
 			base.AddToWorld();
 			return true;
 		}
+
+		private int Despawn(ECSGameTimer timer)
+		{
+			if (!IsAlive)
+				return 0;
+
+			// Don't despawn mid fight.
+			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+				return DESPAWN_RETRY_INTERVAL;
+
+			RemoveFromWorld();
+			return 0;
+		}
+
 		public override bool CanDropLoot => false;
 	}
 }

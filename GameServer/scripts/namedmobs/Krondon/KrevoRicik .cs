@@ -77,7 +77,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC add in GetNPCsInRadius(4000))
 			{
@@ -85,7 +85,7 @@ namespace DOL.GS
 				if (add.IsAlive && add.Brain is KrevoAddBrain)
 					add.Die(this);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
     }
 }

@@ -80,15 +80,15 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC adds in GetNPCsInRadius(8000))
 			{
 				if (adds != null && adds.IsAlive && adds.Brain is BadbWraithBrain)
 					adds.RemoveFromWorld();
 			}
-			base.Die(killer);
-        }		
+			base.ProcessDeath(killer);
+        }
 	}
 }
 namespace DOL.AI.Brain

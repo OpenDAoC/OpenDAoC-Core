@@ -107,11 +107,11 @@ namespace DOL.GS
 			return true;
 		}
 		public static int DevelinAddCount = 0;
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			if (CurrentRegion.IsNightTime)
 				++DevelinAddCount;
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

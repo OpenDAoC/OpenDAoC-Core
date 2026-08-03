@@ -107,7 +107,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
 			{
@@ -123,7 +123,7 @@ namespace DOL.GS
 					}
 				}
 			}
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public void SpawnOrbs()
 		{
@@ -227,10 +227,10 @@ namespace DOL.GS
         {
         }
 		public static int Orb1Count = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--Orb1Count;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{
@@ -358,10 +358,10 @@ namespace DOL.GS
 		{
 		}
 		public static int Orb2Count = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--Orb2Count;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{
@@ -489,10 +489,10 @@ namespace DOL.GS
 		{
 		}
 		public static int Orb3Count = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--Orb3Count;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{
@@ -620,10 +620,10 @@ namespace DOL.GS
 		{
 		}
 		public static int Orb4Count = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--Orb4Count;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{

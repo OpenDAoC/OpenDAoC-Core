@@ -21,10 +21,10 @@ namespace DOL.GS
 			return base.AddToWorld();
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			(Brain as GiantLemerBrain)?.ClearAdds();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 	}
 }

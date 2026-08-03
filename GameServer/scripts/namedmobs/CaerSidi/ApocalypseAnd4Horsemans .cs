@@ -406,18 +406,18 @@ namespace DOL.GS
             }
         }
         private bool prepareBellum = false;
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
-            
+
             if(!prepareBellum)
-            { 
+            {
                 BroadcastMessage(String.Format("Bellum says, 'Prepare yourselves for war. One minute, you are granted.'"));
                 new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnHorsemanBellum), 60000);//60s before starting
                 prepareBellum = true;
             }
             FamesIsUp = false;
             FamesBrain.StartedFames = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public int SpawnHorsemanBellum(ECSGameTimer timer)
         {
@@ -577,7 +577,7 @@ namespace DOL.GS
             }
         }
         private bool prepareMorbus = false;
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
             if (!prepareMorbus)
             {
@@ -603,7 +603,7 @@ namespace DOL.GS
             BellumBrain.StartedBellum = false;
             BellumUP = false;
             spawn_fate2 = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public int SpawnHorsemanMorbus(ECSGameTimer timer)
         {
@@ -1352,7 +1352,7 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
             if (!prepareFunus)
             {
@@ -1367,7 +1367,7 @@ namespace DOL.GS
             MorbusBrain.StartedMorbus = false;
             spawn_fate3 = false;
             MorbusUP = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public int SpawnHorsemanFunus(ECSGameTimer timer)
         {
@@ -1637,10 +1637,10 @@ namespace DOL.GS
         {
             get { return 15000; }
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --Morbus.Morbus_Swarm_count;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public override void SetStats(DbMob dbMob = null)
@@ -1879,7 +1879,7 @@ namespace DOL.GS
         }
         public static bool FunusUp = true;
         private bool prepareApoc = false;
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
             if (!prepareApoc)
             {
@@ -1890,7 +1890,7 @@ namespace DOL.GS
             spawn_fate4 = false;
             FunusBrain.StartedFunus = false;
             FunusUp = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public int SpawnApoc(ECSGameTimer timer)
         {
@@ -2068,7 +2068,7 @@ namespace DOL.GS
             get { return 300000; }
         }
         public static bool ApocUP = true;
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
             foreach (GameNPC npc in GetNPCsInRadius(4000))
             {
@@ -2084,11 +2084,11 @@ namespace DOL.GS
             BroadcastMessage(String.Format("Apocalypse shouts, 'Your end is at hand!'"));
 
             AwardEpicEncounterKillPoint();
-           
+
             ApocalypseBrain.StartedApoc = false;
             ApocInitializator.start_respawn_check = false;
             ApocUP = false;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }      
         
         protected int AwardEpicEncounterKillPoint()

@@ -190,11 +190,11 @@ namespace DOL.GS
 		}
 		public static int SphereCount = 0;
 		public static bool IsSphereDead = false;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--SphereCount;
 			IsSphereDead = true;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
 		{

@@ -5,14 +5,14 @@ namespace DOL.GS.Scripts
     /// </summary>
     public class BPMobHigh : GameNPC
     {
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             GamePlayer player = killer as GamePlayer;
 
             if (player is GamePlayer && RewardStatus is RewardEligibility.Eligible)
                 player.GainBountyPoints((this.Level * 5));
 
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

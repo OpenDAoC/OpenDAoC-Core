@@ -78,14 +78,13 @@ namespace DOL.GS.Scripts
         /// Invoked when Aros the Spiritmaster dies.
         /// </summary>
         /// <param name="killer">The living that got the killing blow.</param>
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             if (killer == null)
                 log.Error("Aros The Spiritmaster Killed: killer is null!");
             else
                 log.Debug("Aros The Spiritmaster Killed: killer is " + killer.Name + ", attackers:");
             base.StopCurrentSpellcast();
-            base.Die(killer);
 
             foreach (String message in m_DeathAnnounce)
             {
@@ -103,6 +102,8 @@ namespace DOL.GS.Scripts
                     npc.Die(killer);
                 }
             }
+
+            base.ProcessDeath(killer);
         }
 
         #region Damage & Heal Events

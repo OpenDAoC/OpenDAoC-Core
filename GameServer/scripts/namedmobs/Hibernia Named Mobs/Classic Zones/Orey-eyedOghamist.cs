@@ -73,6 +73,7 @@ namespace DOL.GS
 
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			CurrentPathPoint = MovementMgr.CreatePath(EPathType.Loop, MaxSpeedBase, _patrolPoints);
+			Spells = [OreyEyedOghamistBrain.Bomb];
 			OreyEyedOghamistBrain sbrain = new OreyEyedOghamistBrain();
 			SetOwnBrain(sbrain);
 			base.AddToWorld();
@@ -93,17 +94,12 @@ namespace DOL.AI.Brain
 		}
         public override void Think()
 		{
-			if (Body.IsAlive)
-			{
-				if (!Body.Spells.Contains(OreyBomb))
-					Body.Spells.Add(OreyBomb);
-			}
 			if(Body.TargetObject != null && HasAggro)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (!Body.IsWithinRadius(Body.TargetObject, 300))
 				{
-					if (!Body.IsCasting && Util.Chance(100))
+					if (!Body.IsCasting)
 						Body.CastSpell(OreyDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 				}
 				else
@@ -118,34 +114,23 @@ namespace DOL.AI.Brain
             base.Think();
 		}
 		#region Spells
-		private Spell m_OreyBomb;
-		private Spell OreyBomb
+		internal static Spell Bomb => ScriptSpells.GetOrCreate("OreyBomb", 60, static spell =>
 		{
-			get
-			{
-				if (m_OreyBomb == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 5;
-					spell.Power = 0;
-					spell.RecastDelay = Util.Random(20, 30);
-					spell.ClientEffect = 4369;
-					spell.Icon = 4369;
-					spell.Damage = 800;
-					spell.DamageType = (int)eDamageType.Energy;
-					spell.Name = "Energy Blast";
-					spell.Range = 0;
-					spell.Radius = 1000;
-					spell.SpellID = 12012;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Uninterruptible = true;
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					m_OreyBomb = new Spell(spell, 60);
-				}
-				return m_OreyBomb;
-			}
-		}
+			spell.CastTime = 5;
+			spell.Power = 0;
+			spell.RecastDelay = Util.Random(20, 30);
+			spell.ClientEffect = 4369;
+			spell.Icon = 4369;
+			spell.Damage = 800;
+			spell.DamageType = (int)eDamageType.Energy;
+			spell.Name = "Energy Blast";
+			spell.Range = 0;
+			spell.Radius = 1000;
+			spell.SpellID = 12012;
+			spell.Target = eSpellTarget.ENEMY.ToString();
+			spell.Uninterruptible = true;
+			spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+		});
 		private Spell m_Orey_SC_Debuff;
 		private Spell Orey_SC_Debuff
 		{

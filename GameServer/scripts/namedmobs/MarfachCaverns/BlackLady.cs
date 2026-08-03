@@ -128,9 +128,9 @@ namespace DOL.GS
                 Add1.Heading = 2053;
                 Add1.AddToWorld();
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
-            base.Die(killer);
+            base.ProcessDeath(killer);
             foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc.Brain is OgressBrain)
@@ -296,10 +296,10 @@ namespace DOL.GS
             get { return 2500; }
         }
         public static int OgressCount = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --OgressCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override bool AddToWorld()
         {

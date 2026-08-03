@@ -137,7 +137,7 @@ namespace DOL.GS
             }
         }
         public static int QueenKulaCount = 0;
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
             if(KingTuscar.KingTuscarCount > 0)
                 BroadcastMessage(String.Format("As the Queen Kula dies, King Tuscar scream in rage and gather more strength!"));
@@ -159,7 +159,7 @@ namespace DOL.GS
             {
                 ReportNews(killer);
             }
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         #endregion
         #region AddToWorld
@@ -617,10 +617,10 @@ namespace DOL.GS
             get { return 300000; }
         }
         public static int KingTuscarCount = 0;
-        public override void Die(GameObject killer)//on kill generate orbs
+        public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
             --KingTuscarCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         #region Styles
         public override void OnAttackedByEnemy(AttackData ad)// on Boss actions

@@ -442,10 +442,10 @@ namespace DOL.GS
             get { return 5000; }
         }
         public static int CopyCountFire = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --CopyCountFire;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
@@ -564,10 +564,10 @@ namespace DOL.GS
             get { return 5000; }
         }
         public static int CopyCountIce = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --CopyCountIce;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
@@ -687,10 +687,10 @@ namespace DOL.GS
             get { return 5000; }
         }
         public static int CopyCountAir = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --CopyCountAir;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
@@ -808,10 +808,10 @@ namespace DOL.GS
             get { return 5000; }
         }
         public static int CopyCountEarth = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             --CopyCountEarth;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }

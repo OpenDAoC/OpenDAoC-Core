@@ -81,7 +81,7 @@ namespace DOL.GS
 				npc.AddToWorld();
 			}
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
         {
 			RealCaithorUp = false;
 			foreach(GameNPC npc in GetNPCsInRadius(8000))
@@ -89,7 +89,7 @@ namespace DOL.GS
 				if (npc.IsAlive && npc != null && npc.PackageID == "RealCaithorDorocha")
 					npc.Die(this);
             }
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
     }
 }
@@ -201,7 +201,7 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			var despawnGiantCaithorTimer2 = TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn2");
 			if (despawnGiantCaithorTimer2 != null)
@@ -217,7 +217,7 @@ namespace DOL.GS
 			}
 			GhostCaithorUP = false;
 			SpawnCaithor();
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 		private void SpawnCaithor()
 		{
@@ -333,11 +333,11 @@ namespace DOL.GS
 			return true;
 		}
 		public static int DorochaKilled = 0;
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			if(!Caithor.RealCaithorUp)
 			++DorochaKilled;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

@@ -196,7 +196,7 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             if (IsRealHost)
             {
@@ -207,7 +207,7 @@ namespace DOL.GS
                 }
             }
 
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 
         public override bool AddToWorld()

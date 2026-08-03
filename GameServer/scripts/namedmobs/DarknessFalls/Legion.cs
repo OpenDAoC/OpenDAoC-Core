@@ -107,7 +107,7 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             foreach (GameNPC npc in GetNPCsInRadius(5000))
             {
@@ -143,12 +143,12 @@ namespace DOL.GS.Scripts
                 TempProperties.RemoveProperty("legion_castaoe");
             }
 
-            base.Die(killer);
-
             if (canReportNews)
             {
                 ReportNews(killer);
             }
+
+            base.ProcessDeath(killer);
         }
         public void BroadcastMessage(String message)
         {

@@ -95,14 +95,14 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC npc in GetNPCsInRadius(4500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is FallenExecutionerBrain)
 					npc.Die(this);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
         private void SpawnExecutioners()
 		{
@@ -247,10 +247,10 @@ namespace DOL.GS
 			return true;
 		}
 		
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			--SisterBlytheBrain.FallenExecutionerCount;
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

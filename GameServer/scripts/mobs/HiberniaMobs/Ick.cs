@@ -1,6 +1,9 @@
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 namespace DOL.GS
 {
@@ -25,21 +28,31 @@ namespace DOL.GS
 			return base.AddToWorld();
 		}
 
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			Message.MessageToArea(this, "Ick bursts apart, and a writhing knot of worms spills out!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
 			SpawnWorms();
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 
 		private void SpawnWorms()
 		{
+			Vector3 position = new(X, Y, Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
 			for (int i = 0; i < 10; i++)
 			{
+				// Pick positions on the navmesh whenever possible, so that worms can't spawn inside walls.
+				Vector3 spawnPoint = usePathfinding ?
+					PathfindingProvider.Instance.GetRandomPoint(zone, position, 100, filters) ?? position :
+					new(X + Util.Random(-100, 100), Y + Util.Random(-100, 100), Z);
+
 				IckAdd npc = new IckAdd();
-				npc.X = X + Util.Random(-100, 100);
-				npc.Y = Y + Util.Random(-100, 100);
-				npc.Z = Z;
+				npc.X = (int) spawnPoint.X;
+				npc.Y = (int) spawnPoint.Y;
+				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
 				npc.AddToWorld();
@@ -57,6 +70,9 @@ namespace DOL.GS
 
 	public class IckAdd : GameNPC
 	{
+		private const int DESPAWN_DELAY = 180000; // Worms burrow away if they're left alone.
+		private const int DESPAWN_RETRY_INTERVAL = 30000;
+
 		public IckAdd() : base() { }
 
 		public override bool AddToWorld()
@@ -68,7 +84,21 @@ namespace DOL.GS
 			SetOwnBrain(new IckAddBrain());
 			LoadedFromScript = true;
 			RespawnInterval = -1;
+			new ECSGameTimer(this, Despawn, DESPAWN_DELAY);
 			return base.AddToWorld();
+		}
+
+		private int Despawn(ECSGameTimer timer)
+		{
+			if (!IsAlive)
+				return 0;
+
+			// Don't despawn mid fight.
+			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
+				return DESPAWN_RETRY_INTERVAL;
+
+			RemoveFromWorld();
+			return 0;
 		}
 	}
 }

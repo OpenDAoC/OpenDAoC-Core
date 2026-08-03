@@ -75,10 +75,10 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
             BroadcastMessage(String.Format("To come this far... only to face a terrible death!"));
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

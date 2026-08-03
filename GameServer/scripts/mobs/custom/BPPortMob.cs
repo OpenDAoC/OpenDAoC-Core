@@ -53,9 +53,8 @@ namespace DOL.GS.Scripts
         public override int MeleeAttackRange => 400;
 
         #endregion
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
-            base.Die(killer);
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)) //3600 units
             {
                 player.ReceiveItem(this, "ML1token");// Adds an item into player inventory
@@ -64,7 +63,7 @@ namespace DOL.GS.Scripts
                 player.MoveTo(90, 51597, 38366, 10858, 3281);// Moved player to specified location
             }
 
-            StartRespawn();
+            base.ProcessDeath(killer);
         }
     }
 }

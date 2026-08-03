@@ -74,14 +74,14 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
-		public override void Die(GameObject killer)
+		public override void ProcessDeath(GameObject killer)
 		{
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "EmthoroAdd")
 					npc.Die(this);
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
 		}
 		public override bool AddToWorld()
 		{

@@ -87,14 +87,14 @@ namespace DOL.GS
 				add.AddToWorld();
 			}
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			foreach (GameNPC adds in GetNPCsInRadius(8000))
 			{
 				if (adds != null && adds.IsAlive && adds.Brain is BreanwortBrain)
 					adds.RemoveFromWorld();
 			}
-			base.Die(killer);
+			base.ProcessDeath(killer);
         }
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{

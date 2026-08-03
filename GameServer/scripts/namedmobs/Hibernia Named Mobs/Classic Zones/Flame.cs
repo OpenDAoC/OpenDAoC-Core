@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
+using OpenDAoC.Pathing;
+using static DOL.GS.Pathfinder;
 
 #region Epic Flame Mob
 namespace DOL.GS
@@ -178,10 +181,10 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void Die(GameObject killer)
+        public override void ProcessDeath(GameObject killer)
         {
 			SpawnFlame();
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
 		private void SpawnFlame()
         {
@@ -190,10 +193,21 @@ namespace DOL.GS
 				if (npc.Brain is FlameNormalBrain)
 					return;
 			}
+
+			Vector3 position = new(X, Y, Z);
+			Zone zone = CurrentZone;
+			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
+			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+
+			// Pick a position on the navmesh whenever possible, so that Flame can't spawn inside walls.
+			Vector3 spawnPoint = usePathfinding ?
+				PathfindingProvider.Instance.GetRandomPoint(zone, position, 500, filters) ?? position :
+				new(X + Util.Random(-500, 500), Y + Util.Random(-500, 500), Z);
+
 			FlameNormal boss = new FlameNormal();
-			boss.X = X + Util.Random(-500, 500);
-			boss.Y = Y + Util.Random(-500, 500);
-			boss.Z = Z;
+			boss.X = (int) spawnPoint.X;
+			boss.Y = (int) spawnPoint.Y;
+			boss.Z = (int) spawnPoint.Z;
 			boss.Heading = Heading;
 			boss.CurrentRegion = CurrentRegion;
 			boss.AddToWorld();

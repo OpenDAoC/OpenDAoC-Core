@@ -14,6 +14,7 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165094);
 			LoadTemplate(npcTemplate);
 			Faction = FactionMgr.GetFactionByID(782);
+			Spells = [QuillanMuireBrain.DD, QuillanMuireBrain.DD2];
 
 			QuillanMuireBrain sbrain = new QuillanMuireBrain();
 			SetOwnBrain(sbrain);
@@ -36,9 +37,6 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
 			{
-				TryCastSpell(QuillanMuire_DD, 25);
-				TryCastSpell(QuillanMuire_DD2, 25);
-
 				int pulledFriends = PullFriends("QuillanBaf", 4000);
 				pulledFriends += PullFriends(npc => npc.Brain is MuireHerbalistBrain, 4000);
 
@@ -48,7 +46,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Spells
-		private static Spell QuillanMuire_DD => ScriptSpells.GetOrCreate("QuillanMuireDD", 20, static spell =>
+		internal static Spell DD => ScriptSpells.GetOrCreate("QuillanMuireDD", 20, static spell =>
 		{
 			spell.CastTime = 3.5;
 			spell.RecastDelay = Util.Random(10, 15);
@@ -65,7 +63,7 @@ namespace DOL.AI.Brain
 			spell.MoveCast = true;
 			spell.DamageType = (int)eDamageType.Energy;
 		});
-		private static Spell QuillanMuire_DD2 => ScriptSpells.GetOrCreate("QuillanMuireDD2", 20, static spell =>
+		internal static Spell DD2 => ScriptSpells.GetOrCreate("QuillanMuireDD2", 20, static spell =>
 		{
 			spell.CastTime = 3.5;
 			spell.RecastDelay = Util.Random(8, 12);
@@ -105,6 +103,7 @@ namespace DOL.GS
 			Model = 446;
 			Size = 52;
 			Faction = FactionMgr.GetFactionByID(782);
+			Spells = [MuireHerbalistBrain.Heal, MuireHerbalistBrain.StrengthBuff];
 			MuireHerbalistBrain sbrain = new MuireHerbalistBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;
@@ -117,108 +116,96 @@ namespace DOL.AI.Brain
 {
     public class MuireHerbalistBrain : StandardMobBrain
 	{
+		private bool _healAnnounced;
+
 		public MuireHerbalistBrain() : base()
 		{
 			AggroLevel = 100;
 			AggroRange = 400;
 		}
-		private GameNPC HealNpc;
-		private GameNPC BuffNpc;
-		private bool _healAnnounced;
-		private void HealAndBuff()
-		{
-			if (HealNpc != null && (!HealNpc.IsAlive || HealNpc.HealthPercent >= 50 || !HealNpc.IsWithinRadius(Body, 1500)))
-				HealNpc = null;
 
-			if (HealNpc == null && Body.Faction != null)
-			{
-				List<GameNPC> npcToHeal = new List<GameNPC>();
-
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
-				{
-					if (npc.IsAlive && npc.Faction == Body.Faction && npc.HealthPercent < 50)
-						npcToHeal.Add(npc);
-				}
-
-				if (npcToHeal.Count > 0)
-					HealNpc = npcToHeal[Util.Random(0, npcToHeal.Count - 1)];
-			}
-
-			if (HealNpc != null)
-			{
-				if (!Body.IsCasting)
-				{
-					GameObject oldTarget = Body.TargetObject;
-					Body.TargetObject = HealNpc;
-					Body.CastSpell(MuireHerbalistHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-					Body.TargetObject = oldTarget;
-
-					if (!_healAnnounced)
-					{
-						Message.MessageToArea(Body, "The Muire herbalist chants over the wounded, and torn flesh knits closed!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
-						_healAnnounced = true;
-					}
-				}
-
-				return;
-			}
-
-			if (BuffNpc != null && (!BuffNpc.IsAlive || !BuffNpc.IsWithinRadius(Body, 500) || BuffNpc.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff)))
-				BuffNpc = null;
-
-			if (BuffNpc == null)
-			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(500))
-				{
-					if (npc.IsAlive && (npc.Name == "Muire Hero" || npc.Name == "Muire Champion" || npc.Name == "Quillan Muire")
-						&& !npc.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
-					{
-						BuffNpc = npc;
-						break;
-					}
-				}
-
-				if (BuffNpc == null && !Body.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
-					BuffNpc = Body;
-			}
-
-			if (BuffNpc != null && !Body.IsCasting)
-			{
-				GameObject oldTarget = Body.TargetObject;
-				Body.TargetObject = BuffNpc;
-				Body.CastSpell(MuireHerbalist_Buff_STR, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				Body.TargetObject = oldTarget;
-			}
-		}
-
-        public override void Think()
+		public override void Think()
 		{
 			if (!HasAggro)
 				_healAnnounced = false;
+			else
+			{
+				// Defensive spells are only checked by out of combat states, so a fighting herbalist has to check them itself.
+				// Stopping the attack mirrors what `AttackMostWanted` does for offensive spells, and lets the cast actually start.
+				if (CheckSpells(eCheckSpellType.Defensive))
+					Body.StopAttack();
 
-			if (Body.IsAlive)
-				HealAndBuff();
+				if (!_healAnnounced && Body.castingComponent.SpellHandler?.Spell.SpellType is eSpellType.Heal)
+				{
+					_healAnnounced = true;
+					Message.MessageToArea(Body, "The Muire herbalist chants over the wounded, and torn flesh knits closed!", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
+				}
+			}
 
 			base.Think();
         }
-        #region Spells
-        private static Spell MuireHerbalistHeal => ScriptSpells.GetOrCreate("MuireHerbalistHeal", 15, static spell =>
+
+		protected override GameLiving FindTargetForDefensiveSpell(Spell spell)
+		{
+			switch (spell.SpellType)
+			{
+				case eSpellType.Heal:
+					return FindWoundedFriend();
+				case eSpellType.StrengthBuff:
+					return FindBuffTarget();
+				default:
+					return base.FindTargetForDefensiveSpell(spell);
+			}
+		}
+
+		private GameLiving FindWoundedFriend()
+		{
+			if (Body.Faction == null)
+				return null;
+
+			List<GameNPC> wounded = new();
+
+			foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+			{
+				if (npc.IsAlive && npc.Faction == Body.Faction && npc.HealthPercent < 50)
+					wounded.Add(npc);
+			}
+
+			return wounded.Count > 0 ? wounded[Util.Random(0, wounded.Count - 1)] : null;
+		}
+
+		private GameLiving FindBuffTarget()
+		{
+			foreach (GameNPC npc in Body.GetNPCsInRadius(500))
+			{
+				if (npc.IsAlive && (npc.Name == "Muire Hero" || npc.Name == "Muire Champion" || npc.Name == "Quillan Muire")
+					&& !npc.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff))
+				{
+					return npc;
+				}
+			}
+
+			return !Body.effectListComponent.ContainsEffectForEffectType(eEffect.StrengthBuff) ? Body : null;
+		}
+
+		#region Spells
+		internal static Spell Heal => ScriptSpells.GetOrCreate("MuireHerbalistHeal", 15, static spell =>
 		{
 			spell.CastTime = 3;
-			spell.RecastDelay = 3;
+			spell.RecastDelay = 8;
 			spell.ClientEffect = 1340;
 			spell.Icon = 1340;
 			spell.TooltipId = 1340;
 			spell.Value = 150;
 			spell.Name = "Heal";
 			spell.Range = 1500;
-			spell.SpellID = 11949;
+			spell.SpellID = 11970;
 			spell.Target = eSpellTarget.REALM.ToString();
 			spell.Type = eSpellType.Heal.ToString();
 			spell.Uninterruptible = false;
 			spell.MoveCast = false;
 		});
-		private static Spell MuireHerbalist_Buff_STR => ScriptSpells.GetOrCreate("MuireHerbalistBuffSTR", 15, static spell =>
+		internal static Spell StrengthBuff => ScriptSpells.GetOrCreate("MuireHerbalistBuffSTR", 15, static spell =>
 		{
 			spell.CastTime = 3;
 			spell.RecastDelay = 0;
