@@ -1065,6 +1065,7 @@ namespace DOL.GS
             }
             else
             {
+                RaidEncounter.OnPlayerQuit(this);
                 Notify(GamePlayerEvent.Quit, this);
                 AuditMgr.AddAuditEntry(Client, AuditType.Character, AuditSubtype.CharacterLogout, "", Name);
                 Delete();
