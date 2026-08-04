@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.Movement;
@@ -21,8 +20,6 @@ namespace DOL.AI.Brain
         private const uint ROAM_START_HOUR = 21;
         private const uint ROAM_END_HOUR = 23;
 
-        private readonly Lock _addsLock = new();
-        private readonly List<GameNPC> _adds = new();
         private readonly TimedAbility[] _abilities;
         private readonly TimedAbility _roamGlare;
 
@@ -111,21 +108,11 @@ namespace DOL.AI.Brain
             base.OnAttackedByEnemy(ad);
         }
 
-        public void RegisterAdd(GameNPC add)
-        {
-            lock (_addsLock)
-            {
-                _adds.RemoveAll(static existing => !existing.IsAlive);
-                _adds.Add(add);
-            }
-        }
-
         public override bool Stop()
         {
             if (_isRoaming)
                 EndRoam();
 
-            DespawnAdds();
             return base.Stop();
         }
 
@@ -137,22 +124,8 @@ namespace DOL.AI.Brain
             foreach (TimedAbility ability in _abilities)
                 ability.NextFireAt = 0;
 
-            DespawnAdds();
+            RaidEncounter?.DespawnAdds();
             Body.Health = Body.MaxHealth;
-        }
-
-        private void DespawnAdds()
-        {
-            lock (_addsLock)
-            {
-                foreach (GameNPC add in _adds)
-                {
-                    if (add.IsAlive)
-                        add.RemoveFromWorld();
-                }
-
-                _adds.Clear();
-            }
         }
 
         #region Ability scheduler
@@ -350,6 +323,7 @@ namespace DOL.AI.Brain
             anchor.LoadedFromScript = true;
             anchor.SetOwnBrain(new BlankBrain());
             anchor.AddToWorld();
+            RaidEncounter?.RegisterAdd(anchor);
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {

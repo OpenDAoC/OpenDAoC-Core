@@ -32,7 +32,7 @@ namespace DOL.GS
             if (!base.AddToWorld())
                 return false;
 
-            OwnerBrain?.RegisterAdd(this);
+            OwnerBrain?.RaidEncounter?.RegisterAdd(this);
             return true;
         }
     }
