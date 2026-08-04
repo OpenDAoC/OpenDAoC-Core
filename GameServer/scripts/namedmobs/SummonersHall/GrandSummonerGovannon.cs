@@ -458,7 +458,7 @@ namespace DOL.AI.Brain
 			Point3D point1 = new Point3D(32063, 40896, 15468);
 			if(!Body.IsWithinRadius(point1,40))
             {
-				Body.WalkTo(point1, 35);
+				Body.PathTo(point1, 35);
             }
 			else
             {
@@ -543,7 +543,7 @@ namespace DOL.AI.Brain
 			Point3D point1 = new Point3D(32063, 40896, 15468);
 			if (!Body.IsWithinRadius(point1, 40))
 			{
-				Body.WalkTo(point1, 35);
+				Body.PathTo(point1, 35);
 			}
 			else
 			{

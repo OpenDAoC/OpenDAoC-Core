@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160317);
                 Body.MaxSpeedBase = npcTemplate.MaxSpeed;
                 Body.Z = 10958;
-                Body.WalkTo(point1, 200);
+                Body.PathTo(point1, 200);
             }
 
             if (Body.IsWithinRadius(point1, 50) && !healBoss && restphase)
