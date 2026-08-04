@@ -82,6 +82,7 @@ namespace DOL.GS
             LoadTemplate(template);
             MeleeDamageType = Config.MeleeDamageType;
             TetherRange = LAIR_RADIUS;
+            RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
             DragonBrain brain = new(Config);
 
             brain.RaidEncounter = new(brain)
