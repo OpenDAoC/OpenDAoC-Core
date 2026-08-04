@@ -29,6 +29,9 @@ namespace DOL.GS
         private readonly Dictionary<string, long> _quitTimes = new();
         private readonly Lock _activityLock = new();
 
+        private readonly List<GameNPC> _adds = new();
+        private readonly Lock _addsLock = new();
+
         private readonly record struct PendingReward(int BountyPoints, string CurrencyItemTemplateId, int CurrencyItemCount, string SourceName);
 
         private readonly record struct PendingGrant(long EnqueuedAt, Action<GamePlayer> Grant);
@@ -628,8 +631,44 @@ namespace DOL.GS
             }
         }
 
+        /// <summary>
+        /// Ties an encounter-spawned add to the encounter's lifecycle: it is despawned when the encounter ends or resets.
+        /// Adds that die or leave the world on their own simply fall out of the registry.
+        /// </summary>
+        public void RegisterAdd(GameNPC add)
+        {
+            if (add == null)
+                return;
+
+            lock (_addsLock)
+            {
+                _adds.RemoveAll(static existing => !existing.IsAlive || existing.ObjectState is not GameObject.eObjectState.Active);
+                _adds.Add(add);
+            }
+        }
+
+        /// <summary>
+        /// Removes every registered add that is still alive and in the world. Runs as part of <see cref="Clear"/>,
+        /// so it fires whenever the encounter ends or resets; owner brains with an earlier reset of their own may also call it directly.
+        /// </summary>
+        public void DespawnAdds()
+        {
+            lock (_addsLock)
+            {
+                foreach (GameNPC add in _adds)
+                {
+                    if (add.IsAlive && add.ObjectState is GameObject.eObjectState.Active)
+                        add.RemoveFromWorld();
+                }
+
+                _adds.Clear();
+            }
+        }
+
         public void Clear()
         {
+            DespawnAdds();
+
             lock (_activeEncountersLock)
             {
                 if (_activeEncounters.Remove(this))
