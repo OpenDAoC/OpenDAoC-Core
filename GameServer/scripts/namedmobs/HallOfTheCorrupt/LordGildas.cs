@@ -352,7 +352,6 @@ namespace DOL.AI.Brain
                     float angle = living.GetAngle(Body);
                     Point2D positionalPoint;
                     positionalPoint = living.GetPointFromHeading((ushort)(living.Heading + (180 * (4096.0 / 360.0))), 65);
-                    //Body.WalkTo(positionalPoint.X, positionalPoint.Y, living.Z, 280);
                     Body.X = positionalPoint.X;
                     Body.Y = positionalPoint.Y;
                     Body.Z = living.Z;
