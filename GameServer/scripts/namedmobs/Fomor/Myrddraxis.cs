@@ -464,6 +464,15 @@ namespace DOL.AI.Brain
 		public static bool StartCastDD = false;
 		public static bool StartCastDOT = false;
 		private bool RemoveAdds = false;
+		private bool HeadExists(Type headType)
+		{
+			foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+			{
+				if (npc != null && npc.IsAlive && npc.GetType() == headType)
+					return true;
+			}
+			return false;
+		}
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
@@ -487,11 +496,15 @@ namespace DOL.AI.Brain
 				CanCastPBAOE3 = false;
 				if (!RemoveAdds)
 				{
+					bool secondHeadUp = HeadExists(typeof(MyrddraxisSecondHead));
+					bool thirdHeadUp = HeadExists(typeof(MyrddraxisThirdHead));
+					bool fourthHeadUp = HeadExists(typeof(MyrddraxisFourthHead));
+					bool fifthHeadUp = HeadExists(typeof(MyrddraxisFifthHead));
 					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null)
 						{
-							if (MyrddraxisSecondHead.SecondHeadCount == 0)
+							if (!secondHeadUp)
 							{
 								MyrddraxisSecondHead Add1 = new MyrddraxisSecondHead();
 								Add1.X = 32384;
@@ -502,8 +515,9 @@ namespace DOL.AI.Brain
 								Add1.Flags = GameNPC.eFlags.FLYING;
 								Add1.RespawnInterval = -1;
 								Add1.AddToWorld();
+								secondHeadUp = true;
 							}
-							if (MyrddraxisThirdHead.ThirdHeadCount == 0)
+							if (!thirdHeadUp)
 							{
 								MyrddraxisThirdHead Add2 = new MyrddraxisThirdHead();
 								Add2.X = 32187;
@@ -514,8 +528,9 @@ namespace DOL.AI.Brain
 								Add2.Flags = GameNPC.eFlags.FLYING;
 								Add2.RespawnInterval = -1;
 								Add2.AddToWorld();
+								thirdHeadUp = true;
 							}
-							if (MyrddraxisFourthHead.FourthHeadCount == 0)
+							if (!fourthHeadUp)
 							{
 								MyrddraxisFourthHead Add3 = new MyrddraxisFourthHead();
 								Add3.X = 32371;
@@ -526,8 +541,9 @@ namespace DOL.AI.Brain
 								Add3.Flags = GameNPC.eFlags.FLYING;
 								Add3.RespawnInterval = -1;
 								Add3.AddToWorld();
+								fourthHeadUp = true;
 							}
-							if (MyrddraxisFifthHead.FifthHeadCount == 0)
+							if (!fifthHeadUp)
 							{
 								MyrddraxisFifthHead Add4 = new MyrddraxisFifthHead();
 								Add4.X = 32576;
@@ -538,6 +554,7 @@ namespace DOL.AI.Brain
 								Add4.Flags = GameNPC.eFlags.FLYING;
 								Add4.RespawnInterval = -1;
 								Add4.AddToWorld();
+								fifthHeadUp = true;
 							}
 						}
 					}
@@ -852,12 +869,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int SecondHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--SecondHeadCount;
-			base.ProcessDeath(killer);
-		}
         public override void DealDamage(AttackData ad)
         {
 			if(ad != null)
@@ -892,7 +903,6 @@ namespace DOL.GS
 
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++SecondHeadCount;
 			Faction = FactionMgr.GetFactionByID(105);
 
 			MyrddraxisSecondHeadBrain sbrain = new MyrddraxisSecondHeadBrain();
@@ -1055,12 +1065,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int ThirdHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--ThirdHeadCount;
-			base.ProcessDeath(killer);
-		}
 		public override void DealDamage(AttackData ad)
 		{
 			if (ad != null)
@@ -1095,7 +1099,6 @@ namespace DOL.GS
 
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++ThirdHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
 
@@ -1259,12 +1262,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int FourthHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--FourthHeadCount;
-			base.ProcessDeath(killer);
-		}
 		public override void DealDamage(AttackData ad)
 		{
 			if (ad != null)
@@ -1299,7 +1296,6 @@ namespace DOL.GS
 
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++FourthHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
 
@@ -1463,12 +1459,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int FifthHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--FifthHeadCount;
-			base.ProcessDeath(killer);
-		}
 		public override void DealDamage(AttackData ad)
 		{
 			if (ad != null)
@@ -1502,7 +1492,6 @@ namespace DOL.GS
 			LoadTemplate(npcTemplate);
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++FifthHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
 

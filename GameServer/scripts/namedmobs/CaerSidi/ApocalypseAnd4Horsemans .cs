@@ -1304,7 +1304,7 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
-                if (Morbus_Swarm_count > 0)
+                if (AliveSwarmCount > 0)
                 {
                     if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
                         || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
@@ -1381,7 +1381,22 @@ namespace DOL.GS
             return 0;
         }
         public static bool spawn_fate3 = false;
-        public static int Morbus_Swarm_count = 0;
+        public readonly List<GameNPC> Swarm = new List<GameNPC>();
+        public int AliveSwarmCount
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (GameNPC npc in Swarm)
+                {
+                    if (npc != null && npc.IsAlive && npc.ObjectState is eObjectState.Active)
+                        count++;
+                }
+
+                return count;
+            }
+        }
         public void SpawnFateBearer()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
@@ -1507,10 +1522,7 @@ namespace DOL.AI.Brain
                             if (npc.IsAlive)
                             {
                                 if (npc.PackageID == "MorbusBaf" && npc.Brain is MorbusSwarmBrain)
-                                {
                                     npc.RemoveFromWorld();
-                                    Morbus.Morbus_Swarm_count = 0;
-                                }
                             }
                         }
                     }
@@ -1537,7 +1549,7 @@ namespace DOL.AI.Brain
             if (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)
             {
                 StartedMorbus = true;
-                if(Morbus.Morbus_Swarm_count > 0)
+                if(Body is Morbus morbus && morbus.AliveSwarmCount > 0)
                 {
                     Body.Model = 771;
                     Body.Size = 50;
@@ -1570,7 +1582,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                if(Morbus.Morbus_Swarm_count == 0)
+                if(Body is Morbus morbus2 && morbus2.AliveSwarmCount == 0)
                 {
                     if (spawn_swarm == false)
                     {
@@ -1596,6 +1608,9 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
+                if (Body is Morbus morbusToPrune)
+                    morbusToPrune.Swarm.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+
                 for (int i = 0; i < Util.Random(6,10); i++)
                 {
                     MorbusSwarm Add = new MorbusSwarm();
@@ -1607,7 +1622,8 @@ namespace DOL.AI.Brain
                     Add.RespawnInterval = -1;
                     Add.PackageID = "MorbusBaf";
                     Add.AddToWorld();
-                    ++Morbus.Morbus_Swarm_count;
+                    if (Body is Morbus morbus)
+                        morbus.Swarm.Add(Add);
                 }
             }
             spawn_swarm=false;
@@ -1637,12 +1653,6 @@ namespace DOL.GS
         {
             get { return 15000; }
         }
-        public override void ProcessDeath(GameObject killer)
-        {
-            --Morbus.Morbus_Swarm_count;
-            base.ProcessDeath(killer);
-        }
-
         public override void SetStats(DbMob dbMob = null)
         {
             if (PackageID == "MorbusBaf")
@@ -2132,7 +2142,6 @@ namespace DOL.GS
             ApocalypseBrain.ApocAggro = false;
             ApocalypseBrain.pop_harbringers = false;
             ApocalypseBrain.StartedApoc = false;
-            HarbringerOfFate.HarbringersCount = 0;
             ApocUP = true;
 
 
@@ -2146,7 +2155,7 @@ namespace DOL.GS
             return true;
         }
 
-        public static int KilledEnemys = 0;
+        public int KilledEnemys = 0;
         public override void EnemyKilled(GameLiving enemy)
         {
             if(enemy is GamePlayer)
@@ -2185,6 +2194,7 @@ namespace DOL.AI.Brain
         public static bool pop_harbringers = false;
         public static bool StartedApoc = false;
         private bool RemoveAdds = false;
+        private int _harbringersCount = 0;
 
         public override void Think()
         {
@@ -2202,8 +2212,9 @@ namespace DOL.AI.Brain
                 ApocAggro = false;
                 pop_harbringers = false;
                 StartedApoc = false;
-                Apocalypse.KilledEnemys = 0;
-                HarbringerOfFate.HarbringersCount = 0;
+                if (Body is Apocalypse apoc)
+                    apoc.KilledEnemys = 0;
+                _harbringersCount = 0;
 
                 if (!RemoveAdds)
                 {
@@ -2261,7 +2272,7 @@ namespace DOL.AI.Brain
                     SpawnRainOfFire();
                     spawn_rain_of_fire = true;
                 }
-                if (HarbringerOfFate.HarbringersCount == 0)
+                if (_harbringersCount == 0)
                 {
                     if (spawn_harbringers == false)
                     {
@@ -2347,7 +2358,7 @@ namespace DOL.AI.Brain
         public static bool spawn_harbringers = false;
         public int SpawnHarbringers(ECSGameTimer timer)
         {
-            if (Apocalypse.KilledEnemys == 4)//he doint it only once, spawning 2 harbringers is killed 4 players
+            if (Body is Apocalypse apoc && apoc.KilledEnemys == 4)//he doint it only once, spawning 2 harbringers is killed 4 players
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                 {
@@ -2367,7 +2378,7 @@ namespace DOL.AI.Brain
                     Add.RespawnInterval = -1;
                     Add.PackageID = "ApocBaf";
                     Add.AddToWorld();
-                    ++HarbringerOfFate.HarbringersCount;
+                    ++_harbringersCount;
                 }
             }
             if(Body.HealthPercent <= 50 && pop_harbringers==false)/// spawning another 2 harbringers if boss is at 50%
@@ -2392,7 +2403,7 @@ namespace DOL.AI.Brain
                     Add.RespawnInterval = -1;
                     Add.PackageID = "ApocBaf";
                     Add.AddToWorld();
-                    ++HarbringerOfFate.HarbringersCount;
+                    ++_harbringersCount;
                 }
                 pop_harbringers = true;
             }
@@ -2404,6 +2415,7 @@ namespace DOL.AI.Brain
         public void SpawnRainOfFire()
         {
             RainOfFire Add = new RainOfFire();
+            Add.Apoc = Body as Apocalypse;
             Add.X = Body.X;
             Add.Y = Body.Y;
             Add.Z = Body.Z + 940;
@@ -2479,7 +2491,6 @@ namespace DOL.GS
                 return;
             base.SetStats(dbMob);
         }
-        public static int HarbringersCount = 0;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 50; }
         public override short Strength { get => base.Strength; set => base.Strength = 200; }
         public override bool AddToWorld()
@@ -2555,6 +2566,8 @@ namespace DOL.GS
     {
         public RainOfFire() : base() { }
 
+        public Apocalypse Apoc;
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
@@ -2567,9 +2580,9 @@ namespace DOL.GS
         }
         public override void EnemyKilled(GameLiving enemy)
         {
-            if (enemy is GamePlayer)
+            if (enemy is GamePlayer && Apoc != null && Apoc.IsAlive)
             {
-                ++Apocalypse.KilledEnemys;
+                ++Apoc.KilledEnemys;
             }
             base.EnemyKilled(enemy);
         }

@@ -406,7 +406,6 @@ namespace DOL.GS
 		{
 			153,162,137,146,773,784,169,178,185,194
 		};
-		public static int ArosPetCount = 0;
 		public override bool AddToWorld()
 		{
 			Name = "spirit champion";
@@ -427,7 +426,6 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(779);
 
 			VisibleActiveWeaponSlots = 16;
-			++ArosPetCount;
 			Size = 50;
 			Level = 62;
 			MaxSpeedBase = 225;
@@ -442,11 +440,6 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void ProcessDeath(GameObject killer)
-        {
-			--ArosPetCount;
-            base.ProcessDeath(killer);
-        }
         public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;
 		private Spell m_SpiritChampion_stun;

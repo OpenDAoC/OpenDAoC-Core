@@ -562,7 +562,6 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 IsPulled2 = false;
                 RandomTarget = null;
-                FrozenBomb.FrozenBombCount = 0;
                 message1 = false;
                 IsBombUp = false;
                 StartCastRoot = false;
@@ -607,7 +606,7 @@ namespace DOL.AI.Brain
                             PlayersToDD.Add(player);
                     }
                 }
-                if (IsBombUp == false && FrozenBomb.FrozenBombCount == 0)
+                if (IsBombUp == false && !IsFrozenBombUp())
                 {
                     if (PlayersToDD.Count > 0)
                     {
@@ -630,9 +629,14 @@ namespace DOL.AI.Brain
         }
 
         #region Spawn Frost Bomb
+        private GameNPC _frozenBomb;
+        private bool IsFrozenBombUp()
+        {
+            return _frozenBomb != null && _frozenBomb.IsAlive && _frozenBomb.ObjectState is GameObject.eObjectState.Active;
+        }
         public int SpawnBombTimer(ECSGameTimer timer)
         {
-            if (FrozenBomb.FrozenBombCount == 0)
+            if (!IsFrozenBombUp())
                 SpawnFrozenBomb();
 
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBomb), 5000);
@@ -667,6 +671,7 @@ namespace DOL.AI.Brain
             npc.Heading = Body.Heading;
             npc.CurrentRegion = Body.CurrentRegion;
             npc.AddToWorld();
+            _frozenBomb = npc;
         }
         #endregion
 
@@ -831,15 +836,9 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.15;
         }
-        public static int FrozenBombCount = 0;
         public override void Die(GameObject killer)
         {
             base.Die(null);
-        }
-        public override void ProcessDeath(GameObject killer)
-        {
-            FrozenBombCount = 0;
-            base.ProcessDeath(killer);
         }
         public override int MaxHealth
         {
@@ -850,7 +849,6 @@ namespace DOL.GS
             Model = 665;
             Size = 100;
             MaxSpeedBase = 0;
-            FrozenBombCount = 1;
             Name = "Ice Spike";
             Level = (byte)Util.Random(62, 66);
 

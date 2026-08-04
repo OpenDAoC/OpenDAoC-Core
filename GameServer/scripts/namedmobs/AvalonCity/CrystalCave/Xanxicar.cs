@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -307,7 +308,7 @@ namespace DOL.AI.Brain
 				Bomb4 = false;
 				SpawnAddsOnce = false;
 				CheckForSingleAdd = false;
-				XanxicarianChampion.XanxicarianChampionCount = 0;
+				_champions.Clear();
 				if (!RemoveAdds)
 				{
 					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
@@ -356,12 +357,12 @@ namespace DOL.AI.Brain
 				}
 				if(Body.HealthPercent<=50)
                 {
-					if(SpawnAddsOnce==false && XanxicarianChampion.XanxicarianChampionCount == 0)
+					if(SpawnAddsOnce==false && AliveChampionCount == 0)
                     {
 						SpawnAdds();
 						SpawnAddsOnce = true;
                     }
-					if(SpawnAddsOnce && CheckForSingleAdd==false && XanxicarianChampion.XanxicarianChampionCount == 0)
+					if(SpawnAddsOnce && CheckForSingleAdd==false && AliveChampionCount == 0)
                     {
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreAdds), Util.Random(15000, 25000));//spawn 1 add every 25-35s
 						CheckForSingleAdd = true;
@@ -375,6 +376,15 @@ namespace DOL.AI.Brain
         #region adds
         public static bool SpawnAddsOnce = false;
 		public static bool CheckForSingleAdd = false;
+		private readonly List<GameNPC> _champions = new List<GameNPC>();
+		private int AliveChampionCount
+		{
+			get
+			{
+				_champions.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+				return _champions.Count;
+			}
+		}
 		public void SpawnAdds()
         {
 			for (int i = 0; i < 5; i++)
@@ -387,11 +397,12 @@ namespace DOL.AI.Brain
 				Add.CurrentRegion = Body.CurrentRegion;
 				Add.Heading = Body.Heading;
 				Add.AddToWorld();
+				_champions.Add(Add);
 			}
 		}
 		public int SpawnMoreAdds(ECSGameTimer timer)
         {
-			if (XanxicarianChampion.XanxicarianChampionCount == 0 && HasAggro)
+			if (AliveChampionCount == 0 && HasAggro)
 			{
 				XanxicarianChampion Add = new XanxicarianChampion();
 				Add.X = Body.X + Util.Random(-150, 150);
@@ -401,6 +412,7 @@ namespace DOL.AI.Brain
 				Add.CurrentRegion = Body.CurrentRegion;
 				Add.Heading = Body.Heading;
 				Add.AddToWorld();
+				_champions.Add(Add);
 				CheckForSingleAdd = false;
 			}
 			return 0;
@@ -500,17 +512,10 @@ namespace DOL.GS
 			get { return 8000; }
 		}
 
-		public static int XanxicarianChampionCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--XanxicarianChampionCount;
-			base.ProcessDeath(killer);
-		}
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(91);
 			LoadTemplate(npcTemplate);
-			++XanxicarianChampionCount;
 			Faction = FactionMgr.GetFactionByID(10);
 			RespawnInterval = -1;
 			XanxicarianChampionBrain sbrain = new XanxicarianChampionBrain();

@@ -46,8 +46,8 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public static List<GamePlayer> attackers = new List<GamePlayer>();
-        public static int attackers_count = 0;
+        public List<GamePlayer> attackers = new List<GamePlayer>();
+        public int attackers_count = 0;
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
@@ -170,14 +170,16 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                Silencer.attackers_count = 0;
-                //Silencer silencer = new Silencer();
-                if (!ClearAttackers)
+                if (Body is Silencer silencer)
                 {
-                    if (Silencer.attackers.Count > 0)
+                    silencer.attackers_count = 0;
+                    if (!ClearAttackers)
                     {
-                        Silencer.attackers.Clear();
-                        ClearAttackers = true;
+                        if (silencer.attackers.Count > 0)
+                        {
+                            silencer.attackers.Clear();
+                            ClearAttackers = true;
+                        }
                     }
                 }
             }

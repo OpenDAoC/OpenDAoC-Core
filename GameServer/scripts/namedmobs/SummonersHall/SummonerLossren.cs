@@ -83,7 +83,6 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(206);
 			IsCloakHoodUp = true;
 			SummonerLossrenBrain.IsCreatingSouls = false;
-			TorturedSouls.TorturedSoulKilled = 0;
 
 			SummonerLossrenBrain sbrain = new SummonerLossrenBrain();
 			SetOwnBrain(sbrain);
@@ -156,7 +155,23 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		public static bool IsCreatingSouls = false;
+		public int TorturedSoulKilled = 0;
 		private bool RemoveAdds = false;
+		private readonly List<GameNPC> _souls = new List<GameNPC>();
+		private GameNPC _explodeZombie;
+		private bool IsTorturedSoulUp()
+		{
+			foreach (GameNPC npc in _souls)
+			{
+				if (npc != null && npc.IsAlive && npc.ObjectState is GameObject.eObjectState.Active)
+					return true;
+			}
+			return false;
+		}
+		private bool IsExplodeZombieUp()
+		{
+			return _explodeZombie != null && _explodeZombie.IsAlive && _explodeZombie.ObjectState is GameObject.eObjectState.Active;
+		}
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
@@ -164,8 +179,7 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
-				TorturedSouls.TorturedSoulKilled = 0;
-				TorturedSouls.TorturedSoulCount = 0;
+				TorturedSoulKilled = 0;
 				if (!RemoveAdds)
 				{
 					foreach (GameNPC souls in Body.GetNPCsInRadius(5000))
@@ -210,7 +224,7 @@ namespace DOL.AI.Brain
         {
 			if (Body.InCombat && Body.IsAlive && HasAggro)
 			{
-				if(TorturedSouls.TorturedSoulCount == 0)
+				if(!IsTorturedSoulUp())
 					SpawnSouls();
 			}
 			SpawnBigZombie();
@@ -223,6 +237,7 @@ namespace DOL.AI.Brain
 			Point3D point2 = new Point3D(38505, 41211, 16001);
 			Point3D point3 = new Point3D(39180, 40583, 16000);
 			Point3D point4 = new Point3D(39745, 41176, 16001);
+			_souls.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
 
 			for (int i = 0; i < Util.Random(18, 25); i++)//create 18-25 souls every time timer will launch
 			{
@@ -261,9 +276,10 @@ namespace DOL.AI.Brain
 				}
 				add.CurrentRegion = Body.CurrentRegion;
 				add.Heading = Body.Heading;
+				add.OwnerBrain = this;
 				add.AddToWorld();
 				add.LoadedFromScript = true;
-				++TorturedSouls.TorturedSoulCount;
+				_souls.Add(add);
 			}
 		}
 		public void SpawnBigZombie()
@@ -272,7 +288,7 @@ namespace DOL.AI.Brain
 			Point3D point2 = new Point3D(38505, 41211, 16001);
 			Point3D point3 = new Point3D(39180, 40583, 16000);
 			Point3D point4 = new Point3D(39745, 41176, 16001);
-			if (TorturedSouls.TorturedSoulKilled == 20 && ExplodeUndead.ExplodeZombieCount==0)//spawn explode zombie
+			if (TorturedSoulKilled == 20 && !IsExplodeZombieUp())//spawn explode zombie
 			{
 				ExplodeUndead add2 = new ExplodeUndead();
 				switch (Util.Random(1, 4))
@@ -310,8 +326,8 @@ namespace DOL.AI.Brain
 				add2.Heading = Body.Heading;
 				add2.AddToWorld();
 				add2.LoadedFromScript = true;
-				TorturedSouls.TorturedSoulKilled = 0;
-				++ExplodeUndead.ExplodeZombieCount;
+				_explodeZombie = add2;
+				TorturedSoulKilled = 0;
 			}
 		}
 	}
@@ -366,12 +382,11 @@ namespace DOL.GS
 			}
 		}
 
-		public static int TorturedSoulCount = 0;
-		public static int TorturedSoulKilled = 0;
+		public SummonerLossrenBrain OwnerBrain;
 		public override void ProcessDeath(GameObject killer)
         {
-			--TorturedSoulCount;
-			++TorturedSoulKilled;
+			if (OwnerBrain != null && OwnerBrain.Body != null && OwnerBrain.Body.IsAlive)
+				++OwnerBrain.TorturedSoulKilled;
             base.ProcessDeath(killer);
         }
 		public override bool CanDropLoot => false;
@@ -528,10 +543,8 @@ namespace DOL.GS
 			}
 		}
 
-		public static int ExplodeZombieCount = 0;
 		public override void ProcessDeath(GameObject killer)
 		{
-			--ExplodeZombieCount;
 			RandomTarget = null;
 			base.ProcessDeath(killer);
 		}
@@ -549,7 +562,6 @@ namespace DOL.GS
 			RandomTarget = null;
 			ExplodeUndeadBrain.IsKilled = false;
 			ExplodeUndeadBrain.SetAggroAmount = false;
-			ExplodeZombieCount = 0;
 			Zombie_Targets.Clear();
 			Name = "infected ghoul";
 			RespawnInterval = -1;

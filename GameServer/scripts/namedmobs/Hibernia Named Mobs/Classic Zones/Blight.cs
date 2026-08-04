@@ -10,6 +10,7 @@ namespace DOL.GS
 	public class Blight : GameEpicBoss
 	{
 		public Blight() : base() { }
+		public BlightController Owner;
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -118,28 +119,22 @@ namespace DOL.GS
         }
 		private int SpawnFireBlight(ECSGameTimer timer)
         {
-			BlightControllerBrain.CreateLateBlight = false;
-			BlightControllerBrain.CreateFleshBlight = false;
-			BlightControllerBrain.CreateBlight = false;
-			FireBlight.FireBlightCount = 0;
-			LateBlight.LateBlightCount = 0;
-			FleshBlight.FleshBlightCount = 0;
-
-			for (int i = 0; i < 8; i++)
+			BlightController controller = Owner;
+			if (controller == null)
 			{
 				foreach (GameNPC npc in GetNPCsInRadius(8000))
 				{
-					if (npc.Brain is BlightControllerBrain)
-                    {
-						FireBlight boss = new FireBlight();
-						boss.X = npc.X + Util.Random(-500, 500);
-						boss.Y = npc.Y + Util.Random(-500, 500);
-						boss.Z = npc.Z;
-						boss.Heading = npc.Heading;
-						boss.CurrentRegion = npc.CurrentRegion;
-						boss.AddToWorld();
+					if (npc is BlightController found)
+					{
+						controller = found;
+						break;
 					}
 				}
+			}
+			if (controller != null && controller.Brain is BlightControllerBrain brain)
+			{
+				brain.ResetBlightCycle();
+				controller.SpawnFireBlight();
 			}
 			return 0;
 		}
@@ -237,6 +232,7 @@ namespace DOL.GS
 		public FireBlight() : base()
 		{
 		}
+		public BlightController Owner;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -263,7 +259,6 @@ namespace DOL.GS
 		}
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
-		public static int FireBlightCount = 0;
 		public override bool AddToWorld()
 		{
 			Model = 26;
@@ -300,7 +295,8 @@ namespace DOL.GS
 		#endregion
 		public override void ProcessDeath(GameObject killer)
         {
-			++FireBlightCount;
+			if (Owner?.Brain is BlightControllerBrain brain)
+				++brain.FireBlightsKilled;
 			base.ProcessDeath(killer);
         }
     }
@@ -344,6 +340,7 @@ namespace DOL.GS
 		public LateBlight() : base()
 		{
 		}
+		public BlightController Owner;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -370,7 +367,6 @@ namespace DOL.GS
 		}
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 200; }
-		public static int LateBlightCount = 0;
 		public override bool AddToWorld()
 		{
 			Model = 26;
@@ -406,7 +402,8 @@ namespace DOL.GS
 		#endregion
 		public override void ProcessDeath(GameObject killer)
 		{
-			++LateBlightCount;
+			if (Owner?.Brain is BlightControllerBrain brain)
+				++brain.LateBlightsKilled;
 			base.ProcessDeath(killer);
 		}
 	}
@@ -450,6 +447,7 @@ namespace DOL.GS
 		public FleshBlight() : base()
 		{
 		}
+		public BlightController Owner;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -476,7 +474,6 @@ namespace DOL.GS
 		}
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 200; }
-		public static int FleshBlightCount = 0;
 		public override bool AddToWorld()
 		{
 			Model = 26;
@@ -512,7 +509,8 @@ namespace DOL.GS
 		#endregion
 		public override void ProcessDeath(GameObject killer)
 		{
-			++FleshBlightCount;
+			if (Owner?.Brain is BlightControllerBrain brain)
+				++brain.FleshBlightsKilled;
 			base.ProcessDeath(killer);
 		}
 	}
@@ -577,13 +575,6 @@ namespace DOL.GS
 		}
 		public void SpawnFireBlight()
 		{
-			BlightControllerBrain.CreateLateBlight = false;
-			BlightControllerBrain.CreateFleshBlight = false;
-			BlightControllerBrain.CreateBlight = false;
-			FireBlight.FireBlightCount = 0;
-			LateBlight.LateBlightCount = 0;
-			FleshBlight.FleshBlightCount = 0;
-
 			foreach (GameNPC npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is FireBlightBrain)
@@ -597,6 +588,7 @@ namespace DOL.GS
 				boss.Z = Z;
 				boss.Heading = Heading;
 				boss.CurrentRegion = CurrentRegion;
+				boss.Owner = this;
 				boss.AddToWorld();
 			}
 		}
@@ -614,17 +606,30 @@ namespace DOL.AI.Brain
 		{
 			ThinkInterval = 1000;
 		}
-		public static bool CreateLateBlight = false;
-		public static bool CreateFleshBlight = false;
-		public static bool CreateBlight = false;
+		private bool CreateLateBlight = false;
+		private bool CreateFleshBlight = false;
+		private bool CreateBlight = false;
+		public int FireBlightsKilled = 0;
+		public int LateBlightsKilled = 0;
+		public int FleshBlightsKilled = 0;
+
+		public void ResetBlightCycle()
+		{
+			CreateLateBlight = false;
+			CreateFleshBlight = false;
+			CreateBlight = false;
+			FireBlightsKilled = 0;
+			LateBlightsKilled = 0;
+			FleshBlightsKilled = 0;
+		}
 
 		public override void Think()
 		{
-			if(FireBlight.FireBlightCount == 8)
+			if(FireBlightsKilled == 8)
 				SpawnLateBlight();
-			if (LateBlight.LateBlightCount == 4)
+			if (LateBlightsKilled == 4)
 				SpawnFleshBlight();
-			if (FleshBlight.FleshBlightCount == 2)
+			if (FleshBlightsKilled == 2)
 				SpawnBlight();
 		}
 
@@ -635,7 +640,7 @@ namespace DOL.AI.Brain
 				if (npc.Brain is LateBlightBrain)
 					return;
 			}
-			if (FireBlight.FireBlightCount == 8 && !CreateLateBlight)
+			if (FireBlightsKilled == 8 && !CreateLateBlight)
 			{
 				for (int i = 0; i < 4; i++)
 				{
@@ -645,6 +650,7 @@ namespace DOL.AI.Brain
 					boss.Z = Body.Z;
 					boss.Heading = Body.Heading;
 					boss.CurrentRegion = Body.CurrentRegion;
+					boss.Owner = Body as BlightController;
 					boss.AddToWorld();
 				}
 				CreateLateBlight = true;
@@ -657,7 +663,7 @@ namespace DOL.AI.Brain
 				if (npc.Brain is FleshBlightBrain)
 					return;
 			}
-			if (LateBlight.LateBlightCount == 4 && FireBlight.FireBlightCount == 8 && !CreateFleshBlight)
+			if (LateBlightsKilled == 4 && FireBlightsKilled == 8 && !CreateFleshBlight)
 			{
 				for (int i = 0; i < 2; i++)
 				{
@@ -667,6 +673,7 @@ namespace DOL.AI.Brain
 					boss.Z = Body.Z;
 					boss.Heading = Body.Heading;
 					boss.CurrentRegion = Body.CurrentRegion;
+					boss.Owner = Body as BlightController;
 					boss.AddToWorld();
 				}
 				CreateFleshBlight = true;
@@ -679,7 +686,7 @@ namespace DOL.AI.Brain
 				if (npc.Brain is BlightBrain)
 					return;
 			}
-			if (FleshBlight.FleshBlightCount == 2 && LateBlight.LateBlightCount == 4 && FireBlight.FireBlightCount == 8 && !CreateBlight)
+			if (FleshBlightsKilled == 2 && LateBlightsKilled == 4 && FireBlightsKilled == 8 && !CreateBlight)
 			{
 				Blight boss = new Blight();
 				boss.X = Body.X + Util.Random(-500, 500);
@@ -687,6 +694,7 @@ namespace DOL.AI.Brain
 				boss.Z = Body.Z;
 				boss.Heading = Body.Heading;
 				boss.CurrentRegion = Body.CurrentRegion;
+				boss.Owner = Body as BlightController;
 				boss.AddToWorld();
 				CreateBlight = true;
 			}

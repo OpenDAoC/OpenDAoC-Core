@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				if (IsTargetPicked == false && OrshomFire.FireCount > 0)
+				if (IsTargetPicked == false && IsFireAlive())
 				{
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(15000, 20000));//timer to port and pick player
 					IsTargetPicked = true;
@@ -174,6 +174,22 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
+		private Orshom _orshom;
+		private bool IsFireAlive()
+		{
+			if (_orshom == null)
+			{
+				foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+				{
+					if (npc is Orshom orshom)
+					{
+						_orshom = orshom;
+						break;
+					}
+				}
+			}
+			return _orshom?.Fire != null && _orshom.Fire.IsAlive && _orshom.Fire.ObjectState is GameObject.eObjectState.Active;
+		}
 	}
 }
 /////////////////////////////////////////////////////////////Orshom////////////////////////////////
@@ -182,6 +198,7 @@ namespace DOL.GS
     public class Orshom : GameEpicBoss
 	{
 		public Orshom() : base() { }
+		public OrshomFire Fire;
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -284,7 +301,6 @@ namespace DOL.AI.Brain
 							if (npc.IsAlive && npc.Brain is OrshomFireBrain)
 							{
 								npc.RemoveFromWorld();
-								OrshomFire.FireCount = 0;
 							}
 						}
 					}
@@ -318,13 +334,10 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnFire()
 		{
-			foreach (GameNPC mob in Body.GetNPCsInRadius(8000))
-			{
-				if (mob.Brain is OrshomFireBrain)
-				{
-					return;
-				}
-			}
+			if (Body is not Orshom orshom)
+				return;
+			if (orshom.Fire != null && orshom.Fire.IsAlive && orshom.Fire.ObjectState is GameObject.eObjectState.Active)
+				return;
 			OrshomFire npc = new OrshomFire();
 			npc.X = 31406;
 			npc.Y = 69599;
@@ -333,6 +346,7 @@ namespace DOL.AI.Brain
 			npc.CurrentRegion = Body.CurrentRegion;
 			npc.RespawnInterval = -1;
 			npc.AddToWorld();
+			orshom.Fire = npc;
 		}
 	}
 }
@@ -405,12 +419,6 @@ namespace DOL.GS
 		{
 			get { return 10000; }
 		}
-		public static int FireCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-			--FireCount;
-            base.ProcessDeath(killer);
-        }
         public override bool AddToWorld()
 		{
 			Model = 665;
@@ -422,7 +430,6 @@ namespace DOL.GS
 			Intelligence = 200;
 			Charisma = 200;
 			Empathy = 200;
-			++FireCount;
 
 			MaxSpeedBase = 0;
 			RespawnInterval = -1;
