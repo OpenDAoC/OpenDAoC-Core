@@ -2120,7 +2120,7 @@ namespace DOL.GS.Spells
 
 		public virtual void ApplyEffectOnTarget(GameLiving target)
 		{
-			if ((HasPositiveEffect || Spell.IsHelpful) && target != Caster && !GameServer.ServerRules.IsAllowedToHelp(Caster, target, true))
+			if ((HasPositiveEffect || Spell.IsHelpful) && target != Caster && !GameServer.ServerRules.IsAllowedToHelp(Caster, target, Spell.Pulse != 0))
 				return;
 
 			if (RaidEncounter.HasActiveEncounters && AbstractServerRules.TryGetPlayerOwner(Caster, out GamePlayer raidCaster))
