@@ -266,7 +266,7 @@ namespace DOL.AI.Brain
 
                 foreach (ECSGameEffect effect in Body.effectListComponent.GetEffects())
                 {
-                    if (effect.SpellHandler.Spell.IsHarmful)
+                    if (effect.SpellHandler?.Spell.IsHarmful == true)
                         effect.End();
                 }
 
