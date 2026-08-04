@@ -403,134 +403,96 @@ namespace DOL.AI.Brain
                 if (Body.HealthPercent <= 95 && Body.HealthPercent > 90 && !adds1)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds1 = true;
                 }
                 if (Body.HealthPercent <= 90 && Body.HealthPercent > 85 && !adds2)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds2 = true;
                 }
                 if (Body.HealthPercent <= 85 && Body.HealthPercent > 80 && !adds3)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds3 = true;
                 }
                 if (Body.HealthPercent <= 80 && Body.HealthPercent > 75 && !adds4)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds4 = true;
                 }
                 if (Body.HealthPercent <= 75 && Body.HealthPercent > 70 && !adds5)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds5 = true;
                 }
                 if (Body.HealthPercent <= 70 && Body.HealthPercent > 65 && !adds6)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds6 = true;
                 }
                 if (Body.HealthPercent <= 65 && Body.HealthPercent > 60 && !adds7)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds7 = true;
                 }
                 if (Body.HealthPercent <= 60 && Body.HealthPercent > 55 && !adds8)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds8 = true;
                 }
                 if (Body.HealthPercent <= 55 && Body.HealthPercent > 50 && !adds9)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds9 = true;
                 }
                 if (Body.HealthPercent <= 50 && Body.HealthPercent > 45 && !adds10)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds10 = true;
                 }
                 if (Body.HealthPercent <= 45 && Body.HealthPercent > 40 && !adds11)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds11 = true;
                 }
                 if (Body.HealthPercent <= 40 && Body.HealthPercent > 35 && !adds12)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds12 = true;
                 }
                 if (Body.HealthPercent <= 35 && Body.HealthPercent > 30 && !adds13)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds13 = true;
                 }
                 if (Body.HealthPercent <= 30 && Body.HealthPercent > 25 && !adds14)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds14 = true;
                 }
                 if (Body.HealthPercent <= 25 && Body.HealthPercent > 20 && !adds15)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds15 = true;
                 }
                 if (Body.HealthPercent <= 20 && Body.HealthPercent > 15 && !adds16)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds16 = true;
                 }
                 if (Body.HealthPercent <= 15 && Body.HealthPercent > 10 && !adds17)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds17 = true;
                 }
                 if (Body.HealthPercent <= 10 && Body.HealthPercent > 5 && !adds18)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds18 = true;
                 }
                 if (Body.HealthPercent <= 5 && Body.HealthPercent > 0 && !adds19)
                 {
                     SpawnAdds();
-                    spawnAmount = 0;
-                    PlayerCountInLegionLair = 0;
                     adds19 = true;
                 }
                 #endregion
@@ -589,25 +551,25 @@ namespace DOL.AI.Brain
             CanPbaoe = false;
             return 0;
         }
-        public static int PlayerCountInLegionLair = 0;
-        public static int spawnAmount = 0;
         private void SpawnAdds()
         {
+            int playerCountInLegionLair = 0;
+            int spawnAmount = 0;
             if (Body.InCombat && Body.IsAlive && HasAggro)
             {
                 foreach (GamePlayer playerNearby in Body.GetPlayersInRadius(2000))
                 {
                     if (playerNearby != null && playerNearby.Client.Account.PrivLevel == 1)
                     {
-                        PlayerCountInLegionLair++;
+                        playerCountInLegionLair++;
                     }
-                    if (PlayerCountInLegionLair < 4)
+                    if (playerCountInLegionLair < 4)
                         spawnAmount = 1;
-                    if (PlayerCountInLegionLair > 4)
-                        spawnAmount = PlayerCountInLegionLair / 4;
+                    if (playerCountInLegionLair > 4)
+                        spawnAmount = playerCountInLegionLair / 4;
                 }
             }
-            if (PlayerCountInLegionLair > 0 && spawnAmount > 0)
+            if (playerCountInLegionLair > 0 && spawnAmount > 0)
             {
                 //log.Warn("PlayerCountInLegionLair = " + PlayerCountInLegionLair + " and spawnAmount = "+ spawnAmount);
                 for (int i = 0; i < spawnAmount; i++)

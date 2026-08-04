@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -161,19 +162,24 @@ namespace DOL.AI.Brain
             {
                 RemoveAdds = false;
                 Body.CastSpell(BlueLady_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                if ((BlueLadySwordAdd.SwordCount < 10 || BlueLadyAxeAdd.AxeCount < 10) && CanSpawnAdds == false)
+                if (CanSpawnAdds == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(25000, 45000));
-                    CanSpawnAdds = true;
+                    CountAdds(out int swordCount, out int axeCount);
+                    if (swordCount < 10 || axeCount < 10)
+                    {
+                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(25000, 45000));
+                        CanSpawnAdds = true;
+                    }
                 }
             }
             base.Think();
         }
         private int SpawnAdds(ECSGameTimer timer)
         {
+            CountAdds(out int swordCount, out int axeCount);
             for (int i = 0; i < 10; i++)
             {
-                if (BlueLadySwordAdd.SwordCount < 10)
+                if (swordCount < 10)
                 {
                     BlueLadySwordAdd add = new BlueLadySwordAdd();
                     add.X = Body.X + Util.Random(-100, 100);
@@ -182,11 +188,13 @@ namespace DOL.AI.Brain
                     add.CurrentRegion = Body.CurrentRegion;
                     add.Heading = Body.Heading;
                     add.AddToWorld();
+                    _swordAdds.Add(add);
+                    ++swordCount;
                 }
             }
             for (int i = 0; i < 10; i++)
             {
-                if (BlueLadyAxeAdd.AxeCount < 10)
+                if (axeCount < 10)
                 {
                     BlueLadyAxeAdd add2 = new BlueLadyAxeAdd();
                     add2.X = Body.X + Util.Random(-100, 100);
@@ -195,10 +203,21 @@ namespace DOL.AI.Brain
                     add2.CurrentRegion = Body.CurrentRegion;
                     add2.Heading = Body.Heading;
                     add2.AddToWorld();
+                    _axeAdds.Add(add2);
+                    ++axeCount;
                 }
             }
             CanSpawnAdds = false;
             return 0;
+        }
+        private readonly List<GameNPC> _swordAdds = new List<GameNPC>();
+        private readonly List<GameNPC> _axeAdds = new List<GameNPC>();
+        private void CountAdds(out int swordCount, out int axeCount)
+        {
+            _swordAdds.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+            _axeAdds.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+            swordCount = _swordAdds.Count;
+            axeCount = _axeAdds.Count;
         }
         public Spell m_BlueLady_DD;
         public Spell BlueLady_DD
@@ -257,12 +276,6 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.15;
         }
-        public static int SwordCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --SwordCount;
-            base.ProcessDeath(killer);
-        }
         public override long ExperienceValue => 0;
         public override bool CanDropLoot => false;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 125; }
@@ -276,7 +289,6 @@ namespace DOL.GS
             Level = (byte)Util.Random(50, 55);
             Realm = 0;
 
-            ++SwordCount;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
 
@@ -320,12 +332,6 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.15;
         }
-        public static int AxeCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --AxeCount;
-            base.ProcessDeath(killer);
-        }
         public override long ExperienceValue => 0;
         public override bool CanDropLoot => false;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 125; }
@@ -344,7 +350,6 @@ namespace DOL.GS
             Inventory = templateHib.CloseTemplate();
             VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.Standard;
 
-            ++AxeCount;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -85,7 +86,6 @@ namespace DOL.GS
 
             Faction = FactionMgr.GetFactionByID(187);
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            SpecialInnocent.InnocentCount = 0;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 67, 0, 0);//modelID,color,effect,extension
@@ -135,9 +135,10 @@ namespace DOL.AI.Brain
         private bool CanSpawnAdds = false;
         private int SpawnAdd(ECSGameTimer timer)
         {
+            int innocentCount = CountInnocents();
             for (int i = 0; i < 8; i++)
             {
-                if (SpecialInnocent.InnocentCount < 9)
+                if (innocentCount < 9)
                 {
                     SpecialInnocent add = new SpecialInnocent();
                     add.X = Body.X + Util.Random(-100, 100);
@@ -147,10 +148,18 @@ namespace DOL.AI.Brain
                     add.RespawnInterval = -1;
                     add.Heading = Body.Heading;
                     add.AddToWorld();
+                    _innocents.Add(add);
+                    ++innocentCount;
                 }
             }
             CanSpawnAdds = false;
             return 0;
+        }
+        private readonly List<GameNPC> _innocents = new List<GameNPC>();
+        private int CountInnocents()
+        {
+            _innocents.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+            return _innocents.Count;
         }
         private bool RemoveAdds = false;
         public override void Think()
@@ -159,7 +168,6 @@ namespace DOL.AI.Brain
             {
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                SpecialInnocent.InnocentCount = 0;
                 CanSpawnAdds = false;
                 if (!RemoveAdds)
                 {
@@ -176,7 +184,7 @@ namespace DOL.AI.Brain
             if (HasAggro && Body.InCombat && Body.TargetObject != null)
             {
                 RemoveAdds = false;
-                if(SpecialInnocent.InnocentCount<9 && CanSpawnAdds == false)
+                if(CanSpawnAdds == false && CountInnocents() < 9)
                 {
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdd), Util.Random(20000, 30000));
                     CanSpawnAdds=true;
@@ -251,7 +259,6 @@ namespace DOL.GS
             }
             base.OnAttackEnemy(ad);
         }
-        public static int InnocentCount = 0;
         public override bool AddToWorld()
         {
             Model = (ushort)Util.Random(442, 446);
@@ -262,7 +269,6 @@ namespace DOL.GS
             TetherRange = 0;
             Faction = FactionMgr.GetFactionByID(187);
 
-            ++InnocentCount;
             Strength = 50;
             Dexterity = 120;
             Constitution = 100;
@@ -271,11 +277,6 @@ namespace DOL.GS
             SetOwnBrain(innocentbrain);
             base.AddToWorld();
             return true;
-        }
-        public override void ProcessDeath(GameObject killer)
-        {
-            --InnocentCount;
-            base.ProcessDeath(killer);
         }
         public override double GetArmorAF(eArmorSlot slot)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -107,6 +108,7 @@ namespace DOL.GS
         private void SpawnExecutioners()
 		{
 			Point3D spawn = new Point3D(322192, 671493, 2764);
+			Executioners.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not eObjectState.Active);
 			for (int i = 0; i < 4; i++)
 			{
 				FallenExecutioner npc = new FallenExecutioner();
@@ -116,8 +118,10 @@ namespace DOL.GS
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
 				npc.AddToWorld();
+				Executioners.Add(npc);
 			}
 		}
+		public readonly List<GameNPC> Executioners = new List<GameNPC>();
 	}
 }
 namespace DOL.AI.Brain
@@ -138,7 +142,6 @@ namespace DOL.AI.Brain
 				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 			}
 		}
-		public static int FallenExecutionerCount = 0;
 		private bool Message1 = false;
 		private bool Message2 = false;
 		public override void Think()
@@ -154,17 +157,6 @@ namespace DOL.AI.Brain
 			if(HasAggro && Body.TargetObject != null)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
-				if (!Message1)
-                {
-					switch(Util.Random(1,2))
-                    {
-						case 1: BroadcastMessage("Sister Blythe shouts in a language you cannot understand!"); break;
-						case 2: BroadcastMessage(String.Format("{0} says, \"Come my pets! Let us show these fools what comes of failure!\"", Body.Name)); break;
-					}
-					if(FallenExecutionerCount > 0)
-						BroadcastMessage("The fallen executioner says, \"By your command!\"");
-					Message1 = true;
-                }
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is FallenExecutionerBrain brain)
@@ -173,7 +165,19 @@ namespace DOL.AI.Brain
 							brain.AddToAggroList(target, 10);
 					}
 				}
-				if(FallenExecutionerCount < 4)
+				int executionerCount = AliveExecutionerCount();
+				if (!Message1)
+                {
+					switch(Util.Random(1,2))
+                    {
+						case 1: BroadcastMessage("Sister Blythe shouts in a language you cannot understand!"); break;
+						case 2: BroadcastMessage(String.Format("{0} says, \"Come my pets! Let us show these fools what comes of failure!\"", Body.Name)); break;
+					}
+					if(executionerCount > 0)
+						BroadcastMessage("The fallen executioner says, \"By your command!\"");
+					Message1 = true;
+                }
+				if(executionerCount < 4)
                 {
 					if (!Message2)
 					{
@@ -207,12 +211,30 @@ namespace DOL.AI.Brain
 			}
 			return 0;
         }
+		private int AliveExecutionerCount()
+		{
+			if (Body is not SisterBlythe blythe)
+				return 0;
+
+			int count = 0;
+			foreach (GameNPC npc in blythe.Executioners)
+			{
+				if (npc != null && npc.IsAlive && npc.ObjectState is GameObject.eObjectState.Active)
+					++count;
+			}
+			return count;
+		}
 		private void SpawnExecutioners()
 		{
+			if (Body is not SisterBlythe blythe)
+				return;
+
+			blythe.Executioners.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+			int executionerCount = blythe.Executioners.Count;
 			Point3D spawn = new Point3D(322192, 671493, 2764);
 			for (int i = 0; i < 4; i++)
 			{
-				if (FallenExecutionerCount < 4)
+				if (executionerCount < 4)
 				{
 					FallenExecutioner npc = new FallenExecutioner();
 					npc.X = spawn.X + Util.Random(-150, 150);
@@ -221,6 +243,8 @@ namespace DOL.AI.Brain
 					npc.Heading = Body.Heading;
 					npc.CurrentRegion = Body.CurrentRegion;
 					npc.AddToWorld();
+					blythe.Executioners.Add(npc);
+					++executionerCount;
 				}
 			}
 		}
@@ -237,7 +261,6 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160685);
 			LoadTemplate(npcTemplate);
-			++SisterBlytheBrain.FallenExecutionerCount;
 
 			FallenExecutionerBrain sbrain = new FallenExecutionerBrain();
 			SetOwnBrain(sbrain);
@@ -246,12 +269,6 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		
-        public override void ProcessDeath(GameObject killer)
-        {
-			--SisterBlytheBrain.FallenExecutionerCount;
-            base.ProcessDeath(killer);
-        }
     }
 }
 namespace DOL.AI.Brain

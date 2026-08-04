@@ -219,6 +219,8 @@ namespace DOL.AI.Brain
 		}
 		public static bool SpawnSacrifices1 = false;
 		public static bool Stage2 = false;
+		public bool SacrificeCompleted = false;
+		public bool DemonCompleted = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -235,6 +237,8 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Stage2 = false;
 				SpawnSacrifices1 = false;
+				SacrificeCompleted = false;
+				DemonCompleted = false;
 				Body.Health = Body.MaxHealth;
 				if (!RemoveAdds)
 				{
@@ -314,6 +318,7 @@ namespace DOL.AI.Brain
 			Add1.Heading = 3054;
 			Add1.LoadedFromScript = true;
 			Add1.Faction = FactionMgr.GetFactionByID(187);
+			Add1.OwnerBrain = this;
 			Add1.AddToWorld();
 
 			SummonedDemon Add2 = new SummonedDemon();
@@ -324,13 +329,15 @@ namespace DOL.AI.Brain
 			Add2.Heading = 1004;
 			Add2.LoadedFromScript = true;
 			Add2.Faction = FactionMgr.GetFactionByID(187);
+			Add2.OwnerBrain = this;
 			Add2.AddToWorld();
 		}
+		private ShadeOfAelfgar _shade;
 		public void SpawnShadeOfAelfgar()
         {
-			if (SummonedSacrifice.SacrificeKilledCount == 1 && SummonedDemon.SummonedDemonCount == 1)//both summoned demon and sacrifice must be killed
+			if (SacrificeCompleted && DemonCompleted)//both summoned demon and sacrifice must be killed
 			{
-				if (ShadeOfAelfgar.ShadeOfAelfgarCount == 0)//make sure there is only 1 always
+				if (_shade == null || !_shade.IsAlive || _shade.ObjectState is not GameObject.eObjectState.Active)//make sure there is only 1 always
 				{
 					ShadeOfAelfgar Add1 = new ShadeOfAelfgar();
 					Add1.X = 32128;
@@ -341,8 +348,9 @@ namespace DOL.AI.Brain
 					Add1.LoadedFromScript = true;
 					Add1.Faction = FactionMgr.GetFactionByID(187);
 					Add1.AddToWorld();
-					SummonedDemon.SummonedDemonCount = 0;
-					SummonedSacrifice.SacrificeKilledCount = 0;
+					_shade = Add1;
+					DemonCompleted = false;
+					SacrificeCompleted = false;
 				}
 			}
 		}
@@ -414,7 +422,7 @@ namespace DOL.GS
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
-		public static int SacrificeKilledCount = 0;
+		public GrandSummonerGovannonBrain OwnerBrain;
         public override void Die(GameObject killer)
         {
             base.Die(killer);
@@ -423,7 +431,6 @@ namespace DOL.GS
 		{
 			Model = 122;
 			Name = "summoned sacrifice";
-			SacrificeKilledCount = 0;
 			RespawnInterval = -1;
 			Size = 45;
 			Level = (byte)Util.Random(62, 68);
@@ -462,7 +469,8 @@ namespace DOL.AI.Brain
             }
 			else
             {
-				SummonedSacrifice.SacrificeKilledCount = 1;
+				if (Body is SummonedSacrifice sacrifice && sacrifice.OwnerBrain != null)
+					sacrifice.OwnerBrain.SacrificeCompleted = true;
 				Body.Die(Body);//is at point so it die
             }
 			base.Think();
@@ -499,7 +507,7 @@ namespace DOL.GS
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
-		public static int SummonedDemonCount = 0;
+		public GrandSummonerGovannonBrain OwnerBrain;
 		public override void Die(GameObject killer)
 		{
 			base.Die(killer);
@@ -508,7 +516,6 @@ namespace DOL.GS
 		{
 			Model = 253;
 			Name = "summoned demon";
-			SummonedDemonCount = 0;
 			RespawnInterval = -1;
 			Size = 30;
 			Level = (byte)Util.Random(62, 68);
@@ -547,7 +554,8 @@ namespace DOL.AI.Brain
 			}
 			else
 			{
-				SummonedDemon.SummonedDemonCount = 1;
+				if (Body is SummonedDemon demon && demon.OwnerBrain != null)
+					demon.OwnerBrain.DemonCompleted = true;
 				Body.Die(Body);//is at point so it die
 			}
 			base.Think();
@@ -584,12 +592,6 @@ namespace DOL.GS
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
-		public static int ShadeOfAelfgarCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			++ShadeOfAelfgarCount;
-			base.ProcessDeath(killer);
-		}
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18803);
@@ -597,7 +599,6 @@ namespace DOL.GS
 
 			ShadeOfAelfgarBrain.RandomTarget = null;
 			ShadeOfAelfgarBrain.CanPort = false;
-			ShadeOfAelfgarCount = 0;
 			RespawnInterval = -1;
 			Faction = FactionMgr.GetFactionByID(187);
 			ShadeOfAelfgarBrain sacrifice = new ShadeOfAelfgarBrain();

@@ -10,6 +10,7 @@ namespace DOL.GS
 	public class Balor : GameEpicBoss
 	{
 		public Balor() : base() { }
+		public BalorEye Eye;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -106,9 +107,13 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		public static bool spawn_eye = false;
+		private bool IsEyeOfBalorUp()
+		{
+			return Body is Balor balor && balor.Eye != null && balor.Eye.IsAlive && balor.Eye.ObjectState is GameObject.eObjectState.Active;
+		}
 		public void SpawnEyeOfBalor()
 		{
-			if (BalorEye.EyeCount == 0)
+			if (!IsEyeOfBalorUp())
 			{
 				BalorEye Add1 = new BalorEye();
 				Add1.X = Body.X;
@@ -118,6 +123,8 @@ namespace DOL.AI.Brain
 				Add1.Heading = Body.Heading;
 				Add1.RespawnInterval = -1;
 				Add1.AddToWorld();
+				if (Body is Balor balor)
+					balor.Eye = Add1;
 			}
 		}
 		private int m_stage = 10;
@@ -290,12 +297,6 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-		public static int EyeCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-			--EyeCount;
-            base.ProcessDeath(killer);
-        }
         public override bool AddToWorld()
 		{
 			Model = 665;
@@ -314,7 +315,6 @@ namespace DOL.GS
 			BalorEyeBrain.PickTarget = false;
 			BalorEyeBrain.RandomTarget = null;
 			BalorEyeBrain.Cancast = false;
-			++EyeCount;
 			Size = 20;
 			Level = (byte)Util.Random(65, 70);
 			Faction = FactionMgr.GetFactionByID(93);

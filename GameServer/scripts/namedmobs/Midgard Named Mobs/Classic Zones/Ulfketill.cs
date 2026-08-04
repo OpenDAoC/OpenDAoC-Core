@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -9,6 +10,7 @@ namespace DOL.GS
 	public class Ulfketill : GameEpicBoss
 	{
 		public Ulfketill() : base() { }
+		public readonly List<GameNPC> Jotuns = new List<GameNPC>();
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -84,7 +86,7 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
-			if (UlfketillAdds.JotunsCount < 3 && !HasAggro)
+			if (!HasAggro && AliveJotunCount() < 3)
 			{
 				SpawnJotuns();
 			}
@@ -102,11 +104,29 @@ namespace DOL.AI.Brain
             }
 			base.Think();
 		}
+		private int AliveJotunCount()
+		{
+			if (Body is not Ulfketill ulfketill)
+				return 0;
+
+			int count = 0;
+			foreach (GameNPC npc in ulfketill.Jotuns)
+			{
+				if (npc != null && npc.IsAlive && npc.ObjectState is GameObject.eObjectState.Active)
+					++count;
+			}
+			return count;
+		}
 		private void SpawnJotuns()
 		{
+			if (Body is not Ulfketill ulfketill)
+				return;
+
+			ulfketill.Jotuns.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+			int jotunsCount = ulfketill.Jotuns.Count;
 			for (int i = 0; i < 3; i++)
 			{
-				if (UlfketillAdds.JotunsCount < 3)
+				if (jotunsCount < 3)
 				{
 					UlfketillAdds add = new UlfketillAdds();
 					add.X = Body.X + Util.Random(-500, 500);
@@ -115,6 +135,8 @@ namespace DOL.AI.Brain
 					add.Heading = Body.Heading;
 					add.CurrentRegion = Body.CurrentRegion;
 					add.AddToWorld();
+					ulfketill.Jotuns.Add(add);
+					++jotunsCount;
 				}
 			}
 		}
@@ -156,7 +178,6 @@ namespace DOL.GS
 		}
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 200; }
-		public static int JotunsCount = 0;
 		public override bool AddToWorld()
 		{
 			Model = 1770;
@@ -165,7 +186,6 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			Level = (byte)Util.Random(50, 55);
 			MaxSpeedBase = 225;
-			++JotunsCount;
 
 			UlfketillAddsBrain sbrain = new UlfketillAddsBrain();
 			SetOwnBrain(sbrain);
@@ -173,11 +193,6 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void ProcessDeath(GameObject killer)
-        {
-			--JotunsCount;
-            base.ProcessDeath(killer);
-        }
 		public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;
 	}
