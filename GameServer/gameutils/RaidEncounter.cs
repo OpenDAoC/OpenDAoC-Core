@@ -627,7 +627,12 @@ namespace DOL.GS
             {
                 _lastActivity.Remove(player.InternalID);
                 _quitTimes.Remove(player.InternalID);
-                return _roster.Remove(player.InternalID);
+
+                if (!_roster.Remove(player.InternalID))
+                    return false;
+
+                Size--;
+                return true;
             }
         }
 
