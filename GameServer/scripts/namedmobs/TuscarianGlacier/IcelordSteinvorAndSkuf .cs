@@ -544,7 +544,6 @@ namespace DOL.GS
             Realm = eRealm.None;
             RespawnInterval = -1;
 
-            HrimthursaSeerBrain.walkto_point = false;
             HrimthursaSeerBrain adds = new HrimthursaSeerBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -585,7 +584,7 @@ namespace DOL.AI.Brain
             ThinkInterval = 1000;
         }
 
-        public static bool walkto_point = false;
+        private bool _walkedToRoom = false;
         public void Walk_To_Room()
         {
             Point3D point1 = new Point3D();
@@ -597,10 +596,10 @@ namespace DOL.AI.Brain
             {
                 if (Body.CurrentRegionID == 160) //TG
                 {
-                    if (!Body.IsWithinRadius(point1, 30) && walkto_point == false)
-                        Body.WalkTo(point1, 100);
+                    if (!Body.IsWithinRadius(point1, 30) && _walkedToRoom == false)
+                        Body.PathTo(point1, 100);
                     else
-                        walkto_point = true;
+                        _walkedToRoom = true;
                 }
             }
         }

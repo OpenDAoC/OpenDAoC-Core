@@ -386,7 +386,7 @@ namespace DOL.AI.Brain
                                     if (!Body.IsWithinRadius(point1, 50))
                                     {
                                         Body.StopAttack();
-                                        Body.WalkTo(point1, 400);
+                                        Body.PathTo(point1, 400);
                                         IsWalking = true;
                                     }
                                     break;
@@ -394,7 +394,7 @@ namespace DOL.AI.Brain
                                     if (!Body.IsWithinRadius(point2, 50))
                                     {
                                         Body.StopAttack();
-                                        Body.WalkTo(point2, 400);
+                                        Body.PathTo(point2, 400);
                                         IsWalking = true;
                                     }
                                     break;
@@ -402,7 +402,7 @@ namespace DOL.AI.Brain
                                     if (!Body.IsWithinRadius(point3, 50))
                                     {
                                         Body.StopAttack();
-                                        Body.WalkTo(point3, 400);
+                                        Body.PathTo(point3, 400);
                                         IsWalking = true;
                                     }
                                     break;
@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
                                     if (!Body.IsWithinRadius(point4, 50))
                                     {
                                         Body.StopAttack();
-                                        Body.WalkTo(point4, 400);
+                                        Body.PathTo(point4, 400);
                                         IsWalking = true;
                                     }
                                     break;
