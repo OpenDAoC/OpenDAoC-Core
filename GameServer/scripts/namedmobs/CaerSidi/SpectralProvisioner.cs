@@ -14,7 +14,7 @@ namespace DOL.GS.Scripts
 	public SpectralProvisioner()
 		: base() { }
 		// The old script randomized the speed of each waypoint-to-waypoint walk between 195 and 300.
-		private const short PATROL_SPEED = 250;
+		public const short PATROL_SPEED = 250;
 
 		private static readonly (int X, int Y, int Z)[] _patrolPoints =
 		[
@@ -161,6 +161,9 @@ namespace DOL.AI.Brain
 			if (Body.IsAlive)
 			{
 				Body.MaxSpeedBase = 300;
+
+				if (!Body.IsMovingOnPath)
+					Body.MoveOnPath(SpectralProvisioner.PATROL_SPEED);
 
 				// if (HasAggro && Body.TargetObject != null)
 				// {
