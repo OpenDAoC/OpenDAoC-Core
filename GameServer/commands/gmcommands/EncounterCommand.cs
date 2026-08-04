@@ -186,7 +186,14 @@ namespace DOL.GS.Commands
                 return;
 
             if (encounter.RemoveFromRoster(player))
+            {
+                GameNPC ownerBody = encounter.Owner.Body;
+
+                if (ownerBody != null && ownerBody.Health > ownerBody.MaxHealth)
+                    ownerBody.Health = ownerBody.MaxHealth;
+
                 DisplayMessage(client, $"{player.Name} was removed from the raid encounter roster of {npc.Name}.");
+            }
             else
                 DisplayMessage(client, $"{player.Name} is not on the raid encounter roster of {npc.Name}.");
         }
