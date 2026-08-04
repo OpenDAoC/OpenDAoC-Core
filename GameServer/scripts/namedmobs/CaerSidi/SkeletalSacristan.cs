@@ -9,7 +9,7 @@ namespace DOL.GS.Scripts
 {
     public class SkeletalSacristan : GameEpicBoss
     {
-        private const short PATROL_SPEED = 220;
+        public const short PATROL_SPEED = 220;
 
         private static readonly (int X, int Y, int Z)[] _patrolPoints =
         [
@@ -98,6 +98,9 @@ namespace DOL.AI.Brain
 	{
         public override void Think()
 		{
+            if (Body.IsAlive && !Body.IsMovingOnPath)
+                Body.MoveOnPath(GS.Scripts.SkeletalSacristan.PATROL_SPEED);
+
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 ClearAggroList();
