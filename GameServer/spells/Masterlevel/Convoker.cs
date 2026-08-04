@@ -745,9 +745,6 @@ namespace DOL.AI.Brain
 
 		public override void FollowOwner()
 		{
-			if (Body.IsAttacking)
-				Disengage();
-
 			Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 	}

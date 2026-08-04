@@ -58,29 +58,17 @@ namespace DOL.AI.Brain
             else if (brain.AggressionState is eAggressionState.Passive)
                 brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
 
-            // Handle pet movement.
-            if (brain.WalkState is eWalkState.Follow && brain.Owner != null)
-                brain.Follow(brain.Owner);
+            brain.CheckAbilities();
 
             // Cast defensive spells if applicable.
-            brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive);
-            brain.CheckAbilities();
+            if (!brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
+                brain.ResumeWalkState();
         }
     }
 
     public class ControlledMobState_AGGRO : StandardMobState_AGGRO
     {
         public ControlledMobState_AGGRO(ControlledMobBrain brain) : base(brain) { }
-
-        public override void Exit()
-        {
-            _brain.ClearAggroList();
-
-            if (_brain.Body.IsAttacking)
-                _brain.Body.StopAttack();
-
-            _brain.Body.TargetObject = null;
-        }
 
         public override void Think()
         {
@@ -104,37 +92,32 @@ namespace DOL.AI.Brain
             if (brain.AggressionState is eAggressionState.Aggressive)
                 brain.CheckProximityAggro();
 
-            /* this was added in 1.88 : https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.88
-             * removing to conform to 1.65
-            // Stop hunting player entering in steath
-            if (brain.Body.TargetObject != null && brain.Body.TargetObject is GamePlayer)
+            // This was added in 1.88 : https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.88
+            // Removing to conform to 1.65.
+            /*if (brain.Body.TargetObject is GamePlayer playerTarget && playerTarget.IsStealthed)
             {
-                GamePlayer player = brain.Body.TargetObject as GamePlayer;
-                if (brain.Body.IsAttacking && player.IsStealthed && !brain.previousIsStealthed)
-                {
-                    brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-                }
-                brain.previousIsStealthed = player.IsStealthed;
+                brain.RemoveFromAggroList(playerTarget);
+                brain.OrderedAttackTarget = null;
             }*/
-
-            bool hasTarget = brain.HasAggro || brain.OrderedAttackTarget != null;
-
-            // Check for buffs, heals, etc, interrupting melee if not being interrupted.
-            if (!hasTarget)
-            {
-                if (brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
-                    return;
-
-                // Return to defensive if there's no valid target, unless confused.
-                if (brain.AggressionState is not eAggressionState.Aggressive && !brain.Body.IsConfused)
-                {
-                    brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-                    return;
-                }
-            }
 
             brain.AttackMostWanted();
             brain.CheckAbilities();
+
+            if (!brain.HasAggro && brain.OrderedAttackTarget == null)
+            {
+                // Return to defensive if there's no valid target, unless confused.
+
+                if (brain.AggressionState is not eAggressionState.Aggressive && !brain.Body.IsConfused)
+                {
+                    brain.Disengage();
+                    brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+                    return;
+                }
+
+                // Only check defensive spells if there's no target.
+                if (!brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
+                    brain.ResumeWalkState();
+            }
         }
     }
 
@@ -143,14 +126,6 @@ namespace DOL.AI.Brain
         public override eFSMStateType StateType => eFSMStateType.PASSIVE;
 
         public ControlledMobState_PASSIVE(ControlledMobBrain brain) : base(brain) { }
-
-        public override void Enter()
-        {
-            if (_brain.Body.IsCasting)
-                _brain.Body.StopCurrentSpellcast();
-
-            base.Enter();
-        }
 
         public override void Think()
         {
@@ -170,13 +145,11 @@ namespace DOL.AI.Brain
             else if (brain.AggressionState is eAggressionState.Defensive)
                 brain.FSM.SetCurrentState(eFSMStateType.IDLE);
 
-            // Handle pet movement.
-            if (brain.WalkState is eWalkState.Follow && brain.Owner != null)
-                brain.Follow(brain.Owner);
-
-            // Cast defensive spells if applicable.
-            brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive);
             brain.CheckAbilities();
+
+            if (!brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
+                brain.ResumeWalkState();
+
         }
     }
 }
