@@ -28,9 +28,7 @@ namespace DOL.AI.Brain
 		public const short MIN_OWNER_FOLLOW_DIST = 80;
 		public const short MAX_OWNER_FOLLOW_DIST = 10000;
 
-		protected int m_tempX = 0;
-		protected int m_tempY = 0;
-		protected int m_tempZ = 0;
+		protected Vector3? _tempPosition = Vector3.Zero;
 
 		/// <summary>
 		/// Holds the controlling player of this brain
@@ -203,14 +201,7 @@ namespace DOL.AI.Brain
                 if (m_aggressionState is eAggressionState.Passive)
                 {
                     Disengage();
-
-                    if (WalkState == eWalkState.Follow)
-                        FollowOwner();
-                    else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-                    {
-                        Body.StopFollowing();
-                        Body.PathTo(new Vector3(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
-                    }
+                    ResumeWalkState();
                 }
             }
         }
@@ -258,9 +249,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void Stay()
 		{
-			m_tempX = Body.X;
-			m_tempY = Body.Y;
-			m_tempZ = Body.Z;
+			_tempPosition = new(Body.X, Body.Y, Body.Z);
 			WalkState = eWalkState.Stay;
 			Body.StopMoving();
 		}
@@ -270,9 +259,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void ComeHere()
 		{
-			m_tempX = Owner.X;
-			m_tempY = Owner.Y;
-			m_tempZ = Owner.Z;
+			_tempPosition = new(Owner.X, Owner.Y, Owner.Z);
 			WalkState = eWalkState.ComeHere;
 			Body.StopFollowing();
 			Body.PathTo(Owner, Body.MaxSpeed);
@@ -284,9 +271,7 @@ namespace DOL.AI.Brain
 		/// <param name="target"></param>
 		public virtual void Goto(GameObject target)
 		{
-			m_tempX = target.X;
-			m_tempY = target.Y;
-			m_tempZ = target.Z;
+			_tempPosition = new(target.X, target.Y, target.Z);
 			WalkState = eWalkState.GoTarget;
 			Body.StopFollowing();
 			Body.PathTo(target, Body.MaxSpeed);
@@ -310,9 +295,6 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void FollowOwner()
 		{
-			if (Body.IsAttacking)
-				Disengage();
-
 			if (Owner is GamePlayer
 			    && IsMainPet
 			    && ((GamePlayer)Owner).CharacterClass.ID != (int)eCharacterClass.Animist
@@ -825,60 +807,58 @@ namespace DOL.AI.Brain
 
 			GameLiving target = CalculateNextAttackTarget();
 
-			if (target != null)
+			if (target == null)
+				return;
+
+			if (!Body.IsAttacking || target != Body.TargetObject)
 			{
-				if (!Body.IsAttacking || target != Body.TargetObject)
+				Body.TargetObject = target;
+
+				List<GameSpellEffect> effects = new List<GameSpellEffect>();
+
+				lock (Body.EffectList.Lock)
 				{
-					Body.TargetObject = target;
-
-					List<GameSpellEffect> effects = new List<GameSpellEffect>();
-
-					lock (Body.EffectList.Lock)
+					foreach (IGameEffect effect in Body.EffectList)
 					{
-						foreach (IGameEffect effect in Body.EffectList)
-						{
-							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
-								effects.Add(gameSpellEffect);
-						}
+						if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+							effects.Add(gameSpellEffect);
 					}
-
-					lock (Owner.EffectList.Lock)
-					{
-						foreach (IGameEffect effect in Owner.EffectList)
-						{
-							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
-								effects.Add(gameSpellEffect);
-						}
-					}
-
-					foreach (GameSpellEffect effect in effects)
-						effect.Cancel(false);
 				}
 
-				if (CheckSpells(eCheckSpellType.Offensive))
-					Body.StopAttack();
-				else
-					Body.StartAttack(target);
+				lock (Owner.EffectList.Lock)
+				{
+					foreach (IGameEffect effect in Owner.EffectList)
+					{
+						if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+							effects.Add(gameSpellEffect);
+					}
+				}
+
+				foreach (GameSpellEffect effect in effects)
+					effect.Cancel(false);
 			}
+
+			if (CheckSpells(eCheckSpellType.Offensive))
+				Body.StopAttack();
 			else
-			{
-				if (Body.IsAttacking)
-					Disengage();
-
-				if (WalkState == eWalkState.Follow)
-					FollowOwner();
-				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-				{
-					Body.StopFollowing();
-					Body.PathTo(new Vector3(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
-				}
-			}
+				Body.StartAttack(target);
 		}
 
 		public override void Disengage()
 		{
 			m_orderAttackTarget = null;
 			base.Disengage();
+		}
+
+		public void ResumeWalkState()
+		{
+			if (WalkState is eWalkState.Follow)
+				FollowOwner();
+			else if (_tempPosition.HasValue)
+			{
+				Body.StopMoving();
+				Body.PathTo(_tempPosition.Value, Body.MaxSpeed);
+			}
 		}
 
 		public virtual void OnOwnerAttacked(AttackData ad)
