@@ -332,7 +332,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
             {
-				if (!Body.IsCasting && !Body.IsBeingInterrupted)
+				if (!Body.IsCasting && !Body.IsInterruptedOrSelfInterrupted())
 				{
 					if (Body.attackComponent.AttackState)
 						Body.attackComponent.StopAttack();

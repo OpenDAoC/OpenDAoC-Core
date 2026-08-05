@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
 
 			if (type == eCheckSpellType.Offensive && Body is CommanderPet pet
 				&& pet.PreferredSpell != CommanderPet.eCommanderPreferredSpell.None
-				&& !pet.IsCasting && !pet.IsBeingInterrupted && pet.TargetObject is GameLiving living && living.IsAlive)
+				&& !pet.IsCasting && !pet.IsInterruptedOrSelfInterrupted() && pet.TargetObject is GameLiving living && living.IsAlive)
 
 			{
 				Spell spellDamage = pet.CommSpellDamage;

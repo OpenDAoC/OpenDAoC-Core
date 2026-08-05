@@ -472,10 +472,10 @@ namespace DOL.GS
 
             _halfwayDrawChecked = true;
 
-            if (!_owner.IsInterrupted)
+            if (!_owner.IsInterrupted(out GameLiving lastInterrupter))
                 return false;
 
-            InterruptAim(_owner.LastInterrupter);
+            InterruptAim(lastInterrupter);
             return true;
         }
 

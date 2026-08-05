@@ -2970,10 +2970,10 @@ namespace DOL.GS.Commands
 			text.Add("");
 
 			if (targetMob.TargetObject != null)
-			{
 				text.Add("TargetObject: " + targetMob.TargetObject.Name);
-				text.Add("InView: " + targetMob.TargetInView);
-			}
+
+			if (targetMob.IsInterrupted(out GameLiving lastInterrupter))
+				text.Add("LastInterrupter: " + lastInterrupter.Name);
 
 			if (standardBrain != null)
 			{

@@ -354,7 +354,7 @@ namespace DOL.GS.Spells
 			return TryInterruptCaster(attacker);
 		}
 
-		private bool PerformDuringCastInterruptCheck(GameLiving attacker)
+		private bool PerformDuringCastInterruptCheck()
 		{
 			// If we reach the half cast time while an interrupt timer is running, initiate a self interrupt.
 
@@ -366,7 +366,7 @@ namespace DOL.GS.Spells
 
 			_halfwayCastChecked = true;
 
-			if (!Caster.IsInterrupted || !TryInterruptCaster(attacker))
+			if (!Caster.IsInterrupted(out GameLiving lastInterrupter) || !TryInterruptCaster(lastInterrupter))
 				return false;
 
 			Caster.StartInterruptTimer(Caster.SpellSelfInterruptDuration, AttackData.eAttackType.Spell, Caster);
@@ -594,7 +594,7 @@ namespace DOL.GS.Spells
 			// Check interrupt timer.
 			if (!m_spell.Uninterruptible && !m_spell.IsInstantCast)
 			{
-				long interruptRemainingDuration = Caster.InterruptRemainingDuration;
+				long interruptRemainingDuration = Caster.GetInterruptRemainingDuration();
 
 				if (interruptRemainingDuration > 0)
 				{
@@ -1020,7 +1020,7 @@ namespace DOL.GS.Spells
 
 		public virtual bool CheckDuringCast(GameLiving target, bool quiet)
 		{
-			if (PerformDuringCastInterruptCheck(Caster.LastInterrupter))
+			if (PerformDuringCastInterruptCheck())
 				return false;
 
 			if (Caster is GameNPC npcOwner)
@@ -1083,7 +1083,7 @@ namespace DOL.GS.Spells
 						}
 					}
 					else
-						CastState = Caster.IsBeingInterrupted ? eCastState.Interrupted : eCastState.Cleanup;
+						CastState = Caster.IsInterruptedOrSelfInterrupted() ? eCastState.Interrupted : eCastState.Cleanup;
 
 					break;
 				}
