@@ -71,6 +71,7 @@ namespace DOL.Database
             // Called when an object has been created and its properties initialized.
             // Creates a copy of itself to be able to keep track of dirty properties.
             _snapshot = (DataObject) MemberwiseClone();
+            _snapshot._snapshot = null;
             _snapshot.Dirty = false;
         }
 
