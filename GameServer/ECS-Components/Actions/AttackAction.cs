@@ -61,10 +61,7 @@ namespace DOL.GS
 
             // This must be checked after `ShouldTick` so that the last attack data remains valid for the whole attack interval.
             if (!AttackComponent.AttackState)
-            {
-                CleanUp();
                 return false;
-            }
 
             _weapon = _owner.ActiveWeapon;
             _leftWeapon = _owner.ActiveLeftWeapon;

@@ -28,7 +28,7 @@ namespace DOL.AI.Brain
 		public const short MIN_OWNER_FOLLOW_DIST = 80;
 		public const short MAX_OWNER_FOLLOW_DIST = 10000;
 
-		protected Vector3? _tempPosition = Vector3.Zero;
+		protected Vector3? _tempPosition;
 
 		/// <summary>
 		/// Holds the controlling player of this brain
