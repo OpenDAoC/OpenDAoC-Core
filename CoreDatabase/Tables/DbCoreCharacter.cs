@@ -122,7 +122,6 @@ namespace DOL.Database
 		private int m_respecAmountAllSkill;  // full Respecs.
 		private int m_respecAmountSingleSkill; // Single-Line Respecs
 		private int m_respecAmountRealmSkill; //realm respecs
-		private int m_respecAmountDOL; // Patch 1.84 /respec Mythic
 		private int m_respecAmountChampionSkill; // CL Respecs
 		private bool m_isLevelRespecUsed;
 		private int m_respecBought; // /respec buy
