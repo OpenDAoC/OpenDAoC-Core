@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 50;
 			AggroRange = 300;
 			ThinkInterval = 1000;
-			GateCounter = new("ZritZritGate", 20, (kills, required) =>
+			GateCounter = new(20, (kills, required) =>
 			{
 				if (kills == required / 2)
 					Message.MessageToArea(Body, "Furious chittering echoes from the cracks in the rock.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
@@ -61,7 +61,7 @@ namespace DOL.GS
 	{
 		public ZritZritAdd() : base() { }
 
-		public override string GateId => "ZritZritGate";
+		protected override bool IsGateOwner(GameNPC npc) => npc is ZritZrit;
 
 		public override bool AddToWorld()
 		{

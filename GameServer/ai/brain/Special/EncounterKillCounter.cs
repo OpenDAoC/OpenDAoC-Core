@@ -1,52 +1,39 @@
 using System;
-using DOL.GS;
+using System.Threading;
 
 namespace DOL.AI.Brain
 {
-    /// <summary>
-    /// Implemented by brains that gate an encounter behind a number of add kills.
-    /// </summary>
     public interface IEncounterGateOwner
     {
         EncounterKillCounter GateCounter { get; }
     }
 
-    /// <summary>
-    /// Tracks how many adds of a given gate have died.
-    /// </summary>
     public sealed class EncounterKillCounter
     {
         private readonly Action<int, int> _onProgress;
+        private int _kills;
 
-        public EncounterKillCounter(string gateId, int requiredKills, Action<int, int> onProgress = null)
+        public EncounterKillCounter(int requiredKills, Action<int, int> onProgress = null)
         {
-            GateId = gateId;
             RequiredKills = requiredKills;
             _onProgress = onProgress;
         }
 
-        public string GateId { get; }
         public int RequiredKills { get; }
-        public int Kills { get; private set; }
+        public int Kills => Volatile.Read(ref _kills);
         public bool IsOpen => Kills >= RequiredKills;
 
         public void Reset()
         {
-            Kills = 0;
+            Interlocked.Exchange(ref _kills, 0);
         }
 
-        public static void NotifyDeath(EncounterGateAdd add)
+        public void IncrementKills()
         {
-            foreach (GameNPC npc in add.GetNPCsInRadius(add.GateNotifyRadius))
-            {
-                if (npc.Brain is IEncounterGateOwner owner && owner.GateCounter is EncounterKillCounter counter && counter.GateId == add.GateId)
-                {
-                    counter.Kills++;
+            int newKills = Interlocked.Increment(ref _kills);
 
-                    if (!counter.IsOpen)
-                        counter._onProgress?.Invoke(counter.Kills, counter.RequiredKills);
-                }
-            }
+            if (newKills < RequiredKills)
+                _onProgress?.Invoke(newKills, RequiredKills);
         }
     }
 }
