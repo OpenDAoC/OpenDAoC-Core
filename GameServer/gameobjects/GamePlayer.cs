@@ -2969,6 +2969,7 @@ namespace DOL.GS
             Level = 1;
             Experience = 0;
             RespecAllLines();
+            RespecRealm(false);
 
             if (Level < originalLevel && originalLevel > 5)
             {
