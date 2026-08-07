@@ -782,8 +782,6 @@ namespace DOL.GS
 		public virtual int StickMinimumRange => (int) (MeleeAttackRange * 0.375);
 		public virtual int StickMaximumRange => 5000;
 
-		public long LastVisibleToPlayersTickCount => m_lastVisibleToPlayerTick;
-
 		public ref Vector3 Destination => ref movementComponent.Destination;
 		public GameObject FollowTarget => movementComponent.FollowTarget;
 		public string PathID

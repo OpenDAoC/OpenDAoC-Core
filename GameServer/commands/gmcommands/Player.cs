@@ -1220,16 +1220,6 @@ namespace DOL.GS.Commands
                                                            eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                     break;
                                 }
-                            case "dol":
-                                {
-                                    player.RespecAmountDOL += amount;
-                                    player.Client.Out.SendMessage(
-                                        client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has awarded you " + amount +
-                                        " DOL (full) respec!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                    client.Out.SendMessage(amount + " DOL (full) respec given successfully to " + player.Name + "!",
-                                                           eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                    break;
-                                }
                             case "champion":
                                 {
                                     player.RespecAmountChampionSkill += amount;
@@ -2435,8 +2425,7 @@ namespace DOL.GS.Commands
 					 player.GetModified(eProperty.ArmorAbsorption) + " ABS");
 			text.Add(" ");
 			text.Add("SPECCING INFORMATIONS ");
-			text.Add("  - Respecs availables : " + player.RespecAmountDOL + " dol, " + player.RespecAmountSingleSkill +
-					 " single, " + player.RespecAmountAllSkill + " full");
+			text.Add("  - Respecs availables : " + player.RespecAmountSingleSkill + " single, " + player.RespecAmountAllSkill + " full");
 			text.Add("  - Remaining spec. points : " + player.SkillSpecialtyPoints);
 			sTitle = "  - Player specialisations : ";
 			sCurrent = string.Empty;

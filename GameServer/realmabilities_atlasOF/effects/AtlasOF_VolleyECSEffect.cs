@@ -206,7 +206,7 @@ namespace DOL.GS.Effects
         {
             _isReadyToShoot = false;
 
-            if (player.IsBeingInterrupted)
+            if (player.IsInterruptedOrSelfInterrupted())
             {
                 Cancel();
                 return;

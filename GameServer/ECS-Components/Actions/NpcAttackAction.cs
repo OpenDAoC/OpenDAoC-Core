@@ -52,7 +52,7 @@ namespace DOL.GS
                 meleeAttackRange += (int) (TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH * maxSpeed * 0.001);
 
             // NPCs try to switch to their ranged weapon whenever possible.
-            if (!_npcOwner.IsBeingInterrupted &&
+            if (!_npcOwner.IsInterruptedOrSelfInterrupted() &&
                 _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
                 !_npcOwner.IsWithinRadius(_target, meleeAttackRange) &&
                 !_wasMeleeWeaponSwitchForced)

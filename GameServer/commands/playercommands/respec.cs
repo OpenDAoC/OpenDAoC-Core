@@ -13,7 +13,6 @@ namespace DOL.GS.Commands
         const string RA_RESPEC = "realm_respec";
         const string ALL_RESPEC = "all_respec";
         const string LINE_RESPEC = "line_respec";
-        const string DOL_RESPEC = "dol_respec";
         const string BUY_RESPEC = "buy_respec";
         const string CHAMP_RESPEC = "champion_respec";
         
@@ -34,7 +33,6 @@ namespace DOL.GS.Commands
                 // Check for respecs.
                 if (client.Player.RespecAmountAllSkill < 1
                     && client.Player.RespecAmountSingleSkill < 1
-                    && client.Player.RespecAmountDOL <1
                     && client.Player.RespecAmountRealmSkill < 1)
                 {
                     DisplayMessage(client, "You don't seem to have any respecs available.");
@@ -56,11 +54,6 @@ namespace DOL.GS.Commands
                 {
                     DisplayMessage(client, "You have " + client.Player.RespecAmountRealmSkill + " realm skill respecs available.");
                     DisplayMessage(client, "Target any trainer and use /respec REALM");
-                }
-                if (client.Player.RespecAmountDOL > 0)
-                {
-                    DisplayMessage(client, "You have " + client.Player.RespecAmountDOL + " DOL ( full skill ) respecs available.");
-                    DisplayMessage(client, "Target any trainer and use /respec all");
                 }
                 DisplayMessage(client, "Use /respec buy to buy an single-line respec.");
                 return;
@@ -201,11 +194,6 @@ namespace DOL.GS.Commands
             {
                 player.RespecAll();
                 player.TempProperties.RemoveProperty(ALL_RESPEC);
-            }
-            if (player.TempProperties.GetProperty<bool>(DOL_RESPEC))
-            {
-                player.RespecDOL();
-                player.TempProperties.RemoveProperty(DOL_RESPEC);
             }
             if (player.TempProperties.GetProperty<bool>(RA_RESPEC))
             {

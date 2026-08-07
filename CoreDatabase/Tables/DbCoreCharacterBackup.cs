@@ -130,7 +130,6 @@ namespace DOL.Database
 			this.Region = character.Region;
 			this.RespecAmountAllSkill = character.RespecAmountAllSkill;
 			this.RespecAmountChampionSkill = character.RespecAmountChampionSkill;
-			this.RespecAmountDOL = character.RespecAmountDOL;
 			this.RespecAmountRealmSkill = character.RespecAmountRealmSkill;
 			this.RespecAmountSingleSkill = character.RespecAmountSingleSkill;
 			this.RespecBought = character.RespecBought;
