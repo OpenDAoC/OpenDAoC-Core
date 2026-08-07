@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 80;
 			AggroRange = 400;
 			ThinkInterval = 1000;
-			GateCounter = new("QueenMajorGate", 20, (kills, required) =>
+			GateCounter = new(20, (kills, required) =>
 			{
 				if (kills == required / 2)
 					Message.MessageToArea(Body, "An angry buzz rises from the nest below.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
@@ -66,7 +66,7 @@ namespace DOL.GS
 	{
 		public QueenMajorAdd() : base() { }
 
-		public override string GateId => "QueenMajorGate";
+		protected override bool IsGateOwner(GameNPC npc) => npc is QueenMajor;
 
 		public override bool AddToWorld()
 		{

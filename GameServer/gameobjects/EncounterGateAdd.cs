@@ -2,21 +2,37 @@ using DOL.AI.Brain;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// An add whose death is reported to every nearby brain owning a matching encounter gate counter.
-    /// </summary>
     public abstract class EncounterGateAdd : GameNPC
     {
-        public virtual string GateId => PackageID;
-        public virtual ushort GateNotifyRadius => 4000;
+        private EncounterKillCounter _counter;
+
         protected virtual bool CountsTowardGate => true;
 
-        public override void Die(GameObject killer)
+        protected virtual bool IsGateOwner(GameNPC npc) => npc.Brain is IEncounterGateOwner;
+
+        public override bool AddToWorld()
+        {
+            if (!base.AddToWorld())
+                return false;
+
+            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            {
+                if (IsGateOwner(npc) && npc.Brain is IEncounterGateOwner owner)
+                {
+                    _counter = owner.GateCounter;
+                    break;
+                }
+            }
+
+            return true;
+        }
+
+        public override void ProcessDeath(GameObject killer)
         {
             if (CountsTowardGate)
-                EncounterKillCounter.NotifyDeath(this);
+                _counter?.IncrementKills();
 
-            base.Die(killer);
+            base.ProcessDeath(killer);
         }
     }
 }

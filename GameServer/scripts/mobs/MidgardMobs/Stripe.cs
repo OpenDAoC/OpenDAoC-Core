@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 50;
 			AggroRange = 300;
 			ThinkInterval = 1000;
-			GateCounter = new("StripeGate", 20, (kills, required) =>
+			GateCounter = new(20, (kills, required) =>
 			{
 				if (kills == required / 2)
 					Message.MessageToArea(Body, "The grass sways! Something big is circling closer...", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
@@ -61,7 +61,7 @@ namespace DOL.GS
 	{
 		public StripeAdd() : base() { }
 
-		public override string GateId => "StripeGate";
+		protected override bool IsGateOwner(GameNPC npc) => npc is Stripe;
 
 		public override bool AddToWorld()
 		{
