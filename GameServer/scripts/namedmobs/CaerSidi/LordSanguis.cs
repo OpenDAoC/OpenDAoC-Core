@@ -94,7 +94,7 @@ namespace DOL.GS
             base.ProcessDeath(killer);
         }
 
-        public static bool Spawn_Lich_Lord = false;
+        public bool Spawn_Lich_Lord = false;
 
         public int SpawnLich(ECSGameTimer timer)
         {
@@ -302,7 +302,6 @@ namespace DOL.GS
             Name = "Lich Lord Sanguis";
             ParryChance = 35;
             RespawnInterval = -1;
-            LichLordSanguisBrain.set_flag = false;
 
             TetherRange = 2000;
             Size = 100;
@@ -312,7 +311,6 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 8;
             Realm = eRealm.None;
-            LichLordSanguisBrain.set_flag = false;
             LichLordSanguisBrain adds = new LichLordSanguisBrain();
             SetOwnBrain(adds);
             base.AddToWorld();
@@ -345,7 +343,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool set_flag = false;
+        public bool set_flag = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

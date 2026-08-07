@@ -125,7 +125,6 @@ namespace DOL.GS
             {
                 Styles.Add(slam);
             }
-            LieutenantMeadeBrain.CanWalk = false;
             VisibleActiveWeaponSlots = 16;
             MeleeDamageType = eDamageType.Slash;
             LieutenantMeadeBrain sbrain = new LieutenantMeadeBrain();
@@ -183,7 +182,7 @@ namespace DOL.AI.Brain
             AggroRange = 400;
             ThinkInterval = 1500;
         }
-        public static bool CanWalk = false;
+        public bool CanWalk = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

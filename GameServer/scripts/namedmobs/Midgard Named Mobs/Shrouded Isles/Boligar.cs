@@ -102,10 +102,10 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public static bool IsTargetTeleported = false;
+		public bool IsTargetTeleported = false;
 		#region Pick player to port
-		public static GamePlayer teleporttarget = null;
-		public static GamePlayer TeleportTarget
+		public GamePlayer teleporttarget = null;
+		public GamePlayer TeleportTarget
 		{
 			get { return teleporttarget; }
 			set { teleporttarget = value; }

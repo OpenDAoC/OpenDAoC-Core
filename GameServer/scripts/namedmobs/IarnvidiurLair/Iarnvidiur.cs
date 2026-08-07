@@ -81,10 +81,10 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsTargetTeleported = false;
+		public bool IsTargetTeleported = false;
 		#region Pick player to port
-		public static GamePlayer teleporttarget = null;
-		public static GamePlayer TeleportTarget
+		public GamePlayer teleporttarget = null;
+		public GamePlayer TeleportTarget
 		{
 			get { return teleporttarget; }
 			set { teleporttarget = value; }
@@ -154,9 +154,9 @@ namespace DOL.AI.Brain
         }
 		#endregion
 		#region DD or Dot random player
-		public static bool IsTargetPicked = false;
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public bool IsTargetPicked = false;
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }

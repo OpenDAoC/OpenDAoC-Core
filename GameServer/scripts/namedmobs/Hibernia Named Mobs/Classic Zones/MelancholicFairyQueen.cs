@@ -58,7 +58,6 @@ namespace DOL.GS
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 200; }
 		#endregion
-		public static bool IsKilled = false;
 		public override bool AddToWorld()
 		{			
 			Name = "Melancholic Fairy Queen";
@@ -68,7 +67,6 @@ namespace DOL.GS
 			TetherRange = 2600;
 			Flags = eFlags.FLYING;
 			MaxSpeedBase = 250;
-			IsKilled = false;
 
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			MelancholicFairyQueenBrain sbrain = new MelancholicFairyQueenBrain();
@@ -80,7 +78,6 @@ namespace DOL.GS
 		}
         public override void ProcessDeath(GameObject killer)
         {
-			IsKilled = true;
 			foreach (GameNPC adds in GetNPCsInRadius(8000))
 			{
 				if (adds != null && adds.IsAlive && adds.Brain is MFQGuardsBrain)

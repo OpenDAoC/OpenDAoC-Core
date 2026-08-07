@@ -85,7 +85,7 @@ namespace DOL.GS
             return true;
         }
 
-        public static bool spawn_souls = false;
+        public bool spawn_souls = false;
         private readonly List<GameNPC> _souls = new List<GameNPC>();
         private int AliveSoulCount
         {
@@ -151,7 +151,7 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
-                if (AliveSoulCount > 0 || SoulReckonerBrain.InRoom == false) //take no damage
+                if (AliveSoulCount > 0 || Brain is not SoulReckonerBrain { InRoom: true }) //take no damage
                 {
                     GamePlayer truc;
                     if (source is GamePlayer)
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
             CanBaf = false;
         }
 
-        public static bool InRoom = false;
+        public bool InRoom = false;
 
         public void AwayFromRoom()
         {
@@ -242,7 +242,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public static bool BafMobs = false;
+        public bool BafMobs = false;
 
         public override void Think()
         {
@@ -286,7 +286,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
         #region Spawn Soul
-        public static bool Spawn_Souls = false;
+        public bool Spawn_Souls = false;
         private int SpawnSouls(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)

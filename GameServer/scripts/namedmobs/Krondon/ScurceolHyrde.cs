@@ -286,9 +286,9 @@ namespace DOL.AI.Brain
 			AggroRange = 250;
 			ThinkInterval = 1500;
 		}
-		private protected static bool IsTargetPicked = false;
-		private protected static GamePlayer randomtarget = null;
-		private protected static GamePlayer RandomTarget
+		private protected bool IsTargetPicked = false;
+		private protected GamePlayer randomtarget = null;
+		private protected GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -410,9 +410,9 @@ namespace DOL.AI.Brain
 			AggroRange = 250;
 			ThinkInterval = 1500;
 		}
-		private protected static bool IsTargetPicked = false;
-		private protected static GamePlayer randomtarget = null;
-		private protected static GamePlayer RandomTarget
+		private protected bool IsTargetPicked = false;
+		private protected GamePlayer randomtarget = null;
+		private protected GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -534,9 +534,9 @@ namespace DOL.AI.Brain
 			AggroRange = 250;
 			ThinkInterval = 1500;
 		}
-		private protected static bool IsTargetPicked = false;
-		private protected static GamePlayer randomtarget = null;
-		private protected static GamePlayer RandomTarget
+		private protected bool IsTargetPicked = false;
+		private protected GamePlayer randomtarget = null;
+		private protected GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -658,9 +658,9 @@ namespace DOL.AI.Brain
 			AggroRange = 250;
 			ThinkInterval = 1500;
 		}
-		private protected static bool IsTargetPicked = false;
-		private protected static GamePlayer randomtarget = null;
-		private protected static GamePlayer RandomTarget
+		private protected bool IsTargetPicked = false;
+		private protected GamePlayer randomtarget = null;
+		private protected GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }

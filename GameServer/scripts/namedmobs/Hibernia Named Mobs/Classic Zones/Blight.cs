@@ -32,7 +32,7 @@ namespace DOL.GS
 		public override int MeleeAttackRange => 350;
 		public override void StartAttack(GameObject target)
 		{
-			if (BlightBrain.canGrowth)
+			if (Brain is BlightBrain brain && brain.canGrowth)
 				return;
 			else
 				base.StartAttack(target);
@@ -41,7 +41,7 @@ namespace DOL.GS
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
 				return true;
-			if (BlightBrain.canGrowth && IsAlive && keyName == GS.Abilities.DamageImmunity)
+			if (Brain is BlightBrain brain && brain.canGrowth && IsAlive && keyName == GS.Abilities.DamageImmunity)
 				return true;
 			return base.HasAbility(keyName);
 		}
@@ -78,7 +78,6 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			BlightBrain.canGrowth = true;
 			Name = "Blight";
 			Model = 26;
 			Level = 70;
@@ -195,7 +194,7 @@ namespace DOL.AI.Brain
 				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 			}
 		}
-		public static bool canGrowth = true;
+		public bool canGrowth = true;
 		bool SpamMessage = false;
 		public override void Think()
 		{
@@ -615,6 +614,11 @@ namespace DOL.AI.Brain
 
 		public void ResetBlightCycle()
 		{
+			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			{
+				if (npc.IsAlive && (npc.Brain is FireBlightBrain || npc.Brain is LateBlightBrain || npc.Brain is FleshBlightBrain))
+					npc.RemoveFromWorld();
+			}
 			CreateLateBlight = false;
 			CreateFleshBlight = false;
 			CreateBlight = false;

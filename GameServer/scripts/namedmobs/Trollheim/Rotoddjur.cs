@@ -81,7 +81,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 500;
 		}
-		public static bool IsPulled = false;
+		public bool IsPulled = false;
 		private bool RemoveAdds = false;
 		public override void Think()
 		{

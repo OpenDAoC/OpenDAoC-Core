@@ -85,11 +85,11 @@ namespace DOL.GS
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if(ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && Brain is LurfosHeraldBrain brain)
             {
-				if(LurfosHeraldBrain.IsColdWeapon)
+				if(brain.IsColdWeapon)
 					CastSpell(Weapon_Cold, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				if (LurfosHeraldBrain.IsHeatWeapon)
+				if (brain.IsHeatWeapon)
 					CastSpell(Weapon_Heat, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
             base.OnAttackEnemy(ad);
@@ -162,10 +162,10 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsColdWeapon = false;
-		public static bool IsHeatWeapon = false;
-		public static bool IsNormalWeapon = false;
-		public static bool StartSwitchWeapons = false;
+		public bool IsColdWeapon = false;
+		public bool IsHeatWeapon = false;
+		public bool IsNormalWeapon = false;
+		public bool StartSwitchWeapons = false;
 		public int SwitchToCold(ECSGameTimer timer)
         {
 			if (HasAggro)

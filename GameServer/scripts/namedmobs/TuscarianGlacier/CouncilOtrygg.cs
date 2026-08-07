@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         private readonly List<GameNPC> _pets = new List<GameNPC>();
         private readonly object _petsLock = new object();
         public override void OnAttackedByEnemy(AttackData ad)

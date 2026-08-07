@@ -52,7 +52,6 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162545);
             LoadTemplate(npcTemplate);
-            IssordenBrain.BafMobs = false;
             Faction = FactionMgr.GetFactionByID(140);
 
             IssordenBrain sbrain = new IssordenBrain();
@@ -78,14 +77,13 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
-        public static bool IsTargetPicked = false;
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public static bool BafMobs = false;
+        public bool BafMobs = false;
         private bool PrepareBolt = false;
         public override void Think()
         {

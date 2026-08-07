@@ -175,7 +175,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 600;
         }
-        public static bool Spawn_Splinders = false;
+        public bool Spawn_Splinders = false;
         private bool RemoveAdds = false;
         public override void Think()
         {
@@ -258,10 +258,10 @@ namespace DOL.AI.Brain
             return 0;
         }
         #region broodmother mezz
-        public static bool CanCast = false;
-        public static bool StartCastMezz = false;
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public bool CanCast = false;
+        public bool StartCastMezz = false;
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
@@ -289,7 +289,7 @@ namespace DOL.AI.Brain
                     if (CanCast == false)
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_Mezz[Util.Random(0, Enemys_To_Mezz.Count - 1)];//pick random target from list
-                        RandomTarget = Target;//set random target to static RandomTarget
+                        RandomTarget = Target;
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMezz), 3000);
                         CanCast = true;
                     }
@@ -322,9 +322,9 @@ namespace DOL.AI.Brain
         }
         #endregion
         #region Pick player to port
-        public static bool IsTargetTeleported = false;
-        public static GamePlayer teleporttarget = null;
-        public static GamePlayer TeleportTarget
+        public bool IsTargetTeleported = false;
+        public GamePlayer teleporttarget = null;
+        public GamePlayer TeleportTarget
         {
             get { return teleporttarget; }
             set { teleporttarget = value; }

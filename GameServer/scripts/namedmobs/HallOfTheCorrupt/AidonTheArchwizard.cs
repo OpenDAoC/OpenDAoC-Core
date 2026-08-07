@@ -96,8 +96,6 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            AidonTheArchwizardBrain.IsPulled = false;
-            AidonTheArchwizardBrain.CanCast = false;
 
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
@@ -166,8 +164,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool IsPulled = false;
-        public static bool spawn_copies = false;
+        public bool spawn_copies = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (spawn_copies == false)
@@ -200,7 +197,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-        public static bool CanCast = false;
+        public bool CanCast = false;
         public bool SpawnCopiesAgain = false;
         private bool RemoveAdds = false;
         public override void Think()
@@ -210,7 +207,6 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                IsPulled = false;
                 spawn_copies = false;
                 CanCast = false;
                 SpawnCopiesAgain = false;

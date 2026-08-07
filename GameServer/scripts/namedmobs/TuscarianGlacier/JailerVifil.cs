@@ -113,7 +113,7 @@ namespace DOL.AI.Brain
             ThinkInterval = 2000;
         }
 
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
             return 0;
         }
         private bool RemoveAdds = false;
-        public static bool spam_teleport = false;
+        public bool spam_teleport = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

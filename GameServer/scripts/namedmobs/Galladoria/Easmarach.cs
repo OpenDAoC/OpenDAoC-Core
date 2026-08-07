@@ -101,10 +101,10 @@ namespace DOL.GS
 
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            EasmarachBrain.restphase = false;
-            EasmarachBrain.dontattack = false;
 
             EasmarachBrain sBrain = new EasmarachBrain();
+            sBrain.restphase = false;
+            sBrain.dontattack = false;
             SetOwnBrain(sBrain);
             LoadedFromScript = false; //load from database
             SaveIntoDatabase();
@@ -133,8 +133,8 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool restphase = false;
-        public static bool dontattack = false;
+        public bool restphase = false;
+        public bool dontattack = false;
         public override void AttackMostWanted()
         {
             if (dontattack==true)

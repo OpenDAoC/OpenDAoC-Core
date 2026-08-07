@@ -73,10 +73,12 @@ namespace DOL.AI.Brain
 		private bool Message = false;
 		private bool SpawnDemons = false;
 		private bool PlayerAreaCheck = false;
-		public static bool CanRemoveMorgana = false;
+		public bool CanRemoveMorgana = false;
 		private bool Morganacast = false;
 		public int BechardDemonicMinionsKilled = 0;
 		public int SilchardeDemonicMinionsKilled = 0;
+		public bool BechardKilled = false;
+		public bool SilchardeKilled = false;
 		public override void Think()
 		{
 			if (!PlayerAreaCheck)
@@ -119,7 +121,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-			if (!SpawnDemons || (CanRemoveMorgana && SpawnDemons && Bechard.BechardKilled && Silcharde.SilchardeKilled))
+			if (!SpawnDemons || (CanRemoveMorgana && SpawnDemons && BechardKilled && SilchardeKilled))
 			{
 				if (changed == false)
 				{
@@ -167,8 +169,8 @@ namespace DOL.AI.Brain
 			Morganacast = false;
 			SpawnDemons = false;
 			CanRemoveMorgana = false;
-			Bechard.BechardKilled = false;
-			Silcharde.SilchardeKilled = false;
+			BechardKilled = false;
+			SilchardeKilled = false;
 			BechardDemonicMinionsKilled = 0;
 			SilchardeDemonicMinionsKilled = 0;
 			return 0;
@@ -280,44 +282,54 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(700000009);
 			LoadTemplate(npcTemplate);
-			BechardKilled = false;
 
 			BechardBrain sbrain = new BechardBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
 			base.AddToWorld();
+
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.BechardKilled = false;
+
 			return true;
 		}
-		public static bool BechardKilled = false;
 		public MorganaBrain OwnerBrain;
+		private MorganaBrain ResolveOwnerBrain()
+		{
+			if (OwnerBrain == null || OwnerBrain.Body == null || OwnerBrain.Body.Brain != OwnerBrain || OwnerBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				OwnerBrain = null;
+				foreach (GameNPC mob in GetNPCsInRadius(5000))
+				{
+					if (mob.Brain is MorganaBrain brain)
+					{
+						OwnerBrain = brain;
+						break;
+					}
+				}
+			}
+			return OwnerBrain;
+		}
 		public override void ProcessDeath(GameObject killer)
 		{
-			BechardKilled = true;
-			SpawnDemonic();
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.BechardKilled = true;
+
+			SpawnDemonic(owner);
 			base.ProcessDeath(killer);
 		}
-		private void SpawnDemonic()
+		private void SpawnDemonic(MorganaBrain owner)
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
 			Vector3 position = new(spawn.X, spawn.Y, spawn.Z);
 			Zone zone = CurrentZone;
 			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
 			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
-
-			MorganaBrain owner = OwnerBrain;
-
-			if (owner == null)
-			{
-				foreach (GameNPC mob in GetNPCsInRadius(5000))
-				{
-					if (mob.Brain is MorganaBrain brain)
-					{
-						owner = brain;
-						break;
-					}
-				}
-			}
 
 			for (int i = 0; i < Morgana.BechardMinionCount + Util.Random(4, 6); i++)
 			{
@@ -455,45 +467,55 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(700000008);
 			LoadTemplate(npcTemplate);
-			SilchardeKilled = false;
 
 			SilchardeBrain sbrain = new SilchardeBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
 			base.AddToWorld();
+
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.SilchardeKilled = false;
+
 			return true;
 		}
 
-		public static bool SilchardeKilled = false;
 		public MorganaBrain OwnerBrain;
+		private MorganaBrain ResolveOwnerBrain()
+		{
+			if (OwnerBrain == null || OwnerBrain.Body == null || OwnerBrain.Body.Brain != OwnerBrain || OwnerBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				OwnerBrain = null;
+				foreach (GameNPC mob in GetNPCsInRadius(5000))
+				{
+					if (mob.Brain is MorganaBrain brain)
+					{
+						OwnerBrain = brain;
+						break;
+					}
+				}
+			}
+			return OwnerBrain;
+		}
 		public override void ProcessDeath(GameObject killer)
 		{
-			SilchardeKilled = true;
-			SpawnDemonic();
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.SilchardeKilled = true;
+
+			SpawnDemonic(owner);
 			base.ProcessDeath(killer);
 		}
-		private void SpawnDemonic()
+		private void SpawnDemonic(MorganaBrain owner)
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
 			Vector3 position = new(spawn.X, spawn.Y, spawn.Z);
 			Zone zone = CurrentZone;
 			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
 			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
-
-			MorganaBrain owner = OwnerBrain;
-
-			if (owner == null)
-			{
-				foreach (GameNPC mob in GetNPCsInRadius(5000))
-				{
-					if (mob.Brain is MorganaBrain brain)
-					{
-						owner = brain;
-						break;
-					}
-				}
-			}
 
 			for (int i = 0; i < Morgana.SilchardeMinionCount + Util.Random(4, 6); i++)
 			{

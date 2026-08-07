@@ -195,7 +195,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool spawnadds = false;
+        public bool spawnadds = false;
         private bool RemoveAdds = false;
         public override void Think()
         {
@@ -254,10 +254,10 @@ namespace DOL.AI.Brain
             base.Think();
         }
         #region Cast root on random target
-        public static bool CanCast2 = false;
-        public static bool StartCastRoot = false;
-        public static GamePlayer randomtarget2 = null;
-        public static GamePlayer RandomTarget2
+        public bool CanCast2 = false;
+        public bool StartCastRoot = false;
+        public GamePlayer randomtarget2 = null;
+        public GamePlayer RandomTarget2
         {
             get { return randomtarget2; }
             set { randomtarget2 = value; }
@@ -285,7 +285,7 @@ namespace DOL.AI.Brain
                     if (CanCast2 == false)
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_Root[Util.Random(0, Enemys_To_Root.Count - 1)];//pick random target from list
-                        RandomTarget2 = Target;//set random target to static RandomTarget
+                        RandomTarget2 = Target;
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastRoot), 2000);
                         CanCast2 = true;
                     }
@@ -345,7 +345,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public static bool CanCastAoeSnare = false;
+        public bool CanCastAoeSnare = false;
         public int CastAoeSnare(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)

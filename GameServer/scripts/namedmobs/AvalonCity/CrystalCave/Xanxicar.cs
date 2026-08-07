@@ -166,24 +166,24 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
         #region Check Flags/Port,DD list/broadcast
-        public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public static GamePlayer randomtarget2 = null;
-		public static GamePlayer RandomTarget2
+		public GamePlayer randomtarget2 = null;
+		public GamePlayer RandomTarget2
 		{
 			get { return randomtarget2; }
 			set { randomtarget2 = value; }
 		}
-		public static bool IsTargetPicked = false;
-		public static bool IsTargetPicked2 = false;
-		public static bool Bomb1 = false;
-		public static bool Bomb2 = false;
-		public static bool Bomb3 = false;
-		public static bool Bomb4 = false;
+		public bool IsTargetPicked = false;
+		public bool IsTargetPicked2 = false;
+		public bool Bomb1 = false;
+		public bool Bomb2 = false;
+		public bool Bomb3 = false;
+		public bool Bomb4 = false;
 		private bool RemoveAdds = false;
         System.Collections.Generic.List<GamePlayer> Port_Enemys = new System.Collections.Generic.List<GamePlayer>();
 		System.Collections.Generic.List<GamePlayer> DD_Enemys = new System.Collections.Generic.List<GamePlayer>();
@@ -374,8 +374,8 @@ namespace DOL.AI.Brain
         #endregion
 
         #region adds
-        public static bool SpawnAddsOnce = false;
-		public static bool CheckForSingleAdd = false;
+        public bool SpawnAddsOnce = false;
+		public bool CheckForSingleAdd = false;
 		private readonly List<GameNPC> _champions = new List<GameNPC>();
 		private int AliveChampionCount
 		{

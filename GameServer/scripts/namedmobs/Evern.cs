@@ -79,7 +79,6 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160628);
             LoadTemplate(npcTemplate);
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            EvernBrain.spawnfairy = false;
             //Idle = false;
             MaxSpeedBase = 300;
 
@@ -166,7 +165,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
-        public static bool spawnfairy = false;
+        public bool spawnfairy = false;
         private bool RemoveAdds = false;
         public override void Think()
         {

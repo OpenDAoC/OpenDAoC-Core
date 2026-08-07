@@ -67,9 +67,9 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(96);
             SetOwnBrain(sBrain);
 
-            OrganicEnergyMechanismBrain.StartCastDOT = false;
-            OrganicEnergyMechanismBrain.CanCast = false;
-            OrganicEnergyMechanismBrain.RandomTarget = null;
+            sBrain.StartCastDOT = false;
+            sBrain.CanCast = false;
+            sBrain.RandomTarget = null;
 
             bool success = base.AddToWorld();
             if (success)
@@ -116,10 +116,10 @@ namespace DOL.AI.Brain
             }
         }
         #region OEM Dot
-        public static bool CanCast = false;
-        public static bool StartCastDOT = false;
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public bool CanCast = false;
+        public bool StartCastDOT = false;
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
                     if (CanCast == false)
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
-                        RandomTarget = Target;//set random target to static RandomTarget
+                        RandomTarget = Target;
                         BroadcastMessage(String.Format(Body.Name + "looks sickly... powerfull magic essense will errupt on " + RandomTarget.Name + "!"));
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 5000);
                         CanCast = true;
@@ -237,7 +237,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public static bool SpawnFeeder = false;
+        public bool SpawnFeeder = false;
         public int SpawnFeeders(ECSGameTimer timer) // We define here adds
         {
             if (Body.IsAlive && HasAggro)
