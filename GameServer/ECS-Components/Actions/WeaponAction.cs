@@ -487,7 +487,7 @@ namespace DOL.GS
             return new()
             {
                 Attacker = _owner,
-                Target = _target as GameLiving,
+                Target = _target,
                 Style = style,
                 DamageType = _owner.attackComponent.AttackDamageType(weapon, this),
                 AttackType = AttackData.GetAttackType(weapon, this, _owner),
