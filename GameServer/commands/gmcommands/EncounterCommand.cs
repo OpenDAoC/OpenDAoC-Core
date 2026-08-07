@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Commands
 {
@@ -252,6 +253,12 @@ namespace DOL.GS.Commands
 
         private void SnapshotNow(GameClient client)
         {
+            if (!Properties.RAID_SCALING_ENABLED)
+            {
+                DisplayMessage(client, "Raid scaling is disabled (server property 'raid_scaling_enabled').");
+                return;
+            }
+
             RaidEncounter encounter = GetTargetEncounter(client, out GameNPC npc);
 
             if (encounter == null)

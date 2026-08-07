@@ -63,7 +63,8 @@ namespace DOL.GS
             long expireTime = GameLoop.GameLoopTime + (attackData.Interval > 0 ? attackData.Interval : Properties.SPELL_INTERRUPT_DURATION);
             AttackerTracker.AddOrUpdate(attackData.Attacker, attackData.IsMeleeAttack, expireTime);
 
-            if (RaidEncounter.HasActiveEncounters &&
+            if (Properties.RAID_SCALING_ENABLED &&
+                RaidEncounter.HasActiveEncounters &&
                 ((owner as GameNPC)?.Brain as StandardMobBrain)?.RaidEncounter is { Active: true } raidEncounter &&
                 AbstractServerRules.TryGetPlayerOwner(attackData.Attacker, out GamePlayer raidAttacker))
             {

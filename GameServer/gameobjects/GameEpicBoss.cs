@@ -8,12 +8,11 @@ namespace DOL.GS
         public override double MaxHealthScalingFactor => 1.5 * RaidEncounterHealthScalingFactor;
         public double DefaultArmorFactorScalingFactor => 1.6;
         public int ArmorFactorScalingFactorPetCap => 24;
-        public double ArmorFactorScalingFactor { get; set; }
+        public double ArmorFactorScalingFactor => EpicNpcArmorFactor.Resolve(this, this);
 
         public GameEpicBoss() : base()
         {
             DamageFactor = 2.25;
-            ArmorFactorScalingFactor = DefaultArmorFactorScalingFactor;
         }
 
         public override void ReturnToSpawnPoint(short speed)

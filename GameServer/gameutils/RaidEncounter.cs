@@ -28,6 +28,9 @@ namespace DOL.GS
         private readonly Dictionary<string, long> _lastActivity = new();
         private readonly Dictionary<string, long> _quitTimes = new();
         private readonly Lock _activityLock = new();
+        private int _cachedActiveAttackerCount;
+        private long _activeAttackerCountCacheExpiry;
+        private volatile bool _active;
 
         private readonly List<GameNPC> _adds = new();
         private readonly Lock _addsLock = new();
@@ -46,7 +49,7 @@ namespace DOL.GS
         /// </summary>
         public StandardMobBrain Owner { get; }
 
-        public bool Active { get; private set; }
+        public bool Active => _active;
         public int Size { get; set; }
         public int ScaleSize => Math.Clamp(Size, Properties.RAID_SCALING_BASELINE_SIZE, Properties.RAID_SCALING_MAX_SIZE);
         public double HpMultiplier => 1 + Properties.RAID_SCALING_HP_PER_EXTRA_PLAYER * (ScaleSize - Properties.RAID_SCALING_BASELINE_SIZE);
@@ -98,6 +101,9 @@ namespace DOL.GS
         /// <returns>True if the encounter became active.</returns>
         public bool Snapshot(GameNPC body, StandardMobBrain brain)
         {
+            if (!Properties.RAID_SCALING_ENABLED)
+                return false;
+
             GamePlayer puller = null;
 
             foreach (GameLiving living in brain.GetOrderedAggroList())
@@ -149,7 +155,7 @@ namespace DOL.GS
                     _roster.Add(internalId);
 
                 Size = newRoster.Count;
-                Active = true;
+                _active = true;
             }
 
             lock (_activeEncountersLock)
@@ -232,6 +238,9 @@ namespace DOL.GS
         /// </summary>
         public static void RecordHelpActivity(GamePlayer caster, GamePlayer target)
         {
+            if (!Properties.RAID_SCALING_ENABLED)
+                return;
+
             RaidEncounter[] encounters = _activeEncounterSnapshot;
 
             if (encounters.Length == 0 || caster == null || target == null || caster == target)
@@ -252,6 +261,9 @@ namespace DOL.GS
         /// </summary>
         public static void RecordHostileSupportActivity(GamePlayer caster, GameNPC target)
         {
+            if (!Properties.RAID_SCALING_ENABLED)
+                return;
+
             if (!HasActiveEncounters || caster == null || target == null)
                 return;
 
@@ -340,22 +352,33 @@ namespace DOL.GS
 
         /// <summary>
         /// Roster members who attacked, healed, buffed or debuffed within the last <see cref="Properties.RAID_SCALING_ACTIVITY_WINDOW_SECONDS"/> seconds.
+        /// The result is cached for up to one second, since it's read per hit from combat threads.
         /// </summary>
         public int GetActiveAttackerCount()
         {
-            long threshold = GameLoop.GameLoopTime - Properties.RAID_SCALING_ACTIVITY_WINDOW_SECONDS * 1000L;
-            int count = 0;
+            if (GameLoop.GameLoopTime < Volatile.Read(ref _activeAttackerCountCacheExpiry))
+                return Volatile.Read(ref _cachedActiveAttackerCount);
 
             lock (_activityLock)
             {
+                // Double-check so concurrent readers don't all rescan when the window rolls over.
+                if (GameLoop.GameLoopTime < Volatile.Read(ref _activeAttackerCountCacheExpiry))
+                    return _cachedActiveAttackerCount;
+
+                long threshold = GameLoop.GameLoopTime - Properties.RAID_SCALING_ACTIVITY_WINDOW_SECONDS * 1000L;
+                int count = 0;
+
                 foreach (long lastSeen in _lastActivity.Values)
                 {
                     if (lastSeen >= threshold)
                         count++;
                 }
-            }
 
-            return count;
+                // Publish the count before the expiry stamp so a reader that sees a valid expiry sees the count that belongs to it.
+                Volatile.Write(ref _cachedActiveAttackerCount, count);
+                Volatile.Write(ref _activeAttackerCountCacheExpiry, GameLoop.GameLoopTime + 1000);
+                return count;
+            }
         }
 
         /// <summary>
@@ -685,7 +708,8 @@ namespace DOL.GS
                 _roster.Clear();
                 _lastActivity.Clear();
                 _quitTimes.Clear();
-                Active = false;
+                Volatile.Write(ref _activeAttackerCountCacheExpiry, 0);
+                _active = false;
                 Size = 0;
             }
 

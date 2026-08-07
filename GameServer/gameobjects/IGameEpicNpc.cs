@@ -4,6 +4,6 @@
     {
         public double DefaultArmorFactorScalingFactor { get; }
         public int ArmorFactorScalingFactorPetCap { get; }
-        public double ArmorFactorScalingFactor { get; set; }
+        public double ArmorFactorScalingFactor { get; }
     }
 }

@@ -614,6 +614,12 @@ namespace DOL.GS.ServerProperties
 		public static int SET_DIFFICULTY_ON_EPIC_ENCOUNTERS;
 
 		/// <summary>
+		/// Master toggle for the raid encounter auto-scaling system
+		/// </summary>
+		[ServerProperty("world", "raid_scaling_enabled", "Toggles the raid encounter auto-scaling system (roster snapshot, HP/AF scaling, roster lockout, bonus loot, participation rewards). When false, encounters never activate and epic NPCs use the legacy per-attacker armor scaling. Flipping it off mid-fight does not clear already-active encounters - they end normally, it only prevents new snapshots.", true)]
+		public static bool RAID_SCALING_ENABLED;
+
+		/// <summary>
 		/// Raid size a raid encounter is balanced around, and below which it isn't scaled up
 		/// </summary>
 		[ServerProperty("world", "raid_scaling_baseline_size", "Raid encounter scaling: roster size the encounter is balanced around. Smaller rosters fight the unscaled encounter.", 8)]

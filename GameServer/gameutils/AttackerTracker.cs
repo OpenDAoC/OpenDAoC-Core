@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
@@ -8,6 +8,8 @@ namespace DOL.GS
         private readonly GameLiving _owner;
         private readonly AttackerCheckTimer _attackerCheckTimer;
         private int _meleeCount = 0;
+        private int _playerCount = 0;
+        private int _petCount = 0;
 
         private readonly Dictionary<GameLiving, AttackerInfo> _attackers = new();
         private readonly Lock _lock = new();
@@ -24,6 +26,10 @@ namespace DOL.GS
         }
 
         public int MeleeCount => Volatile.Read(ref _meleeCount);
+
+        public int PlayerCount => Volatile.Read(ref _playerCount);
+
+        public int PetCount => Volatile.Read(ref _petCount);
 
         public ICollection<GameLiving> Attackers
         {
@@ -46,7 +52,7 @@ namespace DOL.GS
         public AttackerTracker(GameLiving owner)
         {
             _owner = owner;
-            _attackerCheckTimer = AttackerCheckTimer.Create(this);
+            _attackerCheckTimer = new AttackerCheckTimer(this);
         }
 
         public void AddOrUpdate(GameLiving attacker, bool isMelee, long expireTime)
@@ -77,6 +83,12 @@ namespace DOL.GS
 
                     if (isMelee)
                         _meleeCount++;
+
+                    // The classification of an attacker never changes, so it only needs to be counted when the entry is created.
+                    if (attacker is GamePlayer)
+                        _playerCount++;
+                    else if (attacker is GameSummonedPet)
+                        _petCount++;
                 }
             }
         }
@@ -95,6 +107,8 @@ namespace DOL.GS
             {
                 _attackers.Clear();
                 _meleeCount = 0;
+                _playerCount = 0;
+                _petCount = 0;
             }
 
             _attackerCheckTimer.Stop();
@@ -102,84 +116,15 @@ namespace DOL.GS
 
         private readonly record struct AttackerInfo(bool IsMelee, long ExpireTime);
 
-        private class StandardAttackerCheckTimer : AttackerCheckTimer
-        {
-            public StandardAttackerCheckTimer(AttackerTracker attackerTracker) : base(attackerTracker) { }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                lock (_attackerTracker._lock)
-                {
-                    foreach (var pair in _attackerTracker._attackers)
-                        TryRemoveAttacker(pair);
-
-                    return base.OnTick(timer);
-                }
-            }
-        }
-
-        private class EpicNpcAttackerCheckTimer : AttackerCheckTimer
-        {
-            private IGameEpicNpc _epicNpc;
-
-            public EpicNpcAttackerCheckTimer(AttackerTracker attackerTracker) : base(attackerTracker)
-            {
-                _epicNpc = attackerTracker._owner as IGameEpicNpc;
-            }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                // Update `ArmorFactorScalingFactor`.
-                double armorFactorScalingFactor = _epicNpc.DefaultArmorFactorScalingFactor;
-                int petCount = 0;
-
-                lock (_attackerTracker._lock)
-                {
-                    foreach (var pair in _attackerTracker._attackers)
-                    {
-                        if (TryRemoveAttacker(pair))
-                            continue;
-
-                        if (pair.Key is GamePlayer)
-                            armorFactorScalingFactor -= 0.04;
-                        else if (pair.Key is GameSummonedPet && petCount <= _epicNpc.ArmorFactorScalingFactorPetCap)
-                        {
-                            armorFactorScalingFactor -= 0.01;
-                            petCount++;
-                        }
-
-                        if (armorFactorScalingFactor < 0.4)
-                        {
-                            armorFactorScalingFactor = 0.4;
-                            break;
-                        }
-                    }
-
-                    _epicNpc.ArmorFactorScalingFactor = armorFactorScalingFactor;
-                    return base.OnTick(timer);
-                }
-            }
-        }
-
-        private abstract class AttackerCheckTimer : ECSGameTimerWrapperBase
+        private sealed class AttackerCheckTimer : ECSGameTimerWrapperBase
         {
             public const int CHECK_ATTACKERS_INTERVAL = 1000;
 
-            protected readonly GameLiving _owner;
-            protected readonly AttackerTracker _attackerTracker;
+            private readonly AttackerTracker _attackerTracker;
 
             public AttackerCheckTimer(AttackerTracker attackerTracker) : base(attackerTracker._owner)
             {
-                _owner = attackerTracker._owner;
                 _attackerTracker = attackerTracker;
-            }
-
-            public static AttackerCheckTimer Create(AttackerTracker attackerTracker)
-            {
-                if (attackerTracker._owner is IGameEpicNpc)
-                    return new EpicNpcAttackerCheckTimer(attackerTracker);
-                else
-                    return new StandardAttackerCheckTimer(attackerTracker);
             }
 
             public void WakeUp()
@@ -193,15 +138,26 @@ namespace DOL.GS
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                return _attackerTracker.Count == 0 ? 0 : CHECK_ATTACKERS_INTERVAL;
+                lock (_attackerTracker._lock)
+                {
+                    foreach (var pair in _attackerTracker._attackers)
+                        TryRemoveAttacker(pair);
+
+                    return _attackerTracker.Count == 0 ? 0 : CHECK_ATTACKERS_INTERVAL;
+                }
             }
 
-            protected bool TryRemoveAttacker(in KeyValuePair<GameLiving, AttackerInfo> pair)
+            private bool TryRemoveAttacker(in KeyValuePair<GameLiving, AttackerInfo> pair)
             {
                 if (pair.Value.ExpireTime < GameLoop.GameLoopTime && _attackerTracker._attackers.Remove(pair.Key))
                 {
                     if (pair.Value.IsMelee)
                         _attackerTracker._meleeCount--;
+
+                    if (pair.Key is GamePlayer)
+                        _attackerTracker._playerCount--;
+                    else if (pair.Key is GameSummonedPet)
+                        _attackerTracker._petCount--;
 
                     return true;
                 }

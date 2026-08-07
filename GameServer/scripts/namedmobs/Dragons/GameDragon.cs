@@ -21,10 +21,7 @@ namespace DOL.GS
         public override double GetArmorAbsorb(eArmorSlot slot) => 0.25;
         public override double GetArmorAF(eArmorSlot slot)
         {
-            double factor = (Brain as StandardMobBrain)?.RaidEncounter is { Active: true } raidEncounter
-                ? raidEncounter.CalculateArmorFactorScalingFactor(DefaultArmorFactorScalingFactor, raidEncounter.GetActiveAttackerCount())
-                : ArmorFactorScalingFactor;
-            return 350 * factor / DefaultArmorFactorScalingFactor;
+            return 350 * ArmorFactorScalingFactor / DefaultArmorFactorScalingFactor;
         }
         public override ushort SpawnHeading { get => Config.SpawnHeading; set { } }
         public override Point3D SpawnPoint { get => Config.SpawnPoint; set { } }

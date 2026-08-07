@@ -5,12 +5,11 @@
         public override double MaxHealthScalingFactor => 1.25 * RaidEncounterHealthScalingFactor;
         public double DefaultArmorFactorScalingFactor => 0.8;
         public int ArmorFactorScalingFactorPetCap => 16;
-        public double ArmorFactorScalingFactor { get; set; }
+        public double ArmorFactorScalingFactor => EpicNpcArmorFactor.Resolve(this, this);
 
         public GameEpicNPC() : base()
         {
             DamageFactor = 1.5;
-            ArmorFactorScalingFactor = DefaultArmorFactorScalingFactor;
         }
 
         public override bool HasAbility(string keyName)
