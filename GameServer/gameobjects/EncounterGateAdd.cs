@@ -4,33 +4,35 @@ namespace DOL.GS
 {
     public abstract class EncounterGateAdd : GameNPC
     {
-        private EncounterKillCounter _counter;
+        protected const ushort GATE_OWNER_SEARCH_RADIUS = 4000;
+
+        private GameNPC _gateOwner;
 
         protected virtual bool CountsTowardGate => true;
 
-        protected virtual bool IsGateOwner(GameNPC npc) => npc.Brain is IEncounterGateOwner;
-
-        public override bool AddToWorld()
-        {
-            if (!base.AddToWorld())
-                return false;
-
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
-            {
-                if (IsGateOwner(npc) && npc.Brain is IEncounterGateOwner owner)
-                {
-                    _counter = owner.GateCounter;
-                    break;
-                }
-            }
-
-            return true;
-        }
+        protected abstract bool IsGateOwner(GameNPC npc);
 
         public override void ProcessDeath(GameObject killer)
         {
             if (CountsTowardGate)
-                _counter?.IncrementKills();
+            {
+                if (_gateOwner == null || _gateOwner.ObjectState is not eObjectState.Active || !IsGateOwner(_gateOwner))
+                {
+                    _gateOwner = null;
+
+                    foreach (GameNPC npc in GetNPCsInRadius(GATE_OWNER_SEARCH_RADIUS))
+                    {
+                        if (IsGateOwner(npc) && npc.Brain is IEncounterGateOwner)
+                        {
+                            _gateOwner = npc;
+                            break;
+                        }
+                    }
+                }
+
+                if (_gateOwner?.Brain is IEncounterGateOwner owner)
+                    owner.GateCounter?.IncrementKills();
+            }
 
             base.ProcessDeath(killer);
         }

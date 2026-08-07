@@ -75,6 +75,18 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
+		public override void ProcessDeath(GameObject killer)
+		{
+			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
+			{
+				if (npc != null)
+				{
+					if (npc.IsAlive && (npc.Brain is TorturedSoulsBrain || npc.Brain is ExplodeUndeadBrain))
+						npc.RemoveFromWorld();
+				}
+			}
+			base.ProcessDeath(killer);
+		}
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18806);

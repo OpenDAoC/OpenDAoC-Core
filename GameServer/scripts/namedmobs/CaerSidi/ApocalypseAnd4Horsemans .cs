@@ -1526,6 +1526,15 @@ namespace DOL.AI.Brain
                             }
                         }
                     }
+                    if (Body is Morbus morbusToClear)
+                    {
+                        foreach (GameNPC npc in morbusToClear.Swarm)
+                        {
+                            if (npc != null && npc.ObjectState is GameObject.eObjectState.Active)
+                                npc.RemoveFromWorld();
+                        }
+                        morbusToClear.Swarm.Clear();
+                    }
                     RemoveAdds = true;
                 }
             }

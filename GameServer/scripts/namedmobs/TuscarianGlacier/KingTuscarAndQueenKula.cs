@@ -139,8 +139,9 @@ namespace DOL.GS
         private GameNPC _kingTuscar;
         public bool IsKingTuscarUp()
         {
-            if (_kingTuscar == null)
+            if (_kingTuscar == null || _kingTuscar.ObjectState is not eObjectState.Active || _kingTuscar.Brain is not KingTuscarBrain)
             {
+                _kingTuscar = null;
                 foreach (GameNPC npc in GetNPCsInRadius(8000))
                 {
                     if (npc is KingTuscar)
@@ -150,7 +151,7 @@ namespace DOL.GS
                     }
                 }
             }
-            return _kingTuscar != null && _kingTuscar.IsAlive && _kingTuscar.ObjectState is eObjectState.Active;
+            return _kingTuscar != null && _kingTuscar.IsAlive;
         }
         public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
@@ -210,7 +211,7 @@ namespace DOL.GS
         {
             if (ad != null && ad.Damage > 0 && ad.Attacker != null && ad.Attacker.IsAlive && ad.Attacker is GamePlayer)
             {
-                bool kingTuscarUp = Brain is not QueenKulaBrain brain || brain.KingTuscarUp;
+                bool kingTuscarUp = IsKingTuscarUp();
                 if(!kingTuscarUp || HealthPercent <= 50)
                 {
                     if (Util.Chance(50))
@@ -281,7 +282,6 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         public static bool IsTargetPicked = false;
-        public bool KingTuscarUp = true;
         List<GamePlayer> Port_Enemys = new List<GamePlayer>();
         public int PickPlayer(ECSGameTimer timer)
         {
@@ -424,7 +424,6 @@ namespace DOL.AI.Brain
                     message1 = true;
                 }
                 bool kingTuscarUp = Body is QueenKula queenKula && queenKula.IsKingTuscarUp();
-                KingTuscarUp = kingTuscarUp;
                 if (IsTargetPicked == false)
                 {
                     if (kingTuscarUp)
@@ -636,8 +635,9 @@ namespace DOL.GS
         private GameNPC _queenKula;
         public bool IsQueenKulaUp()
         {
-            if (_queenKula == null)
+            if (_queenKula == null || _queenKula.ObjectState is not eObjectState.Active || _queenKula.Brain is not QueenKulaBrain)
             {
+                _queenKula = null;
                 foreach (GameNPC npc in GetNPCsInRadius(8000))
                 {
                     if (npc is QueenKula)
@@ -647,7 +647,7 @@ namespace DOL.GS
                     }
                 }
             }
-            return _queenKula != null && _queenKula.IsAlive && _queenKula.ObjectState is eObjectState.Active;
+            return _queenKula != null && _queenKula.IsAlive;
         }
         #region Styles
         public override void OnAttackedByEnemy(AttackData ad)// on Boss actions
@@ -681,7 +681,7 @@ namespace DOL.GS
                 if (Util.Chance(50))
                     CastSpell(Thunder_aoe2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
             }
-            if ((Brain is KingTuscarBrain brain && !brain.QueenKulaUp) || (HealthPercent <= 50 && KingTuscarBrain.TuscarRage==true))
+            if (!IsQueenKulaUp() || (HealthPercent <= 50 && KingTuscarBrain.TuscarRage==true))
             {
                 if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 175 && ad.Style.ClassID == 22)
                 {
@@ -909,7 +909,6 @@ namespace DOL.AI.Brain
         }
         public static bool message2 = false;
         public static bool TuscarRage = false;
-        public bool QueenKulaUp = true;
         public static bool IsPulled2 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
@@ -970,7 +969,6 @@ namespace DOL.AI.Brain
                 {
                     GameLiving living = Body.TargetObject as GameLiving;
                     bool queenKulaUp = Body is KingTuscar kingTuscar && kingTuscar.IsQueenKulaUp();
-                    QueenKulaUp = queenKulaUp;
                     if(queenKulaUp)
                     {
                         Body.Strength = 350;

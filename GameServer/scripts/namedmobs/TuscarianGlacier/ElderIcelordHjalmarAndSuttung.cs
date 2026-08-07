@@ -668,11 +668,37 @@ namespace DOL.GS
         public GameNPC HjalmarBoss;
         public bool IsSuttungUp()
         {
-            return SuttungBoss != null && SuttungBoss.IsAlive && SuttungBoss.ObjectState is eObjectState.Active;
+            if (SuttungBoss != null && SuttungBoss.IsAlive && SuttungBoss.ObjectState is eObjectState.Active)
+                return true;
+
+            return IsOtherSuttungUp();
         }
         public bool IsHjalmarUp()
         {
-            return HjalmarBoss != null && HjalmarBoss.IsAlive && HjalmarBoss.ObjectState is eObjectState.Active;
+            if (HjalmarBoss != null && HjalmarBoss.IsAlive && HjalmarBoss.ObjectState is eObjectState.Active)
+                return true;
+
+            return IsOtherHjalmarUp();
+        }
+        private bool IsOtherSuttungUp()
+        {
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+            {
+                if (npc is Suttung && npc.IsAlive && npc.ObjectState is eObjectState.Active)
+                    return true;
+            }
+
+            return false;
+        }
+        private bool IsOtherHjalmarUp()
+        {
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+            {
+                if (npc is Hjalmar && npc.IsAlive && npc.ObjectState is eObjectState.Active)
+                    return true;
+            }
+
+            return false;
         }
         public void SpawnSuttung()
         {

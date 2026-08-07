@@ -169,7 +169,6 @@ namespace DOL.AI.Brain
 				npc.Z = Body.Z;
 				npc.Heading = Body.Heading;
 				npc.CurrentRegion = Body.CurrentRegion;
-				npc.RespawnInterval = -1;
 				npc.AddToWorld();
 				if (Body is Fuladl boss)
 					boss.RegisterPart(npc);
@@ -218,7 +217,7 @@ namespace DOL.GS
 			Name = "Part of Fuladl";
 			Size = (byte)(Util.Random(50,70));
 			MaxSpeedBase = 250;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = -1;
 
 			Faction = FactionMgr.GetFactionByID(8);
 
