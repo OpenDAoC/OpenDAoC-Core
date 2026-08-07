@@ -65,8 +65,8 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-        public static GameLiving TeleportTarget = null;
-        public static bool CanPoison = false;
+        public GameLiving TeleportTarget = null;
+        public bool CanPoison = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if(ad != null && ad.Attacker != null && Body.TargetObject != ad.Attacker && CanPoison==false)

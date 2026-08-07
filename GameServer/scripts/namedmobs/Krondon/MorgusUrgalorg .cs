@@ -95,14 +95,14 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public static bool IsPulled = false;
-		public static bool CanCast = false;
+		public bool IsPulled = false;
+		public bool CanCast = false;
 		List<GamePlayer> Enemys_To_DD = new List<GamePlayer>();
 		public void PickRandomTarget()
 		{
@@ -122,7 +122,7 @@ namespace DOL.AI.Brain
 				if (CanCast == false)
 				{
 					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
-					RandomTarget = Target;//set random target to static RandomTarget
+					RandomTarget = Target;
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetTarget), 4500);
 					CanCast = true;
 				}

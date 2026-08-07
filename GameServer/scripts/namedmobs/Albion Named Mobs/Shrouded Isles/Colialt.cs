@@ -94,7 +94,7 @@ namespace DOL.GS
         }
 		public override void DealDamage(AttackData ad)
 		{
-			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && ColialtBrain.ColialtPhase)
+			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && Brain is ColialtBrain brain && brain.ColialtPhase)
 			{
 				Health += ad.Damage;
 			}
@@ -102,7 +102,7 @@ namespace DOL.GS
 		}
 		public override void StartAttack(GameObject target)
         {
-			if (ColialtBrain.ColialtPhase)
+			if (Brain is ColialtBrain brain && brain.ColialtPhase)
 				return;
 			else
 				base.StartAttack(target);
@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool ColialtPhase = false;
+		public bool ColialtPhase = false;
 		private bool CanFollow = false;
 		public override void Think()
 		{

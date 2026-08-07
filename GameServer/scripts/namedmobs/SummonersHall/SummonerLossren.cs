@@ -94,7 +94,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Faction = FactionMgr.GetFactionByID(206);
 			IsCloakHoodUp = true;
-			SummonerLossrenBrain.IsCreatingSouls = false;
 
 			SummonerLossrenBrain sbrain = new SummonerLossrenBrain();
 			SetOwnBrain(sbrain);
@@ -166,7 +165,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsCreatingSouls = false;
+		public bool IsCreatingSouls = false;
 		public int TorturedSoulKilled = 0;
 		private bool RemoveAdds = false;
 		private readonly List<GameNPC> _souls = new List<GameNPC>();
@@ -204,6 +203,14 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
+					foreach (GameNPC souls in _souls)
+					{
+						if (souls != null && souls.ObjectState is GameObject.eObjectState.Active)
+							souls.RemoveFromWorld();
+					}
+					_souls.Clear();
+					if (IsExplodeZombieUp())
+						_explodeZombie.RemoveFromWorld();
 					RemoveAdds = true;
 				}
 			}
@@ -449,15 +456,16 @@ namespace DOL.AI.Brain
 			AggroRange = 800;
 		}
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public static bool IsKilled = false;
-		public static bool SetAggroAmount = false;
+		public bool IsKilled = false;
+		public bool SetAggroAmount = false;
 		public override void Think()
 		{
+			GamePlayer randomTarget = Body is ExplodeUndead undead ? undead.RandomTarget : null;
 			if (Body.IsAlive)
 			{
-				if (Body.TargetObject == null && ExplodeUndead.RandomTarget != null)
+				if (Body.TargetObject == null && randomTarget != null)
 				{
-					Body.TargetObject = ExplodeUndead.RandomTarget;
+					Body.TargetObject = randomTarget;
 				}
 				if (Body.TargetObject != null)
 				{
@@ -472,11 +480,11 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			if (Body.IsAlive && ExplodeUndead.RandomTarget != null )
+			if (Body.IsAlive && randomTarget != null )
             {
 				if (SetAggroAmount == false)
 				{
-					AddToAggroList(ExplodeUndead.RandomTarget, 2000);
+					AddToAggroList(randomTarget, 2000);
 					SetAggroAmount = true;
 				}
 			}
@@ -561,8 +569,8 @@ namespace DOL.GS
 			base.ProcessDeath(killer);
 		}
         public override bool CanDropLoot => false;
-        public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -572,8 +580,6 @@ namespace DOL.GS
 		{
 			Model = 923;
 			RandomTarget = null;
-			ExplodeUndeadBrain.IsKilled = false;
-			ExplodeUndeadBrain.SetAggroAmount = false;
 			Zombie_Targets.Clear();
 			Name = "infected ghoul";
 			RespawnInterval = -1;

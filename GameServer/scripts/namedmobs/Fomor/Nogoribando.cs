@@ -75,11 +75,11 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled = false;
-		public static bool IsBig = false;
-		public static bool IsSmall = false;
-		public static bool IsChangingSize = false;
-		public static bool IsInCombat = false;
+		public bool IsPulled = false;
+		public bool IsBig = false;
+		public bool IsSmall = false;
+		public bool IsChangingSize = false;
+		public bool IsInCombat = false;
 		public int ChangeSizeToBig(ECSGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)

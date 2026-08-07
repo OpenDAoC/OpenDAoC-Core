@@ -47,24 +47,15 @@ namespace DOL.GS
         }
         public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
-            Spawn_Snakes = false;
-            HakrBrain.spam_message1 = false;
             base.ProcessDeath(killer);
         }
-        public static bool Spawn_Snakes = false;
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162347);
             LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(140);
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            Spawn_Snakes = false;
-            HakrBrain.spam_message1 = false;
-            if (Spawn_Snakes == false)
-            {
-                SpawnSnakes();
-                Spawn_Snakes = true;
-            }
+            SpawnSnakes();
             HakrBrain sbrain = new HakrBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -161,7 +152,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -247,8 +238,8 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool spam_teleport = false;
-        public static bool spam_message1 = false;
+        public bool spam_teleport = false;
+        public bool spam_message1 = false;
         public override void Think()
         {
             bool iceweaverUp = Body is Hakr hakr && hakr.IsIceweaverUp;
@@ -350,7 +341,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)

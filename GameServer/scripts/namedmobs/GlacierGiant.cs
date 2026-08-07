@@ -48,9 +48,6 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161360);
 			LoadTemplate(npcTemplate);
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-			GlacierGiantBrain.Clear_List = false;
-			GlacierGiantBrain.RandomTarget = null;
-
 			GlacierGiantBrain sbrain = new GlacierGiantBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -146,8 +143,8 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 	
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -203,7 +200,7 @@ namespace DOL.AI.Brain
 				}
 			}
 		}
-		public static bool Clear_List = false;
+		public bool Clear_List = false;
 		public int ListCleanTimer(ECSGameTimer timer)
         {
 			if (Body.IsAlive && Body.InCombat && HasAggro && Teleported_Players.Count > 0)

@@ -74,11 +74,6 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            SteinvorBrain.PlayerX = 0;
-            SteinvorBrain.PlayerY = 0;
-            SteinvorBrain.PlayerZ = 0;
-            SteinvorBrain.RandomTarget = null;
-            SteinvorBrain.PickedTarget = false;
 
             SteinvorBrain sbrain = new SteinvorBrain();
             SetOwnBrain(sbrain);
@@ -142,7 +137,7 @@ namespace DOL.AI.Brain
             ThinkInterval = 1500;
         }
 
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -210,16 +205,16 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public static bool PickedTarget = false;
-        public static int PlayerX = 0;
-        public static int PlayerY = 0;
-        public static int PlayerZ = 0;
+        public bool PickedTarget = false;
+        public int PlayerX = 0;
+        public int PlayerY = 0;
+        public int PlayerZ = 0;
 
         public int PickPlayer(ECSGameTimer timer)
         {
@@ -367,7 +362,6 @@ namespace DOL.GS
         {
             base.Die(killer);
         }
-        public static bool Spawn_Snakes = false;
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162349);
@@ -437,7 +431,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
-        public static bool IsPulled2 = false;
+        public bool IsPulled2 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled2 == false)

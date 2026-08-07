@@ -229,10 +229,10 @@ namespace DOL.AI.Brain
 			}
 		}
 		#region Aros Debuff
-		public static bool CanCastDebuff = false;
+		public bool CanCastDebuff = false;
 		List<GamePlayer> Enemys_To_Debuff = new List<GamePlayer>();
-		public static GamePlayer debufftarget = null;
-		public static GamePlayer DebuffTarget
+		public GamePlayer debufftarget = null;
+		public GamePlayer DebuffTarget
 		{
 			get { return debufftarget; }
 			set { debufftarget = value; }
@@ -254,7 +254,7 @@ namespace DOL.AI.Brain
 					if (CanCastDebuff == false && Body.GetSkillDisabledDuration(Aros_Debuff) == 0)
 					{
 						GamePlayer Target = Enemys_To_Debuff[Util.Random(0, Enemys_To_Debuff.Count - 1)];//pick random target from list
-						DebuffTarget = Target;//set random target to static RandomTarget
+						DebuffTarget = Target;
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDebuff), 5000);
 						CanCastDebuff = true;
 					}

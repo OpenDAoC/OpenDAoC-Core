@@ -92,7 +92,6 @@ namespace DOL.GS
             LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(187);
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Plant;
-            AncientBlackOakBrain.IsPulled = false;
             MeleeDamageType = eDamageType.Matter;
             AncientBlackOakBrain sbrain = new AncientBlackOakBrain();
             SetOwnBrain(sbrain);
@@ -148,7 +147,7 @@ namespace DOL.AI.Brain
             AggroRange = 400;
             ThinkInterval = 1500;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

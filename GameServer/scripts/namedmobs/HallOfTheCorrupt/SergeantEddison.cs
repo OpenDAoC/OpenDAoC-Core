@@ -36,7 +36,7 @@ namespace DOL.GS
             IsRanged = false;
             return 0;
         }
-        public static bool IsRanged = false;
+        public bool IsRanged = false;
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {
             if (IsRanged == false)
@@ -233,7 +233,8 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
-                SergeantEddison.IsRanged = false;
+                if (Body is SergeantEddison eddison)
+                    eddison.IsRanged = false;
             }
             if (Body.IsOutOfTetherRange)
             {

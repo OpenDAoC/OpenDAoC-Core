@@ -52,7 +52,6 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160146);
 			LoadTemplate(npcTemplate);
-			DremcisFuiloltairBrain.CanSpawnStag = false;
 
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			DremcisFuiloltairBrain sbrain = new DremcisFuiloltairBrain();
@@ -90,7 +89,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 
-		public static bool CanSpawnStag = false;
+		private bool CanSpawnStag = false;
 		private bool CanSpawnBlobs = false;
 		private bool RemoveAdds = false;
 		public override void Think()

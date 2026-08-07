@@ -63,12 +63,12 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159351);
             LoadTemplate(npcTemplate);
 
-            ConservatorBrain.spampoison = false;
-            ConservatorBrain.spamaoe = false;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
 
             ConservatorBrain sBrain = new ConservatorBrain();
+            sBrain.spampoison = false;
+            sBrain.spamaoe = false;
             SetOwnBrain(sBrain);
             LoadedFromScript = false; //load from database
             SaveIntoDatabase();
@@ -195,8 +195,8 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public static bool spampoison = false;
-        public static bool spamaoe = false;
+        public bool spampoison = false;
+        public bool spamaoe = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

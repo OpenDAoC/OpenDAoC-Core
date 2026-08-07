@@ -134,14 +134,14 @@ namespace DOL.AI.Brain
 			AggroRange = 400;
 			ThinkInterval = 1500;
 		}
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public static bool IsTargetPicked = false;
-		public static bool IsPulled = false;
+		public bool IsTargetPicked = false;
+		public bool IsPulled = false;
 		List<GamePlayer> Port_Enemys = new List<GamePlayer>();
 		public int ThrowPlayer(ECSGameTimer timer)
 		{

@@ -92,10 +92,10 @@ namespace DOL.GS
             }
         }
 
-        public static bool get_resist = false; //set resists
-        public static bool resist_timer = false;
-        public static bool resist_timer_end = false;
-        public static bool spam1 = false;
+        public bool get_resist = false; //set resists
+        public bool resist_timer = false;
+        public bool resist_timer_end = false;
+        public bool spam1 = false;
 
         public int ResistTime(ECSGameTimer timer)
         {
@@ -131,6 +131,7 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166029);
             LoadTemplate(npcTemplate);
             LoadTemplate(npcTemplate);
+            attackers.Clear();
             attackers_count = 0;
             get_resist = false;
             resist_timer = false;

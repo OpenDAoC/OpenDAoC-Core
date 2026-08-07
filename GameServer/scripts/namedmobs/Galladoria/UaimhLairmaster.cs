@@ -9,7 +9,7 @@ namespace DOL.GS.Scripts
     public class UaimhLairmaster : GameEpicBoss
     {
         protected String m_FleeingAnnounce;
-        public static bool IsFleeing = true;
+        public bool IsFleeing = true;
 
         public UaimhLairmaster() : base()
         {
@@ -166,7 +166,7 @@ namespace DOL.GS.Scripts
             protected byte MIN_Size = 60;
 
             protected String m_AggroAnnounce;
-            public static bool IsAggroEnemies = true;
+            public bool IsAggroEnemies = true;
 
             private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

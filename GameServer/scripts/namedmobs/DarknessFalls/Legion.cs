@@ -82,9 +82,6 @@ namespace DOL.GS.Scripts
             Empathy = npcTemplate.Empathy;
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
-            LegionBrain.CanThrow = false;
-            LegionBrain.RemoveAdds = false;
-            LegionBrain.IsCreatingSouls = false;
 
             // demon
             BodyType = 2;
@@ -305,59 +302,17 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 850;
         }
-        public static bool RemoveAdds = false;
-        public static bool IsCreatingSouls = false;
-        public static bool CanThrow = false;
-        public static bool CanPbaoe = false;
-        #region Health check bools
-        public static bool adds1 = false;
-        public static bool adds2 = false;
-        public static bool adds3 = false;
-        public static bool adds4 = false;
-        public static bool adds5 = false;
-        public static bool adds6 = false;
-        public static bool adds7 = false;
-        public static bool adds8 = false;
-        public static bool adds9 = false;
-        public static bool adds10 = false;
-        public static bool adds11 = false;
-        public static bool adds12 = false;
-        public static bool adds13 = false;
-        public static bool adds14 = false;
-        public static bool adds15 = false;
-        public static bool adds16 = false;
-        public static bool adds17 = false;
-        public static bool adds18 = false;
-        public static bool adds19 = false;
-        #endregion
+        private bool RemoveAdds = false;
+        private bool CanThrow = false;
+        private bool CanPbaoe = false;
+        private readonly bool[] addsSpawned = new bool[19];
 
         public override void Think()
         {
             if(!CheckProximityAggro())
             {
-                IsCreatingSouls = false;
                 CanThrow = false;
-                #region Health check bools
-                adds1 = false;
-                adds2 = false;
-                adds3 = false;
-                adds4 = false;
-                adds5 = false;
-                adds6 = false;
-                adds7 = false;
-                adds8 = false;
-                adds9 = false;
-                adds10 = false;
-                adds11 = false;
-                adds12 = false;
-                adds13 = false;
-                adds14 = false;
-                adds15 = false;
-                adds16 = false;
-                adds17 = false;
-                adds18 = false;
-                adds19 = false;
-                #endregion
+                Array.Clear(addsSpawned, 0, addsSpawned.Length);
 
                 if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
                     randomlyPickedPlayers.Clear();
@@ -400,100 +355,15 @@ namespace DOL.AI.Brain
                     CanPbaoe = true;
                 }
                 #region Legion health checks
-                if (Body.HealthPercent <= 95 && Body.HealthPercent > 90 && !adds1)
+                int healthPercent = Body.HealthPercent;
+                for (int i = 0; i < addsSpawned.Length; i++)
                 {
-                    SpawnAdds();
-                    adds1 = true;
-                }
-                if (Body.HealthPercent <= 90 && Body.HealthPercent > 85 && !adds2)
-                {
-                    SpawnAdds();
-                    adds2 = true;
-                }
-                if (Body.HealthPercent <= 85 && Body.HealthPercent > 80 && !adds3)
-                {
-                    SpawnAdds();
-                    adds3 = true;
-                }
-                if (Body.HealthPercent <= 80 && Body.HealthPercent > 75 && !adds4)
-                {
-                    SpawnAdds();
-                    adds4 = true;
-                }
-                if (Body.HealthPercent <= 75 && Body.HealthPercent > 70 && !adds5)
-                {
-                    SpawnAdds();
-                    adds5 = true;
-                }
-                if (Body.HealthPercent <= 70 && Body.HealthPercent > 65 && !adds6)
-                {
-                    SpawnAdds();
-                    adds6 = true;
-                }
-                if (Body.HealthPercent <= 65 && Body.HealthPercent > 60 && !adds7)
-                {
-                    SpawnAdds();
-                    adds7 = true;
-                }
-                if (Body.HealthPercent <= 60 && Body.HealthPercent > 55 && !adds8)
-                {
-                    SpawnAdds();
-                    adds8 = true;
-                }
-                if (Body.HealthPercent <= 55 && Body.HealthPercent > 50 && !adds9)
-                {
-                    SpawnAdds();
-                    adds9 = true;
-                }
-                if (Body.HealthPercent <= 50 && Body.HealthPercent > 45 && !adds10)
-                {
-                    SpawnAdds();
-                    adds10 = true;
-                }
-                if (Body.HealthPercent <= 45 && Body.HealthPercent > 40 && !adds11)
-                {
-                    SpawnAdds();
-                    adds11 = true;
-                }
-                if (Body.HealthPercent <= 40 && Body.HealthPercent > 35 && !adds12)
-                {
-                    SpawnAdds();
-                    adds12 = true;
-                }
-                if (Body.HealthPercent <= 35 && Body.HealthPercent > 30 && !adds13)
-                {
-                    SpawnAdds();
-                    adds13 = true;
-                }
-                if (Body.HealthPercent <= 30 && Body.HealthPercent > 25 && !adds14)
-                {
-                    SpawnAdds();
-                    adds14 = true;
-                }
-                if (Body.HealthPercent <= 25 && Body.HealthPercent > 20 && !adds15)
-                {
-                    SpawnAdds();
-                    adds15 = true;
-                }
-                if (Body.HealthPercent <= 20 && Body.HealthPercent > 15 && !adds16)
-                {
-                    SpawnAdds();
-                    adds16 = true;
-                }
-                if (Body.HealthPercent <= 15 && Body.HealthPercent > 10 && !adds17)
-                {
-                    SpawnAdds();
-                    adds17 = true;
-                }
-                if (Body.HealthPercent <= 10 && Body.HealthPercent > 5 && !adds18)
-                {
-                    SpawnAdds();
-                    adds18 = true;
-                }
-                if (Body.HealthPercent <= 5 && Body.HealthPercent > 0 && !adds19)
-                {
-                    SpawnAdds();
-                    adds19 = true;
+                    int upperBound = 95 - i * 5;
+                    if (healthPercent <= upperBound && healthPercent > upperBound - 5 && !addsSpawned[i])
+                    {
+                        SpawnAdds();
+                        addsSpawned[i] = true;
+                    }
                 }
                 #endregion
                 if (!CanThrow)

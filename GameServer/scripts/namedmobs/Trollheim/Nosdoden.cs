@@ -366,7 +366,6 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 800;
 		}
-		public static bool IsPulled = false;
 		private bool SpawnAdds1 = false;
 		private bool SpawnAdds2 = false;
 		private bool SpawnAdds3 = false;
@@ -384,10 +383,10 @@ namespace DOL.AI.Brain
 			}
 		}
 		#region Worm Dot
-		public static bool CanCast2 = false;
-		public static bool StartCastDOT = false;
-		public static GamePlayer randomtarget2 = null;
-		public static GamePlayer RandomTarget2
+		public bool CanCast2 = false;
+		public bool StartCastDOT = false;
+		public GamePlayer randomtarget2 = null;
+		public GamePlayer RandomTarget2
 		{
 			get { return randomtarget2; }
 			set { randomtarget2 = value; }
@@ -415,7 +414,7 @@ namespace DOL.AI.Brain
 					if (CanCast2 == false)
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
-						RandomTarget2 = Target;//set random target to static RandomTarget
+						RandomTarget2 = Target;
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 2000);
 						CanCast2 = true;
 					}
@@ -449,10 +448,10 @@ namespace DOL.AI.Brain
 		}
 		#endregion
 		#region Worm DD
-		public static bool CanCast = false;
-		public static bool StartCastDD = false;
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public bool CanCast = false;
+		public bool StartCastDD = false;
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -480,7 +479,7 @@ namespace DOL.AI.Brain
 					if (CanCast == false)
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
-						RandomTarget = Target;//set random target to static RandomTarget
+						RandomTarget = Target;
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 5000);
 						BroadcastMessage(String.Format(Body.Name + " starts casting void magic at " + RandomTarget.Name + "."));
 						CanCast = true;
@@ -514,14 +513,14 @@ namespace DOL.AI.Brain
 			return 0;
 		}
 		#endregion
-		public static GameNPC spiritmob = null;
-		public static GameNPC SpiritMob
+		public GameNPC spiritmob = null;
+		public GameNPC SpiritMob
 		{
 			get { return spiritmob; }
 			set { spiritmob = value; }
 		}
-		public static GamePlayer playerrezzed = null;
-		public static GamePlayer PlayerRezzed
+		public GamePlayer playerrezzed = null;
+		public GamePlayer PlayerRezzed
 		{
 			get { return playerrezzed; }
 			set { playerrezzed = value; }
@@ -541,6 +540,8 @@ namespace DOL.AI.Brain
 				RandomTarget = null;
 				RandomTarget2 = null;
 				CanKillSpirit = false;
+				SpiritMob = null;
+				PlayerRezzed = null;
 				SpawnAdds1 = false;
 				SpawnAdds2 = false;
 				SpawnAdds3 = false;

@@ -95,12 +95,12 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 			CanBaf = false;
 		}
-		public static bool IsPulled = false;
+		public bool IsPulled = false;
         #region Throw Player
         List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-		public static bool IsTargetPicked = false;
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public bool IsTargetPicked = false;
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -148,6 +148,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				RandomTarget = null;//throw
 				IsTargetPicked = false;//throw
+				IsPulled = false;
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{

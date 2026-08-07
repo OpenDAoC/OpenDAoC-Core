@@ -139,9 +139,8 @@ namespace DOL.GS
         private GameNPC _kingTuscar;
         public bool IsKingTuscarUp()
         {
-            if (_kingTuscar == null || _kingTuscar.ObjectState is not eObjectState.Active || _kingTuscar.Brain is not KingTuscarBrain)
+            if (_kingTuscar == null)
             {
-                _kingTuscar = null;
                 foreach (GameNPC npc in GetNPCsInRadius(8000))
                 {
                     if (npc is KingTuscar)
@@ -151,7 +150,7 @@ namespace DOL.GS
                     }
                 }
             }
-            return _kingTuscar != null && _kingTuscar.IsAlive;
+            return _kingTuscar != null && _kingTuscar.IsAlive && _kingTuscar.ObjectState is eObjectState.Active;
         }
         public override void ProcessDeath(GameObject killer)//on kill generate orbs
         {
@@ -192,9 +191,6 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 316, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
-            QueenKulaBrain.IsTargetPicked = false;
-            QueenKulaBrain.message1 = false;
-            QueenKulaBrain.IsPulled1 = false;
 
             VisibleActiveWeaponSlots = 16;
             MeleeDamageType = eDamageType.Slash;
@@ -203,6 +199,7 @@ namespace DOL.GS
             LoadedFromScript = false;//load from database
             SaveIntoDatabase();
             base.AddToWorld();
+            IsKingTuscarUp();
             return true;
         }
         #endregion
@@ -275,13 +272,13 @@ namespace DOL.AI.Brain
             }
         }
         #region Teleport Player & PlayerInCenter()
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public static bool IsTargetPicked = false;
+        public bool IsTargetPicked = false;
         List<GamePlayer> Port_Enemys = new List<GamePlayer>();
         public int PickPlayer(ECSGameTimer timer)
         {
@@ -328,7 +325,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public static bool message1 = false;
+        public bool message1 = false;
         public void PlayerInCenter()
         {
             Point3D FrostPoint = new Point3D();
@@ -370,7 +367,6 @@ namespace DOL.AI.Brain
         }
         #endregion
         #region OnAttackedByEnemy()
-        public static bool IsPulled1 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (HasAggro && Body.TargetObject != null)
@@ -402,7 +398,6 @@ namespace DOL.AI.Brain
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165083);
                 Body.Strength = npcTemplate.Strength;
                 IsTargetPicked =false;
-                IsPulled1 = false;
             }
             if (Body.IsOutOfTetherRange)
             {
@@ -635,9 +630,8 @@ namespace DOL.GS
         private GameNPC _queenKula;
         public bool IsQueenKulaUp()
         {
-            if (_queenKula == null || _queenKula.ObjectState is not eObjectState.Active || _queenKula.Brain is not QueenKulaBrain)
+            if (_queenKula == null)
             {
-                _queenKula = null;
                 foreach (GameNPC npc in GetNPCsInRadius(8000))
                 {
                     if (npc is QueenKula)
@@ -647,7 +641,7 @@ namespace DOL.GS
                     }
                 }
             }
-            return _queenKula != null && _queenKula.IsAlive;
+            return _queenKula != null && _queenKula.IsAlive && _queenKula.ObjectState is eObjectState.Active;
         }
         #region Styles
         public override void OnAttackedByEnemy(AttackData ad)// on Boss actions
@@ -681,7 +675,7 @@ namespace DOL.GS
                 if (Util.Chance(50))
                     CastSpell(Thunder_aoe2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
             }
-            if (!IsQueenKulaUp() || (HealthPercent <= 50 && KingTuscarBrain.TuscarRage==true))
+            if (!IsQueenKulaUp() || (HealthPercent <= 50 && Brain is KingTuscarBrain tuscarBrain && tuscarBrain.TuscarRage))
             {
                 if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 175 && ad.Style.ClassID == 22)
                 {
@@ -720,9 +714,6 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 575, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            KingTuscarBrain.message2 = false;
-            KingTuscarBrain.TuscarRage = false;
-            KingTuscarBrain.IsPulled2 = false;
 
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
@@ -731,6 +722,7 @@ namespace DOL.GS
             LoadedFromScript = false;//load from database
             SaveIntoDatabase();
             base.AddToWorld();
+            IsQueenKulaUp();
             return true;
         }       
         #endregion
@@ -907,9 +899,8 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool message2 = false;
-        public static bool TuscarRage = false;
-        public static bool IsPulled2 = false;
+        public bool message2 = false;
+        public bool TuscarRage = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (HasAggro && Body.TargetObject != null)
@@ -941,7 +932,6 @@ namespace DOL.AI.Brain
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162909);
                 Body.Strength = npcTemplate.Strength;
                 TuscarRage = false;
-                IsPulled2 = false;
             }
             if (Body.IsOutOfTetherRange)
             {

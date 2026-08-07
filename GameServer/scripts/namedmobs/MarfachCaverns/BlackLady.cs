@@ -101,12 +101,7 @@ namespace DOL.GS
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             // humanoid
-            IsOakUp = false;
-            if (IsOakUp == false)
-            {
-                SpawnOak();
-                IsOakUp = true;
-            }
+            SpawnOak();
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
             BodyType = 6;
@@ -116,7 +111,6 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public static bool IsOakUp = false;
         public void SpawnOak()
         {
                 AncientBlackOak Add1 = new AncientBlackOak();

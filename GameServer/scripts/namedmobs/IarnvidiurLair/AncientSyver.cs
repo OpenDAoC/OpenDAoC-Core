@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled = false;
+		public bool IsPulled = false;
 		public override void Think()
 		{
 			if (!CheckProximityAggro())

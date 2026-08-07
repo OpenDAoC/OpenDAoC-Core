@@ -72,7 +72,7 @@ namespace DOL.GS
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && GrandSummonerGovannonBrain.Stage2==true)
+			if(ad != null && Brain is GrandSummonerGovannonBrain govannonBrain && govannonBrain.Stage2==true)
             {
 				if(Util.Chance(35))//30% chance to make a bleed
                 {
@@ -100,8 +100,6 @@ namespace DOL.GS
 			LoadTemplate(npcTemplate);
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Faction = FactionMgr.GetFactionByID(206);
-			GrandSummonerGovannonBrain.SpawnSacrifices1 = false;
-			GrandSummonerGovannonBrain.Stage2 = false;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 86, 43, 0, 0); //Slot,model,color,effect,extension
@@ -217,8 +215,8 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool SpawnSacrifices1 = false;
-		public static bool Stage2 = false;
+		public bool SpawnSacrifices1 = false;
+		public bool Stage2 = false;
 		public bool SacrificeCompleted = false;
 		public bool DemonCompleted = false;
 		public void BroadcastMessage(String message)
@@ -599,8 +597,6 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18803);
 			LoadTemplate(npcTemplate);
 
-			ShadeOfAelfgarBrain.RandomTarget = null;
-			ShadeOfAelfgarBrain.CanPort = false;
 			RespawnInterval = -1;
 			Faction = FactionMgr.GetFactionByID(187);
 			ShadeOfAelfgarBrain sacrifice = new ShadeOfAelfgarBrain();
@@ -660,14 +656,14 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 800;
 		}
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
 		List<GamePlayer> Enemys_To_Port = new List<GamePlayer>();
-		public static bool CanPort = false;
+		public bool CanPort = false;
 		public void PickRandomTarget()
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
@@ -686,7 +682,7 @@ namespace DOL.AI.Brain
 				if (CanPort == false)
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_Port[Util.Random(0, Enemys_To_Port.Count - 1)];//pick random target from list
-					RandomTarget = Target;//set random target to static RandomTarget
+					RandomTarget = Target;
 					RandomTarget.MoveTo(Body.CurrentRegionID, 32091, 39684, 16302, 4094);
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), Util.Random(10000,20000));//port every 10-20s
 					CanPort = true;

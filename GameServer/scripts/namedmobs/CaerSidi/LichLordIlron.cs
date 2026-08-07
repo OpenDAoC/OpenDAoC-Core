@@ -61,7 +61,7 @@ namespace DOL.GS.Scripts
             sBrain.AggroLevel = 100;
             sBrain.AggroRange = 500;
 
-            LichLordIlronBrain.spawnimages = true;
+            sBrain.spawnimages = true;
             LoadedFromScript = false;//load from database
             SaveIntoDatabase();
             base.AddToWorld();
@@ -94,7 +94,7 @@ namespace DOL.AI.Brain
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool spawnimages = true;
+        public bool spawnimages = true;
 
         public override void Think()
         {

@@ -74,7 +74,6 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 500;
 		}
-		public static bool IsPulled = false;
 		public override void Think()
 		{
 			if (HasAggro && Body.TargetObject != null)

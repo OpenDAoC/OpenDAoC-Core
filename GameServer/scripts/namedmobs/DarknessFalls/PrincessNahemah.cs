@@ -56,7 +56,7 @@ namespace DOL.GS
             SetOwnBrain(sBrain);
             sBrain.AggroLevel = 100;
             sBrain.AggroRange = 500;
-            PrincessNahemahBrain.spawnMinions = true;
+            sBrain.spawnMinions = true;
 
             // demon
             BodyType = 2;
@@ -87,7 +87,7 @@ namespace DOL.AI.Brain
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool spawnMinions = true;
+        public bool spawnMinions = true;
         private bool RemoveAdds = false;
         public override void Think()
         {

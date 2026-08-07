@@ -10,8 +10,6 @@ namespace DOL.GS.Scripts
         {
         }
 
-        public static GameNPC SI_Gnat = new GameNPC();
-
         public override bool AddToWorld()
         {
             Model = 917;
@@ -27,7 +25,6 @@ namespace DOL.GS.Scripts
             SetOwnBrain(sBrain);
             sBrain.AggroLevel = 100;
             sBrain.AggroRange = 500;
-            GnatBrain.spawnants = true;
             base.AddToWorld();
             return true;
         }
@@ -44,7 +41,7 @@ namespace DOL.AI.Brain
         {
         }
 
-        public static bool spawnants = true;
+        public bool spawnants = true;
 
         public override void Think()
         {
@@ -110,8 +107,6 @@ namespace DOL.GS
         public GnatAnts() : base()
         {
         }
-
-        public static GameNPC SI_Gnatants = new GameNPC();
 
         public override int MaxHealth
         {

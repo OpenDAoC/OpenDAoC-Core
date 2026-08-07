@@ -131,7 +131,6 @@ namespace DOL.GS
                 Styles.Add(taunt);
             if(!Styles.Contains(after_block))
                 Styles.Add(after_block);
-            LadyDarraBrain.reset_darra = false;
             spawn_palas = false;
             
             VisibleActiveWeaponSlots = 16;
@@ -182,7 +181,7 @@ namespace DOL.GS
             else
                 log.Warn("Lady Darra exist ingame, remove it and restart server if you want to add by script code.");
         }
-        public static bool spawn_palas = false;
+        public bool spawn_palas = false;
         public static int CountPaladins()
         {
             int count = 0;
@@ -249,7 +248,7 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 1500;
         }
-        public static bool reset_darra = false;
+        public bool reset_darra = false;
         public override void Think()
         {
             if (!CheckProximityAggro())
@@ -267,9 +266,9 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (reset_darra == false)
                 {
-                    if (LadyDarra.CountPaladins() <= 3)
+                    if (Body is LadyDarra darra && LadyDarra.CountPaladins() <= 3)
                     {
-                        LadyDarra.spawn_palas = false;
+                        darra.spawn_palas = false;
                         foreach (GameNPC pala in Body.GetNPCsInRadius(2000))
                         {
                             if (pala != null)
@@ -280,7 +279,6 @@ namespace DOL.AI.Brain
                                 }
                             }
                         }
-                        LadyDarra darra = new LadyDarra();
                         darra.SpawnPaladins();
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDarra), 7000);
                         reset_darra = true;

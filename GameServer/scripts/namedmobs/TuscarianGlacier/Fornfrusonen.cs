@@ -200,7 +200,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public static bool FornInCombat = false;
+        public bool FornInCombat = false;
         public void SpawnShards()
         {
             for (int i = 0; i < Util.Random(2, 3); i++)
