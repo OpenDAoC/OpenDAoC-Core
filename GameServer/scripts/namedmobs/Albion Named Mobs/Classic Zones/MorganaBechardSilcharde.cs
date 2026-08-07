@@ -578,6 +578,18 @@ namespace DOL.GS
 		public MorganaBrain OwnerBrain;
 		public override void ProcessDeath(GameObject killer)
 		{
+			if (OwnerBrain == null || OwnerBrain.Body == null || OwnerBrain.Body.Brain != OwnerBrain || OwnerBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				OwnerBrain = null;
+				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+				{
+					if (npc.Brain is MorganaBrain brain)
+					{
+						OwnerBrain = brain;
+						break;
+					}
+				}
+			}
 			if (OwnerBrain != null)
 			{
 				if (PackageID == "BechardMinion")

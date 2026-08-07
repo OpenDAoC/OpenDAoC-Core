@@ -119,6 +119,12 @@ namespace DOL.GS
             }
         }
 
+        public void RegisterSoul(GameNPC soul)
+        {
+            _souls.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not eObjectState.Active);
+            _souls.Add(soul);
+        }
+
         public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
             foreach (GameNPC npc in GetNPCsInRadius(8000))
@@ -294,6 +300,9 @@ namespace DOL.AI.Brain
                     Add.CurrentRegion = Body.CurrentRegion;
                     Add.Heading = Body.Heading;
                     Add.AddToWorld();
+
+                    if (Body is SoulReckoner reckoner)
+                        reckoner.RegisterSoul(Add);
                 }
             }
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));

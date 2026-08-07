@@ -1927,7 +1927,7 @@ namespace DOL.GS
 			Brain?.Start();
 
 			if (Brain is IEncounterGateOwner gateOwner)
-				gateOwner.GateCounter.Reset();
+				gateOwner.GateCounter?.Reset();
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;

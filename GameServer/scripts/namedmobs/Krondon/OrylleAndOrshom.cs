@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
 		{
 			if (_orshom == null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 				{
 					if (npc is Orshom orshom)
 					{

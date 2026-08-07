@@ -133,8 +133,6 @@ namespace DOL.GS
 				Add1.Heading = Heading;
 				Add1.RespawnInterval = -1;
 				Add1.AddToWorld();
-				lock (MinionsLock)
-					Minions.Add(Add1);
 			}
 		}
 	}

@@ -310,6 +310,8 @@ namespace DOL.AI.Brain
         }
 		public void SpawnDemonAndSacrifice() // spawn sacrifice and demon
 		{
+			SacrificeCompleted = false;
+			DemonCompleted = false;
 			SummonedSacrifice Add1 = new SummonedSacrifice();
 			Add1.X = 31018;
 			Add1.Y = 40889;
