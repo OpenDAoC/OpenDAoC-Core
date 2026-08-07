@@ -2744,16 +2744,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gets/Sets amount of DOL respecs
-        /// (delegate to PlayerCharacter)
-        /// </summary>
-        public virtual int RespecAmountDOL
-        {
-            get { return DBCharacter != null ? DBCharacter.RespecAmountDOL : 0; }
-            set { if (DBCharacter != null) DBCharacter.RespecAmountDOL = value; }
-        }
-
-        /// <summary>
         /// Gets/Sets level respec usage flag
         /// (delegate to PlayerCharacter)
         /// </summary>
@@ -3002,17 +2992,6 @@ namespace DOL.GS
                 if (Level == 5)
                     IsLevelRespecUsed = true;
 
-                return true;
-            }
-
-            return false;
-        }
-
-        public virtual bool RespecDOL()
-        {
-            if(RespecAllLines()) // Wipe skills and styles.
-            {
-                RespecAmountDOL--; // Decriment players respecs available.
                 return true;
             }
 

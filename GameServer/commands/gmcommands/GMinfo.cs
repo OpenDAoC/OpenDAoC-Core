@@ -330,7 +330,6 @@ namespace DOL.GS.Commands
 					info.Add(sTitle + sCurrent);
 
 					info.Add(" ");
-					info.Add("  - Respecs dol : " + target.RespecAmountDOL);
 					info.Add("  - Respecs single : " + target.RespecAmountSingleSkill);
 					info.Add("  - Respecs full : " + target.RespecAmountAllSkill);
 					

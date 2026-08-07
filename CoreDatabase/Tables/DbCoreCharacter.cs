@@ -1449,24 +1449,7 @@ namespace DOL.Database
 				m_respecAmountRealmSkill = value;
 			}
 		}
-		
-		/// <summary>
-		/// Gets/Sets the characters DOL respecs available
-		/// </summary>
-		[DataElement(AllowDbNull = false)]
-		public int RespecAmountDOL
-		{
-			get
-			{
-				return m_respecAmountDOL;
-			}
-			set
-			{
-				Dirty = true;
-				m_respecAmountDOL = value;
-			}
-		}
-		
+
 		/// <summary>
 		/// Gets/sets the characters single-line respecs available
 		/// </summary>
