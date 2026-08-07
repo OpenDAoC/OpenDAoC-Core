@@ -2745,16 +2745,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gets/Sets amount of DOL respecs
-        /// (delegate to PlayerCharacter)
-        /// </summary>
-        public virtual int RespecAmountDOL
-        {
-            get { return DBCharacter != null ? DBCharacter.RespecAmountDOL : 0; }
-            set { if (DBCharacter != null) DBCharacter.RespecAmountDOL = value; }
-        }
-
-        /// <summary>
         /// Gets/Sets level respec usage flag
         /// (delegate to PlayerCharacter)
         /// </summary>
@@ -2970,6 +2960,7 @@ namespace DOL.GS
             Level = 1;
             Experience = 0;
             RespecAllLines();
+            RespecRealm(false);
 
             if (Level < originalLevel && originalLevel > 5)
             {
@@ -3002,17 +2993,6 @@ namespace DOL.GS
                 if (Level == 5)
                     IsLevelRespecUsed = true;
 
-                return true;
-            }
-
-            return false;
-        }
-
-        public virtual bool RespecDOL()
-        {
-            if(RespecAllLines()) // Wipe skills and styles.
-            {
-                RespecAmountDOL--; // Decriment players respecs available.
                 return true;
             }
 
@@ -3696,11 +3676,12 @@ namespace DOL.GS
             if (sendMessage == true && amount > 0)
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.YouGet", amount.ToString()), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-            while (RealmPoints >= CalculateRPsFromRealmLevel(RealmLevel + 1) && RealmLevel < ( REALMPOINTS_FOR_LEVEL.Length - 1 ) )
+            while (RealmPoints >= CalculateRPsFromRealmLevel(RealmLevel + 1) && RealmLevel < (REALMPOINTS_FOR_LEVEL.Length - 1))
             {
                 RealmLevel++;
                 Out.SendUpdatePlayer();
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.GainedLevel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
                 if (RealmLevel % 10 == 0)
                 {
                     Out.SendUpdatePlayerSkills(true);
@@ -3708,16 +3689,32 @@ namespace DOL.GS
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.ReachedRank", (RealmLevel / 10) + 1), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.NewRealmTitle", RealmRankTitle(Client.Account.Language)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.GainBonus", RealmLevel / 10), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
                     foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         plr.Out.SendLivingDataUpdate(this, true);
+
                     Notify(GamePlayerEvent.RRLevelUp, this);
                 }
                 else
                     Notify(GamePlayerEvent.RLLevelUp, this);
+
                 if (GameServer.ServerRules.CanGenerateNews(this) && ((RealmLevel >= 40 && RealmLevel % 10 == 0) || RealmLevel >= 60))
                 {
                     string newsmessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.ReachedRankNews", Name, RealmLevel + 10, LastPositionUpdateZone.Description);
-                    NewsMgr.CreateNews(newsmessage, this.Realm, eNewsType.RvRLocal, true);
+                    NewsMgr.CreateNews(newsmessage, Realm, eNewsType.RvRLocal, true);
+                }
+            }
+
+            if (amount < 0)
+            {
+                int newLevel = CalculateRealmLevelFromRPs(RealmPoints);
+
+                if (newLevel < RealmLevel)
+                {
+                    RealmLevel = newLevel;
+                    RespecRealm(false);
+                    Out.SendUpdatePlayer();
+                    Out.SendUpdatePlayerSkills(true);
                 }
             }
 

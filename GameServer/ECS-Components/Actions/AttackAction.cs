@@ -61,10 +61,7 @@ namespace DOL.GS
 
             // This must be checked after `ShouldTick` so that the last attack data remains valid for the whole attack interval.
             if (!AttackComponent.AttackState)
-            {
-                CleanUp();
                 return false;
-            }
 
             _weapon = _owner.ActiveWeapon;
             _leftWeapon = _owner.ActiveLeftWeapon;
@@ -472,10 +469,10 @@ namespace DOL.GS
 
             _halfwayDrawChecked = true;
 
-            if (!_owner.IsInterrupted)
+            if (!_owner.IsInterrupted(out GameLiving lastInterrupter))
                 return false;
 
-            InterruptAim(_owner.LastInterrupter);
+            InterruptAim(lastInterrupter);
             return true;
         }
 

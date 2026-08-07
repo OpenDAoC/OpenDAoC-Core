@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using DOL.AI.Brain;
@@ -21,15 +22,14 @@ namespace DOL.GS
     public class AttackComponent : IServiceObject
     {
         public GameLiving owner;
-        public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
+        public WeaponAction weaponAction; // This represents the current weapon action, which will be stale when resolving ranged attacks.
         public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.AttackComponent);
         public AttackerTracker AttackerTracker { get; private set; }
 
         private BlockRoundHandler _blockRoundHandler;
         private GameObject _startAttackTarget;
         private bool _startAttackRequested;
-        private GameLiving[] _broadcastExcludes = new GameLiving[3];
 
         public AttackComponent(GameLiving owner)
         {
@@ -43,8 +43,7 @@ namespace DOL.GS
         {
             if (owner.ObjectState is not eObjectState.Active)
             {
-                attackAction.CleanUp();
-                ServiceObjectStore.Remove(this);
+                Stop();
                 return;
             }
 
@@ -55,7 +54,16 @@ namespace DOL.GS
             }
 
             if (!attackAction.Tick())
-                ServiceObjectStore.Remove(this);
+                Stop();
+        }
+
+        private void Stop()
+        {
+            attackAction.CleanUp();
+            weaponAction = null;
+            _startAttackTarget = null;
+            _startAttackRequested = false;
+            ServiceObjectStore.Remove(this);
         }
 
         public void AddAttacker(AttackData attackData)
@@ -1910,12 +1918,13 @@ namespace DOL.GS
             }
         }
 
-        private void BroadcastObserverMessage(AttackData ad)
+        private static void BroadcastObserverMessage(AttackData ad)
         {
-            Array.Clear(_broadcastExcludes);
-            AddParticipantToExcludes(ad.Attacker, _broadcastExcludes, 0);
-            AddParticipantToExcludes(ad.Target, _broadcastExcludes, 1);
-            AddParticipantToExcludes(ad.OriginalTarget, _broadcastExcludes, 2);
+            var broadcastExcludes = GameLoop.GetListForTick<GameLiving>();
+
+            AddParticipantToExcludes(ad.Attacker, broadcastExcludes);
+            AddParticipantToExcludes(ad.Target, broadcastExcludes);
+            AddParticipantToExcludes(ad.OriginalTarget, broadcastExcludes);
 
             string message = ad.AttackResult switch
             {
@@ -1929,24 +1938,23 @@ namespace DOL.GS
             };
 
             if (!string.IsNullOrEmpty(message))
-                Message.SystemToArea(ad.Attacker, message, eChatType.CT_OthersCombat, _broadcastExcludes);
+                Message.SystemToArea(ad.Attacker, message, eChatType.CT_OthersCombat, CollectionsMarshal.AsSpan(broadcastExcludes));
 
             ad.BroadcastMessage = message;
 
-            static void AddParticipantToExcludes(GameLiving entity, GameLiving[] excludes, int index)
+            static void AddParticipantToExcludes(GameLiving entity, List<GameLiving> excludes)
             {
                 if (entity == null)
                     return;
 
                 if (entity is GamePlayer)
-                    excludes[index] = entity;
-
-                if (entity is GameNPC npc && npc.Brain is IControlledBrain brain)
+                    excludes.Add(entity);
+                else if (entity is GameNPC npc && npc.Brain is IControlledBrain brain)
                 {
                     GamePlayer owner = brain.GetPlayerOwner();
 
                     if (owner != null)
-                        excludes[index] = owner;
+                        excludes.Add(owner);
                 }
             }
 

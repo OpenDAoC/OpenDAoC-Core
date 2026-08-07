@@ -244,7 +244,7 @@ namespace DOL.GS.SpamMob
 
                         if (spell.Uninterruptible && Body.CastSpell(spell, m_mobSpellLine))
                             casted = true;
-                        else if (!Body.IsBeingInterrupted && Body.CastSpell(spell, m_mobSpellLine))
+                        else if (!Body.IsInterruptedOrSelfInterrupted() && Body.CastSpell(spell, m_mobSpellLine))
                             casted = true;
                     }
                 }
@@ -269,7 +269,7 @@ namespace DOL.GS.SpamMob
 
                         if (spellToCast.Uninterruptible && Body.CastSpell(spellToCast, m_mobSpellLine))
                             casted = true;
-                        else if (!Body.IsBeingInterrupted && Body.CastSpell(spellToCast, m_mobSpellLine))
+                        else if (!Body.IsInterruptedOrSelfInterrupted() && Body.CastSpell(spellToCast, m_mobSpellLine))
                             casted = true;
                     }
                 }
@@ -415,7 +415,5 @@ namespace DOL.GS.SpamMob
                 dex
             };
         }
-
-        public override bool IsBeingInterrupted => false;
     }
 }

@@ -1028,7 +1028,7 @@ namespace DOL.AI.Brain
             bool isInterruptible = spell.CastTime > 0 && !spell.Uninterruptible;
             blockedBySelfInterrupt = false;
 
-            if (isInterruptible && Body.IsInterrupted)
+            if (isInterruptible && Body.IsInterrupted(out _))
                 return false;
 
             if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
@@ -1043,7 +1043,7 @@ namespace DOL.AI.Brain
                     return false;
             }
 
-            if (isInterruptible && Body.IsSelfInterrupted)
+            if (isInterruptible && Body.IsSelfInterrupted())
             {
                 blockedBySelfInterrupt = true;
                 return false;
@@ -1094,7 +1094,7 @@ namespace DOL.AI.Brain
             target = null;
             blockedBySelfInterrupt = false;
 
-            if (isInterruptible && Body.IsInterrupted)
+            if (isInterruptible && Body.IsInterrupted(out _))
                 return false;
 
             if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
@@ -1105,7 +1105,7 @@ namespace DOL.AI.Brain
             if (target == null)
                 return false;
 
-            if (isInterruptible && Body.IsSelfInterrupted)
+            if (isInterruptible && Body.IsSelfInterrupted())
             {
                 blockedBySelfInterrupt = true;
                 return false;

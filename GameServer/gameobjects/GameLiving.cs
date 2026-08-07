@@ -678,7 +678,6 @@ namespace DOL.GS
 			set { }
 		}
 
-		private readonly Lock _interruptTimerLock = new();
 		private readonly Lock _interruptCallbackLock = new();
 
 		/// <summary>
@@ -686,11 +685,11 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartInterruptTimer(int duration, eAttackType attackType, GameLiving attacker)
 		{
-			long newInterruptTime = GameLoop.GameLoopTime + duration;
+			long interruptExpireTime = GameLoop.GameLoopTime + duration;
 
 			if (attacker == this)
 			{
-				_selfInterruptTime = newInterruptTime;
+				attackComponent.AttackerTracker.SetSelfInterrupt(interruptExpireTime);
 				return;
 			}
 
@@ -708,15 +707,7 @@ namespace DOL.GS
 			if (!Util.Chance(100 + (attacker.EffectiveLevel - EffectiveLevel) * 5))
 				return;
 
-			lock (_interruptTimerLock)
-			{
-				// Don't update the interrupt time if it's shorter than the current one.
-				if (_interruptTime < newInterruptTime)
-				{
-					_interruptTime = newInterruptTime;
-					LastInterrupter = attacker;
-				}
-			}
+			attackComponent.AttackerTracker.SetInterrupt(attacker, interruptExpireTime);
 
 			if (_interruptCallbackLock.TryEnter())
 			{
@@ -743,27 +734,29 @@ namespace DOL.GS
 			}
 		}
 
-		private long _interruptTime; // Represents a soft interrupt timer inflicted by attackers.
-		private long _selfInterruptTime; // Represents a hard interrupt timer inflicted by self.
-
-		public GameLiving LastInterrupter { get; private set; }
 		public virtual bool SelfInterruptsOnMeleeAttack => true;
-		public virtual bool IsBeingInterrupted => IsInterrupted || IsSelfInterrupted;
-		public bool IsInterrupted => _interruptTime > GameLoop.GameLoopTime;
-		public bool IsSelfInterrupted => _selfInterruptTime > GameLoop.GameLoopTime;
+		public virtual int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
+		public virtual int SpellSelfInterruptDuration => Properties.SPELL_SELF_INTERRUPT_DURATION;
 
-		public long InterruptRemainingDuration
+		public bool IsInterrupted(out GameLiving lastInterrupter)
 		{
-			get
-			{
-				// If HARD_INTERRUPT_ON_ATTACKED is true, there is no distinction between _selfInterruptTime and _interruptTime.
-				long interruptTime = Properties.HARD_INTERRUPT_ON_ATTACKED ? Math.Max(_selfInterruptTime, _interruptTime) : _selfInterruptTime;
-				return Math.Max(0, interruptTime - GameLoop.GameLoopTime);
-			}
+			return attackComponent.AttackerTracker.IsInterrupted(out lastInterrupter);
 		}
 
-		public int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
-		public int SpellSelfInterruptDuration => Properties.SPELL_SELF_INTERRUPT_DURATION;
+		public bool IsSelfInterrupted()
+		{
+			return attackComponent.AttackerTracker.IsSelfInterrupted();
+		}
+
+		public bool IsInterruptedOrSelfInterrupted()
+		{
+			return attackComponent.AttackerTracker.IsInterruptedOrSelfInterrupted();
+		}
+
+		public long GetInterruptRemainingDuration()
+		{
+			return attackComponent.AttackerTracker.GetInterruptRemainingDuration();
+		}
 
 		/// <summary>
 		/// Check if we can make a proc on a weapon go off.  Weapon Procs

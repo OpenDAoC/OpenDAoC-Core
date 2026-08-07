@@ -212,10 +212,10 @@ namespace DOL.GS.Commands
 					info.Add("");
 
 					if (target.TargetObject != null)
-					{
 						info.Add("TargetObject: " + target.TargetObject.Name);
-						info.Add("InView: " + target.TargetInView);
-					}
+
+					if (target.IsInterrupted(out GameLiving lastInterrupter))
+						info.Add("LastInterrupter: " + lastInterrupter.Name);
 
 					if (target.Brain is StandardMobBrain brain)
 					{
@@ -330,7 +330,6 @@ namespace DOL.GS.Commands
 					info.Add(sTitle + sCurrent);
 
 					info.Add(" ");
-					info.Add("  - Respecs dol : " + target.RespecAmountDOL);
 					info.Add("  - Respecs single : " + target.RespecAmountSingleSkill);
 					info.Add("  - Respecs full : " + target.RespecAmountAllSkill);
 					

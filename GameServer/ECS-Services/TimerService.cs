@@ -70,13 +70,13 @@ namespace DOL.GS
 
         public GameObject Owner { get; }
         public ECSTimerCallback Callback { private get; set; }
-        public MethodInfo CallbackInfo => Callback?.GetMethodInfo();
         public int Interval { get; set; }
         public long NextTick { get; protected set; }
         public bool IsAlive { get; private set; }
-        public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
         public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Timer);
-        private PropertyCollection _properties;
+        public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
+        public MethodInfo CallbackInfo => Callback?.GetMethodInfo();
+
 
         public ECSGameTimer(GameObject timerOwner)
         {
@@ -136,15 +136,15 @@ namespace DOL.GS
         {
             get
             {
-                if (_properties == null)
+                if (field == null)
                 {
                     lock (this)
                     {
-                        _properties ??= new();
+                        field ??= new();
                     }
                 }
 
-                return _properties;
+                return field;
             }
         }
     }

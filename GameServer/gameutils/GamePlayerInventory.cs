@@ -594,26 +594,30 @@ namespace DOL.GS
                     }
                     default:
                     {
+                        // A swap leaves the weapon slot occupied by the item that came from `toSlot`, so the active
+                        // weapon slot must be kept and refreshed to point at the new item instead of being abandoned.
+                        bool weaponSlotStillOccupied = player.Inventory.GetItem(fromSlot) != null;
+
                         switch (fromSlot)
                         {
                             case eInventorySlot.RightHandWeapon:
                             {
                                 if (player.ActiveWeaponSlot is eActiveWeaponSlot.Standard)
-                                    player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                                    player.SwitchWeapon(weaponSlotStillOccupied ? eActiveWeaponSlot.Standard : eActiveWeaponSlot.TwoHanded);
 
                                 break;
                             }
                             case eInventorySlot.TwoHandWeapon:
                             {
                                 if (player.ActiveWeaponSlot is eActiveWeaponSlot.TwoHanded)
-                                    player.SwitchWeapon(eActiveWeaponSlot.Standard);
+                                    player.SwitchWeapon(weaponSlotStillOccupied ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
 
                                 break;
                             }
                             case eInventorySlot.DistanceWeapon:
                             {
                                 if (player.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
-                                    player.SwitchWeapon(eActiveWeaponSlot.Standard);
+                                    player.SwitchWeapon(weaponSlotStillOccupied ? eActiveWeaponSlot.Distance : eActiveWeaponSlot.Standard);
 
                                 break;
                             }

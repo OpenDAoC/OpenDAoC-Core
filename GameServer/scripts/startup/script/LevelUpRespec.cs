@@ -36,13 +36,7 @@ namespace DOL.GS.GameEvents
 		/// Declare a logger for this class.
 		/// </summary>
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-		
-		/// <summary>
-		/// What levels did we allow a DOL respec ? serialized
-		/// </summary>
-		[ServerProperty("startup", "give_dol_respec_at_level", "What levels does we give a DOL respec ? separated by a semi-colon or a range with a dash (ie 1-5;7;9)", "0")]
-		public static string GIVE_DOL_RESPEC_AT_LEVEL;
-		
+
 		[ScriptLoadedEvent]
 		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
 		{
@@ -71,26 +65,6 @@ namespace DOL.GS.GameEvents
 			if (player == null)
 				return;
 
-			// Graveen: give a DOL respec on the GIVE_DOL_RESPEC_ON_LEVELS levels
-			foreach (string str in Util.SplitCSV(GIVE_DOL_RESPEC_AT_LEVEL, true))
-			{
-				byte level_respec = 0;
-				
-				if(!byte.TryParse(str, out level_respec))
-					level_respec = 0;
-
-				if (player.Level == level_respec)
-				{
-					int oldAmount = player.RespecAmountDOL;
-                    player.RespecAmountDOL++;
-
-                    if (oldAmount != player.RespecAmountDOL)
-                    {
-                        player.Out.SendMessage(string.Format("As you reached level {0}, you are awarded a DOL (full) respec!", player.Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    }
-                }
-			}
-			
 			// Fixed Level Respecs
 			switch (player.Level)
 			{
