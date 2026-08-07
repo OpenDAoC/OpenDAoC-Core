@@ -787,7 +787,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public void MakeAttack(WeaponAction action, AttackData ad, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
+        public void MakeAttack(WeaponAction action, AttackData ad, GameLiving target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -863,11 +863,6 @@ namespace DOL.GS
                         // Multiple Hit check.
                         if (ad.AttackResult is eAttackResult.HitStyle)
                         {
-                            List<GameObject> extraTargets = new();
-                            List<GameObject> listAvailableTargets = new();
-                            DbInventoryItem attackWeapon = owner.ActiveWeapon;
-                            DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
-
                             bool IsShieldSwipe = style.ID == 600;
                             int numTargetsCanHit;
 
@@ -887,6 +882,8 @@ namespace DOL.GS
                             if (numTargetsCanHit <= 0)
                                 break;
 
+                            List<GameLiving> listAvailableTargets = new();
+
                             // This implementation of Shield Swipe doesn't affect players.
                             if (!IsShieldSwipe)
                             {
@@ -905,13 +902,14 @@ namespace DOL.GS
 
                             // Remove primary target.
                             listAvailableTargets.Remove(target);
+                            List<GameLiving> extraTargets = GameLoop.GetListForTick<GameLiving>();
 
                             if (numTargetsCanHit >= listAvailableTargets.Count)
                                 extraTargets = listAvailableTargets;
                             else
                             {
                                 int index;
-                                GameObject availableTarget;
+                                GameLiving availableTarget;
 
                                 for (int i = numTargetsCanHit; i > 0; i--)
                                 {
@@ -922,9 +920,13 @@ namespace DOL.GS
                                 }
                             }
 
-                            foreach (GameObject extraTarget in extraTargets)
+                            DbInventoryItem attackWeapon = owner.ActiveWeapon;
+                            DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
+                            int attackSpeed = AttackSpeed(attackWeapon);
+
+                            foreach (GameLiving extraTarget in extraTargets)
                             {
-                                weaponAction = new(playerOwner, extraTarget as GameLiving, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 0);
+                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, attackSpeed, null, 0);
                                 weaponAction.Execute();
                             }
                         }
