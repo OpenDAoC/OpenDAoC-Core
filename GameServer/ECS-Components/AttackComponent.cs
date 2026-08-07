@@ -924,7 +924,7 @@ namespace DOL.GS
 
                             foreach (GameObject extraTarget in extraTargets)
                             {
-                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 0);
+                                weaponAction = new(playerOwner, extraTarget as GameLiving, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 0);
                                 weaponAction.Execute();
                             }
                         }

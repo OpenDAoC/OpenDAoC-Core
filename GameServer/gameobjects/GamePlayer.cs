@@ -6670,7 +6670,7 @@ namespace DOL.GS
                                 }
                                 else
                                 {
-                                    rangeAttackComponent.AutoFireTarget = TargetObject;
+                                    rangeAttackComponent.AutoFireTarget = TargetObject as GameLiving;
                                     rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFire;
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShot"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }

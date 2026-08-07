@@ -15,7 +15,7 @@ namespace DOL.GS
     public class WeaponAction
     {
         private GameLiving _owner;
-        private GameObject _target;
+        private GameLiving _target;
         private DbInventoryItem _attackWeapon;
         private DbInventoryItem _leftWeapon;
         private double _effectiveness;
@@ -36,7 +36,7 @@ namespace DOL.GS
         public DualWieldMechanic DualWieldMechanic { get; private set; }
         public byte SwingsExecuted { get; private set; }
 
-        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle, byte styleChainStage)
+        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle, byte styleChainStage)
         {
             _owner = owner;
             _target = target;
@@ -49,7 +49,7 @@ namespace DOL.GS
             StyleChainStage = styleChainStage;
         }
 
-        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
+        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
         {
             _owner = owner;
             _target = target;
