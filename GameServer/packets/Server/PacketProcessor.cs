@@ -520,7 +520,7 @@ namespace DOL.GS.PacketHandler
             {
                 if (!_client.Socket.Connected)
                 {
-                    OnFailure();
+                    OnFailure(this);
                     return;
                 }
 
@@ -531,21 +531,21 @@ namespace DOL.GS.PacketHandler
             }
             catch (ObjectDisposedException)
             {
-                OnFailure();
+                OnFailure(this);
             }
             catch (SocketException e)
             {
                 if (log.IsDebugEnabled)
                     log.Debug($"Socket exception on TCP send (Client: {_client}) (Code: {e.SocketErrorCode})");
 
-                OnFailure();
+                OnFailure(this);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
                     log.Error($"Unhandled exception on TCP send (Client: {_client}): {e}");
 
-                OnFailure();
+                OnFailure(this);
             }
             finally
             {
@@ -553,9 +553,9 @@ namespace DOL.GS.PacketHandler
                 _sendContext.Position = 0;
             }
 
-            void OnFailure()
+            static void OnFailure(PacketProcessor processor)
             {
-                _tcpSendArgsPool.Enqueue(_sendContext.CurrentArgs);
+                processor._tcpSendArgsPool.Enqueue(processor._sendContext.CurrentArgs);
             }
         }
 
@@ -565,7 +565,7 @@ namespace DOL.GS.PacketHandler
             {
                 if (!_client.Socket.Connected)
                 {
-                    OnFailure();
+                    OnFailure(this);
                     return;
                 }
 
@@ -576,21 +576,21 @@ namespace DOL.GS.PacketHandler
             }
             catch (ObjectDisposedException)
             {
-                OnFailure();
+                OnFailure(this);
             }
             catch (SocketException e)
             {
                 if (log.IsDebugEnabled)
                     log.Debug($"Socket exception on UDP send (Client: {_client}) (Code: {e.SocketErrorCode})");
 
-                OnFailure();
+                OnFailure(this);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
                     log.Error($"Unhandled exception on UDP send (Client: {_client}): {e}");
 
-                OnFailure();
+                OnFailure(this);
             }
             finally
             {
@@ -598,10 +598,10 @@ namespace DOL.GS.PacketHandler
                 _sendContext.Position = 0;
             }
 
-            void OnFailure()
+            static void OnFailure(PacketProcessor processor)
             {
-                _client.UdpConfirm = false;
-                _udpSendArgsPool.Enqueue(_sendContext.CurrentArgs);
+                processor._client.UdpConfirm = false;
+                processor._udpSendArgsPool.Enqueue(processor._sendContext.CurrentArgs);
             }
         }
 
