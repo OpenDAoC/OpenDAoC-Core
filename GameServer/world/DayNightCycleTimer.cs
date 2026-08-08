@@ -62,59 +62,59 @@ namespace DOL.GS
             }
 
             return _updateInterval;
-
-            void UpdateGameTime()
-            {
-                // Can these overflow?
-                double delta = GameLoop.GameLoopTime - _dayStartTime;
-                double newGameTime = 0;
-
-                // X complete iterations means X days have passed since `_dayStartTime`.
-                while (delta > 0)
-                {
-                    // From midnight to 6am.
-                    newGameTime += Math.Min(QUARTER_OF_A_DAY, delta * _nightIncrement);
-                    delta -= QUARTER_OF_A_DAY / _nightIncrement;
-
-                    if (delta <= 0)
-                        break;
-
-                    // From 6am to 6pm.
-                    newGameTime += Math.Min(HALF_OF_A_DAY, delta * DayIncrement);
-                    delta -= HALF_OF_A_DAY / DayIncrement;
-
-                    if (delta <= 0)
-                        break;
-
-                    // From 6pm to midnight.
-                    newGameTime += Math.Min(QUARTER_OF_A_DAY, delta * _nightIncrement);
-                    delta -= QUARTER_OF_A_DAY / _nightIncrement;
-
-                    if (delta <= 0)
-                        break;
-
-                    // The remainder now represents how much time has passed since the start of the current day.
-                    _dayStartTime = (long) (GameLoop.GameLoopTime - delta);
-                }
-
-                CurrentGameTime = (uint) (newGameTime % DAY);
-            }
-
-            void ResyncClients()
-            {
-                foreach (GamePlayer player in ClientService.Instance.GetPlayers<object>(Predicate))
-                    player.Out.SendTime();
-
-                static bool Predicate(GamePlayer player, object unused)
-                {
-                    return player.CurrentRegion?.UseTimeManager == true;
-                }
-            }
         }
 
         public void ChangeGameTime(uint newDayIncrement, double startTimePercent)
         {
             InitializeInternal(newDayIncrement, (uint) (startTimePercent * DAY));
+        }
+
+        private void UpdateGameTime()
+        {
+            // Can these overflow?
+            double delta = GameLoop.GameLoopTime - _dayStartTime;
+            double newGameTime = 0;
+
+            // X complete iterations means X days have passed since `_dayStartTime`.
+            while (delta > 0)
+            {
+                // From midnight to 6am.
+                newGameTime += Math.Min(QUARTER_OF_A_DAY, delta * _nightIncrement);
+                delta -= QUARTER_OF_A_DAY / _nightIncrement;
+
+                if (delta <= 0)
+                    break;
+
+                // From 6am to 6pm.
+                newGameTime += Math.Min(HALF_OF_A_DAY, delta * DayIncrement);
+                delta -= HALF_OF_A_DAY / DayIncrement;
+
+                if (delta <= 0)
+                    break;
+
+                // From 6pm to midnight.
+                newGameTime += Math.Min(QUARTER_OF_A_DAY, delta * _nightIncrement);
+                delta -= QUARTER_OF_A_DAY / _nightIncrement;
+
+                if (delta <= 0)
+                    break;
+
+                // The remainder now represents how much time has passed since the start of the current day.
+                _dayStartTime = (long) (GameLoop.GameLoopTime - delta);
+            }
+
+            CurrentGameTime = (uint) (newGameTime % DAY);
+        }
+
+        private static void ResyncClients()
+        {
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers<object>(Predicate))
+                player.Out.SendTime();
+
+            static bool Predicate(GamePlayer player, object unused)
+            {
+                return player.CurrentRegion?.UseTimeManager == true;
+            }
         }
     }
 }
