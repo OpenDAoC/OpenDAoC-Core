@@ -1414,168 +1414,29 @@ namespace DOL.GS.ServerRules
             Dictionary<Group, EntityCountTotalDamagePair> groupCountAndDamage,
             out bool isWorthAnything)
         {
-            // Modify rewards (base XP, RP, BP) based on damage percent inflicted by the battlegroup, group, or player.
-            EntityCountTotalDamagePair entityCountTotalDamagePair;
+            EntityCountTotalDamagePair entityStats;
+            bool isGrouped = playerToAward.Group != null;
 
-            if (playerToAward.Group != null)
-                groupCountAndDamage.TryGetValue(playerToAward.Group, out entityCountTotalDamagePair);
+            if (isGrouped)
+                groupCountAndDamage.TryGetValue(playerToAward.Group, out entityStats);
             else
-                playerCountAndDamage.TryGetValue(playerToAward, out entityCountTotalDamagePair);
+                playerCountAndDamage.TryGetValue(playerToAward, out entityStats);
 
-            if (entityCountTotalDamagePair == null)
+            if (entityStats == null)
             {
                 isWorthAnything = false;
                 return;
             }
 
-            isWorthAnything = killedPlayer.DeathTime + Properties.RP_WORTH_SECONDS <= killedPlayer.PlayedTime;
-            double damagePercent = CalculateDamagePercent();
-            int baseRpReward;
-            int baseBpReward;
-            long baseXpReward;
-            long baseMoneyReward;
-            int realmPointsEarned = 0;
+            PlayerKillRewardProcessor processor = new(
+                playerToAward,
+                killer,
+                killedPlayer,
+                entityStats,
+                playerTotalDamageReceived,
+                groupCountAndDamage);
 
-            if (isWorthAnything)
-            {
-                // Players don't drop bags of money, it's immediately split and awarded.
-                CalculateRewardsModifiedByGroup(entityCountTotalDamagePair, out baseRpReward, out baseBpReward, out baseXpReward, out baseMoneyReward);
-
-                baseRpReward = Math.Min(baseRpReward, CalculateRpCap());
-                baseBpReward = Math.Min(baseBpReward, CalculateBpCap());
-                baseXpReward = Math.Min(baseXpReward, CalculateXpCap());
-                baseMoneyReward = Math.Min(baseMoneyReward, CalculateMoneyCap());
-
-                RewardRealmPoints(out realmPointsEarned);
-                RewardBountyPoints();
-                RewardExperience();
-                RewardMoney();
-            }
-            else
-                SendNotWorthRewardMessage();
-
-            ProcessPlayerToAwardStats(realmPointsEarned);
-
-            double CalculateDamagePercent()
-            {
-                double damagePercent = entityCountTotalDamagePair.Damage / playerTotalDamageReceived;
-
-                if (damagePercent > 1.0)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"{nameof(damagePercent)} in {nameof(AwardPlayerOnPlayerKill)} was superior to 1 ({entityCountTotalDamagePair.Damage} / {playerTotalDamageReceived})");
-
-                    damagePercent = 1.0;
-                }
-
-                return damagePercent;
-            }
-
-            void CalculateRewardsModifiedByGroup(EntityCountTotalDamagePair entityCountTotalDamagePair, out int baseRpReward, out int baseBpReward, out long baseXpReward, out long baseMoneyReward)
-            {
-                int entityCount = entityCountTotalDamagePair.Count;
-                baseXpReward = killedPlayer.ExperienceValue / entityCount;
-                baseRpReward = killedPlayer.RealmPointsValue / entityCount;
-                baseBpReward = (!Properties.ALLOW_BPS_IN_BGS && killedPlayer.CurrentZone.IsBG ? 0 : killedPlayer.BountyPointsValue) / entityCount;
-                baseMoneyReward = killedPlayer.MoneyValue / entityCount;
-            }
-
-            int CalculateRpCap()
-            {
-                return playerToAward.RealmPointsValue * 2;
-            }
-
-            int CalculateBpCap()
-            {
-                return playerToAward.BountyPointsValue * 2;
-            }
-
-            long CalculateXpCap()
-            {
-                return playerToAward.ExperienceValue * Properties.XP_PVP_CAP_PERCENT / 100;
-            }
-
-            long CalculateMoneyCap()
-            {
-                return playerToAward.MoneyValue * 2;
-            }
-
-            void RewardRealmPoints(out int realmPointsEarned)
-            {
-                int realmPoints = (int) (baseRpReward * damagePercent);
-                DbBattleground battleground = GameServer.KeepManager.GetBattleground(playerToAward.CurrentRegionID);
-
-                // Only award RPs if the player is under the battleground's cap.
-                if (battleground == null || (playerToAward.RealmLevel < battleground.MaxRealmLevel))
-                    realmPoints = (int) (realmPoints * (1.0 + 2.0 * (killedPlayer.RealmLevel - playerToAward.RealmLevel) / 900.0));
-
-                realmPoints += CalculateGroupBonus();
-
-                if (realmPoints > 0)
-                    playerToAward.GainRealmPoints(realmPoints, true);
-
-                realmPointsEarned = realmPoints;
-
-                int CalculateGroupBonus()
-                {
-                    if (playerToAward.Group == null || !groupCountAndDamage.TryGetValue(playerToAward.Group, out EntityCountTotalDamagePair value))
-                        return 0;
-
-                    return (int) (realmPoints * (value.Count - 1) * 0.125);
-                }
-            }
-
-            void RewardBountyPoints()
-            {
-                int bountyPoints = (int) (baseBpReward * damagePercent);
-                bountyPoints += CalculateOutpostBonus();
-
-                if (bountyPoints > 0)
-                    playerToAward.GainBountyPoints(bountyPoints);
-
-                int CalculateOutpostBonus()
-                {
-                    if (KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_5, playerToAward.Realm))
-                        return (int) (bountyPoints / 100.0 * 5);
-
-                    if (KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_3, playerToAward.Realm))
-                        return (int) (bountyPoints / 100.0 * 3);
-
-                    return 0;
-                }
-            }
-
-            void RewardExperience()
-            {
-                long experience = (long) (baseXpReward * damagePercent);
-                experience += GameServer.ServerRules.CalculateOutpostExperienceBonus(playerToAward, baseXpReward);
-
-                if (experience > 0)
-                    playerToAward.GainExperience(eXPSource.Player, experience);
-            }
-
-            void RewardMoney()
-            {
-                long money = (long) (baseMoneyReward * damagePercent);
-
-                if (money > 0)
-                {
-                    playerToAward.AddMoney(money, "You receive {0}");
-                    InventoryLogging.LogInventoryAction(killedPlayer, playerToAward, eInventoryActionType.Other, money);
-                }
-            }
-
-            void ProcessPlayerToAwardStats(int realmPointsEarned)
-            {
-                GameObject killerToUse = killer is GameNPC petKiller && petKiller.Brain is IControlledBrain petKillerBrain ?  petKillerBrain.GetPlayerOwner() : killer;
-                playerToAward.UpdateKillStatsOnPlayerKill(killedPlayer.Realm, playerToAward == killerToUse, damagePercent >= 1.0 && entityCountTotalDamagePair.Count == 1, realmPointsEarned);
-            }
-
-            void SendNotWorthRewardMessage()
-            {
-                playerToAward.Out.SendMessage($"{killedPlayer.Name} has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                playerToAward.Out.SendMessage($"{killedPlayer.Name} has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            }
+            processor.ProcessRewards(out isWorthAnything);
         }
 
         public long CalculateOutpostExperienceBonus(GamePlayer playerToAward, long baseXpReward)
