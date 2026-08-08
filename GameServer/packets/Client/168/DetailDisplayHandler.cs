@@ -895,33 +895,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				case 24://SpellsNew
 					if (client.CanSendTooltip(24, objectId))
 					{
-						Spell spell = FindPlayerSpellForTooltip(objectId, snapSkills, snapLists);
-
-						if (spell == null)
-						{
-							// Workaround for dynamically created spell that couldn't be retrieved from SkillBase.
-							// Either because AddScriptedSpell wasn't called, or the spell was missing values to be handled by it.
-							// This is the case for most (if not all) spells spawned by RAs.
-							// The only way to retrieve the spell is by iterating the player's effect list.
-
-							// To further complicate things, those spells don't define InternalID, but Icon.
-							// This means that we have to compare objectId against ECSGameSpellEffect.Icon first,
-							// but then reply to the client with the correct value and update Spell.InternalId
-
-							// Note: DbSpell.TooltipId becomes Spell.InternalId when created.
-
-							foreach (ECSGameSpellEffect spellEffect in client.Player.effectListComponent.GetSpellEffects())
-							{
-								if (spellEffect.Icon == objectId)
-								{
-									spell = spellEffect.SpellHandler.Spell;
-									spell.InternalID = objectId;
-									client.Out.SendDelveInfo(DelveSpell(client, spell));
-									break;
-								}
-							}
-						}
-
+						Spell spell = FindSpellForTooltip(client, objectId, snapSkills, snapLists);
 						client.Out.SendDelveInfo(DelveSpell(client, spell));
 					}
 					break;
@@ -933,11 +907,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						if (client.CanSendTooltip(26, objectId))
 						{
-							Spell song = FindPlayerSpellForTooltip(objectId, snapSkills, snapLists);
-							client.Out.SendDelveInfo(DelveSong(client, song));
+							Spell spell = FindSpellForTooltip(client, objectId, snapSkills, snapLists);
+							client.Out.SendDelveInfo(DelveSong(client, spell));
+							client.Out.SendDelveInfo(DelveSpell(client, spell));
 						}
-						Spell spell = FindPlayerSpellForTooltip(objectId, snapSkills, snapLists);
-						client.Out.SendDelveInfo(DelveSpell(client, spell));
 					}
 					break;
 				case 27://RANew
@@ -1007,11 +980,39 @@ namespace DOL.GS.PacketHandler.Client.v168
 				log.Warn($"DetailDisplayHandler no info for objectID {objectId} of type {objectType}. Item: {item?.Id_nb ?? (invItem?.Id_nb ?? "null")}, client: {client}");
 		}
 
-		private static Spell FindPlayerSpellForTooltip(
+		private static Spell FindSpellForTooltip(
+			GameClient client,
 			ushort tooltipId,
 			List<(Skill, Skill)> usableSkills,
 			List<(SpellLine, List<Skill>)> usableSpellLists)
 		{
+			// We can't rely on SkillBase.GetSpellByTooltipID exclusively because the returned spells are level 1.
+			// Retrieving the spell from the player's effect list component handles all effects currently present on the player.
+			// If this fails, checking useable spells handles the spell list.
+
+			foreach (ECSGameSpellEffect spellEffect in client.Player.effectListComponent.GetSpellEffects())
+			{
+				Spell spell = spellEffect.SpellHandler.Spell;
+
+				// Normally defined spell.
+				if (spell.InternalID > 0)
+				{
+					if (spell.InternalID == tooltipId)
+						return spell;
+
+					continue;
+				}
+
+				// Spells that don't define InternalID generally define Icon instead.
+				// This is the case of procedurally created spells that weren't passed to SkillBase.AddScriptedSpell (typically spells spawned by RAs).
+				// We have to reply to the client with the correct value and update Spell.InternalId.
+				if (spellEffect.Icon == tooltipId)
+				{
+					spell.InternalID = tooltipId;
+					return spell;
+				}
+			}
+
 			foreach ((SpellLine _, List<Skill> skills) in usableSpellLists)
 			{
 				foreach (Skill skill in skills)
@@ -1027,8 +1028,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					return spell;
 			}
 
-			// Global spell templates intentionally have level 1. They are only a fallback for
-			// effect and scripted spell tooltips that are not present in the player's skill lists.
+			// Fallback. The spell level will be 1.
 			return SkillBase.GetSpellByTooltipID(tooltipId);
 		}
 
@@ -1930,11 +1930,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (minutes == 0)
 								{
-									list.Add(String.Format("Can use item every: {0} sec", seconds));
+									list.Add(string.Format("Can use item every: {0} sec", seconds));
 								}
 								else
 								{
-									list.Add(String.Format("Can use item every: {0}:{1:00} min", minutes, seconds));
+									list.Add(string.Format("Can use item every: {0}:{1:00} min", minutes, seconds));
 								}
 							}
 
