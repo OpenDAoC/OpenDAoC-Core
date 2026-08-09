@@ -116,8 +116,9 @@ namespace DOL.GS
 
         protected override void Stop()
         {
-            LastNegativeLosCheckTarget = null;
             base.Stop();
+            _queuedCastLosCheckListener.StopAndClear();
+            LastNegativeLosCheckTarget = null;
         }
 
         public void HandleLosCheckResponse(GamePlayer losChecker, LosCheckResponse response, ushort targetId)
