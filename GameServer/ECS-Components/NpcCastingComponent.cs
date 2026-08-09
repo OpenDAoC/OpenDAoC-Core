@@ -24,6 +24,8 @@ namespace DOL.GS
 
                 if (base.QueuedSpellHandler != null)
                     StartQueuedCastLosCheck();
+                else
+                    _queuedCastLosCheckListener.StopAndClear();
             }
         }
 
@@ -158,6 +160,14 @@ namespace DOL.GS
 
         private void StartQueuedCastLosCheck()
         {
+            if (_queuedCastLosCheckListener.IsAlive)
+            {
+                if (_queuedCastLosCheckListener.QueuedSpellHandler == QueuedSpellHandler)
+                    return;
+
+                _queuedCastLosCheckListener.StopAndClear();
+            }
+
             if (QueuedSpellHandler.LosChecker == null)
             {
                 QueuedSpellHandler.HasLos = true;
@@ -173,34 +183,35 @@ namespace DOL.GS
             }
 
             _queuedCastLosCheckListener.QueuedSpellHandler = QueuedSpellHandler;
-
-            if (!_queuedCastLosCheckListener.IsAlive)
-                _queuedCastLosCheckListener.Start();
+            _queuedCastLosCheckListener.Start();
         }
 
         private class QueuedCastLosCheckListener : ECSGameTimerWrapperBase, ILosCheckListener
         {
-            private CastingComponent _castingComponent;
-
             public SpellHandler QueuedSpellHandler { get; set; }
 
             public QueuedCastLosCheckListener(CastingComponent castingComponent) : base(castingComponent.Owner)
             {
-                _castingComponent = castingComponent;
                 Interval = ServerProperties.Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
             }
 
             public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
             {
-                if (QueuedSpellHandler == null || QueuedSpellHandler != _castingComponent.QueuedSpellHandler)
+                if (QueuedSpellHandler == null)
                     return;
 
                 QueuedSpellHandler.HasLos = response is LosCheckResponse.True;
             }
 
+            public void StopAndClear()
+            {
+                Stop();
+                QueuedSpellHandler = null;
+            }
+
             protected override int OnTick(ECSGameTimer timer)
             {
-                if (QueuedSpellHandler == null || QueuedSpellHandler != _castingComponent.QueuedSpellHandler)
+                if (QueuedSpellHandler == null)
                     return 0;
 
                 QueuedSpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, QueuedSpellHandler.Target, this);
