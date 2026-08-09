@@ -123,6 +123,14 @@ namespace DOL.GS
 
         private void StartDuringCastLosCheck()
         {
+            if (_duringCastLosCheckListener.IsAlive)
+            {
+                if (_duringCastLosCheckListener.SpellHandler == SpellHandler)
+                    return;
+
+                _duringCastLosCheckListener.StopAndClear();
+            }
+
             bool checkLos = false;
 
             if (Owner is GameNPC)
@@ -143,9 +151,6 @@ namespace DOL.GS
                 SpellHandler.HasLos = true;
                 return;
             }
-
-            if (_duringCastLosCheckListener.IsAlive)
-                return;
 
             _duringCastLosCheckListener.SpellHandler = SpellHandler;
             _duringCastLosCheckListener.Start();
@@ -237,6 +242,8 @@ namespace DOL.GS
             if (Owner is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroBrain)
                 necroBrain.CheckAttackSpellQueue();
 
+            _duringCastLosCheckListener.StopAndClear();
+
             if (QueuedSpellHandler != null)
             {
                 SpellHandler = QueuedSpellHandler;
@@ -254,6 +261,9 @@ namespace DOL.GS
         protected virtual void Stop()
         {
             ServiceObjectStore.Remove(this);
+            _duringCastLosCheckListener.StopAndClear();
+            SpellHandler = null;
+            QueuedSpellHandler = null;
         }
 
         public void ReturnToPool(CastSpellRequest request)
@@ -499,27 +509,30 @@ namespace DOL.GS
 
         private class DuringCastLosCheckListener : ECSGameTimerWrapperBase, ILosCheckListener
         {
-            private CastingComponent _castingComponent;
-
             public SpellHandler SpellHandler { get; set; }
 
             public DuringCastLosCheckListener(CastingComponent castingComponent) : base(castingComponent.Owner)
             {
-                _castingComponent = castingComponent;
                 Interval = ServerProperties.Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
             }
 
             public void HandleLosCheckResponse(GamePlayer player, LosCheckResponse response, ushort targetId)
             {
-                if (SpellHandler == null || SpellHandler != _castingComponent.SpellHandler)
+                if (SpellHandler == null)
                     return;
 
                 SpellHandler.HasLos = response is LosCheckResponse.True;
             }
 
+            public void StopAndClear()
+            {
+                Stop();
+                SpellHandler = null;
+            }
+
             protected override int OnTick(ECSGameTimer timer)
             {
-                if (SpellHandler == null || SpellHandler != _castingComponent.SpellHandler)
+                if (SpellHandler == null)
                     return 0;
 
                 SpellHandler.LosChecker.Out.SendLosCheckRequest(Owner, SpellHandler.Target, this);
@@ -527,6 +540,7 @@ namespace DOL.GS
             }
         }
 
+        // Currently unused, most likely outdated.
         private class EndOfCastLosCheckListener : ILosCheckListener
         {
             private CastingComponent _castingComponent;
