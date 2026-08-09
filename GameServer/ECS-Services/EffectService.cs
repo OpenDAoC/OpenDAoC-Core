@@ -84,6 +84,15 @@ namespace DOL.GS
                 return;
             }
 
+            if (effect.Owner.ObjectState is GameObject.eObjectState.Deleted)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"Discarding effect on deleted owner (Effect: {effect}) (Owner: {effect.Owner})");
+
+                ServiceObjectStore.Remove(effect);
+                return;
+            }
+
             if (effect is ECSGameAbilityEffect abilityEffect)
                 TickAbilityEffect(abilityEffect);
             else if (effect is ECSGameSpellEffect spellEffect)
