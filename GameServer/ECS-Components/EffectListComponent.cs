@@ -517,7 +517,7 @@ namespace DOL.GS
                 {
                     bool start = effect.FinalizeState(result);
 
-                    component._pendingEffects.Enqueue(new(effect, static (effect, start) =>
+                    component._pendingEffects.Enqueue(new(effect, effect.IsBeingReplaced, static (effect, start) =>
                     {
                         try
                         {
@@ -572,7 +572,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    component._pendingEffects.Enqueue(new(effect, static (effect, _) =>
+                    component._pendingEffects.Enqueue(new(effect, effect.IsBeingReplaced, static (effect, _) =>
                     {
                         try
                         {
@@ -907,7 +907,7 @@ namespace DOL.GS
                 {
                     bool stop = effect.FinalizeState(result);
 
-                    component._pendingEffects.Enqueue(new(effect, static (effect, stop) =>
+                    component._pendingEffects.Enqueue(new(effect, effect.IsBeingReplaced, static (effect, stop) =>
                     {
                         try
                         {
@@ -1030,13 +1030,17 @@ namespace DOL.GS
             Failed
         }
 
-        protected readonly record struct PendingEffect(ECSGameEffect Effect, Action<ECSGameEffect, bool> Action, bool State)
+        protected readonly record struct PendingEffect(ECSGameEffect Effect, bool IsBeingReplaced, Action<ECSGameEffect, bool> Action, bool State)
         {
             public void Process()
             {
-                Effect.NeedsClientUpdate = true; // Allows IPacketLib.SendUpdateIcons to only send updates for effects that have changed.
+                // Allows IPacketLib.SendUpdateIcons to only send updates for effects that have changed.
+                Effect.NeedsClientUpdate = true;
+                // Restore the value as it was when this transition was decided, not whatever a sibling pending entry left behind.
+                Effect.IsBeingReplaced = IsBeingReplaced;
                 Action(Effect, State);
-                Effect.IsBeingReplaced = false; // This needs to always be set to false.
+                // Always reset once processed.
+                Effect.IsBeingReplaced = false;
             }
         }
     }
