@@ -63,7 +63,6 @@ namespace DOL.AI
             if (!Body.IsAtSpawn && !IsActive)
                 Body.MoveInRegion(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading, true);
 
-            Body.ClearObjectsInRadiusCache();
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
             return true;
         }

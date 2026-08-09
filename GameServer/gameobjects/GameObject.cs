@@ -645,7 +645,6 @@ namespace DOL.GS
 				SubZoneObject?.InitiateSubZoneTransition(null, null);
 
 			CurrentRegion.RemoveObject(this);
-			ClearObjectsInRadiusCache();
 			return true;
 		}
 
@@ -703,7 +702,6 @@ namespace DOL.GS
 			Notify(GameObjectEvent.Delete, this);
 			RemoveFromWorld();
 			ObjectState = eObjectState.Deleted;
-			ClearObjectsInRadiusCache();
 			GameEventMgr.RemoveAllHandlersForObject(this);
 		}
 
@@ -929,67 +927,15 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		private readonly Lock _objectInRadiusCachesLock = new();
-		private readonly Dictionary<eGameObjectType, ObjectsInRadiusCache> _objectsInRadiusCaches = new();
-
-		public void ClearObjectsInRadiusCache()
-		{
-			lock (_objectInRadiusCachesLock)
-			{
-				_objectsInRadiusCaches.Clear();
-			}
-		}
-
 		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject, IPooledList<T>
 		{
+			List<T> result = GameLoop.GetListForTick<T>();
+
 			if (CurrentRegion == null)
-				return new(); // Should never happen.
-
-			lock (_objectInRadiusCachesLock)
-			{
-				if (!_objectsInRadiusCaches.TryGetValue(objectType, out ObjectsInRadiusCache cache))
-				{
-					cache = new(new List<T>(), 0, 0);
-					_objectsInRadiusCaches[objectType] = cache;
-				}
-
-				if (cache.ExpireTime >= GameLoop.GameLoopTime)
-				{
-					// If the radius being checked is smaller than the cached radius, build a filtered list.
-					if (cache.Radius > radiusToCheck)
-					{
-						List<T> filtered = GameLoop.GetListForTick<T>();
-
-						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
-						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
-						// But whether that would be faster or not is debatable, and would depend on how often the cache is hit with a smaller radius.
-						for (int i = 0; i < cache.List.Count; i++)
-						{
-							T obj = (T) cache.List[i];
-
-							if (IsWithinRadius(obj, radiusToCheck))
-								filtered.Add(obj);
-						}
-
-						return filtered;
-					}
-					else if (cache.Radius == radiusToCheck)
-					{
-						List<T> copy = GameLoop.GetListForTick<T>();
-						copy.AddRange((List<T>) cache.List);
-						return copy;
-					}
-				}
-
-				// If the cache is no longer valid or if the radius being checked is bigger than the cached radius, refresh the cache.
-				List<T> cachedList = (List<T>) cache.List;
-				cachedList.Clear();
-				CurrentRegion.GetInRadius(this, objectType, radiusToCheck, cachedList);
-				cache.Set(cachedList, radiusToCheck, GameLoop.GameLoopTime + 500);
-				List<T> result = GameLoop.GetListForTick<T>();
-				result.AddRange(cachedList);
 				return result;
-			}
+
+			CurrentRegion.GetInRadius(this, objectType, radiusToCheck, result);
+			return result;
 		}
 
 		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
@@ -1010,25 +956,6 @@ namespace DOL.GS
 		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
-		}
-
-		private class ObjectsInRadiusCache
-		{
-			public IList List { get; set; }
-			public ushort Radius { get; set; }
-			public long ExpireTime { get; set; }
-
-			public ObjectsInRadiusCache(IList list, ushort radius, long expireTime)
-			{
-				Set(list, radius, expireTime);
-			}
-
-			public void Set(IList list, ushort radius, long expireTime)
-			{
-				List = list;
-				Radius = radius;
-				ExpireTime = expireTime;
-			}
 		}
 
 		#endregion
