@@ -20,7 +20,8 @@ namespace DOL.AI.Brain
             get
             {
                 TurretPet body = Body as TurretPet;
-                return body.TurretSpell.CalculateEffectiveRange(body);
+                Spell spell = body.TurretSpell;
+                return spell.IsPBAoE ? spell.Radius : spell.CalculateEffectiveRange(body);
             }
         }
 
