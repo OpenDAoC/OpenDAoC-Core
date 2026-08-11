@@ -428,13 +428,13 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The first factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
-		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 3.2)]
+		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 2.5)]
 		public static double PVE_MOB_DAMAGE_F1;
 
 		/// <summary>
 		/// The second factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
-		[ServerProperty("atlas", "pve_mob_damage_f2", "The second factor in the PVE mob damage equation. Lower hits harder.", 150.0)]
+		[ServerProperty("atlas", "pve_mob_damage_f2", "The second factor in the PVE mob damage equation. Lower hits harder.", 120.0)]
 		public static double PVE_MOB_DAMAGE_F2;
 
 		/// <summary>
