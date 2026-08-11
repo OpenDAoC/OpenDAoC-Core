@@ -349,12 +349,13 @@ namespace DOL.GS
 			return 1 - (1 - conPart) * (1 - dexPart);
 		}
 
-		/// <summary>
-		/// Gets the weaponskill of weapon
-		/// </summary>
-		public virtual double GetWeaponSkill(DbInventoryItem weapon)
+		public virtual int GetClassBaseWeaponSkill(DbInventoryItem weapon)
 		{
-			// Needs to be overridden.
+			return 0;
+		}
+
+		public virtual double GetWeaponSkill(int weaponStat, int classBaseWeaponSkill)
+		{
 			return 0;
 		}
 

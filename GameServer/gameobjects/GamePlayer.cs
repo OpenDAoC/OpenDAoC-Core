@@ -5454,16 +5454,19 @@ namespace DOL.GS
             return WeaponBaseSpecLevel((eObjectType) weapon.Object_Type, weapon.SlotPosition);
         }
 
-        /// <summary>
-        /// Gets the weaponskill of weapon
-        /// </summary>
-        public override double GetWeaponSkill(DbInventoryItem weapon)
+        public override int GetClassBaseWeaponSkill(DbInventoryItem weapon)
         {
             if (weapon == null)
                 return 0;
 
-            int classBaseWeaponSkill = (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
-            double weaponSkill = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
+            return (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ?
+                CharacterClass.WeaponSkillRangedBase :
+                CharacterClass.WeaponSkillBase;
+        }
+
+        public override double GetWeaponSkill(int weaponStat, int classBaseWeaponSkill)
+        {
+            double weaponSkill = Level * classBaseWeaponSkill * 0.005 * (1 + weaponStat * 0.005) * Effectiveness;
             return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 

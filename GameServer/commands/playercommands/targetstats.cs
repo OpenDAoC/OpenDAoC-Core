@@ -96,7 +96,7 @@ namespace DOL.GS.Commands
                     info.Add(header);
                     info.Add($"Weapon damage:  {weaponDamage:0}  |  {weaponDamageCap:0} (cap)");
 
-                    _ = target.attackComponent.CalculateWeaponSkill(weapon, 0, out double baseWeaponSkill);
+                    _ = target.attackComponent.CalculateDamageWeaponSkill(weapon, 0, out double baseWeaponSkill);
                     int spec = target.attackComponent.CalculateSpec(weapon);
                     (double lowerVariance, double upperVariance) = target.attackComponent.CalculateVarianceRange(client.Player, spec);
                     info.Add($"Weapon skill:  {baseWeaponSkill:0.00}");

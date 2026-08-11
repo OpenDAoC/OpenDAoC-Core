@@ -2682,11 +2682,14 @@ namespace DOL.GS
 			StartAttack(target);
 		}
 
-		private double damageFactor = 1;
-
-		public override double GetWeaponSkill(DbInventoryItem weapon)
+		public override int GetClassBaseWeaponSkill(DbInventoryItem weapon)
 		{
-			double weaponSkill = Math.Max(1, (int) Level) * 2.5 * (1 + 0.01 * (GetWeaponStat(weapon) + 30) / 2);
+			return 500;
+		}
+
+		public override double GetWeaponSkill(int weaponStat, int classBaseWeaponSkill)
+		{
+			double weaponSkill = Math.Max(1, (int) Level) * classBaseWeaponSkill * 0.005 * (1 + (weaponStat + 30) * 0.005);
 			return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
 		}
 
@@ -3947,9 +3950,7 @@ namespace DOL.GS
 			LoadTemplate(template);
 		}
 
-		private double m_campBonus = 1;
-
-		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
-		public double DamageFactor { get => damageFactor; set => damageFactor = value; }
+		public double CampBonus { get; set; } = 1;
+		public double DamageFactor { get; set; } = 1;
 	}
 }
