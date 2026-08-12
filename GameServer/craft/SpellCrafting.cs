@@ -165,9 +165,16 @@ namespace DOL.GS
 					{
 						DbInventoryItem currentItem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
 
-						if (currentItem.Object_Type != (int)eObjectType.SpellcraftGem)
+						if ((eObjectType) currentItem.Object_Type is not eObjectType.SpellcraftGem)
 						{
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.FalseItem"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return false;
+						}
+
+						if (SkillBase.CheckPropertyType((eProperty) currentItem.Bonus1Type, ePropertyType.Focus) &&
+							(eObjectType) item.Object_Type is not eObjectType.Staff)
+						{
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.NotStaff"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return false;
 						}
 
