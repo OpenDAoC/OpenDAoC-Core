@@ -1,12 +1,12 @@
-using DOL.Database;
-using DOL.Language;
-using DOL.GS.PacketHandler;
 using System;
+using DOL.Database;
+using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS
 {
 	/// <summary>
-	/// AdvancedCraftingSkill is the skill for alchemy and spellcrafting whitch add all combine system
+	/// AdvancedCraftingSkill is the skill for alchemy and spellcrafting which add all combine system
 	/// </summary>
 	public abstract class AdvancedCraftingSkill : AbstractProfession
 	{
@@ -36,8 +36,6 @@ namespace DOL.GS
 		/// <summary>
 		/// Called when player accept to combine items
 		/// </summary>
-		/// <param name="player"></param>
-		/// <returns></returns>
 		public virtual bool CombineItems(GamePlayer player)
 		{
 			if(player.TradeWindow.PartnerTradeItems == null || player.TradeWindow.PartnerItemsCount != 1)
@@ -61,9 +59,6 @@ namespace DOL.GS
 		/// <summary>
         /// Check if the player can enchant the item
 		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="item"></param>
-		/// <returns></returns>
 		public virtual bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
 		{
 			if(item == null) return false;
