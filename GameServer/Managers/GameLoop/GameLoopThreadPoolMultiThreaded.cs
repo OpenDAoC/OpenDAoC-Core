@@ -33,7 +33,7 @@ namespace DOL.GS
 
         // Work coordination.
         private CountdownEvent _workerStartLatch;       // Signals when all workers are initialized.
-        private ManualResetEventSlim[] _workReady;      // Per-worker event to trigger work.
+        private SemaphoreSlim  _workReady;
 
         // Work processing.
         private WorkProcessor _workProcessor;           // Current work processor instance, reused for each execution.
@@ -62,52 +62,48 @@ namespace DOL.GS
             BuildChunkDivisorTable();
             StartWorkers();
             StartWatchdog();
+        }
 
-            void Configure()
+        private void Configure()
+        {
+            _workerCount = _degreeOfParallelism - 1;
+            _workers = new Thread[_workerCount];
+            _workerCycle = new long[_workerCount];
+            _workerStartLatch = new(_workerCount);
+            _workReady = new(0, _workerCount);
+            _shutdownToken = new();
+            base.Init();
+        }
+
+        private void BuildChunkDivisorTable()
+        {
+            _workSplitBiasTable = new double[_degreeOfParallelism + 1];
+
+            for (int i = 1; i <= _degreeOfParallelism; i++)
+                _workSplitBiasTable[i] = Math.Pow(i, WORK_SPLIT_BIAS_FACTOR);
+
+            _workSplitBiasTable[0] = 1; // Prevent division by zero, fallback.
+        }
+
+        private void StartWorkers()
+        {
+            for (int i = 0; i < _workerCount; i++)
             {
-                _workerCount = _degreeOfParallelism - 1;
-                _workers = new Thread[_workerCount];
-                _workerCycle = new long[_workerCount];
-                _workerStartLatch = new(_workerCount);
-                _workReady = new ManualResetEventSlim[_workerCount];
-
-                for (int i = 0; i < _workerCount; i++)
-                    _workReady[i] = new(false);
-
-                _shutdownToken = new();
-                base.Init();
-            }
-
-            void BuildChunkDivisorTable()
-            {
-                _workSplitBiasTable = new double[_degreeOfParallelism + 1];
-
-                for (int i = 1; i <= _degreeOfParallelism; i++)
-                    _workSplitBiasTable[i] = Math.Pow(i, WORK_SPLIT_BIAS_FACTOR);
-
-                _workSplitBiasTable[0] = 1; // Prevent division by zero, fallback.
-            }
-
-            void StartWorkers()
-            {
-                for (int i = 0; i < _workerCount; i++)
+                Thread worker = new(new ParameterizedThreadStart(InitWorker))
                 {
-                    Thread worker = new(new ParameterizedThreadStart(InitWorker))
-                    {
-                        Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
-                        IsBackground = true
-                    };
-                    worker.Start((i, false));
-                }
-
-                _workerStartLatch.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
+                    Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
+                    IsBackground = true
+                };
+                worker.Start((i, false));
             }
 
-            void StartWatchdog()
-            {
-                _watchdog = new(_workers, _workerCycle, RestartWorkers);
-                _watchdog.Start();
-            }
+            _workerStartLatch.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
+        }
+
+        private void StartWatchdog()
+        {
+            _watchdog = new(_workers, _workerCycle, RestartWorkers);
+            _watchdog.Start();
         }
 
         public override void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
@@ -168,8 +164,8 @@ namespace DOL.GS
             // The caller thread will also be used, so in this case we need to subtract one from the amount of workers to start.
             int workersToStart = count < _degreeOfParallelism ? count - 1 : _workerCount;
 
-            for (int i = 0; i < workersToStart; i++)
-                _workReady[i].Set();
+            if (workersToStart > 0)
+                _workReady.Release(workersToStart);
 
             ProcessWorkActions();
             Interlocked.Increment(ref _workState.CompletedWorkerCount);
@@ -197,6 +193,8 @@ namespace DOL.GS
                 if (worker != null && Thread.CurrentThread != worker && worker.IsAlive)
                     worker.Join();
             }
+
+            _workReady.Dispose();
         }
 
         protected override void InitWorker(object obj)
@@ -230,7 +228,6 @@ namespace DOL.GS
 
         private void RunWorkerLoop(int id, CancellationToken cancellationToken)
         {
-            ManualResetEventSlim workReady = _workReady[id];
             ref long workerCycle = ref _workerCycle[id];
             long cycle = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
 
@@ -238,7 +235,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    workReady.Wait(cancellationToken);
+                    _workReady.Wait(cancellationToken);
                     workerCycle = ++cycle;
                     ProcessWorkActions();
                 }
@@ -263,7 +260,6 @@ namespace DOL.GS
                 }
                 finally
                 {
-                    workReady.Reset();
                     workerCycle = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
                     Interlocked.Increment(ref _workState.CompletedWorkerCount);
                 }
