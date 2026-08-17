@@ -1381,9 +1381,9 @@ namespace DOL.AI.Brain
             private const int EFFECTIVE_AGGRO_DISTANCE_THRESHOLD = 250; // Should be higher than players' melee range.
             private static readonly double EFFECTIVE_AGGRO_EXPONENT = Math.Log(1 / 3.0) / (1500 - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD);
 
-            protected readonly ABrain _owner;
+            protected readonly StandardMobBrain _owner;
 
-            public ThreatStrategy(ABrain owner)
+            public ThreatStrategy(StandardMobBrain owner)
             {
                 _owner = owner;
             }

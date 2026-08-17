@@ -154,6 +154,11 @@ namespace DOL.AI.Brain
 
                 return null;
             }
+
+            public override bool ShouldBeRemoved(GameLiving target)
+            {
+                return base.ShouldBeRemoved(target) || !_owner.Body.IsWithinRadius(target, _owner.AggroRange);
+            }
         }
     }
 }
