@@ -30,7 +30,7 @@ namespace DOL.GS
         }
 
         public GameLiving LastNegativeLosCheckTarget { get; private set; }
-        private bool IsCasterGuard => _npcOwner is GuardCaster;
+        private bool IsCasterGuardOrImmobile => _npcOwner is GuardCaster || _npcOwner.MaxSpeedBase == 0;
 
         public NpcCastingComponent(GameNPC npcOwner) : base(npcOwner)
         {
@@ -91,8 +91,8 @@ namespace DOL.GS
             if (QueuedSpellHandler?.Target == target)
                 ClearQueuedSpellHandler();
 
-            // Caster guards forget about the target.
-            if (IsCasterGuard)
+            // Immobile NPCs and caster guards forget about the target.
+            if (IsCasterGuardOrImmobile)
             {
                 // Keep the target in the aggro list while the NPC is still casting.
                 // This ensures that the NPC doesn't enter an idle state, potentially interfering with spell casting.

@@ -16,7 +16,7 @@ namespace DOL.GS
         private bool _wasMeleeWeaponSwitchForced; // Used to prevent NPCs from switching to their ranged weapon automatically if they explicitly switched to a melee weapon during combat.
 
         private static int LosCheckInterval => Properties.CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
-        private bool IsArcherGuard => _npcOwner is GuardArcher;
+        private bool IsArcherGuardOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
 
         public NpcAttackAction(GameNPC owner) : base(owner)
         {
@@ -143,7 +143,7 @@ namespace DOL.GS
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
 
                 // Keep RangedAttackState as Aim for mobile NPCs so StopAttack applies the melee switch delay and resets state.
-                if (IsArcherGuard)
+                if (IsArcherGuardOrImmobile)
                     _npcOwner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
 
                 OnOutOfRangeOrNoLosRangedAttack();
@@ -259,7 +259,7 @@ namespace DOL.GS
             // If we're a guard or an immobile NPC, let's forget about our target so that we can attack another one and not stare at the wall.
             // Otherwise, switch to melee, but keep the timer alive.
 
-            if (IsArcherGuard)
+            if (IsArcherGuardOrImmobile)
             {
                 if (_losCheckTarget is GameLiving livingLosCheckTarget)
                     (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(livingLosCheckTarget);
