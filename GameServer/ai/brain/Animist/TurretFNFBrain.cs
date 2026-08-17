@@ -6,7 +6,7 @@ namespace DOL.AI.Brain
 {
     public class TurretFNFBrain : TurretBrain
     {
-        protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.CHECK_LOS_BEFORE_AGGRO_FNF;
+        public override int ThinkInterval => 1000;
         protected override bool CanAddToAggroListFromMultipleLosChecks => true;
 
         public TurretFNFBrain(GameLiving owner) : base(owner) { }
@@ -81,6 +81,20 @@ namespace DOL.AI.Brain
             }
         }
 
+        protected override bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target, bool checkLos)
+        {
+            // Turn towards the target we're attempting to cast on if not already casting.
+            if (base.TrustCast(spell, type, target, checkLos))
+            {
+                if (!Body.IsCasting)
+                    Body.TurnTo(target);
+
+                return true;
+            }
+
+            return false;
+        }
+
         protected override AggroTable BuildAggroTable()
         {
             return new(new FnfTurretThreatStrategy(this));
@@ -88,8 +102,9 @@ namespace DOL.AI.Brain
 
         protected override GameLiving CalculateNextAttackTarget()
         {
-            return CleanUpAggroListAndGetHighestModifiedThreat();
-
+            GameLiving target = CleanUpAggroListAndGetHighestModifiedThreat();
+            Body.attackComponent.AttackState = target != null;
+            return target;
         }
 
         public override void UpdatePetWindow() { }

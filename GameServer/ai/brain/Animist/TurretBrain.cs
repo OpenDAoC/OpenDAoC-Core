@@ -7,9 +7,6 @@ namespace DOL.AI.Brain
     {
         protected readonly List<GameLiving> _defensiveSpellTargets;
 
-        protected virtual bool CheckLosBeforeCastingDefensiveSpells => false;
-        protected virtual bool CheckLosBeforeCastingOffensiveSpells => true;
-
         public TurretBrain(GameLiving owner) : base(owner)
         {
             _defensiveSpellTargets = new();
@@ -43,11 +40,7 @@ namespace DOL.AI.Brain
                         return false;
 
                     GameLiving target = FindTargetForDefensiveSpell(spell);
-
-                    if (target != null)
-                        return TrustCast(spell, eCheckSpellType.Defensive, target, CheckLosBeforeCastingDefensiveSpells);
-
-                    break;
+                    return TrustCast(spell, eCheckSpellType.Defensive, target, false);
                 }
                 case eCheckSpellType.Offensive:
                 {
@@ -55,11 +48,7 @@ namespace DOL.AI.Brain
                         return false;
 
                     GameLiving target = CalculateNextAttackTarget();
-
-                    if (target != null)
-                        return TrustCast(spell, eCheckSpellType.Offensive, target, CheckLosBeforeCastingOffensiveSpells);
-
-                    break;
+                    return TrustCast(spell, eCheckSpellType.Offensive, target, true);
                 }
             }
 
@@ -116,14 +105,14 @@ namespace DOL.AI.Brain
             if (spell.IsPBAoE)
                 return Body.CastSpell(spell, m_mobSpellLine);
 
-            if (target != null)
+            if (target == null)
             {
-                Body.TargetObject = target;
-                Body.StopAttack();
-                return Body.CastSpell(spell, m_mobSpellLine, checkLos);
+                Body.TargetObject = null;
+                return false;
             }
 
-            return false;
+            Body.TargetObject = target;
+            return Body.CastSpell(spell, m_mobSpellLine, checkLos);
         }
 
         public override bool Stop()

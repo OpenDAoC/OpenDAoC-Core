@@ -655,7 +655,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "check_los_before_aggro", "Should we perform LoS checks before allowing standard NPCs to aggro from proximity.", true)]
 		public static bool CHECK_LOS_BEFORE_AGGRO;
 
-		[ServerProperty("world", "check_los_before_aggro_fnf", "Should we perform LoS checks before allowing FnF turrets to aggro from proximity. If false, they will attempt to cast behind walls.", true)]
+		[ServerProperty("world", "check_los_before_aggro_fnf", "Should we perform LoS checks before allowing FnF turrets to aggro from proximity. If false, they will attempt to cast behind walls.", false)]
 		public static bool CHECK_LOS_BEFORE_AGGRO_FNF;
 
 		[ServerProperty("world", "check_los_during_npc_ranged_attack", "Should NPCs perform LoS checks during ranged attacks.", false)]
