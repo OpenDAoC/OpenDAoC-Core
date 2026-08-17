@@ -2855,6 +2855,7 @@ namespace DOL.GS
 		public override void Delete()
 		{
 			effectListComponent.CancelAll();
+			TempProperties.RemoveAllProperties();
 			base.Delete();
 		}
 
