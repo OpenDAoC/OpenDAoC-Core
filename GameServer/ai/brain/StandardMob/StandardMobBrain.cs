@@ -1087,7 +1087,6 @@ namespace DOL.AI.Brain
                 case eSpellType.PaladinArmorFactorBuff:
                 case eSpellType.BodyResistBuff:
                 case eSpellType.BodySpiritEnergyBuff:
-                case eSpellType.Buff:
                 case eSpellType.CelerityBuff:
                 case eSpellType.ColdResistBuff:
                 case eSpellType.CombatSpeedBuff:
@@ -1191,11 +1190,6 @@ namespace DOL.AI.Brain
                         break;
                     }
 
-                    break;
-                }
-                case eSpellType.Summon:
-                {
-                    target = Body;
                     break;
                 }
                 case eSpellType.SummonMinion:

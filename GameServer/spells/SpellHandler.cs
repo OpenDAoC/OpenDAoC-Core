@@ -142,7 +142,6 @@ namespace DOL.GS.Spells
 						case eSpellType.Pet:
 						case eSpellType.SummonCommander:
 						case eSpellType.SummonTheurgistPet:
-						case eSpellType.Summon:
 						case eSpellType.SummonJuggernaut:
 						case eSpellType.SummonMinion:
 						case eSpellType.SummonSimulacrum:
