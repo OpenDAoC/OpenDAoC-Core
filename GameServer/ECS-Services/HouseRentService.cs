@@ -40,58 +40,66 @@ namespace DOL.GS
 
         private static void ProcessHouseRent(House house)
         {
-            if (string.IsNullOrEmpty(house.OwnerID) || house.NoPurge)
-                return;
-
-            long rent = HouseMgr.GetRentByModel(house.Model);
-
-            if (rent <= 0)
-                return;
-
-            DateTime now = DateTime.Now;
-            TimeSpan diff = now - house.LastPaid;
-
-            if (diff.Days < Properties.RENT_DUE_DAYS)
-                return;
-
-            long lockboxAmount = house.KeptMoney;
-
-            // Try to pull from the lockbox first.
-            if (lockboxAmount >= rent)
+            try
             {
-                house.KeptMoney -= rent;
-                house.LastPaid = now;
-                house.SaveIntoDatabase();
-                return;
-            }
+                if (string.IsNullOrEmpty(house.OwnerID) || house.NoPurge)
+                    return;
 
-            GameConsignmentMerchant consignmentMerchant = house.ConsignmentMerchant;
-            long consignmentAmount = 0;
+                long rent = HouseMgr.GetRentByModel(house.Model);
 
-            // Try to pull from the consignment merchant.
-            if (consignmentMerchant != null)
-            {
-                consignmentAmount = consignmentMerchant.TotalMoney;
-                long remainingDifference = rent - lockboxAmount;
+                if (rent <= 0)
+                    return;
 
-                if (remainingDifference <= consignmentAmount)
+                DateTime now = DateTime.Now;
+                TimeSpan diff = now - house.LastPaid;
+
+                if (diff.Days < Properties.RENT_DUE_DAYS)
+                    return;
+
+                long lockboxAmount = house.KeptMoney;
+
+                // Try to pull from the lockbox first.
+                if (lockboxAmount >= rent)
                 {
-                    // TotalMoney delegates to ConsignmentState and immediately saves the consignment merchant.
-                    house.KeptMoney = 0;
-                    consignmentMerchant.TotalMoney -= remainingDifference;
+                    house.KeptMoney -= rent;
                     house.LastPaid = now;
                     house.SaveIntoDatabase();
                     return;
                 }
+
+                GameConsignmentMerchant consignmentMerchant = house.ConsignmentMerchant;
+                long consignmentAmount = 0;
+
+                // Try to pull from the consignment merchant.
+                if (consignmentMerchant != null)
+                {
+                    consignmentAmount = consignmentMerchant.TotalMoney;
+                    long remainingDifference = rent - lockboxAmount;
+
+                    if (remainingDifference <= consignmentAmount)
+                    {
+                        // TotalMoney delegates to ConsignmentState and immediately saves the consignment merchant.
+                        house.KeptMoney = 0;
+                        consignmentMerchant.TotalMoney -= remainingDifference;
+                        house.LastPaid = now;
+                        house.SaveIntoDatabase();
+                        return;
+                    }
+                }
+
+                // If we reached here, they can't afford rent.
+                if (log.IsWarnEnabled)
+                    log.Warn($"House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
+
+                lock (_removalLock)
+                {
+                    _removalQueue.Enqueue(house);
+                }
             }
-
-            // If we reached here, they can't afford rent.
-            if (log.IsWarnEnabled)
-                log.Warn($"House {house.HouseNumber} owned by {house.Name} can't afford rent and is being repossessed! rentAmount: {rent} lockboxAmount: {lockboxAmount} consignmentAmount: {consignmentAmount}");
-
-            lock (_removalLock)
+            catch (Exception e)
             {
-                _removalQueue.Enqueue(house);
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(ProcessHouseRent)} failed (House: {house.HouseNumber})", e);
             }
         }
     }
