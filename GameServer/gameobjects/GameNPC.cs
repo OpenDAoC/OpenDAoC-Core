@@ -2215,7 +2215,7 @@ namespace DOL.GS
 
 					switch (Faction.GetStandingToFaction(player))
 					{
-						case Faction.Standing.Aggresive:
+						case Faction.Standing.Aggressive:
 						{
 							translationString = "GameNPC.GetAggroLevelString.Aggressive1";
 							break;

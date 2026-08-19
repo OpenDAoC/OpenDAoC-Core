@@ -137,7 +137,7 @@ namespace DOL.GS
             int aggro = _aggroLevels.TryGetValue(player.ObjectId, out AggroLevel playerAggro) ? playerAggro.Aggro : _baseAggroLevel;
 
             if (aggro > 75)
-                return Standing.Aggresive;
+                return Standing.Aggressive;
             else if (aggro > 50)
                 return Standing.Hostile;
             else if (aggro > 25)
@@ -151,7 +151,7 @@ namespace DOL.GS
             Friendly,
             Neutral,
             Hostile,
-            Aggresive
+            Aggressive
         }
 
         public readonly record struct AggroLevel(GamePlayer Player, int Aggro, bool Dirty = false);
