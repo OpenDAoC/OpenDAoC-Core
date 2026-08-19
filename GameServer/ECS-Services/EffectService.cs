@@ -89,6 +89,8 @@ namespace DOL.GS
                 if (log.IsDebugEnabled)
                     log.Debug($"Discarding effect on deleted owner (Effect: {effect}) (Owner: {effect.Owner})");
 
+                // Attempt to end the effect normally, but always remove it from the store.
+                effect.End();
                 ServiceObjectStore.Remove(effect);
                 return;
             }
