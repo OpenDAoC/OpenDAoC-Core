@@ -1,5 +1,6 @@
 using System;
 using DOL.GS;
+using DOL.GS.ServerProperties;
 
 namespace DOL.AI.Brain
 {
@@ -8,6 +9,9 @@ namespace DOL.AI.Brain
         protected const int BASEFORMATIONDIST = 50;
 
         public bool MinionsAssisting => Owner is CommanderPet commander && commander.MinionsAssisting;
+        protected override bool CanCastDefensiveSpellsOnGroupMembers => false;
+        protected override int HealThreshold => Properties.BONEDANCER_HEALER_PET_HEAL_THRESHOLD;
+        protected override bool UseEmergencyHeal => false;
 
         public BdPetBrain(GameLiving Owner) : base(Owner)
         {

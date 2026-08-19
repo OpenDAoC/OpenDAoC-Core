@@ -114,6 +114,23 @@ namespace DOL.GS
             _npcOwner.ApplyInstantHarmfulSpellDelay();
         }
 
+        public override void PromoteQueuedSpellHandler()
+        {
+            if (_npcOwner.Brain is StandardMobBrain brain)
+            {
+                if (brain is NecromancerPetBrain necroBrain)
+                    necroBrain.CheckAttackSpellQueue();
+
+                if (QueuedSpellHandler != null)
+                {
+                   if (!brain.CanSpellStillBeCastOnTarget(QueuedSpellHandler.Spell, QueuedSpellHandler.Target))
+                        QueuedSpellHandler = null;
+                }
+            }
+
+            base.PromoteQueuedSpellHandler();
+        }
+
         protected override void Stop()
         {
             base.Stop();

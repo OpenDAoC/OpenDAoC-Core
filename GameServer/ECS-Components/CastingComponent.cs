@@ -237,11 +237,8 @@ namespace DOL.GS
 
         public virtual void OnSpellCast(Spell spell) { }
 
-        public void PromoteQueuedSpellHandler()
+        public virtual void PromoteQueuedSpellHandler()
         {
-            if (Owner is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain necroBrain)
-                necroBrain.CheckAttackSpellQueue();
-
             _duringCastLosCheckListener.StopAndClear();
 
             if (QueuedSpellHandler != null)
