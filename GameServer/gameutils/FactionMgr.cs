@@ -65,7 +65,7 @@ namespace DOL.GS
             return count;
         }
 
-        public static void LoadAllAggroToFaction(GamePlayer player, IList<DbFactionAggroLevel> factionRelations)
+        public static void LoadAllAggroToFaction(GamePlayer player, List<DbFactionAggroLevel> factionRelations)
         {
             foreach (DbFactionAggroLevel factionRelation in factionRelations)
             {
