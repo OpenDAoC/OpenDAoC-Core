@@ -22,8 +22,9 @@ namespace DOL.GS
         private static string _statsResurrect;
         private static readonly Lock _globalStatsLock = new();
 
-        private GamePlayer _player;
-        private DateTime _loginTime;
+        private readonly GamePlayer _player;
+        private readonly DateTime _loginTime;
+        private readonly Lock _playerStatsLock = new();
         public uint TotalRealmPointsEarned { get; private set; }
         public uint RealmPointsEarnedFromKills { get; private set; }
         public uint KillsThatHaveEarnedRealmPoints { get; private set; }
@@ -32,7 +33,6 @@ namespace DOL.GS
         public uint HitPointsHealed { get; private set; }
         public uint RealmPointsEarnedFromHitPointsHealed { get; private set; }
         public uint ResurrectionsPerformed { get; private set; }
-        private readonly Lock _playerStatsLock = new();
 
         public PlayerStatistics(GamePlayer player)
         {
@@ -124,7 +124,7 @@ namespace DOL.GS
 
                     TryInsertTopStat(topRp, otherPlayer.Name, stats.TotalRealmPointsEarned);
 
-                    uint rphs = (uint) Math.Round(RPsPerHour(stats.TotalRealmPointsEarned, now.Subtract(stats._loginTime)));
+                    uint rphs = RPsPerHour(stats.TotalRealmPointsEarned, now.Subtract(stats._loginTime));
                     TryInsertTopStat(topLrp, otherPlayer.Name, rphs);
 
                     uint irs = (uint) Math.Round(stats.TotalRealmPointsEarned / Math.Max(1.0, stats.Deaths));
@@ -272,9 +272,9 @@ namespace DOL.GS
             return divisor == 0 ? dividend : dividend == 0 ? 0 : dividend / divisor;
         }
 
-        public static double RPsPerHour(uint realmPoints, TimeSpan time)
+        public static uint RPsPerHour(uint realmPoints, TimeSpan time)
         {
-            return realmPoints == 0 || time.TotalHours <= 0 ? 0.0 : realmPoints / time.TotalHours;
+            return realmPoints == 0 || time.TotalHours <= 0 ? 0 : (uint) Math.Round(realmPoints / time.TotalHours);
         }
 
         private readonly record struct StatEntry(string Name, uint Value, uint SecondaryValue = 0);
