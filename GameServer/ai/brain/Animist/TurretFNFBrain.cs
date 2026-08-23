@@ -112,7 +112,34 @@ namespace DOL.AI.Brain
 
         protected class FnfTurretThreatStrategy : ControlledNpcThreatStrategy
         {
+            // FnFs prioritize entities by placing them in different buckets based on distance.
+            // This is a custom logic to make them more likely to target an entity they can actually cast on.
+
+            // Fractions of AggroRange marking bucket boundaries (must be in ascending order).
+            private static readonly double[] _distanceBucketThresholds = [0.4];
+
+            private static int DistanceBucketCount => _distanceBucketThresholds.Length + 1;
+
             public FnfTurretThreatStrategy(StandardMobBrain owner) : base(owner) { }
+
+            public override long CalculateEffectiveAggro(long baseAggro, GameLiving target, out double distance)
+            {
+                // Fnf turrets don't care about effective aggro, target selection is random.
+                // We're repurposing it to bucket entities by distance.
+                distance = _owner.Body.GetDistanceTo(target);
+                return GetDistanceBucket(distance);
+            }
+
+            private int GetDistanceBucket(double distance)
+            {
+                for (int i = 0; i < _distanceBucketThresholds.Length; i++)
+                {
+                    if (distance < _owner.AggroRange * _distanceBucketThresholds[i])
+                        return i;
+                }
+
+                return _distanceBucketThresholds.Length; // Farthest bucket.
+            }
 
             public override GameLiving SelectTarget(ReadOnlySpan<AggroTable.TargetCandidate> candidates)
             {
@@ -124,33 +151,37 @@ namespace DOL.AI.Brain
                 }
 
                 Spell turretSpell = turretPet.TurretSpell;
+
+                if (turretSpell == null)
+                    return null;
+
                 int randomIndex = Util.Random(candidates.Length - 1);
-                GameLiving selectedFallback = candidates[randomIndex].Living;
-                GameLiving selectedPrimary = null;
+                int slotCount = DistanceBucketCount * 2; // Primary block, then fallback block.
+                Span<int> bestIndexByPriority = stackalloc int[slotCount];
+                bestIndexByPriority.Fill(-1);
 
-                // Prioritize targets that don't already have our effect and aren't immune to it.
-                // If there's none, allow them to be attacked again but only if our spell does damage.
-                if (turretSpell != null)
+                for (int i = 0; i < candidates.Length; i++)
                 {
-                    for (int i = 0; i < candidates.Length; i++)
-                    {
-                        int index = (randomIndex + i) % candidates.Length;
-                        GameLiving living = candidates[index].Living;
+                    int index = (randomIndex + i) % candidates.Length;
+                    int priority = GetPriority(candidates[index], brain, turretSpell);
 
-                        if (!brain.LivingHasEffect(living, turretSpell) &&
-                            !living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
-                        {
-                            selectedPrimary = living;
-                            break;
-                        }
-                    }
+                    if (priority == -1)
+                        continue;
+
+                    ref int slot = ref bestIndexByPriority[priority];
+
+                    if (slot == -1)
+                        slot = index;
+
+                    if (priority == 0)
+                        break; // Closest + untouched, the best possible match. No need to look further.
                 }
 
-                if (selectedPrimary != null)
-                    return selectedPrimary;
-
-                if (turretSpell != null && turretSpell.Damage > 0)
-                    return selectedFallback;
+                foreach (int index in bestIndexByPriority)
+                {
+                    if (index != -1)
+                        return candidates[index].Living;
+                }
 
                 return null;
             }
@@ -158,6 +189,25 @@ namespace DOL.AI.Brain
             public override bool ShouldBeRemoved(GameLiving target)
             {
                 return base.ShouldBeRemoved(target) || !_owner.Body.IsWithinRadius(target, _owner.AggroRange);
+            }
+
+            private static int GetPriority(AggroTable.TargetCandidate candidate, StandardMobBrain brain, Spell turretSpell)
+            {
+                // Lower value = higher priority.
+                // Primary (untouched) candidates occupy [0, bucketCount), ordered closest-first.
+                // Fallback candidates occupy [bucketCount, 2*bucketCount), ordered closest-first.
+                // Returns -1 if the candidate isn't a valid target at all.
+
+                GameLiving living = candidate.Living;
+                int distanceBucket = (int) candidate.EffectiveAggro;
+                bool untouched = !brain.LivingHasEffect(living, turretSpell) &&
+                    !living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity);
+
+                if (!untouched && turretSpell.Damage <= 0)
+                    return -1; // No damage, fallback tiers don't apply.
+
+                int fallbackOffset = untouched ? 0 : DistanceBucketCount;
+                return fallbackOffset + distanceBucket;
             }
         }
     }

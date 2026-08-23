@@ -1149,7 +1149,7 @@ namespace DOL.GS
 			// Essentially, Engage works exactly the same against arrows as it does against melee attacks.
 
 			// "Visible arc" for block and guard according to https://www.chadwickgjohnson.com/data/20080715114502/index.html (2002)
-			// Note: Visible angle might refer to the "Your target is not visible!" message when attacking someting outside the 120 degrrees arc.
+			// Note: Visible angle might refer to the "Your target is not visible!" message when attacking something outside the 120 degrees arc.
 			// 120 degrees angle for block (and maybe Guard) according to https://www.chadwickgjohnson.com/data/20080715114516/index.html (2002).
 			// 120 for both block and Guard according to http://web.archive.org/web/20040210014020/http://guides.rpgaheris.com/paladin.htm#_Toc57081020 (2003~2004).
 			// 180 for Guard according to https://www.chadwickgjohnson.com/data/20110518210634/index.html (2010).
