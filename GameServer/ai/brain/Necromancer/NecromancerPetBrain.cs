@@ -32,6 +32,11 @@ namespace DOL.AI.Brain
             base.Attack(target);
         }
 
+        public override bool CanSpellStillBeCastOnTarget(Spell spell, GameLiving target)
+        {
+            return true;
+        }
+
         public override void Disengage()
         {
             base.Disengage();
