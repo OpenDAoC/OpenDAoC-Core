@@ -90,15 +90,8 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.TurnTo))
             {
-                if (!Owner.IsAttacking)
-                {
-                    FinalizeTick();
-                    return;
-                }
-
-                UnsetFlag(MovementState.TurnTo);
-                _resetHeadingTimer?.Stop();
-                _resetHeadingTimer = null;
+                FinalizeTick();
+                return;
             }
 
             if (IsFlagSet(MovementState.Request))
@@ -336,12 +329,21 @@ namespace DOL.GS
 
         public void TurnTo(ushort heading, int duration = 0)
         {
-            if (Owner.Heading == heading || Owner.IsCrowdControlled || IsTurningDisabled)
+            bool hasDuration = duration > 0;
+
+            if (!hasDuration && Owner.Heading == heading)
                 return;
 
-            if (duration > 0)
+            if (Owner.IsCrowdControlled || IsTurningDisabled)
+                return;
+
+            // Ignore duration if we're attacking or casting.
+            if (hasDuration && !Owner.attackComponent.AttackState && !Owner.castingComponent.IsCasting)
             {
                 SetFlag(MovementState.TurnTo);
+
+                if (IsMoving)
+                    UpdateMovement(0);
 
                 if (_resetHeadingTimer == null)
                 {
