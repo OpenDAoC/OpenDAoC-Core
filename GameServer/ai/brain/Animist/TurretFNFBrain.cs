@@ -112,8 +112,19 @@ namespace DOL.AI.Brain
 
         protected class FnfTurretThreatStrategy : ControlledNpcThreatStrategy
         {
-            // FnFs prioritize entities by placing them in different buckets based on distance.
-            // This is a custom logic to make them more likely to target an entity they can actually cast on.
+            // For reminder, FnFs acquire a random target in range then perform a LoS check.
+            // On Live (August 2026), they do this every second. This is the behavior we're using.
+            // In 1.65, they actually attempted to cast, which delayed target acquisition.
+
+            // Furthermore, Live (August 2026) overrides this logic in dungeon and makes them perform the LoS check first,
+            // which makes them more reactive and less likely to lock onto an NPC in a different room or floor.
+            // Live seems to rely on server side LoS checks for this, preventing the client from being flooded with packets.
+            // This wasn't the case in ~1.65 according to a video where FnFs attempted to cast behind walls in Dodens Gruva.
+
+            // But because our dungeons are packed with NPCs, this would make them particularly unreliable.
+            // For this reason, we make FnFs prioritize NPCs by placing them in different buckets based on distance.
+            // Enemy players are always placed in the first bucket so that they're always evaluated,
+            // preventing an exploit where one player could force all turrets to lock onto them, remain behind a wall, and protect other players.
 
             // Fractions of AggroRange marking bucket boundaries (must be in ascending order).
             private static readonly double[] _distanceBucketThresholds = [0.4];
@@ -126,12 +137,17 @@ namespace DOL.AI.Brain
             {
                 // Fnf turrets don't care about effective aggro, target selection is random.
                 // We're repurposing it to bucket entities by distance.
-                distance = _owner.Body.GetDistanceTo(target);
-                return GetDistanceBucket(distance);
+                return GetDistanceBucket(target, out distance);
             }
 
-            private int GetDistanceBucket(double distance)
+            private int GetDistanceBucket(GameLiving target, out double distance)
             {
+                distance = _owner.Body.GetDistanceTo(target);
+
+                // Force players into the closest bucket.
+                if (target is GamePlayer)
+                    return 0;
+
                 for (int i = 0; i < _distanceBucketThresholds.Length; i++)
                 {
                     if (distance < _owner.AggroRange * _distanceBucketThresholds[i])
