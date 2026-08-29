@@ -468,6 +468,7 @@ namespace DOL.GS
                 {
                     playerUpdate |= PlayerUpdate.Stats;
                     playerUpdate |= PlayerUpdate.Encumbrance;
+                    playerUpdate |= PlayerUpdate.WeaponArmor;
                     break;
                 }
                 case eEffect.StrengthConBuff:
@@ -475,6 +476,7 @@ namespace DOL.GS
                 {
                     playerUpdate |= PlayerUpdate.Stats;
                     playerUpdate |= PlayerUpdate.Encumbrance;
+                    playerUpdate |= PlayerUpdate.WeaponArmor;
                     break;
                 }
                 case eEffect.ConstitutionBuff:
@@ -488,8 +490,17 @@ namespace DOL.GS
                 case eEffect.DexterityDebuff:
                 case eEffect.QuicknessBuff:
                 case eEffect.QuicknessDebuff:
+                {
+                    playerUpdate |= PlayerUpdate.Stats;
+                    break;
+                }
                 case eEffect.DexQuickBuff:
                 case eEffect.DexQuiDebuff:
+                {
+                    playerUpdate |= PlayerUpdate.Stats;
+                    playerUpdate |= PlayerUpdate.WeaponArmor;
+                    break;
+                }
                 case eEffect.AcuityBuff:
                 case eEffect.AcuityDebuff:
                 {
