@@ -576,16 +576,9 @@ namespace DOL.AI.Brain
 			}
 
 			GameLiving target = CalculateNextAttackTarget();
-
-			if (target == null)
-			{
-				Body.StopAttack();
-				return;
-			}
-
 			Body.TargetObject = target;
 
-			if (CheckSpells(eCheckSpellType.Offensive))
+			if (target == null || CheckSpells(eCheckSpellType.Offensive))
 				Body.StopAttack();
 			else
 				Body.StartAttack(target);
