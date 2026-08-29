@@ -77,9 +77,9 @@ namespace DOL.GS.Commands
             {
                 DbInventoryItem mainWeapon = target.ActiveWeapon;
                 DbInventoryItem leftWeapon = target.ActiveLeftWeapon;
-                WeaponAction weaponAction = new(client.Player, target, mainWeapon, leftWeapon, 1.0, 0, null, 0);
+                WeaponAction weaponAction = new(target, client.Player, mainWeapon, leftWeapon, 1.0, 0, null, 0);
                 weaponAction.DetermineDualWieldMechanic(); // Must be called manually since the attack is not actually being executed.
-                AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, weaponAction, client.Player);
+                AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, weaponAction, target);
 
                 if (target is GameNPC || mainWeapon != null)
                     AddMainHandInfo(info, client, target, mainWeapon, attackType);
