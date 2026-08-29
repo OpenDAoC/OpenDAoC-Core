@@ -461,6 +461,13 @@ namespace DOL.GS
         {
             // This currently doesn't bridge zone crossings. Unsure if needed.
 
+            // Never touch _activePath while committed to an off-mesh link.
+            if (_offMeshCommitEnd.HasValue)
+            {
+                node = null;
+                return false;
+            }
+
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
             {
                 CalculatePath(_activePath, zone, position, target, BlockingDoorAvoidanceFilters);
