@@ -5,12 +5,10 @@ using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using DOL.GS;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
 
 namespace DOL.AI.Brain
 {
@@ -580,35 +578,12 @@ namespace DOL.AI.Brain
 			GameLiving target = CalculateNextAttackTarget();
 
 			if (target == null)
-				return;
-
-			if (!Body.IsAttacking || target != Body.TargetObject)
 			{
-				Body.TargetObject = target;
-
-				List<GameSpellEffect> effects = new List<GameSpellEffect>();
-
-				lock (Body.EffectList.Lock)
-				{
-					foreach (IGameEffect effect in Body.EffectList)
-					{
-						if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
-							effects.Add(gameSpellEffect);
-					}
-				}
-
-				lock (Owner.EffectList.Lock)
-				{
-					foreach (IGameEffect effect in Owner.EffectList)
-					{
-						if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
-							effects.Add(gameSpellEffect);
-					}
-				}
-
-				foreach (GameSpellEffect effect in effects)
-					effect.Cancel(false);
+				Body.StopAttack();
+				return;
 			}
+
+			Body.TargetObject = target;
 
 			if (CheckSpells(eCheckSpellType.Offensive))
 				Body.StopAttack();
