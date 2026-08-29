@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using DOL.GS.Housing;
 using DOL.GS.PlayerTitles;
+using DOL.GS.PropertyCalc;
 
 namespace DOL.GS.PacketHandler
 {
@@ -178,33 +179,28 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
+		private static readonly eStat[] _updateStats =
+		[
+			eStat.STR, eStat.DEX, eStat.CON, eStat.QUI,
+			eStat.INT, eStat.PIE, eStat.EMP, eStat.CHR,
+		];
+
 		public override void SendCharStatsUpdate()
 		{
 			if (m_gameClient.Player == null)
 				return;
 
-			eStat[] updateStats =
-			{
-				eStat.STR,
-				eStat.DEX,
-				eStat.CON,
-				eStat.QUI,
-				eStat.INT,
-				eStat.PIE,
-				eStat.EMP,
-				eStat.CHR,
-			};
+			Span<int> baseStats = stackalloc int[_updateStats.Length];
+			Span<int> itemCaps = stackalloc int[_updateStats.Length];
 
-			int[] baseStats = new int[updateStats.Length];
-			int[] modStats = new int[updateStats.Length];
-			int[] itemCaps = new int[updateStats.Length];
-			int itemCap = (int)(m_gameClient.Player.Level * 1.5);
+			int itemCap = (int) (m_gameClient.Player.Level * 1.5);
 			int bonusCap = m_gameClient.Player.Level / 2 + 1;
 
-			for (int i = 0; i < updateStats.Length; i++)
+			for (int i = 0; i < _updateStats.Length; i++)
 			{
 				int cap = itemCap;
-				switch ((eProperty)updateStats[i])
+
+				switch ((eProperty) _updateStats[i])
 				{
 					case eProperty.Strength:
 						cap += m_gameClient.Player.ItemBonus[eProperty.StrCapBonus];
@@ -233,7 +229,7 @@ namespace DOL.GS.PacketHandler
 					default: break;
 				}
 
-				if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+				if (_updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 					cap += m_gameClient.Player.ItemBonus[eProperty.AcuCapBonus];
 
 				itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
@@ -241,101 +237,91 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.StatsUpdate)))
 			{
-				// base
-				for (int i = 0; i < updateStats.Length; i++)
+				// Base.
+				for (int i = 0; i < _updateStats.Length; i++)
 				{
-					baseStats[i] = m_gameClient.Player.GetBaseStat(updateStats[i]);
+					baseStats[i] = m_gameClient.Player.GetBaseStat(_updateStats[i]);
 
-					if (updateStats[i] == eStat.CON)
+					if (_updateStats[i] == eStat.CON)
 						baseStats[i] -= m_gameClient.Player.TotalConstitutionLostAtDeath;
 
-					pak.WriteShort((ushort)baseStats[i]);
+					pak.WriteShort((ushort) baseStats[i]);
 				}
 
 				pak.WriteShort(0);
 
-				// buffs/debuffs only; remove base, item bonus, RA bonus, class bonus
-				for (int i = 0; i < updateStats.Length; i++)
+				// Buffs/debuffs only; remove base, item bonus, RA bonus, class bonus.
+				for (int i = 0; i < _updateStats.Length; i++)
 				{
-					modStats[i] = m_gameClient.Player.GetModified((eProperty) updateStats[i]);
-					int abilityBonus = m_gameClient.Player.AbilityBonus[(eProperty) updateStats[i]];
+					int modStat = m_gameClient.Player.GetModified((eProperty) _updateStats[i]);
+					int abilityBonus = m_gameClient.Player.AbilityBonus[(eProperty) _updateStats[i]];
 					int acuityItemBonus = 0;
 
-					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+					if (_updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+						if (StatCalculator.ShouldApplyAcuityBonus(m_gameClient.Player.CharacterClass))
 						{
 							abilityBonus += m_gameClient.Player.AbilityBonus[eProperty.Acuity];
 
-							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
+							if (m_gameClient.Player.CharacterClass.ClassType is not eClassType.PureTank)
 								acuityItemBonus = m_gameClient.Player.ItemBonus[eProperty.Acuity];
 						}
 					}
 
-					int buff = modStats[i] - baseStats[i];
+					int buff = modStat - baseStats[i];
 					buff -= abilityBonus;
-					buff -= Math.Min(itemCaps[i], m_gameClient.Player.ItemBonus[(eProperty) updateStats[i]] + acuityItemBonus);
+					buff -= Math.Min(itemCaps[i], m_gameClient.Player.ItemBonus[(eProperty) _updateStats[i]] + acuityItemBonus);
 
-					pak.WriteShort((ushort)buff);
+					pak.WriteShort((ushort) buff);
 				}
 
 				pak.WriteShort(0);
 
-				// item bonuses
-				for (int i = 0; i < updateStats.Length; i++)
+				// Item bonuses.
+				for (int i = 0; i < _updateStats.Length; i++)
 				{
 					int acuityItemBonus = 0;
 
-					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+					if (_updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+						if (StatCalculator.ShouldApplyAcuityBonus(m_gameClient.Player.CharacterClass))
 						{
-
-							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
+							if (m_gameClient.Player.CharacterClass.ClassType is not eClassType.PureTank)
 								acuityItemBonus = m_gameClient.Player.ItemBonus[eProperty.Acuity];
 						}
 					}
 
-					pak.WriteShort((ushort)(m_gameClient.Player.ItemBonus[(eProperty) updateStats[i]] + acuityItemBonus));
+					pak.WriteShort((ushort) (m_gameClient.Player.ItemBonus[(eProperty) _updateStats[i]] + acuityItemBonus));
 				}
 
 				pak.WriteShort(0);
 
-				// item caps
-				for (int i = 0; i < updateStats.Length; i++)
-				{
-					pak.WriteByte((byte)itemCaps[i]);
-				}
+				// Item caps.
+				for (int i = 0; i < _updateStats.Length; i++)
+					pak.WriteByte((byte) itemCaps[i]);
 
 				pak.WriteByte(0);
 
-				// RA bonuses
-				for (int i = 0; i < updateStats.Length; i++)
+				// RA bonuses.
+				for (int i = 0; i < _updateStats.Length; i++)
 				{
 					int acuityItemBonus = 0;
-					if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.CharacterClass.ManaStat)
+
+					if (m_gameClient.Player.CharacterClass.ClassType is not eClassType.PureTank &&
+						_updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
-						{
+						if (StatCalculator.ShouldApplyAcuityBonus(m_gameClient.Player.CharacterClass))
 							acuityItemBonus = m_gameClient.Player.AbilityBonus[eProperty.Acuity];
-						}
 					}
-					pak.WriteByte((byte)(m_gameClient.Player.AbilityBonus[(eProperty) updateStats[i]] + acuityItemBonus));
+
+					pak.WriteByte((byte) (m_gameClient.Player.AbilityBonus[(eProperty) _updateStats[i]] + acuityItemBonus));
 				}
 
 				pak.WriteByte(0);
 
-				//Why don't we and mythic use this class bonus byte?
-				//pak.Fill(0, 9);
-				//if (m_gameClient.Player.CharacterClass.ID == (int)eCharacterClass.Vampiir)
-				//	pak.WriteByte((byte)(m_gameClient.Player.Level - 5)); // Vampire bonuses
-				//else
-				pak.WriteByte(0x00); // FF if resists packet
-				pak.WriteByte((byte)m_gameClient.Player.TotalConstitutionLostAtDeath);
-				pak.WriteShort((ushort)m_gameClient.Player.MaxHealth);
+				pak.WriteByte(0x00); // FF if resists packet.
+				pak.WriteByte((byte) m_gameClient.Player.TotalConstitutionLostAtDeath);
+				pak.WriteShort((ushort) m_gameClient.Player.MaxHealth);
 				pak.WriteShort(0);
 
 				SendTCP(pak);

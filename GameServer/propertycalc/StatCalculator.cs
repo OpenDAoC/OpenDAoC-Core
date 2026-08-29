@@ -41,7 +41,7 @@ namespace DOL.GS.PropertyCalc
             {
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (ShouldApplyAcuityBonus(player.CharacterClass))
                         abilityBonus += player.AbilityBonus[eProperty.Acuity];
                 }
 
@@ -116,7 +116,7 @@ namespace DOL.GS.PropertyCalc
             {
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (ShouldApplyAcuityBonus(player.CharacterClass))
                         itemBonus += living.ItemBonus[eProperty.Acuity];
                 }
             }
@@ -143,7 +143,7 @@ namespace DOL.GS.PropertyCalc
             {
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (ShouldApplyAcuityBonus(player.CharacterClass))
                         itemBonusCapIncrease += living.ItemBonus[eProperty.AcuCapBonus];
                 }
             }
@@ -164,7 +164,7 @@ namespace DOL.GS.PropertyCalc
             {
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (ShouldApplyAcuityBonus(player.CharacterClass))
                         mythicalItemBonusCapIncrease += living.ItemBonus[eProperty.MythicalAcuCapBonus];
                 }
             }
@@ -185,13 +185,12 @@ namespace DOL.GS.PropertyCalc
             return living == null ? 0 : 52;
         }
 
-        public static bool IsClassAffectedByAcuityAbility(ICharacterClass characterClass)
+        public static bool ShouldApplyAcuityBonus(ICharacterClass characterClass)
         {
-            return (eCharacterClass) characterClass.ID is
-                not eCharacterClass.Scout and
-                not eCharacterClass.Hunter and
-                not eCharacterClass.Ranger and
-                not eCharacterClass.Nightshade; // Augmented Acuity augments spell damage since 1.62, but it shouldn't increase stats directly.
+            return (eCharacterClass) characterClass.ID is not eCharacterClass.Scout
+                and not eCharacterClass.Hunter
+                and not eCharacterClass.Ranger
+                and not eCharacterClass.Nightshade; // Augmented Acuity augments spell damage since 1.62, but it shouldn't increase stats directly.
         }
 
         public static void ApplyDebuffs(ref int baseDebuff, ref int specDebuff, ref int buffBonus, ref int baseAndItemStat)
