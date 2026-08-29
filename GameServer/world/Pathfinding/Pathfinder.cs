@@ -326,6 +326,11 @@ namespace DOL.GS
             if (!IsJumpNode(next))
                 return;
 
+            float distToJumpStartSq = (next.Position - position).LengthSquared();
+
+            if (distToJumpStartSq > NODE_REACHED_DISTANCE * NODE_REACHED_DISTANCE)
+                return;
+
             int endIndex = ResolveOffMeshLinkEndIndex();
             _offMeshCommitEnd = _activePath.Nodes.Peek(endIndex).Position;
         }
