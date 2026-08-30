@@ -10964,10 +10964,6 @@ namespace DOL.GS
                 {
                     GamePlayer enemyPlayer = enemy as GamePlayer;
 
-                    // Own group is always visible.
-                    if (enemyPlayer.Group != null && Group != null && enemyPlayer.Group == Group)
-                        return true;
-
                     // Why is this still using the old effect list and vanish effect?
                     if (enemyPlayer.EffectList.GetOfType<VanishEffect>() != null || enemyPlayer.Client.Account.PrivLevel > 1)
                         return false;
