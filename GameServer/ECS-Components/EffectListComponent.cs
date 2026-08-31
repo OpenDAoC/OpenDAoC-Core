@@ -863,12 +863,16 @@ namespace DOL.GS
                 if (effectA.IsConcentrationEffect() && effectB.IsConcentrationEffect())
                     return false;
 
+                // Only one movement speed buff is allowed, otherwise it allows falling back to another speed buff after being put in combat.
+                if (effectA.EffectType is eEffect.MovementSpeedBuff && effectB.EffectType is eEffect.MovementSpeedBuff)
+                    return false;
+
                 if (!effectA.SpellHandler.Spell.IsHelpful || !effectB.SpellHandler.Spell.IsHelpful)
                     return false;
 
                 return effectA.SpellHandler.Caster != effectB.SpellHandler.Caster ||
-                    effectA.SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects ||
-                    effectB.SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects;
+                    effectA.SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects ||
+                    effectB.SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects;
             }
 
             static bool HandleConcentration(ECSGameSpellEffect spellEffect)
