@@ -264,6 +264,8 @@ namespace DOL.GS
 
             if (Owner is GameTaxi or GameTaxiBoat)
                 Owner.RemoveFromWorld();
+            else
+                UpdateMovement(0);
 
             // We don't reset CurrentPathPoint here to allow the path to be resumed. This must be done manually if needed (on NPC death for example).
         }
@@ -515,7 +517,9 @@ namespace DOL.GS
             {
                 _ownerPosition = destination;
 
-                if (CurrentSpeed > 0)
+                // Defer the stop if we're on a continuous path. OnArrival will handle the next movement seamlessly.
+                // Avoids sending a stop packet causing the NPC to stutter.
+                if (CurrentSpeed > 0 && (!IsFlagSet(MovementState.OnPath) || CurrentPathPoint?.WaitTime != 0))
                     UpdateMovement(0);
 
                 return;
