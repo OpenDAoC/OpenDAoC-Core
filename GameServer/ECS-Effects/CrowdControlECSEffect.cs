@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using DOL.AI;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
@@ -31,7 +29,7 @@ namespace DOL.GS
             if (Owner is GameNPC npc)
                 npc.StopMoving();
 
-            if (Owner.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            if (Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
                 UpdatePlayerStatus();
         }
 

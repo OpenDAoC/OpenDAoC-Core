@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using DOL.AI.Brain;
-using DOL.GS.Effects;
 using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.PropertyCalc
@@ -26,10 +24,20 @@ namespace DOL.GS.PropertyCalc
 
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            if (living.IsCrowdControlled && living.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            bool hasSpeedOfSound = living.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
+
+            // Hard CC check. Speed of Sound ignores it.
+            if (!hasSpeedOfSound && living.IsCrowdControlled)
                 return 0;
 
-            double speedIncrease = living.BuffBonusMultCategory1.Get((int)property);
+            double speedIncrease = 1.0;
+
+            // Speed of Sound ignores other movement speed buffs and debuffs (including roots), but doesn't give any speed increase if the entity is stealthed.
+            if (!hasSpeedOfSound)
+                speedIncrease = living.BuffBonusMultCategory1.Get((int) property);
+            else if (!living.IsStealthed)
+                speedIncrease = SPEED4;
+
             double maxSpeedBase = living.MaxSpeedBase;
 
             if (living is GamePlayer player)

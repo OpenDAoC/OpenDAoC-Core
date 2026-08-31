@@ -59,9 +59,6 @@ namespace DOL.GS.Spells
 			if (target.EffectList.GetOfType<ArmsLengthEffect>() != null)
 				return;
 
-			if (target.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
-				return;
-
 			if (target is GamePlayer && (target as GamePlayer).IsRiding)
 				return;
 

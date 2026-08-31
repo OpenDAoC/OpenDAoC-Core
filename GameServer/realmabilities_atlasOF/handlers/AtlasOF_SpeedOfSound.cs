@@ -9,8 +9,6 @@ namespace DOL.GS.RealmAbilities
 	{
 		public AtlasOF_SpeedOfSound(DbAbility dba, int level) : base(dba, level) { }
 
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
 		int m_range = 2000;
 		int m_duration = 30000; // Your group moves at twice normal speed for 30 seconds
 
@@ -54,23 +52,13 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			bool success;
 			foreach (GameLiving target in targets)
 			{
 				//send spelleffect
 				foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					visPlayer.Out.SendSpellEffectAnimation(player, target, 7021, 0, false, CastSuccess(true));
+					visPlayer.Out.SendSpellEffectAnimation(player, target, 7021, 0, false, 1);
 				ECSGameEffectFactory.Create(new(target, m_duration, 1), static (in i) => new SpeedOfSoundECSEffect(i));
 			}
-
 		}
-		private byte CastSuccess(bool suc)
-		{
-			if (suc)
-				return 1;
-			else
-				return 0;
-		}
-		
 	}
 }
