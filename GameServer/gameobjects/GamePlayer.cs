@@ -7913,7 +7913,7 @@ namespace DOL.GS
             if (pet.MaxSpeedBase <= 0)
                 return true;
 
-            pet.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort) ((Heading + 2048) % 4096), false);
+            pet.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort) ((Heading + 2048) % 4096));
             return true;
         }
 

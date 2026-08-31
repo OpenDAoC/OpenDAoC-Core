@@ -2021,12 +2021,9 @@ namespace DOL.GS
 			return true;
 		}
 
-		public virtual bool MoveInRegion(ushort regionID, int x, int y, int z, ushort heading, bool forceMove)
+		public virtual bool MoveInRegion(ushort regionID, int x, int y, int z, ushort heading)
 		{
 			if (m_ObjectState is not eObjectState.Active || regionID != CurrentRegionID)
-				return false;
-
-			if (!forceMove && InCombat)
 				return false;
 
 			Region region = WorldMgr.GetRegion(regionID);
@@ -2059,7 +2056,7 @@ namespace DOL.GS
 				if (controlledBrain != null && controlledBrain.Body != null)
 				{
 					GameNPC subPet = controlledBrain.Body;
-					subPet.MoveInRegion(CurrentRegionID, m_x, m_y, m_z, Heading, true);
+					subPet.MoveInRegion(CurrentRegionID, m_x, m_y, m_z, Heading);
 				}
 			}
 
