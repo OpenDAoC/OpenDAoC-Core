@@ -473,7 +473,7 @@ namespace DOL.AI.Brain
                 // From an ordered aggro list, ignore the first 5 entities. Then take 8~16 random players
                 var randomlyPickedPlayers = GetOrderedAggroList(5).OfType<GamePlayer>().Where(x =>
                 {
-                    return x.Client.Account.PrivLevel == 1 && HasAggro && x.IsWithinRadius(Body, 2500);
+                    return x.Client.Account.PrivLevel == 1 && x.IsWithinRadius(Body, 2500);
                 }).OrderBy(static x => Util.Random(int.MaxValue - 1)).Take(Util.Random(8, 16));
 
                 foreach (GamePlayer player in randomlyPickedPlayers)
