@@ -593,11 +593,21 @@ namespace DOL.AI.Brain
 		public void ResumeWalkState()
 		{
 			if (WalkState is eWalkState.Follow)
-				FollowOwner();
-			else if (_tempPosition.HasValue)
 			{
-				Body.StopMoving();
-				Body.PathTo(_tempPosition.Value, Body.MaxSpeed);
+				FollowOwner();
+				return;
+			}
+
+			if (_tempPosition.HasValue)
+			{
+				if (Body.IsWithinRadius(_tempPosition.Value, 0))
+				{
+					_tempPosition = null;
+					return;
+				}
+
+				if (!Body.IsCasting && Body.rangeAttackComponent.RangedAttackState is eRangedAttackState.None)
+					Body.PathTo(_tempPosition.Value, Body.MaxSpeed);
 			}
 		}
 
