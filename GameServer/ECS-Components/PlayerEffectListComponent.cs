@@ -72,6 +72,9 @@ namespace DOL.GS
                 _requestedPlayerUpdates = EffectHelper.PlayerUpdate.None;
             }
 
+            if (_owner.ObjectState is GameObject.eObjectState.Deleted)
+                return;
+
             if ((requestedUpdates & EffectHelper.PlayerUpdate.Icons) != 0)
             {
                 _owner.Group?.UpdateMemberIcons(_owner, false);
