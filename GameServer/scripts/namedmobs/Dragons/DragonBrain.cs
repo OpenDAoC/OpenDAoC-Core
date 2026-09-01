@@ -25,10 +25,10 @@ namespace DOL.AI.Brain
 
         private DragonConfig Config { get; }
 
-        private bool _encounterStarted;
-        private bool _isRoaming;
-        private bool _roamDoneToday;
-        private int _breathIndex;
+        internal bool _encounterStarted;
+        internal bool _isRoaming;
+        internal bool _roamDoneToday;
+        internal int _breathIndex;
         private short _speedBeforeRoam;
 
         public DragonBrain(DragonConfig config)
