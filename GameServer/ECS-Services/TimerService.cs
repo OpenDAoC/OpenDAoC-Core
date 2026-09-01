@@ -77,7 +77,6 @@ namespace DOL.GS
         public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
         public MethodInfo CallbackInfo => Callback?.GetMethodInfo();
 
-
         public ECSGameTimer(GameObject timerOwner)
         {
             Owner = timerOwner;

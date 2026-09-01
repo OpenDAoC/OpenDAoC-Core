@@ -281,8 +281,7 @@ namespace DOL.GS.Commands
                     (int) Math.Round(fixedPos.Value.X),
                     (int) Math.Round(fixedPos.Value.Y),
                     (int) Math.Round(fixedPos.Value.Z),
-                    npc.SpawnHeading,
-                    true);
+                    npc.SpawnHeading);
                 npc.SpawnPoint = new(npc);
                 npc.SaveIntoDatabase();
             }

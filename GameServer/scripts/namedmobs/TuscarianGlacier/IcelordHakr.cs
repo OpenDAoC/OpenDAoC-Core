@@ -47,24 +47,15 @@ namespace DOL.GS
         }
         public override void ProcessDeath(GameObject killer) //on kill generate orbs
         {
-            Spawn_Snakes = false;
-            HakrBrain.spam_message1 = false;
             base.ProcessDeath(killer);
         }
-        public static bool Spawn_Snakes = false;
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162347);
             LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(140);
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            Spawn_Snakes = false;
-            HakrBrain.spam_message1 = false;
-            if (Spawn_Snakes == false)
-            {
-                SpawnSnakes();
-                Spawn_Snakes = true;
-            }
+            SpawnSnakes();
             HakrBrain sbrain = new HakrBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -106,8 +97,22 @@ namespace DOL.GS
             else
                 log.Warn("Icelord Hakr exist ingame, remove it and restart server if you want to add by script code.");
         }
+        public readonly List<GameNPC> Iceweavers = new List<GameNPC>();
+        public bool IsIceweaverUp
+        {
+            get
+            {
+                foreach (GameNPC npc in Iceweavers)
+                {
+                    if (npc != null && npc.IsAlive && npc.ObjectState is eObjectState.Active)
+                        return true;
+                }
+                return false;
+            }
+        }
         public void SpawnSnakes()
         {
+            Iceweavers.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not eObjectState.Active);
             for (int i = 0; i < 2; i++)
             {
                 HakrAdd Add1 = new HakrAdd();
@@ -118,7 +123,7 @@ namespace DOL.GS
                 Add1.Heading = Heading;
                 Add1.PackageID = "HakrBaf";
                 Add1.AddToWorld();
-                ++HakrAdd.IceweaverCount;
+                Iceweavers.Add(Add1);
             }
             for (int i = 0; i < 2; i++)
             {
@@ -129,7 +134,7 @@ namespace DOL.GS
                 Add2.CurrentRegion = CurrentRegion;
                 Add2.Heading = Heading;
                 Add2.AddToWorld();
-                ++HakrAdd.IceweaverCount;
+                Iceweavers.Add(Add2);
             }
         }
     }
@@ -147,7 +152,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 1500;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -170,7 +175,7 @@ namespace DOL.AI.Brain
         }
         public void TeleportPlayer()
         {
-            if (HakrAdd.IceweaverCount > 0)
+            if (Body is Hakr hakr && hakr.IsIceweaverUp)
             {
                 List<GameLiving> enemies = GetUnorderedAggroList();
                 foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
@@ -233,11 +238,12 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool spam_teleport = false;
-        public static bool spam_message1 = false;
+        public bool spam_teleport = false;
+        public bool spam_message1 = false;
         public override void Think()
         {
-            if (HakrAdd.IceweaverCount == 0 && spam_message1 == false && Body.IsAlive)
+            bool iceweaverUp = Body is Hakr hakr && hakr.IsIceweaverUp;
+            if (spam_message1 == false && Body.IsAlive && !iceweaverUp)
             {
                 BroadcastMessage(String.Format("Magic barrier fades away from Icelord Hakr!"));
                 spam_message1 = true;
@@ -253,7 +259,7 @@ namespace DOL.AI.Brain
             }
             if (HasAggro)
             {
-                if (spam_teleport == false && Body.TargetObject != null && HakrAdd.IceweaverCount > 0)
+                if (spam_teleport == false && Body.TargetObject != null && iceweaverUp)
                 {
                     int rand = Util.Random(10000, 20000);
                     new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PortTimer), rand);
@@ -297,12 +303,6 @@ namespace DOL.GS
         {
             get { return 20000; }
         }
-        public static int IceweaverCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --IceweaverCount;
-            base.ProcessDeath(killer);
-        }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 250; }
         public override bool AddToWorld()
@@ -341,7 +341,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 500;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)

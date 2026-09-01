@@ -579,7 +579,7 @@ namespace DOL.AI.Brain
             if (Body.Faction != null)
             {
                 if (realTarget is GamePlayer realTargetPlayer)
-                    return Body.Faction.GetStandingToFaction(realTargetPlayer) is Faction.Standing.Aggresive;
+                    return Body.Faction.GetStandingToFaction(realTargetPlayer) is Faction.Standing.Aggressive;
                 else if (realTarget is GameNPC realTargetNpc && Body.Faction.EnemyFactions.Contains(realTargetNpc.Faction))
                     return true;
             }
@@ -1034,14 +1034,8 @@ namespace DOL.AI.Brain
             if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
                 return false;
 
-            if (Body.TargetObject is not GameLiving target || !Body.IsWithinRadius(target, spell.CalculateEffectiveRange(Body)))
+            if (!CanSpellStillBeCastOnTarget(spell, Body.TargetObject as GameLiving))
                 return false;
-
-            if (spell.Duration > 0 || spell.IsConcentration)
-            {
-                if (spell.SpellType is not eSpellType.DirectDamageWithDebuff and not eSpellType.DamageSpeedDecrease && LivingHasEffect(target, spell))
-                    return false;
-            }
 
             if (isInterruptible && Body.IsSelfInterrupted())
             {
@@ -1116,164 +1110,8 @@ namespace DOL.AI.Brain
 
         protected virtual GameLiving FindTargetForDefensiveSpell(Spell spell)
         {
-            GameLiving target = null;
-
-            // This does not include every spell type.
             switch (spell.SpellType)
             {
-                #region Buffs
-
-                case eSpellType.AcuityBuff:
-                case eSpellType.AFHitsBuff:
-                case eSpellType.AllMagicResistBuff:
-                case eSpellType.AllSecondaryMagicResistsBuff:
-                case eSpellType.ArmorAbsorptionBuff:
-                case eSpellType.BaseArmorFactorBuff:
-                case eSpellType.SpecArmorFactorBuff:
-                case eSpellType.PaladinArmorFactorBuff:
-                case eSpellType.BodyResistBuff:
-                case eSpellType.BodySpiritEnergyBuff:
-                case eSpellType.Buff:
-                case eSpellType.CelerityBuff:
-                case eSpellType.ColdResistBuff:
-                case eSpellType.CombatSpeedBuff:
-                case eSpellType.ConstitutionBuff:
-                case eSpellType.CourageBuff:
-                case eSpellType.CrushSlashTrustBuff:
-                case eSpellType.DexterityBuff:
-                case eSpellType.DexterityQuicknessBuff:
-                case eSpellType.EffectivenessBuff:
-                case eSpellType.EnduranceRegenBuff:
-                case eSpellType.EnergyResistBuff:
-                case eSpellType.FatigueConsumptionBuff:
-                case eSpellType.FlexibleSkillBuff:
-                case eSpellType.HasteBuff:
-                case eSpellType.HealthRegenBuff:
-                case eSpellType.HeatColdMatterBuff:
-                case eSpellType.HeatResistBuff:
-                case eSpellType.HeroismBuff:
-                case eSpellType.KeepDamageBuff:
-                case eSpellType.MagicResistBuff:
-                case eSpellType.MatterResistBuff:
-                case eSpellType.MeleeDamageBuff:
-                case eSpellType.MesmerizeDurationBuff:
-                case eSpellType.MLABSBuff:
-                case eSpellType.ParryBuff:
-                case eSpellType.PowerHealthEnduranceRegenBuff:
-                case eSpellType.PowerRegenBuff:
-                case eSpellType.SavageCombatSpeedBuff:
-                case eSpellType.SavageCrushResistanceBuff:
-                case eSpellType.SavageDPSBuff:
-                case eSpellType.SavageParryBuff:
-                case eSpellType.SavageSlashResistanceBuff:
-                case eSpellType.SavageThrustResistanceBuff:
-                case eSpellType.SpiritResistBuff:
-                case eSpellType.StrengthBuff:
-                case eSpellType.StrengthConstitutionBuff:
-                case eSpellType.SuperiorCourageBuff:
-                case eSpellType.ToHitBuff:
-                case eSpellType.WeaponSkillBuff:
-                case eSpellType.DamageAdd:
-                case eSpellType.OffensiveProc:
-                case eSpellType.DefensiveProc:
-                case eSpellType.DamageShield:
-                case eSpellType.Bladeturn:
-                {
-                    if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && spell.Target is not eSpellTarget.PET)
-                    {
-                        target = Body;
-                        break;
-                    }
-
-                    if (Body.ControlledBrain?.Body != null &&
-                        spell.Target is not eSpellTarget.SELF &&
-                        Body.IsWithinRadius(target, spell.CalculateEffectiveRange(Body)) &&
-                        !LivingHasEffect(Body.ControlledBrain.Body, spell))
-                    {
-                        target = Body.ControlledBrain.Body;
-                        break;
-                    }
-
-                    break;
-                }
-
-                #endregion Buffs
-
-                #region Disease Cure/Poison Cure/Summon
-
-                case eSpellType.CureDisease:
-                {
-                    if (Body.IsDiseased)
-                    {
-                        target = Body;
-                        break;
-                    }
-
-                    if (Body.ControlledBrain?.Body != null &&
-                        Body.ControlledBrain.Body.IsDiseased &&
-                        spell.Target is not eSpellTarget.SELF &&
-                        Body.IsWithinRadius(Body.ControlledBrain.Body, spell.CalculateEffectiveRange(Body)))
-                    {
-                        target = Body.ControlledBrain.Body;
-                        break;
-                    }
-
-                    break;
-                }
-                case eSpellType.CurePoison:
-                {
-                    if (Body.IsPoisoned)
-                    {
-                        target = Body;
-                        break;
-                    }
-
-                    if (Body.ControlledBrain?.Body != null &&
-                        Body.ControlledBrain.Body.IsPoisoned &&
-                        spell.Target is not eSpellTarget.SELF &&
-                        Body.IsWithinRadius(Body.ControlledBrain.Body, spell.CalculateEffectiveRange(Body)))
-                    {
-                        target = Body.ControlledBrain.Body;
-                        break;
-                    }
-
-                    break;
-                }
-                case eSpellType.Summon:
-                {
-                    target = Body;
-                    break;
-                }
-                case eSpellType.SummonMinion:
-                {
-                    // If the list is null, lets make sure it gets initialized.
-                    if (Body.ControlledNpcList == null)
-                        Body.InitControlledBrainArray(2);
-                    else
-                    {
-                        // Let's check to see if the list is full - if it is, we can't cast another minion.
-                        // If it isn't, let them cast.
-                        IControlledBrain[] icb = Body.ControlledNpcList;
-                        int numberOfPets = 0;
-
-                        for (int i = 0; i < icb.Length; i++)
-                        {
-                            if (icb[i] != null)
-                                numberOfPets++;
-                        }
-
-                        if (numberOfPets >= icb.Length)
-                            break;
-                    }
-
-                    target = Body;
-                    break;
-                }
-
-                #endregion Disease Cure/Poison Cure/Summon
-
-                #region Heals
-
                 case eSpellType.CombatHeal:
                 case eSpellType.Heal:
                 case eSpellType.HealOverTime:
@@ -1282,26 +1120,164 @@ namespace DOL.AI.Brain
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
                 {
-                    if (Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
+                    List<GameLiving> candidates = GetPrioritizedTargetsForDefensiveSpell(spell);
+
+                    if (UseEmergencyHeal)
                     {
-                        target = Body;
-                        break;
+                        int emergencyThreshold = HealThreshold / 2;
+
+                        foreach (GameLiving candidate in candidates)
+                        {
+                            if (candidate.HealthPercent < emergencyThreshold && CanSpellStillBeCastOnTarget(spell, candidate))
+                                return candidate;
+                        }
                     }
 
-                    if (Body.ControlledBrain?.Body != null &&
-                        spell.Target is not eSpellTarget.SELF &&
-                        Body.IsWithinRadius(Body.ControlledBrain.Body, spell.CalculateEffectiveRange(Body)) &&
-                        Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
+                    foreach (GameLiving candidate in candidates)
                     {
-                        target = Body.ControlledBrain.Body;
-                        break;
+                        if (CanSpellStillBeCastOnTarget(spell, candidate))
+                            return candidate;
                     }
 
                     break;
                 }
+                default:
+                {
+                    List<GameLiving> candidates = GetPrioritizedTargetsForDefensiveSpell(spell);
 
-                #endregion
+                    foreach (GameLiving candidate in candidates)
+                    {
+                        if (CanSpellStillBeCastOnTarget(spell, candidate))
+                            return candidate;
+                    }
 
+                    break;
+                }
+            }
+
+            return null;
+        }
+
+        protected virtual List<GameLiving> GetPrioritizedTargetsForDefensiveSpell(Spell spell)
+        {
+            // Prioritization order: Self, own minions.
+
+            List<GameLiving> candidates = GameLoop.GetListForTick<GameLiving>();
+
+            candidates.Add(Body);
+
+            if (spell.Target is not eSpellTarget.SELF)
+            {
+                IControlledBrain[] controlledNpcList = Body.ControlledNpcList;
+
+                if (controlledNpcList != null)
+                {
+                    foreach (IControlledBrain brain in controlledNpcList)
+                    {
+                        if (brain?.Body != null)
+                            candidates.Add(brain.Body);
+                    }
+                }
+            }
+
+            return candidates;
+        }
+
+        protected virtual int HealThreshold => Properties.NPC_HEAL_THRESHOLD;
+        protected virtual bool UseEmergencyHeal => false;
+
+        public virtual bool CanSpellStillBeCastOnTarget(Spell spell, GameLiving target)
+        {
+            if (target == null)
+                return false;
+
+            bool allowedToAttack = GameServer.ServerRules.IsAllowedToAttack(Body, target, true);
+            int spellRange = spell.CalculateEffectiveRange(Body);
+
+            // Offensive spells.
+            if (spell.IsHarmful)
+            {
+                if (!allowedToAttack)
+                    return false;
+
+                if (!Body.IsWithinRadius(target, spellRange))
+                    return false;
+
+                if (spell.Duration > 0 || spell.IsConcentration)
+                {
+                    if (spell.SpellType is not eSpellType.DirectDamageWithDebuff and not eSpellType.DamageSpeedDecrease && LivingHasEffect(target, spell))
+                        return false;
+                }
+
+                return true;
+            }
+
+            // Defensive spells.
+            if (allowedToAttack)
+                return false;
+
+            bool isSelf = target == Body;
+
+            switch (spell.SpellType)
+            {
+                case eSpellType.CureDisease:
+                {
+                    if (!target.IsDiseased)
+                        return false;
+
+                    if (isSelf)
+                        return true;
+
+                    return Body.IsWithinRadius(target, spellRange);
+                }
+                case eSpellType.CurePoison:
+                {
+                    if (!target.IsPoisoned)
+                        return false;
+
+                    if (isSelf)
+                        return true;
+
+                    return Body.IsWithinRadius(target, spellRange);
+                }
+                case eSpellType.SummonMinion:
+                {
+                    if (!isSelf)
+                        return false;
+
+                    if (Body.ControlledNpcList == null)
+                    {
+                        Body.InitControlledBrainArray(2);
+                        return true;
+                    }
+
+                    IControlledBrain[] controlledBrain = Body.ControlledNpcList;
+                    int numberOfPets = 0;
+
+                    for (int i = 0; i < controlledBrain.Length; i++)
+                    {
+                        if (controlledBrain[i] != null)
+                            numberOfPets++;
+                    }
+
+                    return numberOfPets < controlledBrain.Length;
+                }
+                case eSpellType.CombatHeal:
+                case eSpellType.Heal:
+                case eSpellType.HealOverTime:
+                case eSpellType.MercHeal:
+                case eSpellType.OmniHeal:
+                case eSpellType.PBAoEHeal:
+                case eSpellType.SpreadHeal:
+                {
+                    if (target.HealthPercent >= HealThreshold || LivingHasEffect(target, spell))
+                        return false;
+
+                    if (isSelf)
+                        return true;
+
+                    return Body.IsWithinRadius(target, spellRange);
+                }
                 case eSpellType.SummonCommander:
                 case eSpellType.SummonDruidPet:
                 case eSpellType.SummonHunterPet:
@@ -1309,18 +1285,19 @@ namespace DOL.AI.Brain
                 case eSpellType.SummonUnderhill:
                 case eSpellType.SummonSimulacrum:
                 case eSpellType.SummonSpiritFighter:
-                {
-                    if (Body.ControlledBrain != null)
-                        break;
-
-                    target = Body;
-                    break;
-                }
+                    return isSelf && Body.ControlledBrain == null;
                 default:
-                    break;
-            }
+                {
+                    if (LivingHasEffect(target, spell))
+                        return false;
 
-            return target;
+                    if (isSelf)
+                        return true;
+
+                    return Body.IsWithinRadius(target, spellRange);
+
+                }
+            }
         }
 
         protected static SpellLine m_mobSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
@@ -1383,15 +1360,8 @@ namespace DOL.AI.Brain
             SpellHandler spellHandler = Body.castingComponent.SpellHandler;
 
             // If we're currently casting 'spell' on 'target', assume it already has the effect.
-            // This allows spell queuing while preventing casting on the same target more than once.
+            // This helps spell queuing.
             if (spellHandler != null && spellHandler.Spell.ID == spell.ID && spellHandler.Target == target)
-                return true;
-
-            SpellHandler queuedSpellHandler = Body.castingComponent.QueuedSpellHandler;
-
-            // Do the same for our queued up spell.
-            // This can happen on charmed pets having two buffs that they're trying to cast on their owner.
-            if (queuedSpellHandler != null && queuedSpellHandler.Spell.ID == spell.ID && queuedSpellHandler.Target == target)
                 return true;
 
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
@@ -1427,9 +1397,9 @@ namespace DOL.AI.Brain
             private const int EFFECTIVE_AGGRO_DISTANCE_THRESHOLD = 250; // Should be higher than players' melee range.
             private static readonly double EFFECTIVE_AGGRO_EXPONENT = Math.Log(1 / 3.0) / (1500 - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD);
 
-            protected readonly ABrain _owner;
+            protected readonly StandardMobBrain _owner;
 
-            public ThreatStrategy(ABrain owner)
+            public ThreatStrategy(StandardMobBrain owner)
             {
                 _owner = owner;
             }

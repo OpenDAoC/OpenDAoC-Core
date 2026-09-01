@@ -64,22 +64,21 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 573, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
-            SuttungBrain.message1 = false;
-            SuttungBrain.message2 = false;
-            SuttungCount = 1;
 
             VisibleActiveWeaponSlots = 16;
             SuttungBrain sbrain = new SuttungBrain();
             SetOwnBrain(sbrain);
-            LoadedFromScript = true; 
+            LoadedFromScript = true;
             base.AddToWorld();
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            {
+                if (npc is HjalmarSuttungController controller)
+                {
+                    controller.SuttungBoss = this;
+                    break;
+                }
+            }
             return true;
-        }
-        public static int SuttungCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            SuttungCount = 0;
-            base.ProcessDeath(killer);
         }
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {
@@ -147,7 +146,7 @@ namespace DOL.AI.Brain
             }
         }
 
-        public static bool IsBerserker = false;
+        public bool IsBerserker = false;
 
         public int BerserkerPhase(ECSGameTimer timer)
         {
@@ -177,9 +176,9 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public static bool message1 = false;
-        public static bool message2 = false;
-        public static bool AggroText = false;
+        public bool message1 = false;
+        public bool message2 = false;
+        public bool AggroText = false;
 
         public override void Think()
         {
@@ -330,13 +329,6 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public static int HjalmarCount = 0;
-        public override void ProcessDeath(GameObject killer) //on kill generate orbs
-        {
-            HjalmarCount = 0;
-            base.ProcessDeath(killer);
-        }
-
         public override void OnAttackEnemy(AttackData ad)
         {
             if (ad != null && (ad.AttackResult == eAttackResult.HitStyle || ad.AttackResult == eAttackResult.HitUnstyled))
@@ -354,9 +346,6 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             RespawnInterval = -1;
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
-            HjalmarBrain.message1 = false;
-            HjalmarBrain.message2 = false;
-            HjalmarCount = 1;
 
             if(!Styles.Contains(taunt))
                 Styles.Add(taunt);
@@ -374,6 +363,14 @@ namespace DOL.GS
             SetOwnBrain(sbrain);
             LoadedFromScript = true;
             base.AddToWorld();
+            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            {
+                if (npc is HjalmarSuttungController controller)
+                {
+                    controller.HjalmarBoss = this;
+                    break;
+                }
+            }
             return true;
         }
         public void BroadcastMessage(String message)
@@ -420,9 +417,8 @@ namespace DOL.AI.Brain
             }
         }
 
-        public static bool message1 = false;
-        public static bool message2 = false;
-        public static bool AggroText = false;
+        public bool message1 = false;
+        public bool message2 = false;
         private bool RemoveAdds = false;
         public override void Think()
         {
@@ -679,9 +675,19 @@ namespace DOL.GS
                 case 2: SpawnHjalmar(); break;
             }
         }
-        private void SpawnSuttung()
+        public GameNPC SuttungBoss;
+        public GameNPC HjalmarBoss;
+        public bool IsSuttungUp()
         {
-            if (Suttung.SuttungCount == 0)
+            return SuttungBoss != null && SuttungBoss.IsAlive && SuttungBoss.ObjectState is eObjectState.Active;
+        }
+        public bool IsHjalmarUp()
+        {
+            return HjalmarBoss != null && HjalmarBoss.IsAlive && HjalmarBoss.ObjectState is eObjectState.Active;
+        }
+        public void SpawnSuttung()
+        {
+            if (!IsSuttungUp())
             {
                 Suttung boss = new Suttung();
                 boss.X = 32055;
@@ -690,12 +696,14 @@ namespace DOL.GS
                 boss.Heading = 2084;
                 boss.CurrentRegion = CurrentRegion;
                 boss.AddToWorld();
-                HjalmarSuttungControllerBrain.Spawn_Boss = false;
+                SuttungBoss = boss;
+                if (Brain is HjalmarSuttungControllerBrain controllerBrain)
+                    controllerBrain.Spawn_Boss = false;
             }
         }
-        private void SpawnHjalmar()
+        public void SpawnHjalmar()
         {
-            if (Hjalmar.HjalmarCount == 0)
+            if (!IsHjalmarUp())
             {
                 Hjalmar boss = new Hjalmar();
                 boss.X = 32079;
@@ -704,7 +712,9 @@ namespace DOL.GS
                 boss.Heading = 21;
                 boss.CurrentRegion = CurrentRegion;
                 boss.AddToWorld();
-                HjalmarSuttungControllerBrain.Spawn_Boss = false;
+                HjalmarBoss = boss;
+                if (Brain is HjalmarSuttungControllerBrain controllerBrain)
+                    controllerBrain.Spawn_Boss = false;
             }
         }
     }
@@ -721,64 +731,32 @@ namespace DOL.AI.Brain
         {
             ThinkInterval = 1000;
         }
-        public static bool Spawn_Boss = false;
+        public bool Spawn_Boss = false;
         public override void Think()
         {
             int respawn = GS.ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
-            if (Body.IsAlive)
+            if (Body.IsAlive && Body is HjalmarSuttungController controller)
             {
-                if (Suttung.SuttungCount == 1 || Hjalmar.HjalmarCount == 1)//one of them is up
+                if (!Spawn_Boss && !controller.IsSuttungUp() && !controller.IsHjalmarUp())//noone of them is up
                 {
-                    //log.Warn("Suttung or Hjalmar is around");
-                }
-                if(Suttung.SuttungCount == 0 && Hjalmar.HjalmarCount == 0)//noone of them is up
-                {
-                    if (!Spawn_Boss)
-                    {
-                        //log.Warn("Trying to respawn Suttung or Hjalmar");
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBoss), respawn);
-                        Spawn_Boss = true;
-                    }
+                    //log.Warn("Trying to respawn Suttung or Hjalmar");
+                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBoss), respawn);
+                    Spawn_Boss = true;
                 }
             }
         }
 
         private int SpawnBoss(ECSGameTimer timer)
         {
-            switch(Util.Random(1,2))
+            if (Body is HjalmarSuttungController controller)
             {
-                case 1: SpawnSuttung(); break;
-                case 2: SpawnHjalmar(); break;
+                switch(Util.Random(1,2))
+                {
+                    case 1: controller.SpawnSuttung(); break;
+                    case 2: controller.SpawnHjalmar(); break;
+                }
             }
             return 0;
-        }
-        private void SpawnSuttung()
-        {
-            if (Suttung.SuttungCount == 0)
-            {
-                Suttung boss = new Suttung();
-                boss.X = 32055;
-                boss.Y = 54253;
-                boss.Z = 11883;
-                boss.Heading = 2084;
-                boss.CurrentRegion = Body.CurrentRegion;
-                boss.AddToWorld();
-                Spawn_Boss = false;
-            }
-        }
-        private void SpawnHjalmar()
-        {
-            if (Hjalmar.HjalmarCount == 0)
-            {
-                Hjalmar boss = new Hjalmar();
-                boss.X = 32079;
-                boss.Y = 53415;
-                boss.Z = 11885;
-                boss.Heading = 21;
-                boss.CurrentRegion = Body.CurrentRegion;
-                boss.AddToWorld();
-                Spawn_Boss = false;
-            }
         }
     }
 }

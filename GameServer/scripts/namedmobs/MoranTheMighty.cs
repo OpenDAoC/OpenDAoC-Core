@@ -66,7 +66,6 @@ namespace DOL.GS
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
             MoranBrain sBrain = new MoranBrain();
-            MoranBrain._aggroStart = true;
             SetOwnBrain(sBrain);
             base.AddToWorld();
             return true;
@@ -80,7 +79,7 @@ namespace DOL.AI.Brain
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool _aggroStart = true;
+        public bool _aggroStart = true;
         
         public MoranBrain()
             : base()

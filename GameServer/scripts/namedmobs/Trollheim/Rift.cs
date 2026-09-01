@@ -81,7 +81,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(150);
-			RiftBrain.IsValkyn = false;
 
 			RiftBrain sbrain = new RiftBrain();
 			SetOwnBrain(sbrain);
@@ -104,9 +103,9 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled = false;
-		public static bool IsValkyn = false;
-		public static bool IsRift = false;
+		public bool IsPulled = false;
+		public bool IsValkyn = false;
+		public bool IsRift = false;
 		public void ChangeAppearance()
         {
 			if (!HasAggro && Body.IsAlive && IsValkyn == false)
@@ -191,7 +190,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public static bool SpawnMoreAdds = false;
+		public bool SpawnMoreAdds = false;
 		public int SpawnAdds(ECSGameTimer timer)
         {
 			if (Body.IsAlive && HasAggro && IsRift)

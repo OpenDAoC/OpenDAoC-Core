@@ -432,7 +432,7 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error($"Tried to relocate object to a non-existent zone (Object: {gameObject})");
 
-                        AbortRelocation();
+                        AbortRelocation(gameObject);
                         return;
                     }
 
@@ -443,7 +443,7 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error($"Tried to relocate object to a non-existent subzone (Object: {gameObject})");
 
-                        AbortRelocation();
+                        AbortRelocation(gameObject);
                         return;
                     }
 
@@ -456,7 +456,7 @@ namespace DOL.GS
             else
                 subZoneObject.InitiateSubZoneTransition(null, null);
 
-            void AbortRelocation()
+            static void AbortRelocation(GameObject gameObject)
             {
                 if (gameObject is GamePlayer player)
                     player.MoveToBind();

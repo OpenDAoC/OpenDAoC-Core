@@ -20,9 +20,6 @@ namespace DOL.AI.Brain
 				if (!CanAggroTarget(player))
 					continue;
 
-				if (player.IsStealthed || player.Steed != null)
-					continue;
-
 				if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
 					continue;
 

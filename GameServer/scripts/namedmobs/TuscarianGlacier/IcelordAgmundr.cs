@@ -59,8 +59,6 @@ namespace DOL.GS
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
 
-            AgmundrBrain.IsChanged = false;
-            AgmundrBrain.IsPulled = false;
             AgmundrBrain sbrain = new AgmundrBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -97,8 +95,8 @@ namespace DOL.AI.Brain
             ThinkInterval = 2000;
         }
 
-        public static bool IsPulled = false;
-        public static bool IsChanged = false;
+        public bool IsPulled = false;
+        public bool IsChanged = false;
         private bool PulledText = false;
         public void BroadcastMessage(String message)
         {

@@ -222,7 +222,6 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 1500;
         }
-        public static bool reset_darra = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

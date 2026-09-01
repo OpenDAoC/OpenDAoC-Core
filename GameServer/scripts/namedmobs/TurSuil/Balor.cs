@@ -10,6 +10,7 @@ namespace DOL.GS
 	public class Balor : GameEpicBoss
 	{
 		public Balor() : base() { }
+		public BalorEye Eye;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -75,7 +76,6 @@ namespace DOL.GS
 			LoadTemplate(npcTemplate);
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
-			BalorBrain.spawn_eye = false;
 			Faction = FactionMgr.GetFactionByID(93);
 			IsCloakHoodUp = true;
 
@@ -105,10 +105,13 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool spawn_eye = false;
+		private bool IsEyeOfBalorUp()
+		{
+			return Body is Balor balor && balor.Eye != null && balor.Eye.IsAlive && balor.Eye.ObjectState is GameObject.eObjectState.Active;
+		}
 		public void SpawnEyeOfBalor()
 		{
-			if (BalorEye.EyeCount == 0)
+			if (!IsEyeOfBalorUp())
 			{
 				BalorEye Add1 = new BalorEye();
 				Add1.X = Body.X;
@@ -118,6 +121,8 @@ namespace DOL.AI.Brain
 				Add1.Heading = Body.Heading;
 				Add1.RespawnInterval = -1;
 				Add1.AddToWorld();
+				if (Body is Balor balor)
+					balor.Eye = Add1;
 			}
 		}
 		private int m_stage = 10;
@@ -187,8 +192,8 @@ namespace DOL.AI.Brain
 			AggroRange = 1500;
 			ThinkInterval = 500;
 		}
-		public static bool PickTarget = false;
-		public static bool Cancast = false;
+		public bool PickTarget = false;
+		public bool Cancast = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -214,8 +219,8 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -240,7 +245,7 @@ namespace DOL.AI.Brain
 			if (Enemys_To_DD.Count > 0)
 			{
 				GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
-				RandomTarget = Target;//set random target to static RandomTarget
+				RandomTarget = Target;
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartCast), 3000);
 			}
 		}
@@ -290,12 +295,6 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-		public static int EyeCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-			--EyeCount;
-            base.ProcessDeath(killer);
-        }
         public override bool AddToWorld()
 		{
 			Model = 665;
@@ -311,10 +310,6 @@ namespace DOL.GS
 			Flags ^= eFlags.DONTSHOWNAME;
 			//Flags ^= eFlags.STATUE;
 
-			BalorEyeBrain.PickTarget = false;
-			BalorEyeBrain.RandomTarget = null;
-			BalorEyeBrain.Cancast = false;
-			++EyeCount;
 			Size = 20;
 			Level = (byte)Util.Random(65, 70);
 			Faction = FactionMgr.GetFactionByID(93);

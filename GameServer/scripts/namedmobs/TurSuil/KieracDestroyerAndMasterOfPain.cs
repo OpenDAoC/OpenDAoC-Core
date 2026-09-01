@@ -126,7 +126,7 @@ namespace DOL.GS
 			}
 			return success;
 		}
-		private static bool SpawnMoP=false;
+		private bool SpawnMoP=false;
 		public override void ProcessDeath(GameObject killer)
 		{
 			if (SpawnMoP == false)

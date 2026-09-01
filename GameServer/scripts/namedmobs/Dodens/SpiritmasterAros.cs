@@ -229,10 +229,10 @@ namespace DOL.AI.Brain
 			}
 		}
 		#region Aros Debuff
-		public static bool CanCastDebuff = false;
+		public bool CanCastDebuff = false;
 		List<GamePlayer> Enemys_To_Debuff = new List<GamePlayer>();
-		public static GamePlayer debufftarget = null;
-		public static GamePlayer DebuffTarget
+		public GamePlayer debufftarget = null;
+		public GamePlayer DebuffTarget
 		{
 			get { return debufftarget; }
 			set { debufftarget = value; }
@@ -254,7 +254,7 @@ namespace DOL.AI.Brain
 					if (CanCastDebuff == false && Body.GetSkillDisabledDuration(Aros_Debuff) == 0)
 					{
 						GamePlayer Target = Enemys_To_Debuff[Util.Random(0, Enemys_To_Debuff.Count - 1)];//pick random target from list
-						DebuffTarget = Target;//set random target to static RandomTarget
+						DebuffTarget = Target;
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDebuff), 5000);
 						CanCastDebuff = true;
 					}
@@ -406,7 +406,6 @@ namespace DOL.GS
 		{
 			153,162,137,146,773,784,169,178,185,194
 		};
-		public static int ArosPetCount = 0;
 		public override bool AddToWorld()
 		{
 			Name = "spirit champion";
@@ -427,7 +426,6 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(779);
 
 			VisibleActiveWeaponSlots = 16;
-			++ArosPetCount;
 			Size = 50;
 			Level = 62;
 			MaxSpeedBase = 225;
@@ -442,11 +440,6 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-        public override void ProcessDeath(GameObject killer)
-        {
-			--ArosPetCount;
-            base.ProcessDeath(killer);
-        }
         public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;
 		private Spell m_SpiritChampion_stun;

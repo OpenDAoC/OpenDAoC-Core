@@ -34,7 +34,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1000;
 		}
 
-		public EncounterKillCounter GateCounter { get; } = new("SnarlsGate", 3);
+		public EncounterKillCounter GateCounter { get; } = new(3);
 
 		public override void Think()
 		{
@@ -56,7 +56,7 @@ namespace DOL.GS
 	{
 		public SnarlsAdd() : base() { }
 
-		public override string GateId => "SnarlsGate";
+		protected override bool IsGateOwner(GameNPC npc) => npc is Snarls;
 
 		public override bool AddToWorld()
 		{

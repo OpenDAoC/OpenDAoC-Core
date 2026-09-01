@@ -140,9 +140,9 @@ namespace DOL.AI.Brain
 		}
 		#region Throw Player
 		List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-		public static bool IsTargetPicked = false;
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public bool IsTargetPicked = false;
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }

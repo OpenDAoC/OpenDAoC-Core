@@ -138,16 +138,18 @@ namespace DOL.GS
 			}
 			else
 			{
-				ArrayList bonusToApply = new ArrayList(4);
+				Span<int> bonusToApply = stackalloc int[8];
+				int bonusCount = 0;
+		
 				if (item.Bonus1Type != 0)
 				{
-					bonusToApply.Add(item.Bonus1Type);
+					bonusToApply[bonusCount++] = item.Bonus1Type;
 					if (item.Bonus2Type != 0)
 					{
-						bonusToApply.Add(item.Bonus2Type);
+						bonusToApply[bonusCount++] = item.Bonus2Type;
 						if (item.Bonus3Type != 0)
 						{
-							bonusToApply.Add(item.Bonus3Type);
+							bonusToApply[bonusCount++] = item.Bonus3Type;
 							if (item.Bonus4Type != 0)
 							{
 								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.AlreadyImbued", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -163,9 +165,16 @@ namespace DOL.GS
 					{
 						DbInventoryItem currentItem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
 
-						if (currentItem.Object_Type != (int)eObjectType.SpellcraftGem)
+						if ((eObjectType) currentItem.Object_Type is not eObjectType.SpellcraftGem)
 						{
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.FalseItem"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return false;
+						}
+
+						if (SkillBase.CheckPropertyType((eProperty) currentItem.Bonus1Type, ePropertyType.Focus) &&
+							(eObjectType) item.Object_Type is not eObjectType.Staff)
+						{
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.NotStaff"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return false;
 						}
 
@@ -175,13 +184,13 @@ namespace DOL.GS
 							return false;
 						}
 
-						if (bonusToApply.Count > 4)
+						if (bonusCount >= 4)
 						{
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.DifferentTypes", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return false;
 						}
 
-						bonusToApply.Add(currentItem.Bonus1Type);
+						bonusToApply[bonusCount++] = currentItem.Bonus1Type;
 					}
 				}
 

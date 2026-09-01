@@ -56,9 +56,6 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            BirghirBrain.IsTargetPicked = false;
-            BirghirBrain.message1 = false;
-            BirghirBrain.IsPulled = false;
 
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
@@ -92,8 +89,8 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
@@ -164,9 +161,9 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public static bool IsTargetPicked = false;
-        public static bool message1 = false;
-        public static bool IsPulled = false;
+        public bool IsTargetPicked = false;
+        public bool message1 = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -424,11 +421,6 @@ namespace DOL.GS
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
 
-            GuthlacBrain.message1 = false;
-            GuthlacBrain.IsBombUp = false;
-            GuthlacBrain.RandomTarget = null;
-            GuthlacBrain.IsPulled2 = false;
-
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
             GuthlacBrain sbrain = new GuthlacBrain();
@@ -460,10 +452,10 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool message1 = false;
-        public static bool IsBombUp = false;
-        public static GameLiving randomtarget = null;
-        public static GameLiving RandomTarget
+        public bool message1 = false;
+        public bool IsBombUp = false;
+        public GameLiving randomtarget = null;
+        public GameLiving RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
@@ -471,10 +463,10 @@ namespace DOL.AI.Brain
         List<GamePlayer> PlayersToDD = new List<GamePlayer>();
 
         #region Root && debuff
-        public static bool CanCast = false;
-        public static bool StartCastRoot = false;
-        public static GameLiving randomtarget2 = null;
-        public static GameLiving RandomTarget2
+        public bool CanCast = false;
+        public bool StartCastRoot = false;
+        public GameLiving randomtarget2 = null;
+        public GameLiving RandomTarget2
         {
             get { return randomtarget2; }
             set { randomtarget2 = value; }
@@ -498,7 +490,7 @@ namespace DOL.AI.Brain
                     if (CanCast == false)
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_Root[Util.Random(0, Enemys_To_Root.Count - 1)];//pick random target from list
-                        RandomTarget2 = Target;//set random target to static RandomTarget
+                        RandomTarget2 = Target;
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastRoot), 1000);
                         CanCast = true;
                     }
@@ -533,7 +525,7 @@ namespace DOL.AI.Brain
         }
         #endregion
 
-        public static bool IsPulled2 = false;
+        public bool IsPulled2 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled2 == false)
@@ -562,7 +554,6 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 IsPulled2 = false;
                 RandomTarget = null;
-                FrozenBomb.FrozenBombCount = 0;
                 message1 = false;
                 IsBombUp = false;
                 StartCastRoot = false;
@@ -607,7 +598,7 @@ namespace DOL.AI.Brain
                             PlayersToDD.Add(player);
                     }
                 }
-                if (IsBombUp == false && FrozenBomb.FrozenBombCount == 0)
+                if (IsBombUp == false && !IsFrozenBombUp())
                 {
                     if (PlayersToDD.Count > 0)
                     {
@@ -630,9 +621,14 @@ namespace DOL.AI.Brain
         }
 
         #region Spawn Frost Bomb
+        private GameNPC _frozenBomb;
+        private bool IsFrozenBombUp()
+        {
+            return _frozenBomb != null && _frozenBomb.IsAlive && _frozenBomb.ObjectState is GameObject.eObjectState.Active;
+        }
         public int SpawnBombTimer(ECSGameTimer timer)
         {
-            if (FrozenBomb.FrozenBombCount == 0)
+            if (!IsFrozenBombUp())
                 SpawnFrozenBomb();
 
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBomb), 5000);
@@ -667,6 +663,7 @@ namespace DOL.AI.Brain
             npc.Heading = Body.Heading;
             npc.CurrentRegion = Body.CurrentRegion;
             npc.AddToWorld();
+            _frozenBomb = npc;
         }
         #endregion
 
@@ -831,15 +828,9 @@ namespace DOL.GS
             // 85% ABS is cap.
             return 0.15;
         }
-        public static int FrozenBombCount = 0;
         public override void Die(GameObject killer)
         {
             base.Die(null);
-        }
-        public override void ProcessDeath(GameObject killer)
-        {
-            FrozenBombCount = 0;
-            base.ProcessDeath(killer);
         }
         public override int MaxHealth
         {
@@ -850,7 +841,6 @@ namespace DOL.GS
             Model = 665;
             Size = 100;
             MaxSpeedBase = 0;
-            FrozenBombCount = 1;
             Name = "Ice Spike";
             Level = (byte)Util.Random(62, 66);
 

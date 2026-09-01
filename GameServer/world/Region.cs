@@ -1314,34 +1314,30 @@ namespace DOL.GS
             return distance <= squareRadius;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius)
         {
-            List<GameStaticItem> result = new();
+            var result = GameLoop.GetListForTick<GameStaticItem>();
             GetInRadius(point, eGameObjectType.ITEM, radius, result);
             return result;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
         {
-            List<GameNPC> result = new();
+            var result = GameLoop.GetListForTick<GameNPC>();
             GetInRadius(point, eGameObjectType.NPC, radius, result);
             return result;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
         {
-            List<GamePlayer> result = new();
+            var result = GameLoop.GetListForTick<GamePlayer>();
             GetInRadius(point, eGameObjectType.PLAYER, radius, result);
             return result;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
-            List<GameDoorBase> result = new();
+            var result = GameLoop.GetListForTick<GameDoorBase>();
             GetInRadius(point, eGameObjectType.DOOR, radius, result);
             return result;
         }

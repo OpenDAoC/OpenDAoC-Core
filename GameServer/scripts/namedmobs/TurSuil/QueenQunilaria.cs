@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -13,6 +14,8 @@ namespace DOL.GS
 	public class QueenQunilaria : GameEpicBoss
 	{
 		public QueenQunilaria() : base() { }
+		public readonly List<GameNPC> Minions = new List<GameNPC>();
+		public readonly object MinionsLock = new object();
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -147,19 +150,29 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnAdds()
 		{
-			for (int i = 0; i < 3; i++)
+			if (Body is not QueenQunilaria queen)
+				return;
+
+			lock (queen.MinionsLock)
 			{
-				if (QunilariaAdd.MinionCount < 4)
+				queen.Minions.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+				int minionCount = queen.Minions.Count;
+				for (int i = 0; i < 3; i++)
 				{
-					QunilariaAdd Add1 = new QunilariaAdd();
-					Add1.X = Body.X + Util.Random(-100, 100);
-					Add1.Y = Body.Y + Util.Random(-100, 100);
-					Add1.Z = Body.Z;
-					Add1.CurrentRegion = Body.CurrentRegion;
-					Add1.Heading = Body.Heading;
-					Add1.RespawnInterval = -1;
-					Add1.PackageID = "QunilariaCombatAdd";
-					Add1.AddToWorld();
+					if (minionCount < 4)
+					{
+						QunilariaAdd Add1 = new QunilariaAdd();
+						Add1.X = Body.X + Util.Random(-100, 100);
+						Add1.Y = Body.Y + Util.Random(-100, 100);
+						Add1.Z = Body.Z;
+						Add1.CurrentRegion = Body.CurrentRegion;
+						Add1.Heading = Body.Heading;
+						Add1.RespawnInterval = -1;
+						Add1.PackageID = "QunilariaCombatAdd";
+						Add1.AddToWorld();
+						queen.Minions.Add(Add1);
+						++minionCount;
+					}
 				}
 			}
 		}
@@ -248,14 +261,8 @@ namespace DOL.GS
 			get { return 3000; }
 		}
 
-		public static int MinionCount = 0;
 		public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--MinionCount;
-			base.ProcessDeath(killer);
-		}
 		public override bool AddToWorld()
 		{
 			Model = 764;
@@ -267,7 +274,6 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			MaxSpeedBase = 225;
 
-			++MinionCount;
 			Size = (byte)Util.Random(80, 100);
 			Level = (byte)Util.Random(58, 64);
 			Faction = FactionMgr.GetFactionByID(93);

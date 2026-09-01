@@ -5455,16 +5455,19 @@ namespace DOL.GS
             return WeaponBaseSpecLevel((eObjectType) weapon.Object_Type, weapon.SlotPosition);
         }
 
-        /// <summary>
-        /// Gets the weaponskill of weapon
-        /// </summary>
-        public override double GetWeaponSkill(DbInventoryItem weapon)
+        public override int GetClassBaseWeaponSkill(DbInventoryItem weapon)
         {
             if (weapon == null)
                 return 0;
 
-            int classBaseWeaponSkill = (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
-            double weaponSkill = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
+            return (eInventorySlot) weapon.SlotPosition is eInventorySlot.DistanceWeapon ?
+                CharacterClass.WeaponSkillRangedBase :
+                CharacterClass.WeaponSkillBase;
+        }
+
+        public override double GetWeaponSkill(int weaponStat, int classBaseWeaponSkill)
+        {
+            double weaponSkill = Level * classBaseWeaponSkill * 0.005 * (1 + weaponStat * 0.005) * Effectiveness;
             return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 
@@ -6671,7 +6674,7 @@ namespace DOL.GS
                                 }
                                 else
                                 {
-                                    rangeAttackComponent.AutoFireTarget = TargetObject;
+                                    rangeAttackComponent.AutoFireTarget = TargetObject as GameLiving;
                                     rangeAttackComponent.RangedAttackState = eRangedAttackState.AimFire;
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.AutoReleaseShot"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
@@ -7911,7 +7914,7 @@ namespace DOL.GS
             if (pet.MaxSpeedBase <= 0)
                 return true;
 
-            pet.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort) ((Heading + 2048) % 4096), false);
+            pet.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort) ((Heading + 2048) % 4096));
             return true;
         }
 
@@ -10961,10 +10964,6 @@ namespace DOL.GS
                 case eGameObjectType.PLAYER:
                 {
                     GamePlayer enemyPlayer = enemy as GamePlayer;
-
-                    // Own group is always visible.
-                    if (enemyPlayer.Group != null && Group != null && enemyPlayer.Group == Group)
-                        return true;
 
                     // Why is this still using the old effect list and vanish effect?
                     if (enemyPlayer.EffectList.GetOfType<VanishEffect>() != null || enemyPlayer.Client.Account.PrivLevel > 1)

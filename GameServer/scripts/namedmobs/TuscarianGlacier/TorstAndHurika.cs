@@ -394,9 +394,9 @@ namespace DOL.AI.Brain
         }
 
         public List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-        public static bool IsTargetPicked = false;
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public bool IsTargetPicked = false;
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
@@ -587,8 +587,8 @@ namespace DOL.AI.Brain
         private protected bool Point2check = false;
         bool SetNpcTarget = false;
 
-        private protected static GameNPC trostnpc = null;
-        private protected static GameNPC TrostNpc
+        private protected GameNPC trostnpc = null;
+        private protected GameNPC TrostNpc
         {
             get { return trostnpc; }
             set { trostnpc = value; }

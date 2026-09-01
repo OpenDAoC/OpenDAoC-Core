@@ -131,7 +131,6 @@ namespace DOL.GS
                 Styles.Add(taunt);
             if(!Styles.Contains(after_block))
                 Styles.Add(after_block);
-            LadyDarraBrain.reset_darra = false;
             spawn_palas = false;
             
             VisibleActiveWeaponSlots = 16;
@@ -182,10 +181,20 @@ namespace DOL.GS
             else
                 log.Warn("Lady Darra exist ingame, remove it and restart server if you want to add by script code.");
         }
-        public static bool spawn_palas = false;
+        public bool spawn_palas = false;
+        public static int CountPaladins()
+        {
+            int count = 0;
+            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(277))
+            {
+                if (npc != null && npc.IsAlive && npc.Brain is SpectralPaladinBrain)
+                    ++count;
+            }
+            return count;
+        }
         public void SpawnPaladins()
         {
-            if (SpectralPaladin.paladins_count == 0 && spawn_palas==false)
+            if (CountPaladins() == 0 && spawn_palas==false)
             {
                 SpectralPaladin Add1 = new SpectralPaladin();
                 Add1.X = 30000;
@@ -239,7 +248,7 @@ namespace DOL.AI.Brain
             AggroRange = 500;
             ThinkInterval = 1500;
         }
-        public static bool reset_darra = false;
+        public bool reset_darra = false;
         public override void Think()
         {
             if (!CheckProximityAggro())
@@ -257,9 +266,9 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (reset_darra == false)
                 {
-                    if (SpectralPaladin.paladins_count <= 3)
+                    if (Body is LadyDarra darra && LadyDarra.CountPaladins() <= 3)
                     {
-                        LadyDarra.spawn_palas = false;
+                        darra.spawn_palas = false;
                         foreach (GameNPC pala in Body.GetNPCsInRadius(2000))
                         {
                             if (pala != null)
@@ -270,7 +279,6 @@ namespace DOL.AI.Brain
                                 }
                             }
                         }
-                        LadyDarra darra = new LadyDarra();
                         darra.SpawnPaladins();
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDarra), 7000);
                         reset_darra = true;
@@ -322,12 +330,6 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public static int paladins_count = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --paladins_count;
-            base.ProcessDeath(killer);
-        }
         public override bool AddToWorld()
         {
             RespawnInterval = -1;
@@ -347,7 +349,6 @@ namespace DOL.GS
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.Standard);
             VisibleActiveWeaponSlots = 16;
-            ++paladins_count;
 
             Faction = FactionMgr.GetFactionByID(187);
             SpectralPaladinBrain adds = new SpectralPaladinBrain();

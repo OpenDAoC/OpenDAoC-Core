@@ -326,6 +326,11 @@ namespace DOL.GS
             if (!IsJumpNode(next))
                 return;
 
+            float distToJumpStartSq = (next.Position - position).LengthSquared();
+
+            if (distToJumpStartSq > NODE_REACHED_DISTANCE * NODE_REACHED_DISTANCE)
+                return;
+
             int endIndex = ResolveOffMeshLinkEndIndex();
             _offMeshCommitEnd = _activePath.Nodes.Peek(endIndex).Position;
         }
@@ -460,6 +465,13 @@ namespace DOL.GS
         public bool TryGetClosestReachableNode(Zone zone, Vector3 position, Vector3 target, out Vector3? node)
         {
             // This currently doesn't bridge zone crossings. Unsure if needed.
+
+            // Never touch _activePath while committed to an off-mesh link.
+            if (_offMeshCommitEnd.HasValue)
+            {
+                node = null;
+                return false;
+            }
 
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
             {

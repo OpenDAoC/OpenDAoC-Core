@@ -1926,6 +1926,9 @@ namespace DOL.GS
 
 			Brain?.Start();
 
+			if (Brain is IEncounterGateOwner gateOwner)
+				gateOwner.GateCounter?.Reset();
+
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;
 			else if (Mana > 0 && MaxMana > 0 && Mana < MaxMana)
@@ -2018,12 +2021,9 @@ namespace DOL.GS
 			return true;
 		}
 
-		public virtual bool MoveInRegion(ushort regionID, int x, int y, int z, ushort heading, bool forceMove)
+		public virtual bool MoveInRegion(ushort regionID, int x, int y, int z, ushort heading)
 		{
 			if (m_ObjectState is not eObjectState.Active || regionID != CurrentRegionID)
-				return false;
-
-			if (!forceMove && InCombat)
 				return false;
 
 			Region region = WorldMgr.GetRegion(regionID);
@@ -2056,7 +2056,7 @@ namespace DOL.GS
 				if (controlledBrain != null && controlledBrain.Body != null)
 				{
 					GameNPC subPet = controlledBrain.Body;
-					subPet.MoveInRegion(CurrentRegionID, m_x, m_y, m_z, Heading, true);
+					subPet.MoveInRegion(CurrentRegionID, m_x, m_y, m_z, Heading);
 				}
 			}
 
@@ -2212,7 +2212,7 @@ namespace DOL.GS
 
 					switch (Faction.GetStandingToFaction(player))
 					{
-						case Faction.Standing.Aggresive:
+						case Faction.Standing.Aggressive:
 						{
 							translationString = "GameNPC.GetAggroLevelString.Aggressive1";
 							break;
@@ -2679,11 +2679,14 @@ namespace DOL.GS
 			StartAttack(target);
 		}
 
-		private double damageFactor = 1;
-
-		public override double GetWeaponSkill(DbInventoryItem weapon)
+		public override int GetClassBaseWeaponSkill(DbInventoryItem weapon)
 		{
-			double weaponSkill = Math.Max(1, (int) Level) * 2.5 * (1 + 0.01 * (GetWeaponStat(weapon) + 30) / 2);
+			return 440;
+		}
+
+		public override double GetWeaponSkill(int weaponStat, int classBaseWeaponSkill)
+		{
+			double weaponSkill = Math.Max(1, (int) Level) * classBaseWeaponSkill * 0.005 * (1 + weaponStat * 0.005);
 			return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
 		}
 
@@ -3944,11 +3947,10 @@ namespace DOL.GS
 			LoadTemplate(template);
 		}
 
-		private double m_campBonus = 1;
+		public double CampBonus { get; set; } = 1;
+		public double DamageFactor { get; set; } = 1;
+        public override double MaxHealthScalingFactor => base.MaxHealthScalingFactor * RaidEncounterHealthScalingFactor;
+        protected double RaidEncounterHealthScalingFactor => Brain is StandardMobBrain brain && brain.RaidEncounter is { Active: true } raidEncounter && (raidEncounter.Owner == brain || brain.RaidEncounterScalesHealth) ? raidEncounter.HpMultiplier : 1.0;
 
-		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
-		public override double MaxHealthScalingFactor => base.MaxHealthScalingFactor * RaidEncounterHealthScalingFactor;
-		protected double RaidEncounterHealthScalingFactor => Brain is StandardMobBrain brain && brain.RaidEncounter is { Active: true } raidEncounter && (raidEncounter.Owner == brain || brain.RaidEncounterScalesHealth) ? raidEncounter.HpMultiplier : 1.0;
-		public double DamageFactor { get => damageFactor; set => damageFactor = value; }
 	}
 }

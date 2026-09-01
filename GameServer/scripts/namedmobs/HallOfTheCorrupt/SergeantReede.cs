@@ -133,7 +133,6 @@ namespace DOL.GS
             {
                 Styles.Add(SideFollowUp);
             }
-            SergeantReedeBrain.CanWalk = false;
             VisibleActiveWeaponSlots = 16;
             MeleeDamageType = eDamageType.Thrust;
             SergeantReedeBrain sbrain = new SergeantReedeBrain();
@@ -192,7 +191,7 @@ namespace DOL.AI.Brain
             AggroRange = 400;
             ThinkInterval = 1500;
         }
-        public static bool CanWalk = false;
+        public bool CanWalk = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

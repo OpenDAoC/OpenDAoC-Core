@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -9,6 +10,8 @@ namespace DOL.GS
 {
     public class AidonTheArchwizard : GameEpicBoss
     {
+        public readonly List<GameNPC> Copies = new List<GameNPC>();
+
         public AidonTheArchwizard() : base()
         {
         }
@@ -93,8 +96,6 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-            AidonTheArchwizardBrain.IsPulled = false;
-            AidonTheArchwizardBrain.CanCast = false;
 
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
@@ -163,8 +164,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public static bool IsPulled = false;
-        public static bool spawn_copies = false;
+        public bool spawn_copies = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (spawn_copies == false)
@@ -197,7 +197,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-        public static bool CanCast = false;
+        public bool CanCast = false;
         public bool SpawnCopiesAgain = false;
         private bool RemoveAdds = false;
         public override void Think()
@@ -207,14 +207,9 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                IsPulled = false;
                 spawn_copies = false;
                 CanCast = false;
                 SpawnCopiesAgain = false;
-                AidonCopyFire.CopyCountFire = 0;
-                AidonCopyIce.CopyCountIce = 0;
-                AidonCopyAir.CopyCountAir = 0;
-                AidonCopyEarth.CopyCountEarth = 0;
                 if (!RemoveAdds)
                 {
                     foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
@@ -269,9 +264,29 @@ namespace DOL.AI.Brain
             CanCast = false;
             return 0;
         }
+        private bool CopyExists(Type copyType)
+        {
+            if (Body is not AidonTheArchwizard aidon)
+                return false;
+
+            foreach (GameNPC npc in aidon.Copies)
+            {
+                if (npc != null && npc.IsAlive && npc.ObjectState is GameObject.eObjectState.Active && npc.GetType() == copyType)
+                    return true;
+            }
+            return false;
+        }
+        private void RegisterCopy(GameNPC copy)
+        {
+            if (Body is AidonTheArchwizard aidon)
+            {
+                aidon.Copies.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+                aidon.Copies.Add(copy);
+            }
+        }
         private int SpawnMoreCopies(ECSGameTimer timer)
         {
-            if (HasAggro && AidonCopyFire.CopyCountFire == 0 && AidonCopyIce.CopyCountIce == 0 && AidonCopyAir.CopyCountAir == 0 && AidonCopyEarth.CopyCountEarth == 0)
+            if (HasAggro && !CopyExists(typeof(AidonCopyFire)) && !CopyExists(typeof(AidonCopyIce)) && !CopyExists(typeof(AidonCopyAir)) && !CopyExists(typeof(AidonCopyEarth)))
             {
                 switch (Util.Random(1, 4))
                 {
@@ -283,6 +298,7 @@ namespace DOL.AI.Brain
                         Add3.CurrentRegionID = 277;
                         Add3.Heading = 3059;
                         Add3.AddToWorld();
+                        RegisterCopy(Add3);
                         break;
                     case 2:
                         AidonCopyFire Add1 = new AidonCopyFire();
@@ -292,6 +308,7 @@ namespace DOL.AI.Brain
                         Add1.CurrentRegionID = 277;
                         Add1.Heading = 1015;
                         Add1.AddToWorld();
+                        RegisterCopy(Add1);
                         break;
                     case 3:
                         AidonCopyEarth Add4 = new AidonCopyEarth();
@@ -301,6 +318,7 @@ namespace DOL.AI.Brain
                         Add4.CurrentRegionID = 277;
                         Add4.Heading = 1019;
                         Add4.AddToWorld();
+                        RegisterCopy(Add4);
                         break;
                     case 4:
                         AidonCopyIce Add2 = new AidonCopyIce();
@@ -310,6 +328,7 @@ namespace DOL.AI.Brain
                         Add2.CurrentRegionID = 277;
                         Add2.Heading = 3008;
                         Add2.AddToWorld();
+                        RegisterCopy(Add2);
                         break;
                 }
             }
@@ -318,7 +337,7 @@ namespace DOL.AI.Brain
         }
         public void SpawnCopies()
         {
-            if (AidonCopyFire.CopyCountFire == 0)
+            if (!CopyExists(typeof(AidonCopyFire)))
             {
                 AidonCopyFire Add1 = new AidonCopyFire();
                 Add1.X = 31649;
@@ -327,8 +346,9 @@ namespace DOL.AI.Brain
                 Add1.CurrentRegionID = 277;
                 Add1.Heading = 1015;
                 Add1.AddToWorld();
+                RegisterCopy(Add1);
             }
-            if (AidonCopyIce.CopyCountIce == 0)
+            if (!CopyExists(typeof(AidonCopyIce)))
             {
                 AidonCopyIce Add2 = new AidonCopyIce();
                 Add2.X = 31083;
@@ -337,8 +357,9 @@ namespace DOL.AI.Brain
                 Add2.CurrentRegionID = 277;
                 Add2.Heading = 3008;
                 Add2.AddToWorld();
+                RegisterCopy(Add2);
             }
-            if (AidonCopyAir.CopyCountAir == 0)
+            if (!CopyExists(typeof(AidonCopyAir)))
             {
                 AidonCopyAir Add3 = new AidonCopyAir();
                 Add3.X = 31080;
@@ -347,8 +368,9 @@ namespace DOL.AI.Brain
                 Add3.CurrentRegionID = 277;
                 Add3.Heading = 3059;
                 Add3.AddToWorld();
+                RegisterCopy(Add3);
             }
-            if (AidonCopyEarth.CopyCountEarth == 0)
+            if (!CopyExists(typeof(AidonCopyEarth)))
             {
                 AidonCopyEarth Add4 = new AidonCopyEarth();
                 Add4.X = 31637;
@@ -357,6 +379,7 @@ namespace DOL.AI.Brain
                 Add4.CurrentRegionID = 277;
                 Add4.Heading = 1019;
                 Add4.AddToWorld();
+                RegisterCopy(Add4);
             }
         }
         public Spell m_AidonBoss_DD;
@@ -441,12 +464,6 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public static int CopyCountFire = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --CopyCountFire;
-            base.ProcessDeath(killer);
-        }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
         public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
@@ -472,7 +489,6 @@ namespace DOL.GS
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
-            ++CopyCountFire;
 
             Size = 55;
             Level = 75;
@@ -563,12 +579,6 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public static int CopyCountIce = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --CopyCountIce;
-            base.ProcessDeath(killer);
-        }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
         public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
@@ -594,7 +604,6 @@ namespace DOL.GS
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
-            ++CopyCountIce;
 
             Size = 55;
             Level = 75;
@@ -686,12 +695,6 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public static int CopyCountAir = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --CopyCountAir;
-            base.ProcessDeath(killer);
-        }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
         public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
@@ -717,7 +720,6 @@ namespace DOL.GS
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
-            ++CopyCountAir;
 
             Size = 55;
             Level = 75;
@@ -807,12 +809,6 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public static int CopyCountEarth = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --CopyCountEarth;
-            base.ProcessDeath(killer);
-        }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }
         public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
@@ -838,7 +834,6 @@ namespace DOL.GS
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
-            ++CopyCountEarth;
 
             Size = 55;
             Level = 75;

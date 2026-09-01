@@ -167,12 +167,7 @@ namespace DOL.GS
 
 			Faction = FactionMgr.GetFactionByID(105);
 
-			CanSpawnHeads = false;
-			if(CanSpawnHeads == false)
-            {
-				SpawnHeads();
-				CanSpawnHeads = true;
-            }
+			SpawnHeads();
 
 			MyrddraxisBrain sbrain = new MyrddraxisBrain();
 			SetOwnBrain(sbrain);
@@ -182,8 +177,7 @@ namespace DOL.GS
 			return true;
 		}
         #region Spawn Heads
-        public static bool CanSpawnHeads = false;
-		public void SpawnHeads()
+        public void SpawnHeads()
         {
 			//Second Head
 			MyrddraxisSecondHead Add1 = new MyrddraxisSecondHead();
@@ -307,16 +301,16 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled = false;
-		public static bool CanCast = false;
-		public static bool CanCast2 = false;
-		public static bool CanCastStun1 = false;
-		public static bool CanCastStun2 = false;
-		public static bool CanCastStun3 = false;
-		public static bool CanCastStun4 = false;
-		public static bool CanCastPBAOE1 = false;
-		public static bool CanCastPBAOE2 = false;
-		public static bool CanCastPBAOE3 = false;
+		public bool IsPulled = false;
+		public bool CanCast = false;
+		public bool CanCast2 = false;
+		public bool CanCastStun1 = false;
+		public bool CanCastStun2 = false;
+		public bool CanCastStun3 = false;
+		public bool CanCastStun4 = false;
+		public bool CanCastPBAOE1 = false;
+		public bool CanCastPBAOE2 = false;
+		public bool CanCastPBAOE3 = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -325,8 +319,8 @@ namespace DOL.AI.Brain
 			}
 		}
 		#region Hydra DOT
-		public static GamePlayer randomtarget2 = null;
-		public static GamePlayer RandomTarget2
+		public GamePlayer randomtarget2 = null;
+		public GamePlayer RandomTarget2
 		{
 			get { return randomtarget2; }
 			set { randomtarget2 = value; }
@@ -352,7 +346,7 @@ namespace DOL.AI.Brain
 					if (CanCast2 == false)
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
-						RandomTarget2 = Target;//set random target to static RandomTarget
+						RandomTarget2 = Target;
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 2000);
 						CanCast2 = true;
 					}
@@ -385,8 +379,8 @@ namespace DOL.AI.Brain
 		}
 		#endregion
 		#region Hydra DD
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -412,7 +406,7 @@ namespace DOL.AI.Brain
 					if (CanCast == false)
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
-						RandomTarget = Target;//set random target to static RandomTarget
+						RandomTarget = Target;
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 5000);
 						BroadcastMessage(String.Format(Body.Name + " taking a big flame breath at " + RandomTarget.Name + "."));
 						CanCast = true;
@@ -461,9 +455,18 @@ namespace DOL.AI.Brain
 			return 0;
 		}
 		#endregion
-		public static bool StartCastDD = false;
-		public static bool StartCastDOT = false;
+		public bool StartCastDD = false;
+		public bool StartCastDOT = false;
 		private bool RemoveAdds = false;
+		private bool HeadExists(Type headType)
+		{
+			foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+			{
+				if (npc != null && npc.IsAlive && npc.GetType() == headType)
+					return true;
+			}
+			return false;
+		}
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
@@ -487,11 +490,15 @@ namespace DOL.AI.Brain
 				CanCastPBAOE3 = false;
 				if (!RemoveAdds)
 				{
+					bool secondHeadUp = HeadExists(typeof(MyrddraxisSecondHead));
+					bool thirdHeadUp = HeadExists(typeof(MyrddraxisThirdHead));
+					bool fourthHeadUp = HeadExists(typeof(MyrddraxisFourthHead));
+					bool fifthHeadUp = HeadExists(typeof(MyrddraxisFifthHead));
 					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null)
 						{
-							if (MyrddraxisSecondHead.SecondHeadCount == 0)
+							if (!secondHeadUp)
 							{
 								MyrddraxisSecondHead Add1 = new MyrddraxisSecondHead();
 								Add1.X = 32384;
@@ -502,8 +509,9 @@ namespace DOL.AI.Brain
 								Add1.Flags = GameNPC.eFlags.FLYING;
 								Add1.RespawnInterval = -1;
 								Add1.AddToWorld();
+								secondHeadUp = true;
 							}
-							if (MyrddraxisThirdHead.ThirdHeadCount == 0)
+							if (!thirdHeadUp)
 							{
 								MyrddraxisThirdHead Add2 = new MyrddraxisThirdHead();
 								Add2.X = 32187;
@@ -514,8 +522,9 @@ namespace DOL.AI.Brain
 								Add2.Flags = GameNPC.eFlags.FLYING;
 								Add2.RespawnInterval = -1;
 								Add2.AddToWorld();
+								thirdHeadUp = true;
 							}
-							if (MyrddraxisFourthHead.FourthHeadCount == 0)
+							if (!fourthHeadUp)
 							{
 								MyrddraxisFourthHead Add3 = new MyrddraxisFourthHead();
 								Add3.X = 32371;
@@ -526,8 +535,9 @@ namespace DOL.AI.Brain
 								Add3.Flags = GameNPC.eFlags.FLYING;
 								Add3.RespawnInterval = -1;
 								Add3.AddToWorld();
+								fourthHeadUp = true;
 							}
-							if (MyrddraxisFifthHead.FifthHeadCount == 0)
+							if (!fifthHeadUp)
 							{
 								MyrddraxisFifthHead Add4 = new MyrddraxisFifthHead();
 								Add4.X = 32576;
@@ -538,6 +548,7 @@ namespace DOL.AI.Brain
 								Add4.Flags = GameNPC.eFlags.FLYING;
 								Add4.RespawnInterval = -1;
 								Add4.AddToWorld();
+								fifthHeadUp = true;
 							}
 						}
 					}
@@ -852,12 +863,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int SecondHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--SecondHeadCount;
-			base.ProcessDeath(killer);
-		}
         public override void DealDamage(AttackData ad)
         {
 			if(ad != null)
@@ -892,7 +897,6 @@ namespace DOL.GS
 
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++SecondHeadCount;
 			Faction = FactionMgr.GetFactionByID(105);
 
 			MyrddraxisSecondHeadBrain sbrain = new MyrddraxisSecondHeadBrain();
@@ -914,7 +918,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled1 = false;
+		public bool IsPulled1 = false;
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
@@ -1055,12 +1059,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int ThirdHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--ThirdHeadCount;
-			base.ProcessDeath(killer);
-		}
 		public override void DealDamage(AttackData ad)
 		{
 			if (ad != null)
@@ -1095,7 +1093,6 @@ namespace DOL.GS
 
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++ThirdHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
 
@@ -1118,7 +1115,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled2 = false;
+		public bool IsPulled2 = false;
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
@@ -1259,12 +1256,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int FourthHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--FourthHeadCount;
-			base.ProcessDeath(killer);
-		}
 		public override void DealDamage(AttackData ad)
 		{
 			if (ad != null)
@@ -1299,7 +1290,6 @@ namespace DOL.GS
 
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++FourthHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
 
@@ -1322,7 +1312,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled3 = false;
+		public bool IsPulled3 = false;
 		public override void Think()
 		{
 			if (!CheckProximityAggro())
@@ -1463,12 +1453,6 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public static int FifthHeadCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--FifthHeadCount;
-			base.ProcessDeath(killer);
-		}
 		public override void DealDamage(AttackData ad)
 		{
 			if (ad != null)
@@ -1502,7 +1486,6 @@ namespace DOL.GS
 			LoadTemplate(npcTemplate);
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			++FifthHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
 
@@ -1525,7 +1508,7 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool IsPulled4 = false;
+		public bool IsPulled4 = false;
 		public override void Think()
 		{
 			if (!CheckProximityAggro())

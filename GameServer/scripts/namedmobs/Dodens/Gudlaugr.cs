@@ -97,7 +97,7 @@ namespace DOL.GS.Scripts
 		{
 			public GudlaugrBrain() : base() { }
 
-			public static bool transmorph = true;
+			public bool transmorph = true;
 			public override void Think()
 			{
 				if (Body.InCombat && Body.IsAlive && HasAggro)

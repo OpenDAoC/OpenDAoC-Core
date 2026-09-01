@@ -171,6 +171,7 @@ SpellCrafting.IsAllowedToCombine.FalseItem:		    This item can't be used to Spel
 SpellCrafting.IsAllowedToCombine.FalseMaterial:		{0} can't be used to enchant an item!
 SpellCrafting.IsAllowedToCombine.NoEnchanted:		This item can't be enchanted!
 SpellCrafting.IsAllowedToCombine.NoMoreLevels:		You can't overcharge your {0} by more than 5 levels!
+SpellCrafting.IsAllowedToCombine.NotStaff:			Only staves can be imbued with focus properties!
 SpellCrafting.IsAllowedToCombine.NoSameBonus:		You can't put the same bonus on an item multiple times!
 SpellCrafting.IsAllowedToCombine.NotEnoughSkill:	You do not have enough skill to imbue that!
 SpellCrafting.ShowSpellCraftingInfo.CurrentBonus:	Bonus currently on the {0}:

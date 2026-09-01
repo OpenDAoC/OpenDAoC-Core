@@ -106,9 +106,9 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
         #region bolt random enemy
-        public static bool CanCast = false;
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+        public bool CanCast = false;
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
@@ -130,7 +130,7 @@ namespace DOL.AI.Brain
 			if (CanCast == false && Enemys_To_DD.Count > 0)
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
-				RandomTarget = Target;//set random target to static RandomTarget
+				RandomTarget = Target;
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), 1000);
 				CanCast = true;
 			}
@@ -156,9 +156,9 @@ namespace DOL.AI.Brain
 		}
 		#endregion
 		#region Teleport random enemy
-		public static bool CanPort = false;
-		public static GamePlayer teleporttarget = null;
-		public static GamePlayer TeleportTarget
+		public bool CanPort = false;
+		public GamePlayer teleporttarget = null;
+		public GamePlayer TeleportTarget
 		{
 			get { return teleporttarget; }
 			set { teleporttarget = value; }
@@ -180,7 +180,7 @@ namespace DOL.AI.Brain
 			if (CanPort == false)
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_Port[Util.Random(0, Enemys_To_Port.Count - 1)];//pick random target from list
-				TeleportTarget = Target;//set random target to static RandomTarget
+				TeleportTarget = Target;
 				switch(Util.Random(1,4))
                 {
 					case 1: TeleportTarget.MoveTo(180, 32956, 37669, 16465, 1028); break;

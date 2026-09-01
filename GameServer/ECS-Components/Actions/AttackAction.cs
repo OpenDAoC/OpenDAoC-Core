@@ -14,7 +14,7 @@ namespace DOL.GS
         protected DbInventoryItem _weapon;
         protected DbInventoryItem _leftWeapon;
         protected Style _combatStyle;
-        protected GameObject _target;
+        protected GameLiving _target;
         protected double _effectiveness;
         protected int _ticksToTarget;
         protected int _attackInterval;
@@ -77,7 +77,7 @@ namespace DOL.GS
 
         private void TickMeleeAttack()
         {
-            _target = _owner.TargetObject;
+            _target = _owner.TargetObject as GameLiving;
 
             if (PrepareMeleeAttack())
             {
@@ -91,7 +91,7 @@ namespace DOL.GS
 
         private void TickRangedAttack()
         {
-            _target = _owner.rangeAttackComponent.AutoFireTarget ?? _owner.TargetObject;
+            _target = _owner.rangeAttackComponent.AutoFireTarget ?? _owner.TargetObject as GameLiving;
 
             if (PrepareRangedAttack())
             {

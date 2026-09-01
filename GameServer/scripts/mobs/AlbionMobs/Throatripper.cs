@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 80;
 			AggroRange = 400;
 			ThinkInterval = 1000;
-			GateCounter = new("ThroatripperGate", 10, (kills, required) =>
+			GateCounter = new(10, (kills, required) =>
 			{
 				if (kills == required / 2)
 					Message.MessageToArea(Body, "Distant howls answer one another in the dark.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow, WorldMgr.VISIBILITY_DISTANCE);
@@ -72,7 +72,7 @@ namespace DOL.GS
 	{
 		public ThroatripperAdd() : base() { }
 
-		public override string GateId => "ThroatripperGate";
+		protected override bool IsGateOwner(GameNPC npc) => npc is Throatripper;
 		protected override bool CountsTowardGate => CurrentRegion.IsNightTime;
 
 		public override bool AddToWorld()

@@ -45,11 +45,11 @@ namespace DOL.GS
                 {
                     AggroLevel playerAggro = pair.Value;
                     string characterId = pair.Key;
-                    bool isDisconnected = playerAggro.Player.Client.ClientState is GameClient.eClientState.Disconnected;
+                    bool isDeleted = playerAggro.Player.ObjectState is GameObject.eObjectState.Deleted;
 
                     // ICollection.Remove ensures the item is only removed if both the key and the exact struct value still match.
                     // If they reconnected on another thread, TryLoadAggroLevel created a new struct, and this safely does nothing.
-                    if (isDisconnected)
+                    if (playerAggro.Player.ObjectState is GameObject.eObjectState.Deleted)
                         ((ICollection<KeyValuePair<string, AggroLevel>>) _aggroLevels).Remove(pair);
 
                     if (!playerAggro.Dirty)
@@ -75,7 +75,7 @@ namespace DOL.GS
                         GameServer.Database.SaveObject(dbFactionAggroLevel);
                     }
 
-                    if (!isDisconnected)
+                    if (!isDeleted)
                         _aggroLevels.TryUpdate(characterId, playerAggro with { Dirty = false }, playerAggro);
 
                     count++;
@@ -137,7 +137,7 @@ namespace DOL.GS
             int aggro = _aggroLevels.TryGetValue(player.ObjectId, out AggroLevel playerAggro) ? playerAggro.Aggro : _baseAggroLevel;
 
             if (aggro > 75)
-                return Standing.Aggresive;
+                return Standing.Aggressive;
             else if (aggro > 50)
                 return Standing.Hostile;
             else if (aggro > 25)
@@ -151,7 +151,7 @@ namespace DOL.GS
             Friendly,
             Neutral,
             Hostile,
-            Aggresive
+            Aggressive
         }
 
         public readonly record struct AggroLevel(GamePlayer Player, int Aggro, bool Dirty = false);

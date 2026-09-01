@@ -73,7 +73,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
@@ -212,7 +212,7 @@ namespace DOL.AI.Brain
             AggroRange = 600;
             ThinkInterval = 2000;
         }
-        public static bool IsPulled2 = false;
+        public bool IsPulled2 = false;
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled2 == false)

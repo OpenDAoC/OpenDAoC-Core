@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -75,8 +77,6 @@ namespace DOL.GS
 			}
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50022);
 			LoadTemplate(npcTemplate);
-			GreenMawAdd.GreenMawRedCount = 0;
-			GreenMawAdd2.GreenMawOrangeCount = 0;
 
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			GreenMawBrain sbrain = new GreenMawBrain();
@@ -97,6 +97,7 @@ namespace DOL.GS
 			Zone zone = CurrentZone;
 			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
 			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+			GreenMawWave wave = new();
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -111,8 +112,41 @@ namespace DOL.GS
 				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
+				npc.Wave = wave;
+				wave.Add(npc);
 				npc.AddToWorld();
 			}
+		}
+	}
+
+	public class GreenMawWave
+	{
+		private readonly List<GameNPC> _members = new();
+		private int _nextWaveTriggered;
+
+		public void Add(GameNPC npc)
+		{
+			lock (_members)
+				_members.Add(npc);
+		}
+
+		public void Remove(GameNPC npc)
+		{
+			lock (_members)
+				_members.Remove(npc);
+		}
+
+		public bool RemoveAndCheckLastAlive(GameNPC npc)
+		{
+			lock (_members)
+			{
+				_members.Remove(npc);
+
+				if (_members.Count > 0)
+					return false;
+			}
+
+			return Interlocked.Exchange(ref _nextWaveTriggered, 1) == 0;
 		}
 	}
 }
@@ -150,6 +184,7 @@ namespace DOL.GS
 		private const int DESPAWN_RETRY_INTERVAL = 30000;
 
 		public GreenMawAdd() : base() { }
+		public GreenMawWave Wave;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)
@@ -204,15 +239,14 @@ namespace DOL.GS
 			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
 				return DESPAWN_RETRY_INTERVAL;
 
+			Wave?.Remove(this);
 			RemoveFromWorld();
 			return 0;
 		}
 
-		public static int GreenMawRedCount = 0;
         public override void ProcessDeath(GameObject killer)
         {
-			++GreenMawRedCount;
-			if (GreenMawRedCount >= 3)
+			if (Wave != null && Wave.RemoveAndCheckLastAlive(this))
 				SpawnCopies();
 			base.ProcessDeath(killer);
         }
@@ -223,6 +257,7 @@ namespace DOL.GS
 			Zone zone = CurrentZone;
 			bool usePathfinding = zone != null && zone.IsPathfindingEnabled;
 			EDtPolyFlags[] filters = usePathfinding ? PathfindingProvider.Instance.DefaultFilters : null;
+			GreenMawWave wave = new();
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -237,6 +272,8 @@ namespace DOL.GS
 				npc.Z = (int) spawnPoint.Z;
 				npc.Heading = Heading;
 				npc.CurrentRegion = CurrentRegion;
+				npc.Wave = wave;
+				wave.Add(npc);
 				npc.AddToWorld();
 			}
 		}
@@ -300,6 +337,7 @@ namespace DOL.GS
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 150; }
 		#endregion
+		public GreenMawWave Wave;
 		public override bool AddToWorld()
 		{
 			Name = "Part of Green Maw";
@@ -324,15 +362,14 @@ namespace DOL.GS
 			if (InCombat || Brain is StandardMobBrain { HasAggro: true })
 				return DESPAWN_RETRY_INTERVAL;
 
+			Wave?.Remove(this);
 			RemoveFromWorld();
 			return 0;
 		}
 
-		public static int GreenMawOrangeCount = 0;
 		public override void ProcessDeath(GameObject killer)
 		{
-			++GreenMawOrangeCount;
-			if (GreenMawOrangeCount >= 4)
+			if (Wave != null && Wave.RemoveAndCheckLastAlive(this))
 				SpawnCopies();
 			base.ProcessDeath(killer);
 		}

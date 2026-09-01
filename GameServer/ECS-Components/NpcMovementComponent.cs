@@ -90,15 +90,8 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.TurnTo))
             {
-                if (!Owner.IsAttacking)
-                {
-                    FinalizeTick();
-                    return;
-                }
-
-                UnsetFlag(MovementState.TurnTo);
-                _resetHeadingTimer?.Stop();
-                _resetHeadingTimer = null;
+                FinalizeTick();
+                return;
             }
 
             if (IsFlagSet(MovementState.Request))
@@ -271,6 +264,8 @@ namespace DOL.GS
 
             if (Owner is GameTaxi or GameTaxiBoat)
                 Owner.RemoveFromWorld();
+            else
+                UpdateMovement(0);
 
             // We don't reset CurrentPathPoint here to allow the path to be resumed. This must be done manually if needed (on NPC death for example).
         }
@@ -336,12 +331,21 @@ namespace DOL.GS
 
         public void TurnTo(ushort heading, int duration = 0)
         {
-            if (Owner.Heading == heading || Owner.IsCrowdControlled || IsTurningDisabled)
+            bool hasDuration = duration > 0;
+
+            if (!hasDuration && Owner.Heading == heading)
                 return;
 
-            if (duration > 0)
+            if (Owner.IsCrowdControlled || IsTurningDisabled)
+                return;
+
+            // Ignore duration if we're attacking or casting.
+            if (hasDuration && !Owner.attackComponent.AttackState && !Owner.castingComponent.IsCasting)
             {
                 SetFlag(MovementState.TurnTo);
+
+                if (IsMoving)
+                    UpdateMovement(0);
 
                 if (_resetHeadingTimer == null)
                 {
@@ -513,7 +517,9 @@ namespace DOL.GS
             {
                 _ownerPosition = destination;
 
-                if (CurrentSpeed > 0)
+                // Defer the stop if we're on a continuous path. OnArrival will handle the next movement seamlessly.
+                // Avoids sending a stop packet causing the NPC to stutter.
+                if (CurrentSpeed > 0 && (!IsFlagSet(MovementState.OnPath) || CurrentPathPoint?.WaitTime != 0))
                     UpdateMovement(0);
 
                 return;

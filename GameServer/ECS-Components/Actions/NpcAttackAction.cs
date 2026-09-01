@@ -276,17 +276,17 @@ namespace DOL.GS
         {
             private readonly GameNPC _npcOwner;
             private readonly NpcAttackAction _attackAction;
-            private GameObject _target;
+            private GameLiving _target;
             private GamePlayer _losChecker;
 
-            public CheckLosTimer(GameObject owner, NpcAttackAction attackAction, GameObject target) : base(owner)
+            public CheckLosTimer(GameObject owner, NpcAttackAction attackAction, GameLiving target) : base(owner)
             {
                 _npcOwner = owner as GameNPC;
                 _attackAction = attackAction;
                 ChangeTarget(target);
             }
 
-            public void ChangeTarget(GameObject newTarget)
+            public void ChangeTarget(GameLiving newTarget)
             {
                 if (newTarget == null)
                 {

@@ -86,20 +86,12 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public static int OakCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            OakCount=0;
-            base.ProcessDeath(killer);
-        }
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8823);
             LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(187);
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Plant;
-            AncientBlackOakBrain.IsPulled = false;
-            OakCount =1;
             MeleeDamageType = eDamageType.Matter;
             AncientBlackOakBrain sbrain = new AncientBlackOakBrain();
             SetOwnBrain(sbrain);
@@ -155,7 +147,7 @@ namespace DOL.AI.Brain
             AggroRange = 400;
             ThinkInterval = 1500;
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         public override void Think()
         {
             if (!CheckProximityAggro())

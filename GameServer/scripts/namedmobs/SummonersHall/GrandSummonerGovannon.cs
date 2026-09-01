@@ -72,7 +72,7 @@ namespace DOL.GS
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && GrandSummonerGovannonBrain.Stage2==true)
+			if(ad != null && Brain is GrandSummonerGovannonBrain govannonBrain && govannonBrain.Stage2==true)
             {
 				if(Util.Chance(35))//30% chance to make a bleed
                 {
@@ -100,8 +100,6 @@ namespace DOL.GS
 			LoadTemplate(npcTemplate);
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Faction = FactionMgr.GetFactionByID(206);
-			GrandSummonerGovannonBrain.SpawnSacrifices1 = false;
-			GrandSummonerGovannonBrain.Stage2 = false;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 86, 43, 0, 0); //Slot,model,color,effect,extension
@@ -217,8 +215,10 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool SpawnSacrifices1 = false;
-		public static bool Stage2 = false;
+		public bool SpawnSacrifices1 = false;
+		public bool Stage2 = false;
+		public bool SacrificeCompleted = false;
+		public bool DemonCompleted = false;
 		public void BroadcastMessage(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -235,6 +235,8 @@ namespace DOL.AI.Brain
 				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Stage2 = false;
 				SpawnSacrifices1 = false;
+				SacrificeCompleted = false;
+				DemonCompleted = false;
 				Body.Health = Body.MaxHealth;
 				if (!RemoveAdds)
 				{
@@ -306,6 +308,8 @@ namespace DOL.AI.Brain
         }
 		public void SpawnDemonAndSacrifice() // spawn sacrifice and demon
 		{
+			SacrificeCompleted = false;
+			DemonCompleted = false;
 			SummonedSacrifice Add1 = new SummonedSacrifice();
 			Add1.X = 31018;
 			Add1.Y = 40889;
@@ -314,6 +318,7 @@ namespace DOL.AI.Brain
 			Add1.Heading = 3054;
 			Add1.LoadedFromScript = true;
 			Add1.Faction = FactionMgr.GetFactionByID(187);
+			Add1.OwnerBrain = this;
 			Add1.AddToWorld();
 
 			SummonedDemon Add2 = new SummonedDemon();
@@ -324,13 +329,15 @@ namespace DOL.AI.Brain
 			Add2.Heading = 1004;
 			Add2.LoadedFromScript = true;
 			Add2.Faction = FactionMgr.GetFactionByID(187);
+			Add2.OwnerBrain = this;
 			Add2.AddToWorld();
 		}
+		private ShadeOfAelfgar _shade;
 		public void SpawnShadeOfAelfgar()
         {
-			if (SummonedSacrifice.SacrificeKilledCount == 1 && SummonedDemon.SummonedDemonCount == 1)//both summoned demon and sacrifice must be killed
+			if (SacrificeCompleted && DemonCompleted)//both summoned demon and sacrifice must be killed
 			{
-				if (ShadeOfAelfgar.ShadeOfAelfgarCount == 0)//make sure there is only 1 always
+				if (_shade == null || !_shade.IsAlive || _shade.ObjectState is not GameObject.eObjectState.Active)//make sure there is only 1 always
 				{
 					ShadeOfAelfgar Add1 = new ShadeOfAelfgar();
 					Add1.X = 32128;
@@ -341,8 +348,9 @@ namespace DOL.AI.Brain
 					Add1.LoadedFromScript = true;
 					Add1.Faction = FactionMgr.GetFactionByID(187);
 					Add1.AddToWorld();
-					SummonedDemon.SummonedDemonCount = 0;
-					SummonedSacrifice.SacrificeKilledCount = 0;
+					_shade = Add1;
+					DemonCompleted = false;
+					SacrificeCompleted = false;
 				}
 			}
 		}
@@ -414,7 +422,7 @@ namespace DOL.GS
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
-		public static int SacrificeKilledCount = 0;
+		public GrandSummonerGovannonBrain OwnerBrain;
         public override void Die(GameObject killer)
         {
             base.Die(killer);
@@ -423,7 +431,6 @@ namespace DOL.GS
 		{
 			Model = 122;
 			Name = "summoned sacrifice";
-			SacrificeKilledCount = 0;
 			RespawnInterval = -1;
 			Size = 45;
 			Level = (byte)Util.Random(62, 68);
@@ -462,7 +469,8 @@ namespace DOL.AI.Brain
             }
 			else
             {
-				SummonedSacrifice.SacrificeKilledCount = 1;
+				if (Body is SummonedSacrifice sacrifice && sacrifice.OwnerBrain != null)
+					sacrifice.OwnerBrain.SacrificeCompleted = true;
 				Body.Die(Body);//is at point so it die
             }
 			base.Think();
@@ -499,7 +507,7 @@ namespace DOL.GS
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
-		public static int SummonedDemonCount = 0;
+		public GrandSummonerGovannonBrain OwnerBrain;
 		public override void Die(GameObject killer)
 		{
 			base.Die(killer);
@@ -508,7 +516,6 @@ namespace DOL.GS
 		{
 			Model = 253;
 			Name = "summoned demon";
-			SummonedDemonCount = 0;
 			RespawnInterval = -1;
 			Size = 30;
 			Level = (byte)Util.Random(62, 68);
@@ -547,7 +554,8 @@ namespace DOL.AI.Brain
 			}
 			else
 			{
-				SummonedDemon.SummonedDemonCount = 1;
+				if (Body is SummonedDemon demon && demon.OwnerBrain != null)
+					demon.OwnerBrain.DemonCompleted = true;
 				Body.Die(Body);//is at point so it die
 			}
 			base.Think();
@@ -584,20 +592,11 @@ namespace DOL.GS
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
-		public static int ShadeOfAelfgarCount = 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			++ShadeOfAelfgarCount;
-			base.ProcessDeath(killer);
-		}
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18803);
 			LoadTemplate(npcTemplate);
 
-			ShadeOfAelfgarBrain.RandomTarget = null;
-			ShadeOfAelfgarBrain.CanPort = false;
-			ShadeOfAelfgarCount = 0;
 			RespawnInterval = -1;
 			Faction = FactionMgr.GetFactionByID(187);
 			ShadeOfAelfgarBrain sacrifice = new ShadeOfAelfgarBrain();
@@ -657,14 +656,14 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 800;
 		}
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
 		List<GamePlayer> Enemys_To_Port = new List<GamePlayer>();
-		public static bool CanPort = false;
+		public bool CanPort = false;
 		public void PickRandomTarget()
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
@@ -683,7 +682,7 @@ namespace DOL.AI.Brain
 				if (CanPort == false)
 				{
 					GamePlayer Target = (GamePlayer)Enemys_To_Port[Util.Random(0, Enemys_To_Port.Count - 1)];//pick random target from list
-					RandomTarget = Target;//set random target to static RandomTarget
+					RandomTarget = Target;
 					RandomTarget.MoveTo(Body.CurrentRegionID, 32091, 39684, 16302, 4094);
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), Util.Random(10000,20000));//port every 10-20s
 					CanPort = true;

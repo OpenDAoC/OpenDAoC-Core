@@ -332,6 +332,11 @@ namespace DOL.GS
             }
         }
 
+        public override string ToString()
+        {
+            return $"Name={Name} Type={EffectType} Start={StartTick} End={ExpireTick} State={_state}|{_transitionalState}";
+        }
+
         public enum ImmunityType
         {
             None,

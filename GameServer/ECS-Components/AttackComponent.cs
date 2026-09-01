@@ -796,7 +796,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public void MakeAttack(WeaponAction action, AttackData ad, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
+        public void MakeAttack(WeaponAction action, AttackData ad, GameLiving target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -872,11 +872,6 @@ namespace DOL.GS
                         // Multiple Hit check.
                         if (ad.AttackResult is eAttackResult.HitStyle)
                         {
-                            List<GameObject> extraTargets = new();
-                            List<GameObject> listAvailableTargets = new();
-                            DbInventoryItem attackWeapon = owner.ActiveWeapon;
-                            DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
-
                             bool IsShieldSwipe = style.ID == 600;
                             int numTargetsCanHit;
 
@@ -896,6 +891,8 @@ namespace DOL.GS
                             if (numTargetsCanHit <= 0)
                                 break;
 
+                            List<GameLiving> listAvailableTargets = new();
+
                             // This implementation of Shield Swipe doesn't affect players.
                             if (!IsShieldSwipe)
                             {
@@ -914,13 +911,14 @@ namespace DOL.GS
 
                             // Remove primary target.
                             listAvailableTargets.Remove(target);
+                            List<GameLiving> extraTargets = GameLoop.GetListForTick<GameLiving>();
 
                             if (numTargetsCanHit >= listAvailableTargets.Count)
                                 extraTargets = listAvailableTargets;
                             else
                             {
                                 int index;
-                                GameObject availableTarget;
+                                GameLiving availableTarget;
 
                                 for (int i = numTargetsCanHit; i > 0; i--)
                                 {
@@ -931,9 +929,13 @@ namespace DOL.GS
                                 }
                             }
 
-                            foreach (GameObject extraTarget in extraTargets)
+                            DbInventoryItem attackWeapon = owner.ActiveWeapon;
+                            DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
+                            int attackSpeed = AttackSpeed(attackWeapon);
+
+                            foreach (GameLiving extraTarget in extraTargets)
                             {
-                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, AttackSpeed(attackWeapon), null, 0);
+                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, attackSpeed, null, 0);
                                 weaponAction.Execute();
                             }
                         }
@@ -989,7 +991,7 @@ namespace DOL.GS
 
                     int spec = CalculateSpec(weapon);
                     double specModifier = CalculateSpecModifier(action, ad.Target, spec, out (double, double) varianceRange);
-                    double weaponSkill = CalculateWeaponSkill(weapon, specModifier, out double baseWeaponSkill);
+                    double weaponSkill = CalculateDamageWeaponSkill(weapon, specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
 
                     double damageMod = weaponSkill / armorMod;
@@ -1153,9 +1155,39 @@ namespace DOL.GS
             return 1.0;
         }
 
-        public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
+        public double CalculateDamageWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
-            baseWeaponSkill = owner.GetWeaponSkill(weapon);
+            return CalculateWeaponSkill(weapon, specModifier, 0, out baseWeaponSkill);
+        }
+
+        public double CalculateDefensePenetrationWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
+        {
+            // Live tests hint at defense penetration being based on the damage table of the attacker, but not at a 1:1 ratio.
+            // To allow this, we use a damage table offset. When comparing hybrid classes to pure tank classes:
+            // No offset: 1 - (19 / 22) = 13.64%
+            // With offset: 1 - ((19 - 11) / (22 - 11)) = 27.27%
+
+            // Note: How defense penetration is actually supposed to work couldn't be reverse engineered,
+            // and every test hinted that the base defense rates are inaccurate to begin with.
+            // This is a best effort attempt.
+
+            // The offset should probably be inferior to the lowest base weapon skill of any class.
+
+            const int CLASS_BASE_WEAPON_SKILL_OFFSET = -220;
+            const double COEFFICIENT = 0.002;
+            return CalculateWeaponSkill(weapon, specModifier, CLASS_BASE_WEAPON_SKILL_OFFSET, out baseWeaponSkill) * COEFFICIENT;
+        }
+
+        private double CalculateWeaponSkill(
+            DbInventoryItem weapon,
+            double specModifier,
+            int classBaseWeaponSkillOffset,
+            out double baseWeaponSkill)
+        {
+            baseWeaponSkill = owner.GetWeaponSkill(
+                owner.GetWeaponStat(weapon),
+                owner.GetClassBaseWeaponSkill(weapon) + classBaseWeaponSkillOffset);
+
             return baseWeaponSkill * specModifier;
         }
 
@@ -1163,7 +1195,7 @@ namespace DOL.GS
         {
             int levelDifference = (owner is GamePlayer ? owner.WeaponSpecLevel(weapon) : owner.Level) - targetLevel;
             double specModifier = 1 + levelDifference * 0.01;
-            return CalculateWeaponSkill(weapon, specModifier, out _) * 0.08 / 100;
+            return CalculateDefensePenetrationWeaponSkill(weapon, specModifier, out _);
         }
 
         public int CalculateSpec(DbInventoryItem weapon)

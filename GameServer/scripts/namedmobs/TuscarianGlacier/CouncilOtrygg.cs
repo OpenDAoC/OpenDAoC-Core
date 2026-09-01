@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
@@ -62,7 +63,6 @@ namespace DOL.GS
             LoadTemplate(npcTemplate);
             Faction = FactionMgr.GetFactionByID(140);
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            OtryggAdd.PetsCount = 0;
             OtryggBrain sbrain = new OtryggBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -112,25 +112,40 @@ namespace DOL.AI.Brain
             if (HasAggro && Body.TargetObject != null)
             {
                 RemoveAdds = false;
-                if (OtryggAdd.PetsCount is < 8 and >= 0)
+                lock (_petsLock)
                 {
-                    SpawnPetsMore();
+                    int petsCount = 0;
+                    foreach (GameNPC npc in _pets)
+                    {
+                        if (npc != null && npc.IsAlive && npc.ObjectState is GameObject.eObjectState.Active)
+                            petsCount++;
+                    }
+                    if (petsCount < 8)
+                    {
+                        SpawnPetsMore();
+                    }
                 }
             }
             base.Think();
         }
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
+        private readonly List<GameNPC> _pets = new List<GameNPC>();
+        private readonly object _petsLock = new object();
         public override void OnAttackedByEnemy(AttackData ad)
         {
             if (IsPulled == false)
             {
-                SpawnPets();
+                lock (_petsLock)
+                {
+                    SpawnPets();
+                }
                 IsPulled = true;
             }
             base.OnAttackedByEnemy(ad);
         }
         public void SpawnPets()
         {
+            _pets.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
             for (int i = 0; i < 8; i++) // Spawn 8 pets
             {
                 OtryggAdd Add = new OtryggAdd();
@@ -140,11 +155,12 @@ namespace DOL.AI.Brain
                 Add.CurrentRegion = Body.CurrentRegion;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
-                OtryggAdd.PetsCount++;
+                _pets.Add(Add);
             }
         }
         public void SpawnPetsMore()
         {
+            _pets.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
             OtryggAdd Add = new OtryggAdd();
             Add.X = Body.SpawnPoint.X + Util.Random(-50, 80);
             Add.Y = Body.SpawnPoint.Y + Util.Random(-50, 80);
@@ -152,7 +168,7 @@ namespace DOL.AI.Brain
             Add.CurrentRegion = Body.CurrentRegion;
             Add.Heading = Body.Heading;
             Add.AddToWorld();
-            OtryggAdd.PetsCount++;
+            _pets.Add(Add);
         }
     }
 }
@@ -189,13 +205,7 @@ namespace DOL.GS
         {
             get { return 10000; }
         }
-        public override void ProcessDeath(GameObject killer)
-        {
-            PetsCount--;
-            base.ProcessDeath(killer);
-        }
         public override bool CanDropLoot => false;
-        public static int PetsCount = 0;
         #region Stats
         public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }
         public override short Piety { get => base.Piety; set => base.Piety = 200; }

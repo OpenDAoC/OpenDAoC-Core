@@ -143,7 +143,6 @@ namespace DOL.GS.Spells
 						case eSpellType.Pet:
 						case eSpellType.SummonCommander:
 						case eSpellType.SummonTheurgistPet:
-						case eSpellType.Summon:
 						case eSpellType.SummonJuggernaut:
 						case eSpellType.SummonMinion:
 						case eSpellType.SummonSimulacrum:
@@ -2903,8 +2902,8 @@ namespace DOL.GS.Spells
 			// Results overestimated damage by 0.1% on average.
 			if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
 			{
-				stat = Caster.GetWeaponSkill(Caster.ActiveWeapon);
 				DbInventoryItem weapon = Caster.ActiveWeapon;
+				stat = Caster.GetWeaponSkill(Caster.GetWeaponStat(weapon), Caster.GetClassBaseWeaponSkill(weapon));
 
 				// We can't retrieve the skill from the spell, so we have to use the currently equipped weapon instead.
 				if (weapon != null)

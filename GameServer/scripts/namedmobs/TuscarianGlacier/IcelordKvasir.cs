@@ -140,7 +140,7 @@ namespace DOL.AI.Brain
             ThinkInterval = 2000;
         }
 
-        public static bool IsPulled = false;
+        public bool IsPulled = false;
         private bool StartMezz = false;
         private bool AggroText = false;
         public void BroadcastMessage(String message)
@@ -319,8 +319,6 @@ namespace DOL.GS
             Size = 50;
             Level = 50;
             MaxSpeedBase = 0;
-            TunnelsBrain.message1 = false;
-            TunnelsBrain.message2 = false;
 
             Faction = FactionMgr.GetFactionByID(140);
 
@@ -343,8 +341,8 @@ namespace DOL.AI.Brain
             AggroLevel = 0;
             AggroRange = 0;
         }
-        public static bool message1 = false;
-        public static bool message2 = false;
+        public bool message1 = false;
+        public bool message2 = false;
         public void BroadcastMessage(String message)
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

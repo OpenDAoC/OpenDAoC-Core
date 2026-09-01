@@ -135,7 +135,6 @@ namespace DOL.GS
         Pet, // May not be needed.
         AFHitsBuff,
         AllMagicResistBuff,
-        Buff,
         CelerityBuff,
         CourageBuff,
         CrushSlashTrustBuff,
@@ -150,7 +149,6 @@ namespace DOL.GS
         SuperiorCourageBuff,
         ToHitBuff,
         WeaponSkillBuff,
-        Summon,
         SummonMinion,
         SummonCommander,
         AllStatsPercentDebuff,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -10,6 +11,7 @@ namespace DOL.GS
 	public class AbomosSoultrapper : GameEpicBoss
 	{
 		public AbomosSoultrapper() : base() { }
+		public readonly List<GameNPC> Adds = new List<GameNPC>();
 
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -183,9 +185,14 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnAdds()
 		{
+			if (Body is not AbomosSoultrapper abomos)
+				return;
+
+			abomos.Adds.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+			int addsCount = abomos.Adds.Count;
 			for (int i = 0; i < 2; i++)
 			{
-				if (AbomosAdd.AddsCount < 3)
+				if (addsCount < 3)
 				{
 					AbomosAdd Add1 = new AbomosAdd();
 					Add1.X = Body.X;
@@ -195,6 +202,8 @@ namespace DOL.AI.Brain
 					Add1.Heading = Body.Heading;
 					Add1.RespawnInterval = -1;
 					Add1.AddToWorld();
+					abomos.Adds.Add(Add1);
+					++addsCount;
 				}
 			}
 		}
@@ -222,12 +231,6 @@ namespace DOL.GS
 		{
 			get { return 5000; }
 		}
-		public static int AddsCount= 0;
-		public override void ProcessDeath(GameObject killer)
-		{
-			--AddsCount;
-			base.ProcessDeath(killer);
-		}
 		public override bool CanDropLoot => false;
 		public override long ExperienceValue => 0;
 		public override bool AddToWorld()
@@ -235,7 +238,6 @@ namespace DOL.GS
 			Model = 826;
 			Name = "Abomos Servant";
 			RespawnInterval = -1;
-			++AddsCount;
 
 			Size = (byte)Util.Random(80, 100);
 			Level = (byte)Util.Random(50,55);

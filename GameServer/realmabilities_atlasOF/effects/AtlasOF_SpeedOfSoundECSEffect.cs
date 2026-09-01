@@ -18,19 +18,6 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            foreach (ECSGameSpellEffect speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
-            {
-                if (speedBuff.GetType() != typeof(SpeedOfSoundECSEffect))
-                    speedBuff.Disable();
-            }
-
-            foreach (ECSGameSpellEffect root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
-                root.Disable();
-
-            foreach (ECSGameSpellEffect ichor in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Ichor))
-                ichor.Disable();
-
-            OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, PropertyCalc.MaxSpeedCalculator.SPEED4);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
         }
 
@@ -38,17 +25,6 @@ namespace DOL.GS.Effects
         {
             if (OwnerPlayer == null)
                 return;
-
-            OwnerPlayer.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-
-            foreach (ECSGameSpellEffect speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
-                speedBuff.Enable();
-
-            foreach (ECSGameSpellEffect root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
-                root.Enable();
-
-            foreach (ECSGameSpellEffect ichor in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Ichor))
-                ichor.Enable();
 
             OwnerPlayer.Out.SendUpdateMaxSpeed();
         }

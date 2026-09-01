@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -100,23 +101,16 @@ namespace DOL.GS
             Inventory = template.CloseTemplate();
             SwitchWeapon(eActiveWeaponSlot.TwoHanded);
             // humanoid
-            IsOakUp = false;
-            if (IsOakUp == false)
-            {
-                SpawnOak();
-                IsOakUp = true;
-            }
+            SpawnOak();
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = eDamageType.Crush;
             BodyType = 6;
             IsCloakHoodUp = true;
-            Ogress.OgressCount = 0;
             BlackLadyBrain blackladybrain = new BlackLadyBrain();
             SetOwnBrain(blackladybrain);
             base.AddToWorld();
             return true;
         }
-        public static bool IsOakUp = false;
         public void SpawnOak()
         {
                 AncientBlackOak Add1 = new AncientBlackOak();
@@ -136,7 +130,6 @@ namespace DOL.GS
                 if (npc.Brain is OgressBrain)
                 {
                     npc.RemoveFromWorld();
-                    Ogress.OgressCount = 0;
                 }
             }
             foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
@@ -177,7 +170,6 @@ namespace DOL.AI.Brain
                             if (npc.IsAlive && npc.Brain is OgressBrain)
                             {
                                 npc.RemoveFromWorld();
-                                Ogress.OgressCount = 0;
                             }
                         }
                     }
@@ -196,9 +188,11 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
+        private readonly List<GameNPC> _ogresses = new List<GameNPC>();
         public void SpawnOgress()
         {
-            if (Ogress.OgressCount < 5)
+            _ogresses.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not GameObject.eObjectState.Active);
+            if (_ogresses.Count < 5)
             {
                 switch (Util.Random(1, 2))
                 {
@@ -212,6 +206,7 @@ namespace DOL.AI.Brain
                             Add1.RespawnInterval = -1;
                             Add1.Heading = 3618;
                             Add1.AddToWorld();
+                            _ogresses.Add(Add1);
                         }
                         break;
                     case 2:
@@ -224,6 +219,7 @@ namespace DOL.AI.Brain
                             Add2.RespawnInterval = -1;
                             Add2.Heading = 2114;
                             Add2.AddToWorld();
+                            _ogresses.Add(Add2);
                         }
                         break;
                 }
@@ -295,12 +291,6 @@ namespace DOL.GS
         {
             get { return 2500; }
         }
-        public static int OgressCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-            --OgressCount;
-            base.ProcessDeath(killer);
-        }
         public override bool AddToWorld()
         {
             Model = 402;
@@ -313,7 +303,6 @@ namespace DOL.GS
             Realm = eRealm.None;
             TetherRange = 0;
 
-            ++OgressCount;
             Strength = 50;
             Dexterity = 200;
             Constitution = 100;

@@ -48,15 +48,15 @@ namespace DOL.GS
 		{
 			get { return 10000; }
 		}
-		public static bool RealCaithorUp = false;
+		public GhostOfCaithor GhostOwner;
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(50023);
 			LoadTemplate(npcTemplate);
-			RealCaithorUp = true;
 
 			SpawnDorochas();
-			CaithorDorocha.DorochaKilled = 0;
+			if (GhostOwner?.Brain is GhostOfCaithorBrain brain)
+				brain.DorochaKilled = 0;
 			CaithorBrain sbrain = new CaithorBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
@@ -83,7 +83,6 @@ namespace DOL.GS
 		}
 		public override void ProcessDeath(GameObject killer)
         {
-			RealCaithorUp = false;
 			foreach(GameNPC npc in GetNPCsInRadius(8000))
             {
 				if (npc.IsAlive && npc != null && npc.PackageID == "RealCaithorDorocha")
@@ -174,7 +173,11 @@ namespace DOL.GS
 		public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
 		public override short Strength { get => base.Strength; set => base.Strength = 400; }
 		#endregion
-		public static bool GhostCaithorUP = false;
+		private Caithor _realCaithor;
+		public bool IsRealCaithorUp()
+		{
+			return _realCaithor != null && _realCaithor.IsAlive && _realCaithor.ObjectState is eObjectState.Active;
+		}
 		public override bool AddToWorld()
 		{
 			foreach (GameNPC npc in GetNPCsInRadius(8000))
@@ -189,9 +192,6 @@ namespace DOL.GS
 			TetherRange = 4000;
 			Flags = 0;
 			LoadEquipmentTemplateFromDatabase("65b95161-a813-41cb-be0c-a57d132f8173");
-			GhostCaithorUP = true;
-			GhostOfCaithorBrain.CanDespawn = false;
-			GhostOfCaithorBrain.despawnGiantCaithor = false;
 
 			GhostOfCaithorBrain sbrain = new GhostOfCaithorBrain();
 			SetOwnBrain(sbrain);
@@ -215,7 +215,6 @@ namespace DOL.GS
 				despawnGiantCaithorTimer.Stop();
 				TempProperties.RemoveProperty("giantcaithor_despawn");
 			}
-			GhostCaithorUP = false;
 			SpawnCaithor();
             base.ProcessDeath(killer);
         }
@@ -227,6 +226,8 @@ namespace DOL.GS
 			npc.Z = 4984;
 			npc.Heading = 3319;
 			npc.CurrentRegion = CurrentRegion;
+			npc.GhostOwner = this;
+			_realCaithor = npc;
 			npc.AddToWorld();
 		}
 	}
@@ -245,11 +246,12 @@ namespace DOL.AI.Brain
 		ushort oldModel;
 		GameNPC.eFlags oldFlags;
 		bool changed;
-		public static bool despawnGiantCaithor = false;
-		public static bool CanDespawn = false;
+		public bool despawnGiantCaithor = false;
+		public int DorochaKilled = 0;
 		public override void Think()
 		{
-			if (CaithorDorocha.DorochaKilled >= 5 && !Caithor.RealCaithorUp)
+			bool realCaithorUp = Body is GhostOfCaithor ghost && ghost.IsRealCaithorUp();
+			if (DorochaKilled >= 5 && !realCaithorUp)
 			{
 				if (changed)
 				{
@@ -293,7 +295,7 @@ namespace DOL.AI.Brain
 					despawnGiantCaithorTimer.Stop();
 					Body.TempProperties.RemoveProperty("giantcaithor_despawn");
 				}				
-				CaithorDorocha.DorochaKilled = 0;
+				DorochaKilled = 0;
 				oldFlags = Body.Flags;
 				Body.Flags ^= GameNPC.eFlags.CANTTARGET;
 				Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
@@ -332,11 +334,23 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-		public static int DorochaKilled = 0;
+		private GhostOfCaithorBrain _ghostBrain;
         public override void ProcessDeath(GameObject killer)
         {
-			if(!Caithor.RealCaithorUp)
-			++DorochaKilled;
+			if (_ghostBrain == null || _ghostBrain.Body == null || _ghostBrain.Body.Brain != _ghostBrain || _ghostBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				_ghostBrain = null;
+				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+				{
+					if (npc.Brain is GhostOfCaithorBrain brain)
+					{
+						_ghostBrain = brain;
+						break;
+					}
+				}
+			}
+			if (_ghostBrain != null && _ghostBrain.Body is GhostOfCaithor ghost && !ghost.IsRealCaithorUp())
+				++_ghostBrain.DorochaKilled;
             base.ProcessDeath(killer);
         }
     }

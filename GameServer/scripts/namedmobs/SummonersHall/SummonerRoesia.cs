@@ -73,8 +73,6 @@ namespace DOL.GS
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(18804);
 			LoadTemplate(npcTemplate);
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-			SummonerRoesiaBrain.RandomTarget = null;
-			SummonerRoesiaBrain.CanCast = false;
 			Faction = FactionMgr.GetFactionByID(187);
 			IsCloakHoodUp = true;
 
@@ -224,13 +222,13 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		public static GamePlayer randomtarget = null;
-		public static GamePlayer RandomTarget
+		public GamePlayer randomtarget = null;
+		public GamePlayer RandomTarget
 		{
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public static bool CanCast = false;
+		public bool CanCast = false;
 		List<GamePlayer> Enemys_To_DD = new List<GamePlayer>();
 		public void PickRandomTarget()
         {
@@ -250,7 +248,7 @@ namespace DOL.AI.Brain
 				if (CanCast==false)
 				{
 					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
-					RandomTarget = Target;//set random target to static RandomTarget
+					RandomTarget = Target;
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 3000);
 					CanCast = true;
 				}				

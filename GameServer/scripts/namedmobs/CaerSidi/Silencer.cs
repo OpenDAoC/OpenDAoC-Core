@@ -46,8 +46,8 @@ namespace DOL.GS
             return 0.20;
         }
 
-        public static List<GamePlayer> attackers = new List<GamePlayer>();
-        public static int attackers_count = 0;
+        public List<GamePlayer> attackers = new List<GamePlayer>();
+        public int attackers_count = 0;
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
@@ -92,10 +92,10 @@ namespace DOL.GS
             }
         }
 
-        public static bool get_resist = false; //set resists
-        public static bool resist_timer = false;
-        public static bool resist_timer_end = false;
-        public static bool spam1 = false;
+        public bool get_resist = false; //set resists
+        public bool resist_timer = false;
+        public bool resist_timer_end = false;
+        public bool spam1 = false;
 
         public int ResistTime(ECSGameTimer timer)
         {
@@ -131,6 +131,7 @@ namespace DOL.GS
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166029);
             LoadTemplate(npcTemplate);
             LoadTemplate(npcTemplate);
+            attackers.Clear();
             attackers_count = 0;
             get_resist = false;
             resist_timer = false;
@@ -170,14 +171,16 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                Silencer.attackers_count = 0;
-                //Silencer silencer = new Silencer();
-                if (!ClearAttackers)
+                if (Body is Silencer silencer)
                 {
-                    if (Silencer.attackers.Count > 0)
+                    silencer.attackers_count = 0;
+                    if (!ClearAttackers)
                     {
-                        Silencer.attackers.Clear();
-                        ClearAttackers = true;
+                        if (silencer.attackers.Count > 0)
+                        {
+                            silencer.attackers.Clear();
+                            ClearAttackers = true;
+                        }
                     }
                 }
             }

@@ -24,8 +24,7 @@ namespace DOL.GS.Spells
             // Check for immunities.
             if (target.HasAbility(Abilities.CCImmunity) ||
                 target.HasAbility(Abilities.RootImmunity) || // Also affects snares?
-                target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) ||
-                target.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
+                target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
             {
                 MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
                 OnSpellNegated(target, SpellNegatedReason.Immune);

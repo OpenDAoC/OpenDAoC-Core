@@ -22,12 +22,8 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Morgana Initializing...");
 		}
-		public static int BechardCount = 0;
-		public static int SilchardeCount = 0;
-		public static int BechardMinionCount = 10;
-		public static int SilchardeMinionCount = 10;
-		public static int BechardDemonicMinionsCount = 0;
-		public static int SilchardeDemonicMinionsCount = 0;
+		public const int BechardMinionCount = 10;
+		public const int SilchardeMinionCount = 10;
 		public override bool AddToWorld()
 		{
 			foreach (GameNPC npc in GetNPCsInRadius(5000))
@@ -77,8 +73,12 @@ namespace DOL.AI.Brain
 		private bool Message = false;
 		private bool SpawnDemons = false;
 		private bool PlayerAreaCheck = false;
-		public static bool CanRemoveMorgana = false;
+		public bool CanRemoveMorgana = false;
 		private bool Morganacast = false;
+		public int BechardDemonicMinionsKilled = 0;
+		public int SilchardeDemonicMinionsKilled = 0;
+		public bool BechardKilled = false;
+		public bool SilchardeKilled = false;
 		public override void Think()
 		{
 			if (!PlayerAreaCheck)
@@ -98,9 +98,9 @@ namespace DOL.AI.Brain
 				}
 			}
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(700000001);
-			if(Morgana.BechardMinionCount > 0 && Morgana.BechardDemonicMinionsCount > 0 && Morgana.SilchardeMinionCount > 0 && Morgana.SilchardeDemonicMinionsCount > 0)
+			if(Morgana.BechardMinionCount > 0 && BechardDemonicMinionsKilled > 0 && Morgana.SilchardeMinionCount > 0 && SilchardeDemonicMinionsKilled > 0)
             {
-				if(Morgana.BechardDemonicMinionsCount >= 10 && Morgana.SilchardeDemonicMinionsCount >= 10)
+				if(BechardDemonicMinionsKilled >= 10 && SilchardeDemonicMinionsKilled >= 10)
                 {
 					if(!Morganacast)
                     {
@@ -121,7 +121,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-			if (!SpawnDemons || (CanRemoveMorgana && SpawnDemons && Bechard.BechardKilled && Silcharde.SilchardeKilled))
+			if (!SpawnDemons || (CanRemoveMorgana && SpawnDemons && BechardKilled && SilchardeKilled))
 			{
 				if (changed == false)
 				{
@@ -169,51 +169,43 @@ namespace DOL.AI.Brain
 			Morganacast = false;
 			SpawnDemons = false;
 			CanRemoveMorgana = false;
-			Bechard.BechardKilled = false;
-			Silcharde.SilchardeKilled = false;
-			Morgana.SilchardeCount = 0;
-			Silcharde.SilchardeKilled = false;
-			Morgana.BechardCount = 0;
-			Bechard.BechardKilled = false;
-			Morgana.BechardDemonicMinionsCount = 0;
-			Morgana.SilchardeDemonicMinionsCount = 0;
+			BechardKilled = false;
+			SilchardeKilled = false;
+			BechardDemonicMinionsKilled = 0;
+			SilchardeDemonicMinionsKilled = 0;
 			return 0;
 		}
 		private void SpawnBechard()
 		{
-			if (Morgana.BechardCount == 0)
+			foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
 			{
-				foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
-				{
-					if (mob.Brain is BechardBrain)
-						return;
-				}
-				Bechard npc = new Bechard();
-				npc.X = 306044;
-				npc.Y = 670253;
-				npc.Z = 3028;
-				npc.Heading = 3232;
-				npc.CurrentRegion = Body.CurrentRegion;
-				npc.AddToWorld();
+				if (mob.Brain is BechardBrain)
+					return;
 			}
+			Bechard npc = new Bechard();
+			npc.X = 306044;
+			npc.Y = 670253;
+			npc.Z = 3028;
+			npc.Heading = 3232;
+			npc.CurrentRegion = Body.CurrentRegion;
+			npc.OwnerBrain = this;
+			npc.AddToWorld();
 		}
 		private void SpawnSilcharde()
 		{
-			if (Morgana.SilchardeCount == 0)
+			foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
 			{
-				foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
-				{
-					if (mob.Brain is SilchardeBrain)
-						return;
-				}
-				Silcharde npc = new Silcharde();
-				npc.X = 306132;
-				npc.Y = 669983;
-				npc.Z = 3040;
-				npc.Heading = 3148;
-				npc.CurrentRegion = Body.CurrentRegion;
-				npc.AddToWorld();
+				if (mob.Brain is SilchardeBrain)
+					return;
 			}
+			Silcharde npc = new Silcharde();
+			npc.X = 306132;
+			npc.Y = 669983;
+			npc.Z = 3040;
+			npc.Heading = 3148;
+			npc.CurrentRegion = Body.CurrentRegion;
+			npc.OwnerBrain = this;
+			npc.AddToWorld();
 		}
 	}
 }
@@ -290,25 +282,48 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(700000009);
 			LoadTemplate(npcTemplate);
-			++Morgana.BechardCount;
-			BechardKilled = false;
 
 			BechardBrain sbrain = new BechardBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
 			base.AddToWorld();
+
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.BechardKilled = false;
+
 			return true;
 		}
-		public static bool BechardKilled = false;
+		public MorganaBrain OwnerBrain;
+		private MorganaBrain ResolveOwnerBrain()
+		{
+			if (OwnerBrain == null || OwnerBrain.Body == null || OwnerBrain.Body.Brain != OwnerBrain || OwnerBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				OwnerBrain = null;
+				foreach (GameNPC mob in GetNPCsInRadius(5000))
+				{
+					if (mob.Brain is MorganaBrain brain)
+					{
+						OwnerBrain = brain;
+						break;
+					}
+				}
+			}
+			return OwnerBrain;
+		}
 		public override void ProcessDeath(GameObject killer)
 		{
-			--Morgana.BechardCount;
-			BechardKilled = true;
-			SpawnDemonic();
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.BechardKilled = true;
+
+			SpawnDemonic(owner);
 			base.ProcessDeath(killer);
 		}
-		private void SpawnDemonic()
+		private void SpawnDemonic(MorganaBrain owner)
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
 			Vector3 position = new(spawn.X, spawn.Y, spawn.Z);
@@ -330,6 +345,7 @@ namespace DOL.GS
 				npc.Heading = 3148;
 				npc.CurrentRegion = CurrentRegion;
 				npc.PackageID = "BechardMinion";
+				npc.OwnerBrain = owner;
 				npc.AddToWorld();
 			}
 		}
@@ -451,26 +467,49 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(700000008);
 			LoadTemplate(npcTemplate);
-			++Morgana.SilchardeCount;
-			SilchardeKilled = false;
 
 			SilchardeBrain sbrain = new SilchardeBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;
 			RespawnInterval = -1;
 			base.AddToWorld();
+
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.SilchardeKilled = false;
+
 			return true;
 		}
 
-		public static bool SilchardeKilled = false;
+		public MorganaBrain OwnerBrain;
+		private MorganaBrain ResolveOwnerBrain()
+		{
+			if (OwnerBrain == null || OwnerBrain.Body == null || OwnerBrain.Body.Brain != OwnerBrain || OwnerBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				OwnerBrain = null;
+				foreach (GameNPC mob in GetNPCsInRadius(5000))
+				{
+					if (mob.Brain is MorganaBrain brain)
+					{
+						OwnerBrain = brain;
+						break;
+					}
+				}
+			}
+			return OwnerBrain;
+		}
 		public override void ProcessDeath(GameObject killer)
 		{
-			SilchardeKilled = true;
-			--Morgana.SilchardeCount;
-			SpawnDemonic();
+			MorganaBrain owner = ResolveOwnerBrain();
+
+			if (owner != null)
+				owner.SilchardeKilled = true;
+
+			SpawnDemonic(owner);
 			base.ProcessDeath(killer);
 		}
-		private void SpawnDemonic()
+		private void SpawnDemonic(MorganaBrain owner)
 		{
 			Point3D spawn = new Point3D(306041, 670103, 3310);
 			Vector3 position = new(spawn.X, spawn.Y, spawn.Z);
@@ -492,6 +531,7 @@ namespace DOL.GS
 				npc.Heading = 3148;
 				npc.CurrentRegion = CurrentRegion;
 				npc.PackageID = "SilchardeMinion";
+				npc.OwnerBrain = owner;
 				npc.AddToWorld();
 			}
 		}
@@ -557,12 +597,28 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
+		public MorganaBrain OwnerBrain;
 		public override void ProcessDeath(GameObject killer)
 		{
-			if (PackageID == "BechardMinion")
-				++Morgana.BechardDemonicMinionsCount;
-			if (PackageID == "SilchardeMinion")
-				++Morgana.SilchardeDemonicMinionsCount;
+			if (OwnerBrain == null || OwnerBrain.Body == null || OwnerBrain.Body.Brain != OwnerBrain || OwnerBrain.Body.ObjectState is not eObjectState.Active)
+			{
+				OwnerBrain = null;
+				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+				{
+					if (npc.Brain is MorganaBrain brain)
+					{
+						OwnerBrain = brain;
+						break;
+					}
+				}
+			}
+			if (OwnerBrain != null)
+			{
+				if (PackageID == "BechardMinion")
+					++OwnerBrain.BechardDemonicMinionsKilled;
+				if (PackageID == "SilchardeMinion")
+					++OwnerBrain.SilchardeDemonicMinionsKilled;
+			}
 			base.ProcessDeath(killer);
 		}
 	}

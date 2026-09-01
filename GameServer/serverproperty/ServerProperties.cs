@@ -428,13 +428,13 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The first factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
-		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 3.2)]
+		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 2.5)]
 		public static double PVE_MOB_DAMAGE_F1;
 
 		/// <summary>
 		/// The second factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
-		[ServerProperty("atlas", "pve_mob_damage_f2", "The second factor in the PVE mob damage equation. Lower hits harder.", 150.0)]
+		[ServerProperty("atlas", "pve_mob_damage_f2", "The second factor in the PVE mob damage equation. Lower hits harder.", 120.0)]
 		public static double PVE_MOB_DAMAGE_F2;
 
 		/// <summary>
@@ -709,7 +709,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "check_los_before_aggro", "Should we perform LoS checks before allowing standard NPCs to aggro from proximity.", true)]
 		public static bool CHECK_LOS_BEFORE_AGGRO;
 
-		[ServerProperty("world", "check_los_before_aggro_fnf", "Should we perform LoS checks before allowing FnF turrets to aggro from proximity. If false, they will attempt to cast behind walls.", true)]
+		[ServerProperty("world", "check_los_before_aggro_fnf", "Should we perform LoS checks before allowing FnF turrets to aggro from proximity. If false, they will attempt to cast behind walls.", false)]
 		public static bool CHECK_LOS_BEFORE_AGGRO_FNF;
 
 		[ServerProperty("world", "check_los_during_npc_ranged_attack", "Should NPCs perform LoS checks during ranged attacks.", false)]

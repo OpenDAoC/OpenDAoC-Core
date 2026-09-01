@@ -828,44 +828,37 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 
-			if (udp)
-			{
-				using var pak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectUpdate));
-				Write(pak);
-				SendUDP(pak);
-			}
+			using PacketOut pak = udp ?
+				PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectUpdate)) :
+				PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectUpdate));
+
+			pak.WriteShort(speed);
+			pak.WriteShort(heading);
+			pak.WriteShort(xOffsetInZone);
+			pak.WriteShort(xOffsetInTargetZone);
+			pak.WriteShort(yOffsetInZone);
+			pak.WriteShort(yOffsetInTargetZone);
+			pak.WriteShort(z);
+			pak.WriteShort(zOffsetInTargetZone);
+			pak.WriteShort(obj.ObjectID);
+			pak.WriteShort((ushort) targetId);
+
+			if (obj is GameLiving living)
+				pak.WriteByte(living.HealthPercent);
 			else
-			{
-				using var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectUpdate));
-				Write(pak);
-				SendTCP(pak);
-			}
+				pak.WriteByte(0);
 
-			void Write(PacketOut pak)
-			{
-				pak.WriteShort(speed);
-				pak.WriteShort(heading);
-				pak.WriteShort(xOffsetInZone);
-				pak.WriteShort(xOffsetInTargetZone);
-				pak.WriteShort(yOffsetInZone);
-				pak.WriteShort(yOffsetInTargetZone);
-				pak.WriteShort(z);
-				pak.WriteShort(zOffsetInTargetZone);
-				pak.WriteShort(obj.ObjectID);
-				pak.WriteShort((ushort) targetId);
+			//Dinberg:Instances - zoneskinID for positioning of objects clientside.
+			flags |= (byte) (((zone.ZoneSkinID & 0x100) >> 6) | ((targetZoneSkinId & 0x100) >> 5));
+			pak.WriteByte(flags);
+			pak.WriteByte((byte) zone.ZoneSkinID);
+			//Dinberg:Instances - targetZone already accomodates for this feat.
+			pak.WriteByte((byte) targetZoneSkinId);
 
-				if (obj is GameLiving)
-					pak.WriteByte((obj as GameLiving).HealthPercent);
-				else
-					pak.WriteByte(0);
-
-				//Dinberg:Instances - zoneskinID for positioning of objects clientside.
-				flags |= (byte) (((zone.ZoneSkinID & 0x100) >> 6) | ((targetZoneSkinId & 0x100) >> 5));
-				pak.WriteByte(flags);
-				pak.WriteByte((byte) zone.ZoneSkinID);
-				//Dinberg:Instances - targetZone already accomodates for this feat.
-				pak.WriteByte((byte) targetZoneSkinId);
-			}
+			if (udp)
+				SendUDP((GSUDPPacketOut) pak);
+			else
+				SendTCP((GSTCPPacketOut) pak);
 		}
 
 		public virtual void SendPlayerQuit(bool totalOut)

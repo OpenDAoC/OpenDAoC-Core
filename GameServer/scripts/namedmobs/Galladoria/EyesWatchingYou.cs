@@ -16,9 +16,8 @@ namespace DOL.GS
         public override bool IsVisibleToPlayers => true;//this make dragon think all the time, no matter if player is around or not
         public override bool AddToWorld()
         {
-            EyesWatchingYouInitBrain.RandomTarget = null;
-            EyesWatchingYouInitBrain.Pick_randomly_Target = false;
             EyesWatchingYouInitBrain sbrain = new EyesWatchingYouInitBrain();
+            sbrain.RandomTarget = null;
             SetOwnBrain(sbrain);
             base.AddToWorld();
             return true;
@@ -71,8 +70,7 @@ namespace DOL.AI.Brain
         {
             ThinkInterval = 1000;
         }
-        public static List<GamePlayer> PlayersInGalla = new List<GamePlayer>();
-        public static bool Pick_randomly_Target = false;
+        public List<GamePlayer> PlayersInGalla = new List<GamePlayer>();
         private bool allowTimer = false;
         private int TimerDoStuff(ECSGameTimer timer)
         {
@@ -96,8 +94,8 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public static GamePlayer randomtarget = null;
-        public static GamePlayer RandomTarget
+        public GamePlayer randomtarget = null;
+        public GamePlayer RandomTarget
         {
             get { return randomtarget; }
             set { randomtarget = value; }
@@ -122,7 +120,6 @@ namespace DOL.AI.Brain
                         mob.AddToWorld();
                     }
                     RandomTarget = null;
-                    Pick_randomly_Target = false;
                     if (PlayersInGalla.Count > 0)
                         PlayersInGalla.Clear();
                 }

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using DOL.GS.Quests;
+using DOL.Logging;
 using static DOL.GS.RolloverSchedulerService;
 
 namespace DOL.GS
 {
     public static class PeriodicQuestService
     {
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly List<QuestRegistration> _registrations = new();
 
         public static void Initialize()
@@ -57,11 +60,19 @@ namespace DOL.GS
         private static void ResetQuests<T>()
         {
             List<GamePlayer> players = ClientService.Instance.GetPlayers();
-            GameLoop.ExecuteForEach(players, players.Count, Action);
+            GameLoop.ExecuteForEach(players, players.Count, ResetPlayerQuests<T>);
+        }
 
-            static void Action(GamePlayer player)
+        private static void ResetPlayerQuests<T>(GamePlayer player)
+        {
+            try
             {
                 player.RemoveFinishedQuests(static quest => quest is T);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(ResetPlayerQuests)}<{typeof(T).Name}> failed (Player: {player})", e);
             }
         }
 

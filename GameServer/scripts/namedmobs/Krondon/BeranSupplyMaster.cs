@@ -88,8 +88,8 @@ namespace DOL.AI.Brain
 			AggroRange = 600;
 			ThinkInterval = 1500;
 		}
-		public static bool Ignite_Barrel = false;
-		public static bool BringAdds = false;
+		public bool Ignite_Barrel = false;
+		public bool BringAdds = false;
 		private bool RemoveAdds = false;
 		public override void Think()
 		{

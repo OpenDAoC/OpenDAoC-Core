@@ -6,7 +6,7 @@ namespace DOL.AI.Brain
 {
     public class TurretFNFBrain : TurretBrain
     {
-        protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.CHECK_LOS_BEFORE_AGGRO_FNF;
+        public override int ThinkInterval => 1000;
         protected override bool CanAddToAggroListFromMultipleLosChecks => true;
 
         public TurretFNFBrain(GameLiving owner) : base(owner) { }
@@ -81,6 +81,20 @@ namespace DOL.AI.Brain
             }
         }
 
+        protected override bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target, bool checkLos)
+        {
+            // Turn towards the target we're attempting to cast on if not already casting.
+            if (base.TrustCast(spell, type, target, checkLos))
+            {
+                if (!Body.IsCasting)
+                    Body.TurnTo(target);
+
+                return true;
+            }
+
+            return false;
+        }
+
         protected override AggroTable BuildAggroTable()
         {
             return new(new FnfTurretThreatStrategy(this));
@@ -88,8 +102,9 @@ namespace DOL.AI.Brain
 
         protected override GameLiving CalculateNextAttackTarget()
         {
-            return CleanUpAggroListAndGetHighestModifiedThreat();
-
+            GameLiving target = CleanUpAggroListAndGetHighestModifiedThreat();
+            Body.attackComponent.AttackState = target != null;
+            return target;
         }
 
         public override void UpdatePetWindow() { }
@@ -97,7 +112,50 @@ namespace DOL.AI.Brain
 
         protected class FnfTurretThreatStrategy : ControlledNpcThreatStrategy
         {
+            // For reminder, FnFs acquire a random target in range then perform a LoS check.
+            // On Live (August 2026), they do this every second. This is the behavior we're using.
+            // In 1.65, they actually attempted to cast, which delayed target acquisition.
+
+            // Furthermore, Live (August 2026) overrides this logic in dungeon and makes them perform the LoS check first,
+            // which makes them more reactive and less likely to lock onto an NPC in a different room or floor.
+            // Live seems to rely on server side LoS checks for this, preventing the client from being flooded with packets.
+            // This wasn't the case in ~1.65 according to a video where FnFs attempted to cast behind walls in Dodens Gruva.
+
+            // But because our dungeons are packed with NPCs, this would make them particularly unreliable.
+            // For this reason, we make FnFs prioritize NPCs by placing them in different buckets based on distance.
+            // Enemy players are always placed in the first bucket so that they're always evaluated,
+            // preventing an exploit where one player could force all turrets to lock onto them, remain behind a wall, and protect other players.
+
+            // Fractions of AggroRange marking bucket boundaries (must be in ascending order).
+            private static readonly double[] _distanceBucketThresholds = [0.4];
+
+            private static int DistanceBucketCount => _distanceBucketThresholds.Length + 1;
+
             public FnfTurretThreatStrategy(StandardMobBrain owner) : base(owner) { }
+
+            public override long CalculateEffectiveAggro(long baseAggro, GameLiving target, out double distance)
+            {
+                // Fnf turrets don't care about effective aggro, target selection is random.
+                // We're repurposing it to bucket entities by distance.
+                return GetDistanceBucket(target, out distance);
+            }
+
+            private int GetDistanceBucket(GameLiving target, out double distance)
+            {
+                distance = _owner.Body.GetDistanceTo(target);
+
+                // Force players into the closest bucket.
+                if (target is GamePlayer)
+                    return 0;
+
+                for (int i = 0; i < _distanceBucketThresholds.Length; i++)
+                {
+                    if (distance < _owner.AggroRange * _distanceBucketThresholds[i])
+                        return i;
+                }
+
+                return _distanceBucketThresholds.Length; // Farthest bucket.
+            }
 
             public override GameLiving SelectTarget(ReadOnlySpan<AggroTable.TargetCandidate> candidates)
             {
@@ -109,35 +167,63 @@ namespace DOL.AI.Brain
                 }
 
                 Spell turretSpell = turretPet.TurretSpell;
+
+                if (turretSpell == null)
+                    return null;
+
                 int randomIndex = Util.Random(candidates.Length - 1);
-                GameLiving selectedFallback = candidates[randomIndex].Living;
-                GameLiving selectedPrimary = null;
+                int slotCount = DistanceBucketCount * 2; // Primary block, then fallback block.
+                Span<int> bestIndexByPriority = stackalloc int[slotCount];
+                bestIndexByPriority.Fill(-1);
 
-                // Prioritize targets that don't already have our effect and aren't immune to it.
-                // If there's none, allow them to be attacked again but only if our spell does damage.
-                if (turretSpell != null)
+                for (int i = 0; i < candidates.Length; i++)
                 {
-                    for (int i = 0; i < candidates.Length; i++)
-                    {
-                        int index = (randomIndex + i) % candidates.Length;
-                        GameLiving living = candidates[index].Living;
+                    int index = (randomIndex + i) % candidates.Length;
+                    int priority = GetPriority(candidates[index], brain, turretSpell);
 
-                        if (!brain.LivingHasEffect(living, turretSpell) &&
-                            !living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
-                        {
-                            selectedPrimary = living;
-                            break;
-                        }
-                    }
+                    if (priority == -1)
+                        continue;
+
+                    ref int slot = ref bestIndexByPriority[priority];
+
+                    if (slot == -1)
+                        slot = index;
+
+                    if (priority == 0)
+                        break; // Closest + untouched, the best possible match. No need to look further.
                 }
 
-                if (selectedPrimary != null)
-                    return selectedPrimary;
-
-                if (turretSpell != null && turretSpell.Damage > 0)
-                    return selectedFallback;
+                foreach (int index in bestIndexByPriority)
+                {
+                    if (index != -1)
+                        return candidates[index].Living;
+                }
 
                 return null;
+            }
+
+            public override bool ShouldBeRemoved(GameLiving target)
+            {
+                return base.ShouldBeRemoved(target) || !_owner.Body.IsWithinRadius(target, _owner.AggroRange);
+            }
+
+            private static int GetPriority(AggroTable.TargetCandidate candidate, StandardMobBrain brain, Spell turretSpell)
+            {
+                // Lower value = higher priority.
+                // Primary (untouched) candidates occupy [0, bucketCount), ordered closest-first.
+                // Fallback candidates occupy [bucketCount, 2*bucketCount), ordered closest-first.
+                // Returns -1 if the candidate isn't a valid target at all.
+
+                GameLiving living = candidate.Living;
+                int distanceBucket = (int) candidate.EffectiveAggro;
+                bool untouched = !brain.LivingHasEffect(living, turretSpell) &&
+                    !living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity);
+
+                if (!untouched && turretSpell.Damage <= 0)
+                    return -1; // No damage, fallback tiers don't apply.
+
+                int fallbackOffset = untouched ? 0 : DistanceBucketCount;
+                return fallbackOffset + distanceBucket;
             }
         }
     }

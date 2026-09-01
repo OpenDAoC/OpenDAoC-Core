@@ -589,7 +589,7 @@ namespace DOL.GS.Spells
                 lowerboundary = Math.Max(lowerboundary, 75);
                 lowerboundary = Math.Min(lowerboundary, 125);
 
-                damage *= (player.GetWeaponSkill(weapon) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
+                damage *= (player.GetWeaponSkill(player.GetWeaponStat(weapon), player.GetClassBaseWeaponSkill(weapon)) + 90.68) / (ad.Target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67);
 
                 //If they have badge of Valor, we need to modify the damage
 				if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)

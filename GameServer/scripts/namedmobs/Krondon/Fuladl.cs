@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -16,9 +17,27 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Fuladl Initializing...");
 		}
+		private readonly List<FuladlAdd> _parts = new();
+		public void RegisterPart(FuladlAdd part)
+		{
+			_parts.RemoveAll(p => !p.IsAlive || p.ObjectState != eObjectState.Active);
+			_parts.Add(part);
+		}
+		public bool HasAliveParts
+		{
+			get
+			{
+				foreach (FuladlAdd part in _parts)
+				{
+					if (part.IsAlive && part.ObjectState == eObjectState.Active)
+						return true;
+				}
+				return false;
+			}
+		}
 		public override int GetResist(eDamageType damageType)
 		{
-			if (FuladlAdd.PartsCount > 0)
+			if (HasAliveParts)
 			{
 				switch (damageType)
 				{
@@ -123,7 +142,6 @@ namespace DOL.AI.Brain
 							if (npc.IsAlive && npc.Brain is FuladlAddBrain)
 							{
 								npc.RemoveFromWorld();
-								FuladlAdd.PartsCount = 0;
 							}
 						}
 					}
@@ -151,8 +169,9 @@ namespace DOL.AI.Brain
 				npc.Z = Body.Z;
 				npc.Heading = Body.Heading;
 				npc.CurrentRegion = Body.CurrentRegion;
-				npc.RespawnInterval = -1;
 				npc.AddToWorld();
+				if (Body is Fuladl boss)
+					boss.RegisterPart(npc);
 			}
 		}
 	}
@@ -189,12 +208,6 @@ namespace DOL.GS
 		{
 			get { return 3000; }
 		}
-		public static int PartsCount = 0;
-        public override void ProcessDeath(GameObject killer)
-        {
-			--PartsCount;
-            base.ProcessDeath(killer);
-        }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 150; }		
         public override bool AddToWorld()
@@ -203,9 +216,8 @@ namespace DOL.GS
 			Level = (byte)(Util.Random(65, 68));
 			Name = "Part of Fuladl";
 			Size = (byte)(Util.Random(50,70));
-			++PartsCount;
 			MaxSpeedBase = 250;
-			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = -1;
 
 			Faction = FactionMgr.GetFactionByID(8);
 

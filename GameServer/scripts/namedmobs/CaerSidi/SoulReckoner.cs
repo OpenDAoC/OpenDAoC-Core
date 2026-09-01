@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
@@ -59,7 +60,7 @@ namespace DOL.GS
 
             MeleeDamageType = eDamageType.Spirit;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            ReckonedSoul.SoulCount = 0;
+            _souls.Clear();
             SoulReckonerBrain adds = new SoulReckonerBrain();
             SetOwnBrain(adds);
             if (CurrentRegionID == 60)
@@ -84,10 +85,27 @@ namespace DOL.GS
             return true;
         }
 
-        public static bool spawn_souls = false;
+        public bool spawn_souls = false;
+        private readonly List<GameNPC> _souls = new List<GameNPC>();
+        private int AliveSoulCount
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (GameNPC npc in _souls)
+                {
+                    if (npc != null && npc.IsAlive && npc.ObjectState is eObjectState.Active)
+                        count++;
+                }
+
+                return count;
+            }
+        }
 
         public void SpawnSouls()
         {
+            _souls.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not eObjectState.Active);
             for (int i = 0; i < Util.Random(4, 6); i++) // Spawn 4-6 souls
             {
                 ReckonedSoul Add = new ReckonedSoul();
@@ -97,7 +115,14 @@ namespace DOL.GS
                 Add.CurrentRegion = CurrentRegion;
                 Add.Heading = Heading;
                 Add.AddToWorld();
+                _souls.Add(Add);
             }
+        }
+
+        public void RegisterSoul(GameNPC soul)
+        {
+            _souls.RemoveAll(npc => npc == null || !npc.IsAlive || npc.ObjectState is not eObjectState.Active);
+            _souls.Add(soul);
         }
 
         public override void ProcessDeath(GameObject killer) //on kill generate orbs
@@ -126,7 +151,7 @@ namespace DOL.GS
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
-                if (ReckonedSoul.SoulCount > 0 || SoulReckonerBrain.InRoom == false) //take no damage
+                if (AliveSoulCount > 0 || Brain is not SoulReckonerBrain { InRoom: true }) //take no damage
                 {
                     GamePlayer truc;
                     if (source is GamePlayer)
@@ -181,7 +206,7 @@ namespace DOL.AI.Brain
             CanBaf = false;
         }
 
-        public static bool InRoom = false;
+        public bool InRoom = false;
 
         public void AwayFromRoom()
         {
@@ -217,7 +242,7 @@ namespace DOL.AI.Brain
                 }
             }
         }
-        public static bool BafMobs = false;
+        public bool BafMobs = false;
 
         public override void Think()
         {
@@ -261,7 +286,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
         #region Spawn Soul
-        public static bool Spawn_Souls = false;
+        public bool Spawn_Souls = false;
         private int SpawnSouls(ECSGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
@@ -275,6 +300,9 @@ namespace DOL.AI.Brain
                     Add.CurrentRegion = Body.CurrentRegion;
                     Add.Heading = Body.Heading;
                     Add.AddToWorld();
+
+                    if (Body is SoulReckoner reckoner)
+                        reckoner.RegisterSoul(Add);
                 }
             }
             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));
@@ -348,15 +376,9 @@ namespace DOL.GS
             get { return 20000; }
         }
 
-        public override void ProcessDeath(GameObject killer)
-        {
-            --SoulCount;
-            base.ProcessDeath(killer);
-        }
         public override bool CanDropLoot => false;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 150; }
-        public static int SoulCount = 0;
 
         public override bool AddToWorld()
         {
@@ -376,7 +398,6 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 6;
             Realm = eRealm.None;
-            ++SoulCount;
 
             ReckonedSoulBrain adds = new ReckonedSoulBrain();
             SetOwnBrain(adds);
