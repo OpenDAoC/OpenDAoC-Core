@@ -215,48 +215,6 @@ namespace DOL.GS
             }
         }
 
-        private class EpicNpcAttackerCheckTimer : AttackerCheckTimer
-        {
-            private IGameEpicNpc _epicNpc;
-
-            public EpicNpcAttackerCheckTimer(AttackerTracker attackerTracker) : base(attackerTracker)
-            {
-                _epicNpc = attackerTracker._owner as IGameEpicNpc;
-            }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                double armorFactorScalingFactor = _epicNpc.DefaultArmorFactorScalingFactor;
-                int petCount = 0;
-
-                lock (_attackerTracker._lock)
-                {
-                    foreach (var pair in _attackerTracker._attackers)
-                    {
-                        if (TryRemoveAttacker(pair))
-                            continue;
-
-                        if (pair.Key is GamePlayer)
-                            armorFactorScalingFactor -= 0.04;
-                        else if (pair.Key is GameSummonedPet && petCount < _epicNpc.ArmorFactorScalingFactorPetCap)
-                        {
-                            armorFactorScalingFactor -= 0.01;
-                            petCount++;
-                        }
-
-                        if (armorFactorScalingFactor < 0.4)
-                        {
-                            armorFactorScalingFactor = 0.4;
-                            break;
-                        }
-                    }
-
-                    _epicNpc.ArmorFactorScalingFactor = armorFactorScalingFactor;
-                    return base.OnTick(timer);
-                }
-            }
-        }
-
         private abstract class AttackerCheckTimer : ECSGameTimerWrapperBase
         {
             private const int CHECK_ATTACKERS_INTERVAL = 1000;
@@ -273,10 +231,7 @@ namespace DOL.GS
 
             public static AttackerCheckTimer Create(AttackerTracker attackerTracker)
             {
-                if (attackerTracker._owner is IGameEpicNpc)
-                    return new EpicNpcAttackerCheckTimer(attackerTracker);
-                else
-                    return new StandardAttackerCheckTimer(attackerTracker);
+                return new StandardAttackerCheckTimer(attackerTracker);
             }
 
             public void WakeUp()

@@ -261,7 +261,7 @@ namespace DOL.AI.Brain
         {
             if (!_hasLeashReset && Body.IsAlive && HasAggro && Body.IsOutOfTetherRange)
             {
-                Body.MoveInRegion(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading, true);
+                Body.MoveInRegion(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
                 Body.Health = Body.MaxHealth;
 
                 foreach (ECSGameEffect effect in Body.effectListComponent.GetEffects())
