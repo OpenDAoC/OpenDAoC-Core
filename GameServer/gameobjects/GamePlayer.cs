@@ -5343,31 +5343,36 @@ namespace DOL.GS
                     armorAbsorb += itemAbsorb * hitChancePercent * 0.01;
                 }
 
-                int bestLevel = -1;
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.AlbArmor));
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.HibArmor));
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.MidArmor));
-
-                int abs = bestLevel switch
-                {
-                    ArmorLevel.Leather => GetArmorTypeAbsorbPercent(eObjectType.Leather),
-                    ArmorLevel.Studded => GetArmorTypeAbsorbPercent(eObjectType.Studded),
-                    ArmorLevel.Chain => GetArmorTypeAbsorbPercent(eObjectType.Chain),
-                    ArmorLevel.Plate => GetArmorTypeAbsorbPercent(eObjectType.Plate),
-                    _ => 0
-                };
-
                 double eaf = 10 * armorLevel * (1 + armorAbsorb);
-                int eafCap = (int) (10 * Level * (1 + abs * 0.01));
-
-                eaf += BaseBuffBonusCategory[eProperty.ArmorFactor]; // Base buff before cap.
-                eaf = Math.Min(eaf, eafCap);
-                eaf += Math.Min(Level * 1.875, SpecBuffBonusCategory[eProperty.ArmorFactor]) -
-                    DebuffCategory[eProperty.ArmorFactor] +
-                    OtherBonus[eProperty.ArmorFactor] +
-                    Math.Min(Level, ItemBonus[eProperty.ArmorFactor]);
-                eaf *= BuffBonusMultCategory1.Get((int) eProperty.ArmorFactor);
+                // Base buff before cap. Shouldn't this be applied on a per armor piece basis?
+                eaf += BaseBuffBonusCategory[eProperty.ArmorFactor];
+                eaf = Math.Min(eaf, GetDisplayedArmorFactorCap(this));
+                eaf += GetModified(eProperty.ArmorFactor);
                 return (int) eaf;
+
+                static int GetDisplayedArmorFactorCap(GamePlayer player)
+                {
+                    int bestLevel = -1;
+                    bestLevel = Math.Max(bestLevel, player.GetAbilityLevel(Abilities.AlbArmor));
+                    bestLevel = Math.Max(bestLevel, player.GetAbilityLevel(Abilities.HibArmor));
+                    bestLevel = Math.Max(bestLevel, player.GetAbilityLevel(Abilities.MidArmor));
+
+                    int abs = bestLevel switch
+                    {
+                        ArmorLevel.Leather => GetArmorTypeAbsorbPercent(eObjectType.Leather),
+                        ArmorLevel.Studded => GetArmorTypeAbsorbPercent(eObjectType.Studded),
+                        ArmorLevel.Chain => GetArmorTypeAbsorbPercent(eObjectType.Chain),
+                        ArmorLevel.Plate => GetArmorTypeAbsorbPercent(eObjectType.Plate),
+                        _ => 0
+                    };
+
+                    int playerLevel = player.Level;
+
+                    if (player.RealmLevel > 39)
+                        playerLevel++;
+
+                    return (int) (10 * playerLevel * (1 + abs * 0.01));
+                }
 
                 static int GetArmorTypeAbsorbPercent(eObjectType armorType)
                 {
