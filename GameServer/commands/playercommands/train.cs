@@ -70,7 +70,8 @@ namespace DOL.GS.Commands
             if (!Train(client, spec, level))
                 return;
 
-            OnTrained(client);
+            client.Player.RefreshSpecDependantSkills(true);
+            SendUpdates(client);
         }
 
         public static bool Train(GameClient client, Specialization spec, int level)
@@ -159,9 +160,8 @@ namespace DOL.GS.Commands
             player.CharacterClass.OnSkillTrained(player, specialization);
         }
 
-        public static void OnTrained(GameClient client)
+        public static void SendUpdates(GameClient client)
         {
-            client.Player.RefreshSpecDependantSkills(true);
             client.Out.SendUpdatePoints();
             client.Out.SendUpdatePlayer();
             client.Out.SendCharResistsUpdate();

@@ -111,8 +111,8 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 uint val = packet.ReadInt();
 
-                if (!amounts.ContainsKey(code) && val > 1)
-                    amounts.Add(code, val);
+                if (val > 1)
+                    amounts.TryAdd(code, val);
             }
 
             List<Specialization> specs = client.Player.GetSpecList().Where(e => e.Trainable).ToList();
@@ -131,27 +131,29 @@ namespace DOL.GS.PacketHandler.Client.v168
                 skillCount++;
             }
 
+            amounts.Clear();
+
             // Realm abilities.
             packet.Seek(position + 64, System.IO.SeekOrigin.Begin);
             size = 50;
-            amounts.Clear();
+            List<(int Index, uint Value)> raAmounts = new();
 
-            for (uint i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
                 uint val = packet.ReadInt();
 
-                if (val > 0 && !amounts.ContainsKey(i))
-                    amounts.Add(i, val);
+                if (val > 0)
+                    raAmounts.Add((i, val));
             }
 
-            if (amounts != null && amounts.Count > 0)
+            if (raAmounts != null && raAmounts.Count > 0)
             {
                 // Realm abilities.
-                var raList = SkillBase.GetClassRealmAbilities(client.Player.CharacterClass.ID).Where(ra => ra is not RR5RealmAbility);
+                var raList = SkillBase.GetClassRealmAbilities(client.Player.CharacterClass.ID).Where(ra => ra is not RR5RealmAbility).ToArray();
 
-                foreach (var pair in amounts)
+                foreach (var pair in raAmounts)
                 {
-                    RealmAbility ra = raList.ElementAtOrDefault((int) pair.Key);
+                    RealmAbility ra = raList.ElementAtOrDefault(pair.Index);
 
                     if (ra != null)
                     {
@@ -186,13 +188,14 @@ namespace DOL.GS.PacketHandler.Client.v168
                             client.Player.AddRealmAbility(ra, false);
                         }
 
+                        client.Player.RefreshSpecDependantSkills(true);
                         trained = true;
                     }
                 }
             }
 
             if (trained)
-                TrainCommandHandler.OnTrained(client);
+                TrainCommandHandler.SendUpdates(client);
         }
     }
 
