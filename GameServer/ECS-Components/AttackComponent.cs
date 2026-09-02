@@ -76,15 +76,11 @@ namespace DOL.GS
         /// </summary>
         public int CalculateCriticalChance(WeaponAction action)
         {
-            switch (owner.ActiveWeaponSlot)
+            return action?.ActiveWeaponSlot switch
             {
-                default:
-                case eActiveWeaponSlot.Standard:
-                case eActiveWeaponSlot.TwoHanded:
-                    return owner.GetModified(eProperty.CriticalMeleeHitChance);
-                case eActiveWeaponSlot.Distance:
-                    return action?.RangedAttackType is eRangedAttackType.Critical ? 0 : owner.GetModified(eProperty.CriticalArcheryHitChance);
-            }
+                eActiveWeaponSlot.Distance => action.RangedAttackType is eRangedAttackType.Critical ? 0 : owner.GetModified(eProperty.CriticalArcheryHitChance),
+                _ => owner.GetModified(eProperty.CriticalMeleeHitChance),
+            };
         }
 
         public DbInventoryItem GetAttackAmmo(WeaponAction action)
