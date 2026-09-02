@@ -77,31 +77,6 @@ namespace DOL.GS.PropertyCalc
         }
     }
 
-    //Cast Speed
-    [PropertyCalculator(eProperty.CastingSpeed)]
-    public class SpellCastSpeedPercentCalculator : PropertyCalculator
-    {
-        public override int CalcValue(GameLiving living, eProperty property)
-        {
-            GameLiving livingToCheck;
-
-            // Use the player's ability and item bonuses if the caster is a necromancer pet.
-            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
-                livingToCheck = playerOwner;
-            else
-                livingToCheck = living;
-
-            // Only custom server settings should have both ability and item bonuses. But this allows both despite the different cap values.
-            int abilityBonus = livingToCheck.AbilityBonus[property]; // Mastery of the Art (OF), capped at 15%.
-            int abilityBonusOverCap = Math.Max(0, abilityBonus - 15);
-            int itemBonus = livingToCheck.ItemBonus[property]; // ToA item bonus, capped at 10%.
-            int itemBonusOverCap = Math.Max(0, itemBonus - 10);
-            int cappedBonus = (abilityBonus - abilityBonusOverCap) + (itemBonus - itemBonusOverCap);
-            int remainingDebuff = Math.Max(0, living.DebuffCategory[property] - (abilityBonusOverCap + itemBonusOverCap));
-            return cappedBonus - remainingDebuff;
-        }
-    }
-
     //Spell Duration
     [PropertyCalculator(eProperty.SpellDuration)]
     public class SpellDurationPercentCalculator : PropertyCalculator

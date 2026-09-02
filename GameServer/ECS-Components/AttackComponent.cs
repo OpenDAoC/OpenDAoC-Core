@@ -362,7 +362,7 @@ namespace DOL.GS
                         if (Properties.ALLOW_OLD_ARCHERY)
                             speed *= 1.0 - owner.GetModified(eProperty.ArcherySpeed) * 0.01;
                         else
-                            speed *= 1.0 - owner.GetModified(eProperty.CastingSpeed) * 0.01;
+                            speed *= owner.GetModified(eProperty.CastingSpeed) * 0.001;
                     }
                     else
                         speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.001;

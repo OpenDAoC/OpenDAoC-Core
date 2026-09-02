@@ -296,7 +296,7 @@ namespace DOL.GS
 
             double castTime = spell.CastTime;
             double dexterityModifier = 1 - (GetModified(eProperty.Dexterity) - 60) / 600.0;
-            double bonusModifier = 1 - GetModified(eProperty.CastingSpeed) * 0.01;
+            double bonusModifier = GetModified(eProperty.CastingSpeed) * 0.001;
             castTime *= dexterityModifier * bonusModifier;
             return (int) Math.Max(castTime, spell.CastTime * 0.4); // Capped at 40% of the delve speed.
         }
