@@ -30,7 +30,7 @@ namespace DOL.GS.PropertyCalc
             double result = buffBonus;
             result += (1 - result * 0.01) * abilityBonus;
             result += (1 - result * 0.01) * itemBonus;
-            return (int) (100 - result) * 10;
+            return (int) ((100 - result) * 10);
         }
     }
 }
