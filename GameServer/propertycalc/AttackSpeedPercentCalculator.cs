@@ -24,15 +24,12 @@ namespace DOL.GS.PropertyCalc
 
             int abilityBonus = livingToCheck.AbilityBonus[property]; // Mastery of Arms, Mastery of Archery, Mastery of the Art (OF).
             int itemBonus = Math.Min(10, livingToCheck.ItemBonus[property]); // ToA item bonus, capped at 10%.
-            int buffBonus = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
-            int debuffMalus = Math.Abs(livingToCheck.DebuffCategory[property]);
+            int buffBonus = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property] - Math.Abs(livingToCheck.DebuffCategory[property]);
 
-            // Two layers of bonuses; multiplicative.
-            int active = buffBonus - debuffMalus;
-            int passive = abilityBonus + itemBonus;
-
-            double result = active;
-            result += (1 - result * 0.01) * passive;
+            // Three layers of bonuses; multiplicative.
+            double result = buffBonus;
+            result += (1 - result * 0.01) * abilityBonus;
+            result += (1 - result * 0.01) * itemBonus;
             return (int) (100 - result) * 10;
         }
     }
