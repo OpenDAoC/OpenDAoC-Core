@@ -3,6 +3,7 @@ using System;
 namespace DOL.GS.PropertyCalc
 {
     [PropertyCalculator(eProperty.MeleeSpeed)]
+    [PropertyCalculator(eProperty.ArcherySpeed)]
     [PropertyCalculator(eProperty.CastingSpeed)]
     public class MeleeSpeedPercentCalculator : PropertyCalculator
     {
@@ -21,7 +22,7 @@ namespace DOL.GS.PropertyCalc
             else
                 livingToCheck = living;
 
-            int abilityBonus = livingToCheck.AbilityBonus[property]; // Mastery of Arms, Mastery of the Art (OF).
+            int abilityBonus = livingToCheck.AbilityBonus[property]; // Mastery of Arms, Mastery of Archery, Mastery of the Art (OF).
             int itemBonus = Math.Min(10, livingToCheck.ItemBonus[property]); // ToA item bonus, capped at 10%.
             int buffBonus = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
             int debuffMalus = Math.Abs(livingToCheck.DebuffCategory[property]);

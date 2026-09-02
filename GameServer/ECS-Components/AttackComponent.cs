@@ -296,10 +296,7 @@ namespace DOL.GS
                 {
                     if (Properties.ALLOW_OLD_ARCHERY)
                     {
-                        speed *= quicknessMultiplier;
-                        double percent;
-                        percent = speed * 0.01 * player.GetModified(eProperty.ArcherySpeed);
-                        speed -= percent;
+                        speed *= quicknessMultiplier * player.GetModified(eProperty.ArcherySpeed) * 0.001;
 
                         if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
                             speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
@@ -360,7 +357,7 @@ namespace DOL.GS
                     {
                         // Old archery uses archery speed, but new archery uses casting speed.
                         if (Properties.ALLOW_OLD_ARCHERY)
-                            speed *= 1.0 - owner.GetModified(eProperty.ArcherySpeed) * 0.01;
+                            speed *= owner.GetModified(eProperty.ArcherySpeed) * 0.001;
                         else
                             speed *= owner.GetModified(eProperty.CastingSpeed) * 0.001;
                     }
