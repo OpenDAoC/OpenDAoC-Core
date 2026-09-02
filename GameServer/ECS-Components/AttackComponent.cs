@@ -2281,10 +2281,12 @@ namespace DOL.GS
 
         public class BlockRoundHandler
         {
-            private GameObject _owner;
-            private int _usedBlockRoundCount;
+            private readonly GameLiving _owner;
+            private readonly Dictionary<GameLiving, BlockRoundReservation> _reservationsByAttacker = new();
+            private readonly Stack<BlockRoundReservation> _reservationPool = new();
+            private readonly Lock _lock = new();
 
-            public BlockRoundHandler(GameObject owner)
+            public BlockRoundHandler(GameLiving owner)
             {
                 _owner = owner;
             }
@@ -2308,37 +2310,72 @@ namespace DOL.GS
                     return true;
                 }
 
-                // Many threads can enter this block simultaneously, so we increment the count first, then decrement if we've overshot the shield size.
-                usedBlockRoundCount = Interlocked.Increment(ref _usedBlockRoundCount);
+                GameLiving attacker = attackData.Attacker;
 
-                if (usedBlockRoundCount > shieldSize)
+                lock (_lock)
                 {
-                    Relinquish();
-                    return false;
+                    if (_reservationsByAttacker.TryGetValue(attacker, out BlockRoundReservation reservation))
+                    {
+                        // This attacker already holds a round. If they're swinging faster than their
+                        // expected interval (can happen with an archer whose target is closing the distance),
+                        // extend their existing reservation instead of attempting to take another slot.
+                        reservation.Start(attackData.Interval);
+                        usedBlockRoundCount = _reservationsByAttacker.Count;
+                        action?.HasConsumedBlockRound = true;
+                        return true;
+                    }
+
+                    if (_reservationsByAttacker.Count >= shieldSize)
+                    {
+                        usedBlockRoundCount = _reservationsByAttacker.Count;
+                        return false;
+                    }
+
+                    reservation = _reservationPool.Count > 0 ? _reservationPool.Pop() : new(_owner, this);
+                    reservation.Begin(attacker, attackData.Interval);
+                    _reservationsByAttacker.Add(attacker, reservation);
+                    usedBlockRoundCount = _reservationsByAttacker.Count;
                 }
 
                 action?.HasConsumedBlockRound = true;
-                new BlockRoundCountDecrementTimer(_owner, Relinquish).Start(attackData.Interval);
                 return true;
             }
 
-            private void Relinquish()
+            private void Relinquish(BlockRoundReservation reservation)
             {
-                Interlocked.Decrement(ref _usedBlockRoundCount);
+                lock (_lock)
+                {
+                    _reservationsByAttacker.Remove(reservation.Attacker);
+                    reservation.Reset();
+                    _reservationPool.Push(reservation);
+                }
             }
 
-            class BlockRoundCountDecrementTimer : ECSGameTimerWrapperBase
+            private class BlockRoundReservation : ECSGameTimerWrapperBase
             {
-                private Action _decrementBlockRoundCount;
+                private readonly BlockRoundHandler _handler;
 
-                public BlockRoundCountDecrementTimer(GameObject owner, Action decrementBlockRoundCount) : base(owner)
+                public GameLiving Attacker { get; private set; }
+
+                public BlockRoundReservation(GameObject owner, BlockRoundHandler handler) : base(owner)
                 {
-                    _decrementBlockRoundCount = decrementBlockRoundCount;
+                    _handler = handler;
+                }
+
+                public void Begin(GameLiving attacker, int interval)
+                {
+                    Attacker = attacker;
+                    Start(interval);
+                }
+
+                public void Reset()
+                {
+                    Attacker = null;
                 }
 
                 protected override int OnTick(ECSGameTimer timer)
                 {
-                    _decrementBlockRoundCount();
+                    _handler.Relinquish(this);
                     return 0;
                 }
             }
