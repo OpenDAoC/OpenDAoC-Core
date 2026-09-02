@@ -1,19 +1,13 @@
 namespace DOL.GS.PropertyCalc
 {
-    /// <summary>
-    /// The evade chance calculator. Returns 0 .. 1000 chance.
-    /// 
-    /// BuffBonusCategory1 unused
-    /// BuffBonusCategory2 unused
-    /// BuffBonusCategory3 unused
-    /// BuffBonusCategory4 unused
-    /// BuffBonusMultCategory1 unused
-    /// </summary>
     [PropertyCalculator(eProperty.EvadeChance)]
     public class EvadeChanceCalculator : PropertyCalculator
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
+            // The returned value is multiplied by 10 to allow for 1 decimal place of precision.
+            // Caller should divide by 10 to get the actual percentage.
+
             int chance = 0;
 
             if (living is GamePlayer player)

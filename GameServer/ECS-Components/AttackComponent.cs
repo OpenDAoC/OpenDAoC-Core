@@ -313,7 +313,7 @@ namespace DOL.GS
                         speed *= quicknessMultiplier;
                 }
                 else
-                    speed *= quicknessMultiplier * 0.01 * player.GetModified(eProperty.MeleeSpeed);
+                    speed *= quicknessMultiplier * player.GetModified(eProperty.MeleeSpeed) * 0.001;
 
                 return (int) Math.Max(minimum, speed * 100);
             }
@@ -351,7 +351,7 @@ namespace DOL.GS
                             }
                         }
 
-                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01 * modifier;
+                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.001 * modifier;
                     }
                 }
                 else
@@ -365,7 +365,7 @@ namespace DOL.GS
                             speed *= 1.0 - owner.GetModified(eProperty.CastingSpeed) * 0.01;
                     }
                     else
-                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01;
+                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.001;
                 }
 
                 return (int) Math.Max(minimum, speed);
