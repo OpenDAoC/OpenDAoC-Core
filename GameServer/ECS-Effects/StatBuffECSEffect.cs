@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.Spells;
 
 namespace DOL.GS
@@ -16,8 +17,11 @@ namespace DOL.GS
             if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                 return;
 
-            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
-                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
+            Span<eProperty> properties = stackalloc eProperty[EffectHelper.MAX_PROPERTIES_PER_EFFECT];
+            int propertyCount = EffectHelper.FillPropertiesFromEffect(EffectType, properties);
+
+            for (int i = 0; i < propertyCount; i++)
+                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, properties[i], SpellHandler.Spell.Value, Effectiveness, false);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
             // This will also update health, endurance, and power if they're above their max amount.
@@ -40,8 +44,11 @@ namespace DOL.GS
             if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                 return;
 
-            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
-                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
+            Span<eProperty> properties = stackalloc eProperty[EffectHelper.MAX_PROPERTIES_PER_EFFECT];
+            int propertyCount = EffectHelper.FillPropertiesFromEffect(EffectType, properties);
+
+            for (int i = 0; i < propertyCount; i++)
+                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, properties[i], SpellHandler.Spell.Value, Effectiveness, true);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
             // This will also update health, endurance, and power if they're above their max amount.

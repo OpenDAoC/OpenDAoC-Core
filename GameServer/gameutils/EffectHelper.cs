@@ -12,6 +12,8 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
+        public const int MAX_PROPERTIES_PER_EFFECT = 6; // Must be at least equal to the maximum number of properties that can be applied by a single effect.
+
         public static bool IsWithinConcentrationBuffRadius(GameLiving effectOwner, GameLiving effectSource, eSpellType spellType)
         {
             int radius = spellType is eSpellType.EnduranceRegenBuff ?
@@ -312,156 +314,161 @@ namespace DOL.GS
                 player.Out.SendSpellEffectAnimation(e.SpellHandler.Caster, e.Owner, e.SpellHandler.Spell.ClientEffect, 0, false, 0);
         }
 
-        public static List<eProperty> GetPropertiesFromEffect(eEffect e)
+        public static int FillPropertiesFromEffect(eEffect effect, Span<eProperty> properties)
         {
-            List<eProperty> list = new();
+            if (properties.Length < MAX_PROPERTIES_PER_EFFECT)
+                throw new ArgumentException($"The properties span must have a length of at least {MAX_PROPERTIES_PER_EFFECT}.", nameof(properties));
 
-            switch (e)
+            int count = 0;
+
+            switch (effect)
             {
                 case eEffect.StrengthBuff:
                 case eEffect.StrengthDebuff:
-                    list.Add(eProperty.Strength);
-                    return list;
+                    properties[count++] = eProperty.Strength;
+                    break;
                 case eEffect.DexterityBuff:
                 case eEffect.DexterityDebuff:
-                    list.Add(eProperty.Dexterity);
-                    return list;
+                    properties[count++] = eProperty.Dexterity;
+                    break;
                 case eEffect.ConstitutionBuff:
                 case eEffect.ConstitutionDebuff:
-                    list.Add(eProperty.Constitution);
-                    return list;
+                    properties[count++] = eProperty.Constitution;
+                    break;
                 case eEffect.AcuityBuff:
                 case eEffect.AcuityDebuff:
-                    list.Add(eProperty.Acuity);
-                    return list;
+                    properties[count++] = eProperty.Acuity;
+                    break;
                 case eEffect.StrengthConBuff:
                 case eEffect.StrConDebuff:
-                    list.Add(eProperty.Strength);
-                    list.Add(eProperty.Constitution);
-                    return list;
+                    properties[count++] = eProperty.Strength;
+                    properties[count++] = eProperty.Constitution;
+                    break;
                 case eEffect.WsConDebuff:
-                    list.Add(eProperty.WeaponSkill);
-                    list.Add(eProperty.Constitution);
-                    return list;
+                    properties[count++] = eProperty.WeaponSkill;
+                    properties[count++] = eProperty.Constitution;
+                    break;
                 case eEffect.DexQuickBuff:
                 case eEffect.DexQuiDebuff:
-                    list.Add(eProperty.Dexterity);
-                    list.Add(eProperty.Quickness);
-                    return list;
+                    properties[count++] = eProperty.Dexterity;
+                    properties[count++] = eProperty.Quickness;
+                    break;
                 case eEffect.BaseAFBuff:
                 case eEffect.SpecAFBuff:
                 case eEffect.PaladinAf:
                 case eEffect.ArmorFactorDebuff:
-                    list.Add(eProperty.ArmorFactor);
-                    return list;
+                    properties[count++] = eProperty.ArmorFactor;
+                    break;
                 case eEffect.ArmorAbsorptionDebuff:
-                    list.Add(eProperty.ArmorAbsorption);
-                    return list;
+                    properties[count++] = eProperty.ArmorAbsorption;
+                    break;
                 case eEffect.PhysicalAbsorptionBuff:
-                    list.Add(eProperty.PhysicalAbsorption);
-                    return list;
+                    properties[count++] = eProperty.PhysicalAbsorption;
+                    break;
                 case eEffect.MeleeDamageBuff:
                 case eEffect.MeleeDamageDebuff:
-                    list.Add(eProperty.MeleeDamage);
-                    return list;
+                    properties[count++] = eProperty.MeleeDamage;
+                    break;
                 case eEffect.NaturalResistDebuff:
-                    list.Add(eProperty.Resist_Natural);
-                    return list;
+                    properties[count++] = eProperty.Resist_Natural;
+                    break;
                 case eEffect.BodyResistBuff:
                 case eEffect.BodyResistDebuff:
-                    list.Add(eProperty.Resist_Body);
-                    return list;
+                    properties[count++] = eProperty.Resist_Body;
+                    break;
                 case eEffect.SpiritResistBuff:
                 case eEffect.SpiritResistDebuff:
-                    list.Add(eProperty.Resist_Spirit);
-                    return list;
+                    properties[count++] = eProperty.Resist_Spirit;
+                    break;
                 case eEffect.EnergyResistBuff:
                 case eEffect.EnergyResistDebuff:
-                    list.Add(eProperty.Resist_Energy);
-                    return list;
+                    properties[count++] = eProperty.Resist_Energy;
+                    break;
                 case eEffect.HeatResistBuff:
                 case eEffect.HeatResistDebuff:
-                    list.Add(eProperty.Resist_Heat);
-                    return list;
+                    properties[count++] = eProperty.Resist_Heat;
+                    break;
                 case eEffect.ColdResistBuff:
                 case eEffect.ColdResistDebuff:
-                    list.Add(eProperty.Resist_Cold);
-                    return list;
+                    properties[count++] = eProperty.Resist_Cold;
+                    break;
                 case eEffect.MatterResistBuff:
                 case eEffect.MatterResistDebuff:
-                    list.Add(eProperty.Resist_Matter);
-                    return list;
+                    properties[count++] = eProperty.Resist_Matter;
+                    break;
                 case eEffect.HeatColdMatterBuff:
-                    list.Add(eProperty.Resist_Heat);
-                    list.Add(eProperty.Resist_Cold);
-                    list.Add(eProperty.Resist_Matter);
-                    return list;
+                    properties[count++] = eProperty.Resist_Heat;
+                    properties[count++] = eProperty.Resist_Cold;
+                    properties[count++] = eProperty.Resist_Matter;
+                    break;
                 case eEffect.BodySpiritEnergyBuff:
-                    list.Add(eProperty.Resist_Body);
-                    list.Add(eProperty.Resist_Spirit);
-                    list.Add(eProperty.Resist_Energy);
-                    return list;
+                    properties[count++] = eProperty.Resist_Body;
+                    properties[count++] = eProperty.Resist_Spirit;
+                    properties[count++] = eProperty.Resist_Energy;
+                    break;
                 case eEffect.AllMagicResistsBuff:
-                    list.Add(eProperty.Resist_Body);
-                    list.Add(eProperty.Resist_Spirit);
-                    list.Add(eProperty.Resist_Energy);
-                    list.Add(eProperty.Resist_Heat);
-                    list.Add(eProperty.Resist_Cold);
-                    list.Add(eProperty.Resist_Matter);
-                    return list;
+                    properties[count++] = eProperty.Resist_Body;
+                    properties[count++] = eProperty.Resist_Spirit;
+                    properties[count++] = eProperty.Resist_Energy;
+                    properties[count++] = eProperty.Resist_Heat;
+                    properties[count++] = eProperty.Resist_Cold;
+                    properties[count++] = eProperty.Resist_Matter;
+                    break;
                 case eEffect.SlashResistBuff:
                 case eEffect.SlashResistDebuff:
-                    list.Add(eProperty.Resist_Slash);
-                    return list;
+                    properties[count++] = eProperty.Resist_Slash;
+                    break;
                 case eEffect.ThrustResistBuff:
                 case eEffect.ThrustResistDebuff:
-                    list.Add(eProperty.Resist_Thrust);
-                    return list;
+                    properties[count++] = eProperty.Resist_Thrust;
+                    break;
                 case eEffect.CrushResistBuff:
                 case eEffect.CrushResistDebuff:
-                    list.Add(eProperty.Resist_Crush);
-                    return list;
+                    properties[count++] = eProperty.Resist_Crush;
+                    break;
                 case eEffect.AllMeleeResistsBuff:
                 case eEffect.AllMeleeResistsDebuff:
-                    list.Add(eProperty.Resist_Crush);
-                    list.Add(eProperty.Resist_Thrust);
-                    list.Add(eProperty.Resist_Slash);
-                    return list;
+                    properties[count++] = eProperty.Resist_Crush;
+                    properties[count++] = eProperty.Resist_Thrust;
+                    properties[count++] = eProperty.Resist_Slash;
+                    break;
                 case eEffect.HealthRegenBuff:
-                    list.Add(eProperty.HealthRegenerationAmount);
-                    return list;
+                    properties[count++] = eProperty.HealthRegenerationAmount;
+                    break;
                 case eEffect.PowerRegenBuff:
-                    list.Add(eProperty.PowerRegenerationAmount);
-                    return list;
+                    properties[count++] = eProperty.PowerRegenerationAmount;
+                    break;
                 case eEffect.EnduranceRegenBuff:
-                    list.Add(eProperty.EnduranceRegenerationAmount);
-                    return list;
+                    properties[count++] = eProperty.EnduranceRegenerationAmount;
+                    break;
                 case eEffect.MeleeHasteBuff:
                 case eEffect.MeleeHasteDebuff:
-                    list.Add(eProperty.MeleeSpeed);
-                    return list;
+                    properties[count++] = eProperty.MeleeSpeed;
+                    break;
                 case eEffect.MovementSpeedBuff:
                 case eEffect.MovementSpeedDebuff:
-                    list.Add(eProperty.MaxSpeed);
-                    return list;
+                    properties[count++] = eProperty.MaxSpeed;
+                    break;
                 case eEffect.MesmerizeDurationBuff:
-                    list.Add(eProperty.MesmerizeDurationReduction);
-                    return list;
+                    properties[count++] = eProperty.MesmerizeDurationReduction;
+                    break;
                 case eEffect.FatigueConsumptionBuff:
                 case eEffect.FatigueConsumptionDebuff:
-                    list.Add(eProperty.FatigueConsumption);
-                    return list;
+                    properties[count++] = eProperty.FatigueConsumption;
+                    break;
                 case eEffect.EvadeBuff:
                 case eEffect.SavageStyleEvadeBuff:
-                    list.Add(eProperty.EvadeChance);
-                    return list;
+                    properties[count++] = eProperty.EvadeChance;
+                    break;
                 case eEffect.ParryBuff:
                 case eEffect.SavageStyleParryBuff:
-                    list.Add(eProperty.ParryChance);
-                    return list;
+                    properties[count++] = eProperty.ParryChance;
+                    break;
                 default:
-                    return list;
+                    break;
             }
+
+            return count;
         }
 
         public static PlayerUpdate GetPlayerUpdateFromEffect(eEffect effect)

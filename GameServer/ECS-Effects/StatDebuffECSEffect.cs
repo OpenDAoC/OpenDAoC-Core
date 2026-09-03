@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.PlayerClass;
 using DOL.GS.Spells;
 
@@ -36,8 +37,11 @@ namespace DOL.GS
                 if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                     return;
 
-                foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
-                    ApplyBonus(Owner, _isForcedToSpecDebuff ? eBuffBonusCategory.SpecDebuff : propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
+                Span<eProperty> properties = stackalloc eProperty[EffectHelper.MAX_PROPERTIES_PER_EFFECT];
+                int propertyCount = EffectHelper.FillPropertiesFromEffect(EffectType, properties);
+
+                for (int i = 0; i < propertyCount; i++)
+                    ApplyBonus(Owner, _isForcedToSpecDebuff ? eBuffBonusCategory.SpecDebuff : propertyChangingSpell.BonusCategory1, properties[i], SpellHandler.Spell.Value, Effectiveness, true);
             }
 
             // "Your agility is suppressed!"
@@ -59,8 +63,11 @@ namespace DOL.GS
                 if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                     return;
 
-                foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
-                    ApplyBonus(Owner, _isForcedToSpecDebuff ? eBuffBonusCategory.SpecDebuff : propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
+                Span<eProperty> properties = stackalloc eProperty[EffectHelper.MAX_PROPERTIES_PER_EFFECT];
+                int propertyCount = EffectHelper.FillPropertiesFromEffect(EffectType, properties);
+
+                for (int i = 0; i < propertyCount; i++)
+                    ApplyBonus(Owner, _isForcedToSpecDebuff ? eBuffBonusCategory.SpecDebuff : propertyChangingSpell.BonusCategory1, properties[i], SpellHandler.Spell.Value, Effectiveness, false);
             }
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
