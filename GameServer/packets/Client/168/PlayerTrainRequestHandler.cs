@@ -146,18 +146,25 @@ namespace DOL.GS.PacketHandler.Client.v168
                     raAmounts.Add((i, val));
             }
 
-            if (raAmounts != null && raAmounts.Count > 0)
+            if (raAmounts.Count > 0)
             {
-                // Realm abilities.
                 var raList = SkillBase.GetClassRealmAbilities(client.Player.CharacterClass.ID).Where(ra => ra is not RR5RealmAbility).ToArray();
+                List<(int Index, uint Value)> pending = raAmounts;
+                bool shouldRetry;
 
-                foreach (var pair in raAmounts)
+                do
                 {
-                    RealmAbility ra = raList.ElementAtOrDefault(pair.Index);
+                    bool progressMadeThisRound = false;
+                    List<(int Index, uint Value)> retryNextRound = new();
 
-                    if (ra != null)
+                    foreach (var pair in pending)
                     {
-                        RealmAbility playerRA = (RealmAbility) client.Player.GetAbility(ra.KeyName);
+                        RealmAbility ra = raList.ElementAtOrDefault(pair.Index);
+
+                        if (ra == null)
+                            continue;
+
+                        RealmAbility playerRA = client.Player.GetAbility(ra.KeyName) as RealmAbility;
 
                         if (playerRA != null && (playerRA.Level >= ra.MaxLevel || playerRA.Level >= pair.Value))
                             continue;
@@ -176,7 +183,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                         if (!ra.CheckRequirement(client.Player))
                         {
-                            client.Out.SendMessage($"You are not experienced enough to get {ra.Name} now. Come back later.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            // Might just be waiting on a prerequisite trained this same batch.
+                            retryNextRound.Add(pair);
                             continue;
                         }
 
@@ -188,14 +196,33 @@ namespace DOL.GS.PacketHandler.Client.v168
                             client.Player.AddRealmAbility(ra, false);
                         }
 
-                        client.Player.RefreshSpecDependantSkills(true);
                         trained = true;
+                        progressMadeThisRound = true;
                     }
+
+                    pending = retryNextRound;
+                    shouldRetry = progressMadeThisRound && pending.Count > 0;
+
+                    // Let CheckRequirement see what we just trained.
+                    if (shouldRetry)
+                        client.Player.RefreshSpecDependantSkills(true);
+                } while (shouldRetry);
+
+                // Whatever's left genuinely failed CheckRequirement.
+                foreach (var pair in pending)
+                {
+                    RealmAbility ra = raList.ElementAtOrDefault(pair.Index);
+
+                    if (ra != null)
+                        client.Out.SendMessage($"You are not experienced enough to get {ra.Name} now. Come back later.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
             }
 
             if (trained)
+            {
+                client.Player.RefreshSpecDependantSkills(true);
                 TrainCommandHandler.SendUpdates(client);
+            }
         }
     }
 
