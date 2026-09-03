@@ -971,7 +971,7 @@ namespace DOL.GS
 						player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
 						player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
 					{
-						evadeChance = Math.Max(GetModified(eProperty.EvadeChance), 0);
+						evadeChance = GetModified(eProperty.EvadeChance);
 					}
 				}
 			}
