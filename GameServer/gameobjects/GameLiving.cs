@@ -982,10 +982,6 @@ namespace DOL.GS
 			{
 				evadeChance *= 0.001;
 
-				// Kelgor's Claw 15% evade.
-				if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
-					evadeChance += 15 * 0.01;
-
 				// Evade chance is reduced by the number of attackers.
 				// The reduction amount is believed to be relatively small compared to parry.
 				// We use the same formula, but each additional attacker beyond the first contributes 1/3.
@@ -1082,10 +1078,6 @@ namespace DOL.GS
 					// The penalty was reduced in 1.87.
 					if (attackerCount > 0)
 						parryChance /= attackerCount;
-
-					// Tribal Wrath 25% evade.
-					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
-						parryChance += 25 * 0.01;
 
 					// Reduce chance by attacker's defense penetration.
 					parryChance *= 1 - ad.DefensePenetration;
