@@ -6615,7 +6615,7 @@ namespace DOL.GS
                             m_whistleMountTimer = new(this, new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback), 5000);
                         }
 
-                        break;
+                        return;
                     }
                     case Slot.RIGHTHAND:
                     case Slot.LEFTHAND:
@@ -6638,6 +6638,9 @@ namespace DOL.GS
                     }
                     case Slot.RANGED:
                     {
+                        if (type != 0)
+                           break;
+
                         bool newAttack = false;
                         ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);
 
@@ -6695,16 +6698,16 @@ namespace DOL.GS
                             }
                         }
 
-                        break;
+                        return;
                     }
                     case Slot.FIRSTQUIVER: SwitchQuiver(eActiveQuiverSlot.First, false);
-                        break;
+                        return;
                     case Slot.SECONDQUIVER: SwitchQuiver(eActiveQuiverSlot.Second, false);
-                        break;
+                        return;
                     case Slot.THIRDQUIVER: SwitchQuiver(eActiveQuiverSlot.Third, false);
-                        break;
+                        return;
                     case Slot.FOURTHQUIVER: SwitchQuiver(eActiveQuiverSlot.Fourth, false);
-                        break;
+                        return;
                 }
 
                 if (useItem.SpellID != 0 || useItem.SpellID1 != 0 || useItem.PoisonSpellID != 0)
