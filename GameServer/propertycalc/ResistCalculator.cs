@@ -66,7 +66,6 @@ namespace DOL.GS.PropertyCalc
                 livingToCheck = living;
 
             int buff = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
-            buff = livingToCheck is GameNPC ? buff : Math.Min(buff, BuffBonusCap);
             int debuff = Math.Abs(living.DebuffCategory[property]) + Math.Abs(living.SpecDebuffCategory[property]);
             buff -= debuff;
 
@@ -112,11 +111,6 @@ namespace DOL.GS.PropertyCalc
 
             return Math.Min(living.ItemBonus[eProperty.ResCapBonus_First - eProperty.Resist_First + property], 5);
         }
-
-        /// <summary>
-        /// Cap for player cast resist buffs.
-        /// </summary>
-        public static int BuffBonusCap => 24;
 
         /// <summary>
         /// Hard cap for resists.

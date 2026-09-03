@@ -960,17 +960,20 @@ namespace DOL.GS
 
 			double evadeChance = 0;
 			GamePlayer player = this as GamePlayer;
-			ECSGameEffect evadeBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
 
 			if (player != null)
 			{
-				if (player.HasAbility(Abilities.Advanced_Evade) ||
-					player.HasAbility(Abilities.Enhanced_Evade) ||
-					player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
-					player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
-					evadeChance = GetModified(eProperty.EvadeChance);
-				else if (IsObjectInFront(ad.Attacker, 120) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
-					evadeChance = Math.Max(GetModified(eProperty.EvadeChance), 0);
+				if (player.HasAbility(Abilities.Evade) || player.effectListComponent.ContainsEffectForEffectType(eEffect.EvadeBuff))
+				{
+					if (IsObjectInFront(ad.Attacker, 120) ||
+						player.HasAbility(Abilities.Advanced_Evade) ||
+						player.HasAbility(Abilities.Enhanced_Evade) ||
+						player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
+						player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+					{
+						evadeChance = Math.Max(GetModified(eProperty.EvadeChance), 0);
+					}
+				}
 			}
 			else if (this is GameNPC && IsObjectInFront(ad.Attacker, 120))
 				evadeChance = GetModified(eProperty.EvadeChance);
@@ -1042,7 +1045,6 @@ namespace DOL.GS
 			if (ad.IsMeleeAttack)
 			{
 				BladeBarrierEffect BladeBarrier = null;
-				ECSGameEffect parryBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
 
 				if (player != null)
 				{
@@ -1052,9 +1054,10 @@ namespace DOL.GS
 
 					if (BladeBarrier != null && ActiveWeapon != null)
 						parryChance = 0.90;
-					else if (IsObjectInFront(ad.Attacker, 120))
+					else if (player.HasSpecialization(Specs.Parry) || player.effectListComponent.ContainsEffectForEffectType(eEffect.ParryBuff))
 					{
-						if ((player.HasSpecialization(Specs.Parry) || parryBuff != null) && ActiveWeapon != null &&
+						if (IsObjectInFront(ad.Attacker, 120) &&
+							ActiveWeapon != null &&
 							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.RecurvedBow &&
 							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.Longbow &&
 							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.CompositeBow &&

@@ -50,18 +50,16 @@ namespace DOL.GS
                     return eEffect.Bladeturn;
                 case eSpellType.DamageAdd:
                     return eEffect.DamageAdd;
-                //case eSpellType.DamageReturn:
-                //    return eEffect.DamageReturn;
                 case eSpellType.DamageShield: // FocusShield: Could be the wrong SpellType here.
                     return eEffect.FocusShield;
                 case eSpellType.AblativeArmor:
                     return eEffect.AblativeArmor;
                 case eSpellType.MeleeDamageBuff:
+                case eSpellType.SavageDPSBuff:
                     return eEffect.MeleeDamageBuff;
                 case eSpellType.CombatSpeedBuff:
+                case eSpellType.SavageCombatSpeedBuff:
                     return eEffect.MeleeHasteBuff;
-                //case eSpellType.Celerity: // Possibly the same as CombatSpeedBuff?
-                //    return eEffect.Celerity;
                 case eSpellType.SpeedOfTheRealm:
                 case eSpellType.SpeedEnhancement:
                     return eEffect.MovementSpeedBuff;
@@ -83,16 +81,33 @@ namespace DOL.GS
                     return eEffect.DexQuickBuff;
                 case eSpellType.AcuityBuff:
                     return eEffect.AcuityBuff;
-                case eSpellType.ArmorAbsorptionBuff:
-                    return eEffect.PhysicalAbsorptionBuff; // Every ABS buff are applied as secondary ABS buff and don't modify armor ABS.
                 case eSpellType.BaseArmorFactorBuff:
                     return eEffect.BaseAFBuff;
                 case eSpellType.SpecArmorFactorBuff:
                     return eEffect.SpecAFBuff;
                 case eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
+                case eSpellType.ArmorAbsorptionBuff:
+                    return eEffect.PhysicalAbsorptionBuff; // Every ABS buff are applied as secondary ABS buff and don't modify armor ABS.
+                case eSpellType.SavageEvadeBuff:
+                    return eEffect.EvadeBuff;
+                case eSpellType.SavageStyleEvadeBuff:
+                    return eEffect.SavageStyleEvadeBuff;
+                case eSpellType.SavageParryBuff:
+                    return eEffect.ParryBuff;
+                case eSpellType.SavageStyleParryBuff:
+                    return eEffect.SavageStyleParryBuff;
 
                 // Resists.
+                case eSpellType.CrushResistBuff:
+                case eSpellType.SavageCrushResistanceBuff:
+                    return eEffect.CrushResistBuff;
+                case eSpellType.SlashResistBuff:
+                case eSpellType.SavageSlashResistanceBuff:
+                    return eEffect.SlashResistBuff;
+                case eSpellType.ThrustResistBuff:
+                case eSpellType.SavageThrustResistanceBuff:
+                    return eEffect.ThrustResistBuff;
                 case eSpellType.BodyResistBuff:
                     return eEffect.BodyResistBuff;
                 case eSpellType.SpiritResistBuff:
@@ -160,16 +175,10 @@ namespace DOL.GS
                 case eSpellType.StyleStun:
                 case eSpellType.Stun:
                     return eEffect.Stun;
-                //case eSpellType.StunImmunity:
-                //    return eEffect.StunImmunity;
                 case eSpellType.Mesmerize:
                     return eEffect.Mez;
                 case eSpellType.MesmerizeDurationBuff:
                     return eEffect.MesmerizeDurationBuff;
-                //case eSpellType.MezImmunity:
-                //    return eEffect.MezImmunity;
-                //case eSpellType.SnareImmunity: // Not implemented.
-                //    return eEffect.SnareImmunity;
                 case eSpellType.Nearsight:
                     return eEffect.Nearsight;
 
@@ -186,14 +195,20 @@ namespace DOL.GS
                     return eEffect.DexQuiDebuff;
                 case eSpellType.WeaponSkillConstitutionDebuff:
                     return eEffect.WsConDebuff;
-                //case eSpellType.AcuityDebuff: // Not sure what this is yet.
-                //    return eEffect.Acuity;
-                case eSpellType.ArmorAbsorptionDebuff:
-                    return eEffect.ArmorAbsorptionDebuff;
+                case eSpellType.AcuityDebuff:
+                    return eEffect.AcuityDebuff;
                 case eSpellType.ArmorFactorDebuff:
                     return eEffect.ArmorFactorDebuff;
+                case eSpellType.ArmorAbsorptionDebuff:
+                    return eEffect.ArmorAbsorptionDebuff;
 
                 // Resists.
+                case eSpellType.CrushResistDebuff:
+                    return eEffect.CrushResistDebuff;
+                case eSpellType.SlashResistDebuff:
+                    return eEffect.SlashResistDebuff;
+                case eSpellType.ThrustResistDebuff:
+                    return eEffect.ThrustResistDebuff;
                 case eSpellType.BodyResistDebuff:
                     return eEffect.BodyResistDebuff;
                 case eSpellType.SpiritResistDebuff:
@@ -206,22 +221,8 @@ namespace DOL.GS
                     return eEffect.ColdResistDebuff;
                 case eSpellType.MatterResistDebuff:
                     return eEffect.MatterResistDebuff;
-                case eSpellType.SlashResistDebuff:
-                    return eEffect.SlashResistDebuff;
 
                 // Misc.
-                case eSpellType.SavageCombatSpeedBuff:
-                    return eEffect.MeleeHasteBuff;
-                case eSpellType.SavageCrushResistanceBuff:
-                case eSpellType.SavageDPSBuff:
-                case eSpellType.SavageEnduranceHeal:
-                case eSpellType.SavageEvadeBuff:
-                case eSpellType.SavageStyleEvadeBuff:
-                case eSpellType.SavageParryBuff:
-                case eSpellType.SavageStyleParryBuff:
-                case eSpellType.SavageSlashResistanceBuff:
-                case eSpellType.SavageThrustResistanceBuff:
-                    return eEffect.SavageBuff;
                 case eSpellType.DirectDamage:
                     return eEffect.DirectDamage;
                 case eSpellType.FacilitatePainworking:
@@ -449,6 +450,14 @@ namespace DOL.GS
                 case eEffect.FatigueConsumptionBuff:
                 case eEffect.FatigueConsumptionDebuff:
                     list.Add(eProperty.FatigueConsumption);
+                    return list;
+                case eEffect.EvadeBuff:
+                case eEffect.SavageStyleEvadeBuff:
+                    list.Add(eProperty.EvadeChance);
+                    return list;
+                case eEffect.ParryBuff:
+                case eEffect.SavageStyleParryBuff:
+                    list.Add(eProperty.ParryChance);
                     return list;
                 default:
                     return list;

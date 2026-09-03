@@ -28,6 +28,10 @@ namespace DOL.GS
         SpecAFBuff,
         PaladinAf,
         PhysicalAbsorptionBuff,
+        EvadeBuff,
+        SavageStyleEvadeBuff,
+        ParryBuff,
+        SavageStyleParryBuff,
 
         //resists
         BodyResistBuff,
@@ -108,7 +112,6 @@ namespace DOL.GS
         MesmerizeDurationBuff,
         FatigueConsumptionBuff,
         FatigueConsumptionDebuff,
-        SavageBuff,
         Pet,
         OffensiveProc,
         DefensiveProc,

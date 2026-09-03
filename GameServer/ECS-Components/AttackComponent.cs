@@ -1515,12 +1515,9 @@ namespace DOL.GS
             if (!defenseDisabled)
             {
                 // Savage style buffs.
-                foreach (ECSGameEffect savageBuff in owner.effectListComponent.GetEffects(eEffect.SavageBuff))
+                foreach (ECSGameEffect savageBuff in owner.effectListComponent.GetEffects(static e => e.EffectType is eEffect.SavageStyleEvadeBuff or eEffect.SavageStyleParryBuff))
                 {
-                    if (!savageBuff.IsActive)
-                        continue;
-
-                    if (savageBuff.SpellHandler.Spell.SpellType is eSpellType.SavageStyleEvadeBuff or eSpellType.SavageStyleParryBuff)
+                    if (savageBuff.IsActive)
                         savageBuff.End();
                 }
 
