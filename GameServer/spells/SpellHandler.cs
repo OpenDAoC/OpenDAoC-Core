@@ -2899,7 +2899,7 @@ namespace DOL.GS.Spells
 				else
 					spec = 0;
 
-				spellDamage = stat * (spellDamage / 124 + 1 / 23) * (1 + spec * 0.004);
+				spellDamage = stat * (spellDamage / 124 + 1 / 23.0) * (1 + spec * 0.004);
 				return Math.Max(0, spellDamage);
 			}
 
