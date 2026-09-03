@@ -6698,6 +6698,10 @@ namespace DOL.GS
                             }
                         }
 
+                        // Temporary. We shouldn't use UseSlot even for Volley.
+                        if (volley != null)
+                            Notify(GamePlayerEvent.UseSlot, this, new UseSlotEventArgs(slot, type));
+
                         return;
                     }
                     case Slot.FIRSTQUIVER: SwitchQuiver(eActiveQuiverSlot.First, false);
