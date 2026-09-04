@@ -2884,7 +2884,7 @@ namespace DOL.GS
 			// being overly effective at resuming spell casting after an interruption.
 			// It makes repositioning them easier without having to constantly attack them,
 			// and makes interrupts more effective against FnFs for example.
-			if (attacker != this)
+			if (attacker != this && this is not NecromancerPet)
 				duration += 2500;
 
 			base.StartInterruptTimer(duration, attackType, attacker);
