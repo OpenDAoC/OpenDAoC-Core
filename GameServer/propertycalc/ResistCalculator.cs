@@ -58,14 +58,8 @@ namespace DOL.GS.PropertyCalc
         /// </summary>
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)
         {
-            GameLiving livingToCheck;
-
-            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
-                livingToCheck = playerOwner;
-            else
-                livingToCheck = living;
-
             int buff = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
+            buff = living is GameNPC ? buff : Math.Min(buff, living.Level / 2 + 1);
             int debuff = Math.Abs(living.DebuffCategory[property]) + Math.Abs(living.SpecDebuffCategory[property]);
             buff -= debuff;
 
@@ -112,9 +106,7 @@ namespace DOL.GS.PropertyCalc
             return Math.Min(living.ItemBonus[eProperty.ResCapBonus_First - eProperty.Resist_First + property], 5);
         }
 
-        /// <summary>
-        /// Hard cap for resists.
-        /// </summary>
+        public static int BuffBonusCap => 26;
         public static int HardCap => 70;
     }
 }
