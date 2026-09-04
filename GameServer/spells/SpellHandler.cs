@@ -372,26 +372,33 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
+		private bool IsInterruptImmune()
+		{
+			if (Caster is NecromancerPet necromancerPet)
+			{
+				// MoC isn't given to the Necromancer pet.
+				if (necromancerPet.Owner?.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration) == true)
+					return true;
+
+				if (necromancerPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+					return true;
+
+				return false;
+			}
+
+			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration) || IsQuickCasting)
+				return true;
+
+			return false;
+		}
+
 		protected virtual bool TryInterruptCaster(GameLiving attacker)
 		{
 			if (Spell.Uninterruptible)
 				return false;
 
-			NecromancerPet necromancerPet = Caster as NecromancerPet;
-
-			// MoC isn't given to the Necromancer pet.
-			if (necromancerPet != null)
-			{
-				if (necromancerPet.Owner?.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration) == true)
-					return false;
-			}
-
-			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration) ||
-				Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking) ||
-				IsQuickCasting)
-			{
+			if (IsInterruptImmune())
 				return false;
-			}
 
 			if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 			{
@@ -407,8 +414,8 @@ namespace DOL.GS.Spells
 			InterruptCasting(false);
 
 			// In case the Necromancer pet is in passive mode, check the queue here.
-			if (necromancerPet != null)
-				(necromancerPet.Brain as NecromancerPetBrain).CheckAttackSpellQueue();
+			if (Caster is NecromancerPet necromancerPet)
+				(necromancerPet.Brain as NecromancerPetBrain)?.CheckAttackSpellQueue();
 
 			return true;
 		}
@@ -590,39 +597,28 @@ namespace DOL.GS.Spells
 			if (!Spell.IsInstantCast && m_caster.attackComponent.AttackState && !m_caster.CanCastWhileAttacking())
 				m_caster.attackComponent.StopAttack();
 
+			NecromancerPet necromancerPet = Caster as NecromancerPet;
+
 			// Check interrupt timer.
 			if (!m_spell.Uninterruptible && !m_spell.IsInstantCast)
 			{
 				long interruptRemainingDuration = Caster.GetInterruptRemainingDuration();
 
-				if (interruptRemainingDuration > 0)
+				if (interruptRemainingDuration > 0 && !IsInterruptImmune())
 				{
+					// Convert to seconds.
 					interruptRemainingDuration /= 1000;
 					interruptRemainingDuration++;
 
-					if (playerCaster != null)
+					if (!quiet)
 					{
-						if (!IsQuickCasting &&
-							!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
-						{
-							if (!quiet)
-								MessageToCaster($"You must wait {interruptRemainingDuration} seconds to cast a spell!", eChatType.CT_SpellResisted);
-
-							return false;
-						}
+						if (necromancerPet != null)
+							MessageToCaster($"Your {necromancerPet.Name} must wait {interruptRemainingDuration} seconds to cast a spell!", eChatType.CT_SpellResisted);
+						else
+							MessageToCaster($"You must wait {interruptRemainingDuration} seconds to cast a spell!", eChatType.CT_SpellResisted);
 					}
-					else if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain)
-					{
-						if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
-						{
-							if (!quiet)
-								MessageToCaster($"Your {necroPet.Name} must wait {interruptRemainingDuration} seconds to cast a spell!", eChatType.CT_SpellResisted);
 
-							return false;
-						}
-					}
-					else
-						return false;
+					return false;
 				}
 			}
 
@@ -820,9 +816,7 @@ namespace DOL.GS.Spells
 			if (UnstealthCasterOnStart)
 				Caster.Stealth(false);
 
-			if (Caster is NecromancerPet necromancerPet && necromancerPet.Brain is NecromancerPetBrain necromancerPetBrain)
-				necromancerPetBrain.OnPetBeginCast(Spell, SpellLine);
-
+			(necromancerPet?.Brain as NecromancerPetBrain)?.OnPetBeginCast(Spell, SpellLine);
 			return true;
 		}
 
@@ -1954,29 +1948,6 @@ namespace DOL.GS.Spells
 
 			List<GameLiving> targets = SelectTargets(Target);
 			CasterEffectiveness = Caster.Effectiveness;
-
-			/// [Atlas - Takii] No effectiveness drop in OF MOC.
-// 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-// 			{
-// 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
-// 				if (ra != null && ra.Level > 0)
-// 				{
-// 					_casterEffectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
-// 				}
-// 			}
-
-			//[StephenxPimentel] Reduce Damage if necro is using MoC
-// 			if (Caster is NecromancerPet)
-// 			{
-// 				if ((Caster as NecromancerPet).Owner.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
-// 				{
-// 					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
-// 					if (necroRA != null && necroRA.Level > 0)
-// 					{
-// 						_casterEffectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
-// 					}
-// 				}
-// 			}
 
 			if (Caster is GamePlayer && (Caster as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Warlock && m_spell.IsSecondary)
 			{
