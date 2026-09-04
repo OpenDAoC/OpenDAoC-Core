@@ -2880,14 +2880,12 @@ namespace DOL.GS
 
 		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
 		{
-			// Increase substantially the base interrupt timer duration for non player controlled NPCs
-			// so that they don't start attacking immediately after the attacker's melee swing interval.
-			// It makes repositioning them easier without having to constantly attack them.
+			// Substantially increase the base interrupt duration to prevent NPCs from
+			// being overly effective at resuming spell casting after an interruption.
+			// It makes repositioning them easier without having to constantly attack them,
+			// and makes interrupts more effective against FnFs for example.
 			if (attacker != this)
-			{
-				if (Brain is not IControlledBrain controlledBrain || controlledBrain.GetPlayerOwner() == null)
-					duration += 2500;
-			}
+				duration += 2500;
 
 			base.StartInterruptTimer(duration, attackType, attacker);
 		}
