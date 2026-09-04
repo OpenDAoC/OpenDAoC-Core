@@ -106,7 +106,6 @@ namespace DOL.GS.PropertyCalc
             return Math.Min(living.ItemBonus[eProperty.ResCapBonus_First - eProperty.Resist_First + property], 5);
         }
 
-        public static int BuffBonusCap => 26;
         public static int HardCap => 70;
     }
 }
