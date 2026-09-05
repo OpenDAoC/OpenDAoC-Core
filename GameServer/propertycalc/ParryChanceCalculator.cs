@@ -1,5 +1,3 @@
-using DOL.AI.Brain;
-
 namespace DOL.GS.PropertyCalc
 {
     [PropertyCalculator(eProperty.ParryChance)]
@@ -24,19 +22,7 @@ namespace DOL.GS.PropertyCalc
                 chance += player.AbilityBonus[property] * 10;
             }
             else if (living is GameNPC npc)
-            {
                 chance += npc.ParryChance * 10;
-
-                if (living is NecromancerPet pet && pet.Brain is IControlledBrain)
-                {
-                    chance += pet.BaseBuffBonusCategory[property] * 10;
-                    chance += pet.SpecBuffBonusCategory[property] * 10;
-                    chance -= pet.DebuffCategory[property] * 10;
-                    chance += pet.OtherBonus[property] * 10;
-                    chance += pet.AbilityBonus[property] * 10;
-                    chance += (pet.GetModified(eProperty.Dexterity) * 2 - 100) / 4;
-                }
-            }
 
             return chance;
         }
