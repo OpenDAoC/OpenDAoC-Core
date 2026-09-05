@@ -67,8 +67,8 @@ namespace DOL.GS
 
         public void AddAttacker(AttackData attackData)
         {
-            long expireTime = GameLoop.GameLoopTime + (attackData.Interval > 0 ? attackData.Interval : Properties.SPELL_INTERRUPT_DURATION);
-            AttackerTracker.AddOrUpdate(attackData.Attacker, attackData.IsMeleeAttack, expireTime);
+            int interval = attackData.AttackType is AttackData.eAttackType.Spell ? Properties.SPELL_INTERRUPT_DURATION : attackData.Interval;
+            AttackerTracker.AddOrUpdate(attackData.Attacker, attackData.IsMeleeAttack, GameLoop.GameLoopTime + interval);
         }
 
         /// <summary>
