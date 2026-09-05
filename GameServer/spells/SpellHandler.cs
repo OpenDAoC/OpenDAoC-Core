@@ -1363,8 +1363,7 @@ namespace DOL.GS.Spells
 					Caster.effectListComponent.CancelIncompatiblePulseEffects(this);
 			}
 
-			if (!StartSpell(target, playerWeapon))
-				return;
+			StartSpell(target, playerWeapon);
 
 			/*
 			//Dinberg: This is where I moved the warlock part (previously found in gameplayer) to prevent
@@ -1959,12 +1958,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			int targetCount = targets.Count;
-
-			if (targetCount == 0)
-				return false;
-
-			for (int i = 0; i < targetCount; i++)
+			for (int i = 0; i < targets.Count; i++)
 			{
 				GameLiving targetInList = targets[i];
 
