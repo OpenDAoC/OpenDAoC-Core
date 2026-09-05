@@ -2141,15 +2141,15 @@ namespace DOL.GS
             }
         }
 
-        public static double CalculateSlowWeaponDamageModifier(DbInventoryItem weapon)
+        public double CalculateSlowWeaponDamageModifier(DbInventoryItem weapon)
         {
             // Slow weapon bonus as found here: https://www2.uthgard.net/tracker/issue/2753/@/Bow_damage_variance_issue_(taking_item_/_spec_???)
-            return 1 + (weapon.SPD_ABS - 20) * 0.003;
+            return owner is GameNPC ? 1.0 : 1 + (weapon.SPD_ABS - 20) * 0.003;
         }
 
         public double CalculateTwoHandedDamageModifier(DbInventoryItem weapon)
         {
-            return 1.1 + owner.WeaponSpecLevel(weapon) * 0.005;
+            return owner is GameNPC ? 1.0 : 1.1 + owner.WeaponSpecLevel(weapon) * 0.005;
         }
 
         /// <summary>
