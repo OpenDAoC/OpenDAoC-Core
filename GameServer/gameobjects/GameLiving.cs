@@ -1040,17 +1040,15 @@ namespace DOL.GS
 
 			if (ad.IsMeleeAttack)
 			{
-				BladeBarrierEffect BladeBarrier = null;
-
 				if (player != null)
 				{
 					// BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry.
-					// They still need an active weapon to parry with BladeBarrier
-					BladeBarrier = player.EffectList.GetOfType<BladeBarrierEffect>();
+					// They still need an active weapon to parry with BladeBarrier.
+					// Outdated.
+					/*if (player.EffectList.GetOfType<BladeBarrierEffect>() != null && ActiveWeapon != null)
+						return 0.90;*/
 
-					if (BladeBarrier != null && ActiveWeapon != null)
-						parryChance = 0.90;
-					else if (player.HasSpecialization(Specs.Parry) || player.effectListComponent.ContainsEffectForEffectType(eEffect.ParryBuff))
+					if (player.HasSpecialization(Specs.Parry) || player.effectListComponent.ContainsEffectForEffectType(eEffect.ParryBuff))
 					{
 						if (IsObjectInFront(ad.Attacker, 120) &&
 							ActiveWeapon != null &&
@@ -1067,9 +1065,6 @@ namespace DOL.GS
 				else if (this is GameNPC && IsObjectInFront(ad.Attacker, 120))
 					parryChance = GetModified(eProperty.ParryChance);
 
-				if (BladeBarrier != null)
-					return parryChance;
-
 				if (parryChance > 0)
 				{
 					parryChance *= 0.001;
@@ -1082,19 +1077,20 @@ namespace DOL.GS
 					// Reduce chance by attacker's defense penetration.
 					parryChance *= 1 - ad.DefensePenetration;
 
-					if (ad.AttackType is eAttackType.MeleeTwoHand)
+					if (player != null && ad.AttackType is eAttackType.MeleeTwoHand)
 						parryChance *= ad.Attacker.TwoHandedDefensePenetrationFactor;
 
 					// Infiltrator RR5.
-					if (player != null)
+					// Outdated.
+					/*if (player != null)
 					{
 						OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
 
 						if (Overwhelm != null)
 							parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
-					}
+					}*/
 
-					if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					if (parryChance > Properties.PARRY_CAP && player != null && ad.Target is GamePlayer)
 						parryChance = Properties.PARRY_CAP;
 				}
 			}
