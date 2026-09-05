@@ -62,7 +62,7 @@ namespace DOL.GS
         {
             // Used by damage adds and shields to calculate the damage based on the weapon's attack speed.
             // Note: AttackSpeed returns capped attack speed, which may not be correct for the slowest weapon when dual wielding.
-            return Weapon != null ? Attacker.attackComponent.AttackSpeed(Weapon) : 0;
+            return Attacker.attackComponent.AttackSpeed(Weapon);
         }
 
         public static eAttackType GetAttackType(DbInventoryItem weapon, WeaponAction action, GameLiving attacker)
