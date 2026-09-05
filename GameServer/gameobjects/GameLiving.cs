@@ -994,22 +994,26 @@ namespace DOL.GS
 				// Reduce chance by attacker's defense penetration.
 				evadeChance *= 1 - ad.DefensePenetration;
 
-				if (ad.AttackType == eAttackType.Ranged)
-					evadeChance /= 5.0;
+				if (player != null)
+				{
+					if (ad.AttackType is eAttackType.Ranged)
+						evadeChance /= 5.0;
 
-				if (ad.AttackType is eAttackType.MeleeDualWield)
-					evadeChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
+					if (ad.AttackType is eAttackType.MeleeDualWield)
+						evadeChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
+				}
 
 				// Infiltrator RR5.
-				if (player != null)
+				// Outdated.
+				/*if (player != null)
 				{
 					OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
 
 					if (Overwhelm != null)
 						evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
-				}
+				}*/
 
-				if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+				if (evadeChance > Properties.EVADE_CAP && player != null && ad.Target is GamePlayer)
 					evadeChance = Properties.EVADE_CAP;
 			}
 
