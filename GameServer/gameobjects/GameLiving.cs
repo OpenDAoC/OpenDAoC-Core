@@ -985,7 +985,7 @@ namespace DOL.GS
 				// Evade chance is reduced by the number of attackers.
 				// The reduction amount is believed to be relatively small compared to parry.
 				// We use the same formula, but each additional attacker beyond the first contributes 1/3.
-				if (attackerCount > 0)
+				if (player != null && attackerCount > 0)
 				{
 					double effectiveAttackers = 1 + (attackerCount - 1) / 3.0;
 					evadeChance /= effectiveAttackers;
@@ -1072,7 +1072,7 @@ namespace DOL.GS
 
 					// Parry chance is reduced by the number of attackers.
 					// The penalty was reduced in 1.87.
-					if (attackerCount > 0)
+					if (player != null && attackerCount > 0)
 						parryChance /= attackerCount;
 
 					// Reduce chance by attacker's defense penetration.
