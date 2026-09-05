@@ -1165,27 +1165,13 @@ namespace DOL.GS
 			DbInventoryItem shield = ActiveLeftWeapon;
 			GamePlayer player = this as GamePlayer;
 
-			// NPCs too require a shield (left hand weapon) to block.
-			if (shield == null)
-				return 0;
-
 			if (player != null)
 			{
-				if ((eObjectType) shield.Object_Type is not eObjectType.Shield)
+				if (shield == null || (eObjectType) shield.Object_Type is not eObjectType.Shield)
 					return 0;
 
 				// Only players require a shield size. NPCs don't use block rounds.
 				shieldSize = Math.Max(shield.Type_Damage, 1);
-			}
-			else if (this is GameNPC npc)
-			{
-				// This is a bit of a hack.
-				// NPC items don't use `Object_Type`, so we typically use `SlotPosition` instead.
-				// But `SlotPosition` is the same between a shield and a left hand weapon.
-				// So to prevent dual wielding NPCs from blocking, we have no choice but rely on this property.
-				// This assumes that a NPC cannot have a positive `LeftHandSwingChance` and a positive `BlockChance` at the same time.
-				if (npc.LeftHandSwingChance > 0)
-					return 0;
 			}
 
 			if (player != null)
@@ -1198,28 +1184,19 @@ namespace DOL.GS
 				if (!hasValidWeaponSetup)
 					return 0;
 
-				blockChance = GetModified(eProperty.BlockChance);
+				blockChance = GetModified(eProperty.BlockChance) * 0.001;
 				blockChance *= shield.Quality * 0.01 * shield.ConditionPercent * 0.01;
+
+				// Increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
+				if (ad.AttackType is eAttackType.Ranged)
+					blockChance += 0.25;
 			}
 			else
-			{
-				blockChance = GetModified(eProperty.BlockChance);
-
-				// Ensure NPCs with no base block chance set don't receive any bonus.
-				// This is probably a NPC with an offhand weapon but no offhand swing chance set either.
-				if (blockChance == 0)
-					return 0;
-			}
-
-			blockChance *= 0.001;
+				blockChance = GetModified(eProperty.BlockChance) * 0.001;
 
 			// 5% additional chance to guard with each Guard level.
 			if (isGuard)
 				blockChance += GetAbilityLevel(Abilities.Guard) * 0.05;
-
-			// Increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
-			if (ad.AttackType is eAttackType.Ranged)
-				blockChance += 0.25;
 
 			// Engage mechanics are not fully known.
 			// Traditionally, people would sometimes put only a few points in Shield to get it, hinting that it provided a good block chance even at low spec.
@@ -1244,7 +1221,7 @@ namespace DOL.GS
 
 			blockChance *= 1 - ad.DefensePenetration;
 
-			if (ad.AttackType is eAttackType.MeleeDualWield)
+			if (player != null && ad.AttackType is eAttackType.MeleeDualWield)
 				blockChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 
 			// Outdated / irrelevant code for 1.65. Leaving it here for reference.
@@ -1270,7 +1247,7 @@ namespace DOL.GS
 			}*/
 
 			// RvR cap. Engage shouldn't be affected by it: https://darkageofcamelot.com/article/friday-grab-bag-11032017
-			if (!IsEngaging && blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+			if (!IsEngaging && blockChance > Properties.BLOCK_CAP && player != null && ad.Target is GamePlayer)
 				blockChance = Properties.BLOCK_CAP;
 
 			return blockChance;
