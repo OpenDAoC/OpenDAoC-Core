@@ -5187,7 +5187,7 @@ namespace DOL.GS
                 {
                     // If attacked by a non-damaging spell, we should not show damage numbers.
                     // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
-                    if (ad.AttackType is AttackData.eAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
+                    if (ad.AttackType is AttackData.eAttackType.Spell && ad.SpellHandler?.Spell?.Damage == 0)
                         break;
 
                     string hitLocName = null;
