@@ -40,7 +40,8 @@ namespace DOL.GS
             if (attacker == null || attacker.ObjectState is not GameObject.eObjectState.Active || !attacker.IsAlive)
                 return;
 
-            double damage = attackData.Attacker.WeaponDamage(attackData.Weapon) * attackData.Interval * 0.0005; // 50% of weapon DPS damage add.
+            int weaponAttackSpeed = attackData.GetWeaponAttackSpeed();
+            double damage = attackData.Attacker.WeaponDamage(attackData.Weapon) * weaponAttackSpeed * 0.0005; // 50% of weapon DPS damage add.
             double damageResisted = damage * target.GetResist(eDamageType.Body) * -0.01;
 
             AttackData ad = new()
@@ -50,9 +51,8 @@ namespace DOL.GS
                 Damage = (int) (damage + damageResisted),
                 Modifier = (int) damageResisted,
                 DamageType = eDamageType.Body,
-                AttackType = AttackData.eAttackType.MeleeOneHand,
-                AttackResult = eAttackResult.HitUnstyled,
-                Interval = attackData.Interval
+                AttackType = AttackData.eAttackType.Spell,
+                AttackResult = eAttackResult.HitUnstyled
             };
 
             if (attacker is GamePlayer playerAttacker)

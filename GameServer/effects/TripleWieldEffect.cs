@@ -58,9 +58,8 @@ namespace DOL.GS.Effects
 			if (atkArgs.AttackData.IsOffHand) return; // only react to main hand
 			if (atkArgs.AttackData.Weapon == null) return; // no weapon attack
 
-			//double dpsCap = (1.2 + 0.3 * attacker.Level) * 0.7;
-			//double dps = Math.Min(atkArgs.AttackData.Weapon.DPS_AF/10.0, dpsCap);
-			double damage = atkArgs.AttackData.Weapon.DPS_AF * atkArgs.AttackData.Interval * 0.001;
+			int weaponAttackSpeed = atkArgs.AttackData.GetWeaponAttackSpeed();
+			double damage = atkArgs.AttackData.Weapon.DPS_AF * weaponAttackSpeed * 0.001;
 			double damageResisted = damage * target.GetResist(eDamageType.Body) * -0.01;
 
 			AttackData ad = new AttackData();
@@ -69,9 +68,8 @@ namespace DOL.GS.Effects
 			ad.Damage = (int)(damage + damageResisted);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = eDamageType.Body;
-			ad.AttackType = AttackData.eAttackType.MeleeOneHand;
+			ad.AttackType = AttackData.eAttackType.Spell;
 			ad.AttackResult = eAttackResult.HitUnstyled;
-			ad.Interval = atkArgs.AttackData.Interval;
 
 			GamePlayer owner = attacker as GamePlayer;
 			if (owner != null) {

@@ -111,7 +111,7 @@ namespace DOL.GS.Spells
             double damage;
 
             if (Spell.Damage > 0)
-                damage = Spell.Damage * attackData.Interval * 0.001;
+                damage = Spell.Damage * attackData.GetWeaponAttackSpeed() * 0.001;
             else
                 damage = attackData.BaseDamage * (1 * -Spell.Damage * 0.01);
 
