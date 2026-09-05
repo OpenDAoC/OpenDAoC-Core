@@ -4881,6 +4881,8 @@ namespace DOL.GS
         #region Combat
 
         public override bool BenefitsFromRelics => true;
+        public override double DualWieldDefensePenetrationFactor => 0.5;
+        public override double TwoHandedDefensePenetrationFactor => 0.5;
 
         /// <summary>
         /// Gets/Sets safety flag

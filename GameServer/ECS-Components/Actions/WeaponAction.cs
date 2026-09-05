@@ -172,21 +172,14 @@ namespace DOL.GS
         {
             DualWieldMechanic = DualWieldMechanic.None;
 
-            if (!_owner.attackComponent.CanUseLefthandedWeapon ||
-                _leftWeapon == null ||
-                (eObjectType) _leftWeapon.Object_Type is eObjectType.Shield)
-            {
+            // NPCs don't exactly have dual wield mechanics, but are able to perform double attacks.
+            if (!_owner.attackComponent.CanUseLefthandedWeapon)
                 return 0;
-            }
 
             if (_owner is GameNPC npcOwner)
             {
-                if (_attackWeapon == null ||
-                    _attackWeapon.SlotPosition is not Slot.RIGHTHAND ||
-                    npcOwner.LeftHandSwingChance <= 0)
-                {
+                if (npcOwner.LeftHandSwingChance <= 0)
                     return 0;
-                }
 
                 DualWieldMechanic = DualWieldMechanic.Classic;
 
@@ -197,8 +190,12 @@ namespace DOL.GS
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
 
-            if (_owner is not GamePlayer || _attackWeapon == null)
+            if (_attackWeapon == null ||
+                _leftWeapon == null ||
+                (eObjectType) _leftWeapon.Object_Type is eObjectType.Shield)
+            {
                 return 0;
+            }
 
             // Left Axe.
             if (_owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)

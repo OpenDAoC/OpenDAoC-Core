@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
             AddResistances(info, target);
             AddWeaponsInfo(info, client, target);
             AddArmorInfo(info, target);
-            AddDefenseInfo(info, target);
+            AddDefenseInfo(info, client, target);
             AddMiscellaneousInfo(info, target);
 
             client.Out.SendCustomTextWindow($"[{target.Name} stats]", info);
@@ -187,14 +187,14 @@ namespace DOL.GS.Commands
                 info.Add($"Armor (AF / ABS):  {targetArmor:0.00}");
             }
 
-            static void AddDefenseInfo(List<string> info, GameLiving target)
+            static void AddDefenseInfo(List<string> info, GameClient client, GameLiving target)
             {
                 AttackData lastAttackData = target.attackComponent.attackAction.LastAttackData;
                 int meleeAttackerCount = target.attackComponent.AttackerTracker.MeleeCount;
 
                 AttackData dummyAttackData = new()
                 {
-                    Attacker = target
+                    Attacker = client.Player
                 };
 
                 Span<AttackData.eAttackType> attackTypes =

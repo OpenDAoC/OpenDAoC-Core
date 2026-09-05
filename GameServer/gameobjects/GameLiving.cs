@@ -45,8 +45,8 @@ namespace DOL.GS
 		}
 
 		// Both represent what percentage of this entity's target's defenses should be used, not how much is removed.
-		public virtual double DualWieldDefensePenetrationFactor => 0.5;
-		public virtual double TwoHandedDefensePenetrationFactor => 0.5;
+		public virtual double DualWieldDefensePenetrationFactor => 1.0;
+		public virtual double TwoHandedDefensePenetrationFactor => 1.0;
 
 		public virtual bool BenefitsFromRelics => false;
 
@@ -994,14 +994,11 @@ namespace DOL.GS
 				// Reduce chance by attacker's defense penetration.
 				evadeChance *= 1 - ad.DefensePenetration;
 
-				if (player != null)
-				{
-					if (ad.AttackType is eAttackType.Ranged)
-						evadeChance /= 5.0;
+				if (player != null && ad.AttackType is eAttackType.Ranged)
+					evadeChance /= 5.0;
 
-					if (ad.AttackType is eAttackType.MeleeDualWield)
-						evadeChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
-				}
+				if (ad.AttackType is eAttackType.MeleeDualWield)
+					evadeChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 
 				// Infiltrator RR5.
 				// Outdated.
@@ -1081,7 +1078,7 @@ namespace DOL.GS
 					// Reduce chance by attacker's defense penetration.
 					parryChance *= 1 - ad.DefensePenetration;
 
-					if (player != null && ad.AttackType is eAttackType.MeleeTwoHand)
+					if (ad.AttackType is eAttackType.MeleeTwoHand)
 						parryChance *= ad.Attacker.TwoHandedDefensePenetrationFactor;
 
 					// Infiltrator RR5.
@@ -1221,7 +1218,7 @@ namespace DOL.GS
 
 			blockChance *= 1 - ad.DefensePenetration;
 
-			if (player != null && ad.AttackType is eAttackType.MeleeDualWield)
+			if (ad.AttackType is eAttackType.MeleeDualWield)
 				blockChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 
 			// Outdated / irrelevant code for 1.65. Leaving it here for reference.
