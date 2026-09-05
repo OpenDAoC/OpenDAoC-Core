@@ -780,7 +780,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public void MakeAttack(WeaponAction action, AttackData ad, GameLiving target, DbInventoryItem weapon, Style style, double effectiveness, int interval)
+        public void MakeAttack(WeaponAction action, AttackData ad, GameLiving target, DbInventoryItem weapon, Style style, double effectiveness)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -800,7 +800,7 @@ namespace DOL.GS
                     playerOwner.Out.SendCloseTimerWindow();
                 }
 
-                LivingMakeAttack(action, ad, target, weapon, style, effectiveness, interval);
+                LivingMakeAttack(action, ad, target, weapon, style, effectiveness);
 
                 switch (ad.AttackResult)
                 {
@@ -935,11 +935,11 @@ namespace DOL.GS
                 else
                     effectiveness = 1;
 
-                LivingMakeAttack(action, ad, target, weapon, style, effectiveness, interval);
+                LivingMakeAttack(action, ad, target, weapon, style, effectiveness);
             }
         }
 
-        public void LivingMakeAttack(WeaponAction action, AttackData ad, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool ignoreLos = false)
+        public void LivingMakeAttack(WeaponAction action, AttackData ad, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, bool ignoreLos = false)
         {
             if (ad.Target == null)
                 return;
@@ -1118,11 +1118,11 @@ namespace DOL.GS
             BroadcastObserverMessage(ad);
 
             // Interrupt the target of the attack.
-            ad.Target.StartInterruptTimer(interval, ad.AttackType, owner);
+            ad.Target.StartInterruptTimer(ad.Interval, ad.AttackType, owner);
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
             if (ad.IsMeleeAttack && owner.SelfInterruptsOnMeleeAttack)
-                owner.StartInterruptTimer(interval, ad.AttackType, owner);
+                owner.StartInterruptTimer(ad.Interval, ad.AttackType, owner);
 
             // Handles CC breaks, ablatives...
             owner.OnAttackEnemy(ad);

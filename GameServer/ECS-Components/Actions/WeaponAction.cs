@@ -500,7 +500,7 @@ namespace DOL.GS
         private AttackData InitiateAttack(DbInventoryItem weapon, Style style)
         {
             AttackData ad = CreateAttackData(weapon, style);
-            _owner.attackComponent.MakeAttack(this, ad, _target, weapon, style, _effectiveness, _interval);
+            _owner.attackComponent.MakeAttack(this, ad, _target, weapon, style, _effectiveness);
             SwingsExecuted++;
             return ad;
         }
