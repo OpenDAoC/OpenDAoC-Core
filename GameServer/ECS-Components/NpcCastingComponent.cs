@@ -94,9 +94,9 @@ namespace DOL.GS
             // Immobile NPCs and caster guards forget about the target.
             if (IsCasterGuardOrImmobile)
             {
-                // Keep the target in the aggro list while the NPC is still casting.
-                // This ensures that the NPC doesn't enter an idle state, potentially interfering with spell casting.
-                if (!_npcOwner.IsCasting)
+                // Keep the target in the aggro list while the NPC is still casting on that target.
+                // This ensures that the brain doesn't interfere with spell casting by entering an idle state prematurely.
+                if (!_npcOwner.IsCasting || SpellHandler.Target != target)
                     (_npcOwner.Brain as StandardMobBrain)?.RemoveFromAggroList(target as GameLiving);
 
                 return;
