@@ -720,7 +720,7 @@ namespace DOL.GS
 
             npc.TargetObject = _startAttackTarget;
 
-            if (npc.rangeAttackComponent.AutoFireTarget != null)
+            if (npc.rangeAttackComponent.AutoFireTarget != null && npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
                 return;
 
             if (_startAttackTarget != npc.FollowTarget)
