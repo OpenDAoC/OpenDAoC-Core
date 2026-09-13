@@ -98,7 +98,7 @@ namespace DOL.GS
             // Message: "{0} flings a cloud of dirt in your eyes!"
             OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectStart", _attacker.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             // Message: "{0} throws dirt in {1}'s eyes!"
-            Message.SystemToArea(Owner, LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.AreaEffectStart", OwnerPlayer.Name, Owner.GetName(0, true)), eChatType.CT_System, [_attacker, Owner]);
+            Message.SystemToArea(Owner, LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.AreaEffectStart",  _attacker.GetName(0, true), Owner.GetName(0, true)), eChatType.CT_System, [_attacker, Owner]);
 
         }
 
