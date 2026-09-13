@@ -720,6 +720,9 @@ namespace DOL.GS
 
             npc.TargetObject = _startAttackTarget;
 
+            if (npc.rangeAttackComponent.AutoFireTarget != null)
+                return;
+
             if (_startAttackTarget != npc.FollowTarget)
             {
                 if (npc.IsMoving)

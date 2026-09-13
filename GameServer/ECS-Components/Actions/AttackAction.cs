@@ -56,6 +56,8 @@ namespace DOL.GS
                 _firstTick = false;
             }
 
+            OnEveryTick();
+
             if (!ShouldTick())
                 return true;
 
@@ -74,6 +76,8 @@ namespace DOL.GS
 
             return true;
         }
+
+        protected virtual void OnEveryTick() { }
 
         private void TickMeleeAttack()
         {
@@ -98,7 +102,12 @@ namespace DOL.GS
                 PerformRangedAttack();
 
                 if (FinalizeRangedAttack())
-                    PrepareRangedAttack(); // Immediately prepare the next attack if we can.
+                {
+                    // Immediately prepare the next attack if we can.
+                    // NpcAttackAction can change AutoFireTarget, so the target must be reevaluated.
+                    _target = _owner.rangeAttackComponent.AutoFireTarget ?? _owner.TargetObject as GameLiving;
+                    PrepareRangedAttack();
+                }
             }
 
             if (AttackComponent.AttackState)
