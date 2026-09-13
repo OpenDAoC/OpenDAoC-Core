@@ -105,8 +105,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				SalvageCalculator salvageCalculator = new();
-				SalvageReturn salvageReturn = salvageCalculator.GetSalvage(player, item);
+				SalvageReturn salvageReturn = SalvageCalculator.GetSalvage(player, item);
 
 				salvageYield = new()
 				{

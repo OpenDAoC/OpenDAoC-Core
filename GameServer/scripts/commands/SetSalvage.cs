@@ -49,11 +49,11 @@ namespace DOL.GS.Commands
                 DisplayMessage(client, "This item can' be configured.");
                 return;
             }
-            var sCalc = new SalvageCalculator();
-            var ReturnSalvage = sCalc.GetSalvage(client.Player, item);
+
+            var ReturnSalvage = SalvageCalculator.GetSalvage(client.Player, item);
 
             var oldprice = item.Price;
-            
+
             item.Condition = 50000;
             item.MaxCondition = 50000;
             item.Charges = item.MaxCharges;
