@@ -386,6 +386,7 @@ namespace DOL.GS
         public double WeaponDamage(DbInventoryItem weapon, WeaponAction action, double effectiveness, out double damageCap)
         {
             double damage = owner is GamePlayer player ? CalculatePlayerDamage(player, weapon, action) : CalculateNpcDamage(weapon);
+            damage *= CalculateDamageTypeModifier(weapon);
             damage *= effectiveness;
             damageCap = CalculateDamageCap(damage);
             damage *= GetWeaponQualityConditionModifier(weapon); // Quality and condition don't affect damage cap.
@@ -999,29 +1000,14 @@ namespace DOL.GS
                     // We apply the resistances later, and calculate the cap differently. But it should be mathematically equivalent.
                     double resistMod = CalculateTargetResistanceFactor(ad.Target, ad.DamageType, armor);
 
-                    // Melee damage and style damage ToA bonuses are pretty weird.
-                    // * They're both calculated from base damage.
-                    // * They effectively add the same amount of damage when used independently.
-                    // * Style damage bonus works even on styles that have no growth rate.
-                    // * However, the first one will be added to base damage, and the second one to style damage. This is really just for display purposes.
-                    // * They stack multiplicatively. Assuming a GR of 0, two 10% bonuses result in the attack doing 21% more damage.
-                    // * The higher the GR, the lower their contribution to total damage is (since GR is actually ignored).
-                    double baseDamageSnapshot = damage;
-
-                    // These bonuses don't increase the cap. This is correct for ToA melee bonus, but unknown for Savage/Cleric self-buff (they currently are of the same type).
-                    damage *= CalculateDamageTypeModifier(weapon);
-
                     double styleDamage = 0.0;
                     double styleDamageCap = 0.0;
                     double resistModifier = 0.0;
 
                     if (style != null)
                     {
-                        if (StyleProcessor.ExecuteStyle(ad, baseDamageSnapshot, baseDamageCap, out styleDamage, out styleDamageCap, out int animationId))
+                        if (StyleProcessor.ExecuteStyle(ad, damage, baseDamageCap, out styleDamage, out styleDamageCap, out int animationId))
                         {
-                            // Apply style bonus, calculated on base damage.
-                            styleDamage += damage * owner.GetModified(eProperty.StyleDamage) * 0.01;
-
                             // Save the raw unresisted style damage for the AttackData. To be used by the combat log only.
                             ad.StyleDamage = (int) styleDamage;
 

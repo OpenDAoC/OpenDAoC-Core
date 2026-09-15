@@ -349,11 +349,19 @@ namespace DOL.GS.Styles
 				}
 				else
 				{
+					// Melee damage and style damage ToA bonuses are pretty weird.
+					// * They're both calculated from base damage.
+					// * They effectively add the same amount of damage when used independently.
+					// * Style damage bonus works even on styles that have no growth rate.
+					// * However, the first one will be added to base damage, and the second one to style damage. This is really just for display purposes.
+					// * They stack multiplicatively. Assuming a GR of 0, two 10% bonuses result in the attack doing 21% more damage.
+					// * The higher the GR, the lower their contribution to total damage is (since GR is actually ignored).
+
 					double growthRate = style.GrowthRate;
 					double attackSpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
-					double modifiedGrowthRate = growthRate * spec * attackSpeed / unstyledDamageCap;
-					styleDamage = modifiedGrowthRate * unstyledDamage;
-					styleDamageCap = modifiedGrowthRate * unstyledDamageCap;
+					double modifiedGrowthRate = growthRate * spec * attackSpeed / unstyledDamageCap + living.GetModified(eProperty.StyleDamage) * 0.01;
+					styleDamage = unstyledDamage * modifiedGrowthRate;
+					styleDamageCap = unstyledDamageCap * modifiedGrowthRate;
 
 					// Force styles do at least 1 damage to make level 2 styles actually do something.
 					// Don't forget to ignore the cap. Do it only if the style has a GR.
@@ -373,9 +381,7 @@ namespace DOL.GS.Styles
 					{
 						absorb = (int) Math.Floor(styleDamage * absorb / 100.0);
 						styleDamage -= absorb;
-
-						if (player != null)
-							player.Out.SendMessage($"A barrier absorbs {absorb} damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+						player?.Out.SendMessage($"A barrier absorbs {absorb} damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					}
 				}
 

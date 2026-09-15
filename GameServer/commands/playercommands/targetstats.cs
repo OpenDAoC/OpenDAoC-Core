@@ -90,7 +90,6 @@ namespace DOL.GS.Commands
                 static void AddWeaponInfo(List<string> info, string header, GameClient client, GameLiving target, DbInventoryItem weapon, AttackData.eAttackType attackType)
                 {
                     double weaponDamage = target.attackComponent.WeaponDamage(weapon, null, target.Effectiveness, out double weaponDamageCap);
-                    weaponDamage *= target.attackComponent.CalculateDamageTypeModifier(weapon);
 
                     info.Add("");
                     info.Add(header);
