@@ -119,7 +119,6 @@ namespace DOL.GS
         public PathingStep GetNextStep(Zone zone, Vector3 position, Vector3 target)
         {
             const int NODE_REACHED_DISTANCE_STRICT = 2;
-            const int MAX_LOOKAHEAD = 6;
 
             ReplotIfNeeded(zone, position, target);
 
@@ -141,30 +140,9 @@ namespace DOL.GS
                 return new(NextNodeResult.Waiting);
 
             int nodesToRemove = 0;
-            int maxLookahead = Math.Min(_activePath.Nodes.Count, MAX_LOOKAHEAD); // Limit lookahead in case this gets expensive.
-            int furthestVisibleNodeIndex = -1;
             Vector3? snapPosition = null;
 
-            // Look ahead to find the furthest node we can walk straight to.
-            // Stop at doors, missing LoS, unsafe height changes, or Jump nodes.
-            for (int i = 0; i < maxLookahead; i++)
-            {
-                WrappedPathfindingNode candidateNode = _activePath.Nodes.Peek(i);
-
-                if (IsJumpNode(candidateNode) ||
-                    NodeContainsDoor(candidateNode, false) ||
-                    !PathfindingProvider.Instance.HasLineOfSight(zone, position, candidateNode.Position, DefaultFilters) ||
-                    !IsStraightLineHeightSafe(position, candidateNode.Position, i))
-                {
-                    break;
-                }
-
-                furthestVisibleNodeIndex = i;
-            }
-
-            if (furthestVisibleNodeIndex > 0)
-                nodesToRemove = furthestVisibleNodeIndex;
-            else if (distanceToCurrentSqr <= NODE_REACHED_DISTANCE_STRICT * NODE_REACHED_DISTANCE_STRICT)
+            if (distanceToCurrentSqr <= NODE_REACHED_DISTANCE_STRICT * NODE_REACHED_DISTANCE_STRICT)
             {
                 nodesToRemove = 1;
                 snapPosition = current.Position;
@@ -205,42 +183,6 @@ namespace DOL.GS
             return _crossZoneEntryPoint.HasValue && PathfindingStatus is PathfindingStatus.PathFound ?
                 new(NextNodeResult.Valid, _crossZoneEntryPoint, snapPosition) :
                 new(NextNodeResult.PathComplete, null, snapPosition);
-        }
-
-        private bool IsStraightLineHeightSafe(Vector3 start, Vector3 target, int candidateIndex)
-        {
-            // This should be low enough so that we avoid putting the NPC in a position where it couldn't be snapped to the mesh anymore.
-            const float MAX_SAFE_HEIGHT_DEVIATION = 32f;
-
-            if (candidateIndex == 0)
-                return true;
-
-            Vector2 start2D = start.AsVector2();
-            Vector2 targetDiff2D = target.AsVector2() - start2D;
-            float sqrTotalDistance2D = targetDiff2D.LengthSquared();
-
-            if (sqrTotalDistance2D <= 0f)
-                return Math.Abs(start.Z - target.Z) <= MAX_SAFE_HEIGHT_DEVIATION;
-
-            float invSqrTotalDistance2D = 1f / sqrTotalDistance2D;
-
-            for (int i = 0; i < candidateIndex; i++)
-            {
-                Vector3 node = _activePath.Nodes.Peek(i).Position;
-                Vector2 nodeDiff2D = node.AsVector2() - start2D;
-
-                // Project the intermediate node onto the line segment.
-                // This calculates the 't' progression (0.0 to 1.0) along the segment.
-                float t = Vector2.Dot(nodeDiff2D, targetDiff2D) * invSqrTotalDistance2D;
-                t = Math.Clamp(t, 0f, 1f);
-
-                float expectedZ = float.Lerp(start.Z, target.Z, t);
-
-                if (Math.Abs(expectedZ - node.Z) > MAX_SAFE_HEIGHT_DEVIATION)
-                    return false;
-            }
-
-            return true;
         }
 
         private void ReplotIfNeeded(Zone zone, Vector3 position, Vector3 target)
