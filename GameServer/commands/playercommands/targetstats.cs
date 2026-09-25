@@ -84,7 +84,9 @@ namespace DOL.GS.Commands
                 if (target is GameNPC || mainWeapon != null)
                     AddMainHandInfo(info, client, target, mainWeapon, attackType);
 
-                if (target.attackComponent.CanUseLefthandedWeapon)
+                if (target is GamePlayer && leftWeapon != null && (eObjectType) leftWeapon.Object_Type is eObjectType.Shield && target.GetModifiedSpecLevel(Specs.Shields) > 0)
+                    AddShieldInfo(info, client, target, leftWeapon, attackType);
+                else if (target.attackComponent.CanUseLefthandedWeapon)
                     AddOffHandInfo(info, client, target, leftWeapon, attackType);
 
                 static void AddWeaponInfo(List<string> info, string header, GameClient client, GameLiving target, DbInventoryItem weapon, AttackData.eAttackType attackType)
@@ -126,6 +128,11 @@ namespace DOL.GS.Commands
                 static void AddMainHandInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem rightWeapon, AttackData.eAttackType attackType)
                 {
                     AddWeaponInfo(info, "+ Attack (main hand):", client, target, rightWeapon, attackType);
+                }
+
+                static void AddShieldInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem leftWeapon, AttackData.eAttackType attackType)
+                {
+                    AddWeaponInfo(info, "+ Attack (shield):", client, target, leftWeapon, attackType);
                 }
 
                 static void AddOffHandInfo(List<string> info, GameClient client, GameLiving target, DbInventoryItem leftWeapon, AttackData.eAttackType attackType)
