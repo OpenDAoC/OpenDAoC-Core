@@ -49,23 +49,19 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            House house = client.Player.CurrentHouse;
-			if (house == null)
-			{
-                client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.RangeOfAHouse"),
-                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-				return;
-			}
-
-            long BPsToAdd = 0;
-            try
-            {
-                BPsToAdd = Int64.Parse(args[2]);
-            }
-            catch
+            // Reject non-positive payments before either balance can be changed.
+            if (!Int64.TryParse(args[2], out long BPsToAdd) || BPsToAdd <= 0)
             {
                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.CorrectFormat"),
+                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                return;
+            }
+
+            House house = client.Player.CurrentHouse;
+            if (house == null)
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.RangeOfAHouse"),
                     eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                 return;
