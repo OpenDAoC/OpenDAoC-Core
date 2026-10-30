@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -33,7 +34,9 @@ namespace DOL.GS
 
         // Work coordination.
         private CountdownEvent _workerStartLatch;       // Signals when all workers are initialized.
-        private SemaphoreSlim  _workReady;
+        private SemaphoreSlim  _workReady;              // Signals when work is available for workers to process.
+        private readonly ConcurrentQueue<(int Start, int End)> _orphanedRanges = new();
+        private uint _orphanedCount;
 
         // Work processing.
         private WorkProcessor _workProcessor;           // Current work processor instance, reused for each execution.
@@ -175,6 +178,31 @@ namespace DOL.GS
             // However we really don't want to yield the CPU here, as this could delay the return by a lot.
             while (Volatile.Read(ref _workState.CompletedWorkerCount) < workersToStart + 1)
                 Thread.SpinWait(1);
+
+            // If any workers were interrupted while processing, we need to process the orphaned ranges here on the caller thread.
+            if (Volatile.Read(ref _orphanedCount) > 0)
+                DrainOrphanedRanges();
+        }
+
+        private void DrainOrphanedRanges()
+        {
+            try
+            {
+                while (_orphanedRanges.TryDequeue(out var range))
+                {
+                    int inFlight = range.Start - 1;
+                    _workProcessor.Process(range.Start, range.End, ref inFlight);
+                }
+            }
+            catch
+            {
+                _orphanedRanges.Clear();
+                throw;
+            }
+            finally
+            {
+                Volatile.Write(ref _orphanedCount, 0);
+            }
         }
 
         public override void Dispose()
@@ -301,7 +329,27 @@ namespace DOL.GS
                     if (start < 0)
                         start = 0;
 
-                    _workProcessor.Process(start, end);
+                    int inFlight = start - 1;
+
+                    try
+                    {
+                        _workProcessor.Process(start, end, ref inFlight);
+                    }
+                    catch (ThreadInterruptedException e)
+                    {
+                        // Skip the in-flight item, orphan everything after it.
+                        if (inFlight + 1 < end)
+                        {
+                            _orphanedRanges.Enqueue((inFlight + 1, end));
+                            Interlocked.Increment(ref _orphanedCount);
+                        }
+
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Interrupted while processing item {inFlight} of [{start}, {end})", e);
+
+                        throw;
+                    }
+
                     remainingWork = start - 1;
                 }
             }
@@ -335,10 +383,20 @@ namespace DOL.GS
                 return this;
             }
 
-            public override void Process(int start, int end)
+            public override void Process(int start, int end, ref int inFlight)
             {
-                for (int i = start; i < end; i++)
-                    _action(_items[i]);
+                int current = start;
+
+                try
+                {
+                    for (; current < end; current++)
+                        _action(_items[current]);
+                }
+                catch
+                {
+                    inFlight = current;
+                    throw;
+                }
             }
 
             public void Clear()
@@ -368,44 +426,56 @@ namespace DOL.GS
                 return this;
             }
 
-            public override void Process(int start, int end)
+            public override void Process(int start, int end, ref int inFlight)
             {
-                int currentShardIdx = _shardStartIndices.Length - 1;
+                int current = start;
 
-                while (currentShardIdx > 0 && start < _shardStartIndices[currentShardIdx])
-                    currentShardIdx--;
-
-                int itemsLeft = end - start;
-                int localIdx = start - _shardStartIndices[currentShardIdx];
-
-                while (itemsLeft > 0)
+                try
                 {
-                    int shardValidCount;
+                    int currentShardIdx = _shardStartIndices.Length - 1;
 
-                    // Derive the exact number of valid items in this shard using the boundaries.
-                    if (currentShardIdx < _shardStartIndices.Length - 1)
-                        shardValidCount = _shardStartIndices[currentShardIdx + 1] - _shardStartIndices[currentShardIdx];
-                    else
-                        shardValidCount = _totalCount - _shardStartIndices[currentShardIdx];
+                    while (currentShardIdx > 0 && start < _shardStartIndices[currentShardIdx])
+                        currentShardIdx--;
 
-                    int availableInShard = shardValidCount - localIdx;
-                    int itemsToProcess = Math.Min(itemsLeft, availableInShard);
+                    int itemsLeft = end - start;
+                    int localIdx = start - _shardStartIndices[currentShardIdx];
 
-                    if (itemsToProcess <= 0)
+                    while (itemsLeft > 0)
                     {
+                        // Derive the exact number of valid items in this shard using the boundaries.
+                        int shardValidCount;
+
+                        if (currentShardIdx < _shardStartIndices.Length - 1)
+                            shardValidCount =  _shardStartIndices[currentShardIdx + 1] - _shardStartIndices[currentShardIdx];
+                        else
+                            shardValidCount =  _totalCount - _shardStartIndices[currentShardIdx];
+
+                        int itemsToProcess = Math.Min(itemsLeft, shardValidCount - localIdx);
+
+                        if (itemsToProcess <= 0)
+                        {
+                            currentShardIdx++;
+                            localIdx = 0;
+                            continue;
+                        }
+
+                        List<T> currentShard = _shards[currentShardIdx];
+
+                        for (int i = 0; i < itemsToProcess; i++)
+                        {
+                            _action(currentShard[localIdx + i]);
+                            current++;
+                        }
+
+                        itemsLeft -= itemsToProcess;
                         currentShardIdx++;
                         localIdx = 0;
-                        continue;
                     }
-
-                    List<T> currentShard = _shards[currentShardIdx];
-
-                    for (int i = 0; i < itemsToProcess; i++)
-                        _action(currentShard[localIdx + i]);
-
-                    itemsLeft -= itemsToProcess;
-                    currentShardIdx++;
-                    localIdx = 0;
+                }
+                catch
+                {
+                    inFlight = current;
+                    throw;
                 }
             }
 
@@ -419,7 +489,7 @@ namespace DOL.GS
 
         private abstract class WorkProcessor
         {
-            public abstract void Process(int start, int end);
+            public abstract void Process(int start, int end, ref int inFlight);
         }
     }
 }
