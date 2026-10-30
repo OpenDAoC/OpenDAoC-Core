@@ -233,9 +233,12 @@ namespace DOL.GS
 
             while (Volatile.Read(ref _running))
             {
+                bool acquiredWork = false;
+
                 try
                 {
                     _workReady.Wait(cancellationToken);
+                    acquiredWork = true;
                     workerCycle = ++cycle;
                     ProcessWorkActions();
                 }
@@ -261,7 +264,9 @@ namespace DOL.GS
                 finally
                 {
                     workerCycle = GameLoopThreadPoolWatchdog.IDLE_CYCLE;
-                    Interlocked.Increment(ref _workState.CompletedWorkerCount);
+
+                    if (acquiredWork)
+                        Interlocked.Increment(ref _workState.CompletedWorkerCount);
                 }
             }
 
