@@ -550,8 +550,7 @@ namespace DOL.GS.Spells
                 Target = target,
                 Interval = player.AttackSpeed(weapon),
                 DamageType = player.attackComponent.AttackDamageType(weapon, null),
-                Weapon = weapon,
-                IsOffHand = weapon.Hand == 2
+                Weapon = weapon
             };
 
             //we need to figure out which armor piece they are going to hit.

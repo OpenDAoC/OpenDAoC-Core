@@ -51,8 +51,6 @@ namespace DOL.GS
                 return;
             if (attacker.IsAlive == false)
                 return;
-            if (attackData.IsOffHand)
-                return; // only react to main hand
             if (attackData.Weapon == null)
                 return; // no weapon attack
 

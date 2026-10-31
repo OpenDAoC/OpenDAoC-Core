@@ -21,7 +21,6 @@ namespace DOL.GS
         public int CriticalChance { get; set; }
         public DbInventoryItem Weapon { get; set; }
         public int Interval { get; set; }
-        public bool IsOffHand { get; set; }
         public Style Style { get; set; }
         public List<ISpellHandler> StyleEffects { get; set; }
         public bool CausesCombat { get; set; } = true;

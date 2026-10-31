@@ -55,7 +55,6 @@ namespace DOL.GS.Effects
 			if (attacker == null) return;
 			if (attacker.ObjectState != GameObject.eObjectState.Active) return;
 			if (attacker.IsAlive == false) return;
-			if (atkArgs.AttackData.IsOffHand) return; // only react to main hand
 			if (atkArgs.AttackData.Weapon == null) return; // no weapon attack
 
 			int weaponAttackSpeed = atkArgs.AttackData.GetWeaponAttackSpeed();

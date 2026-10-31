@@ -489,8 +489,7 @@ namespace DOL.GS
                 DamageType = _owner.attackComponent.AttackDamageType(weapon, this),
                 AttackType = AttackData.GetAttackType(weapon, this, _owner),
                 Weapon = weapon,
-                Interval = _interval,
-                IsOffHand = weapon != null && weapon.SlotPosition is Slot.LEFTHAND
+                Interval = _interval
             };
         }
 
