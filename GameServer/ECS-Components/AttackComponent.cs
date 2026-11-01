@@ -307,7 +307,7 @@ namespace DOL.GS
             return property * 0.001;
         }
 
-        private int CalculatePlayerWeaponAttackSpeed(DbInventoryItem weapon, bool rangedWeapon, double modifier)
+        private static int CalculatePlayerWeaponAttackSpeed(DbInventoryItem weapon, bool rangedWeapon, double modifier)
         {
             int minimum = 1500;
             double speed = weapon.SPD_ABS;
@@ -316,22 +316,10 @@ namespace DOL.GS
                 return 0;
 
             speed *= modifier;
-
-            if (rangedWeapon && Properties.ALLOW_OLD_ARCHERY)
-            {
-                if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
-                    speed = speed * 2 - (owner.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
-                else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
-                {
-                    speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
-                    minimum = 900;
-                }
-            }
-
             return (int) Math.Max(minimum, speed * 100);
         }
 
-        private int CalculateNpcWeaponAttackSpeed(DbInventoryItem weapon, double modifier)
+        private static int CalculateNpcWeaponAttackSpeed(DbInventoryItem weapon, double modifier)
         {
             int minimum = 500;
             double speed = NpcWeaponSpeed(weapon) * 100;
@@ -651,25 +639,6 @@ namespace DOL.GS
                         if (oldAttackState != AttackState)
                             player.Out.SendAttackMode(AttackState);
                     }
-                    else
-                    {
-                        string typeMsg = (eObjectType) attackWeapon.Object_Type is eObjectType.Thrown ? "throw" : "shot";
-                        string targetMsg;
-
-                        if (_startAttackTarget != null)
-                        {
-                            targetMsg = player.IsWithinRadius(_startAttackTarget, AttackRange)
-                                ? LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TargetInRange")
-                                : LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TargetOutOfRange");
-                        }
-                        else
-                            targetMsg = string.Empty;
-
-                        int speed = AttackSpeed(attackWeapon) / 100;
-
-                        if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    }
                 }
             }
             else if (owner is GameNPC)
@@ -901,10 +870,11 @@ namespace DOL.GS
 
                             DbInventoryItem attackWeapon = owner.ActiveWeapon;
                             DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
+                            GetWeaponAttackSpeeds(attackWeapon, leftWeapon, out int mainHandAttackSpeed, out int leftHandAttackSpeed);
 
                             foreach (GameLiving extraTarget in extraTargets)
                             {
-                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, 0, null, 0);
+                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, mainHandAttackSpeed, leftHandAttackSpeed, effectiveness, 0, null, 0);
                                 weaponAction.Execute();
                             }
                         }

@@ -77,7 +77,8 @@ namespace DOL.GS.Commands
             {
                 DbInventoryItem mainWeapon = target.ActiveWeapon;
                 DbInventoryItem leftWeapon = target.ActiveLeftWeapon;
-                WeaponAction weaponAction = new(target, client.Player, mainWeapon, leftWeapon, 1.0, 0, null, 0);
+                target.attackComponent.GetWeaponAttackSpeeds(mainWeapon, leftWeapon, out int mainHandAttackSpeed, out int leftHandAttackSpeed);
+                WeaponAction weaponAction = new(target, client.Player, mainWeapon, leftWeapon, mainHandAttackSpeed, leftHandAttackSpeed, 1.0, 0, null, 0);
                 weaponAction.DetermineDualWieldMechanic(); // Must be called manually since the attack is not actually being executed.
                 AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, weaponAction, target);
 

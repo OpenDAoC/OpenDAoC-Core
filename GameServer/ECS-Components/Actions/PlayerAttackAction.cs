@@ -46,6 +46,25 @@ namespace DOL.GS
             return false;
         }
 
+        protected override void SendRangedAttackPrepareMessage()
+        {
+            if (_playerOwner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+                return;
+
+            string typeMsg = (eObjectType) _weapon.Object_Type is eObjectType.Thrown ? "throw" : "shot";
+            string targetMsg = string.Empty;
+
+            if (_target != null)
+            {
+                targetMsg = _playerOwner.IsWithinRadius(_target, _playerOwner.attackComponent.AttackRange) ?
+                    LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.StartAttack.TargetInRange") :
+                    LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.StartAttack.TargetOutOfRange");
+            }
+
+            int speed = _interval / 100;
+            _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+        }
+
         protected override void PerformRangedAttack()
         {
             _playerOwner.rangeAttackComponent.RemoveEnduranceAndAmmoOnShot();

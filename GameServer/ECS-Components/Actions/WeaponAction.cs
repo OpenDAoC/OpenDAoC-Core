@@ -41,31 +41,50 @@ namespace DOL.GS
         public byte SwingsExecuted { get; private set; }
         public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
 
-        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int intervalOffset, Style combatStyle, byte styleChainStage)
+        public WeaponAction(
+            GameLiving owner,
+            GameLiving target,
+            DbInventoryItem attackWeapon,
+            DbInventoryItem leftWeapon,
+            int mainHandAttackSpeed,
+            int leftHandAttackSpeed,
+            double effectiveness,
+            int intervalOffset,
+            Style combatStyle,
+            byte styleChainStage)
         {
             _owner = owner;
             _target = target;
             _attackWeapon = attackWeapon;
             _leftWeapon = leftWeapon;
+            _mainHandAttackSpeed = mainHandAttackSpeed;
+            _leftHandAttackSpeed = leftHandAttackSpeed;
             _effectiveness = effectiveness;
             _intervalOffset = intervalOffset;
             _combatStyle = combatStyle;
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
             StyleChainStage = styleChainStage;
-            owner.attackComponent.GetWeaponAttackSpeeds(attackWeapon, leftWeapon, out _mainHandAttackSpeed, out _leftHandAttackSpeed);
         }
 
-        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, double effectiveness, int intervalOffset, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
+        public WeaponAction(
+            GameLiving owner,
+            GameLiving target,
+            DbInventoryItem attackWeapon,
+            int mainHandAttackSpeed,
+            double effectiveness,
+            int intervalOffset,
+            eRangedAttackType rangedAttackType,
+            DbInventoryItem ammo)
         {
             _owner = owner;
             _target = target;
             _attackWeapon = attackWeapon;
+            _mainHandAttackSpeed = mainHandAttackSpeed;
             _effectiveness = effectiveness;
             _intervalOffset = intervalOffset;
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
             RangedAttackType = rangedAttackType;
             Ammo = ammo;
-            owner.attackComponent.GetWeaponAttackSpeeds(attackWeapon, null, out _mainHandAttackSpeed, out _);
         }
 
         public int Execute(ECSGameTimer timer)
@@ -630,8 +649,10 @@ namespace DOL.GS
                     // Don't use regular attacking code to avoid Reflex Attack triggering itself.
                     // Currently Reflex Attack simply does damage and doesn't trigger procs or damage adds / shields.
 
-                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, 0, null, 0);
-                    AttackData attackData = weaponAction.InitiateAttack(target.ActiveWeapon, null);
+                    DbInventoryItem activeWeapon = target.ActiveWeapon;
+                    target.attackComponent.GetWeaponAttackSpeeds(activeWeapon, null, out int mainHandAttackSpeed, out _);
+                    WeaponAction weaponAction = new(target, attacker, activeWeapon, null, mainHandAttackSpeed, 0, 1.0, 0, null, 0);
+                    AttackData attackData = weaponAction.InitiateAttack(activeWeapon, null);
                     attacker.DealDamage(attackData);
 
                     if (attackData.AttackResult is eAttackResult.HitUnstyled)

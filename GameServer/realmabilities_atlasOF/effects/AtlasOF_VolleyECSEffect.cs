@@ -341,7 +341,16 @@ namespace DOL.GS.Effects
             // This is a little dirty but it allow us to use the normal attack calculations from the attack component (miss chance will be ignored).
             // We clear it up once we're done using it because at this point the attack component isn't ticking.
             AttackComponent attackComponent = OwnerPlayer.attackComponent;
-            attackComponent.weaponAction = new(OwnerPlayer, potentialTargets[Util.Random(0, potentialTargets.Count - 1)], weaponActionData.AttackWeapon, 1.0, 0, eRangedAttackType.Volley, weaponActionData.Ammo);
+            attackComponent.GetWeaponAttackSpeeds(weaponActionData.AttackWeapon, null, out int mainHandAttackSpeed, out _);
+            attackComponent.weaponAction = new(
+                OwnerPlayer,
+                potentialTargets[Util.Random(0, potentialTargets.Count - 1)],
+                weaponActionData.AttackWeapon,
+                mainHandAttackSpeed,
+                1.0,
+                0,
+                eRangedAttackType.Volley,
+                weaponActionData.Ammo);
             attackComponent.weaponAction.Execute();
             attackComponent.weaponAction = null;
             return 0;

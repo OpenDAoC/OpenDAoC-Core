@@ -24,6 +24,8 @@ namespace DOL.GS
 
         protected override void OnEveryTick()
         {
+            base.OnEveryTick();
+
             if (_npcOwner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
             {
                 StopPendingLosCheck();
