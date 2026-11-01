@@ -357,22 +357,7 @@ namespace DOL.GS
 
         protected virtual int PerformMeleeAttack()
         {
-            AttackData lastAttackData = LastAttackData;
-
-            // If we've succesfully used a style during the previous attack, check if the next style is a follow-up.
-            // Reset or increment StyleChainStage based on the result.
-            if (LastAttackData != null &&
-                LastAttackData.AttackResult is eAttackResult.HitStyle &&
-                _combatStyle != null &&
-               _combatStyle.OpeningRequirementType is Style.eOpening.Offensive)
-            {
-                Style lastStyle = lastAttackData.Style;
-
-                if (lastStyle != null && lastStyle.ID == _combatStyle.OpeningRequirementValue)
-                    _styleChainStage++;
-            }
-            else
-                _styleChainStage = 0;
+            UpdateStyleChainStage();
 
             // AttackAction ticks in a way that prevent drifting.
             // WeaponAction calculates the interval based on the actual swings, and uses the offset to ensure correct interrupt / block round durations.
@@ -387,6 +372,27 @@ namespace DOL.GS
                 _styleChainStage);
 
             return AttackComponent.weaponAction.Execute();
+        }
+
+        private void UpdateStyleChainStage()
+        {
+            // If we've successfully used a style during the previous attack, check if the next style is a follow-up.
+            // Reset or increment StyleChainStage based on the result.
+            if (LastAttackData != null &&
+                LastAttackData.AttackResult is eAttackResult.HitStyle &&
+                _combatStyle != null &&
+                _combatStyle.OpeningRequirementType is Style.eOpening.Offensive)
+            {
+                Style lastStyle = LastAttackData.Style;
+
+                if (lastStyle != null && lastStyle.ID == _combatStyle.OpeningRequirementValue)
+                {
+                    _styleChainStage++;
+                    return;
+                }
+            }
+
+            _styleChainStage = 0;
         }
 
         protected virtual void PerformRangedAttack()
