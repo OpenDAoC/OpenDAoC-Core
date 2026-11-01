@@ -234,7 +234,9 @@ namespace DOL.GS
         public int AttackSpeed(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon = null)
         {
             GetWeaponAttackSpeeds(mainWeapon, leftWeapon, out int mainHandAttackSpeed, out int leftHandAttackSpeed);
-            return leftWeapon == null || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield ? mainHandAttackSpeed : AttackSpeed(mainHandAttackSpeed, leftHandAttackSpeed);
+            return leftHandAttackSpeed == 0 || leftWeapon == null || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield ?
+                mainHandAttackSpeed :
+                AttackSpeed(mainHandAttackSpeed, leftHandAttackSpeed);
         }
 
         public void GetWeaponAttackSpeeds(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, out int mainHandAttackSpeed, out int leftHandAttackSpeed)
@@ -247,36 +249,65 @@ namespace DOL.GS
                 if (mainWeapon == null)
                     return;
 
+                bool rangedWeapon = (eObjectType) mainWeapon.Object_Type is
+                    eObjectType.Fired or
+                    eObjectType.Longbow or
+                    eObjectType.Crossbow or
+                    eObjectType.RecurvedBow or
+                    eObjectType.CompositeBow;
+
                 int quickness = Math.Min(250, player.Quickness); // 250 soft cap on quickness.
-                double quicknessMultiplier = GetQuicknessMultiplier(quickness);
-                double meleeSpeedModifier = player.GetModified(eProperty.MeleeSpeed) * 0.001;
-                double archerySpeedModifier = player.GetModified(eProperty.ArcherySpeed) * 0.001;
+                double quicknessModifier = GetQuicknessModifier(quickness);
+                double weaponModifier = CalculateWeaponSpeedModifier(rangedWeapon);
 
-                mainHandAttackSpeed = CalculatePlayerWeaponAttackSpeed(player, mainWeapon, quicknessMultiplier, meleeSpeedModifier, archerySpeedModifier);
+                double modifier = quicknessModifier * weaponModifier;
 
-                if (leftWeapon != null)
-                    leftHandAttackSpeed = CalculatePlayerWeaponAttackSpeed(player, leftWeapon, quicknessMultiplier, meleeSpeedModifier, archerySpeedModifier);
+                mainHandAttackSpeed = CalculatePlayerWeaponAttackSpeed(mainWeapon, rangedWeapon, modifier);
+
+                if (!rangedWeapon && leftWeapon != null)
+                    leftHandAttackSpeed = CalculatePlayerWeaponAttackSpeed(leftWeapon, false, modifier);
             }
             else
             {
-                double quicknessMultiplier = GetQuicknessMultiplier(owner.GetModified(eProperty.Quickness));
-                double meleeSpeedModifier = owner.GetModified(eProperty.MeleeSpeed) * 0.001;
-                double rangedSpeedModifier = (Properties.ALLOW_OLD_ARCHERY ? owner.GetModified(eProperty.ArcherySpeed) : owner.GetModified(eProperty.CastingSpeed)) * 0.001;
-                double petSpeedModifier = owner is GameSummonedPet ? GetSummonedPetSpeedModifier(owner) : 1.0;
+                bool rangedWeapon = owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance;
 
-                mainHandAttackSpeed = CalculateNpcWeaponAttackSpeed(mainWeapon, owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance, quicknessMultiplier, meleeSpeedModifier, rangedSpeedModifier, petSpeedModifier);
+                int quickness = owner.GetModified(eProperty.Quickness);
+                double quicknessModifier = GetQuicknessModifier(quickness);
+                double weaponModifier = CalculateWeaponSpeedModifier(rangedWeapon);
+                double petModifier = GetSummonedPetSpeedModifier();
 
-                if (leftWeapon != null)
-                    leftHandAttackSpeed = CalculateNpcWeaponAttackSpeed(leftWeapon, false, quicknessMultiplier, meleeSpeedModifier, rangedSpeedModifier, petSpeedModifier);
+                double modifier = quicknessModifier * weaponModifier * petModifier;
+
+                mainHandAttackSpeed = CalculateNpcWeaponAttackSpeed(mainWeapon, modifier);
+
+                if (!rangedWeapon && leftWeapon != null)
+                    leftHandAttackSpeed = CalculateNpcWeaponAttackSpeed(leftWeapon, modifier);
             }
 
-            static double GetQuicknessMultiplier(int quickness)
+            static double GetQuicknessModifier(int quickness)
             {
                 return 1.0 - (quickness - 50) * 0.002;
             }
         }
 
-        private int CalculatePlayerWeaponAttackSpeed(GamePlayer player, DbInventoryItem weapon, double quicknessMultiplier, double meleeSpeedModifier, double archerySpeedModifier)
+        private double CalculateWeaponSpeedModifier(bool rangedWeapon)
+        {
+            int property;
+
+            if (rangedWeapon)
+            {
+                if (Properties.ALLOW_OLD_ARCHERY)
+                    property = owner.GetModified(eProperty.ArcherySpeed);
+                else
+                    property = owner.GetModified(eProperty.CastingSpeed);
+            }
+            else
+                property = owner.GetModified(eProperty.MeleeSpeed);
+
+            return property * 0.001;
+        }
+
+        private int CalculatePlayerWeaponAttackSpeed(DbInventoryItem weapon, bool rangedWeapon, double modifier)
         {
             int minimum = 1500;
             double speed = weapon.SPD_ABS;
@@ -284,53 +315,35 @@ namespace DOL.GS
             if (speed == 0)
                 return 0;
 
-            bool bowWeapon = (eObjectType) weapon.Object_Type is
-                eObjectType.Fired or
-                eObjectType.Longbow or
-                eObjectType.Crossbow or
-                eObjectType.RecurvedBow or
-                eObjectType.CompositeBow;
+            speed *= modifier;
 
-            if (bowWeapon)
+            if (rangedWeapon && Properties.ALLOW_OLD_ARCHERY)
             {
-                if (Properties.ALLOW_OLD_ARCHERY)
+                if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
+                    speed = speed * 2 - (owner.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
+                else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
                 {
-                    speed *= quicknessMultiplier * archerySpeedModifier;
-
-                    if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
-                        speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
-                    else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
-                    {
-                        speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
-                        minimum = 900;
-                    }
+                    speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
+                    minimum = 900;
                 }
-                else
-                    speed *= quicknessMultiplier;
             }
-            else
-                speed *= quicknessMultiplier * meleeSpeedModifier;
 
             return (int) Math.Max(minimum, speed * 100);
         }
 
-        private int CalculateNpcWeaponAttackSpeed(DbInventoryItem weapon, bool isRangedWeapon, double quicknessMultiplier, double meleeSpeedModifier, double rangedSpeedModifier, double petSpeedModifier)
+        private int CalculateNpcWeaponAttackSpeed(DbInventoryItem weapon, double modifier)
         {
             int minimum = 500;
-            double speed = NpcWeaponSpeed(weapon) * 100 * quicknessMultiplier;
-
-            if (owner is GameSummonedPet)
-                speed *= meleeSpeedModifier * petSpeedModifier;
-            else if (isRangedWeapon)
-                speed *= rangedSpeedModifier;
-            else
-                speed *= meleeSpeedModifier;
-
+            double speed = NpcWeaponSpeed(weapon) * 100;
+            speed *= modifier;
             return (int) Math.Max(minimum, speed);
         }
 
-        private static double GetSummonedPetSpeedModifier(GameLiving owner)
+        private double GetSummonedPetSpeedModifier()
         {
+            if (owner is not GameSummonedPet)
+                return 1.0;
+
             return owner.Name switch
             {
                 "amber simulacrum" or "emerald simulacrum" => 1.45,
