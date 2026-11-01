@@ -13,6 +13,8 @@ namespace DOL.GS
         private const int STAYS_OPEN_DURATION = 5000;
         private const int REPAIR_INTERVAL = 30 * 1000;
 
+        private long _nextAllowedStateChangeTime;
+
         private static HashSet<int> _borderKeepDoorIds =
         [
             11020501, 11020502,
@@ -35,12 +37,18 @@ namespace DOL.GS
 
         public override void Open(GameLiving opener = null)
         {
-            if (!Locked)
-                State = eDoorState.Open;
-
-            if (HealthPercent > 40 || !_openDead)
+            lock (_stateLock)
             {
-                lock (_stateLock)
+                // Ignore interaction packets that could cause the door to change state again during its current animation.
+                // Normally the client doesn't send a packet, but latency makes it possible.
+                // This is primarily important for border keep doors.
+                if (!_openDead && !GameServiceUtils.ShouldTick(_nextAllowedStateChangeTime))
+                    return;
+
+                if (!Locked)
+                    State = eDoorState.Open;
+
+                if (!_openDead || HealthPercent > 40)
                 {
                     _closeDoorAction ??= new(this);
 
@@ -57,11 +65,24 @@ namespace DOL.GS
 
         public override void Close(GameLiving closer = null)
         {
-            if (!_openDead)
-                State = eDoorState.Closed;
+            lock (_stateLock)
+            {
+                if (!_openDead)
+                    SetState(eDoorState.Closed);
 
-            _closeDoorAction?.Stop();
-            _closeDoorAction = null;
+                _closeDoorAction?.Stop();
+                _closeDoorAction = null;
+            }
+        }
+
+        private void SetState(eDoorState newState)
+        {
+            if (State == newState)
+                return;
+
+            State = newState;
+            int stateChangeCooldown = IsBorderKeepDoor() ? 3000 : 1000;
+            _nextAllowedStateChangeTime = GameLoop.GameLoopTime + stateChangeCooldown;
         }
 
         public override int Health
