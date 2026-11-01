@@ -55,9 +55,9 @@ namespace DOL.GS
                 _playerOwner.rangeAttackComponent.UpdateAmmo(_playerOwner.ActiveWeapon);
         }
 
-        protected override bool FinalizeMeleeAttack()
+        protected override bool FinalizeMeleeAttack(int attackSpeed)
         {
-            if (base.FinalizeMeleeAttack())
+            if (base.FinalizeMeleeAttack(attackSpeed))
             {
                 if (_playerOwner.UseDetailedCombatLog)
                     _playerOwner.Out.SendMessage($"Attack Speed: {_interval / 1000.0}s", eChatType.CT_ResistsChanged, eChatLoc.CL_SystemWindow);

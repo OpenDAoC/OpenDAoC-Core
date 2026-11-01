@@ -18,13 +18,11 @@ namespace DOL.GS.Effects
         {
             public DbInventoryItem AttackWeapon { get; }
             public DbInventoryItem Ammo { get; }
-            public int InterruptDuration { get; }
 
-            public WeaponActionData(DbInventoryItem attackWeapon, DbInventoryItem ammo, int interruptDuration)
+            public WeaponActionData(DbInventoryItem attackWeapon, DbInventoryItem ammo)
             {
                 AttackWeapon = attackWeapon;
                 Ammo = ammo;
-                InterruptDuration = interruptDuration;
             }
         }
 
@@ -257,7 +255,7 @@ namespace DOL.GS.Effects
             // The reason why we do this is because the player's active weapon and attack speed might change before the arrow hits something.
             int ticksToTarget = OwnerPlayer.GetDistanceTo(OwnerPlayer.GroundTarget) * 1000 / RangeAttackComponent.PROJECTILE_FLIGHT_SPEED;
             ECSGameTimer timer = new(OwnerPlayer, new ECSGameTimer.ECSTimerCallback(MakeAttack), ticksToTarget);
-            WeaponActionData weaponActionData = new(player.ActiveWeapon, player.rangeAttackComponent.Ammo, player.attackComponent.AttackSpeed(player.ActiveWeapon));
+            WeaponActionData weaponActionData = new(player.ActiveWeapon, player.rangeAttackComponent.Ammo);
             _weaponActionData.TryAdd(timer, weaponActionData);
 
             player.Out.SendMessage("Your shot arcs into the sky!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -273,13 +271,15 @@ namespace DOL.GS.Effects
 
         private void ShowVolleyEffect()
         {
-            VolleyMob mob = new();
-            mob.X = OwnerPlayer.GroundTarget.X;
-            mob.Y = OwnerPlayer.GroundTarget.Y;
-            mob.Z = OwnerPlayer.GroundTarget.Z;
-            mob.Level = OwnerPlayer.Level;
-            mob.CurrentRegion = OwnerPlayer.CurrentRegion;
-            mob.RespawnInterval = -1;
+            VolleyMob mob = new()
+            {
+                X = OwnerPlayer.GroundTarget.X,
+                Y = OwnerPlayer.GroundTarget.Y,
+                Z = OwnerPlayer.GroundTarget.Z,
+                Level = OwnerPlayer.Level,
+                CurrentRegion = OwnerPlayer.CurrentRegion,
+                RespawnInterval = -1
+            };
             mob.AddToWorld();
         }
 
@@ -341,7 +341,7 @@ namespace DOL.GS.Effects
             // This is a little dirty but it allow us to use the normal attack calculations from the attack component (miss chance will be ignored).
             // We clear it up once we're done using it because at this point the attack component isn't ticking.
             AttackComponent attackComponent = OwnerPlayer.attackComponent;
-            attackComponent.weaponAction = new WeaponAction(OwnerPlayer, potentialTargets[Util.Random(0, potentialTargets.Count - 1)], weaponActionData.AttackWeapon, 1.0, weaponActionData.InterruptDuration, eRangedAttackType.Volley, weaponActionData.Ammo);
+            attackComponent.weaponAction = new(OwnerPlayer, potentialTargets[Util.Random(0, potentialTargets.Count - 1)], weaponActionData.AttackWeapon, 1.0, 0, eRangedAttackType.Volley, weaponActionData.Ammo);
             attackComponent.weaponAction.Execute();
             attackComponent.weaponAction = null;
             return 0;

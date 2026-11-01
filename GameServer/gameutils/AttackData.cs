@@ -21,6 +21,7 @@ namespace DOL.GS
         public int CriticalChance { get; set; }
         public DbInventoryItem Weapon { get; set; }
         public int Interval { get; set; }
+        public int WeaponAttackSpeed { get; set; } // Attack speed of the weapon used for this attack, snapshotted when the attack was created.
         public Style Style { get; set; }
         public List<ISpellHandler> StyleEffects { get; set; }
         public bool CausesCombat { get; set; } = true;
@@ -60,8 +61,9 @@ namespace DOL.GS
         public int GetWeaponAttackSpeed()
         {
             // Used by damage adds and shields to calculate the damage based on the weapon's attack speed.
-            // Note: AttackSpeed returns capped attack speed, which may not be correct for the slowest weapon when dual wielding.
-            return Attacker.attackComponent.AttackSpeed(Weapon);
+            // The value is snapshotted when the attack is created, so that delayed ranged attacks use the
+            // attack speed at the time the projectile was released (which may be affected by Rapid Fire or Critical Shot).
+            return WeaponAttackSpeed > 0 ? WeaponAttackSpeed : Attacker.attackComponent.AttackSpeed(Weapon);
         }
 
         public static eAttackType GetAttackType(DbInventoryItem weapon, WeaponAction action, GameLiving attacker)

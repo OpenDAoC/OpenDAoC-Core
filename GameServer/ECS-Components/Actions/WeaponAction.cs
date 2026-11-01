@@ -14,51 +14,58 @@ namespace DOL.GS
 {
     public class WeaponAction
     {
-        private GameLiving _owner;
-        private GameLiving _target;
-        private DbInventoryItem _attackWeapon;
-        private DbInventoryItem _leftWeapon;
-        private double _effectiveness;
-        private int _interval;
-        private Style _combatStyle;
-        private int _extraSwings;
+        private readonly GameLiving _owner;
+        private readonly GameLiving _target;
+        private DbInventoryItem _attackWeapon;     // Can become the left weapon during dual wield attacks.
+        private readonly DbInventoryItem _leftWeapon;
+        private readonly double _effectiveness;
+        private readonly int _intervalOffset;      // Difference between the scheduled attack time and now (normally zero or negative).
+        private readonly Style _combatStyle;
 
-        public long AttackRoundEndTime { get; private set; }
-        public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
+        // Set by Execute().
+        private int _mainHandAttackSpeed;
+        private int _leftHandAttackSpeed;
+        private int _extraSwings;
+        private int _attackSpeed;
+        private int _interval;                     // Attack speed + interval offset (provided by AttackAction).
 
         public eActiveWeaponSlot ActiveWeaponSlot { get; }
+        public byte StyleChainStage { get; }
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
-        public byte StyleChainStage { get; }
 
-        public bool HasConsumedBlockRound { get; set; } // Used to prevent multihit attacks from consuming multiple block rounds.
-        public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
+        public bool HasConsumedBlockRound { get; set; }         // Used by AttackComponent to prevent multihit attacks from consuming multiple block rounds.
+        public long AttackRoundEndTime { get; private set; }
+        public bool HasAmmoReachedTarget { get; private set; }  // Used to not cancel the release animation. A bit clunky, may not work perfectly.
         public DualWieldMechanic DualWieldMechanic { get; private set; }
         public byte SwingsExecuted { get; private set; }
+        public bool IsAttackRoundFinished => GameServiceUtils.ShouldTick(AttackRoundEndTime);
 
-        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle, byte styleChainStage)
+        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int intervalOffset, Style combatStyle, byte styleChainStage)
         {
             _owner = owner;
             _target = target;
             _attackWeapon = attackWeapon;
             _leftWeapon = leftWeapon;
             _effectiveness = effectiveness;
-            _interval = interval;
+            _intervalOffset = intervalOffset;
             _combatStyle = combatStyle;
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
             StyleChainStage = styleChainStage;
+            owner.attackComponent.GetWeaponAttackSpeeds(attackWeapon, leftWeapon, out _mainHandAttackSpeed, out _leftHandAttackSpeed);
         }
 
-        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
+        public WeaponAction(GameLiving owner, GameLiving target, DbInventoryItem attackWeapon, double effectiveness, int intervalOffset, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
         {
             _owner = owner;
             _target = target;
             _attackWeapon = attackWeapon;
             _effectiveness = effectiveness;
-            _interval = interval;
+            _intervalOffset = intervalOffset;
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
             RangedAttackType = rangedAttackType;
             Ammo = ammo;
+            owner.attackComponent.GetWeaponAttackSpeeds(attackWeapon, null, out _mainHandAttackSpeed, out _);
         }
 
         public int Execute(ECSGameTimer timer)
@@ -68,7 +75,7 @@ namespace DOL.GS
             return 0;
         }
 
-        public void Execute()
+        public int Execute()
         {
             // 1.89
             //- Pets will no longer continue to attack a character after the character has stealthed.
@@ -76,7 +83,7 @@ namespace DOL.GS
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
             if (!MakeMainHandAttack(out AttackData mainHandAttackData))
-                return;
+                return 0;
 
             AttackRoundEndTime = GameLoop.GameLoopTime + _interval;
             AttackData extraAttackData = null;
@@ -114,13 +121,13 @@ namespace DOL.GS
                 case eAttackResult.TargetDead:
                 {
                     _owner.OnTargetDeadOrNoTarget();
-                    return;
+                    return _attackSpeed;
                 }
                 case eAttackResult.NotAllowed_ServerRules:
                 case eAttackResult.NoValidTarget:
                 {
                     _owner.attackComponent.StopAttack();
-                    return;
+                    return _attackSpeed;
                 }
                 case eAttackResult.OutOfRange:
                     break;
@@ -160,6 +167,8 @@ namespace DOL.GS
                     spellHandler?.StartSpell(livingTarget);
                 }
             }
+
+            return _attackSpeed;
         }
 
         public void DetermineDualWieldMechanic()
@@ -457,10 +466,18 @@ namespace DOL.GS
                 }
             }
 
-            attackData = InitiateAttack(_attackWeapon, _combatStyle);
+            // The interval of a dual wield attack depends on which weapons actually swing.
+            // This must be done before the attack is initiated so that the attack data uses the correct interval.
+            _attackSpeed = usedHand switch
+            {
+                2 => AttackComponent.AttackSpeed(_mainHandAttackSpeed, _leftHandAttackSpeed),
+                1 => _leftHandAttackSpeed,
+                _ => _mainHandAttackSpeed
+            };
+            _interval = Math.Max(0, _attackSpeed + _intervalOffset);
 
+            attackData = InitiateAttack(_attackWeapon, _combatStyle);
             _owner.attackComponent.attackAction.LastAttackData = attackData;
-            _owner.attackComponent.UsedHandOnLastDualWieldAttack = attackData.IsHit ? usedHand : (byte) 0;
 
             if (_combatStyle == null)
                 attackData.AnimationId = animationId;
@@ -489,7 +506,8 @@ namespace DOL.GS
                 DamageType = _owner.attackComponent.AttackDamageType(weapon, this),
                 AttackType = AttackData.GetAttackType(weapon, this, _owner),
                 Weapon = weapon,
-                Interval = _interval
+                Interval = _interval,
+                WeaponAttackSpeed =  weapon != null && weapon == _leftWeapon ? _leftHandAttackSpeed : _mainHandAttackSpeed
             };
         }
 
@@ -612,8 +630,7 @@ namespace DOL.GS
                     // Don't use regular attacking code to avoid Reflex Attack triggering itself.
                     // Currently Reflex Attack simply does damage and doesn't trigger procs or damage adds / shields.
 
-                    int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
-                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, attackSpeed, null, 0);
+                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, 1.0, 0, null, 0);
                     AttackData attackData = weaponAction.InitiateAttack(target.ActiveWeapon, null);
                     attacker.DealDamage(attackData);
 

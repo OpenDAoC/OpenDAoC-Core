@@ -17,7 +17,6 @@ namespace DOL.GS
         protected GameLiving _target;
         protected double _effectiveness;
         protected int _ticksToTarget;
-        protected int _attackInterval;
         protected int _interval;
         private readonly GameLiving _owner;
         private long _nextMeleeTick;
@@ -85,8 +84,8 @@ namespace DOL.GS
 
             if (PrepareMeleeAttack())
             {
-                PerformMeleeAttack();
-                FinalizeMeleeAttack();
+                int attackSpeed = PerformMeleeAttack();
+                FinalizeMeleeAttack(attackSpeed);
             }
 
             if (AttackComponent.AttackState)
@@ -230,7 +229,6 @@ namespace DOL.GS
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
 
-            _attackInterval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
             return true;
         }
 
@@ -290,7 +288,6 @@ namespace DOL.GS
             }
 
             _interval = attackSpeed;
-            _attackInterval = _interval;
             _ticksToTarget = _owner.GetDistanceTo(_target) * 1000 / RangeAttackComponent.PROJECTILE_FLIGHT_SPEED;
             int model = _weapon == null ? 0 : _weapon.Model;
             byte flightDuration = (byte) (_ticksToTarget > 350 ? 1 + (_ticksToTarget - 350) / 75 : 1);
@@ -307,7 +304,7 @@ namespace DOL.GS
                 // 0 doesn't display any arrow.
                 // 1 means roughly 350ms (the lowest time possible), then each increment adds about 75ms (needs testing).
                 // Using ticksToTarget, we can make the arrow take more time to reach its target the farther it is.
-                player.Out.SendCombatAnimation(_owner, _target, (ushort)model, 0x00, player.Out.BowShoot, flightDuration, 0x00, ((GameLiving)_target).HealthPercent);
+                player.Out.SendCombatAnimation(_owner, _target, (ushort) model, 0x00, player.Out.BowShoot, flightDuration, 0x00, _target.HealthPercent);
             }
 
             switch (_owner.rangeAttackComponent.RangedAttackType)
@@ -348,7 +345,7 @@ namespace DOL.GS
                     if (elapsedTime < preRapidFireAttackSpeed)
                     {
                         _effectiveness *= elapsedTime / preRapidFireAttackSpeed;
-                        _attackInterval = (int) (preRapidFireAttackSpeed * _effectiveness);
+                        _interval = (int) (preRapidFireAttackSpeed * _effectiveness);
                     }
 
                     break;
@@ -358,7 +355,7 @@ namespace DOL.GS
             return true;
         }
 
-        protected virtual void PerformMeleeAttack()
+        protected virtual int PerformMeleeAttack()
         {
             AttackData lastAttackData = LastAttackData;
 
@@ -377,30 +374,31 @@ namespace DOL.GS
             else
                 _styleChainStage = 0;
 
-            // AttackAction ticks in a way that prevent drifting,
-            // but we must pass the real interval to WeaponAction to ensure correct interrupt / block round durations.
+            // AttackAction ticks in a way that prevent drifting.
+            // WeaponAction calculates the interval based on the actual swings, and uses the offset to ensure correct interrupt / block round durations.
             AttackComponent.weaponAction = new(
                 _owner,
                 _target,
                 _weapon,
                 _leftWeapon,
                 _effectiveness,
-                (int) (_nextMeleeTick - GameLoop.GameLoopTime + _attackInterval),
+                (int) (_nextMeleeTick - GameLoop.GameLoopTime),
                 _combatStyle,
                 _styleChainStage);
-            AttackComponent.weaponAction.Execute();
+
+            return AttackComponent.weaponAction.Execute();
         }
 
         protected virtual void PerformRangedAttack()
         {
             // AttackAction ticks in a way that prevent drifting,
-            // but we must pass the real interval to WeaponAction to ensure correct interrupt / block round durations.
+            // WeaponAction uses the offset to ensure correct interrupt / block round durations.
             AttackComponent.weaponAction = new(
                 _owner,
                 _target,
                 _weapon,
                 _effectiveness,
-                (int) (_nextRangedTick - GameLoop.GameLoopTime + _attackInterval),
+                (int) (_nextRangedTick - GameLoop.GameLoopTime),
                 _owner.rangeAttackComponent.RangedAttackType,
                 _owner.rangeAttackComponent.Ammo);
 
@@ -416,7 +414,7 @@ namespace DOL.GS
                 AttackComponent.weaponAction.Execute();
         }
 
-        protected virtual bool FinalizeMeleeAttack()
+        protected virtual bool FinalizeMeleeAttack(int attackSpeed)
         {
             // Melee weapons tick every TICK_INTERVAL_FOR_NON_ATTACK if they didn't attack.
             if (LastAttackData != null)
@@ -440,13 +438,13 @@ namespace DOL.GS
                     {
                         StyleComponent.NextCombatStyle = null;
                         StyleComponent.NextCombatBackupStyle = null;
-                        _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon) * 2;
+                        _interval = attackSpeed * 2;
                         return true;
                     }
                 }
             }
 
-            _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
+            _interval = attackSpeed;
             return true;
         }
 

@@ -137,12 +137,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gets which weapon was used for the last dual wield attack
-        /// 0: right (or non dual wield user), 1: left, 2: both
-        /// </summary>
-        public int UsedHandOnLastDualWieldAttack { get; set; }
-
-        /// <summary>
         /// Returns this attack's range
         /// </summary>
         public int AttackRange
@@ -232,142 +226,117 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Gets the current attackspeed of this living in milliseconds
-        /// </summary>
-        /// <returns>effective speed of the attack. average if more than one weapon.</returns>
+        public static int AttackSpeed(int mainHandAttackSpeed, int leftHandAttackSpeed)
+        {
+            return (mainHandAttackSpeed + leftHandAttackSpeed) / 2;
+        }
+
         public int AttackSpeed(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon = null)
         {
-            int minimum;
+            GetWeaponAttackSpeeds(mainWeapon, leftWeapon, out int mainHandAttackSpeed, out int leftHandAttackSpeed);
+            return leftWeapon == null || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield ? mainHandAttackSpeed : AttackSpeed(mainHandAttackSpeed, leftHandAttackSpeed);
+        }
+
+        public void GetWeaponAttackSpeeds(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, out int mainHandAttackSpeed, out int leftHandAttackSpeed)
+        {
+            mainHandAttackSpeed = 0;
+            leftHandAttackSpeed = 0;
 
             if (owner is GamePlayer player)
             {
                 if (mainWeapon == null)
-                    return 0;
-
-                minimum = 1500;
-                double speed = 0;
-
-                // If leftWeapon is null even on a dual wield attack, use the mainWeapon instead.
-                switch (UsedHandOnLastDualWieldAttack)
-                {
-                    case 2:
-                    {
-                        speed = mainWeapon.SPD_ABS;
-
-                        if (leftWeapon != null)
-                        {
-                            speed += leftWeapon.SPD_ABS;
-                            speed /= 2;
-                        }
-
-                        break;
-                    }
-                    case 1:
-                    {
-                        speed = leftWeapon != null ? leftWeapon.SPD_ABS : mainWeapon.SPD_ABS;
-                        break;
-                    }
-                    case 0:
-                    {
-                        speed = mainWeapon.SPD_ABS;
-                        break;
-                    }
-                }
-
-                if (speed == 0)
-                    return 0;
-
-                bool bowWeapon = (eObjectType) mainWeapon.Object_Type is
-                    eObjectType.Fired or
-                    eObjectType.Longbow or
-                    eObjectType.Crossbow or
-                    eObjectType.RecurvedBow or
-                    eObjectType.CompositeBow;
+                    return;
 
                 int quickness = Math.Min(250, player.Quickness); // 250 soft cap on quickness.
                 double quicknessMultiplier = GetQuicknessMultiplier(quickness);
+                double meleeSpeedModifier = player.GetModified(eProperty.MeleeSpeed) * 0.001;
+                double archerySpeedModifier = player.GetModified(eProperty.ArcherySpeed) * 0.001;
 
-                if (bowWeapon)
-                {
-                    if (Properties.ALLOW_OLD_ARCHERY)
-                    {
-                        speed *= quicknessMultiplier * player.GetModified(eProperty.ArcherySpeed) * 0.001;
+                mainHandAttackSpeed = CalculatePlayerWeaponAttackSpeed(player, mainWeapon, quicknessMultiplier, meleeSpeedModifier, archerySpeedModifier);
 
-                        if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
-                            speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
-                        else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
-                        {
-                            speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
-                            minimum = 900;
-                        }
-                    }
-                    else
-                        speed *= quicknessMultiplier;
-                }
-                else
-                    speed *= quicknessMultiplier * player.GetModified(eProperty.MeleeSpeed) * 0.001;
-
-                return (int) Math.Max(minimum, speed * 100);
+                if (leftWeapon != null)
+                    leftHandAttackSpeed = CalculatePlayerWeaponAttackSpeed(player, leftWeapon, quicknessMultiplier, meleeSpeedModifier, archerySpeedModifier);
             }
             else
             {
-                minimum = 500;
-                double speed = NpcWeaponSpeed(mainWeapon) * 100 * GetQuicknessMultiplier(owner.GetModified(eProperty.Quickness));
+                double quicknessMultiplier = GetQuicknessMultiplier(owner.GetModified(eProperty.Quickness));
+                double meleeSpeedModifier = owner.GetModified(eProperty.MeleeSpeed) * 0.001;
+                double rangedSpeedModifier = (Properties.ALLOW_OLD_ARCHERY ? owner.GetModified(eProperty.ArcherySpeed) : owner.GetModified(eProperty.CastingSpeed)) * 0.001;
+                double petSpeedModifier = owner is GameSummonedPet ? GetSummonedPetSpeedModifier(owner) : 1.0;
 
-                if (owner is GameSummonedPet pet)
-                {
-                    if (pet != null)
-                    {
-                        double modifier;
+                mainHandAttackSpeed = CalculateNpcWeaponAttackSpeed(mainWeapon, owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance, quicknessMultiplier, meleeSpeedModifier, rangedSpeedModifier, petSpeedModifier);
 
-                        // This is pretty terrible.
-                        switch (pet.Name)
-                        {
-                            case "amber simulacrum":
-                            case "emerald simulacrum":
-                            {
-                                modifier = 1.45;
-                                break;
-                            }
-                            case "ruby simulacrum":
-                            case "sapphire simulacrum":
-                            case "jade simulacrum":
-                            {
-                                modifier = 0.95;
-                                break;
-                            }
-                            default:
-                            {
-                                modifier = 1.0;
-                                break;
-                            }
-                        }
-
-                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.001 * modifier;
-                    }
-                }
-                else
-                {
-                    if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
-                    {
-                        // Old archery uses archery speed, but new archery uses casting speed.
-                        if (Properties.ALLOW_OLD_ARCHERY)
-                            speed *= owner.GetModified(eProperty.ArcherySpeed) * 0.001;
-                        else
-                            speed *= owner.GetModified(eProperty.CastingSpeed) * 0.001;
-                    }
-                    else
-                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.001;
-                }
-
-                return (int) Math.Max(minimum, speed);
+                if (leftWeapon != null)
+                    leftHandAttackSpeed = CalculateNpcWeaponAttackSpeed(leftWeapon, false, quicknessMultiplier, meleeSpeedModifier, rangedSpeedModifier, petSpeedModifier);
             }
 
             static double GetQuicknessMultiplier(int quickness)
             {
                 return 1.0 - (quickness - 50) * 0.002;
             }
+        }
+
+        private int CalculatePlayerWeaponAttackSpeed(GamePlayer player, DbInventoryItem weapon, double quicknessMultiplier, double meleeSpeedModifier, double archerySpeedModifier)
+        {
+            int minimum = 1500;
+            double speed = weapon.SPD_ABS;
+
+            if (speed == 0)
+                return 0;
+
+            bool bowWeapon = (eObjectType) weapon.Object_Type is
+                eObjectType.Fired or
+                eObjectType.Longbow or
+                eObjectType.Crossbow or
+                eObjectType.RecurvedBow or
+                eObjectType.CompositeBow;
+
+            if (bowWeapon)
+            {
+                if (Properties.ALLOW_OLD_ARCHERY)
+                {
+                    speed *= quicknessMultiplier * archerySpeedModifier;
+
+                    if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
+                        speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
+                    else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
+                    {
+                        speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
+                        minimum = 900;
+                    }
+                }
+                else
+                    speed *= quicknessMultiplier;
+            }
+            else
+                speed *= quicknessMultiplier * meleeSpeedModifier;
+
+            return (int) Math.Max(minimum, speed * 100);
+        }
+
+        private int CalculateNpcWeaponAttackSpeed(DbInventoryItem weapon, bool isRangedWeapon, double quicknessMultiplier, double meleeSpeedModifier, double rangedSpeedModifier, double petSpeedModifier)
+        {
+            int minimum = 500;
+            double speed = NpcWeaponSpeed(weapon) * 100 * quicknessMultiplier;
+
+            if (owner is GameSummonedPet)
+                speed *= meleeSpeedModifier * petSpeedModifier;
+            else if (isRangedWeapon)
+                speed *= rangedSpeedModifier;
+            else
+                speed *= meleeSpeedModifier;
+
+            return (int) Math.Max(minimum, speed);
+        }
+
+        private static double GetSummonedPetSpeedModifier(GameLiving owner)
+        {
+            return owner.Name switch
+            {
+                "amber simulacrum" or "emerald simulacrum" => 1.45,
+                "ruby simulacrum" or "sapphire simulacrum" or "jade simulacrum" => 0.95,
+                _ => 1.0
+            };
         }
 
         /// <summary>
@@ -919,11 +888,10 @@ namespace DOL.GS
 
                             DbInventoryItem attackWeapon = owner.ActiveWeapon;
                             DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
-                            int attackSpeed = AttackSpeed(attackWeapon);
 
                             foreach (GameLiving extraTarget in extraTargets)
                             {
-                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, attackSpeed, null, 0);
+                                weaponAction = new(playerOwner, extraTarget, attackWeapon, leftWeapon, effectiveness, 0, null, 0);
                                 weaponAction.Execute();
                             }
                         }
