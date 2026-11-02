@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Numerics;
 using System.Security.Cryptography;
@@ -16,12 +17,10 @@ namespace DOL.GS.PacketHandler
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static RSA _privateKey;
         private static BigInteger _n, _d;   // raw RSA params for no-padding decrypt
-        private static int _k;              // modulus size in bytes
+        private static int _k;              // modulus size in bytes, 0 until a key is loaded
 
         private const int HLen = 32;                    // SHA-256
-        private static readonly byte[] Label = System.Text.Encoding.ASCII.GetBytes("mythic");
         private static readonly byte[] LHash = SHA256.HashData(System.Text.Encoding.ASCII.GetBytes("mythic"));
 
         // Offset and length of the RC4 key in the key transport plaintext.
@@ -30,7 +29,7 @@ namespace DOL.GS.PacketHandler
 
         // `Init` loads the key only if `client_enable_1130_crypto` is on at startup, so changing the property later
         // has no effect until a restart.
-        public static bool Enabled => _privateKey != null;
+        public static bool Enabled => _k > 0;
 
         // Checked once per connection, at the version reply (`CryptKeyRequestHandler`).
         public static bool AppliesTo(GameClient.eClientVersion version) => AppliesTo(Enabled, version);
@@ -38,18 +37,15 @@ namespace DOL.GS.PacketHandler
         public static bool AppliesTo(bool enabled, GameClient.eClientVersion version) =>
             enabled && version is GameClient.eClientVersion.Version1130;
 
-        public static int ModulusBytes => _k;
-
         public static void LoadPrivateKey(string pem)
         {
-            var rsa = RSA.Create();
+            using RSA rsa = RSA.Create();
             rsa.ImportFromPem(pem);
 
             RSAParameters p = rsa.ExportParameters(true);
             _n = BigIntUnsigned(p.Modulus);
             _d = BigIntUnsigned(p.D);
             _k = p.Modulus.Length;
-            _privateKey = rsa;
         }
 
         public static bool Init()
@@ -70,7 +66,7 @@ namespace DOL.GS.PacketHandler
                 LoadPrivateKey(File.ReadAllText(path));
 
                 if (log.IsInfoEnabled)
-                    log.Info($"1.130 RSA private key loaded from '{path}' ({_privateKey.KeySize}-bit, {_k}-byte block)");
+                    log.Info($"1.130 RSA private key loaded from '{path}' ({_k * 8}-bit modulus)");
 
                 return true;
             }
@@ -88,7 +84,7 @@ namespace DOL.GS.PacketHandler
         // this isn't a key transport for this server's key.
         public static byte[] RecoverRc4Key(ReadOnlySpan<byte> body)
         {
-            if (_privateKey == null)
+            if (!Enabled)
                 return null;
 
             byte[] plaintext = DecryptKeyTransport(body);
@@ -106,25 +102,11 @@ namespace DOL.GS.PacketHandler
             byte[] key = new byte[Rc4KeyLength];
             Array.Copy(plaintext, Rc4KeyOffset, key, 0, Rc4KeyLength);
 
-            // Return the SCHEDULED S-box (RC4 KSA applied). PacketEncoding168's SBox setter stores
-            // the value as-is and DecryptPacket uses it directly, so it must already be scheduled.
-            // (The key schedule is the same as PacketEncoding1110.GenerateSBox.)
-            return GenerateSBox(key);
+            // `PacketEncoding168` uses its S-box as given, so schedule the key here.
+            return PacketEncoding1110.GenerateSBox(key);
         }
 
-        private static byte[] GenerateSBox(byte[] key)
-        {
-            var sbox = new byte[256];
-            for (int x = 0; x < 256; x++) sbox[x] = (byte)x;
-            for (int x = 0, y = 0; x < 256; x++)
-            {
-                y = (y + sbox[x] + key[x % key.Length]) & 255;
-                (sbox[x], sbox[y]) = (sbox[y], sbox[x]);
-            }
-            return sbox;
-        }
-
-        public static byte[] DecryptKeyTransport(ReadOnlySpan<byte> body)
+        private static byte[] DecryptKeyTransport(ReadOnlySpan<byte> body)
         {
             using var ms = new MemoryStream();
             int p = 0;
@@ -168,60 +150,52 @@ namespace DOL.GS.PacketHandler
             return ToFixed(m, _k);
         }
 
-        // Returns the message, or null if the padding is invalid.
+        // Returns the message, or null if the padding is invalid. Every check runs before rejecting, so a block that
+        // fails early takes as long as one that fails late.
         private static byte[] MythicOaepDecode(byte[] block)
         {
-            if (block.Length != _k || block[0] != 0x01)
+            if (block.Length != _k)
                 return null;
 
-            var maskedSeed = new byte[HLen];
-            Array.Copy(block, 1, maskedSeed, 0, HLen);
-            var maskedDb = new byte[_k - 1 - HLen];
-            Array.Copy(block, 1 + HLen, maskedDb, 0, maskedDb.Length);
-
+            ReadOnlySpan<byte> maskedSeed = block.AsSpan(1, HLen);
+            ReadOnlySpan<byte> maskedDb = block.AsSpan(1 + HLen);
             byte[] seed = Xor(maskedSeed, Mgf1(maskedDb, HLen));
             byte[] db = Xor(maskedDb, Mgf1(seed, maskedDb.Length));
 
-            // db = lHash || PS(0x00..) || 0x01 || message
-            for (int i = 0; i < HLen; i++)
-                if (db[i] != LHash[i])
-                    return null;
+            // db = lHash || PS (0x00 bytes) || 0x01 || message
+            int separator = 0;
 
-            int j = HLen;
-            while (j < db.Length && db[j] == 0x00) j++;
-            if (j >= db.Length || db[j] != 0x01)
-                return null;
-
-            var msg = new byte[db.Length - (j + 1)];
-            Array.Copy(db, j + 1, msg, 0, msg.Length);
-            return msg;
-        }
-
-        private static byte[] Mgf1(byte[] seed, int length)
-        {
-            var outb = new byte[length];
-            int pos = 0;
-            uint counter = 0;
-            Span<byte> cnt = stackalloc byte[4];
-            while (pos < length)
+            for (int i = HLen; i < db.Length; i++)
             {
-                cnt[0] = (byte)(counter >> 24);
-                cnt[1] = (byte)(counter >> 16);
-                cnt[2] = (byte)(counter >> 8);
-                cnt[3] = (byte)counter;
-                using var sha = SHA256.Create();
-                sha.TransformBlock(seed, 0, seed.Length, null, 0);
-                sha.TransformFinalBlock(cnt.ToArray(), 0, 4);
-                byte[] digest = sha.Hash;
-                int n = Math.Min(HLen, length - pos);
-                Array.Copy(digest, 0, outb, pos, n);
-                pos += n;
-                counter++;
+                if (separator == 0 && db[i] != 0x00)
+                    separator = i;
             }
-            return outb;
+
+            bool valid = block[0] == 0x01;
+            valid &= CryptographicOperations.FixedTimeEquals(db.AsSpan(0, HLen), LHash);
+            valid &= separator != 0 && db[separator] == 0x01;
+
+            return valid ? db[(separator + 1)..] : null;
         }
 
-        private static byte[] Xor(byte[] a, byte[] b)
+        private static byte[] Mgf1(ReadOnlySpan<byte> seed, int length)
+        {
+            byte[] output = new byte[length];
+            byte[] input = new byte[seed.Length + 4];
+            seed.CopyTo(input);
+            Span<byte> digest = stackalloc byte[HLen];
+
+            for (int counter = 0, position = 0; position < length; counter++, position += HLen)
+            {
+                BinaryPrimitives.WriteInt32BigEndian(input.AsSpan(seed.Length), counter);
+                SHA256.HashData(input, digest);
+                digest[..Math.Min(HLen, length - position)].CopyTo(output.AsSpan(position));
+            }
+
+            return output;
+        }
+
+        private static byte[] Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b)
         {
             var r = new byte[a.Length];
             for (int i = 0; i < a.Length; i++) r[i] = (byte)(a[i] ^ b[i]);

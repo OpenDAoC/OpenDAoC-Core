@@ -383,17 +383,9 @@ namespace DOL.GS
                     var enc = PacketProcessor.Encoding;
                     if (enc.EncryptionState == eEncryptionState.RSAEncrypted)
                     {
-                        // The chunk stream is everything after the 2-byte size field. The size field
-                        // (0x280=640) under-counts the real chunk bytes (650 = 5x130) by 10, so use the
-                        // full framed length instead: packetLength = sizefield + HDR_SIZE(12).
-                        int bodyStart = currentOffset + 2;
-                        int bodyLen = packetLength - 2;
-                        byte[] rc4Key = null;
-                        if (bodyStart + bodyLen <= endPosition)
-                        {
-                            var body = new ReadOnlySpan<byte>(buffer, bodyStart, bodyLen);
-                            rc4Key = Rsa1130.RecoverRc4Key(body);
-                        }
+                        // The chunks are everything after the 2-byte size field. The client's size field under-counts
+                        // them by 10 bytes, so take the framed length (size field + HDR_SIZE) minus the size field.
+                        byte[] rc4Key = Rsa1130.RecoverRc4Key(new ReadOnlySpan<byte>(buffer, currentOffset + 2, packetLength - 2));
 
                         if (rc4Key != null)
                         {

@@ -150,7 +150,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		///   Generates the SBox from the common key
 		/// </summary>
-		private static byte[] GenerateSBox(byte[] commonKey) {
+		internal static byte[] GenerateSBox(byte[] commonKey) {
 			// Generate the S-Box from the common key (Code borrowed from DAoC Logger)
 			var sbox = new byte[256];
 			int x, y;

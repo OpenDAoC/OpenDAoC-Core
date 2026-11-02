@@ -47,6 +47,18 @@ namespace DOL.GS.Tests
             Assert.That(Rsa1130.RecoverRc4Key(CreateKeyTransport(otherKey, key)), Is.Null);
         }
 
+        // Each check fails on its own: the leading byte, the label hash, and the 0x01 before the message.
+        [TestCase(0x00, false, 0x01)]
+        [TestCase(0x01, true, 0x01)]
+        [TestCase(0x01, false, 0x02)]
+        public void RecoverRc4Key_BadPadding_ReturnsNull(byte leading, bool wrongLabel, byte separator)
+        {
+            byte[] key = RandomNumberGenerator.GetBytes(Rsa1130.Rc4KeyLength);
+            byte[] lHash = wrongLabel ? SHA256.HashData("other"u8.ToArray()) : LHash;
+
+            Assert.That(Rsa1130.RecoverRc4Key(CreateKeyTransport(_serverKey, key, leading, lHash, separator)), Is.Null);
+        }
+
         // Body = the packet after its 2-byte size field: [sequence][session][parameter][code][payload][checksum].
         // A leading 0x00 and a small second byte also look like the start of an RSA chunk.
         [TestCase(new byte[] { 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0xA9, 0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC })]
@@ -147,7 +159,7 @@ namespace DOL.GS.Tests
         }
 
         // [00][len][RSA block] per chunk; the plaintext is [12-byte header][256-byte RC4 key][2-byte trailer].
-        private static byte[] CreateKeyTransport(RSA rsa, byte[] key)
+        private static byte[] CreateKeyTransport(RSA rsa, byte[] key, byte leading = 0x01, byte[] lHash = null, byte separator = 0x01)
         {
             byte[] plaintext = new byte[Rsa1130.Rc4KeyOffset + Rsa1130.Rc4KeyLength + 2];
             Array.Copy(key, 0, plaintext, Rsa1130.Rc4KeyOffset, key.Length);
@@ -162,7 +174,7 @@ namespace DOL.GS.Tests
             for (int offset = 0; offset < plaintext.Length; offset += maxMessage)
             {
                 int length = Math.Min(maxMessage, plaintext.Length - offset);
-                byte[] block = MythicOaepEncode(plaintext.AsSpan(offset, length), k);
+                byte[] block = MythicOaepEncode(plaintext.AsSpan(offset, length), k, leading, lHash ?? LHash, separator);
                 byte[] ciphertext = BigInteger.ModPow(new BigInteger(block, true, true), e, n).ToByteArray(true, true);
                 body.WriteByte(0x00);
                 body.WriteByte((byte) k);
@@ -174,11 +186,11 @@ namespace DOL.GS.Tests
         }
 
         // RFC 8017 OAEP with SHA-256, label "mythic", and a leading 0x01 where RFC 8017 has 0x00.
-        private static byte[] MythicOaepEncode(ReadOnlySpan<byte> message, int k)
+        private static byte[] MythicOaepEncode(ReadOnlySpan<byte> message, int k, byte leading, byte[] lHash, byte separator)
         {
             byte[] db = new byte[k - 1 - HLEN];
-            LHash.CopyTo(db, 0);
-            db[db.Length - message.Length - 1] = 0x01;
+            lHash.CopyTo(db, 0);
+            db[db.Length - message.Length - 1] = separator;
             message.CopyTo(db.AsSpan(db.Length - message.Length));
 
             byte[] seed = RandomNumberGenerator.GetBytes(HLEN);
@@ -186,7 +198,7 @@ namespace DOL.GS.Tests
             byte[] maskedSeed = Xor(seed, Mgf1(maskedDb, HLEN));
 
             byte[] block = new byte[k];
-            block[0] = 0x01;
+            block[0] = leading;
             maskedSeed.CopyTo(block, 1);
             maskedDb.CopyTo(block, 1 + HLEN);
             return block;
