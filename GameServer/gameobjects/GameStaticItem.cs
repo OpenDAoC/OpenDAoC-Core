@@ -150,13 +150,6 @@ namespace DOL.GS
                 GameServer.Database.SaveObject(_dbWorldObject);
         }
 
-        public override void Delete()
-        {
-            Notify(GameObjectEvent.Delete, this);
-            RemoveFromWorld();
-            ObjectState = eObjectState.Deleted;
-        }
-
         public override void DeleteFromDatabase()
         {
             if (InternalID != null)
