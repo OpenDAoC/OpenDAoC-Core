@@ -227,7 +227,9 @@ namespace DOL.Database
             {
                 conn = CreateConnection(ConnectionString);
                 OpenConnection(conn);
-                transaction = conn.BeginTransaction();
+
+                // BEGIN/COMMIT would only add two round trips to every single-row save, which is most of them.
+                transaction = dataObjectList.Count > 1 ? conn.BeginTransaction() : null;
 
                 foreach (DataObject dataObject in dataObjectList)
                 {
@@ -287,7 +289,7 @@ namespace DOL.Database
                     success.Add(wasSuccessful);
                 }
 
-                transaction.Commit();
+                transaction?.Commit();
             }
             catch (Exception ex)
             {
