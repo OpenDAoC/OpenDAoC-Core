@@ -12,7 +12,6 @@ using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
-using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
@@ -28,7 +27,7 @@ namespace DOL.GS
 	public abstract class GameLiving : GameObject, ITickPooledList<GameLiving>
 	{
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-		public static int IN_COMBAT_DURATION = 10000;
+		private static int IN_COMBAT_DURATION = 10000;
 
 		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; } = new();
 

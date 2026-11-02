@@ -208,7 +208,7 @@ namespace DOL.GS
 			m_DBguild.DuesPercent = IsGuildDuesOn() ? dues : 0;
 		}
 
-		public bool ValidateAddToBankAmount(long amount, out double newBank, out ChangeBankResult changeBankResult)
+		public bool ValidateBankChangeAmount(long amount, out double newBank, out ChangeBankResult changeBankResult)
 		{
 			newBank = GetGuildBank() + amount;
 
@@ -235,7 +235,7 @@ namespace DOL.GS
 
 			amount = Math.Abs(amount);
 
-			if (!ValidateAddToBankAmount(amount, out double newBank, out ChangeBankResult changeBankResult))
+			if (!ValidateBankChangeAmount(amount, out double newBank, out ChangeBankResult changeBankResult))
 			{
 				switch (changeBankResult)
 				{
@@ -272,26 +272,26 @@ namespace DOL.GS
 			return;
 		}
 
-		public void WithdrawFromBank(GamePlayer player, long amount)
+		public bool WithdrawFromBank(GamePlayer player, long amount)
 		{
 			if (player == null || player.Guild == null)
-				return;
+				return false;
 
 			amount = Math.Abs(amount);
 
-			if (!ValidateAddToBankAmount(-amount, out double newBank, out ChangeBankResult changeBankResult))
+			if (!ValidateBankChangeAmount(-amount, out double newBank, out ChangeBankResult changeBankResult))
 			{
 				switch (changeBankResult)
 				{
 					case ChangeBankResult.INVALID:
 					{
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
+						return false;
 					}
 					case ChangeBankResult.FULL:
 					{
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
+						return false;
 					}
 				}
 			}
@@ -309,12 +309,21 @@ namespace DOL.GS
 			player.AddMoney(amount);
 			InventoryLogging.LogInventoryAction($"(GUILD;{Name})", player, eInventoryActionType.Other, amount);
 			player.SaveIntoDatabase();
-			return;
+			return true;
 		}
 
 		public bool AddToBank(long amount, bool save)
 		{
-			if (!ValidateAddToBankAmount(amount, out double newBank, out _))
+			if (amount <= 0 || !ValidateBankChangeAmount(amount, out double newBank, out _))
+				return false;
+
+			ChangeBank(newBank, save);
+			return true;
+		}
+
+		public bool RemoveFromBank(long amount, bool save)
+		{
+			if (amount <= 0 || !ValidateBankChangeAmount(-amount, out double newBank, out _))
 				return false;
 
 			ChangeBank(newBank, save);
@@ -325,6 +334,9 @@ namespace DOL.GS
 		{
 			// `newBank` should have been validated by `ValidateChangeBankAmount`.
 			m_DBguild.Bank = newBank;
+
+			if (save)
+				SaveIntoDatabase();
 		}
 
 		/// <summary>

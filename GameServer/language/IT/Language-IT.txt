@@ -703,10 +703,6 @@ Scripts.Players.Boot.NoHouseError:				Non possiedi una casa!
 Scripts.Players.Boot.NoOneOnline:				Nessuno con quel nome e' online per essere espulso!
 Scripts.Players.Boot.YouRemoved:				Sei stato espulso dalla casa da {0}!
 
-# /Bountyrent
-Scripts.Players.Bountyrent.InHouseError:		Devi essere nella tua casa per usare questo comando!
-Scripts.Players.Bountyrent.NoHouseError:		Non possiedi una casa!
-
 # /Broadcast
 Scripts.Players.Broadcast.Message:				[Broadcast] {0}: {1}
 Scripts.Players.Broadcast.NoHere:				Non puoi inviare messaggi broadcast qui.

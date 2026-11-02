@@ -80,11 +80,6 @@ Scripts.Players.Boot.NoHouseError:			Vous ne possédez pas de maison !
 Scripts.Players.Boot.NoOneOnline:			Aucun joueur portant ce nom n'est en ligne !
 Scripts.Players.Boot.YouRemoved:			Vous avez été éjecté(e) de la maison par {0} !
 
-# /Bountyrent
-Scripts.Players.Bountyrent.InHouseError:	Vous devez être dans votre maison pour utiliser cette commande !
-Scripts.Players.Bountyrent.NoHouseError:	Vous ne possédez pas de maison !
-
-
 # /Broadcast
 Scripts.Players.Broadcast.Message:			[Broadcast] {0}: {1}
 Scripts.Players.Broadcast.NoHere:			Vous ne pouvez pas diffuser dans le canal régional ici.
