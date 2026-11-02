@@ -44,7 +44,7 @@ namespace DOL.GS
                 return;
             if (target.IsAlive == false)
                 return;
-            GameLiving attacker = Owner as GameLiving;
+            GameLiving attacker = Owner;
             if (attacker == null)
                 return;
             if (attacker.ObjectState != GameObject.eObjectState.Active)
@@ -89,14 +89,17 @@ namespace DOL.GS
 
         public override bool HasPositiveEffect => false;
 
+        // The victim may be a monster, which has no client to take a language from.
+        private string Language => OwnerPlayer?.Client?.Account?.Language ?? LanguageMgr.DefaultLanguage;
+
         public override void OnStartEffect()
         {
             Owner.DebuffCategory[eProperty.FumbleChance] += VALUE;
 
             // Message: "{0} flings a cloud of dirt in your eyes!"
-            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectStart", _attacker.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(Language, "Effects.DirtyTricks.EffectStart", _attacker.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             // Message: "{0} throws dirt in {1}'s eyes!"
-            Message.SystemToArea(Owner, LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.AreaEffectStart",  _attacker.GetName(0, true), Owner.GetName(0, true)), eChatType.CT_System, [_attacker, Owner]);
+            Message.SystemToArea(Owner, LanguageMgr.GetTranslation(Language, "Effects.DirtyTricks.AreaEffectStart",  _attacker.GetName(0, true), Owner.GetName(0, true)), eChatType.CT_System, [_attacker, Owner]);
 
         }
 
@@ -105,9 +108,9 @@ namespace DOL.GS
             Owner.DebuffCategory[eProperty.FumbleChance] -= VALUE;
 
             // Message: "You can see clearly again."
-            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectCancel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(Language, "Effects.DirtyTricks.EffectCancel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             // Message: "{0} can see clearly again."
-            Message.SystemToArea(Owner, LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.AreaEffectCancel", Owner.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
+            Message.SystemToArea(Owner, LanguageMgr.GetTranslation(Language, "Effects.DirtyTricks.AreaEffectCancel", Owner.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
         }
     }
 }
