@@ -69,7 +69,8 @@ namespace DOL.GS.Tests
             Assert.That(RsaKeyTransport.RecoverRc4Key(body), Is.Null);
         }
 
-        // TCP, UDP-over-TCP and UDP sends all check `EncryptsOutbound`: this connection's state, not just the version.
+        // TCP, UDP-over-TCP and UDP sends all go through `client.Encryption`: chosen by version and setting, then this
+        // connection's state.
         [TestCase(GameClient.eClientVersion.Version1130, true, eEncryptionState.PseudoRC4Encrypted, true)]
         [TestCase(GameClient.eClientVersion.Version1130, true, eEncryptionState.RSAEncrypted, false)]
         [TestCase(GameClient.eClientVersion.Version1130, true, eEncryptionState.NotEncrypted, false)]
@@ -81,7 +82,7 @@ namespace DOL.GS.Tests
             GameClient client = CreateClient(version, cryptoOn);
             client.PacketProcessor.Encoding.EncryptionState = state;
 
-            Assert.That(client.PacketProcessor.EncryptsOutbound, Is.EqualTo(expected));
+            Assert.That(EncryptsOutbound(client), Is.EqualTo(expected));
         }
 
         // The property is read at startup. Turning it off later must not stop encrypting a connection that uses RC4:
@@ -90,14 +91,12 @@ namespace DOL.GS.Tests
         public void EncryptsOutbound_PropertyTurnedOffMidSession_KeepsEncrypting()
         {
             Properties.CLIENT_ENABLE_ENCRYPTION_RSA = true;
-            GameClient client = new(null) { Version = GameClient.eClientVersion.Version1130 };
-            client.PacketProcessor = new PacketProcessor(client);
-            client.UsesRsaKeyTransport = RsaKeyTransport.AppliesTo(client.Version); // What the version reply does.
+            GameClient client = CreateClient(GameClient.eClientVersion.Version1130, RsaKeyTransport.Enabled);
             client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.PseudoRC4Encrypted;
 
             Properties.CLIENT_ENABLE_ENCRYPTION_RSA = false;
 
-            Assert.That(client.PacketProcessor.EncryptsOutbound, Is.True);
+            Assert.That(EncryptsOutbound(client), Is.True);
             Assert.That(RsaKeyTransport.AppliesTo(GameClient.eClientVersion.Version1130), Is.True, "a new connection after the change");
         }
 
@@ -115,7 +114,7 @@ namespace DOL.GS.Tests
             Receive(client, packet);
 
             Assert.That(client.PacketProcessor.Encoding.EncryptionState, Is.EqualTo(eEncryptionState.PseudoRC4Encrypted));
-            Assert.That(client.PacketProcessor.EncryptsOutbound, Is.True);
+            Assert.That(EncryptsOutbound(client), Is.True);
         }
 
         [Test]
@@ -131,7 +130,7 @@ namespace DOL.GS.Tests
             Receive(client, packet);
 
             Assert.That(client.PacketProcessor.Encoding.EncryptionState, Is.EqualTo(eEncryptionState.NotEncrypted));
-            Assert.That(client.PacketProcessor.EncryptsOutbound, Is.False);
+            Assert.That(EncryptsOutbound(client), Is.False);
         }
 
         [TearDown]
@@ -145,8 +144,27 @@ namespace DOL.GS.Tests
         {
             GameClient client = new(null) { Version = version };
             client.PacketProcessor = new PacketProcessor(client);
-            client.UsesRsaKeyTransport = RsaKeyTransport.AppliesTo(cryptoOn, version); // What the version reply does.
+            client.PacketProcessor.Encoding.SBox = ScheduleKey(RandomNumberGenerator.GetBytes(RsaKeyTransport.Rc4KeyLength));
+
+            // What the version reply does.
+            if (RsaKeyTransport.AppliesTo(cryptoOn, version))
+                client.Encryption = RsaKeyTransport.Instance;
+
             return client;
+        }
+
+        // What every send path does with a packet: [size][code][payload].
+        private static bool EncryptsOutbound(GameClient client)
+        {
+            byte[] packet = new byte[2 + 3 + 21];
+            packet[1] = 21;
+
+            for (int i = 2; i < packet.Length; i++)
+                packet[i] = (byte) (i * 13 + 5);
+
+            byte[] sent = (byte[]) packet.Clone();
+            client.Encryption.EncryptOutbound(client, sent, 0, false);
+            return !sent.AsSpan().SequenceEqual(packet);
         }
 
         // What `GameClient.OnReceive` does once the version is known.

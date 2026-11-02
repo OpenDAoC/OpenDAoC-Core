@@ -12,10 +12,13 @@ namespace DOL.GS.PacketHandler
     // RSA key transport for 1.127 and 1.130 clients. The client generates a 256-byte RC4 key, encrypts it under the server's
     // public key and sends it in chunks: [00][len][RSA block] per chunk, each block the modulus size (one byte short
     // when its top byte is 0). Each block is raw RSA then OAEP with SHA-256, label "mythic" and a leading 0x01 where
-    // RFC 8017 has 0x00. The plaintext is [12-byte header][256-byte RC4 key][2-byte trailer].
-    public static class RsaKeyTransport
+    // RFC 8017 has 0x00. The plaintext is [12-byte header][256-byte RC4 key][2-byte trailer]. After the key transport,
+    // the client encrypts its TCP packets, and expects every server packet (TCP and UDP) encrypted, with that RC4 key.
+    public sealed class RsaKeyTransport : IClientEncryption
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+        public static readonly RsaKeyTransport Instance = new();
 
         private static BigInteger _n, _d;   // raw RSA params for no-padding decrypt
         private static int _k;              // modulus size in bytes, 0 until a key is loaded
@@ -36,6 +39,63 @@ namespace DOL.GS.PacketHandler
 
         public static bool AppliesTo(bool enabled, GameClient.eClientVersion version) =>
             enabled && version is GameClient.eClientVersion.Version1127 or GameClient.eClientVersion.Version1130;
+
+        private RsaKeyTransport() { }
+
+        public bool DecryptInbound(GameClient client, byte[] buffer, int offset, int length)
+        {
+            IPacketEncoding encoding = client.PacketProcessor.Encoding;
+
+            // The version reply sets RSAEncrypted. If the next packet decodes as an RSA key transport (OAEP padding
+            // validation rejects any other content), the session is encrypted. If not, the client may be patched to run
+            // unencrypted: carry on in plaintext and let the checksum decide.
+            if (encoding.EncryptionState is eEncryptionState.RSAEncrypted)
+            {
+                // The chunks are everything after the 2-byte size field. The client's size field under-counts them by
+                // 10 bytes, so take the framed length minus the size field.
+                byte[] sbox = RecoverRc4Key(buffer.AsSpan(offset + 2, length - 2));
+
+                if (sbox != null)
+                {
+                    encoding.SBox = sbox;
+                    encoding.EncryptionState = eEncryptionState.PseudoRC4Encrypted;
+
+                    if (log.IsInfoEnabled)
+                        log.Info($"[rsa-rc4] RC4 established for {client.TcpEndpointAddress}");
+
+                    return false;
+                }
+
+                encoding.EncryptionState = eEncryptionState.NotEncrypted;
+
+                if (log.IsInfoEnabled)
+                    log.Info($"[rsa-rc4] no key transport from {client.TcpEndpointAddress}; continuing unencrypted");
+
+                return true;
+            }
+
+            if (encoding.EncryptionState is eEncryptionState.PseudoRC4Encrypted)
+                encoding.DecryptPacket(buffer, offset, false);
+
+            return true;
+        }
+
+        public void EncryptOutbound(GameClient client, byte[] buffer, int offset, bool udp)
+        {
+            IPacketEncoding encoding = client.PacketProcessor.Encoding;
+
+            if (encoding.EncryptionState is eEncryptionState.PseudoRC4Encrypted)
+                encoding.EncryptPacket(buffer, offset, udp);
+        }
+
+        public void LogChecksumFailure(GameClient client)
+        {
+            // A connection that fell back to plaintext: if this was its first packet, it was neither a key transport for
+            // this server's key nor plaintext.
+            if (client.PacketProcessor.Encoding.EncryptionState is eEncryptionState.NotEncrypted && log.IsWarnEnabled)
+                log.Warn($"{client.TcpEndpointAddress} sent no key transport for this server's RSA key. If this was its first " +
+                    "packet, its game.dll most likely embeds a different public key (unmodified, or set up for another server).");
+        }
 
         public static void LoadPrivateKey(string pem)
         {

@@ -37,11 +37,6 @@ namespace DOL.GS.PacketHandler
         public static long SendBufferPoolExhaustedCount => Volatile.Read(ref _sendBufferPoolExhaustedCount);
         public IPacketEncoding Encoding { get; } = new PacketEncoding168();
 
-        // Whether TCP, UDP-over-TCP and UDP packets to this client are encrypted: a client that completed the RSA
-        // key transport on this connection. Older code paths can set the RC4 state for other clients too, but those are
-        // sent plaintext, as before.
-        public bool EncryptsOutbound => _client.UsesRsaKeyTransport && Encoding.EncryptionState is eEncryptionState.PseudoRC4Encrypted;
-
         public PacketProcessor(GameClient client)
         {
             _client = client;
@@ -332,9 +327,7 @@ namespace DOL.GS.PacketHandler
                 if (!ValidatePacketSize(packetBuffer, packetSize))
                     return;
 
-                // Clients that completed the RSA key transport expect RC4-encrypted server packets.
-                if (EncryptsOutbound)
-                    Encoding.EncryptPacket(packetBuffer, 0, false);
+                _client.Encryption.EncryptOutbound(_client, packetBuffer, 0, false);
 
                 if (_sendContext.CurrentArgs == null)
                 {
@@ -434,10 +427,8 @@ namespace DOL.GS.PacketHandler
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position] = packetBuffer[0];
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 1] = packetBuffer[1];
 
-                // Clients that completed the RSA key transport expect RC4-encrypted server packets. The
-                // frame now has TCP layout, so encrypt it as TCP (same as ProcessTcpPacket).
-                if (EncryptsOutbound)
-                    Encoding.EncryptPacket(_sendContext.CurrentArgs.Buffer, _sendContext.Position, false);
+                // The frame now has TCP layout, so encrypt it as TCP (same as ProcessTcpPacket).
+                _client.Encryption.EncryptOutbound(_client, _sendContext.CurrentArgs.Buffer, _sendContext.Position, false);
 
                 _sendContext.Position += packetSize;
             }
@@ -500,10 +491,8 @@ namespace DOL.GS.PacketHandler
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 2] = (byte) (_udpCounter >> 8);
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 3] = (byte) _udpCounter;
 
-                // These clients decrypt every UDP frame (counter, code, payload) once the handshake is done.
-                // They send their own UDP unencrypted.
-                if (EncryptsOutbound)
-                    Encoding.EncryptPacket(_sendContext.CurrentArgs.Buffer, _sendContext.Position, true);
+                // Encrypted clients decrypt every UDP frame (counter, code, payload); they send their own UDP unencrypted.
+                _client.Encryption.EncryptOutbound(_client, _sendContext.CurrentArgs.Buffer, _sendContext.Position, true);
 
                 _sendContext.Position += packetSize;
             }

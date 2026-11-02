@@ -67,7 +67,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				// runs unencrypted. GameClient checks it before normal packet decoding. Decided once per connection.
 				if (RsaKeyTransport.AppliesTo(client.Version))
 				{
-					client.UsesRsaKeyTransport = true;
+					client.Encryption = RsaKeyTransport.Instance;
 					client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.RSAEncrypted;
 				}
 			}

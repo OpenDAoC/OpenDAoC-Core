@@ -64,11 +64,11 @@ namespace DOL.GS.Tests
         // Only the version reply turns it on.
         [TestCase(GameClient.eClientVersion.Version1127)]
         [TestCase(GameClient.eClientVersion.Version1130)]
-        public void UsesRsaKeyTransport_BeforeVersionReply_IsFalse(GameClient.eClientVersion version)
+        public void Encryption_BeforeVersionReply_IsPlaintext(GameClient.eClientVersion version)
         {
             GameClient client = new(null) { Version = version };
 
-            Assert.That(client.UsesRsaKeyTransport, Is.False);
+            Assert.That(client.Encryption, Is.SameAs(NoClientEncryption.Instance));
         }
 
         // Known answers recorded from the encoders before the S-box copy moved to the stack. A key with every byte set
