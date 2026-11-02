@@ -19,7 +19,8 @@ Keep the private PEM on the server and outside source control. Configure
 `client_rsa_private_key_file` to point to it; the default is
 `config/game-rsa-private.pem` relative to the server root. Set
 `client_enable_1130_crypto` to `true` through the usual server-property configuration and
-restart the server. Startup fails if encryption is enabled and the private key cannot be loaded.
+restart the server. Both properties are read at startup only: changing them takes effect at the next
+restart. Startup fails if encryption is enabled and the private key cannot be loaded.
 
 With 1.130 crypto on, the server accepts both kinds of 1.130 client, decided per connection by
 the client's first packet after the version exchange: a valid RSA key transport starts an

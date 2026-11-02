@@ -90,7 +90,7 @@ namespace DOL.GS
         public IPacketLib Out { get; set; }
         public PacketProcessor PacketProcessor { get; set; }
         public eClientVersion Version { get; set; } = eClientVersion.VersionNotChecked;
-        public bool Uses1130Crypto => DOL.GS.PacketHandler.Rsa1130.AppliesTo(Version);
+        public bool Uses1130Crypto { get; set; } // Set once, at the version reply.
         public eClientType ClientType { get; set; } = eClientType.Unknown;
         public eClientAddons ClientAddons { get; set; }
         public string MinorRev { get; set; } = string.Empty;

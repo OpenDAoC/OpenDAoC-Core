@@ -105,7 +105,7 @@ namespace DOL.GS.ServerProperties
 		/// Enable decrypting 1.130 clients that use RSA key transport (requires a server RSA
 		/// private key whose public half is patched into the client; see client_rsa_private_key_file).
 		/// </summary>
-		[ServerProperty("system", "client_enable_1130_crypto", "Enable RSA-OAEP key transport + RC4 handling for 1.130 clients (requires client_rsa_private_key_file)", false)]
+		[ServerProperty("system", "client_enable_1130_crypto", "Enable RSA-OAEP key transport + RC4 handling for 1.130 clients (requires client_rsa_private_key_file; read at startup)", false)]
 		public static bool CLIENT_ENABLE_1130_CRYPTO;
 
 		/// <summary>

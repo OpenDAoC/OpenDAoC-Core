@@ -37,12 +37,9 @@ namespace DOL.GS.PacketHandler
         public static long SendBufferPoolExhaustedCount => Volatile.Read(ref _sendBufferPoolExhaustedCount);
         public IPacketEncoding Encoding { get; } = new PacketEncoding168();
 
-        /// <summary>
-        /// Whether TCP, UDP-over-TCP and UDP packets to this client are encrypted. Decided per connection: the client must
-        /// be a 1.130 client with 1.130 crypto on, and must have completed the RSA key transport on this connection.
-        /// Older code paths can set the RC4 state for other clients too, but only 1.130 clients get their packets
-        /// decrypted (see `GameClient.Uses1130Crypto`). Everyone else is sent plaintext, as before.
-        /// </summary>
+        // Whether TCP, UDP-over-TCP and UDP packets to this client are encrypted: a 1.130 client that completed the RSA
+        // key transport on this connection. Older code paths can set the RC4 state for other clients too, but those are
+        // sent plaintext, as before.
         public bool EncryptsOutbound => _client.Uses1130Crypto && Encoding.EncryptionState is eEncryptionState.PseudoRC4Encrypted;
 
         public PacketProcessor(GameClient client)

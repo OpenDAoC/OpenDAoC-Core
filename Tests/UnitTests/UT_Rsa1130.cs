@@ -71,6 +71,23 @@ namespace DOL.GS.Tests
             Assert.That(client.PacketProcessor.EncryptsOutbound, Is.EqualTo(expected));
         }
 
+        // The property is read at startup. Turning it off later must not stop encrypting a connection that uses RC4:
+        // the client would read plaintext as ciphertext and drop.
+        [Test]
+        public void EncryptsOutbound_PropertyTurnedOffMidSession_KeepsEncrypting()
+        {
+            Properties.CLIENT_ENABLE_1130_CRYPTO = true;
+            GameClient client = new(null) { Version = GameClient.eClientVersion.Version1130 };
+            client.PacketProcessor = new PacketProcessor(client);
+            client.Uses1130Crypto = Rsa1130.AppliesTo(client.Version); // What the version reply does.
+            client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.PseudoRC4Encrypted;
+
+            Properties.CLIENT_ENABLE_1130_CRYPTO = false;
+
+            Assert.That(client.PacketProcessor.EncryptsOutbound, Is.True);
+            Assert.That(Rsa1130.AppliesTo(GameClient.eClientVersion.Version1130), Is.True, "a new connection after the change");
+        }
+
         [Test]
         public void FirstPacketAfterVersionReply_KeyTransport_EncryptsThisConnection()
         {
@@ -110,11 +127,12 @@ namespace DOL.GS.Tests
             Properties.CLIENT_ENABLE_1130_CRYPTO = false;
         }
 
+        // `cryptoOn` stands for the server's setting at startup.
         private static GameClient CreateClient(GameClient.eClientVersion version, bool cryptoOn)
         {
-            Properties.CLIENT_ENABLE_1130_CRYPTO = cryptoOn;
             GameClient client = new(null) { Version = version };
             client.PacketProcessor = new PacketProcessor(client);
+            client.Uses1130Crypto = Rsa1130.AppliesTo(cryptoOn, version); // What the version reply does.
             return client;
         }
 

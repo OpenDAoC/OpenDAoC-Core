@@ -61,14 +61,13 @@ namespace DOL.GS.Tests
             }
         }
 
-        // No RSA key is loaded here, so `Rsa1130.Enabled` is false, as on a server with 1.130 crypto turned off.
+        // Only the version reply turns it on.
         [TestCase(GameClient.eClientVersion.Version1127)]
         [TestCase(GameClient.eClientVersion.Version1130)]
-        public void Uses1130Crypto_CryptoDisabled_IsFalse(GameClient.eClientVersion version)
+        public void Uses1130Crypto_BeforeVersionReply_IsFalse(GameClient.eClientVersion version)
         {
             GameClient client = new(null) { Version = version };
 
-            Assert.That(Rsa1130.Enabled, Is.False);
             Assert.That(client.Uses1130Crypto, Is.False);
         }
 

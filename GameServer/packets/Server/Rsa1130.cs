@@ -8,23 +8,10 @@ using DOL.Logging;
 
 namespace DOL.GS.PacketHandler
 {
-    /// <summary>
-    /// RSA key transport for 1.130 clients (game.dll).
-    ///
-    /// A 1.130 client generates a random 256-byte RC4 key, RSA-encrypts it under the server's
-    /// public key using a Mythic-customised OAEP, and sends it chunked. The server holds the
-    /// matching private key, decrypts, recovers the 256-byte key and feeds it to the per-packet
-    /// stream cipher (PacketEncoding1110). Pure managed .NET (BigInteger + SHA-256), so it runs on
-    /// Linux with no native dependency.
-    ///
-    /// Reverse-engineered + verified against real captured key-transports:
-    /// - On-wire packet: [u16 BE size][ then [00][len][RSA block] xN ]; each RSA block is the
-    ///   modulus size (occasionally one byte short when the top byte is 0; left-pad before decrypt).
-    /// - Each block: raw RSA (c^d mod n) then Mythic OAEP decode:
-    ///     hash/MGF = SHA-256, label = "mythic" (lHash = SHA-256("mythic")), leading byte 0x01
-    ///     (RFC 8017 uses 0x00; this is the one deviation).
-    /// - Concatenated plaintext (270 bytes): [12-byte header][256-byte RC4 key][2-byte trailer].
-    /// </summary>
+    // RSA key transport for 1.130 clients. The client generates a 256-byte RC4 key, encrypts it under the server's
+    // public key and sends it in chunks: [00][len][RSA block] per chunk, each block the modulus size (one byte short
+    // when its top byte is 0). Each block is raw RSA then OAEP with SHA-256, label "mythic" and a leading 0x01 where
+    // RFC 8017 has 0x00. The plaintext is [12-byte header][256-byte RC4 key][2-byte trailer].
     public static class Rsa1130
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
@@ -37,16 +24,15 @@ namespace DOL.GS.PacketHandler
         private static readonly byte[] Label = System.Text.Encoding.ASCII.GetBytes("mythic");
         private static readonly byte[] LHash = SHA256.HashData(System.Text.Encoding.ASCII.GetBytes("mythic"));
 
-        /// <summary>Offset + length of the RC4 key inside the recovered key-transport plaintext.</summary>
+        // Offset and length of the RC4 key in the key transport plaintext.
         public const int Rc4KeyOffset = 12;
         public const int Rc4KeyLength = 256;
 
-        public static bool Enabled => _privateKey != null && Properties.CLIENT_ENABLE_1130_CRYPTO;
+        // `Init` loads the key only if `client_enable_1130_crypto` is on at startup, so changing the property later
+        // has no effect until a restart.
+        public static bool Enabled => _privateKey != null;
 
-        /// <summary>
-        /// Whether a client of this version uses 1.130 crypto on this server. Receiving and sending both
-        /// check this, so a client is encrypted both ways or not at all.
-        /// </summary>
+        // Checked once per connection, at the version reply (`CryptKeyRequestHandler`).
         public static bool AppliesTo(GameClient.eClientVersion version) => AppliesTo(Enabled, version);
 
         public static bool AppliesTo(bool enabled, GameClient.eClientVersion version) =>
@@ -54,7 +40,6 @@ namespace DOL.GS.PacketHandler
 
         public static int ModulusBytes => _k;
 
-        /// <summary>Loads the game RSA private key from PEM text. `Init` reads it from `client_rsa_private_key_file`.</summary>
         public static void LoadPrivateKey(string pem)
         {
             var rsa = RSA.Create();
@@ -67,7 +52,6 @@ namespace DOL.GS.PacketHandler
             _privateKey = rsa;
         }
 
-        /// <summary>Init hook for GameServer.Start(). Loads the game RSA private key if 1.130 crypto is on.</summary>
         public static bool Init()
         {
             if (!Properties.CLIENT_ENABLE_1130_CRYPTO)
@@ -100,12 +84,8 @@ namespace DOL.GS.PacketHandler
             }
         }
 
-        /// <summary>
-        /// Decrypt a full key-transport packet payload (the GSPacketIn body, framed as
-        /// [00][len][RSA block] chunks after the server's 3-byte header has been stripped), and
-        /// return the 256-byte RC4 key, or null on failure.
-        /// </summary>
-        /// <param name="body">The chunk stream: repeated [00][len][ciphertext].</param>
+        // `body` is the packet after its size field: [00][len][RSA block] chunks. Returns the scheduled S-box, or null if
+        // this isn't a key transport for this server's key.
         public static byte[] RecoverRc4Key(ReadOnlySpan<byte> body)
         {
             if (_privateKey == null)
@@ -132,7 +112,6 @@ namespace DOL.GS.PacketHandler
             return GenerateSBox(key);
         }
 
-        /// <summary>RC4 key schedule: 256-byte S-box from the key, as in PacketEncoding1110.</summary>
         private static byte[] GenerateSBox(byte[] key)
         {
             var sbox = new byte[256];
@@ -145,7 +124,6 @@ namespace DOL.GS.PacketHandler
             return sbox;
         }
 
-        /// <summary>Reassemble + decrypt the [00][len][block] chunks -> concatenated plaintext.</summary>
         public static byte[] DecryptKeyTransport(ReadOnlySpan<byte> body)
         {
             using var ms = new MemoryStream();
@@ -182,7 +160,7 @@ namespace DOL.GS.PacketHandler
             return ms.ToArray();
         }
 
-        /// <summary>Raw RSA: m = c^d mod n, returned left-padded to the modulus size (k bytes).</summary>
+        // m = c^d mod n, left-padded to the modulus size.
         private static byte[] RawRsaDecrypt(ReadOnlySpan<byte> ct)
         {
             BigInteger c = BigIntUnsigned(ct);
@@ -190,10 +168,7 @@ namespace DOL.GS.PacketHandler
             return ToFixed(m, _k);
         }
 
-        /// <summary>
-        /// Mythic OAEP decode of a k-byte block: SHA-256, label "mythic", leading byte 0x01.
-        /// Returns the message, or null if padding is invalid.
-        /// </summary>
+        // Returns the message, or null if the padding is invalid.
         private static byte[] MythicOaepDecode(byte[] block)
         {
             if (block.Length != _k || block[0] != 0x01)
@@ -222,7 +197,6 @@ namespace DOL.GS.PacketHandler
             return msg;
         }
 
-        /// <summary>MGF1 with SHA-256.</summary>
         private static byte[] Mgf1(byte[] seed, int length)
         {
             var outb = new byte[length];
