@@ -394,24 +394,10 @@ namespace DOL.Database
 				// ghost item
 				if (string.IsNullOrEmpty(m_utemplate_id) && string.IsNullOrEmpty(m_itemplate_id))
 					return false;
-				
-				// Items with reuse timers will ALWAYS be saved.
-				return ( base.Dirty || Template.CanUseEvery > 0);
+
+				return base.Dirty;
 			}
-			set
-			{
-				/* Useless check, already doing these in getter accessor
-				// null ownerid items are never saved
-				if (string.IsNullOrEmpty(m_ownerID))
-					base.Dirty =  false;
-				
-				// ghost item
-				if (string.IsNullOrEmpty(m_utemplate_id) && string.IsNullOrEmpty(m_itemplate_id))
-					base.Dirty = false;
-				else
-				*/
-				base.Dirty = value;
-			}
+			set => base.Dirty = value;
 		}
 		
 		#region ItemTemplate wrapper fields
