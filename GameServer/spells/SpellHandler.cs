@@ -957,7 +957,8 @@ namespace DOL.GS.Spells
 							break;
 
 						// Pet spells (shade) don't require the target to be in front.
-						if ((m_spell.SpellType is not eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180, Caster.TargetInViewAlwaysTrueMinRange)) ||
+						// Use 64 instead of the default 32 for the "always in front" range to allow for a little more leniency.
+						if ((m_spell.SpellType is not eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180, 64)) ||
 							(m_caster is GamePlayer playerCaster && !playerCaster.CanDetect(Target)))
 						{
 							if (verbose)

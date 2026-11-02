@@ -667,8 +667,6 @@ namespace DOL.GS
 			set { }
 		}
 
-		public virtual int TargetInViewAlwaysTrueMinRange => 0;
-
 		/// <summary>
 		/// Gets or sets the GroundTargetObject's visibility
 		/// </summary>

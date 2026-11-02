@@ -118,29 +118,17 @@ namespace DOL.GS
         /// <summary>
         /// Can this living accept any item regardless of tradable or droppable?
         /// </summary>
-        public override bool CanTradeAnyItem { get { return Client.Account.PrivLevel > (int)ePrivLevel.Player; }}
+        public override bool CanTradeAnyItem => (ePrivLevel) Client.Account.PrivLevel > ePrivLevel.Player;
 
         /// <summary>
-        /// Gets or sets the targetObject's visibility
+        /// Gets or sets the targetObject's visibility (LoS)
         /// </summary>
-        public override bool TargetInView
-        {
-            get
-            {
-                if (GetDistanceTo(TargetObject) <= TargetInViewAlwaysTrueMinRange)
-                    return true;
-
-                return m_targetInView;
-            }
-            set => m_targetInView = value;
-        }
-
-        public override int TargetInViewAlwaysTrueMinRange => (TargetObject is GamePlayer targetPlayer && targetPlayer.IsMoving) ? 100 : 64;
+        public override bool TargetInView { get; set; }
 
         public override IRandomProvider RandomProvider { get; } = RandomProviderFactory.GetDeckRandomProvider();
 
         /// <summary>
-        /// Gets or sets the GroundTargetObject's visibility
+        /// Gets or sets the GroundTargetObject's visibility (LoS)
         /// </summary>
         public override bool GroundTargetInView
         {
