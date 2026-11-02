@@ -756,122 +756,109 @@ namespace DOL.GS
 			return attackComponent.AttackerTracker.GetInterruptRemainingDuration();
 		}
 
-		/// <summary>
-		/// Check if we can make a proc on a weapon go off.  Weapon Procs
-		/// </summary>
-		public virtual void CheckWeaponMagicalEffect(AttackData ad)
+		public void CheckWeaponMagicalEffect(AttackData ad)
 		{
 			DbInventoryItem weapon = ad.Weapon;
 
-			if (weapon == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+			if (weapon == null || ad.AttackResult is not (eAttackResult.HitStyle or eAttackResult.HitUnstyled))
 				return;
 
-			// Proc chance is 2.5% per SPD, i.e. 10% for a 3.5 SPD weapon. - Tolakram, changed average speed to 3.5
+			// Proc chance is 2.5% per SPD, i.e. 10% for a 3.5 SPD weapon.
+			double chance = (weapon.ProcChance > 0 ? weapon.ProcChance : 10) * (weapon.SPD_ABS / 35.0) * 0.01;
+			TryWeaponProc(weapon, ad, weapon.ProcSpellID, chance);
+			TryWeaponProc(weapon, ad, weapon.ProcSpellID1, chance);
 
-            double procChance = (weapon.ProcChance > 0 ? weapon.ProcChance : 10) * (weapon.SPD_ABS / 35.0) * 0.01;
+			TryWeaponPoison(weapon, ad, weapon.PoisonSpellID);
+		}
 
-            //Error protection and log for Item Proc's
-            Spell procSpell = null;
-            Spell procSpell1 = null;
-            if (this is GamePlayer)
-            {
-                SpellLine line = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-                if (line != null)
-                {
-                    procSpell = SkillBase.FindSpell(weapon.ProcSpellID, line);
-                    procSpell1 = SkillBase.FindSpell(weapon.ProcSpellID1, line);
+		private void TryWeaponProc(DbInventoryItem weapon, AttackData ad, int spellID, double procChance)
+		{
+			if (spellID == 0 || !RandomProvider.Chance(RandomContextFactory.OffensiveProcChance(), procChance))
+				return;
 
-                    if (procSpell == null && weapon.ProcSpellID != 0)
-                    {
-                        log.ErrorFormat("- Proc ID {0} Not Found on item: {1} ", weapon.ProcSpellID, weapon.Template.Id_nb);
-                    }
-                    if (procSpell1 == null && weapon.ProcSpellID1 != 0)
-                    {
-                        log.ErrorFormat("- Proc1 ID {0} Not Found on item: {1} ", weapon.ProcSpellID1, weapon.Template.Id_nb);
-                    }
-                }
-            }
+			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+			if (spellLine == null)
+				return;
 
-            // Proc #1
-            if (procSpell != null && RandomProvider.Chance(RandomContextFactory.OffensiveProcChance(), procChance))
-                StartWeaponMagicalEffect(weapon, ad, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects), weapon.ProcSpellID, false);
-
-            // Proc #2
-            if (procSpell1 != null && RandomProvider.Chance(RandomContextFactory.OffensiveProcChance(), procChance))
-                StartWeaponMagicalEffect(weapon, ad, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects), weapon.ProcSpellID1, false);
-
-			// Poison
-
-			if (weapon.PoisonSpellID != 0)
+			Spell spell = SkillBase.FindSpell(spellID, spellLine);
+			if (spell == null)
 			{
-				if (ad.Target.EffectList.GetOfType<RemedyEffect>() != null)
+				if (log.IsWarnEnabled)
+					log.Warn($"Spell ID {spellID} not found on item: {weapon.Template.Id_nb}");
+
+				return;
+			}
+
+			StartWeaponMagicalEffect(weapon, ad, spellLine, spell, false);
+		}
+
+		private void TryWeaponPoison(DbInventoryItem weapon, AttackData ad, int spellID)
+		{
+			if (spellID == 0)
+				return;
+
+			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
+			if (spellLine == null)
+				return;
+
+			Spell spell = SkillBase.FindSpell(spellID, spellLine);
+			if (spell == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn($"Poison ID {spellID} not found on item: {weapon.Template.Id_nb}");
+
+				return;
+			}
+
+			if (ad.Target.EffectList.GetOfType<RemedyEffect>() != null)
+			{
+				if (this is GamePlayer player)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.CheckWeaponMagicalEffect.Protected"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				return;
+			}
+
+			StartWeaponMagicalEffect(weapon, ad, spellLine, spell, true);
+
+			// Spymaster Enduring Poison.
+			if (ad.Attacker is GamePlayer playerAttacker && playerAttacker.GetSpellLine("Spymaster") != null && Util.Chance(15))
+				return;
+
+			weapon.PoisonCharges--;
+			if (weapon.PoisonCharges <= 0)
+			{
+				weapon.PoisonMaxCharges = 0;
+				weapon.PoisonSpellID = 0;
+			}
+		}
+
+		private void StartWeaponMagicalEffect(DbInventoryItem weapon, AttackData ad, SpellLine spellLine, Spell spell, bool ignoreLevel)
+		{
+			if (!ignoreLevel)
+			{
+				int requiredLevel = weapon.Template.LevelRequirement > 0 ? weapon.Template.LevelRequirement : Math.Min(50, weapon.Level);
+
+				if (requiredLevel > Level)
 				{
-					if (this is GamePlayer)
-						(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.CheckWeaponMagicalEffect.Protected"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					if (this is GamePlayer player)
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+
 					return;
 				}
-
-				StartWeaponMagicalEffect(weapon, ad, SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons), weapon.PoisonSpellID, true);
-
-				// Spymaster Enduring Poison
-
-				if (ad.Attacker is GamePlayer)
-				{
-					GamePlayer PlayerAttacker = ad.Attacker as GamePlayer;
-					if (PlayerAttacker.GetSpellLine("Spymaster") != null)
-						if (Util.Chance((double)(15 * 0.0001))) return;
-				}
-				weapon.PoisonCharges--;
-				if (weapon.PoisonCharges <= 0) { weapon.PoisonMaxCharges = 0; weapon.PoisonSpellID = 0; }
 			}
-		}
 
-		/// <summary>
-		/// Make a proc or poison on the weapon go off.
-		/// Will assume spell is in GlobalSpellsLines.Item_Effects even if it's not and use the weapons LevelRequirement
-		/// Item_Effects must be used here because various spell handlers recognize this line to alter variance and other spell parameters
-		/// </summary>
-		protected virtual void StartWeaponMagicalEffect(DbInventoryItem weapon, AttackData ad, SpellLine spellLine, int spellID, bool ignoreLevel)
-		{
-			if (weapon == null || ad == null)
-				return;
+			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(ad.Attacker, spell, spellLine);
 
-			if (spellLine == null)
-				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-
-			if (spellLine != null)
+			if (spellHandler != null)
 			{
-				Spell procSpell = SkillBase.FindSpell(spellID, spellLine);
+				bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
 
-				if (procSpell != null)
-				{
-					if (ignoreLevel == false)
-					{
-						int requiredLevel = weapon.Template.LevelRequirement > 0 ? weapon.Template.LevelRequirement : Math.Min(50, weapon.Level);
-
-						if (requiredLevel > Level)
-						{
-							if (this is GamePlayer player)
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-
-							return;
-						}
-					}
-
-					ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(ad.Attacker, procSpell, spellLine);
-
-					if (spellHandler != null)
-					{
-						bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
-
-						if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, procSpell.CalculateEffectiveRange(ad.Attacker)))
-							spellHandler.StartSpell(ad.Target, weapon);
-					}
-				}
+				if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, spell.CalculateEffectiveRange(ad.Attacker)))
+					spellHandler.StartSpell(ad.Target, weapon);
 			}
 		}
 
-		public virtual void OnArmorHit(AttackData ad, DbInventoryItem armor)
+		public void OnArmorHit(AttackData ad, DbInventoryItem armor)
 		{
 			if (ad == null || armor == null)
 				return;
@@ -880,7 +867,7 @@ namespace DOL.GS
 			CheckArmorMagicalEffect(ad, armor);
 		}
 
-		protected virtual void CheckArmorMagicalEffect(AttackData ad, DbInventoryItem armor)
+		private void CheckArmorMagicalEffect(AttackData ad, DbInventoryItem armor)
 		{
 			int requiredLevel = armor.Template.LevelRequirement > 0 ? armor.Template.LevelRequirement : Math.Min(50, armor.Level);
 
@@ -888,23 +875,33 @@ namespace DOL.GS
 				return;
 
 			int chance = armor.ProcChance > 0 ? armor.ProcChance : 10;
-			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-
-			if (armor.ProcSpellID != 0 && RandomProvider.Chance(RandomContextFactory.DefensiveProcChance(), chance))
-				StartArmorMagicalEffect(armor, ad.Attacker, SkillBase.FindSpell(armor.ProcSpellID, spellLine), spellLine);
-
-			if (armor.ProcSpellID1 != 0 && RandomProvider.Chance(RandomContextFactory.DefensiveProcChance(), chance))
-				StartArmorMagicalEffect(armor, ad.Attacker, SkillBase.FindSpell(armor.ProcSpellID1, spellLine), spellLine);
+			TryArmorProc(armor, ad, armor.ProcSpellID, chance);
+			TryArmorProc(armor, ad, armor.ProcSpellID1, chance);
 		}
 
-		protected virtual void StartArmorMagicalEffect(DbInventoryItem armor, GameLiving attacker, Spell spell, SpellLine spellLine)
+		private void TryArmorProc(DbInventoryItem armor, AttackData ad, int spellID, int chance)
 		{
-			if (armor == null || attacker == null || spell == null)
+			if (spellID == 0 || !RandomProvider.Chance(RandomContextFactory.DefensiveProcChance(), chance))
 				return;
 
+			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
 			if (spellLine == null)
-				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+				return;
 
+			Spell spell = SkillBase.FindSpell(spellID, spellLine);
+			if (spell == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn($"Spell ID {spellID} not found on item: {armor.Template.Id_nb}");
+
+				return;
+			}
+
+			StartArmorMagicalEffect(armor, ad.Attacker, spell, spellLine);
+		}
+
+		private void StartArmorMagicalEffect(DbInventoryItem armor, GameLiving attacker, Spell spell, SpellLine spellLine)
+		{
 			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, spellLine);
 			spellHandler?.StartSpell(attacker, armor);
 		}
