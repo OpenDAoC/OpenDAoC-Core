@@ -102,16 +102,16 @@ namespace DOL.GS.ServerProperties
 		public static bool CLIENT_ENABLE_ENCRYPTION_RC4;
 
 		/// <summary>
-		/// Enable decrypting 1.130 clients that use RSA key transport (requires a server RSA
+		/// Enable decrypting 1.127 and 1.130 clients that use RSA key transport (requires a server RSA
 		/// private key whose public half is patched into the client; see client_rsa_private_key_file).
 		/// </summary>
-		[ServerProperty("system", "client_enable_1130_crypto", "Enable RSA-OAEP key transport + RC4 handling for 1.130 clients (requires client_rsa_private_key_file; read at startup)", false)]
-		public static bool CLIENT_ENABLE_1130_CRYPTO;
+		[ServerProperty("system", "client_enable_encryption_rsa", "Enable RSA-OAEP key transport + RC4 handling for 1.127 and 1.130 clients (requires client_rsa_private_key_file; read at startup)", false)]
+		public static bool CLIENT_ENABLE_ENCRYPTION_RSA;
 
 		/// <summary>
-		/// Path (relative to the server root) to the PEM RSA private key used to decrypt 1.130+ key transport.
+		/// Path (relative to the server root) to the PEM RSA private key used to decrypt the RSA key transport.
 		/// </summary>
-		[ServerProperty("system", "client_rsa_private_key_file", "PEM RSA private key file for 1.130+ key-transport decryption, relative to server root", "config/game-rsa-private.pem")]
+		[ServerProperty("system", "client_rsa_private_key_file", "PEM RSA private key file for RSA key-transport decryption, relative to server root", "config/game-rsa-private.pem")]
 		public static string CLIENT_RSA_PRIVATE_KEY_FILE;
 
 		/// <summary>

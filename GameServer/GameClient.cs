@@ -90,7 +90,7 @@ namespace DOL.GS
         public IPacketLib Out { get; set; }
         public PacketProcessor PacketProcessor { get; set; }
         public eClientVersion Version { get; set; } = eClientVersion.VersionNotChecked;
-        public bool Uses1130Crypto { get; set; } // Set once, at the version reply.
+        public bool UsesRsaKeyTransport { get; set; } // Set once, at the version reply.
         public eClientType ClientType { get; set; } = eClientType.Unknown;
         public eClientAddons ClientAddons { get; set; }
         public string MinorRev { get; set; } = string.Empty;
@@ -373,9 +373,9 @@ namespace DOL.GS
 
                 bool notKeyTransport = false;
 
-                // A 1.130 client sends its version in plaintext, then an RSA key transport.
+                // A 1.127 or 1.130 client sends its version in plaintext, then an RSA key transport.
                 // After key transport, it encrypts packets with RC4.
-                if (Uses1130Crypto)
+                if (UsesRsaKeyTransport)
                 {
                     // The version reply sets RSAEncrypted. If the next frame decodes as an RSA key transport
                     // (OAEP padding validation rejects any other content), the session is encrypted. If not, the
@@ -385,14 +385,14 @@ namespace DOL.GS
                     {
                         // The chunks are everything after the 2-byte size field. The client's size field under-counts
                         // them by 10 bytes, so take the framed length (size field + HDR_SIZE) minus the size field.
-                        byte[] rc4Key = Rsa1130.RecoverRc4Key(new ReadOnlySpan<byte>(buffer, currentOffset + 2, packetLength - 2));
+                        byte[] rc4Key = RsaKeyTransport.RecoverRc4Key(new ReadOnlySpan<byte>(buffer, currentOffset + 2, packetLength - 2));
 
                         if (rc4Key != null)
                         {
                             enc.SBox = rc4Key;
                             enc.EncryptionState = eEncryptionState.PseudoRC4Encrypted;
                             if (log.IsInfoEnabled)
-                                log.Info($"[1130-crypto] RC4 established for {TcpEndpointAddress}");
+                                log.Info($"[rsa-rc4] RC4 established for {TcpEndpointAddress}");
                             currentOffset += packetLength;
                             continue;   // consumed; do not checksum/handle
                         }
@@ -401,7 +401,7 @@ namespace DOL.GS
                         notKeyTransport = true;
 
                         if (log.IsInfoEnabled)
-                            log.Info($"[1130-crypto] no key transport from {TcpEndpointAddress}; continuing unencrypted");
+                            log.Info($"[rsa-rc4] no key transport from {TcpEndpointAddress}; continuing unencrypted");
                     }
 
                     if (enc.EncryptionState == eEncryptionState.PseudoRC4Encrypted)
@@ -421,11 +421,11 @@ namespace DOL.GS
                     {
                         log.Warn($"Bad TCP packet checksum (packet:0x{pakCheck:X4} calculated:0x{calcCheck:X4}) -> disconnecting\nclient: {this}\ncurOffset={currentOffset}; packetLength={packetLength}");
 
-                        // An unpatched 1.130 client starts encrypting after the version reply. Without 1.130 crypto,
-                        // its first encrypted packet fails here. Clients patched to run unencrypted are unaffected.
-                        if (Version is eClientVersion.Version1130 && !Uses1130Crypto)
-                            log.Warn($"{TcpEndpointAddress} is a 1.130 client that encrypts, but 1.130 crypto is off " +
-                                "(client_enable_1130_crypto, client_rsa_private_key_file; see docs/client-1130-crypto.md)");
+                        // An unpatched 1.127 or 1.130 client starts encrypting after the version reply. Without RSA
+                        // encryption, its first encrypted packet fails here. Clients patched to run unencrypted are unaffected.
+                        if (RsaKeyTransport.AppliesTo(true, Version) && !UsesRsaKeyTransport)
+                            log.Warn($"{TcpEndpointAddress} is a {Version} client that encrypts, but RSA encryption is off " +
+                                "(client_enable_encryption_rsa, client_rsa_private_key_file; see docs/client-encryption-rsa.md)");
                         else if (notKeyTransport)
                             log.Warn($"{TcpEndpointAddress} sent neither a key transport for this server's RSA key nor a plaintext " +
                                 "packet. Its game.dll most likely embeds a different public key (unmodified, or set up for another server).");

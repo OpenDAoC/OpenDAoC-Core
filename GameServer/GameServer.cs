@@ -319,8 +319,8 @@ namespace DOL.GS
 					return false;
 
 				//---------------------------------------------------------------
-				// Load the 1.130 RSA private key when enabled.
-				if (!InitComponent(Rsa1130.Init(), "1.130 RSA Key Load"))
+				// Load the RSA private key for client encryption when enabled.
+				if (!InitComponent(RsaKeyTransport.Init(), "RSA Key Load"))
 					return false;
 
 				// -----------------------------------------------------------

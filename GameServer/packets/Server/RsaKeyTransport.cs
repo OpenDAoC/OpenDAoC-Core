@@ -9,11 +9,11 @@ using DOL.Logging;
 
 namespace DOL.GS.PacketHandler
 {
-    // RSA key transport for 1.130 clients. The client generates a 256-byte RC4 key, encrypts it under the server's
+    // RSA key transport for 1.127 and 1.130 clients. The client generates a 256-byte RC4 key, encrypts it under the server's
     // public key and sends it in chunks: [00][len][RSA block] per chunk, each block the modulus size (one byte short
     // when its top byte is 0). Each block is raw RSA then OAEP with SHA-256, label "mythic" and a leading 0x01 where
     // RFC 8017 has 0x00. The plaintext is [12-byte header][256-byte RC4 key][2-byte trailer].
-    public static class Rsa1130
+    public static class RsaKeyTransport
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
         public const int Rc4KeyOffset = 12;
         public const int Rc4KeyLength = 256;
 
-        // `Init` loads the key only if `client_enable_1130_crypto` is on at startup, so changing the property later
+        // `Init` loads the key only if `client_enable_encryption_rsa` is on at startup, so changing the property later
         // has no effect until a restart.
         public static bool Enabled => _k > 0;
 
@@ -35,7 +35,7 @@ namespace DOL.GS.PacketHandler
         public static bool AppliesTo(GameClient.eClientVersion version) => AppliesTo(Enabled, version);
 
         public static bool AppliesTo(bool enabled, GameClient.eClientVersion version) =>
-            enabled && version is GameClient.eClientVersion.Version1130;
+            enabled && version is GameClient.eClientVersion.Version1127 or GameClient.eClientVersion.Version1130;
 
         public static void LoadPrivateKey(string pem)
         {
@@ -50,10 +50,10 @@ namespace DOL.GS.PacketHandler
 
         public static bool Init()
         {
-            if (!Properties.CLIENT_ENABLE_1130_CRYPTO)
+            if (!Properties.CLIENT_ENABLE_ENCRYPTION_RSA)
             {
                 if (log.IsInfoEnabled)
-                    log.Info("1.130 client crypto disabled (client_enable_1130_crypto=false)");
+                    log.Info("RSA client encryption disabled (client_enable_encryption_rsa=false)");
 
                 return true;
             }
@@ -66,15 +66,15 @@ namespace DOL.GS.PacketHandler
                 LoadPrivateKey(File.ReadAllText(path));
 
                 if (log.IsInfoEnabled)
-                    log.Info($"1.130 RSA private key loaded from '{path}' ({_k * 8}-bit modulus)");
+                    log.Info($"RSA private key loaded from '{path}' ({_k * 8}-bit modulus)");
 
                 return true;
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Failed to load 1.130 RSA private key from '{path}'. " +
-                              "Disable client_enable_1130_crypto or provide the key.", e);
+                    log.Error($"Failed to load RSA private key from '{path}'. " +
+                              "Disable client_enable_encryption_rsa or provide the key.", e);
 
                 return false;
             }
@@ -94,7 +94,7 @@ namespace DOL.GS.PacketHandler
             if (plaintext.Length < Rc4KeyOffset + Rc4KeyLength)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn($"[1130-crypto] recovered plaintext too short ({plaintext.Length} bytes) for RC4 key");
+                    log.Warn($"[rsa-rc4] recovered plaintext too short ({plaintext.Length} bytes) for RC4 key");
 
                 return null;
             }
@@ -124,7 +124,7 @@ namespace DOL.GS.PacketHandler
                 if (part == null)
                 {
                     if (log.IsDebugEnabled)
-                        log.Debug($"[1130-crypto] chunk {chunks} OAEP decode failed");
+                        log.Debug($"[rsa-rc4] chunk {chunks} OAEP decode failed");
 
                     return null;
                 }
@@ -135,7 +135,7 @@ namespace DOL.GS.PacketHandler
             if (chunks == 0)
             {
                 if (log.IsDebugEnabled)
-                    log.Debug("[1130-crypto] no RSA chunks found in key-transport body");
+                    log.Debug("[rsa-rc4] no RSA chunks found in key-transport body");
 
                 return null;
             }

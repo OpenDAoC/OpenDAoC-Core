@@ -13,7 +13,7 @@ namespace DOL.GS.Tests
         private const ushort COUNTER = 0x1234;
         private const byte CODE = 0xA9;
 
-        // `GameClient` and `Rsa1130` log.
+        // `GameClient` and `RsaKeyTransport` log.
         [OneTimeSetUp]
         public void InitializeLogging()
         {
@@ -52,23 +52,23 @@ namespace DOL.GS.Tests
         }
 
         [Test]
-        public void Rsa1130AppliesTo_OnlyVersion1130WithCryptoEnabled()
+        public void RsaKeyTransportAppliesTo_Versions1127And1130WithEncryptionEnabled()
         {
             foreach (GameClient.eClientVersion version in Enum.GetValues<GameClient.eClientVersion>())
             {
-                Assert.That(Rsa1130.AppliesTo(false, version), Is.False, $"{version}, crypto disabled");
-                Assert.That(Rsa1130.AppliesTo(true, version), Is.EqualTo(version is GameClient.eClientVersion.Version1130), $"{version}, crypto enabled");
+                Assert.That(RsaKeyTransport.AppliesTo(false, version), Is.False, $"{version}, crypto disabled");
+                Assert.That(RsaKeyTransport.AppliesTo(true, version), Is.EqualTo(version is GameClient.eClientVersion.Version1127 or GameClient.eClientVersion.Version1130), $"{version}, crypto enabled");
             }
         }
 
         // Only the version reply turns it on.
         [TestCase(GameClient.eClientVersion.Version1127)]
         [TestCase(GameClient.eClientVersion.Version1130)]
-        public void Uses1130Crypto_BeforeVersionReply_IsFalse(GameClient.eClientVersion version)
+        public void UsesRsaKeyTransport_BeforeVersionReply_IsFalse(GameClient.eClientVersion version)
         {
             GameClient client = new(null) { Version = version };
 
-            Assert.That(client.Uses1130Crypto, Is.False);
+            Assert.That(client.UsesRsaKeyTransport, Is.False);
         }
 
         // Known answers recorded from the encoders before the S-box copy moved to the stack. A key with every byte set
@@ -228,7 +228,7 @@ namespace DOL.GS.Tests
             return buf;
         }
 
-        // The 1.130 client's UDP receive: decrypts `size + 3` bytes (counter, code, payload) after the size,
+        // The client's UDP receive: decrypts `size + 3` bytes (counter, code, payload) after the size,
         // with a fresh copy of the S-box, second half first.
         private static void ClientDecryptUdpFrame(byte[] sbox, byte[] buf, int offset)
         {

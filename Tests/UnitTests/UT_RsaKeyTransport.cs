@@ -10,10 +10,10 @@ using NUnit.Framework;
 
 namespace DOL.GS.Tests
 {
-    // After the version reply, a 1.130 client's next packet is either an RSA key transport (the session is encrypted)
+    // After the version reply, a 1.127 or 1.130 client's next packet is either an RSA key transport (the session is encrypted)
     // or, for a client patched to run unencrypted, an ordinary plaintext packet. `RecoverRc4Key` tells them apart.
     [TestFixture]
-    public class UT_Rsa1130
+    public class UT_RsaKeyTransport
     {
         private const int HLEN = 32; // SHA-256
         private static readonly byte[] LHash = SHA256.HashData("mythic"u8.ToArray());
@@ -25,15 +25,15 @@ namespace DOL.GS.Tests
         {
             LoggerManager.InitializeWithExplicitLibrary(null, LogLibrary.None);
             _serverKey = RSA.Create(1024);
-            Rsa1130.LoadPrivateKey(_serverKey.ExportPkcs8PrivateKeyPem());
+            RsaKeyTransport.LoadPrivateKey(_serverKey.ExportPkcs8PrivateKeyPem());
         }
 
         [Test]
         public void RecoverRc4Key_KeyTransportForServerKey_ReturnsScheduledKey()
         {
-            byte[] key = RandomNumberGenerator.GetBytes(Rsa1130.Rc4KeyLength);
+            byte[] key = RandomNumberGenerator.GetBytes(RsaKeyTransport.Rc4KeyLength);
 
-            byte[] sbox = Rsa1130.RecoverRc4Key(CreateKeyTransport(_serverKey, key));
+            byte[] sbox = RsaKeyTransport.RecoverRc4Key(CreateKeyTransport(_serverKey, key));
 
             Assert.That(sbox, Is.EqualTo(ScheduleKey(key)));
         }
@@ -42,9 +42,9 @@ namespace DOL.GS.Tests
         public void RecoverRc4Key_KeyTransportForAnotherKey_ReturnsNull()
         {
             using RSA otherKey = RSA.Create(1024);
-            byte[] key = RandomNumberGenerator.GetBytes(Rsa1130.Rc4KeyLength);
+            byte[] key = RandomNumberGenerator.GetBytes(RsaKeyTransport.Rc4KeyLength);
 
-            Assert.That(Rsa1130.RecoverRc4Key(CreateKeyTransport(otherKey, key)), Is.Null);
+            Assert.That(RsaKeyTransport.RecoverRc4Key(CreateKeyTransport(otherKey, key)), Is.Null);
         }
 
         // Each check fails on its own: the leading byte, the label hash, and the 0x01 before the message.
@@ -53,10 +53,10 @@ namespace DOL.GS.Tests
         [TestCase(0x01, false, 0x02)]
         public void RecoverRc4Key_BadPadding_ReturnsNull(byte leading, bool wrongLabel, byte separator)
         {
-            byte[] key = RandomNumberGenerator.GetBytes(Rsa1130.Rc4KeyLength);
+            byte[] key = RandomNumberGenerator.GetBytes(RsaKeyTransport.Rc4KeyLength);
             byte[] lHash = wrongLabel ? SHA256.HashData("other"u8.ToArray()) : LHash;
 
-            Assert.That(Rsa1130.RecoverRc4Key(CreateKeyTransport(_serverKey, key, leading, lHash, separator)), Is.Null);
+            Assert.That(RsaKeyTransport.RecoverRc4Key(CreateKeyTransport(_serverKey, key, leading, lHash, separator)), Is.Null);
         }
 
         // Body = the packet after its 2-byte size field: [sequence][session][parameter][code][payload][checksum].
@@ -66,7 +66,7 @@ namespace DOL.GS.Tests
         [TestCase(new byte[] { 0x01, 0x02, 0x00, 0x05, 0x00, 0x00, 0x00, 0xF4, 0x00, 0x00 })]
         public void RecoverRc4Key_PlaintextPacket_ReturnsNull(byte[] body)
         {
-            Assert.That(Rsa1130.RecoverRc4Key(body), Is.Null);
+            Assert.That(RsaKeyTransport.RecoverRc4Key(body), Is.Null);
         }
 
         // TCP, UDP-over-TCP and UDP sends all check `EncryptsOutbound`: this connection's state, not just the version.
@@ -74,7 +74,8 @@ namespace DOL.GS.Tests
         [TestCase(GameClient.eClientVersion.Version1130, true, eEncryptionState.RSAEncrypted, false)]
         [TestCase(GameClient.eClientVersion.Version1130, true, eEncryptionState.NotEncrypted, false)]
         [TestCase(GameClient.eClientVersion.Version1130, false, eEncryptionState.PseudoRC4Encrypted, false)]
-        [TestCase(GameClient.eClientVersion.Version1127, true, eEncryptionState.PseudoRC4Encrypted, false)]
+        [TestCase(GameClient.eClientVersion.Version1127, true, eEncryptionState.PseudoRC4Encrypted, true)]
+        [TestCase(GameClient.eClientVersion.Version1128, true, eEncryptionState.PseudoRC4Encrypted, false)] // Untested, so not enabled.
         public void EncryptsOutbound_DependsOnThisConnectionsState(GameClient.eClientVersion version, bool cryptoOn, eEncryptionState state, bool expected)
         {
             GameClient client = CreateClient(version, cryptoOn);
@@ -88,16 +89,16 @@ namespace DOL.GS.Tests
         [Test]
         public void EncryptsOutbound_PropertyTurnedOffMidSession_KeepsEncrypting()
         {
-            Properties.CLIENT_ENABLE_1130_CRYPTO = true;
+            Properties.CLIENT_ENABLE_ENCRYPTION_RSA = true;
             GameClient client = new(null) { Version = GameClient.eClientVersion.Version1130 };
             client.PacketProcessor = new PacketProcessor(client);
-            client.Uses1130Crypto = Rsa1130.AppliesTo(client.Version); // What the version reply does.
+            client.UsesRsaKeyTransport = RsaKeyTransport.AppliesTo(client.Version); // What the version reply does.
             client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.PseudoRC4Encrypted;
 
-            Properties.CLIENT_ENABLE_1130_CRYPTO = false;
+            Properties.CLIENT_ENABLE_ENCRYPTION_RSA = false;
 
             Assert.That(client.PacketProcessor.EncryptsOutbound, Is.True);
-            Assert.That(Rsa1130.AppliesTo(GameClient.eClientVersion.Version1130), Is.True, "a new connection after the change");
+            Assert.That(RsaKeyTransport.AppliesTo(GameClient.eClientVersion.Version1130), Is.True, "a new connection after the change");
         }
 
         [Test]
@@ -105,7 +106,7 @@ namespace DOL.GS.Tests
         {
             GameClient client = CreateClient(GameClient.eClientVersion.Version1130, true);
             client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.RSAEncrypted; // Set by the version reply.
-            byte[] body = CreateKeyTransport(_serverKey, RandomNumberGenerator.GetBytes(Rsa1130.Rc4KeyLength));
+            byte[] body = CreateKeyTransport(_serverKey, RandomNumberGenerator.GetBytes(RsaKeyTransport.Rc4KeyLength));
             byte[] packet = new byte[2 + body.Length];
             packet[0] = (byte) ((body.Length - 10) >> 8); // The client's size field under-counts the chunks by 10.
             packet[1] = (byte) (body.Length - 10);
@@ -136,7 +137,7 @@ namespace DOL.GS.Tests
         [TearDown]
         public void TurnCryptoOff()
         {
-            Properties.CLIENT_ENABLE_1130_CRYPTO = false;
+            Properties.CLIENT_ENABLE_ENCRYPTION_RSA = false;
         }
 
         // `cryptoOn` stands for the server's setting at startup.
@@ -144,7 +145,7 @@ namespace DOL.GS.Tests
         {
             GameClient client = new(null) { Version = version };
             client.PacketProcessor = new PacketProcessor(client);
-            client.Uses1130Crypto = Rsa1130.AppliesTo(cryptoOn, version); // What the version reply does.
+            client.UsesRsaKeyTransport = RsaKeyTransport.AppliesTo(cryptoOn, version); // What the version reply does.
             return client;
         }
 
@@ -161,8 +162,8 @@ namespace DOL.GS.Tests
         // [00][len][RSA block] per chunk; the plaintext is [12-byte header][256-byte RC4 key][2-byte trailer].
         private static byte[] CreateKeyTransport(RSA rsa, byte[] key, byte leading = 0x01, byte[] lHash = null, byte separator = 0x01)
         {
-            byte[] plaintext = new byte[Rsa1130.Rc4KeyOffset + Rsa1130.Rc4KeyLength + 2];
-            Array.Copy(key, 0, plaintext, Rsa1130.Rc4KeyOffset, key.Length);
+            byte[] plaintext = new byte[RsaKeyTransport.Rc4KeyOffset + RsaKeyTransport.Rc4KeyLength + 2];
+            Array.Copy(key, 0, plaintext, RsaKeyTransport.Rc4KeyOffset, key.Length);
 
             RSAParameters p = rsa.ExportParameters(false);
             BigInteger n = new(p.Modulus, true, true);
