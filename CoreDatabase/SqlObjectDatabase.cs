@@ -220,6 +220,9 @@ namespace DOL.Database
             if (primaryKeyBindings.Count == 0)
                 throw new DatabaseException($"Table {tableHandler.TableName} has no primary key for saving...");
 
+            bool useTransaction = dataObjectList.Count > 1;
+            bool committed = false;
+
             DbConnection conn = null;
             DbTransaction transaction = null;
 
@@ -229,7 +232,7 @@ namespace DOL.Database
                 OpenConnection(conn);
 
                 // BEGIN/COMMIT would only add two round trips to every single-row save, which is most of them.
-                transaction = dataObjectList.Count > 1 ? conn.BeginTransaction() : null;
+                transaction = useTransaction ? conn.BeginTransaction() : null;
 
                 foreach (DataObject dataObject in dataObjectList)
                 {
@@ -265,38 +268,49 @@ namespace DOL.Database
                         FillSQLParameter(dirtyParameters.Concat(primaryParameters), cmd.Parameters);
 
                         if (cmd.ExecuteNonQuery() > 0)
-                        {
-                            dataObject.Dirty = false;
-                            dataObject.TakeSnapshot(); // Important: Take a new snapshot of the now-saved state.
                             wasSuccessful = true;
-                        }
                         else
                         {
                             if (log.IsErrorEnabled)
                                 log.Error($"Error saving data object (0 rows affected) in table {tableHandler.TableName} Object = {dataObject}");
-
-                            wasSuccessful = false;
                         }
                     }
                     catch (Exception ex)
                     {
                         if (log.IsErrorEnabled)
                             log.Error($"Exception while saving data object in table: {tableHandler.TableName}, Object = {dataObject}", ex);
-
-                        wasSuccessful = false;
                     }
 
                     success.Add(wasSuccessful);
                 }
 
                 transaction?.Commit();
+                committed = true;
             }
             catch (Exception ex)
             {
-                transaction?.Rollback();
+                if (useTransaction && !committed)
+                {
+                    try
+                    {
+                        transaction?.Rollback();
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Rollback failed for table: {tableHandler.TableName}", rollbackEx);
+                    }
+
+                    // Rolled-back writes are the ones still marked Dirty with success == true.
+                    for (int i = 0; i < success.Count; i++)
+                    {
+                        if (success[i] && dataObjectList[i].Dirty)
+                            success[i] = false;
+                    }
+                }
 
                 if (log.IsErrorEnabled)
-                    log.Error($"Catastrophic error during batch save for table: {tableHandler.TableName}. Transaction was rolled back.", ex);
+                    log.Error($"Catastrophic error during batch save for table: {tableHandler.TableName}.", ex);
 
                 // Ensure the success list matches the input list count, marking unprocessed as failed.
                 while (success.Count < dataObjectList.Count)
@@ -306,6 +320,30 @@ namespace DOL.Database
             {
                 if (conn != null)
                     CloseConnection(conn);
+            }
+
+            // Finalize only what is durably written.
+            if (committed || !useTransaction)
+            {
+                for (int i = 0; i < success.Count; i++)
+                {
+                    DataObject dataObject = dataObjectList[i];
+
+                    if (!success[i] || !dataObject.Dirty)
+                        continue;
+
+                    dataObject.Dirty = false;
+
+                    try
+                    {
+                        dataObject.TakeSnapshot();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Failed to take snapshot for data object in table: {tableHandler.TableName}, Object = {dataObject}", ex);
+                    }
+                }
             }
 
             return success;
