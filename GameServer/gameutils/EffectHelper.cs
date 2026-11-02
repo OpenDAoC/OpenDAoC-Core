@@ -582,7 +582,7 @@ namespace DOL.GS
                 if (spell == null)
                     continue;
 
-                SpellLine line = SkillBase.GetSpellLine(savedEffect.SpellLine, false);
+                SpellLine line = SkillBase.GetSpellLine(savedEffect.SpellLine);
 
                 if (line == null)
                     continue;

@@ -214,11 +214,6 @@ namespace DOL.GS
 		{
 			get { return eSkillPage.Spells; }
 		}
-
-		public override Skill Clone()
-		{
-			return (SpellLine)MemberwiseClone();
-		}
 	}
 
 	public enum eSkillPage

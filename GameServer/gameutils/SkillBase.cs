@@ -2385,46 +2385,25 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Return the spell line, creating a temporary one if not found
-		/// </summary>
-		/// <param name="keyname"></param>
-		/// <returns></returns>
-		public static SpellLine GetSpellLine(string keyname)
-		{
-			return GetSpellLine(keyname, true);
-		}
-
-		/// <summary>
 		/// Return a spell line
 		/// </summary>
 		/// <param name="keyname">The key name of the line</param>
-		/// <param name="create">Should we create a temp spell line if not found?</param>
-		/// <returns></returns>
-		public static SpellLine GetSpellLine(string keyname, bool create)
+		public static SpellLine GetSpellLine(string keyname)
 		{
-			SpellLine result = null;
 			m_syncLockUpdates.EnterReadLock();
 
 			try
 			{
 				if (m_spellLineIndex.TryGetValue(keyname, out SpellLine value))
-					result = (SpellLine) value.Clone();
+					return value;
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			if (result != null)
-				return result;
-
-			if (create)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn($"Spell-Line {keyname} unknown, creating temporary line.");
-
-				return new SpellLine(keyname, $"{keyname}?", "", true);
-			}
+			if (log.IsWarnEnabled)
+				log.Warn($"Spell-Line {keyname} unknown.");
 
 			return null;
 		}

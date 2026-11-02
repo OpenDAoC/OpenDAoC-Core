@@ -174,7 +174,7 @@ namespace DOL.GS.Effects
 
 				if (!string.IsNullOrEmpty(eff.SpellLine))
 				{
-					line = SkillBase.GetSpellLine(eff.SpellLine, false);
+					line = SkillBase.GetSpellLine(eff.SpellLine);
 					if (line == null)
 					{
 						good = false;
