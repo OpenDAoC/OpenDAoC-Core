@@ -90,6 +90,7 @@ namespace DOL.GS
         public IPacketLib Out { get; set; }
         public PacketProcessor PacketProcessor { get; set; }
         public eClientVersion Version { get; set; } = eClientVersion.VersionNotChecked;
+        public IClientEncryption Encryption { get; set; } = NoClientEncryption.Instance; // Set once, at the version reply.
         public eClientType ClientType { get; set; } = eClientType.Unknown;
         public eClientAddons ClientAddons { get; set; }
         public string MinorRev { get; set; } = string.Empty;
@@ -370,6 +371,12 @@ namespace DOL.GS
                     break;
                 }
 
+                if (!Encryption.DecryptInbound(this, buffer, currentOffset, packetLength))
+                {
+                    currentOffset += packetLength;
+                    continue;
+                }
+
                 int packetEnd = currentOffset + packetLength;
                 int calcCheck = PacketProcessor.CalculateChecksum(buffer, currentOffset, packetLength - 2);
                 int pakCheck = (buffer[packetEnd - 2] << 8) | (buffer[packetEnd - 1]);
@@ -377,7 +384,10 @@ namespace DOL.GS
                 if (pakCheck != calcCheck)
                 {
                     if (log.IsWarnEnabled)
+                    {
                         log.Warn($"Bad TCP packet checksum (packet:0x{pakCheck:X4} calculated:0x{calcCheck:X4}) -> disconnecting\nclient: {this}\ncurOffset={currentOffset}; packetLength={packetLength}");
+                        Encryption.LogChecksumFailure(this);
+                    }
 
                     if (log.IsDebugEnabled)
                         log.Debug(Marshal.ToHexDump("Last received bytes: ", buffer));
@@ -587,7 +597,8 @@ namespace DOL.GS
             Version1127 = 1127,
             Version1128 = 1128,
             Version1129 = 1129,
-            _LastVersion = 1129
+            Version1130 = 1130,
+            _LastVersion = 1130
         }
     }
 }

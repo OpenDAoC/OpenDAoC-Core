@@ -17,7 +17,6 @@
  *
  */
 using System;
-using System.Reflection;
 
 namespace DOL.GS.PacketHandler
 {
@@ -27,11 +26,6 @@ namespace DOL.GS.PacketHandler
 	/// </summary>
 	public class PacketEncoding168 : IPacketEncoding
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
 		protected eEncryptionState m_encryptionState;
 		protected byte[] _sbox = null;
 
@@ -71,8 +65,9 @@ namespace DOL.GS.PacketHandler
 				return null;
 			if (_sbox == null || m_encryptionState == eEncryptionState.NotEncrypted)
 				return buf;
-			byte[] tmpsbox = new byte[_sbox.Length];
-			Array.Copy(_sbox, 0, tmpsbox, 0, _sbox.Length);
+			// Only the first 256 bytes of the S-box are used. Copy them to the stack: no heap allocation per packet.
+			Span<byte> tmpsbox = stackalloc byte[256];
+			_sbox.AsSpan(0, tmpsbox.Length).CopyTo(tmpsbox);
 			byte i = 0;
 			byte j = 0;
 			ushort len = (ushort)((buf[offset] << 8) | buf[offset + 1] + 10); //+10 byte for packet#,session,param,code,checksum
@@ -100,7 +95,6 @@ namespace DOL.GS.PacketHandler
 				buf[k] ^= xorKey;
 				j += buf[k];
 			}
-			log.Debug($"Decrypted {buf.Length} bytes (udp: {udpPacket})");
 			return buf;
 		}
 
@@ -116,8 +110,9 @@ namespace DOL.GS.PacketHandler
 				return null;
 			if (_sbox == null || m_encryptionState == eEncryptionState.NotEncrypted)
 				return buf;
-			byte[] tmpsbox = new byte[_sbox.Length];
-			Array.Copy(_sbox, 0, tmpsbox, 0, _sbox.Length);
+			// Only the first 256 bytes of the S-box are used. Copy them to the stack: no heap allocation per packet.
+			Span<byte> tmpsbox = stackalloc byte[256];
+			_sbox.AsSpan(0, tmpsbox.Length).CopyTo(tmpsbox);
 			byte i = 0;
 			byte j = 0;
 			ushort len = (ushort)((buf[offset] << 8) | buf[offset + 1]);
@@ -149,7 +144,6 @@ namespace DOL.GS.PacketHandler
 				j += buf[k];
 				buf[k] ^= xorKey;
 			}
-			log.Debug($"Encrypted {buf.Length} bytes (udp: {udpPacket})");
 			return buf;
 		}
 	}

@@ -15,6 +15,8 @@ The easiest way to get started with OpenDAoC is to use Docker. Check out the `do
 
 For detailed instructions and additional setup options, refer to the full [OpenDAoC Documentation](https://www.opendaoc.com/docs/).
 
+For the optional 1.127/1.130 game client encryption handshake, see [DAoC game client RSA encryption](docs/client-encryption-rsa.md).
+
 ## Releases
 
 Releases for OpenDAoC are available at [OpenDAoC Releases](https://github.com/OpenDAoC/OpenDAoC-Core/releases).

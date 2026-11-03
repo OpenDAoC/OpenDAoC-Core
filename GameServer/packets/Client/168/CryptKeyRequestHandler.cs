@@ -33,6 +33,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 				// if the DataSize is above 7 then the RC4 key is bundled
 				if (packet.DataSize > 7)
 				{
+					// RSA key transport clients send their key there, never here.
+					if (RsaKeyTransport.AppliesTo(client.Version))
+						return;
+
 					if (Properties.CLIENT_ENABLE_ENCRYPTION_RC4)
 					{
 						var length = packet.ReadIntLowEndian();
@@ -58,6 +62,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				//Send the crypt key to the client
 				client.Out.SendVersionAndCryptKey();
+
+				// After the version reply, the next packet from a 1.127 or 1.130 client carries the RSA key, unless the client
+				// runs unencrypted. GameClient checks it before normal packet decoding. Decided once per connection.
+				if (RsaKeyTransport.AppliesTo(client.Version))
+				{
+					client.Encryption = RsaKeyTransport.Instance;
+					client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.RSAEncrypted;
+				}
 			}
 		}
 	}

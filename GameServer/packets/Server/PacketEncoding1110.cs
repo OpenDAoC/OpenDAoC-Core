@@ -17,7 +17,6 @@
  *
  */
 using System;
-using System.Reflection;
 
 namespace DOL.GS.PacketHandler
 {
@@ -27,11 +26,6 @@ namespace DOL.GS.PacketHandler
 	/// </summary>
 	public class PacketEncoding1110 : IPacketEncoding
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
 		protected byte[] _sbox;
 		protected byte[] _commonKey;
 
@@ -71,8 +65,9 @@ namespace DOL.GS.PacketHandler
 				return null;
 			if (_sbox == null || EncryptionState == eEncryptionState.NotEncrypted)
 				return buf;
-			byte[] tmpsbox = new byte[_sbox.Length];
-			Array.Copy(_sbox, 0, tmpsbox, 0, _sbox.Length);
+			// Only the first 256 bytes of the S-box are used. Copy them to the stack: no heap allocation per packet.
+			Span<byte> tmpsbox = stackalloc byte[256];
+			_sbox.AsSpan(0, tmpsbox.Length).CopyTo(tmpsbox);
 			byte i = 0;
 			byte j = 0;
 			ushort len = (ushort)((buf[offset] << 8) | buf[offset + 1] + 10); //+10 byte for packet#,session,param,code,checksum
@@ -100,7 +95,6 @@ namespace DOL.GS.PacketHandler
 				buf[k] ^= xorKey;
 				j += buf[k];
 			}
-			log.Debug($"Decrypted {len}/{buf.Length} bytes (udp: {udpPacket})");
 			return buf;
 		}
 
@@ -116,8 +110,9 @@ namespace DOL.GS.PacketHandler
 				return null;
 			if (_sbox == null || EncryptionState == eEncryptionState.NotEncrypted)
 				return buf;
-			byte[] tmpsbox = new byte[_sbox.Length];
-			Array.Copy(_sbox, 0, tmpsbox, 0, _sbox.Length);
+			// Only the first 256 bytes of the S-box are used. Copy them to the stack: no heap allocation per packet.
+			Span<byte> tmpsbox = stackalloc byte[256];
+			_sbox.AsSpan(0, tmpsbox.Length).CopyTo(tmpsbox);
 			byte i = 0;
 			byte j = 0;
 			ushort len = (ushort)((buf[offset] << 8) | buf[offset + 1]);
@@ -149,14 +144,13 @@ namespace DOL.GS.PacketHandler
 				j += buf[k];
 				buf[k] ^= xorKey;
 			}
-			log.Debug($"Encrypted {len}/{buf.Length} bytes (udp: {udpPacket})");
 			return buf;
 		}
 
 		/// <summary>
 		///   Generates the SBox from the common key
 		/// </summary>
-		private static byte[] GenerateSBox(byte[] commonKey) {
+		internal static byte[] GenerateSBox(byte[] commonKey) {
 			// Generate the S-Box from the common key (Code borrowed from DAoC Logger)
 			var sbox = new byte[256];
 			int x, y;

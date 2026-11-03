@@ -327,6 +327,8 @@ namespace DOL.GS.PacketHandler
                 if (!ValidatePacketSize(packetBuffer, packetSize))
                     return;
 
+                _client.Encryption.EncryptOutbound(_client, packetBuffer, 0, false);
+
                 if (_sendContext.CurrentArgs == null)
                 {
                     _sendContext.CurrentArgs = GetAvailableTcpSendArgs();
@@ -424,6 +426,10 @@ namespace DOL.GS.PacketHandler
 
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position] = packetBuffer[0];
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 1] = packetBuffer[1];
+
+                // The frame now has TCP layout, so encrypt it as TCP (same as ProcessTcpPacket).
+                _client.Encryption.EncryptOutbound(_client, _sendContext.CurrentArgs.Buffer, _sendContext.Position, false);
+
                 _sendContext.Position += packetSize;
             }
             finally
@@ -484,6 +490,10 @@ namespace DOL.GS.PacketHandler
                 _udpCounter++;
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 2] = (byte) (_udpCounter >> 8);
                 _sendContext.CurrentArgs.Buffer[_sendContext.Position + 3] = (byte) _udpCounter;
+
+                // Encrypted clients decrypt every UDP frame (counter, code, payload); they send their own UDP unencrypted.
+                _client.Encryption.EncryptOutbound(_client, _sendContext.CurrentArgs.Buffer, _sendContext.Position, true);
+
                 _sendContext.Position += packetSize;
             }
             finally
