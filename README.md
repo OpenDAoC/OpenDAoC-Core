@@ -16,7 +16,7 @@ For detailed instructions and additional setup options, see the full documentati
 ## Documentation
 
 - [OpenDAoC Documentation](https://www.opendaoc.com/docs/) *(Note: May contain outdated information)*
-- [Pathing with Detour](Pathing/Detour/README.md): Navmesh generation and server-side pathfinding setup
+- [Pathing with Detour](docs/pathing-with-detour.md): Navmesh generation and server-side pathfinding setup
 - [Client encryption (RSA)](docs/client-encryption-rsa.md): Optional 1.127/1.130 client handshake
 
 ## Releases & Images
