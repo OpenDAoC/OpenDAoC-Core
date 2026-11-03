@@ -1,44 +1,46 @@
 # OpenDAoC
+
 [![Build and Release](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-and-release.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
-## About
+An emulator for Dark Age of Camelot (DAoC) servers, focused on recreating the **1.65** experience.
 
-OpenDAoC is an emulator for Dark Age of Camelot (DAoC) servers, originally a fork of the [DOLSharp](https://github.com/Dawn-of-Light/DOLSharp) project.
+Originally a fork of [DOLSharp](https://github.com/Dawn-of-Light/DOLSharp), its core has been substantially reworked for performance and scalability.
 
-Now completely rewritten with ECS architecture, OpenDAoC ensures performance and scalability for many players, providing a robust platform for creating and managing DAoC servers.
+## Quick Start
 
-While the project focuses on recreating the DAoC 1.65 experience, it can be adapted for any patch level.
+The easiest way to run OpenDAoC is with Docker. Use the `docker-compose.yml` in the repository root as a starting point.
+
+For detailed instructions and additional setup options, see the full documentation below.
 
 ## Documentation
 
-The easiest way to get started with OpenDAoC is to use Docker. Check out the `docker-compose.yml` file in the repository root for an example setup.
+- [OpenDAoC Documentation](https://www.opendaoc.com/docs/) *(Note: May contain outdated information)*
+- [Pathing with Detour](Pathing/Detour/README.md): Navmesh generation and server-side pathfinding setup
+- [Client encryption (RSA)](docs/client-encryption-rsa.md): Optional 1.127/1.130 client handshake
 
-For detailed instructions and additional setup options, refer to the full [OpenDAoC Documentation](https://www.opendaoc.com/docs/).
+## Releases & Images
 
-For the optional 1.127/1.130 game client encryption handshake, see [DAoC game client RSA encryption](docs/client-encryption-rsa.md).
+Prebuilt releases are on the [Releases page](https://github.com/OpenDAoC/OpenDAoC-Core/releases).
 
-## Releases
+Docker images are also available:
 
-Releases for OpenDAoC are available at [OpenDAoC Releases](https://github.com/OpenDAoC/OpenDAoC-Core/releases).
-
-OpenDAoC is also available as a Docker image, which can be pulled from the following registries:
-
-- [GitHub Container Registry](https://ghcr.io/opendaoc/opendaoc-core) (recommended): `ghcr.io/opendaoc/opendaoc-core/opendaoc:latest`
-- [Docker Hub](https://hub.docker.com/repository/docker/claitz/opendaoc/): `claitz/opendaoc:latest`
-
-For detailed instructions and additional setup options, refer to the documentation.
+| Registry | Image |
+|---|---|
+| [GitHub Container Registry](https://ghcr.io/opendaoc/opendaoc-core) (Recommended) | `ghcr.io/opendaoc/opendaoc-core/opendaoc:latest` |
+| [Docker Hub](https://hub.docker.com/repository/docker/claitz/opendaoc/) | `claitz/opendaoc:latest` |
 
 ## Companion Repositories
 
-Several companion repositories are part of the [OpenDAoC project](https://github.com/OpenDAoC).
+Part of the wider [OpenDAoC project](https://github.com/OpenDAoC):
 
-Some of the main repositories include:
-
-- [OpenDAoC Database v1.65](https://github.com/OpenDAoC/OpenDAoC-Database)
-- [Account Manager](https://github.com/OpenDAoC/opendaoc-accountmanager)
-- [Client Launcher](https://github.com/OpenDAoC/OpenDAoC-Launcher)
+| Repository | Purpose |
+|---|---|
+| [OpenDAoC-Database](https://github.com/OpenDAoC/OpenDAoC-Database) | Server database schemas and content |
+| [OpenDAoC-BuildNav](https://github.com/OpenDAoC/OpenDAoC-BuildNav) | Navmesh generator for pathfinding |
+| [OpenDAoC-AccountManager](https://github.com/OpenDAoC/OpenDAoC-AccountManager) | Web-based account management |
+| [OpenDAoC-Launcher](https://github.com/OpenDAoC/OpenDAoC-Launcher) | Custom client launcher |
 
 ## License
 
-OpenDAoC is licensed under the [GNU General Public License (GPL)](https://choosealicense.com/licenses/gpl-3.0/) v3 to serve the DAoC community and promote open-source development.  
-See the [LICENSE](LICENSE) file for more details.
+Licensed under the [GNU GPL v3](LICENSE) to serve the DAoC community and promote open-source development.
