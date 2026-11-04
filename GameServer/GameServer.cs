@@ -29,7 +29,6 @@ using DOL.Mail;
 using DOL.Network;
 using DOL.Timing;
 using JNogueira.Discord.WebhookClient;
-using OpenTelemetry.Resources;
 
 namespace DOL.GS
 {
