@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
@@ -30,6 +29,7 @@ using DOL.Mail;
 using DOL.Network;
 using DOL.Timing;
 using JNogueira.Discord.WebhookClient;
+using OpenTelemetry.Resources;
 
 namespace DOL.GS
 {
@@ -101,6 +101,18 @@ namespace DOL.GS
 		/// Game server status variable
 		/// </summary>
 		protected EGameServerStatus m_status;
+
+		private static long _udpInvalidSizeCount;
+		private static long _udpInvalidChecksumCount;
+		private static long _udpInvalidSessionCount;
+		private static long _udpSourceMismatchCount;
+		private static long _udpEndpointMismatchCount;
+
+		public static long UdpInvalidSizeCount => Volatile.Read(ref _udpInvalidSizeCount);
+		public static long UdpInvalidChecksumCount => Volatile.Read(ref _udpInvalidChecksumCount);
+		public static long UdpInvalidSessionCount => Volatile.Read(ref _udpInvalidSessionCount);
+		public static long UdpSourceMismatchCount => Volatile.Read(ref _udpSourceMismatchCount);
+		public static long UdpEndpointMismatchCount => Volatile.Read(ref _udpEndpointMismatchCount);
 
 		/// <summary>
 		/// World save timer
@@ -1059,85 +1071,122 @@ namespace DOL.GS
 			return client;
 		}
 
-		protected override void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint)
+		protected override bool OnUdpReceive(byte[] buffer, int size, UdpSource source)
 		{
 			if (m_status is not EGameServerStatus.GSS_Open)
-				return;
+				return false;
 
-			if (size == 0)
+			// The header includes the two checksum bytes at the end of the datagram.
+			if (size < GSPacketIn.HDR_SIZE || size > buffer.Length)
 			{
-				log.Debug("Received bytes = 0");
-				return;
+				Interlocked.Increment(ref _udpInvalidSizeCount);
+				return false;
 			}
 
-			int endPosition = offset + size;
-			int packetCheck = (buffer[endPosition - 2] << 8) | buffer[endPosition - 1];
-			int calculatedCheck = PacketProcessor.CalculateChecksum(buffer, offset, size - 2);
+			int checksumOffset = size - 2;
+			int packetCheck = (buffer[checksumOffset] << 8) | buffer[checksumOffset + 1];
+			int calculatedCheck = PacketProcessor.CalculateChecksum(buffer, 0, size - 2);
 
 			if (packetCheck != calculatedCheck)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn($"Bad UDP packet checksum (packet:0x{packetCheck:X4} calculated:0x{calculatedCheck:X4})");
+				Interlocked.Increment(ref _udpInvalidChecksumCount);
 
 				if (log.IsDebugEnabled)
-					log.Debug(Marshal.ToHexDump($"UDP buffer dump, received {size} bytes", buffer));
+					log.Debug($"Bad UDP packet checksum (packet:0x{packetCheck:X4} calculated:0x{calculatedCheck:X4})");
 
-				return;
+				return false;
 			}
 
-			// Post the packet to the game loop for processing.
-			ClientService.Instance.Post(static state =>
+			// There is no padding. The declared payload size plus the header must match the datagram exactly.
+			int declaredPayloadSize = GSPacketIn.GetPacketSize(buffer, 0);
+
+			if (declaredPayloadSize + GSPacketIn.HDR_SIZE != size)
 			{
-				var packet = GameLoop.GetObjectForTick<GSPacketIn>().Init();
-				packet.Load(state.Buffer, state.Offset, state.Size);
-				GameClient client = ClientService.Instance.GetClientBySessionId(packet.SessionID);
+				Interlocked.Increment(ref _udpInvalidSizeCount);
+				return false;
+			}
 
-				if (client == null)
-				{
-					if (log.IsWarnEnabled)
-						log.Warn($"Got an UDP packet from invalid client ID or IP (id: {packet.SessionID}) (ip: {state.EndPoint}) (code: {packet.Code:x2})");
+			ushort sessionId = GSPacketIn.GetPacketSessionID(buffer, 0);
+			GameClient client = ClientService.Instance.GetClientBySessionId(sessionId);
 
+			if (client == null)
+			{
+				Interlocked.Increment(ref _udpInvalidSessionCount);
+
+				if (log.IsDebugEnabled)
+					log.Debug($"Got an UDP packet from an invalid client ID (id: {sessionId}) (source: {source})");
+
+				return false;
+			}
+
+			// A UDP datagram must originate from the same host as the client's TCP connection.
+			// Client using a TCP-only proxy will fallback to TCP for all communication.
+			if (!source.Matches(client.TcpAddress))
+			{
+				Interlocked.Increment(ref _udpSourceMismatchCount);
+
+				if (log.IsDebugEnabled)
+					log.Debug($"Got an UDP packet from an unexpected source (id: {sessionId}) (source: {source}) (expected: {client.TcpAddress})");
+
+				return false;
+			}
+
+			// The packet is valid enough to be processed by the game loop. Ownership of the buffer
+			// is transferred to the posted action, which must call `ReleaseUdpPacketBuffer`.
+			ClientService.Instance.Post(static state => ProcessUdpPacket(state), new UdpReceiveState(buffer, size, source, sessionId));
+			return true;
+		}
+
+		private static void ProcessUdpPacket(UdpReceiveState state)
+		{
+			try
+			{
+				GameClient client = ClientService.Instance.GetClientBySessionId(state.SessionId);
+
+				// The client may have disconnected between the network-thread validation and this tick.
+				if (client == null || !state.Source.Matches(client.TcpAddress))
 					return;
-				}
 
 				if (client.UdpEndPoint == null)
 				{
-					client.UdpEndPoint = state.EndPoint as IPEndPoint;
+					client.UdpEndPoint = state.Source.ToIPEndPoint();
 					client.UdpConfirm = false;
 				}
 
-				if (!client.UdpEndPoint.Equals(state.EndPoint))
+				if (!state.Source.Matches(client.UdpEndPoint))
+				{
+					Interlocked.Increment(ref _udpEndpointMismatchCount);
+
+					if (log.IsDebugEnabled)
+						log.Debug($"Got an UDP packet from an unexpected endpoint (id: {state.SessionId}) (source: {state.Source}) (expected: {client.UdpEndPoint})");
+
 					return;
+				}
+
+				GSPacketIn packet = GameLoop.GetObjectForTick<GSPacketIn>().Init();
 
 				try
 				{
+					packet.Load(state.Buffer, 0, state.Size);
 					client.PacketProcessor.ProcessInboundPacket(packet);
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error(e);
 				}
 				finally
 				{
 					packet.ReleasePooledObject();
 				}
-			}, new
+			}
+			catch (Exception e)
 			{
-				Buffer = buffer,
-				Offset = offset,
-				Size = size,
-				EndPoint = endPoint
-			});
+				if (log.IsErrorEnabled)
+					log.Error(e);
+			}
+			finally
+			{
+				Instance.ReturnUdpPacketBuffer(state.Buffer);
+			}
 		}
 
-		private class UdpPacketState
-		{
-			public byte[] Buffer { get; init; }
-			public int Offset { get; init; }
-			public int Size { get; init; }
-			public EndPoint EndPoint { get; init; }
-		}
+		private readonly record struct UdpReceiveState(byte[] Buffer, int Size, UdpSource Source, ushort SessionId);
 
 		#endregion
 
