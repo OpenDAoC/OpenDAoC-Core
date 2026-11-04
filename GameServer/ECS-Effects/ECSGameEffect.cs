@@ -23,6 +23,7 @@ namespace DOL.GS
         public eEffect EffectType;
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
+        public ServiceObjectId ServiceObjectId { get; }
         public long NextTick;
 
         public ISpellHandler SpellHandler { get; protected set; }
@@ -55,7 +56,6 @@ namespace DOL.GS
         public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
         public int LastClientIndex { get; set; } = -1; // Used eternally for effect list updates.
         public bool NeedsClientUpdate { get; set; } // Used eternally for effect list updates.
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Effect);
 
         // State properties.
         public bool IsActive => _state is State.Active;
@@ -78,9 +78,10 @@ namespace DOL.GS
         public ECSGameEffect(in ECSGameEffectInitParams initParams)
         {
             Owner = initParams.Target;
+            OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
+            ServiceObjectId = new(this, ServiceObjectType.Effect);
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
-            OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
             EffectType = eEffect.Unknown; // Should be overridden in subclasses.
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;

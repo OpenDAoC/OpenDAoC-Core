@@ -6,8 +6,7 @@ namespace DOL.GS
     public abstract class ServiceObjectArrayBase<T> : IServiceObjectArray
         where T : class, IServiceObject
     {
-        // Indicates how the caller should iterate over this collection.
-        public abstract bool IsSharded { get; }
+        protected long _currentUpdateNow;
 
         // Flat array API.
         public abstract List<T> Items { get; }
@@ -18,10 +17,60 @@ namespace DOL.GS
         public abstract int[] ShardStartIndices { get; }
         public abstract int TotalValidCount { get; }
 
-        public abstract void Add(T item);
-        public abstract void Schedule(T item, long wakeUpTimeMs);
-        public abstract void Remove(T item);
-        public abstract void Update(long now);
+        protected abstract void Add(T item);
+        protected abstract void Remove(T item);
+        protected abstract ServiceObjectView<T> UpdateAndGetView();
+
+        protected abstract bool TryPrepareAdd(T item);
+        protected abstract bool TryPrepareRemove(T item);
+
+        public virtual ServiceObjectView<T> UpdateAndGetView(long now)
+        {
+            _currentUpdateNow = now;
+            return UpdateAndGetView();
+        }
+
+        protected static void Add(ServiceObjectArrayBase<T> target, T item)
+        {
+            target.Add(item);
+        }
+
+        protected static void Remove(ServiceObjectArrayBase<T> target, T item)
+        {
+            target.Remove(item);
+        }
+
+        protected static bool TryPrepareAdd(ServiceObjectArrayBase<T> target, T item)
+        {
+            return target.TryPrepareAdd(item);
+        }
+
+        protected static bool TryPrepareRemove(ServiceObjectArrayBase<T> target, T item)
+        {
+            return target.TryPrepareRemove(item);
+        }
+
+        bool IServiceObjectArray.Add(IServiceObject obj)
+        {
+            T item = (T) obj;
+
+            if (!TryPrepareAdd(item))
+                return false;
+
+            Add(item);
+            return true;
+        }
+
+        bool IServiceObjectArray.Remove(IServiceObject obj)
+        {
+            T item = (T) obj;
+
+            if (!TryPrepareRemove(item))
+                return false;
+
+            Remove(item);
+            return true;
+        }
     }
 
     public readonly struct ServiceObjectView<T> where T : class, IServiceObject

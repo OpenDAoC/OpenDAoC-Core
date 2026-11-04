@@ -1,171 +1,157 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace DOL.GS
 {
     public class SchedulableServiceObjectArray<T> : ServiceObjectArray<T>
         where T : class, ISchedulableServiceObject
     {
-        private readonly DrainArray<ScheduleRequest> _itemsToSchedule = new();
+        // Circular timing wheel with a priority queue for distant scheduled items.
 
-        // Hierarchical timing wheel for O(1) suspended item scheduling.
-        // Items sleeping longer than WHEEL_SIZE are parked in _farFuture.
+        // Scheduling uses floor division, so items may wake up early.
+        // Actual wake-up time also depends on the game loop's update frequency.
+        private const int WHEEL_RESOLUTION_MS = 30;
+
         // 1 << 16 = 65,536 buckets.
-        // 65,536 buckets * 50ms = 3,276,800ms = ~54.6 minutes.
-        // If the game loop ticks faster than WHEEL_RESOLUTION_MS, items may be woken up
-        private const int WHEEL_RESOLUTION_MS = 50;
+        // 65,536 buckets * 30ms = 3,276,800ms = ~32.8 minutes.
         private const int WHEEL_BITS = 16;
         private const int WHEEL_SIZE = 1 << WHEEL_BITS;
         private const int WHEEL_MASK = WHEEL_SIZE - 1;
-        private const int SKIP_SCHEDULE_THRESHOLD_TICK = 30;
 
-        private readonly List<SleepTicket>[] _sleepWheel;
-        private readonly Stack<List<SleepTicket>> _listPool = new();
-        private readonly PriorityQueue<SleepTicket, long> _farFuture = new();
+        private readonly ServiceObjectId[] _heads = new ServiceObjectId[WHEEL_SIZE];
         private long _lastProcessedWheelTick = -1;
-        private long _currentUpdateTick;
 
-        public SchedulableServiceObjectArray(int capacity) : base(capacity)
+        public SchedulableServiceObjectArray(int capacity) : base(capacity) { }
+
+        private void Link(ServiceObjectId id, long tick)
         {
-            _sleepWheel = new List<SleepTicket>[WHEEL_SIZE];
-
-            for (int i = 0; i < WHEEL_SIZE; i++)
-                _sleepWheel[i] = new();
+            int bucket = (int) (tick & WHEEL_MASK);
+            ServiceObjectId head = _heads[bucket];
+            id.SleepPrev = null;
+            id.SleepNext = head;
+            head?.SleepPrev = id;
+            _heads[bucket] = id;
+            id.SleepBucket = bucket;
         }
 
-        public override void Schedule(T item, long wakeUpTimeMs)
+        private void Unlink(ServiceObjectId id)
         {
-            long now = GameLoop.GameLoopTime;
-            SchedulableServiceObjectId id = item.ServiceObjectId;
+            ServiceObjectId prev = id.SleepPrev;
+            ServiceObjectId next = id.SleepNext;
 
-            // Bypass the wheel entirely if wakeUpTimeMs is close.
-            if (wakeUpTimeMs - now <= SKIP_SCHEDULE_THRESHOLD_TICK * GameLoop.TickDuration)
-            {
-                if (id.IsRunning)
-                {
-                    id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule);
-                    return;
-                }
-
-                if (id.TrySetAction(ServiceObjectId.PendingAction.Add))
-                    Add(item);
-
-                return;
-            }
-
-            long currentTick = now / WHEEL_RESOLUTION_MS;
-            long targetTick = Math.Max(currentTick, wakeUpTimeMs / WHEEL_RESOLUTION_MS);
-            _itemsToSchedule.Add(new(item, targetTick));
-        }
-
-        protected override void ProcessItemsToRemove(long now)
-        {
-            _currentUpdateTick = now / WHEEL_RESOLUTION_MS;
-            base.ProcessItemsToRemove(now);
-        }
-
-        protected override void ProcessItemsToAdd(long now)
-        {
-            WakeUpItems();
-
-            if (_itemsToSchedule.Any)
-                _itemsToSchedule.DrainTo(static (req, ctx) => ctx.ScheduleInternal(req), this);
-
-            base.ProcessItemsToAdd(now);
-        }
-
-        private void ScheduleInternal(ScheduleRequest request)
-        {
-            T item = request.Item;
-            SchedulableServiceObjectId id = item.ServiceObjectId;
-            long targetTick = request.TargetTick;
-
-            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Schedule) ||
-                targetTick < _lastProcessedWheelTick)
-            {
-                return;
-            }
-
-            RemoveFromList(id);
-            id.MoveTo(SchedulableServiceObjectId.SLEEPING_ID);
-            SleepTicket ticket = new(item, id.SleepToken);
-
-            if (targetTick - _lastProcessedWheelTick >= WHEEL_SIZE)
-                _farFuture.Enqueue(ticket, targetTick);
+            if (prev != null)
+                prev.SleepNext = next;
             else
-                _sleepWheel[(int) (targetTick & WHEEL_MASK)].Add(ticket);
+                _heads[id.SleepBucket] = next;
+
+            next?.SleepPrev = prev;
+            id.SleepPrev = id.SleepNext = null;
+            id.SleepBucket = -1;
         }
 
         private void WakeUpItems()
         {
-            if (_lastProcessedWheelTick == -1)
-                _lastProcessedWheelTick = _currentUpdateTick;
+            long currentUpdateTick = _currentUpdateNow / WHEEL_RESOLUTION_MS;
 
-            List<SleepTicket> currentSwapList = _listPool.Count > 0 ? _listPool.Pop() : new();
+            if (_lastProcessedWheelTick == -1)
+                _lastProcessedWheelTick = currentUpdateTick;
 
             // Catch up on all missed ticks.
-            while (_lastProcessedWheelTick <= _currentUpdateTick)
+            while (_lastProcessedWheelTick <= currentUpdateTick)
             {
-                int bucketIndex = (int) (_lastProcessedWheelTick & WHEEL_MASK);
-                List<SleepTicket> bucket = _sleepWheel[bucketIndex];
+                int bucket = (int) (_lastProcessedWheelTick & WHEEL_MASK);
 
-                if (bucket.Count > 0)
+                ServiceObjectId id = _heads[bucket];
+                _heads[bucket] = null;
+
+                while (id != null)
                 {
-                    _sleepWheel[bucketIndex] = currentSwapList;
+                    ServiceObjectId next = id.SleepNext;
+                    id.SleepNext = id.SleepPrev = null;
+                    id.SleepBucket = -1;
 
-                    for (int i = 0; i < bucket.Count; i++)
+                    if (id.PeekAction() is ServiceObjectId.PendingAction.None)
                     {
-                        SleepTicket ticket = bucket[i];
-                        T item = ticket.Item;
-                        SchedulableServiceObjectId id = item.ServiceObjectId;
+                        long target = id.NextTickMs / WHEEL_RESOLUTION_MS;
 
-                        // Do not wake if the sleep token changed or if there's a pending action.
-                        if (id.SleepToken != ticket.Token ||
-                            id.PeekAction() is not ServiceObjectId.PendingAction.None)
-                        {
-                            continue;
-                        }
-
-                        AddToList(item);
+                        if (target > _lastProcessedWheelTick)
+                            Link(id, Math.Min(target, _lastProcessedWheelTick + WHEEL_SIZE - 1));
+                        else
+                            AddToList(Unsafe.As<T>(id.Owner)); // Safety ensured by ServiceObjectStore.
                     }
 
-                    bucket.Clear();
-                    currentSwapList = bucket;
+                    id = next;
                 }
 
                 _lastProcessedWheelTick++;
-
-                // If the lowest bits are 0, we just completed a full cycle of the wheel.
-                if ((_lastProcessedWheelTick & WHEEL_MASK) == 0)
-                {
-                    while (_farFuture.TryPeek(out SleepTicket ticket, out long targetTick))
-                    {
-                        T item = ticket.Item;
-                        SchedulableServiceObjectId id = item.ServiceObjectId;
-
-                        // Lazy deletion.
-                        if (id.SleepToken != ticket.Token ||
-                            id.PeekAction() is ServiceObjectId.PendingAction.Remove)
-                        {
-                            _farFuture.Dequeue();
-                            continue;
-                        }
-
-                        // Check if remaining items are too far in the future.
-                        if (targetTick - _lastProcessedWheelTick >= WHEEL_SIZE)
-                            break;
-
-                        _sleepWheel[(int) (targetTick & WHEEL_MASK)].Add(ticket);
-                        _farFuture.Dequeue();
-                    }
-                }
             }
-
-            _listPool.Push(currentSwapList);
         }
 
-        private readonly record struct ScheduleRequest(T Item, long TargetTick);
+        protected override bool TryPrepareAdd(T item)
+        {
+            ServiceObjectId id = item.ServiceObjectId;
 
-        private readonly record struct SleepTicket(T Item, long Token);
+            // Already active, nothing pending, and it will still be in the current wheel bucket
+            // (or past due) at the next update: AddInternal would end in a no-op AddToList anyway.
+            if (id.IsRunning &&
+                id.PeekAction() is ServiceObjectId.PendingAction.None &&
+                id.NextTickMs / WHEEL_RESOLUTION_MS <= _currentUpdateNow / WHEEL_RESOLUTION_MS)
+            {
+                return false;
+            }
+
+            return id.TrySetAction(ServiceObjectId.PendingAction.Add);
+        }
+
+        protected override void ProcessItemsToAdd()
+        {
+            WakeUpItems();
+            base.ProcessItemsToAdd();
+        }
+
+        protected override void RemoveInternal(T item)
+        {
+            ServiceObjectId id = item.ServiceObjectId;
+
+            if (!TryPrepareRemoveFromList(id))
+                return;
+
+            if (id.SleepBucket >= 0)
+                Unlink(id);
+
+            RemoveFromList(id);
+            id.Unset();
+        }
+
+        protected override void AddInternal(T item)
+        {
+            ServiceObjectId id = item.ServiceObjectId;
+
+            if (!TryPrepareAddToList(id))
+                return;
+
+            if (id.SleepBucket >= 0)
+                Unlink(id);
+
+            long wakeUp = id.NextTickMs;
+
+            if (wakeUp - _currentUpdateNow <= 0)
+            {
+                AddToList(item);
+                return;
+            }
+
+            long targetTick = wakeUp / WHEEL_RESOLUTION_MS;
+
+            if (targetTick < _lastProcessedWheelTick)
+            {
+                AddToList(item);
+                return;
+            }
+
+            RemoveFromList(id);
+            id.Value = ServiceObjectId.SLEEPING_ID;
+            Link(id, Math.Min(targetTick, _lastProcessedWheelTick + WHEEL_SIZE - 1));
+        }
     }
 }

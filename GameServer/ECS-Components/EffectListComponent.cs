@@ -44,12 +44,13 @@ namespace DOL.GS
         private readonly Lock _concentrationEffectsLock = new();
 
         public GameLiving Owner { get; }
+        public ServiceObjectId ServiceObjectId { get; }
         public int UsedConcentration => Volatile.Read(ref _usedConcentration);
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.EffectListComponent);
 
         protected EffectListComponent(GameLiving owner)
         {
             Owner = owner;
+            ServiceObjectId = new(this, ServiceObjectType.EffectListComponent);
         }
 
         public static EffectListComponent Create(GameLiving living)

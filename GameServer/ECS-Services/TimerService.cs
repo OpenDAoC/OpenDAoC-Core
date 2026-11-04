@@ -69,29 +69,27 @@ namespace DOL.GS
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
         public GameObject Owner { get; }
+        public ServiceObjectId ServiceObjectId { get; }
         public ECSTimerCallback Callback { private get; set; }
         public int Interval { get; set; }
         public long NextTick { get; protected set; }
         public bool IsAlive { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Timer);
         public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
         public MethodInfo CallbackInfo => Callback?.GetMethodInfo();
 
         public ECSGameTimer(GameObject timerOwner)
         {
             Owner = timerOwner;
+            ServiceObjectId = new(this, ServiceObjectType.Timer);
         }
 
-        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback)
+        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback) : this(timerOwner)
         {
-            Owner = timerOwner;
             Callback = callback;
         }
 
-        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback, int interval)
+        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback, int interval) : this(timerOwner, callback)
         {
-            Owner = timerOwner;
-            Callback = callback;
             Interval = interval;
             Start(interval);
         }

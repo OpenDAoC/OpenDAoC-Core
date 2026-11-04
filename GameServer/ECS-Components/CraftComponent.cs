@@ -8,13 +8,14 @@ namespace DOL.GS
         public GamePlayer Owner { get; }
         public CraftAction CraftAction { get; set; }
         public bool CraftState { get; set; }
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.CraftComponent);
+        public ServiceObjectId ServiceObjectId { get; }
         public List<Recipe> Recipes { get; } = new();
         private readonly Lock _recipesLock = new();
 
         public CraftComponent(GamePlayer owner)
         {
             Owner = owner;
+            ServiceObjectId = new(this, ServiceObjectType.CraftComponent);
         }
 
         public void AddRecipe(Recipe recipe)

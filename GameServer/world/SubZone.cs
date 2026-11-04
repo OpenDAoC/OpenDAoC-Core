@@ -84,14 +84,15 @@ namespace DOL.GS
         private bool _isTransitionQueued;     // Persistent state flag indicating that the object will be processed by `ZoneService`.
 
         public LinkedListNode<GameObject> Node { get; }
+        public ServiceObjectId ServiceObjectId { get; }
         public SubZone CurrentSubZone { get; set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.SubZoneObject);
 
         public SubZoneObject(GameObject obj)
         {
             Node = new(obj);
+            ServiceObjectId = new(this, ServiceObjectType.SubZoneObject);
         }
 
         public void InitiateSubZoneTransition(Zone destinationZone, SubZone destinationSubZone)

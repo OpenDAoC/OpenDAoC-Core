@@ -3,18 +3,39 @@
     public class ServiceObjectId
     {
         public const int UNSET_ID = -1;
+        public const int SLEEPING_ID = -2;
 
         private PendingAction _action = PendingAction.None;
 
-        public int Value { get; private set; } = UNSET_ID;
+        public IServiceObject Owner { get; }
         public ServiceObjectType Type { get; }
-
+        public int Value { get; set; } = UNSET_ID;
         public bool IsRegistered => Value != UNSET_ID;
         public bool IsRunning => Value >= 0;
-        public bool IsDormant => IsRegistered && !IsRunning;
 
-        public ServiceObjectId(ServiceObjectType type)
+        // Schedulable properties.
+        public long NextTickMs
         {
+            get;
+            set
+            {
+                field = value;
+
+                // This prevents constructors/initializers from prematurely adding the object.
+                if (IsRegistered)
+                    ServiceObjectStore.Add(Owner);
+            }
+        }
+        public ServiceObjectId SleepNext { get; set; }
+        public ServiceObjectId SleepPrev  { get; set; }
+        public int SleepBucket { get; set; } = -1;
+
+        // Sharded properties.
+        public int ShardIndex { get; set; } = -1;
+
+        public ServiceObjectId(IServiceObject owner, ServiceObjectType type)
+        {
+            Owner = owner;
             Type = type;
         }
 
@@ -41,22 +62,16 @@
             return _action;
         }
 
-        public virtual void MoveTo(int index)
-        {
-            Value = index;
-        }
-
         public void Unset()
         {
             _action = PendingAction.None;
-            MoveTo(UNSET_ID); // Ensure MoveTo overrides are called.
+            Value = UNSET_ID;
         }
 
         public enum PendingAction
         {
             None,
             Add,
-            Schedule,
             Remove
         }
     }

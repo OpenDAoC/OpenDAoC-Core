@@ -29,12 +29,13 @@ namespace DOL.GS
         public SpellHandler SpellHandler { get; protected set; }
         public virtual SpellHandler QueuedSpellHandler { get; protected set; }
 
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.CastingComponent);
+        public ServiceObjectId ServiceObjectId { get; }
         public bool IsCasting => SpellHandler != null; // May not be actually casting yet.
 
         protected CastingComponent(GameLiving owner)
         {
             Owner = owner;
+            ServiceObjectId = new(this, ServiceObjectType.CastingComponent);
             _duringCastLosCheckListener = new(this);
             _endOfCastLosCheckListener = new(this);
         }
