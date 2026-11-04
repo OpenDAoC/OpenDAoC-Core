@@ -18,7 +18,8 @@ namespace DOL.GS.PacketHandler
         private static Dictionary<string, IPacketHandler[]> _cachedPacketHandlerSearchResults = [];
         private static Dictionary<string, List<PacketHandlerAttribute>> _cachedPreprocessorSearchResults = [];
         private static Lock _loadPacketHandlersLock = new();
-        private static long _sendBufferPoolExhaustedCount;
+        private static long _tcpSendArgsPoolMisses;
+        private static long _udpSendArgsPoolMisses;
 
         private readonly GameClient _client;
         private readonly PacketPreprocessing _packetPreprocessor = new();
@@ -34,7 +35,8 @@ namespace DOL.GS.PacketHandler
 
         private readonly SendContext _sendContext = new();
 
-        public static long SendBufferPoolExhaustedCount => Volatile.Read(ref _sendBufferPoolExhaustedCount);
+        public static long TcpSendArgsPoolMisses => Volatile.Read(ref _tcpSendArgsPoolMisses);
+        public static long UdpSendArgsPoolMisses => Volatile.Read(ref _udpSendArgsPoolMisses);
         public IPacketEncoding Encoding { get; } = new PacketEncoding168();
 
         public PacketProcessor(GameClient client)
@@ -635,7 +637,7 @@ namespace DOL.GS.PacketHandler
         {
             if (!_tcpSendArgsPool.TryDequeue(out SocketAsyncEventArgs args))
             {
-                Interlocked.Increment(ref _sendBufferPoolExhaustedCount);
+                Interlocked.Increment(ref _tcpSendArgsPoolMisses);
                 return null;
             }
 
@@ -646,7 +648,7 @@ namespace DOL.GS.PacketHandler
         {
             if (!_udpSendArgsPool.TryDequeue(out SocketAsyncEventArgs args))
             {
-                Interlocked.Increment(ref _sendBufferPoolExhaustedCount);
+                Interlocked.Increment(ref _udpSendArgsPoolMisses);
                 return null;
             }
 

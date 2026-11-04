@@ -74,6 +74,7 @@ namespace DOL.GS
             }
         }
 
+        public IPAddress TcpAddress { get; private set; }
         public IPEndPoint UdpEndPoint { get; set; }
         public Dictionary<string, object> CustomParamsDictionary { get; set; }
         public bool IsPlaying => ClientState is eClientState.Playing or eClientState.Linkdead;
@@ -472,6 +473,9 @@ namespace DOL.GS
 
         public override void OnConnect(SessionId sessionId)
         {
+            if (Socket?.RemoteEndPoint is IPEndPoint ipEndPoint)
+                TcpAddress = ipEndPoint.Address;
+
             base.OnConnect(sessionId);
 
             // `OnConnect` is exclusively called from outside the game loop.

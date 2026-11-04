@@ -88,7 +88,17 @@ namespace DOL.GS
                 int clientCount = ClientService.Instance.ClientCount;
                 int globalHandlers = GameEventMgr.NumGlobalHandlers;
                 int objectHandlers = GameEventMgr.NumObjectHandlers;
-                long sendBufferPoolExhaustedCount = PacketProcessor.SendBufferPoolExhaustedCount;
+                long tcpSendArgsPoolMisses = PacketProcessor.TcpSendArgsPoolMisses;
+                long udpSendArgsPoolMisses = PacketProcessor.UdpSendArgsPoolMisses;
+                long udpPacketsReceived = GameServer.Instance.UdpPacketsReceived;
+                long udpPacketsDropped = GameServer.Instance.UdpPacketsDropped;
+                long udpReceiveErrors = GameServer.Instance.UdpReceiveErrors;
+                long udpBufferReturnFailures = GameServer.Instance.UdpBufferReturnFailures;
+                long udpInvalidSize = GameServer.UdpInvalidSizeCount;
+                long udpInvalidChecksum = GameServer.UdpInvalidChecksumCount;
+                long udpInvalidSession = GameServer.UdpInvalidSessionCount;
+                long udpSourceMismatch = GameServer.UdpSourceMismatchCount;
+                long udpEndpointMismatch = GameServer.UdpEndpointMismatchCount;
 
                 // Game loop average TPS.
                 List<(int, double)> averageTps = GameLoop.GetAverageTps();
@@ -108,7 +118,7 @@ namespace DOL.GS
                 stats.AppendLine($"  {"Page faults/sec:".PadRight(PADDING)} {pageFaults:F1}");
                 stats.AppendLine($"  {"Disk transfers/sec:".PadRight(PADDING)} {diskTransfers:F1}");
 
-                stats.AppendLine("[Application]");
+                stats.AppendLine("[GameServer]");
                 stats.AppendLine($"  {"Clients:".PadRight(PADDING)} {clientCount}");
                 stats.AppendLine($"  {"Event handlers (G/O):".PadRight(PADDING)} {globalHandlers} / {objectHandlers}");
 
@@ -143,13 +153,30 @@ namespace DOL.GS
                 else
                     stats.AppendLine("  No TPS data available.");
 
-                if (sendBufferPoolExhaustedCount > 0)
-                    stats.AppendLine($"  {"Packet pool misses:".PadRight(PADDING)} {sendBufferPoolExhaustedCount}");
+                stats.AppendLine("[Network]");
+
+                if (tcpSendArgsPoolMisses > 0)
+                    stats.AppendLine($"  {"TCP send args pool misses:".PadRight(PADDING)} {tcpSendArgsPoolMisses}");
+
+                if (udpSendArgsPoolMisses > 0)
+                    stats.AppendLine($"  {"UDP send args pool misses:".PadRight(PADDING)} {udpSendArgsPoolMisses}");
+
+                if (udpPacketsReceived > 0 || udpPacketsDropped > 0 || udpReceiveErrors > 0)
+                    stats.AppendLine($"  {"UDP recv/drop/err:".PadRight(PADDING)} {udpPacketsReceived} / {udpPacketsDropped} / {udpReceiveErrors}");
+
+                if (udpInvalidSize > 0 || udpInvalidChecksum > 0 || udpInvalidSession > 0)
+                    stats.AppendLine($"  {"UDP invalid (size/crc/ses):".PadRight(PADDING)} {udpInvalidSize} / {udpInvalidChecksum} / {udpInvalidSession}");
+
+                if (udpSourceMismatch > 0 || udpEndpointMismatch > 0)
+                    stats.AppendLine($"  {"UDP mismatch (spoof/ep):".PadRight(PADDING)} {udpSourceMismatch} / {udpEndpointMismatch}");
+
+                if (udpBufferReturnFailures > 0)
+                    stats.AppendLine($"  {"UDP buffer return fails:".PadRight(PADDING)} {udpBufferReturnFailures}");
 
                 stats.AppendLine("[.NET]");
                 stats.AppendLine($"  {"Workers (used/max):".PadRight(PADDING)} {usedWorkers} / {maxWorkers}");
                 stats.AppendLine($"  {"IOCP (used/max):".PadRight(PADDING)} {usedIocp} / {maxIocp}");
-                stats.Append($"  {"GC ƒ¢ (0/1/2):".PadRight(PADDING)} {gen0Delta} / {gen1Delta} / {gen2Delta}");
+                stats.Append($"  {"GC (0/1/2):".PadRight(PADDING)} {gen0Delta} / {gen1Delta} / {gen2Delta}");
 
                 log.Info(stats.ToString());
                 Thread.CurrentThread.Priority = oldPriority;
