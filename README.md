@@ -41,6 +41,23 @@ Part of the wider [OpenDAoC project](https://github.com/OpenDAoC):
 | [OpenDAoC-AccountManager](https://github.com/OpenDAoC/OpenDAoC-AccountManager) | Web-based account management |
 | [OpenDAoC-Launcher](https://github.com/OpenDAoC/OpenDAoC-Launcher) | Custom client launcher |
 
+## Philosophy & Contributing
+
+OpenDAoC is maintained as a hobby passion project. While it is amazing what can be built today by autonomous AI agents, my motivation for maintaining this project is different: I enjoy programming, software architecture, and the challenge of problem-solving.
+
+I use AI as a tool to learn, double-check things, or speed up tedious refactoring, but development remains human-led.
+
+As a solo maintainer, I need to keep the review process manageable. AI-generated Pull Requests, while welcomed, can be incredibly difficult to parse.
+
+To ensure PRs are reviewable and maintainable, please follow these guidelines if you wish to contribute:
+
+*   **Understand the code you submit**: Do not submit code that you cannot personally debug, explain, or maintain.
+*   **Keep it focused**: PRs should be tightly scoped. Avoid introducing large amounts of code without a clear need.
+*   **Respect the architecture**: Reuse existing, non-legacy APIs and follow the established patterns.
+*   **Human communication**: Write descriptions and comments in your own words. Please avoid overly verbose, LLM-generated summaries.
+
+If you'd like to tackle a larger feature or architectural change, please open an Issue first so we can discuss the approach!
+
 ## License
 
 Licensed under the [GNU GPL v3](LICENSE) to serve the DAoC community and promote open-source development.
