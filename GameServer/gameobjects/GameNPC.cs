@@ -3306,6 +3306,8 @@ namespace DOL.GS
 					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
 					break;
 				}
+				case eSpellType.OffensiveProc:
+				case eSpellType.DefensiveProc:
 				case eSpellType.StyleTaunt:
 				case eSpellType.CurePoison:
 				case eSpellType.CureDisease:
