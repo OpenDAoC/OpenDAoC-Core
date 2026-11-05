@@ -8,7 +8,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public abstract class ECSGameEffect : IServiceObject, ITickPooledList<ECSGameEffect>
+    public abstract class ECSGameEffect : IShardedServiceObject, ITickPooledList<ECSGameEffect>
     {
         private State _state;
         private TransitionalState _transitionalState;
@@ -24,7 +24,11 @@ namespace DOL.GS
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
         public ServiceObjectId ServiceObjectId { get; }
-        public long NextTick;
+        public long NextTick
+        {
+            get => ServiceObjectId.NextTickMs;
+            set => ServiceObjectId.NextTickMs = value;
+        }
 
         public ISpellHandler SpellHandler { get; protected set; }
         public virtual ushort Icon => SpellHandler != null ? SpellHandler.Spell.Icon : (ushort) 0;
