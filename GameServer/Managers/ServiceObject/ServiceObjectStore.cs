@@ -1,5 +1,5 @@
-using System.Collections.Frozen;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using DOL.AI;
 using DOL.GS.ServerProperties;
 
@@ -7,105 +7,86 @@ namespace DOL.GS
 {
     public static class ServiceObjectStore
     {
-        /* 3 types of array are currently available:
-         * 
-         * ServiceObjectArray:
-         *   Simple array with deferred additions and removals.
-         *   Single threaded update.
-         *   Doesn't support scheduling.
-         *   Scales somewhat poorly with object count (O(n)).
-         *   Memory efficient.
-         *   Best for objects meant to be processed only once, or on every game loop tick.
-         * 
-         * SchedulableServiceObjectArray:
-         *   Inherits ServiceObjectArray, controlled by a timing wheel.
-         *   Single threaded update.
-         *   Supports scheduling.
-         *   Memory efficiency depends on its bucket count.
-         *   Scales well with object count, but has slow updates if objects need to be rescheduled frequently.
-         *   No use case for now.
-         * 
-         * ShardedServiceObjectArray:
-         *   Backed by an array of SchedulableServiceObjectArray.
-         *   Multithreaded update.
-         *   Supports scheduling.
-         *   Scales well with object count and has fairly fast updates (depending on CPU count).
-         *   Memory efficiency depends on SchedulableServiceObjectArray's bucket count and CPU count.
-         *   Best for everything that ticks much slower than the game loop, if object count is high enough to justify the overhead.
-         */
+        private static readonly IServiceObjectArray[] _serviceObjectArrays = CreateServiceObjectArrays();
 
-        private static FrozenDictionary<ServiceObjectType, IServiceObjectArray> _serviceObjectArrays =
-            new Dictionary<ServiceObjectType, IServiceObjectArray>()
-            {
-                { ServiceObjectType.Client, new ServiceObjectArray<GameClient>(Properties.MAX_PLAYERS) },
-                { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(Properties.MAX_ENTITIES) },
-                { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
-                { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
-                { ServiceObjectType.Effect, new ServiceObjectArray<ECSGameEffect>(10000) },
-                { ServiceObjectType.EffectListComponent, new ServiceObjectArray<EffectListComponent>(1250) },
-                { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
-                { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },
-                { ServiceObjectType.SubZoneObject, new ServiceObjectArray<SubZoneObject>(Properties.MAX_ENTITIES) },
-                { ServiceObjectType.LivingBeingKilled, new ServiceObjectArray<LivingBeingKilled>(200) },
-                { ServiceObjectType.Timer, new ServiceObjectArray<ECSGameTimer>(500) }
-            }.ToFrozenDictionary();
-
-        public static bool Add<T>(T serviceObject) where T : class, IServiceObject
+        public static bool Add(IServiceObject serviceObject)
         {
             ServiceObjectId id = serviceObject.ServiceObjectId;
-
-            // Prevent re-entry if the object is already registered, but not being removed or scheduled.
-            if (id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Remove and not ServiceObjectId.PendingAction.Schedule)
-                return false;
-
-            // Prevent re-entry if the object is already being added.
-            if (!id.TrySetAction(ServiceObjectId.PendingAction.Add))
-                return false;
-
-            (_serviceObjectArrays[serviceObject.ServiceObjectId.Type] as ServiceObjectArrayBase<T>).Add(serviceObject);
-            return true;
+            return _serviceObjectArrays[(int) id.Type].Add(serviceObject);
         }
 
-        // Schedule an object to be returned at a later time.
-        // Scheduling in the past is allowed (the item will be returned immediately), and it's the caller's responsibility to ensure this makes sense.
-        public static bool Schedule<T>(T serviceObject, long nextTickMs) where T : class, ISchedulableServiceObject
-        {
-            SchedulableServiceObjectId id = serviceObject.ServiceObjectId;
-
-            // Prevent re-entry if the object is already being scheduled.
-            if (!id.TrySetAction(ServiceObjectId.PendingAction.Schedule))
-                return false;
-
-            (_serviceObjectArrays[id.Type] as ServiceObjectArrayBase<T>).Schedule(serviceObject, nextTickMs);
-            return true;
-        }
-
-        public static bool Remove<T>(T serviceObject) where T : class, IServiceObject
+        public static bool Remove(IServiceObject serviceObject)
         {
             ServiceObjectId id = serviceObject.ServiceObjectId;
-
-            // Prevent re-entry if the object is already unregistered, but not being added or scheduled.
-            if (!id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Add and not ServiceObjectId.PendingAction.Schedule)
-                return false;
-
-            // Prevent re-entry if the object is already being removed.
-            if (!id.TrySetAction(ServiceObjectId.PendingAction.Remove))
-                return false;
-
-            (_serviceObjectArrays[serviceObject.ServiceObjectId.Type] as ServiceObjectArrayBase<T>).Remove(serviceObject);
-            return true;
+            return _serviceObjectArrays[(int) id.Type].Remove(serviceObject);
         }
 
         // Applies pending additions and removals then returns the list alongside the last valid index.
         public static ServiceObjectView<T> UpdateAndGetView<T>(ServiceObjectType type) where T : class, IServiceObject
         {
-            ServiceObjectArrayBase<T> array = _serviceObjectArrays[type] as ServiceObjectArrayBase<T>;
-            array.Update(GameLoop.GameLoopTime);
+            return ((ServiceObjectArrayBase<T>) _serviceObjectArrays[(int) type]).UpdateAndGetView(GameLoop.GameLoopTime);
+        }
 
-            if (array.IsSharded)
-                return new(array.Shards, array.ShardStartIndices, array.TotalValidCount);
+        private static IServiceObjectArray[] CreateServiceObjectArrays()
+        {
+            int size = Enum.GetValues<ServiceObjectType>().Max(t => (int) t) + 1;
+            IServiceObjectArray[] arrays = new IServiceObjectArray[size];
+
+            arrays[(int) ServiceObjectType.Client]              = CreateArray<GameClient>(Properties.MAX_PLAYERS);
+            arrays[(int) ServiceObjectType.Brain]               = CreateArray<ABrain>(Properties.MAX_ENTITIES);
+            arrays[(int) ServiceObjectType.AttackComponent]     = CreateArray<AttackComponent>(1250);
+            arrays[(int) ServiceObjectType.CastingComponent]    = CreateArray<CastingComponent>(1250);
+            arrays[(int) ServiceObjectType.Effect]              = CreateArray<ECSGameEffect>(10000);
+            arrays[(int) ServiceObjectType.EffectListComponent] = CreateArray<EffectListComponent>(1250);
+            arrays[(int) ServiceObjectType.MovementComponent]   = CreateArray<MovementComponent>(1250);
+            arrays[(int) ServiceObjectType.CraftComponent]      = CreateArray<CraftComponent>(100);
+            arrays[(int) ServiceObjectType.SubZoneObject]       = CreateArray<SubZoneObject>(Properties.MAX_ENTITIES);
+            arrays[(int) ServiceObjectType.LivingBeingKilled]   = CreateArray<LivingBeingKilled>(200);
+            arrays[(int) ServiceObjectType.Timer]               = CreateArray<ECSGameTimer>(500);
+
+            return arrays;
+        }
+
+        private static IServiceObjectArray CreateArray<T>(int capacity) where T : class, IServiceObject
+        {
+            /* 3 types of array are currently available:
+             * 
+             * ServiceObjectArray:
+             *   Simple array with deferred additions and removals.
+             *   Single threaded update.
+             *   Doesn't support scheduling.
+             *   Scales somewhat poorly with object count (O(n)).
+             *   Memory efficient.
+             *   Best for objects meant to be processed only once, or on every game loop tick.
+             * 
+             * SchedulableServiceObjectArray:
+             *   Inherits ServiceObjectArray, controlled by a timing wheel.
+             *   Single threaded update.
+             *   Supports scheduling.
+             *   Memory efficiency depends on its bucket count.
+             *   Scales well with object count, but has slow updates if objects need to be rescheduled frequently.
+             *   No use case for now.
+             * 
+             * ShardedServiceObjectArray:
+             *   Backed by an array of SchedulableServiceObjectArray.
+             *   Multithreaded update.
+             *   Supports scheduling.
+             *   Scales well with object count, and has fairly fast updates (depending on CPU count) but with a flat overhead.
+             *   Memory efficiency depends on SchedulableServiceObjectArray's bucket count and CPU count.
+             *   Best for everything that ticks much slower than the game loop, if object count is high enough to justify the overhead.
+             */
+
+            Type type = typeof(T);
+            Type arrayType;
+
+            if (typeof(IShardedServiceObject).IsAssignableFrom(type))
+                arrayType = typeof(ShardedServiceObjectArray<>).MakeGenericType(type);
+            else if (typeof(ISchedulableServiceObject).IsAssignableFrom(type))
+                arrayType = typeof(SchedulableServiceObjectArray<>).MakeGenericType(type);
             else
-                return new(array.Items, array.LastValidIndex + 1);
+                arrayType = typeof(ServiceObjectArray<>).MakeGenericType(type);
+
+            return (IServiceObjectArray) Activator.CreateInstance(arrayType, capacity);
         }
     }
 }

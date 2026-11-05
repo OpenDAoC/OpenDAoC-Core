@@ -12,7 +12,6 @@ namespace DOL.GS
         private int _roundRobinCounter;
         private int _totalValidCount;
 
-        public override bool IsSharded => true;
         public override List<T> Items => null;
         public override int LastValidIndex => TotalValidCount - 1;
         public override List<T>[] Shards => _shardsView;
@@ -36,9 +35,9 @@ namespace DOL.GS
             _shardStartIndices = new int[shardCount];
         }
 
-        private SchedulableServiceObjectArray<T> RouteItem(T item)
+        private ServiceObjectArrayBase<T> RouteItem(T item)
         {
-            ShardedServiceObjectId id = item.ServiceObjectId;
+            ServiceObjectId id = item.ServiceObjectId;
 
             if (id.ShardIndex == -1)
                 id.ShardIndex = (int) ((uint) Interlocked.Increment(ref _roundRobinCounter) % _shards.Count);
@@ -46,27 +45,29 @@ namespace DOL.GS
             return _shards[id.ShardIndex];
         }
 
-        public override void Add(T item)
+        protected override void Add(T item)
         {
-            RouteItem(item).Add(item);
+            Add(RouteItem(item), item);
         }
 
-        public override void Schedule(T item, long wakeUpTimeMs)
+        protected override void Remove(T item)
         {
-            RouteItem(item).Schedule(item, wakeUpTimeMs);
+            Remove(RouteItem(item), item);
         }
 
-        public override void Remove(T item)
+        protected override bool TryPrepareAdd(T item)
         {
-            if (item.ServiceObjectId.ShardIndex == -1)
-                return;
-
-            RouteItem(item).Remove(item);
+            return TryPrepareAdd(RouteItem(item), item);
         }
 
-        public override void Update(long now)
+        protected override bool TryPrepareRemove(T item)
         {
-            GameLoop.ExecuteForEach(_shards, _shards.Count, static shard => shard.Update(GameLoop.GameLoopTime));
+            return item.ServiceObjectId.ShardIndex != -1 && TryPrepareRemove(RouteItem(item), item);
+        }
+
+        protected override ServiceObjectView<T> UpdateAndGetView()
+        {
+            GameLoop.ExecuteForEach(_shards, _shards.Count, static shard => shard.UpdateAndGetView(GameLoop.GameLoopTime));
 
             int currentTotal = 0;
 
@@ -77,6 +78,7 @@ namespace DOL.GS
             }
 
             _totalValidCount = currentTotal;
+            return new(_shardsView, _shardStartIndices, _totalValidCount);
         }
     }
 }

@@ -14,12 +14,17 @@ namespace DOL.AI
     public abstract class ABrain : IServiceObject
     {
         public FSM FSM { get; set; }
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Brain);
+        public ServiceObjectId ServiceObjectId { get; }
         public virtual GameNPC Body { get; set; }
         public virtual int ThinkInterval { get; set; } = 2500;
         public bool IsActive => Body != null && Body.IsAlive && Body.ObjectState is GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
         public long NextThinkTick { get; set; }
         protected virtual int ThinkOffsetOnStart => Util.Random(750, 3000);
+
+        public ABrain()
+        {
+            ServiceObjectId = new(this, ServiceObjectType.Brain);
+        }
 
         /// <summary>
         /// Returns the string representation of the ABrain

@@ -22,6 +22,8 @@ namespace DOL.GS
         private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> _tooltipRequestTimes = new();
         private readonly Lock _disconnectLock = new();
 
+        public ServiceObjectId ServiceObjectId { get; }
+
         public DbAccount Account
         {
             get;
@@ -79,7 +81,6 @@ namespace DOL.GS
         public Dictionary<string, object> CustomParamsDictionary { get; set; }
         public bool IsPlaying => ClientState is eClientState.Playing or eClientState.Linkdead;
         public ushort SessionID => SessionId.Value;
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.Client);
         public bool HasSeenPatchNotes { get; set; }
         public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache { get; set; }
         public long LinkDeathTime { get; set; }
@@ -100,7 +101,10 @@ namespace DOL.GS
         public HashSet<eChatType> DisabledChatTypes { get; } = new();
         public eEffectFilter EffectFilter { get; set; }
 
-        public GameClient(Socket socket) : base(socket) { }
+        public GameClient(Socket socket) : base(socket)
+        {
+            ServiceObjectId = new(this, ServiceObjectType.Client);
+        }
 
         public bool CanSendTooltip(int type, int id)
         {

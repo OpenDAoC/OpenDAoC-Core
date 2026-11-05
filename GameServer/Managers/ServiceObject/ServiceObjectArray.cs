@@ -13,7 +13,6 @@ namespace DOL.GS
         private bool _updating;
         private int _lastValidIndex = -1;
 
-        public override bool IsSharded => false;
         public override List<T> Items { get; }
         public override int LastValidIndex => _lastValidIndex;
         public override List<T>[] Shards => null;
@@ -25,61 +24,102 @@ namespace DOL.GS
             Items = new(capacity);
         }
 
-        public override void Add(T item)
+        protected override void Add(T item)
         {
             _itemsToAdd.Add(item);
         }
 
-        public override void Schedule(T item, long wakeUpTimeMs) { }
-
-        public override void Remove(T item)
+        protected override void Remove(T item)
         {
             _itemsToRemove.Add(item);
         }
 
-        public override void Update(long now)
+        protected override bool TryPrepareAdd(T item)
+        {
+            ServiceObjectId id = item.ServiceObjectId;
+
+            // Prevent re-entry if the object is already registered, but not being removed.
+            if (id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Remove)
+                return false;
+
+            // Prevent re-entry if the object is already being added.
+            if (!id.TrySetAction(ServiceObjectId.PendingAction.Add))
+                return false;
+
+            return true;
+        }
+
+        protected override bool TryPrepareRemove(T item)
+        {
+            ServiceObjectId id = item.ServiceObjectId;
+
+            // Prevent re-entry if the object is already unregistered, but not being added.
+            if (!id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Add)
+                return false;
+
+            // Prevent re-entry if the object is already being removed.
+            if (!id.TrySetAction(ServiceObjectId.PendingAction.Remove))
+                return false;
+
+            return true;
+        }
+
+        protected override ServiceObjectView<T> UpdateAndGetView()
         {
             if (Interlocked.Exchange(ref _updating, true) != false)
                 throw new InvalidOperationException($"{typeof(T)} is already being updated.");
 
             try
             {
-                ProcessItemsToRemove(now);
-                ProcessItemsToAdd(now);
+                ProcessItemsToRemove();
+                ProcessItemsToAdd();
             }
             finally
             {
                 _updating = false;
             }
+
+            return new(Items, LastValidIndex + 1);
         }
 
-        protected virtual void ProcessItemsToRemove(long now)
+        protected virtual void ProcessItemsToRemove()
         {
             if (_itemsToRemove.Any)
                 _itemsToRemove.DrainTo(static (item, ctx) => ctx.RemoveInternal(item), this);
         }
 
-        protected virtual void ProcessItemsToAdd(long now)
+        protected virtual void ProcessItemsToAdd()
         {
             if (_itemsToAdd.Any)
                 _itemsToAdd.DrainTo(static (item, ctx) => ctx.AddInternal(item), this);
         }
 
-        private void RemoveInternal(T item)
+        protected static bool TryPrepareRemoveFromList(ServiceObjectId id)
+        {
+            return id.TryConsumeAction(ServiceObjectId.PendingAction.Remove);
+        }
+
+        protected virtual void RemoveInternal(T item)
         {
             ServiceObjectId id = item.ServiceObjectId;
 
-            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Remove))
+            if (!TryPrepareRemoveFromList(id))
                 return;
 
             RemoveFromList(id);
+            id.Unset();
         }
 
-        private void AddInternal(T item)
+        protected static bool TryPrepareAddToList(ServiceObjectId id)
+        {
+            return id.TryConsumeAction(ServiceObjectId.PendingAction.Add);
+        }
+
+        protected virtual void AddInternal(T item)
         {
             ServiceObjectId id = item.ServiceObjectId;
 
-            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Add))
+            if (!TryPrepareAddToList(id))
                 return;
 
             AddToList(item);
@@ -89,23 +129,21 @@ namespace DOL.GS
         {
             int idValue = id.Value;
 
-            if (idValue >= 0 && idValue <= LastValidIndex)
-            {
-                // Swap the item being removed with the item at the end.
-                if (idValue == LastValidIndex)
-                    Items[LastValidIndex] = null;
-                else
-                {
-                    T lastItem = Items[LastValidIndex];
-                    Items[idValue] = lastItem;
-                    lastItem.ServiceObjectId.MoveTo(idValue);
-                    Items[LastValidIndex] = null;
-                }
+            if (idValue < 0 || idValue > LastValidIndex)
+                return;
 
-                _lastValidIndex--;
+            // Swap the item being removed with the item at the end.
+            if (idValue == LastValidIndex)
+                Items[LastValidIndex] = null;
+            else
+            {
+                T lastItem = Items[LastValidIndex];
+                Items[idValue] = lastItem;
+                lastItem.ServiceObjectId.Value = idValue;
+                Items[LastValidIndex] = null;
             }
 
-            id.Unset();
+            _lastValidIndex--;
         }
 
         protected void AddToList(T item)
@@ -130,7 +168,7 @@ namespace DOL.GS
             else
                 Items[LastValidIndex] = item;
 
-            id.MoveTo(LastValidIndex);
+            id.Value = LastValidIndex;
         }
     }
 }

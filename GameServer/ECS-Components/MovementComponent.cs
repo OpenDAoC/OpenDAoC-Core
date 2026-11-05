@@ -13,17 +13,18 @@ namespace DOL.GS
         private int _turningDisabledCount;
 
         public GameLiving Owner { get; }
+        public ServiceObjectId ServiceObjectId { get; }
         public short CurrentSpeed { get; set; }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public long LastMovementTick { get; private set; }
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed != 0;
         public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.MovementComponent);
 
         protected MovementComponent(GameLiving owner)
         {
             Owner = owner;
+            ServiceObjectId = new(this, ServiceObjectType.MovementComponent);
         }
 
         public static MovementComponent Create(GameLiving living)

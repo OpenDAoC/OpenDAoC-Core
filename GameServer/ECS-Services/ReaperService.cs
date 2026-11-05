@@ -77,12 +77,13 @@ namespace DOL.GS
     // Temporary objects to be added to `ServiceObjectStore` and consumed by `ReaperService`, representing a living object being killed and waiting to be processed.
     public class LivingBeingKilled : IServiceObject
     {
+        public ServiceObjectId ServiceObjectId { get; }
         public GameLiving Killed { get; private set; }
         public GameObject Killer { get; private set; }
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.LivingBeingKilled);
 
         private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
+            ServiceObjectId = new(this, ServiceObjectType.LivingBeingKilled);
             Initialize(killed, killer);
         }
 

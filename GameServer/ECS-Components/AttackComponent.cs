@@ -23,7 +23,7 @@ namespace DOL.GS
         public GameLiving owner;
         public AttackAction attackAction;
         public WeaponAction weaponAction; // This represents the current weapon action, which will be stale when resolving ranged attacks.
-        public ServiceObjectId ServiceObjectId { get; } = new(ServiceObjectType.AttackComponent);
+        public ServiceObjectId ServiceObjectId { get; }
         public AttackerTracker AttackerTracker { get; private set; }
 
         private BlockRoundHandler _blockRoundHandler;
@@ -34,6 +34,7 @@ namespace DOL.GS
         {
             this.owner = owner;
             attackAction = AttackAction.Create(owner);
+            ServiceObjectId = new(this, ServiceObjectType.AttackComponent);
             AttackerTracker = new(owner);
             _blockRoundHandler = new(owner);
         }
