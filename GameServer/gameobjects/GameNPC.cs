@@ -3312,8 +3312,8 @@ namespace DOL.GS
 					return spell;
 				default:
 				{
-					if (log.IsWarnEnabled)
-						log.Warn($"Unhandled spell in {nameof(GetScaledSpell)}: {spell}");
+					if (log.IsDebugEnabled)
+						log.Debug($"Unhandled spell in {nameof(GetScaledSpell)}: {spell}");
 
 					return spell;
 				}
