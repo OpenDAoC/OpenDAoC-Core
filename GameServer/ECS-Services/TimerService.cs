@@ -64,7 +64,7 @@ namespace DOL.GS
         }
     }
 
-    public class ECSGameTimer : IServiceObject
+    public class ECSGameTimer : IShardedServiceObject
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
@@ -72,7 +72,11 @@ namespace DOL.GS
         public ServiceObjectId ServiceObjectId { get; }
         public ECSTimerCallback Callback { private get; set; }
         public int Interval { get; set; }
-        public long NextTick { get; protected set; }
+        public long NextTick
+        {
+            get => ServiceObjectId.NextTickMs;
+            private set => ServiceObjectId.NextTickMs = value;
+        }
         public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
         public MethodInfo CallbackInfo => Callback?.GetMethodInfo();
