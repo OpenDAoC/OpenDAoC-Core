@@ -130,7 +130,7 @@ namespace DOL.GS
             }
             finally
             {
-                (_workProcessor as WorkProcessor<T>)?.Clear();
+                _workProcessor?.Clear();
             }
         }
 
@@ -150,7 +150,7 @@ namespace DOL.GS
             }
             finally
             {
-                (_workProcessor as ShardedWorkProcessor<T>)?.Clear();
+                _workProcessor?.Clear();
             }
         }
 
@@ -396,7 +396,7 @@ namespace DOL.GS
                 }
             }
 
-            public void Clear()
+            public override void Clear()
             {
                 _items = null;
                 _action = null;
@@ -476,7 +476,7 @@ namespace DOL.GS
                 }
             }
 
-            public void Clear()
+            public override void Clear()
             {
                 _shards = null;
                 _shardStartIndices = null;
@@ -487,6 +487,7 @@ namespace DOL.GS
         private abstract class WorkProcessor
         {
             public abstract void Process(int start, int end, ref int inFlight);
+            public abstract void Clear();
         }
     }
 }
