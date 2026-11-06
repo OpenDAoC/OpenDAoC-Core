@@ -2874,14 +2874,25 @@ namespace DOL.GS
 
 			if (line != null)
 			{
-				List<Spell> spells = GetSpellList(line.KeyName);
-				foreach (Spell lineSpell in spells)
+				m_syncLockUpdates.EnterReadLock();
+
+				try
 				{
-					if (lineSpell.ID == spellID)
+					if (m_lineSpells.TryGetValue(line.KeyName, out List<Spell> spells))
 					{
-						spell = lineSpell;
-						break;
+						foreach (Spell lineSpell in spells)
+						{
+							if (lineSpell.ID == spellID)
+							{
+								spell = (Spell) lineSpell.Clone();
+								break;
+							}
+						}
 					}
+				}
+				finally
+				{
+					m_syncLockUpdates.ExitReadLock();
 				}
 			}
 
