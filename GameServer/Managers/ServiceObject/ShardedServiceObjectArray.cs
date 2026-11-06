@@ -4,8 +4,8 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    public class ShardedServiceObjectArray<T> : ServiceObjectArrayBase<T>
-        where T : class, IShardedServiceObject
+    public class ShardedServiceObjectArray<T> : ServiceObjectArrayBase<T, ShardedServiceObjectId<T>>
+        where T : class, IShardedServiceObject<T>
     {
         private readonly List<SchedulableServiceObjectArray<T>> _shards;
         private readonly List<T>[] _shardsView;
@@ -38,34 +38,24 @@ namespace DOL.GS
             _updateShardView = shard => shard.UpdateAndGetView(_currentUpdateNow);
         }
 
-        private ServiceObjectArrayBase<T> RouteItem(T item)
+        private SchedulableServiceObjectArray<T> RouteItem(ShardedServiceObjectId<T> id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             if (id.ShardIndex == -1)
                 id.ShardIndex = (int) ((uint) Interlocked.Increment(ref _roundRobinCounter) % _shards.Count);
 
             return _shards[id.ShardIndex];
         }
 
-        protected override void Add(T item)
+        // A sharded ID *is* a schedulable ID, so it goes straight into the shard (plain upcast).
+        // No protected-static forwarding helpers needed anymore.
+        public override bool Add(ShardedServiceObjectId<T> id)
         {
-            Add(RouteItem(item), item);
+            return RouteItem(id).Add(id);
         }
 
-        protected override void Remove(T item)
+        public override bool Remove(ShardedServiceObjectId<T> id)
         {
-            Remove(RouteItem(item), item);
-        }
-
-        protected override bool TryPrepareAdd(T item)
-        {
-            return TryPrepareAdd(RouteItem(item), item);
-        }
-
-        protected override bool TryPrepareRemove(T item)
-        {
-            return item.ServiceObjectId.ShardIndex != -1 && TryPrepareRemove(RouteItem(item), item);
+            return id.ShardIndex != -1 && RouteItem(id).Remove(id);
         }
 
         protected override ServiceObjectView<T> UpdateAndGetView()

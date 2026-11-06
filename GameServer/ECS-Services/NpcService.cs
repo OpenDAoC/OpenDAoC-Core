@@ -26,7 +26,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<ABrain>(ServiceObjectType.Brain);
+                _view = ServiceObjectStore.UpdateAndGetView<ABrain>();
             }
             catch (Exception e)
             {

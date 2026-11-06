@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<CraftComponent>(ServiceObjectType.CraftComponent);
+                _view = ServiceObjectStore.UpdateAndGetView<CraftComponent>();
             }
             catch (Exception e)
             {

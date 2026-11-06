@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace DOL.GS
 {
-    public class SchedulableServiceObjectArray<T> : ServiceObjectArray<T>
-        where T : class, ISchedulableServiceObject
+    public class SchedulableServiceObjectArray<T> : ServiceObjectArray<T, SchedulableServiceObjectId<T>>
+        where T : class, ISchedulableServiceObject<T>
     {
         // Circular timing wheel with a priority queue for distant scheduled items.
 
@@ -18,15 +17,15 @@ namespace DOL.GS
         private const int WHEEL_SIZE = 1 << WHEEL_BITS;
         private const int WHEEL_MASK = WHEEL_SIZE - 1;
 
-        private readonly ServiceObjectId[] _heads = new ServiceObjectId[WHEEL_SIZE];
+        private readonly SchedulableServiceObjectId<T>[] _heads = new SchedulableServiceObjectId<T>[WHEEL_SIZE];
         private long _lastProcessedWheelTick = -1;
 
         public SchedulableServiceObjectArray(int capacity) : base(capacity) { }
 
-        private void Link(ServiceObjectId id, long tick)
+        private void Link(SchedulableServiceObjectId<T> id, long tick)
         {
             int bucket = (int) (tick & WHEEL_MASK);
-            ServiceObjectId head = _heads[bucket];
+            SchedulableServiceObjectId<T> head = _heads[bucket];
             id.SleepPrev = null;
             id.SleepNext = head;
             head?.SleepPrev = id;
@@ -34,10 +33,10 @@ namespace DOL.GS
             id.SleepBucket = bucket;
         }
 
-        private void Unlink(ServiceObjectId id)
+        private void Unlink(SchedulableServiceObjectId<T> id)
         {
-            ServiceObjectId prev = id.SleepPrev;
-            ServiceObjectId next = id.SleepNext;
+            SchedulableServiceObjectId<T> prev = id.SleepPrev;
+            SchedulableServiceObjectId<T> next = id.SleepNext;
 
             if (prev != null)
                 prev.SleepNext = next;
@@ -61,12 +60,12 @@ namespace DOL.GS
             {
                 int bucket = (int) (_lastProcessedWheelTick & WHEEL_MASK);
 
-                ServiceObjectId id = _heads[bucket];
+                SchedulableServiceObjectId<T> id = _heads[bucket];
                 _heads[bucket] = null;
 
                 while (id != null)
                 {
-                    ServiceObjectId next = id.SleepNext;
+                    SchedulableServiceObjectId<T> next = id.SleepNext;
                     id.SleepNext = id.SleepPrev = null;
                     id.SleepBucket = -1;
 
@@ -77,7 +76,7 @@ namespace DOL.GS
                         if (target > _lastProcessedWheelTick)
                             Link(id, Math.Min(target, _lastProcessedWheelTick + WHEEL_SIZE - 1));
                         else
-                            AddToList(Unsafe.As<T>(id.Owner)); // Safety ensured by ServiceObjectStore.
+                            AddToList(id);
                     }
 
                     id = next;
@@ -87,10 +86,8 @@ namespace DOL.GS
             }
         }
 
-        protected override bool TryPrepareAdd(T item)
+        protected override bool TryPrepareAdd(SchedulableServiceObjectId<T> id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             // Already active, nothing pending, and it will still be in the current wheel bucket
             // (or past due) at the next update: AddInternal would end in a no-op AddToList anyway.
             if (id.IsRunning &&
@@ -109,10 +106,8 @@ namespace DOL.GS
             base.ProcessItemsToAdd();
         }
 
-        protected override void RemoveInternal(T item)
+        protected override void RemoveInternal(SchedulableServiceObjectId<T> id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             if (!TryPrepareRemoveFromList(id))
                 return;
 
@@ -123,10 +118,8 @@ namespace DOL.GS
             id.Unset();
         }
 
-        protected override void AddInternal(T item)
+        protected override void AddInternal(SchedulableServiceObjectId<T> id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             if (!TryPrepareAddToList(id))
                 return;
 
@@ -137,7 +130,7 @@ namespace DOL.GS
 
             if (wakeUp - _currentUpdateNow <= 0)
             {
-                AddToList(item);
+                AddToList(id);
                 return;
             }
 
@@ -145,7 +138,7 @@ namespace DOL.GS
 
             if (targetTick < _lastProcessedWheelTick)
             {
-                AddToList(item);
+                AddToList(id);
                 return;
             }
 

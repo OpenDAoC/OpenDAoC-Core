@@ -10,7 +10,7 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
-    public class EffectListComponent : IServiceObject
+    public class EffectListComponent : IServiceObject<EffectListComponent>
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -50,7 +50,7 @@ namespace DOL.GS
         protected EffectListComponent(GameLiving owner)
         {
             Owner = owner;
-            ServiceObjectId = new(this, ServiceObjectType.EffectListComponent);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         public static EffectListComponent Create(GameLiving living)

@@ -8,7 +8,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public abstract class ECSGameEffect : IShardedServiceObject, ITickPooledList<ECSGameEffect>
+    public abstract class ECSGameEffect : IShardedServiceObject<ECSGameEffect>, ITickPooledList<ECSGameEffect>
     {
         private State _state;
         private TransitionalState _transitionalState;
@@ -83,7 +83,7 @@ namespace DOL.GS
         {
             Owner = initParams.Target;
             OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
-            ServiceObjectId = new(this, ServiceObjectType.Effect);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
             EffectType = eEffect.Unknown; // Should be overridden in subclasses.

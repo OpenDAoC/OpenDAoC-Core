@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<ECSGameTimer>(ServiceObjectType.Timer);
+                _view = ServiceObjectStore.UpdateAndGetView<ECSGameTimer>();
             }
             catch (Exception e)
             {
@@ -64,7 +64,7 @@ namespace DOL.GS
         }
     }
 
-    public class ECSGameTimer : IShardedServiceObject
+    public class ECSGameTimer : IShardedServiceObject<ECSGameTimer>
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
@@ -84,7 +84,7 @@ namespace DOL.GS
         public ECSGameTimer(GameObject timerOwner)
         {
             Owner = timerOwner;
-            ServiceObjectId = new(this, ServiceObjectType.Timer);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback) : this(timerOwner)

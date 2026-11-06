@@ -16,7 +16,7 @@ using DOL.Network;
 
 namespace DOL.GS
 {
-    public class GameClient : BaseClient, ICustomParamsValuable, IServiceObject, ITickPooledList<GameClient>
+    public class GameClient : BaseClient, ICustomParamsValuable, IServiceObject<GameClient>, ITickPooledList<GameClient>
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> _tooltipRequestTimes = new();
@@ -103,7 +103,7 @@ namespace DOL.GS
 
         public GameClient(Socket socket) : base(socket)
         {
-            ServiceObjectId = new(this, ServiceObjectType.Client);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         public bool CanSendTooltip(int type, int id)

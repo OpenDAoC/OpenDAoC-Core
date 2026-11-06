@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<CastingComponent>(ServiceObjectType.CastingComponent);
+                _view = ServiceObjectStore.UpdateAndGetView<CastingComponent>();
             }
             catch (Exception e)
             {

@@ -11,7 +11,7 @@ using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public class CastingComponent : IServiceObject
+    public class CastingComponent : IServiceObject<CastingComponent>
     {
         private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -35,7 +35,7 @@ namespace DOL.GS
         protected CastingComponent(GameLiving owner)
         {
             Owner = owner;
-            ServiceObjectId = new(this, ServiceObjectType.CastingComponent);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
             _duringCastLosCheckListener = new(this);
             _endOfCastLosCheckListener = new(this);
         }

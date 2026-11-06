@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    public class MovementComponent : IServiceObject
+    public class MovementComponent : IServiceObject<MovementComponent>
     {
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 2000; // Subzone update is forced by OnPositionUpdate, so this doesn't need to be very frequent.
 
@@ -24,7 +24,7 @@ namespace DOL.GS
         protected MovementComponent(GameLiving owner)
         {
             Owner = owner;
-            ServiceObjectId = new(this, ServiceObjectType.MovementComponent);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         public static MovementComponent Create(GameLiving living)

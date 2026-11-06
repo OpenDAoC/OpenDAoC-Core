@@ -26,7 +26,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<EffectListComponent>(ServiceObjectType.EffectListComponent);
+                _view = ServiceObjectStore.UpdateAndGetView<EffectListComponent>();
             }
             catch (Exception e)
             {

@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<LivingBeingKilled>(ServiceObjectType.LivingBeingKilled);
+                _view = ServiceObjectStore.UpdateAndGetView<LivingBeingKilled>();
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace DOL.GS
     }
 
     // Temporary objects to be added to `ServiceObjectStore` and consumed by `ReaperService`, representing a living object being killed and waiting to be processed.
-    public class LivingBeingKilled : IServiceObject
+    public class LivingBeingKilled : IServiceObject<LivingBeingKilled>
     {
         public ServiceObjectId ServiceObjectId { get; }
         public GameLiving Killed { get; private set; }
@@ -83,7 +83,7 @@ namespace DOL.GS
 
         private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
-            ServiceObjectId = new(this, ServiceObjectType.LivingBeingKilled);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
             Initialize(killed, killer);
         }
 

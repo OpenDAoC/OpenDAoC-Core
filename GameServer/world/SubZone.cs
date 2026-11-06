@@ -76,7 +76,7 @@ namespace DOL.GS
     // This class serves two purposes:
     // * Wraps a `LinkedListNode<GameObject>`, representing a game object in a `SubZone`.
     // * Serves as an object to be added to `ServiceObjectStore` and consumed by `ZoneService`, to move the game object from one `SubZone` to another.
-    public class SubZoneObject : IServiceObject
+    public class SubZoneObject : IServiceObject<SubZoneObject>
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -92,7 +92,7 @@ namespace DOL.GS
         public SubZoneObject(GameObject obj)
         {
             Node = new(obj);
-            ServiceObjectId = new(this, ServiceObjectType.SubZoneObject);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         public void InitiateSubZoneTransition(Zone destinationZone, SubZone destinationSubZone)

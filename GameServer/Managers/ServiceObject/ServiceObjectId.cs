@@ -1,19 +1,18 @@
 ﻿namespace DOL.GS
 {
-    public class ServiceObjectId
+    public abstract class ServiceObjectId
     {
         public const int UNSET_ID = -1;
         public const int SLEEPING_ID = -2;
 
         private PendingAction _action = PendingAction.None;
 
-        public IServiceObject Owner { get; }
-        public ServiceObjectType Type { get; }
+        public abstract IServiceObject Owner { get; }
+
         public int Value { get; set; } = UNSET_ID;
         public bool IsRegistered => Value != UNSET_ID;
         public bool IsRunning => Value >= 0;
 
-        // Schedulable properties.
         public long NextTickMs
         {
             get;
@@ -23,20 +22,18 @@
 
                 // This prevents constructors/initializers from prematurely adding the object.
                 if (IsRegistered)
-                    ServiceObjectStore.Add(Owner);
+                    ServiceObjectStore.Add(this);
             }
         }
-        public ServiceObjectId SleepNext { get; set; }
-        public ServiceObjectId SleepPrev  { get; set; }
-        public int SleepBucket { get; set; } = -1;
 
-        // Sharded properties.
-        public int ShardIndex { get; set; } = -1;
+        private protected ServiceObjectId() { }
 
-        public ServiceObjectId(IServiceObject owner, ServiceObjectType type)
+        public abstract bool Register();
+        public abstract bool Unregister();
+
+        public static ServiceObjectId Create<T>(T owner) where T : class, IServiceObject<T>
         {
-            Owner = owner;
-            Type = type;
+            return T.CreateId(owner);
         }
 
         public bool TrySetAction(PendingAction action)
@@ -73,6 +70,68 @@
             None,
             Add,
             Remove
+        }
+    }
+
+    // ID: Basic functionalities.
+    public class ServiceObjectId<T> : ServiceObjectId
+        where T : class, IServiceObject<T>
+    {
+        public override T Owner { get; }
+
+        public ServiceObjectId(T owner)
+        {
+            Owner = owner;
+        }
+
+        public override bool Register()
+        {
+            return ServiceObjectStore.GetArray<T, ServiceObjectId<T>>().Add(this);
+        }
+
+        public override bool Unregister()
+        {
+            return ServiceObjectStore.GetArray<T, ServiceObjectId<T>>().Remove(this);
+        }
+    }
+
+    // Schedulable ID: Adds the timing wheel's intrusive list node.
+    public class SchedulableServiceObjectId<T> : ServiceObjectId<T>
+        where T : class, ISchedulableServiceObject<T>
+    {
+        public SchedulableServiceObjectId<T> SleepNext { get; set; }
+        public SchedulableServiceObjectId<T> SleepPrev { get; set; }
+        public int SleepBucket { get; set; } = -1;
+
+        public SchedulableServiceObjectId(T owner) : base(owner) { }
+
+        public override bool Register()
+        {
+            return ServiceObjectStore.GetArray<T, SchedulableServiceObjectId<T>>().Add(this);
+        }
+
+        public override bool Unregister()
+        {
+            return ServiceObjectStore.GetArray<T, SchedulableServiceObjectId<T>>().Remove(this);
+        }
+    }
+
+    // Sharded ID: Adds the shard routing index.
+    public class ShardedServiceObjectId<T> : SchedulableServiceObjectId<T>
+        where T : class, IShardedServiceObject<T>
+    {
+        public int ShardIndex { get; set; } = -1;
+
+        public ShardedServiceObjectId(T owner) : base(owner) { }
+
+        public override bool Register()
+        {
+            return ServiceObjectStore.GetArray<T, ShardedServiceObjectId<T>>().Add(this);
+        }
+
+        public override bool Unregister()
+        {
+            return ServiceObjectStore.GetArray<T, ShardedServiceObjectId<T>>().Remove(this);
         }
     }
 }

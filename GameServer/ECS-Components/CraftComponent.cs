@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    public class CraftComponent : IServiceObject
+    public class CraftComponent : IServiceObject<CraftComponent>
     {
         public GamePlayer Owner { get; }
         public CraftAction CraftAction { get; set; }
@@ -15,7 +15,7 @@ namespace DOL.GS
         public CraftComponent(GamePlayer owner)
         {
             Owner = owner;
-            ServiceObjectId = new(this, ServiceObjectType.CraftComponent);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         public void AddRecipe(Recipe recipe)

@@ -26,7 +26,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<SubZoneObject>(ServiceObjectType.SubZoneObject);
+                _view = ServiceObjectStore.UpdateAndGetView<SubZoneObject>();
             }
             catch (Exception e)
             {

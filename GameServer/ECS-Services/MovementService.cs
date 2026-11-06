@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<MovementComponent>(ServiceObjectType.MovementComponent);
+                _view = ServiceObjectStore.UpdateAndGetView<MovementComponent>();
             }
             catch (Exception e)
             {

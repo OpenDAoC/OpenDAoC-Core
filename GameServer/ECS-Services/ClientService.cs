@@ -42,7 +42,7 @@ namespace DOL.GS
 
                 try
                 {
-                    _view = ServiceObjectStore.UpdateAndGetView<GameClient>(ServiceObjectType.Client);
+                    _view = ServiceObjectStore.UpdateAndGetView<GameClient>();
                 }
                 catch (Exception e)
                 {

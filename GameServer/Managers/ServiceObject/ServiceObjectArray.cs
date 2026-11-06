@@ -5,11 +5,12 @@ using System.Threading;
 namespace DOL.GS
 {
     // Manages a contiguous array of active items.
-    public class ServiceObjectArray<T> : ServiceObjectArrayBase<T>
-        where T : class, IServiceObject
+    public class ServiceObjectArray<T, TId> : ServiceObjectArrayBase<T, TId>
+        where T : class, IServiceObject<T>
+        where TId : ServiceObjectId<T>
     {
-        private readonly DrainArray<T> _itemsToAdd = new();
-        private readonly DrainArray<T> _itemsToRemove = new();
+        private readonly DrainArray<TId> _idsToAdd = new();
+        private readonly DrainArray<TId> _idsToRemove = new();
         private bool _updating;
         private int _lastValidIndex = -1;
 
@@ -24,20 +25,26 @@ namespace DOL.GS
             Items = new(capacity);
         }
 
-        protected override void Add(T item)
+        public override bool Add(TId id)
         {
-            _itemsToAdd.Add(item);
+            if (!TryPrepareAdd(id))
+                return false;
+
+            _idsToAdd.Add(id);
+            return true;
         }
 
-        protected override void Remove(T item)
+        public override bool Remove(TId id)
         {
-            _itemsToRemove.Add(item);
+            if (!TryPrepareRemove(id))
+                return false;
+
+            _idsToRemove.Add(id);
+            return true;
         }
 
-        protected override bool TryPrepareAdd(T item)
+        protected virtual bool TryPrepareAdd(TId id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             // Prevent re-entry if the object is already registered, but not being removed.
             if (id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Remove)
                 return false;
@@ -49,10 +56,8 @@ namespace DOL.GS
             return true;
         }
 
-        protected override bool TryPrepareRemove(T item)
+        protected virtual bool TryPrepareRemove(TId id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             // Prevent re-entry if the object is already unregistered, but not being added.
             if (!id.IsRegistered && id.PeekAction() is not ServiceObjectId.PendingAction.Add)
                 return false;
@@ -84,14 +89,14 @@ namespace DOL.GS
 
         protected virtual void ProcessItemsToRemove()
         {
-            if (_itemsToRemove.Any)
-                _itemsToRemove.DrainTo(static (item, ctx) => ctx.RemoveInternal(item), this);
+            if (_idsToRemove.Any)
+                _idsToRemove.DrainTo(static (id, ctx) => ctx.RemoveInternal(id), this);
         }
 
         protected virtual void ProcessItemsToAdd()
         {
-            if (_itemsToAdd.Any)
-                _itemsToAdd.DrainTo(static (item, ctx) => ctx.AddInternal(item), this);
+            if (_idsToAdd.Any)
+                _idsToAdd.DrainTo(static (id, ctx) => ctx.AddInternal(id), this);
         }
 
         protected static bool TryPrepareRemoveFromList(ServiceObjectId id)
@@ -99,10 +104,8 @@ namespace DOL.GS
             return id.TryConsumeAction(ServiceObjectId.PendingAction.Remove);
         }
 
-        protected virtual void RemoveInternal(T item)
+        protected virtual void RemoveInternal(TId id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             if (!TryPrepareRemoveFromList(id))
                 return;
 
@@ -115,14 +118,12 @@ namespace DOL.GS
             return id.TryConsumeAction(ServiceObjectId.PendingAction.Add);
         }
 
-        protected virtual void AddInternal(T item)
+        protected virtual void AddInternal(TId id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             if (!TryPrepareAddToList(id))
                 return;
 
-            AddToList(item);
+            AddToList(id);
         }
 
         protected void RemoveFromList(ServiceObjectId id)
@@ -146,10 +147,8 @@ namespace DOL.GS
             _lastValidIndex--;
         }
 
-        protected void AddToList(T item)
+        protected void AddToList(TId id)
         {
-            ServiceObjectId id = item.ServiceObjectId;
-
             if (id.IsRunning)
                 return;
 
@@ -163,6 +162,8 @@ namespace DOL.GS
                 Items.Resize(newCapacity);
             }
 
+            T item = id.Owner;
+
             if (LastValidIndex >= Items.Count)
                 Items.Add(item);
             else
@@ -170,5 +171,11 @@ namespace DOL.GS
 
             id.Value = LastValidIndex;
         }
+    }
+
+    public class ServiceObjectArray<T> : ServiceObjectArray<T, ServiceObjectId<T>>
+        where T : class, IServiceObject<T>
+    {
+        public ServiceObjectArray(int capacity) : base(capacity) { }
     }
 }

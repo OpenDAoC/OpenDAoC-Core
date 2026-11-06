@@ -11,7 +11,7 @@ namespace DOL.AI
     /// <summary>
     /// This class is the base of all artificial intelligence in game objects
     /// </summary>
-    public abstract class ABrain : IShardedServiceObject
+    public abstract class ABrain : IShardedServiceObject<ABrain>
     {
         public FSM FSM { get; set; }
         public ServiceObjectId ServiceObjectId { get; }
@@ -27,7 +27,7 @@ namespace DOL.AI
 
         public ABrain()
         {
-            ServiceObjectId = new(this, ServiceObjectType.Brain);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
         }
 
         /// <summary>

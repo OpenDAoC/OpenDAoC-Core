@@ -18,7 +18,7 @@ using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public class AttackComponent : IServiceObject
+    public class AttackComponent : IServiceObject<AttackComponent>
     {
         public GameLiving owner;
         public AttackAction attackAction;
@@ -34,7 +34,7 @@ namespace DOL.GS
         {
             this.owner = owner;
             attackAction = AttackAction.Create(owner);
-            ServiceObjectId = new(this, ServiceObjectType.AttackComponent);
+            ServiceObjectId = ServiceObjectFactory.CreateId(this);
             AttackerTracker = new(owner);
             _blockRoundHandler = new(owner);
         }
