@@ -24,7 +24,7 @@ namespace DOL.GS
         protected abstract bool TryPrepareAdd(T item);
         protected abstract bool TryPrepareRemove(T item);
 
-        public virtual ServiceObjectView<T> UpdateAndGetView(long now)
+        public ServiceObjectView<T> UpdateAndGetView(long now)
         {
             _currentUpdateNow = now;
             return UpdateAndGetView();

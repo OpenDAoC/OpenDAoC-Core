@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
@@ -9,6 +10,7 @@ namespace DOL.GS
         private readonly List<SchedulableServiceObjectArray<T>> _shards;
         private readonly List<T>[] _shardsView;
         private readonly int[] _shardStartIndices;
+        private readonly Action<SchedulableServiceObjectArray<T>> _updateShardView;
         private int _roundRobinCounter;
         private int _totalValidCount;
 
@@ -33,6 +35,7 @@ namespace DOL.GS
             }
 
             _shardStartIndices = new int[shardCount];
+            _updateShardView = shard => shard.UpdateAndGetView(_currentUpdateNow);
         }
 
         private ServiceObjectArrayBase<T> RouteItem(T item)
@@ -67,7 +70,7 @@ namespace DOL.GS
 
         protected override ServiceObjectView<T> UpdateAndGetView()
         {
-            GameLoop.ExecuteForEach(_shards, _shards.Count, static shard => shard.UpdateAndGetView(GameLoop.GameLoopTime));
+            GameLoop.ExecuteForEach(_shards, _shards.Count, _updateShardView);
 
             int currentTotal = 0;
 
