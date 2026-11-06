@@ -1,3 +1,5 @@
+using System;
+
 namespace DOL.GS.Spells
 {
     [SpellHandler(eSpellType.CurePoison)]
@@ -5,9 +7,10 @@ namespace DOL.GS.Spells
     {
         public override string ShortDescription => $"All damage over time effects (such as poisons) are removed from the target{GetFrequencyAndDurationSuffix()}.";
 
-        public CurePoisonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
-        {
-            m_spellTypesToRemove = ["DamageOverTime", "StyleBleeding"];
-        }
+        private static readonly eEffect[] _effects = [eEffect.DamageOverTime, eEffect.Bleed];
+
+        protected override ReadOnlySpan<eEffect> EffectsToRemove => _effects;
+
+        public CurePoisonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 }

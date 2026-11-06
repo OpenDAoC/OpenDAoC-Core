@@ -1,26 +1,20 @@
 using System;
-using System.Collections.Generic;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	///
-	/// </summary>
-	[SpellHandler(eSpellType.CureAll)]
-	public class CureAllSpellHandler : RemoveSpellEffectHandler
-	{
-		// constructor
-		public CureAllSpellHandler(GameLiving caster, Spell spell, SpellLine line)
-			: base(caster, spell, line)
-		{
-			m_spellTypesToRemove = new List<string>();
-			m_spellTypesToRemove.Add("DamageOverTime");
-			m_spellTypesToRemove.Add("Nearsight");
-            m_spellTypesToRemove.Add("Silence");
-			m_spellTypesToRemove.Add("Disease");
-            m_spellTypesToRemove.Add("StyleBleeding");
-		}
-	}
+    [SpellHandler(eSpellType.CureAll)]
+    public class CureAllSpellHandler : RemoveSpellEffectHandler
+    {
+        private static readonly eEffect[] _effects =
+        [
+            eEffect.DamageOverTime,
+            eEffect.Nearsight,
+            eEffect.Disease,
+            eEffect.Bleed
+        ];
+
+        protected override ReadOnlySpan<eEffect> EffectsToRemove => _effects;
+
+        public CureAllSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+    }
 }

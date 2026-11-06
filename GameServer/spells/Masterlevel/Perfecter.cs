@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -182,14 +182,15 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SickHeal)]
     public class SickHealSpellHandler : RemoveSpellEffectHandler
     {
-        // constructor
-        public SickHealSpellHandler(GameLiving caster, Spell spell, SpellLine line)
-            : base(caster, spell, line)
-        {
-            m_spellTypesToRemove = new List<string>();
-            m_spellTypesToRemove.Add("PveResurrectionIllness");
-            m_spellTypesToRemove.Add("RvrResurrectionIllness");
-        }
+        private static readonly eEffect[] _effects =
+        [
+            eEffect.ResurrectionIllness,
+            eEffect.RvrResurrectionIllness
+        ];
+
+        protected override ReadOnlySpan<eEffect> EffectsToRemove => _effects;
+
+        public SickHealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
     #endregion
 

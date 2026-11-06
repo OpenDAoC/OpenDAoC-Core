@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 
@@ -43,21 +44,14 @@ namespace DOL.GS.Spells
             return list;
         }
 
-        // constructor
-        public BolsteringRoarSpellHandler(GameLiving caster, Spell spell, SpellLine line)
-            : base(caster, spell, line)
-        {
- 			// RR4: now it's a list
-			m_spellTypesToRemove = new List<string>();       	
-            m_spellTypesToRemove.Add("Mesmerize");
-            m_spellTypesToRemove.Add("SpeedDecrease");
-            m_spellTypesToRemove.Add("StyleSpeedDecrease");
-            m_spellTypesToRemove.Add("DamageSpeedDecrease");
-            m_spellTypesToRemove.Add("HereticSpeedDecrease");
-            m_spellTypesToRemove.Add("HereticDamageSpeedDecreaseLOP");
-            m_spellTypesToRemove.Add("VampiirSpeedDecrease");
-            m_spellTypesToRemove.Add("ValkyrieSpeedDecrease");
-            m_spellTypesToRemove.Add("WarlockSpeedDecrease");
-        }
+        private static readonly eEffect[] _effects =
+        [
+            eEffect.Mez,
+            eEffect.MovementSpeedDebuff
+        ];
+
+        protected override ReadOnlySpan<eEffect> EffectsToRemove => _effects;
+
+        public BolsteringRoarSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 }

@@ -2,6 +2,8 @@ namespace DOL.GS
 {
     public enum eEffect
     {
+        Unknown,
+
         #region Positive Effects
         //positive effects
         Bladeturn,
@@ -105,7 +107,6 @@ namespace DOL.GS
         #endregion
 
         //other
-        Unknown,
         DirectDamage,
         Pulse,
         FacilitatePainworking,

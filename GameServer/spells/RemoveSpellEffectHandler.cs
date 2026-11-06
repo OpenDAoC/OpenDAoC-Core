@@ -1,66 +1,44 @@
-using System.Collections.Generic;
+using System;
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Base class for all spells that remove effects
-	/// </summary>
-	public abstract class RemoveSpellEffectHandler : SpellHandler
-	{
-		/// <summary>
-		/// Stores spell effect type that will be removed
-		/// RR4: now its a list of effects to remove
-		/// </summary>
-		protected List<string> m_spellTypesToRemove = null;
+    /// <summary>
+    /// Base class for all spells that remove effects
+    /// </summary>
+    public abstract class RemoveSpellEffectHandler : SpellHandler
+    {
+        protected abstract ReadOnlySpan<eEffect> EffectsToRemove { get; }
 
-		/// <summary>
-		/// Spell effect type that will be removed
-		/// RR4: now its a list of effects to remove
-		/// </summary>
-		public virtual List<string> SpellTypesToRemove
-		{
-			get { return m_spellTypesToRemove; }
-		}
+        protected RemoveSpellEffectHandler(GameLiving caster, Spell spell, SpellLine line)
+            : base(caster, spell, line) { }
 
-		/// <summary>
-		/// called when spell effect has to be started and applied to targets
-		/// </summary>
-		/// <param name="target"></param>
-		public override void FinishSpellCast(GameLiving target)
-		{
-			m_caster.Mana -= PowerCost(target);
-			base.FinishSpellCast(target);
-		}
+        public override void FinishSpellCast(GameLiving target)
+        {
+            m_caster.Mana -= PowerCost(target);
+            base.FinishSpellCast(target);
+        }
 
-		public override void OnEffectPulse(GameSpellEffect effect)
-		{
-			base.OnEffectPulse(effect);
-			OnDirectEffect(effect.Owner);
-		}
+        public override void OnEffectPulse(GameSpellEffect effect)
+        {
+            base.OnEffectPulse(effect);
+            OnDirectEffect(effect.Owner);
+        }
 
-		public override void OnDirectEffect(GameLiving target)
-		{
-			base.OnDirectEffect(target);
-			if (target == null || !target.IsAlive)
-				return;
+        public override void OnDirectEffect(GameLiving target)
+        {
+            if (target == null || !target.IsAlive)
+                return;
 
-			// RR4: we remove all the effects
-			foreach (string toRemove in SpellTypesToRemove)
-			{
-				//GameSpellEffect effect = target.FindEffectOnTarget(toRemove);
-				eEffect.TryParse(toRemove, out eEffect effectType);
-				ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, effectType);
-				if (toRemove == "Mesmerize")
-					effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
-				if (effect != null)
-					effect.End();
-					//effect.Cancel(false);
-			}
-			SendEffectAnimation(target, 0, false, 1);
-		}
+            base.OnDirectEffect(target);
 
-		// constructor
-		protected RemoveSpellEffectHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-	}
+            foreach (eEffect effectType in EffectsToRemove)
+            {
+                foreach (ECSGameEffect effect in target.effectListComponent.GetEffects(effectType))
+                    effect?.End();
+            }
+
+            SendEffectAnimation(target, 0, false, 1);
+        }
+    }
 }

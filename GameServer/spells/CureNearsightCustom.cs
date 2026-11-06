@@ -1,9 +1,7 @@
-﻿using DOL.GS.Spells;
-
-namespace DOL.GS.Scripts
+﻿namespace DOL.GS.Spells
 {
     [SpellHandler(eSpellType.CureNearsightCustom)]
-    public class CureNearsightCustomSpellHandler : RemoveSpellEffectHandler
+    public class CureNearsightCustomSpellHandler : CureNearsightSpellHandler
     {
         private Spell _spell;
 
@@ -11,9 +9,7 @@ namespace DOL.GS.Scripts
 
         public CureNearsightCustomSpellHandler(GameLiving caster, Spell spell, SpellLine line): base(caster, spell, line)
         {
-            // RR4: now it's a list
-            m_spellTypesToRemove = ["Nearsight", "Silence"];
-            this._spell = spell;
+            _spell = spell;
         }
 
         public override int CalculateCastingTime()
