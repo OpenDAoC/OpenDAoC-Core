@@ -18,13 +18,13 @@ namespace DOL.GS
         private const int WHEEL_MASK = WHEEL_SIZE - 1;
 
         private readonly SchedulableServiceObjectId<T>[] _heads = new SchedulableServiceObjectId<T>[WHEEL_SIZE];
+        private readonly DrainArray<SchedulableServiceObjectId<T>> _idsToReschedule = new();
         private long _lastProcessedWheelTick = -1;
 
         public SchedulableServiceObjectArray(int capacity) : base(capacity) { }
 
-        private void Link(SchedulableServiceObjectId<T> id, long tick)
+        private void Link(SchedulableServiceObjectId<T> id, int bucket)
         {
-            int bucket = (int) (tick & WHEEL_MASK);
             SchedulableServiceObjectId<T> head = _heads[bucket];
             id.SleepPrev = null;
             id.SleepNext = head;
@@ -74,7 +74,7 @@ namespace DOL.GS
                         long target = id.NextTickMs / WHEEL_RESOLUTION_MS;
 
                         if (target > _lastProcessedWheelTick)
-                            Link(id, Math.Min(target, _lastProcessedWheelTick + WHEEL_SIZE - 1));
+                            Link(id, GetBucket(target));
                         else
                             AddToList(id);
                     }
@@ -86,24 +86,60 @@ namespace DOL.GS
             }
         }
 
-        protected override bool TryPrepareAdd(SchedulableServiceObjectId<T> id)
+        public override bool Reschedule(SchedulableServiceObjectId<T> id)
         {
-            // Already active, nothing pending, and it will still be in the current wheel bucket
-            // (or past due) at the next update: AddInternal would end in a no-op AddToList anyway.
-            if (id.IsRunning &&
-                id.PeekAction() is ServiceObjectId.PendingAction.None &&
-                id.NextTickMs / WHEEL_RESOLUTION_MS <= _currentUpdateNow / WHEEL_RESOLUTION_MS)
+            // A pending addition already reads the latest wake time, and a pending removal takes precedence.
+            if (!id.IsRegistered || id.PeekAction() is ServiceObjectId.PendingAction.Add or ServiceObjectId.PendingAction.Remove)
+                return false;
+
+            long target = id.NextTickMs / WHEEL_RESOLUTION_MS;
+            long currentTick = _currentUpdateNow / WHEEL_RESOLUTION_MS;
+
+            if (id.IsRunning)
             {
+                // In the active list and still due at the next update.
+                if (target <= currentTick)
+                    return false;
+            }
+            else if (target > currentTick && id.SleepBucket == GetBucket(target))
+            {
+                // Sleeping in the right bucket already.
                 return false;
             }
 
-            return id.TrySetAction(ServiceObjectId.PendingAction.Add);
+            // Returns false if the id is already queued for a move.
+            if (!id.TrySetAction(ServiceObjectId.PendingAction.Move))
+                return false;
+
+            _idsToReschedule.Add(id);
+            return true;
         }
 
         protected override void ProcessItemsToAdd()
         {
+            ProcessItemsToReschedule();
             WakeUpItems();
             base.ProcessItemsToAdd();
+        }
+
+        private void ProcessItemsToReschedule()
+        {
+            if (!_idsToReschedule.Any)
+                return;
+
+            if (_lastProcessedWheelTick == -1)
+                _lastProcessedWheelTick = _currentUpdateNow / WHEEL_RESOLUTION_MS;
+
+            _idsToReschedule.DrainTo(static (id, ctx) => ctx.RescheduleInternal(id), this);
+        }
+
+        private void RescheduleInternal(SchedulableServiceObjectId<T> id)
+        {
+            // The id may have been removed, or queued for removal, since Reschedule was called.
+            if (!id.TryConsumeAction(ServiceObjectId.PendingAction.Move))
+                return;
+
+            Schedule(id);
         }
 
         protected override void RemoveInternal(SchedulableServiceObjectId<T> id)
@@ -123,6 +159,11 @@ namespace DOL.GS
             if (!TryPrepareAddToList(id))
                 return;
 
+            Schedule(id);
+        }
+
+        private void Schedule(SchedulableServiceObjectId<T> id)
+        {
             if (id.SleepBucket >= 0)
                 Unlink(id);
 
@@ -144,7 +185,12 @@ namespace DOL.GS
 
             RemoveFromList(id);
             id.Value = ServiceObjectId.SLEEPING_ID;
-            Link(id, Math.Min(targetTick, _lastProcessedWheelTick + WHEEL_SIZE - 1));
+            Link(id, GetBucket(targetTick));
+        }
+
+        private int GetBucket(long targetTick)
+        {
+            return (int) (Math.Min(targetTick, _lastProcessedWheelTick + WHEEL_SIZE - 1) & WHEEL_MASK);
         }
     }
 }

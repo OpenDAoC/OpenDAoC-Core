@@ -43,6 +43,11 @@ namespace DOL.GS
             return true;
         }
 
+        public override bool Reschedule(TId id)
+        {
+            return false;
+        }
+
         protected virtual bool TryPrepareAdd(TId id)
         {
             // Prevent re-entry if the object is already registered, but not being removed.

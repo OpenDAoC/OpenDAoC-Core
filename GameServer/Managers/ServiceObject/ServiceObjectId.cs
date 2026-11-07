@@ -19,10 +19,7 @@
             set
             {
                 field = value;
-
-                // This prevents constructors/initializers from prematurely adding the object.
-                if (IsRegistered)
-                    ServiceObjectStore.Add(this);
+                Reschedule();
             }
         }
 
@@ -30,6 +27,10 @@
 
         public abstract bool Register();
         public abstract bool Unregister();
+
+        // Called when the wake time of an already registered object changes.
+        // Non schedulable objects ignore it.
+        protected virtual void Reschedule() { }
 
         public static ServiceObjectId Create<T>(T owner) where T : class, IServiceObject<T>
         {
@@ -69,7 +70,8 @@
         {
             None,
             Add,
-            Remove
+            Remove,
+            Move
         }
     }
 
@@ -114,6 +116,11 @@
         {
             return ServiceObjectStore.GetArray<T, SchedulableServiceObjectId<T>>().Remove(this);
         }
+
+        protected override void Reschedule()
+        {
+            ServiceObjectStore.GetArray<T, SchedulableServiceObjectId<T>>().Reschedule(this);
+        }
     }
 
     // Sharded ID: Adds the shard routing index.
@@ -132,6 +139,11 @@
         public override bool Unregister()
         {
             return ServiceObjectStore.GetArray<T, ShardedServiceObjectId<T>>().Remove(this);
+        }
+
+        protected override void Reschedule()
+        {
+            ServiceObjectStore.GetArray<T, ShardedServiceObjectId<T>>().Reschedule(this);
         }
     }
 }

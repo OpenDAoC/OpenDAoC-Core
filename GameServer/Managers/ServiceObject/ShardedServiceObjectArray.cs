@@ -53,7 +53,12 @@ namespace DOL.GS
 
         public override bool Remove(ShardedServiceObjectId<T> id)
         {
-            return id.ShardIndex != -1 && RouteItem(id).Remove(id);
+            return id.ShardIndex != -1 && _shards[id.ShardIndex].Remove(id);
+        }
+
+        public override bool Reschedule(ShardedServiceObjectId<T> id)
+        {
+            return id.ShardIndex != -1 && _shards[id.ShardIndex].Reschedule(id);
         }
 
         protected override ServiceObjectView<T> UpdateAndGetView()

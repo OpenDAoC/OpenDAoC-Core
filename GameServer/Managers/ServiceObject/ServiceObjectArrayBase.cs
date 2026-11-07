@@ -32,6 +32,7 @@ namespace DOL.GS
     {
         public abstract bool Add(TId id);
         public abstract bool Remove(TId id);
+        public abstract bool Reschedule(TId id);
 
         public override void Publish()
         {
