@@ -57,9 +57,10 @@ namespace DOL.GS
         public ImmunityType AppliedImmunityType => !TriggersImmunity ? ImmunityType.None : (Owner is GamePlayer ? ImmunityType.Player : ImmunityType.Npc);
         public bool TriggersImmunity { get; set; }
         public int ImmunityDuration { get; protected set; } = 60000;
-        public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
-        public int LastClientIndex { get; set; } = -1; // Used eternally for effect list updates.
-        public bool NeedsClientUpdate { get; set; } // Used eternally for effect list updates.
+        public bool IsBeingReplaced { get; set; }       // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
+        public int LastClientIndex { get; set; } = -1;  // Used externally for effect list updates.
+        public bool NeedsClientUpdate { get; set; }     // Used externally for effect list updates.
+        public bool ShouldBeRegistered => Duration > 0 || PulseFreq > 0;
 
         // State properties.
         public bool IsActive => _state is State.Active;
@@ -95,11 +96,6 @@ namespace DOL.GS
         public virtual long GetNextTick()
         {
             return ExpireTick;
-        }
-
-        public bool CanExpire()
-        {
-            return GetNextTick() >= GameLoop.GameLoopTime;
         }
 
         public bool Start()

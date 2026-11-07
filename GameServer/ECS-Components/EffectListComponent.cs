@@ -526,7 +526,7 @@ namespace DOL.GS
                             if (start)
                                 effect.OnStartEffect();
 
-                            if (effect.CanExpire())
+                            if (effect.ShouldBeRegistered)
                                 effect.ServiceObjectId.Register();
 
                             // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
@@ -721,7 +721,7 @@ namespace DOL.GS
                         existingEffect.ServiceObjectId.Unregister();
                         existingEffect.IsBeingReplaced = true;
 
-                        if (effect.CanExpire())
+                        if (effect.ShouldBeRegistered)
                             effect.ServiceObjectId.Register();
 
                         existingEffects[i] = effect;
