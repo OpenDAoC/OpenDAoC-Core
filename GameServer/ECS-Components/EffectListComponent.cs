@@ -517,6 +517,7 @@ namespace DOL.GS
                 try
                 {
                     bool start = effect.FinalizeState(result);
+                    component.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     component._pendingEffects.Enqueue(new(effect, effect.IsBeingReplaced, static (effect, start) =>
                     {
@@ -527,8 +528,6 @@ namespace DOL.GS
 
                             if (effect.CanExpire())
                                 ServiceObjectStore.Add(effect);
-
-                            effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                             // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
                             if (effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
@@ -916,6 +915,7 @@ namespace DOL.GS
                 try
                 {
                     bool stop = effect.FinalizeState(result);
+                    component.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     component._pendingEffects.Enqueue(new(effect, effect.IsBeingReplaced, static (effect, stop) =>
                     {
@@ -923,8 +923,6 @@ namespace DOL.GS
                         {
                             if (stop)
                                 effect.OnStopEffect();
-
-                            effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                             // Keep disabled effects in the store.
                             if (!effect.IsDisabled)
