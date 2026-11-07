@@ -156,8 +156,12 @@ namespace DOL.GS.PacketHandler
 
 					foreach (var effect in pet.effectListComponent.GetSortedEffects())
 					{
-						if (effect.Icon == 0 || effect.IsDisabled || effect is ECSImmunityEffect)
+						if (effect.Icon == 0 ||
+							effect.IsDisabled ||
+							effect is PetECSGameEffect or ECSImmunityEffect)
+						{
 							continue;
+						}
 
 						buffer[count++] = effect.Icon;
 
