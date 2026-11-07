@@ -172,7 +172,7 @@ namespace DOL.GS
             else
                 ShowAttackAnimation(mainHandAttackData, _attackWeapon);
 
-            if (_owner.HasAbilityType(typeof(AtlasOF_PreventFlight)) &&
+            if (_owner.HasAbility(typeof(AtlasOF_PreventFlight)) &&
                 Util.Chance(35) &&
                 _target is GameLiving livingTarget &&
                 livingTarget.IsMoving &&

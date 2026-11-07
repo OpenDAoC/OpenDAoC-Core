@@ -50,8 +50,8 @@ namespace DOL.GS.Spells
 				if (obj is Specialization)
 					text.Add(((Specialization)obj).Name + ": " + ((Specialization)obj).Level.ToString());
 			text.Add("----------------------------------------------------");
-			IList abilities = player.GetAllAbilities();
-			foreach(Ability ab in abilities)
+
+			foreach(Ability ab in player.GetAbilities())
 				if(ab is RealmAbility && ab is RR5RealmAbility == false)
 					text.Add(((RealmAbility)ab).Name);
 

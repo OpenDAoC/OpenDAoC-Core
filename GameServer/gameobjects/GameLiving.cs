@@ -3305,16 +3305,18 @@ namespace DOL.GS
 			return hasit;
 		}
 
-		public bool HasAbilityType(Type type)
+		public bool HasAbility(Type type)
 		{
-			bool hasit = false;
-			
-			lock (_abilitiesLock)
+			lock (m_abilities)
 			{
-				hasit = (m_abilities.Values.Count(x => x.GetType() == type) > 0 ? true : false);
+				foreach (Ability ability in m_abilities.Values)
+				{
+					if (ability.GetType() == type)
+						return true;
+				}
 			}
-			
-			return hasit;
+
+			return false;
 		}
 
 		/// <summary>
@@ -3406,32 +3408,16 @@ namespace DOL.GS
 		/// <returns></returns>
 		public T GetAbility<T>() where T : Ability
 		{
-			T tmp;
 			lock (_abilitiesLock)
 			{
-				tmp = (T)m_abilities.Values.FirstOrDefault(a => a.GetType().Equals(typeof(T)));
-			}
-			
-			return tmp;
-		}
-
-		/// <summary>
-		/// returns ability of living or null if no existant
-		/// </summary>
-		/// <param name="abilityType"></param>
-		/// <returns></returns>
-		[Obsolete("Use GetAbility<T>() instead")]
-		public Ability GetAbility(Type abilityType)
-		{
-			lock (_abilitiesLock)
-			{
-				foreach (Ability ab in m_abilities.Values)
+				foreach (Ability ability in m_abilities.Values)
 				{
-					if (ab.GetType().Equals(abilityType))
-						return ab;
+					if (ability.GetType() == typeof(T))
+						return (T) ability;
 				}
 			}
-			return null;
+			
+			return default;
 		}
 
 		/// <summary>
@@ -3455,19 +3441,32 @@ namespace DOL.GS
 			return Math.Max(1, ab.Level);
 		}
 
-		/// <summary>
-		/// returns all abilities in a copied list
-		/// </summary>
-		/// <returns></returns>
-		public IList GetAllAbilities()
+		public List<Ability> GetAbilities()
 		{
-			List<Ability> list = new List<Ability>();
+			List<Ability> result = null;
+
 			lock (_abilitiesLock)
 			{
-				list = new List<Ability>(m_abilities.Values);
+				if (m_abilities != null && m_abilities.Count > 0)
+					result = [.. m_abilities.Values];
 			}
-			
-			return list;
+
+			return result;
+		}
+
+		public bool HasAbilities(out int count)
+		{
+			count = 0;
+
+			lock (_abilitiesLock)
+			{
+				if (m_abilities == null)
+					return false;
+
+				count = m_abilities.Count;
+			}
+
+			return count > 0;
 		}
 
 		#endregion Abilities

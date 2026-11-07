@@ -980,7 +980,7 @@ namespace DOL.GS
 			_templateSizes = null;
 			Spells = [];
 			Styles = [];
-			Abilities = [];
+			m_abilities = [];
 
 			base.LoadFromDatabase(obj);
 
@@ -3496,83 +3496,6 @@ namespace DOL.GS
 			return true;
 		}
 
-		///// <summary>
-		///// Picks a style, prioritizing reactives an	d chains over positionals and anytimes
-		///// </summary>
-		///// <returns>Selected style</returns>
-		//public override Style GetStyleToUse()
-		//{
-		//	if (m_styles == null || m_styles.Count < 1 || TargetObject == null)
-		//		return null;
-
-		//	// Chain and defensive styles skip the GAMENPC_CHANCES_TO_STYLE,
-		//	//	or they almost never happen e.g. NPC blocks 10% of the time,
-		//	//	default 20% style chance means the defensive style only happens
-		//	//	2% of the time, and a chain from it only happens 0.4% of the time.
-		//	if (StylesChain != null && StylesChain.Count > 0)
-		//		foreach (Style s in StylesChain)
-		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-		//				return s;
-
-		//	if (StylesDefensive != null && StylesDefensive.Count > 0)
-		//		foreach (Style s in StylesDefensive)
-		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon)
-		//				&& CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
-		//				return s;
-
-		//	if (Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE))
-		//	{
-		//		// Check positional styles
-		//		// Picking random styles allows mobs to use multiple styles from the same position
-		//		//	e.g. a mob with both Pincer and Ice Storm side styles will use both of them.
-		//		if (StylesBack != null && StylesBack.Count > 0)
-		//		{
-		//			Style s = StylesBack[Util.Random(0, StylesBack.Count - 1)];
-		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-		//				return s;
-		//		}
-
-		//		if (StylesSide != null && StylesSide.Count > 0)
-		//		{
-		//			Style s = StylesSide[Util.Random(0, StylesSide.Count - 1)];
-		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-		//				return s;
-		//		}
-
-		//		if (StylesFront != null && StylesFront.Count > 0)
-		//		{
-		//			Style s = StylesFront[Util.Random(0, StylesFront.Count - 1)];
-		//			if (StyleProcessor.CanUseStyle(this, s, AttackWeapon))
-		//				return s;
-		//		}
-
-		//		// Pick a random anytime style
-		//		if (StylesAnytime != null && StylesAnytime.Count > 0)
-		//			return StylesAnytime[Util.Random(0, StylesAnytime.Count - 1)];
-		//	}
-
-		//	return null;
-		//} // GetStyleToUse()
-
-		/// <summary>
-		/// The Abilities for this NPC
-		/// </summary>
-		public Dictionary<string, Ability> Abilities
-		{
-			get
-			{
-				Dictionary<string, Ability> tmp = new Dictionary<string, Ability>();
-
-				lock (_abilitiesLock)
-				{
-					tmp = new Dictionary<string, Ability>(m_abilities);
-				}
-
-				return tmp;
-			}
-			protected set => m_abilities = value;
-		}
-
 		#endregion
 
 		#region Notify
@@ -3852,9 +3775,9 @@ namespace DOL.GS
 			copyTarget.OwnerID = OwnerID;
 			copyTarget.PackageID = PackageID;
 
-			if (Abilities != null && Abilities.Count > 0)
+			if (HasAbilities(out _))
 			{
-				foreach (Ability targetAbility in Abilities.Values)
+				foreach (Ability targetAbility in GetAbilities())
 				{
 					if (targetAbility != null)
 						copyTarget.AddAbility(targetAbility);

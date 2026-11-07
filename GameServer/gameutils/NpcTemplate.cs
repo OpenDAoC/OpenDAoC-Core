@@ -214,14 +214,14 @@ namespace DOL.GS
 			m_tetherRange = mob.TetherRange;
 			m_visibleActiveWeaponSlot = mob.VisibleActiveWeaponSlots;
 			
-			if ( mob.Abilities != null && mob.Abilities.Count > 0 )
+			if (mob.HasAbilities(out int abilityCount))
 			{
 				try
 				{
 					if (m_abilities == null)
-						m_abilities = new(mob.Abilities.Count);
+						m_abilities = new(abilityCount);
 
-					foreach (Ability mobAbility in mob.Abilities.Values)
+					foreach (Ability mobAbility in mob.GetAbilities())
 					{
 						m_abilities.Add(mobAbility);
 					}

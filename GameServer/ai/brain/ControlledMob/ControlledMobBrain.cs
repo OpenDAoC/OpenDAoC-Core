@@ -345,86 +345,85 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void CheckAbilities()
 		{
-			if (Body.Abilities == null || Body.Abilities.Count <= 0)
+			if (!Body.HasAbilities(out _))
 				return;
 
-			foreach (Ability ab in Body.Abilities.Values)
+			CheckIntercept();
+			CheckGuard();
+			CheckProtect();
+			CheckCharge();
+		}
+
+		protected void CheckIntercept()
+		{
+			if (!Body.HasAbility(Abilities.Intercept))
+				return;
+
+			GamePlayer playerOwner = GetPlayerOwner();
+
+			if (playerOwner == null)
+				return;
+
+			InterceptAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out InterceptECSGameEffect existingEffectFromAnotherSource);
+
+			if (foundOurEffect)
+				return;
+
+			existingEffectFromAnotherSource?.End();
+			ECSGameEffectFactory.Create(new(Body, 0, 1, null), Body, playerOwner, static (in i, body, owner) => new InterceptECSGameEffect(i, body, owner));
+		}
+
+		protected void CheckGuard()
+		{
+			if (!Body.HasAbility(Abilities.Guard))
+				return;
+
+			GamePlayer playerOwner = GetPlayerOwner();
+
+			if (playerOwner == null)
+				return;
+
+			GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
+
+			if (foundOurEffect)
+				return;
+
+			existingEffectFromAnotherSource?.End();
+			ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in i, body, owner) => new GuardECSGameEffect(i, body, owner));
+		}
+
+		protected void CheckProtect()
+		{
+			if (!Body.HasAbility(Abilities.Protect))
+				return;
+
+			GamePlayer playerOwner = GetPlayerOwner();
+
+			if (playerOwner == null)
+				return;
+
+			ProtectAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out ProtectECSGameEffect existingEffectFromAnotherSource);
+
+			if (foundOurEffect)
+				return;
+
+			existingEffectFromAnotherSource?.End();
+			ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in i, body, owner) => new ProtectECSGameEffect(i, body, owner));
+		}
+
+		protected void CheckCharge()
+		{
+			if (Body.TargetObject is not GameLiving target ||
+				!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) ||
+				Body.IsWithinRadius(target, 500))
 			{
-				switch (ab.KeyName)
-				{
-					case Abilities.Intercept:
-					{
-						GamePlayer playerOwner = GetPlayerOwner();
-
-						if (playerOwner != null)
-						{
-							InterceptAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out InterceptECSGameEffect existingEffectFromAnotherSource);
-
-							if (foundOurEffect)
-								break;
-
-							if (existingEffectFromAnotherSource != null)
-								existingEffectFromAnotherSource.End();
-
-							ECSGameEffectFactory.Create(new(Body, 0, 1, null), Body, playerOwner, static (in i, body, owner) => new InterceptECSGameEffect(i, body, owner));
-						}
-
-						break;
-					}
-					case Abilities.Guard:
-					{
-						GamePlayer playerOwner = GetPlayerOwner();
-
-						if (playerOwner != null)
-						{
-							GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
-
-							if (foundOurEffect)
-								break;
-
-							if (existingEffectFromAnotherSource != null)
-								existingEffectFromAnotherSource.End();
-
-							ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in i, body, owner) => new GuardECSGameEffect(i, body, owner));
-						}
-
-						break;
-					}
-					case Abilities.Protect:
-					{
-						GamePlayer playerOwner = GetPlayerOwner();
-
-						if (playerOwner != null)
-						{
-							ProtectAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out ProtectECSGameEffect existingEffectFromAnotherSource);
-
-							if (foundOurEffect)
-								break;
-
-							if (existingEffectFromAnotherSource != null)
-								existingEffectFromAnotherSource.End();
-
-							ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in i, body, owner) => new ProtectECSGameEffect(i, body, owner));
-						}
-
-						break;
-					}
-					case Abilities.ChargeAbility:
-					{
-						if (Body.TargetObject is GameLiving target &&
-							GameServer.ServerRules.IsAllowedToAttack(Body, target, true) &&
-							!Body.IsWithinRadius(target, 500))
-						{
-							ChargeAbility charge = Body.GetAbility<ChargeAbility>();
-
-							if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
-								charge.Execute(Body);
-						}
-
-						break;
-					}
-				}
+				return;
 			}
+
+			Ability charge = Body.GetAbility(Abilities.ChargeAbility);
+
+			if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
+				charge.Execute(Body);
 		}
 
 		protected virtual bool CanCastDefensiveSpellsOnGroupMembers => true;

@@ -162,8 +162,8 @@ namespace DOL.GS.Commands
 					if (target.GetModified(eProperty.MeleeDamage) > 0)
 						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
 
-					if (target.Abilities != null && target.Abilities.Count > 0)
-						info.Add(" + Abilities: " + target.Abilities.Count);
+					if (target.HasAbilities(out int abilityCount))
+						info.Add(" + Abilities: " + abilityCount);
 
 					if (target.Spells != null && target.Spells.Count > 0)
 						info.Add(" + Spells: " + target.Spells.Count);

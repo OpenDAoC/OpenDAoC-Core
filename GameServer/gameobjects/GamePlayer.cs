@@ -3073,16 +3073,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// returns a list with all non trainable skills without styles
-        /// This is a copy of Ability until any unhandled Skill subclass needs to go in there...
-        /// </summary>
-        /// <returns>list of Skill's</returns>
-        public virtual IList GetNonTrainableSkillList()
-        {
-            return GetAllAbilities();
-        }
-
-        /// <summary>
         /// Retrives a specific specialization by name
         /// </summary>
         /// <param name="name">the name of the specialization line</param>
@@ -10996,7 +10986,7 @@ namespace DOL.GS
                         range = levelDiff * 20 + 125;
 
                     // See Hidden only works against non assassin classes, if they don't have Camouflage enabled.
-                    if (HasAbilityType(typeof(AtlasOF_SeeHidden)) &&
+                    if (HasAbility(typeof(AtlasOF_SeeHidden)) &&
                         !enemyPlayer.CharacterClass.IsAssassin &&
                         !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
                     {

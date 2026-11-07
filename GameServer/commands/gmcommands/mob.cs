@@ -1250,8 +1250,8 @@ namespace DOL.GS.Commands
 				info.Add(" + SpawnPoint:  " + targetMob.SpawnPoint.X + ", " + targetMob.SpawnPoint.Y + ", " + targetMob.SpawnPoint.Z);
 			}
 
-			if (targetMob.Abilities != null && targetMob.Abilities.Count > 0)
-				info.Add(" + Abilities: " + targetMob.Abilities.Count);
+			if (targetMob.HasAbilities(out int abilityCount))
+				info.Add(" + Abilities: " + abilityCount);
 
 			if (targetMob.Spells != null && targetMob.Spells.Count > 0)
 				info.Add(" + Spells: " + targetMob.Spells.Count);
