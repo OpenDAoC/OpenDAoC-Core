@@ -15,7 +15,8 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static volatile Timer _timer;
+        private static StringBuilder _statsBuilder;
+        private static Timer _timer;
 
         private static long _prevGen0;
         private static long _prevGen1;
@@ -39,7 +40,10 @@ namespace DOL.GS
                     _programCpuUsagePercent = TryToCreateStatistic(() => new CurrentProcessCpuUsagePercentStatistic());
                     _pageFaultsPerSecond = TryToCreateStatistic(() => new PageFaultsPerSecondStatistic());
                     _diskTransfersPerSecond = TryToCreateStatistic(() => new DiskTransfersPerSecondStatistic());
-                    _timer = new(PrintStats, null, 0, 0);
+
+                    _statsBuilder = new();
+                    _timer = new(PrintStats, null, Timeout.Infinite, 0);
+                    _timer.Change(0, 0);
                 }
                 catch (Exception e)
                 {
@@ -51,18 +55,35 @@ namespace DOL.GS
             return true;
         }
 
-        public static void PrintStats(object state)
+        private static void PrintStats(object state)
+        {
+            if (!log.IsInfoEnabled)
+                return;
+
+            ThreadPriority oldPriority = Thread.CurrentThread.Priority;
+
+            try
+            {
+                Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+
+                lock (_lock)
+                {
+                    PrintStatsImpl();
+                }
+            }
+            finally
+            {
+                _timer?.Change(ServerProperties.Properties.STATPRINT_FREQUENCY, 0);
+                Thread.CurrentThread.Priority = oldPriority;
+            }
+        }
+
+        private static void PrintStatsImpl()
         {
             const int PADDING = 27;
 
             try
             {
-                if (!log.IsInfoEnabled)
-                    return;
-
-                ThreadPriority oldPriority = Thread.CurrentThread.Priority;
-                Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-
                 // Memory usage.
                 long memUsedMb = GC.GetTotalMemory(false) / 1024 / 1024;
                 long memCommittedMb = GC.GetGCMemoryInfo().TotalCommittedBytes / 1024 / 1024;
@@ -109,22 +130,22 @@ namespace DOL.GS
                 double pageFaults = _pageFaultsPerSecond?.GetNextValue() ?? 0.0;
                 double diskTransfers = _diskTransfersPerSecond?.GetNextValue() ?? 0.0;
 
-                StringBuilder stats = new(512);
+                _statsBuilder.Clear();
 
-                stats.AppendLine();
-                stats.AppendLine("[System]");
-                stats.AppendLine($"  {"CPU (process/system):".PadRight(PADDING)} {procCpu:F1}% / {sysCpu:F1}%");
-                stats.AppendLine($"  {"Memory (used/commit):".PadRight(PADDING)} {memUsedMb} MB / {memCommittedMb} MB");
-                stats.AppendLine($"  {"Page faults/sec:".PadRight(PADDING)} {pageFaults:F1}");
-                stats.AppendLine($"  {"Disk transfers/sec:".PadRight(PADDING)} {diskTransfers:F1}");
+                _statsBuilder.AppendLine();
+                _statsBuilder.AppendLine("[System]");
+                _statsBuilder.AppendLine($"  {"CPU (process/system):",-PADDING} {procCpu:F1}% / {sysCpu:F1}%");
+                _statsBuilder.AppendLine($"  {"Memory (used/commit):",-PADDING} {memUsedMb} MB / {memCommittedMb} MB");
+                _statsBuilder.AppendLine($"  {"Page faults/sec:",-PADDING} {pageFaults:F1}");
+                _statsBuilder.AppendLine($"  {"Disk transfers/sec:",-PADDING} {diskTransfers:F1}");
 
-                stats.AppendLine("[GameServer]");
-                stats.AppendLine($"  {"Clients:".PadRight(PADDING)} {clientCount}");
-                stats.AppendLine($"  {"Event handlers (G/O):".PadRight(PADDING)} {globalHandlers} / {objectHandlers}");
+                _statsBuilder.AppendLine("[GameServer]");
+                _statsBuilder.AppendLine($"  {"Clients:",-PADDING} {clientCount}");
+                _statsBuilder.AppendLine($"  {"Event handlers (G/O):",-PADDING} {globalHandlers} / {objectHandlers}");
 
                 if (averageTps.Count != 0)
                 {
-                    stats.Append("  ");
+                    _statsBuilder.Append("  ");
                     StringBuilder labelBuilder = new("Game loop TPS (");
 
                     for (int i = averageTps.Count - 1; i >= 0; i--)
@@ -137,61 +158,53 @@ namespace DOL.GS
                     }
 
                     labelBuilder.Append(")s:");
-                    stats.Append($"{labelBuilder.ToString().PadRight(PADDING)} ");
+                    _statsBuilder.Append($"{labelBuilder,-PADDING} ");
 
                     for (int i = averageTps.Count - 1; i >= 0; i--)
                     {
                         double percentOfTarget = averageTps[i].Item2 / (10 / GameLoop.TickDuration);
-                        stats.Append($"{percentOfTarget:F1}%");
+                        _statsBuilder.Append($"{percentOfTarget:F1}%");
 
                         if (i != 0)
-                            stats.Append(" / ");
+                            _statsBuilder.Append(" / ");
                     }
 
-                    stats.AppendLine();
+                    _statsBuilder.AppendLine();
                 }
                 else
-                    stats.AppendLine("  No TPS data available.");
+                    _statsBuilder.AppendLine("  No TPS data available.");
 
-                stats.AppendLine("[Network]");
+                _statsBuilder.AppendLine("[Network]");
 
                 if (tcpSendArgsPoolMisses > 0)
-                    stats.AppendLine($"  {"TCP send args pool misses:".PadRight(PADDING)} {tcpSendArgsPoolMisses}");
+                    _statsBuilder.AppendLine($"  {"TCP send args pool misses:",-PADDING} {tcpSendArgsPoolMisses}");
 
                 if (udpSendArgsPoolMisses > 0)
-                    stats.AppendLine($"  {"UDP send args pool misses:".PadRight(PADDING)} {udpSendArgsPoolMisses}");
+                    _statsBuilder.AppendLine($"  {"UDP send args pool misses:",-PADDING} {udpSendArgsPoolMisses}");
 
                 if (udpPacketsReceived > 0 || udpPacketsDropped > 0 || udpReceiveErrors > 0)
-                    stats.AppendLine($"  {"UDP recv/drop/err:".PadRight(PADDING)} {udpPacketsReceived} / {udpPacketsDropped} / {udpReceiveErrors}");
+                    _statsBuilder.AppendLine($"  {"UDP recv/drop/err:",-PADDING} {udpPacketsReceived} / {udpPacketsDropped} / {udpReceiveErrors}");
 
                 if (udpInvalidSize > 0 || udpInvalidChecksum > 0 || udpInvalidSession > 0)
-                    stats.AppendLine($"  {"UDP invalid (size/crc/ses):".PadRight(PADDING)} {udpInvalidSize} / {udpInvalidChecksum} / {udpInvalidSession}");
+                    _statsBuilder.AppendLine($"  {"UDP invalid (size/crc/ses):",-PADDING} {udpInvalidSize} / {udpInvalidChecksum} / {udpInvalidSession}");
 
                 if (udpSourceMismatch > 0 || udpEndpointMismatch > 0)
-                    stats.AppendLine($"  {"UDP mismatch (spoof/ep):".PadRight(PADDING)} {udpSourceMismatch} / {udpEndpointMismatch}");
+                    _statsBuilder.AppendLine($"  {"UDP mismatch (spoof/ep):",-PADDING} {udpSourceMismatch} / {udpEndpointMismatch}");
 
                 if (udpBufferReturnFailures > 0)
-                    stats.AppendLine($"  {"UDP buffer return fails:".PadRight(PADDING)} {udpBufferReturnFailures}");
+                    _statsBuilder.AppendLine($"  {"UDP buffer return fails:",-PADDING} {udpBufferReturnFailures}");
 
-                stats.AppendLine("[.NET]");
-                stats.AppendLine($"  {"Workers (used/max):".PadRight(PADDING)} {usedWorkers} / {maxWorkers}");
-                stats.AppendLine($"  {"IOCP (used/max):".PadRight(PADDING)} {usedIocp} / {maxIocp}");
-                stats.Append($"  {"GC (0/1/2):".PadRight(PADDING)} {gen0Delta} / {gen1Delta} / {gen2Delta}");
+                _statsBuilder.AppendLine("[.NET]");
+                _statsBuilder.AppendLine($"  {"Workers (used/max):",-PADDING} {usedWorkers} / {maxWorkers}");
+                _statsBuilder.AppendLine($"  {"IOCP (used/max):",-PADDING} {usedIocp} / {maxIocp}");
+                _statsBuilder.Append($"  {"GC (0/1/2):",-PADDING} {gen0Delta} / {gen1Delta} / {gen2Delta}");
 
-                log.Info(stats.ToString());
-                Thread.CurrentThread.Priority = oldPriority;
+                log.Info(_statsBuilder.ToString());
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
                     log.Error("Stats log callback failed", e);
-            }
-            finally
-            {
-                lock (_lock)
-                {
-                    _timer?.Change(ServerProperties.Properties.STATPRINT_FREQUENCY, 0);
-                }
             }
         }
 
