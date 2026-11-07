@@ -82,7 +82,7 @@ namespace DOL.GS
         public ECSGameEffect(in ECSGameEffectInitParams initParams)
         {
             Owner = initParams.Target;
-            OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
+            OwnerPlayer = Owner as GamePlayer;
             ServiceObjectId = ServiceObjectFactory.CreateId(this);
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
@@ -95,6 +95,11 @@ namespace DOL.GS
         public virtual long GetNextTick()
         {
             return ExpireTick;
+        }
+
+        public bool CanExpire()
+        {
+            return GetNextTick() >= GameLoop.GameLoopTime;
         }
 
         public bool Start()

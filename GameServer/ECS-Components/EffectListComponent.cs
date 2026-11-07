@@ -525,7 +525,9 @@ namespace DOL.GS
                             if (start)
                                 effect.OnStartEffect();
 
-                            ServiceObjectStore.Add(effect);
+                            if (effect.CanExpire())
+                                ServiceObjectStore.Add(effect);
+
                             effect.Owner.effectListComponent.RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                             // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
@@ -719,7 +721,10 @@ namespace DOL.GS
                         // Replace the instance both in our list and in ServiceObjectStore.
                         ServiceObjectStore.Remove(existingEffect);
                         existingEffect.IsBeingReplaced = true;
-                        ServiceObjectStore.Add(effect);
+
+                        if (effect.CanExpire())
+                            ServiceObjectStore.Add(effect);
+
                         existingEffects[i] = effect;
                         result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
                     }

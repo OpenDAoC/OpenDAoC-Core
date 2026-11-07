@@ -29,7 +29,7 @@ namespace DOL.GS
             if (spell.IsSnare)
             {
                 PulseFreq = 250;
-                NextTick = 1 + Duration / 2 + StartTick + PulseFreq;
+                NextTick = Duration / 2 + StartTick + PulseFreq;
 
                 // Special case for focus snares (BD) since they share the same spell type as normal snares.
                 TriggersImmunity = EffectHelper.GetImmunityEffectFromSpell(spell) is not eEffect.Unknown && !spell.IsFocus;
