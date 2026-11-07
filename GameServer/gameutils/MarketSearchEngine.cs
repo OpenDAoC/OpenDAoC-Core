@@ -104,6 +104,9 @@ namespace DOL.GS
                 if (resultSets == null || resultSets.Count == 0)
                     return query.HasAny ? [] : [.. _itemKeyCache.Keys];
 
+                if (resultSets.Count == 1)
+                    return [.. resultSets[0]];
+
                 // Find the smallest set to start with.
                 HashSet<DbInventoryItem> smallestSet = resultSets[0];
                 int minCount = smallestSet.Count;
