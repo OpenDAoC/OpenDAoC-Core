@@ -24,7 +24,10 @@ namespace DOL.GS
             SpellHandler = initParams.SpellHandler;
             Spell spell = SpellHandler.Spell;
             EffectType = EffectHelper.GetEffectFromSpell(SpellHandler.Spell);
-            PulseFreq = spell.Frequency;
+
+            // Frequency represents the proc chance for these spells.
+            if (EffectType is not (eEffect.OffensiveProc or eEffect.DefensiveProc))
+                PulseFreq = spell.Frequency;
 
             if (spell.IsSnare)
             {
