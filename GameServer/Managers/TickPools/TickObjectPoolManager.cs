@@ -49,7 +49,7 @@ namespace DOL.GS
         SubZoneTransition
     }
 
-    public interface ITickPooledObject<T>
+    public interface ITickPooledObject<TSelf>
     {
         // The game loop tick timestamp when this object was issued.
         // Will be 0 if created outside the game loop (e.g., by a .NET worker thread without local object pools).

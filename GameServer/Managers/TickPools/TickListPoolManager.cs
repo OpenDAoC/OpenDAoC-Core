@@ -79,5 +79,5 @@ namespace DOL.GS
         Area
     }
 
-    public interface ITickPooledList<T> { }
+    public interface ITickPooledList<TSelf> { }
 }

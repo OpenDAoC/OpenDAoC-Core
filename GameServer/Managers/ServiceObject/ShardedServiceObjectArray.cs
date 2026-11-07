@@ -46,8 +46,6 @@ namespace DOL.GS
             return _shards[id.ShardIndex];
         }
 
-        // A sharded ID *is* a schedulable ID, so it goes straight into the shard (plain upcast).
-        // No protected-static forwarding helpers needed anymore.
         public override bool Add(ShardedServiceObjectId<T> id)
         {
             return RouteItem(id).Add(id);

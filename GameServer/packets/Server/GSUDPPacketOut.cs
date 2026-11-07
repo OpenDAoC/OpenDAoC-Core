@@ -1,4 +1,3 @@
-using System;
 using DOL.Network;
 
 namespace DOL.GS.PacketHandler
