@@ -45,7 +45,7 @@ namespace DOL.GS
 
         public override long GetNextTick()
         {
-            return NextTick > 0 && (PulseFreq > 0 || IsConcentrationEffect()) ? NextTick : base.GetNextTick();
+            return NextTick > 0 && PulseFreq > 0 ? NextTick : base.GetNextTick();
         }
 
         public override bool IsConcentrationEffect()
