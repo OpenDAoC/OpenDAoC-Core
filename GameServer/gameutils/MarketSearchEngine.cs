@@ -126,20 +126,31 @@ namespace DOL.GS
                     return [];
 
                 // Intersect all other sets with the smallest set.
-                HashSet<DbInventoryItem> finalResult = [.. smallestSet];
+                List<DbInventoryItem> result = new(smallestSet.Count);
 
-                for (int i = 0; i < resultSets.Count; i++)
+                foreach (DbInventoryItem item in smallestSet)
                 {
-                    if (resultSets[i] == smallestSet)
-                        continue;
+                    bool inAll = true;
 
-                    finalResult.IntersectWith(resultSets[i]);
+                    for (int i = 0; i < resultSets.Count; i++)
+                    {
+                        HashSet<DbInventoryItem> set = resultSets[i];
 
-                    if (finalResult.Count == 0)
-                        break;
+                        if (resultSets[i] == smallestSet)
+                            continue;
+
+                        if (!set.Contains(item))
+                        {
+                            inAll = false;
+                            break;
+                        }
+                    }
+
+                    if (inAll)
+                        result.Add(item);
                 }
 
-                return finalResult;
+                return result;
             }
             finally
             {
