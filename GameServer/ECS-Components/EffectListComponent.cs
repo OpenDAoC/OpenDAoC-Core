@@ -90,7 +90,7 @@ namespace DOL.GS
         public void EndTick()
         {
             if (_pendingEffects.Count == 0)
-                ServiceObjectStore.Remove(this);
+                ServiceObjectId.Unregister();
         }
 
         public void TryEnableBestEffectOfSameType(ECSGameEffect effect)
@@ -424,7 +424,7 @@ namespace DOL.GS
         {
             lock (_effectsLock)
             {
-                ServiceObjectStore.Add(this);
+                ServiceObjectId.Register();
 
                 if (effect.IsStarting || effect.IsEnabling)
                     AddOrEnableEffect(effect);
@@ -527,7 +527,7 @@ namespace DOL.GS
                                 effect.OnStartEffect();
 
                             if (effect.CanExpire())
-                                ServiceObjectStore.Add(effect);
+                                effect.ServiceObjectId.Register();
 
                             // Animations must be sent after calling `OnStartEffect` to prevent interrupts from interfering with them.
                             if (effect is ECSGameSpellEffect spellEffect and not ECSImmunityEffect)
@@ -718,11 +718,11 @@ namespace DOL.GS
                     else
                     {
                         // Replace the instance both in our list and in ServiceObjectStore.
-                        ServiceObjectStore.Remove(existingEffect);
+                        existingEffect.ServiceObjectId.Unregister();
                         existingEffect.IsBeingReplaced = true;
 
                         if (effect.CanExpire())
-                            ServiceObjectStore.Add(effect);
+                            effect.ServiceObjectId.Register();
 
                         existingEffects[i] = effect;
                         result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
@@ -926,7 +926,7 @@ namespace DOL.GS
 
                             // Keep disabled effects in the store.
                             if (!effect.IsDisabled)
-                                ServiceObjectStore.Remove(effect);
+                                effect.ServiceObjectId.Unregister();
                         }
                         catch (Exception e)
                         {

@@ -112,7 +112,7 @@ namespace DOL.GS
                 _startSkillRequests.Enqueue(request);
             }
 
-            ServiceObjectStore.Add(this);
+            ServiceObjectId.Register();
             return true;
         }
 
@@ -178,7 +178,7 @@ namespace DOL.GS
                 _startSkillRequests.Enqueue(startUseAbilityRequest);
             }
 
-            ServiceObjectStore.Add(this);
+            ServiceObjectId.Register();
         }
 
         public int CalculateSpellRange(Spell spell)
@@ -257,7 +257,7 @@ namespace DOL.GS
 
         protected virtual void Stop()
         {
-            ServiceObjectStore.Remove(this);
+            ServiceObjectId.Unregister();
             _duringCastLosCheckListener.StopAndClear();
             SpellHandler = null;
             QueuedSpellHandler = null;

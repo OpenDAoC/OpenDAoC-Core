@@ -80,7 +80,7 @@ namespace DOL.GS
                 // such as double poison application keeping both effect instances alive, and doesn't exempt from performing this check.
                 // See commit 3104fc40059361fcc96d29c4b189770bc6094dad
 
-                ServiceObjectStore.Remove(effect);
+                effect.ServiceObjectId.Unregister();
                 return;
             }
 
@@ -91,7 +91,7 @@ namespace DOL.GS
 
                 // Attempt to end the effect normally, but always remove it from the store.
                 effect.End();
-                ServiceObjectStore.Remove(effect);
+                effect.ServiceObjectId.Unregister();
                 return;
             }
 

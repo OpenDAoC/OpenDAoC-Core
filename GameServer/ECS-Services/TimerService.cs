@@ -109,13 +109,13 @@ namespace DOL.GS
             Interval = interval;
             NextTick = GameLoop.GameLoopTime + interval;
 
-            if (ServiceObjectStore.Add(this))
+            if (ServiceObjectId.Register())
                 IsAlive = true;
         }
 
         public void Stop()
         {
-            if (ServiceObjectStore.Remove(this))
+            if (ServiceObjectId.Unregister())
                 IsAlive = false;
         }
 

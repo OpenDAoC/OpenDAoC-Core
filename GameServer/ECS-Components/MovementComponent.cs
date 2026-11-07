@@ -80,12 +80,12 @@ namespace DOL.GS
 
         protected void AddToServiceObjectStore()
         {
-            ServiceObjectStore.Add(this);
+            ServiceObjectId.Register();
         }
 
         protected virtual void RemoveFromServiceObjectStore()
         {
-            ServiceObjectStore.Remove(this);
+            ServiceObjectId.Unregister();
         }
     }
 }

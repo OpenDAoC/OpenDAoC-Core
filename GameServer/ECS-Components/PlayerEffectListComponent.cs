@@ -28,7 +28,7 @@ namespace DOL.GS
             lock (_playerUpdatesLock)
             {
                 _requestedPlayerUpdates |= playerUpdate;
-                ServiceObjectStore.Add(this);
+                ServiceObjectId.Register();
             }
         }
 

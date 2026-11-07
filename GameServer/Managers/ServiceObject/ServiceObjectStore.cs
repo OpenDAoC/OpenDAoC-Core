@@ -20,26 +20,6 @@ namespace DOL.GS
             Register<ECSGameTimer>();
         }
 
-        public static bool Add(IServiceObject obj)
-        {
-            return Add(obj.ServiceObjectId);
-        }
-
-        public static bool Remove(IServiceObject obj)
-        {
-            return Remove(obj.ServiceObjectId);
-        }
-
-        public static bool Add(ServiceObjectId id)
-        {
-            return id.Register();
-        }
-
-        public static bool Remove(ServiceObjectId id)
-        {
-            return id.Unregister();
-        }
-
         // Applies pending additions and removals then returns the list alongside the last valid index.
         public static ServiceObjectView<T> UpdateAndGetView<T>() where T : class, IServiceObject<T>
         {

@@ -62,7 +62,7 @@ namespace DOL.GS
             {
                 if (livingBeingKilled != null)
                 {
-                    ServiceObjectStore.Remove(livingBeingKilled);
+                    livingBeingKilled.ServiceObjectId.Unregister();
                     livingBeingKilled.Killed.OnReaperServiceHandlingComplete();
                 }
             }
@@ -90,7 +90,7 @@ namespace DOL.GS
         public static void Create(GameLiving killed, GameObject killer)
         {
             LivingBeingKilled livingBeingKilled = new(killed, killer);
-            ServiceObjectStore.Add(livingBeingKilled);
+            livingBeingKilled.ServiceObjectId.Register();
         }
 
         private void Initialize(GameLiving killed, GameObject killer)

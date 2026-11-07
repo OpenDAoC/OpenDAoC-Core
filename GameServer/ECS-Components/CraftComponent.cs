@@ -46,7 +46,7 @@ namespace DOL.GS
             CraftAction?.Tick();
 
             if (CraftAction == null)
-                ServiceObjectStore.Remove(this);
+                ServiceObjectId.Unregister();
         }
 
         public void StartCraft(Recipe recipe, AbstractCraftingSkill skill, int craftingTime)
@@ -54,7 +54,7 @@ namespace DOL.GS
             if (CraftAction == null)
             {
                 CraftAction = new CraftAction(Owner, craftingTime, recipe, skill);
-                ServiceObjectStore.Add(this);
+                ServiceObjectId.Register();
             }
         }
 

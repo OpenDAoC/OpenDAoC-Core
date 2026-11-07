@@ -50,7 +50,7 @@ namespace DOL.AI
         /// <returns>true if started</returns>
         public virtual bool Start()
         {
-            if (!ServiceObjectStore.Add(this))
+            if (!ServiceObjectId.Register())
                 return false;
 
             // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
@@ -65,7 +65,7 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
-            if (!ServiceObjectStore.Remove(this))
+            if (!ServiceObjectId.Unregister())
                 return false;
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.

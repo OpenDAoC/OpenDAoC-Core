@@ -63,7 +63,7 @@ namespace DOL.GS
             weaponAction = null;
             _startAttackTarget = null;
             _startAttackRequested = false;
-            ServiceObjectStore.Remove(this);
+            ServiceObjectId.Unregister();
         }
 
         public void AddAttacker(AttackData attackData)
@@ -440,7 +440,7 @@ namespace DOL.GS
         {
             _startAttackTarget = attackTarget ?? owner.TargetObject;
             _startAttackRequested = true;
-            ServiceObjectStore.Add(this);
+            ServiceObjectId.Register();
         }
 
         private void StartAttack()

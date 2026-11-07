@@ -115,7 +115,7 @@ namespace DOL.GS
                 if (_isTransitionQueued)
                     return;
 
-                if (!ServiceObjectStore.Add(this))
+                if (!ServiceObjectId.Register())
                 {
                     // If adding failed, we must revert the state to be non-pending.
                     if (log.IsErrorEnabled)
@@ -141,7 +141,7 @@ namespace DOL.GS
             if (!_isTransitionQueued)
                 return;
 
-            if (!ServiceObjectStore.Remove(this))
+            if (!ServiceObjectId.Unregister())
             {
                 if (log.IsErrorEnabled)
                     log.Error($"SubZone transition for {Node.Value} couldn't be removed from {nameof(ServiceObjectStore)}.");

@@ -181,7 +181,7 @@ namespace DOL.GS
             // Let's just overwrite the existing client. Most likely `OnClientDisconnect` was not called for some reason.
             _clientsBySessionId[client.SessionId.Value] = client;
 
-            if (ServiceObjectStore.Add(client))
+            if (client.ServiceObjectId.Register())
                 Interlocked.Increment(ref _clientCount);
             else if (log.IsWarnEnabled)
             {
@@ -201,7 +201,7 @@ namespace DOL.GS
 
             _clientsBySessionId[client.SessionId.Value] = null;
 
-            if (ServiceObjectStore.Remove(client))
+            if (client.ServiceObjectId.Unregister())
                 Interlocked.Decrement(ref _clientCount);
             else if (log.IsWarnEnabled)
             {
