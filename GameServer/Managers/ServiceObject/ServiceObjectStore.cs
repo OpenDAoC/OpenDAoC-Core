@@ -1,23 +1,33 @@
 using System;
-using DOL.AI;
 
 namespace DOL.GS
 {
     public static class ServiceObjectStore
     {
-        static ServiceObjectStore()
+        private const int DEFAULT_CAPACITY = 100;
+
+        // Discovers all service object types in this assembly and publishes their arrays.
+        // Must run before any service objects are registered.
+        public static bool Init()
         {
-            Register<GameClient>();
-            Register<ABrain>();
-            Register<AttackComponent>();
-            Register<CastingComponent>();
-            Register<ECSGameEffect>();
-            Register<EffectListComponent>();
-            Register<MovementComponent>();
-            Register<CraftComponent>();
-            Register<SubZoneObject>();
-            Register<LivingBeingKilled>();
-            Register<ECSGameTimer>();
+            foreach (Type type in typeof(ServiceObjectStore).Assembly.GetTypes())
+            {
+                foreach (Type interfaceType in type.GetInterfaces())
+                {
+                    if (!interfaceType.IsGenericType ||
+                        interfaceType.GetGenericTypeDefinition() != typeof(IServiceObject<>) ||
+                        interfaceType.GetGenericArguments()[0] != type)
+                    {
+                        continue;
+                    }
+
+                    IRegistrar registrar = (IRegistrar) Activator.CreateInstance(typeof(Registrar<>).MakeGenericType(type));
+                    registrar.Register();
+                    break;
+                }
+            }
+
+            return true;
         }
 
         // Applies pending additions and removals then returns the list alongside the last valid index.
@@ -45,9 +55,9 @@ namespace DOL.GS
             ArraySlot<T, TId>.Array = array;
         }
 
-        private static void Register<T>() where T : class, IServiceObject<T>
+        private static void Register<T>(int capacity = DEFAULT_CAPACITY) where T : class, IServiceObject<T>
         {
-            T.CreateArray(capacity: 100).Publish();
+            T.CreateArray(capacity).Publish();
         }
 
         private static class ViewSlot<T> where T : class, IServiceObject<T>
@@ -60,6 +70,19 @@ namespace DOL.GS
             where TId : ServiceObjectId<T>
         {
             public static ServiceObjectArrayBase<T, TId> Array;
+        }
+
+        private interface IRegistrar
+        {
+            void Register();
+        }
+
+        private sealed class Registrar<T> : IRegistrar where T : class, IServiceObject<T>
+        {
+            public void Register()
+            {
+                Register<T>();
+            }
         }
     }
 }

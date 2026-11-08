@@ -387,9 +387,13 @@ namespace DOL.GS
 				InitComponent(MailMgr.Init(), "Mail Manager Initialization");
 
 				//---------------------------------------------------------------
+				//Try to initialize the service object store before regions are loaded
+				if (!InitComponent(ServiceObjectStore.Init(), "Service Object Store Initialization"))
+					return false;
+
+				//---------------------------------------------------------------
 				//Try to initialize the WorldMgr in early state
-				RegionData[] regionsData;
-				if (!InitComponent(WorldMgr.EarlyInit(out regionsData), "World Manager PreInitialization"))
+				if (!InitComponent(WorldMgr.EarlyInit(out RegionData[] regionsData), "World Manager PreInitialization"))
 					return false;
 
 				//---------------------------------------------------------------
