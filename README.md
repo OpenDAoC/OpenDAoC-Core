@@ -43,20 +43,16 @@ Part of the wider [OpenDAoC project](https://github.com/OpenDAoC):
 
 ## Philosophy & Contributing
 
-OpenDAoC is maintained as a hobby passion project. While it is amazing what can be built today by autonomous AI agents, my motivation for maintaining this project is different: I enjoy programming, software architecture, and the challenge of problem-solving.
+OpenDAoC is a hobby project driven by my interest in programming. I use AI as a tool to learn, double-check things, or speed up tedious refactoring, but development and maintenance remain human-led.
 
-I use AI as a tool to learn, double-check things, or speed up tedious refactoring, but development remains human-led.
+As the sole maintainer, I need to keep contributions manageable and ensure that submitted code can be properly reviewed and maintained. If you'd like to contribute, please stick to these rules:
 
-As a solo maintainer, I need to keep the review process manageable. AI-generated Pull Requests, while welcomed, can be incredibly difficult to parse.
+* Only submit code that you can personally debug and explain.
+* Keep pull requests small and focused.
+* Follow established patterns and reuse existing, non-legacy APIs.
+* Keep PR descriptions short and to the point.
 
-To ensure PRs are reviewable and maintainable, please follow these guidelines if you wish to contribute:
-
-*   **Understand the code you submit**: Do not submit code that you cannot personally debug, explain, or maintain.
-*   **Keep it focused**: PRs should be tightly scoped. Avoid introducing large amounts of code without a clear need.
-*   **Respect the architecture**: Reuse existing, non-legacy APIs and follow the established patterns.
-*   **Human communication**: Write descriptions and comments in your own words. Please avoid overly verbose, LLM-generated summaries.
-
-If you'd like to tackle a larger feature or architectural change, please open an Issue first so we can discuss the approach!
+If you'd like to tackle a larger feature or architectural change, please open an Issue first so we can discuss the approach.
 
 ## License
 
