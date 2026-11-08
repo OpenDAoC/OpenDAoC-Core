@@ -508,7 +508,7 @@ namespace DOL.GS
             List<DbInventoryItem> items = candidates.Take(ServerProperties.Properties.MARKET_SEARCH_LIMIT).ToList();
 
             if (log.IsInfoEnabled)
-                log.Info($"{nameof(FindItems)} took {start - MonotonicTime.NowMs}ms on {MarketCache.ItemCount} items, got {items.Count} results! searchText: {search.name}");
+                log.Info($"{nameof(FindItems)} took {MonotonicTime.NowMs - start}ms on {MarketCache.ItemCount} items, got {items.Count} results! searchText: {search.name}");
 
             if (ServerProperties.Properties.MARKET_ENABLE_LOG && log.IsDebugEnabled)
                 log.Debug($"Returning '{items.Count}' items from search.");
