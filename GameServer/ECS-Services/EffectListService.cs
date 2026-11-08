@@ -26,7 +26,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<EffectListComponent>();
+                _view = ServiceObjectStore.UpdateAndGetView<EffectListComponent>(GameLoop.GameLoopTime);
             }
             catch (Exception e)
             {

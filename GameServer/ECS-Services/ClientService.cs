@@ -42,7 +42,7 @@ namespace DOL.GS
 
                 try
                 {
-                    _view = ServiceObjectStore.UpdateAndGetView<GameClient>();
+                    _view = ServiceObjectStore.UpdateAndGetView<GameClient>(GameLoop.GameLoopTime);
                 }
                 catch (Exception e)
                 {

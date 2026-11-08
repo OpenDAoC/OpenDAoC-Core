@@ -26,7 +26,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<SubZoneObject>();
+                _view = ServiceObjectStore.UpdateAndGetView<SubZoneObject>(GameLoop.GameLoopTime);
             }
             catch (Exception e)
             {

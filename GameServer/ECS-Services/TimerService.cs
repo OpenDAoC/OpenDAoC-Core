@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<ECSGameTimer>();
+                _view = ServiceObjectStore.UpdateAndGetView<ECSGameTimer>(GameLoop.GameLoopTime);
             }
             catch (Exception e)
             {

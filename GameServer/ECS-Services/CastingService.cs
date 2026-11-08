@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<CastingComponent>();
+                _view = ServiceObjectStore.UpdateAndGetView<CastingComponent>(GameLoop.GameLoopTime);
             }
             catch (Exception e)
             {

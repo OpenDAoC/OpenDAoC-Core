@@ -25,7 +25,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<LivingBeingKilled>();
+                _view = ServiceObjectStore.UpdateAndGetView<LivingBeingKilled>(GameLoop.GameLoopTime);
             }
             catch (Exception e)
             {

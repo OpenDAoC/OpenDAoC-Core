@@ -27,7 +27,7 @@ namespace DOL.GS
 
             try
             {
-                _view = ServiceObjectStore.UpdateAndGetView<ECSGameEffect>();
+                _view = ServiceObjectStore.UpdateAndGetView<ECSGameEffect>(GameLoop.GameLoopTime);
             }
             catch (Exception e)
             {

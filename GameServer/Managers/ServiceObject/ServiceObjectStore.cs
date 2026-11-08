@@ -31,12 +31,12 @@ namespace DOL.GS
         }
 
         // Applies pending additions and removals then returns the list alongside the last valid index.
-        public static ServiceObjectView<T> UpdateAndGetView<T>() where T : class, IServiceObject<T>
+        public static ServiceObjectView<T> UpdateAndGetView<T>(long now) where T : class, IServiceObject<T>
         {
             ServiceObjectArrayBase<T> array = ViewSlot<T>.Array ??
                 throw new InvalidOperationException($"{typeof(T)} is not registered in {nameof(ServiceObjectStore)}.");
 
-            return array.UpdateAndGetView(GameLoop.GameLoopTime);
+            return array.UpdateAndGetView(now);
         }
 
         public static ServiceObjectArrayBase<T, TId> GetArray<T, TId>()
