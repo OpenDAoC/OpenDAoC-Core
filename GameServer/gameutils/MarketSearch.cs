@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using DOL.Database;
 using DOL.Logging;
+using DOL.Timing;
 
 namespace DOL.GS
 {
@@ -500,16 +501,14 @@ namespace DOL.GS
             if (ServerProperties.Properties.MARKET_ENABLE_LOG && search.page == 0 && log.IsDebugEnabled)
                 log.Debug($"Market Search: [{m_searchPlayer.Name}:{m_searchPlayer.Client.Account.Name}] SEARCHING MARKET: {search}");
 
-            Stopwatch watch = Stopwatch.StartNew();
+            long start = MonotonicTime.NowMs;
 
             IEnumerable<DbInventoryItem> candidates = GetInitialCandidates(search);
             candidates = ApplyFilters(candidates, search);
             List<DbInventoryItem> items = candidates.Take(ServerProperties.Properties.MARKET_SEARCH_LIMIT).ToList();
 
-            watch.Stop();
-
             if (log.IsInfoEnabled)
-                log.Info($"{nameof(FindItems)} took {watch.ElapsedMilliseconds}ms on {MarketCache.ItemCount} items, got {items.Count} results! searchText: {search.name}");
+                log.Info($"{nameof(FindItems)} took {start - MonotonicTime.NowMs}ms on {MarketCache.ItemCount} items, got {items.Count} results! searchText: {search.name}");
 
             if (ServerProperties.Properties.MARKET_ENABLE_LOG && log.IsDebugEnabled)
                 log.Debug($"Returning '{items.Count}' items from search.");
