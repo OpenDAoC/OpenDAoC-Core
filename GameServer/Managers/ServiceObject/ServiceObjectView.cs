@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DOL.GS
 {
@@ -14,8 +13,8 @@ namespace DOL.GS
         public ServiceObjectView(List<T> items, int totalValidCount)
         {
             IsSharded = false;
-            Items = items;
             TotalValidCount = totalValidCount;
+            Items = items;
             Shards = null;
             ShardStartIndices = null;
         }
@@ -23,21 +22,10 @@ namespace DOL.GS
         public ServiceObjectView(List<T>[] shards, int[] shardStartIndices, int totalValidCount)
         {
             IsSharded = true;
-            Shards = shards;
-            ShardStartIndices = shardStartIndices;
             TotalValidCount = totalValidCount;
             Items = null;
-        }
-
-        public void ExecuteForEach(Action<T> action)
-        {
-            if (TotalValidCount <= 0)
-                return;
-
-            if (IsSharded)
-                GameLoop.ExecuteForEachSharded(Shards, ShardStartIndices, TotalValidCount, action);
-            else
-                GameLoop.ExecuteForEach(Items, TotalValidCount, action);
+            Shards = shards;
+            ShardStartIndices = shardStartIndices;
         }
     }
 }

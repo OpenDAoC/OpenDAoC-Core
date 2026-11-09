@@ -36,7 +36,7 @@ namespace DOL.GS
                 return;
             }
 
-            _view.ExecuteForEach(TickInternal);
+            GameLoop.ExecuteView(_view, TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
                 Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);

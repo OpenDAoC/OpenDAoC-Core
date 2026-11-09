@@ -61,6 +61,11 @@ namespace DOL.GS
             return _tickPacer.Stats.GetAverageTicks();
         }
 
+        public static void ExecuteView<T>(in ServiceObjectView<T> view, Action<T> action) where T : class, IServiceObject
+        {
+            _tickExecutor.ExecuteView(view, action);
+        }
+
         public static void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
             _tickExecutor.ExecuteForEach(items, toExclusive, action);

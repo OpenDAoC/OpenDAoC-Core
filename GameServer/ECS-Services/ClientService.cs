@@ -53,12 +53,12 @@ namespace DOL.GS
                 }
             }
 
-            _view.ExecuteForEach(BeginTickInternal);
+            GameLoop.ExecuteView(_view, BeginTickInternal);
         }
 
         public override void EndTick()
         {
-            _view.ExecuteForEach(EndTickInternal);
+            GameLoop.ExecuteView(_view, EndTickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
                 Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _view.TotalValidCount);
