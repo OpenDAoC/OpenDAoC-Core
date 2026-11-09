@@ -7,6 +7,7 @@ namespace DOL.GS
     public class ShardedServiceObjectArray<T> : ServiceObjectArrayBase<T, ShardedServiceObjectId<T>>
         where T : class, IShardedServiceObject<T>
     {
+        private readonly IExecutor _executor;
         private readonly List<SchedulableServiceObjectArray<T>> _shards;
         private readonly List<T>[] _shardsView;
         private readonly int[] _shardStartIndices;
@@ -20,13 +21,15 @@ namespace DOL.GS
         public override int[] ShardStartIndices => _shardStartIndices;
         public override int TotalValidCount => _totalValidCount;
 
-        public ShardedServiceObjectArray(int initialCapacity)
+        public ShardedServiceObjectArray(int initialCapacity, IExecutor executor)
         {
-            int shardCount = GameLoop.DegreeOfParallelism;
+            _executor = executor;
+
+            int shardCount = _executor.DegreeOfParallelism;
+            int capacityPerShard = initialCapacity / shardCount;
+
             _shards = new(shardCount);
             _shardsView = new List<T>[shardCount];
-
-            int capacityPerShard = initialCapacity / shardCount;
 
             for (int i = 0; i < shardCount; i++)
             {
@@ -63,7 +66,7 @@ namespace DOL.GS
 
         protected override ServiceObjectView<T> UpdateAndGetView()
         {
-            GameLoop.ExecuteForEach(_shards, _shards.Count, _updateShardView);
+            _executor.ExecuteForEach(_shards, _shards.Count, _updateShardView);
 
             int currentTotal = 0;
 

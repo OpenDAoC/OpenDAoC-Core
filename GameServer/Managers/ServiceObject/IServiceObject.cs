@@ -52,7 +52,7 @@
 
         static ServiceObjectArrayBase<TSelf> IServiceObject<TSelf>.CreateArray(int capacity)
         {
-            return new ShardedServiceObjectArray<TSelf>(capacity);
+            return new ShardedServiceObjectArray<TSelf>(capacity, GameLoopExecutor.Instance);
         }
     }
 }
