@@ -6,7 +6,7 @@ namespace DOL.GS
 {
     public readonly record struct TickExecutorInitParams(Action<Exception> OnFatalError, Func<long> TickSource);
 
-    public abstract class TickExecutor : IDisposable
+    public abstract class TickExecutor : ITickExecutor, IDisposable
     {
         [ThreadStatic] private static TickObjectPoolManager _tickObjectPoolManager;
         [ThreadStatic] private static TickListPoolManager _tickListPoolManager;
@@ -82,5 +82,11 @@ namespace DOL.GS
             _tickListPoolManager.Reset();
             _lastResetTick = tick;
         }
+    }
+
+    public interface ITickExecutor
+    {
+        void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action);
+        void ExecuteForEachSharded<T>(List<T>[] shards, int[] shardStartIndices, int totalCount, Action<T> action);
     }
 }

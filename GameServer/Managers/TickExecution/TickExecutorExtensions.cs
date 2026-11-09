@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public static class TickExecutorExtensions
     {
-        public static void ExecuteView<T>(this TickExecutor executor, in ServiceObjectView<T> view, Action<T> action)
+        public static void ExecuteView<T>(this ITickExecutor executor, in ServiceObjectView<T> view, Action<T> action)
             where T : class, IServiceObject
         {
             if (view.TotalValidCount <= 0)
