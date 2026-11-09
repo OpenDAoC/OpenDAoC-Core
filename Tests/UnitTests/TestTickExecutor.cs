@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DOL.GS.Tests
 {
     internal sealed class TestExecutor : IExecutor
     {
-        public static readonly TestExecutor Instance = new(new TestParallelTickExecutor());
+        public static readonly TestExecutor Instance = new(new TestSerialTickExecutor());
 
         private readonly ITickExecutor _tickExecutor;
 
@@ -34,7 +33,7 @@ namespace DOL.GS.Tests
         }
     }
 
-    internal sealed class TestParallelTickExecutor : ITickExecutor
+    internal sealed class TestSerialTickExecutor : ITickExecutor
     {
         public void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
