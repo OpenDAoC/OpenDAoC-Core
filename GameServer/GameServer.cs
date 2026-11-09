@@ -387,6 +387,11 @@ namespace DOL.GS
 				InitComponent(MailMgr.Init(), "Mail Manager Initialization");
 
 				//---------------------------------------------------------------
+				//Try to initialize the game loop
+				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
+					return false;
+
+				//---------------------------------------------------------------
 				//Try to initialize the service object store before regions are loaded
 				if (!InitComponent(ServiceObjectStore.Init(), "Service Object Store Initialization"))
 					return false;
@@ -534,9 +539,6 @@ namespace DOL.GS
 				if (!InitComponent(base.Start(), "base.Start()"))
 					return false;
 
-				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
-					return false;
-
 				if (!InitComponent(StatPrint.Init(), "StatPrint Init"))
 					return false;
 
@@ -544,6 +546,8 @@ namespace DOL.GS
 
 				if (log.IsInfoEnabled)
 					log.Info($"GarbageCollection IsServerGC: {System.Runtime.GCSettings.IsServerGC}" );
+
+				GameLoop.Start();
 
 				//---------------------------------------------------------------
 				//Open the server, players can now connect if webhook, inform Discord!
@@ -1029,7 +1033,7 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("No longer accepting incoming connections");
 
-			GameLoop.Exit();
+			GameLoop.Stop();
 			GameEventMgr.Notify(ScriptEvent.Unloaded);
 			GameEventMgr.Notify(GameServerEvent.Stopped, this);
 			GameEventMgr.RemoveAllHandlers();

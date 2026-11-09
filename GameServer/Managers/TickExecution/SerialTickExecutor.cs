@@ -41,7 +41,5 @@ namespace DOL.GS
                     action(currentShard[j]);
             }
         }
-
-        public override void Dispose() { }
     }
 }

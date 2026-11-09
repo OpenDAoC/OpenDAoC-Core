@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace DOL.GS
 {
@@ -14,6 +15,8 @@ namespace DOL.GS
         protected readonly Action<Exception> _onFatalError;
         private readonly Func<long> _tickSource;
 
+        protected bool _running;
+
         protected TickExecutor(TickExecutorInitParams initParams)
         {
             ArgumentNullException.ThrowIfNull(initParams.OnFatalError);
@@ -21,14 +24,30 @@ namespace DOL.GS
 
             _onFatalError = initParams.OnFatalError;
             _tickSource = initParams.TickSource;
-            InitThreadStatics();
         }
 
-        public virtual void Start() { }
+        public virtual bool Start()
+        {
+            // Must be called from the thread that will dispatch work.
+
+            if (Interlocked.CompareExchange(ref _running, true, false))
+                return false;
+
+            InitThreadStatics();
+            return true;
+        }
 
         public abstract void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action);
         public abstract void ExecuteForEachSharded<T>(List<T>[] shards, int[] shardStartIndices, int totalCount, Action<T> action);
-        public abstract void Dispose();
+
+        public void Dispose()
+        {
+            bool disposing = Interlocked.Exchange(ref _running, false);
+            Dispose(disposing);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) { }
 
         public T GetObjectForTick<T>() where T : ITickPooledObject<T>, new()
         {

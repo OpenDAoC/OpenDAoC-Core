@@ -36,10 +36,8 @@ namespace DOL.GS
 
         public void Start()
         {
-            if (_running)
+            if (Interlocked.CompareExchange(ref _running, true, false))
                 return;
-
-            _running = true;
 
             if (DYNAMIC_BUSY_WAIT_THRESHOLD && Environment.ProcessorCount > 1)
             {
@@ -59,7 +57,8 @@ namespace DOL.GS
 
         public void Stop()
         {
-            _running = false;
+            if (Interlocked.CompareExchange(ref _running, false, true))
+                return;
 
             if (_busyWaitThresholdThread == null)
                 return;

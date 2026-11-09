@@ -20,7 +20,6 @@ namespace DOL.GS
         private const int MAX_DEGREE_OF_PARALLELISM = 128;
 
         // Thread pool configuration and state.
-        private bool _running;
         private readonly int _degreeOfParallelism;      // Total threads, including caller.
         private readonly int _workerCount;              // Number of dedicated worker threads (= _degreeOfParallelism - 1).
         private readonly string _threadNamePrefix;
@@ -68,13 +67,14 @@ namespace DOL.GS
             _workSplitBiasTable = BuildChunkDivisorTable(_degreeOfParallelism);
         }
 
-        public override void Start()
+        public override bool Start()
         {
-            if (Interlocked.CompareExchange(ref _running, true, false))
-                return;
+            if (!base.Start())
+                return false;
 
             StartWorkers();
             StartWatchdog();
+            return true;
         }
 
         private static double[] BuildChunkDivisorTable(int degreeOfParallelism)
@@ -202,9 +202,9 @@ namespace DOL.GS
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (!Interlocked.CompareExchange(ref _running, false, true))
+            if (!disposing)
                 return;
 
             _watchdog.Stop();

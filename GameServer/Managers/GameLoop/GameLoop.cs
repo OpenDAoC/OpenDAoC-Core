@@ -17,6 +17,7 @@ namespace DOL.GS
         private static Thread _gameLoopThread;
         private static TickExecutor _tickExecutor;
         private static GameLoopTickPacer _tickPacer;
+        private static bool _init;
         private static bool _running;
         private static List<TickState> _tickSequence;
 
@@ -27,7 +28,7 @@ namespace DOL.GS
 
         public static bool Init()
         {
-            if (Interlocked.CompareExchange(ref _running, true, false))
+            if (Volatile.Read(ref _running) || Interlocked.CompareExchange(ref _init, true, false))
                 return false;
 
             TickDuration = 1000.0 / Properties.GAME_LOOP_TICK_RATE;
@@ -37,14 +38,35 @@ namespace DOL.GS
                 Name = THREAD_NAME,
                 IsBackground = true
             };
-            _gameLoopThread.Start();
 
             _tickPacer = new(TickDuration);
-            _tickPacer.Start();
+
+            TickExecutorInitParams initParams = new(
+                static _ => GameServer.Instance.Stop(),
+                static () => GameLoopTime);
+
+            if (DegreeOfParallelism == 1)
+                _tickExecutor = new SerialTickExecutor(initParams);
+            else
+                _tickExecutor = new ParallelTickExecutor(DegreeOfParallelism, THREAD_NAME, initParams);
+
+            BuildTickSequence();
             return true;
         }
 
-        public static void Exit()
+        public static void Start()
+        {
+            if (!Volatile.Read(ref _init))
+                throw new InvalidOperationException("Game loop is not initialized.");
+
+            if (Interlocked.CompareExchange(ref _running, true, false))
+                throw new InvalidOperationException("Game loop is already running.");
+
+            _gameLoopThread.Start();
+            _tickPacer.Start();
+        }
+
+        public static void Stop()
         {
             if (!Interlocked.CompareExchange(ref _running, false, true))
                 return;
@@ -88,17 +110,7 @@ namespace DOL.GS
 
         private static void Run()
         {
-            TickExecutorInitParams initParams = new(
-                static _ => GameServer.Instance.Stop(),
-                static () => GameLoopTime);
-
-            if (DegreeOfParallelism == 1)
-                _tickExecutor = new SerialTickExecutor(initParams);
-            else
-                _tickExecutor = new ParallelTickExecutor(DegreeOfParallelism, THREAD_NAME, initParams);
-
             _tickExecutor.Start(); // Must be done from the game loop thread.
-            BuildTickSequence();
 
             while (Volatile.Read(ref _running))
             {
