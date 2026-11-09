@@ -55,7 +55,7 @@ namespace DOL.GS
             ArraySlot<T, TId>.Array = array;
         }
 
-        private static void Register<T>(int capacity = DEFAULT_CAPACITY) where T : class, IServiceObject<T>
+        public static void Register<T>(int capacity = DEFAULT_CAPACITY) where T : class, IServiceObject<T>
         {
             T.CreateArray(capacity).Publish();
         }
