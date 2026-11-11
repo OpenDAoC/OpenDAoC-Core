@@ -23,11 +23,21 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            if (target.IsPlaying && target.Player != null && target.Player.ObjectState == GameObject.eObjectState.Active)
-            {
-                client.Out.SendPlayerCreate(target.Player);
-                client.Out.SendLivingEquipmentUpdate(target.Player);
-            }
+            if (!target.IsPlaying)
+                return;
+
+            GamePlayer playerTarget = target.Player;
+
+            if (playerTarget.ObjectState is not GameObject.eObjectState.Active)
+                return;
+
+            GamePlayer player = client.Player;
+
+            if (!player.CanDetect(playerTarget) || !player.IsWithinRadius(playerTarget, WorldMgr.VISIBILITY_DISTANCE))
+                return;
+
+            client.Out.SendPlayerCreate(playerTarget);
+            client.Out.SendLivingEquipmentUpdate(playerTarget);
         }
     }
 }
