@@ -473,44 +473,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						if (objectType == 29)
 						{
-							int index = objectId & 0x0F;
-							ushort questID = (ushort)((extraId >> 5) | (ushort)(objectId >> 4));
-							GameLiving questGiver = null;
-							if (client.Player.TargetObject is GameLiving) //- Unty
-								questGiver = (GameLiving)client.Player.TargetObject;
+							// The client sends back the first u16 of the reward's item block, which
+							// PacketLib194.WriteQuestRewards sets to 1 + the reward's position in the last quest window.
+							List<DbItemTemplate> rewards = client.Player.TempProperties.GetProperty<List<DbItemTemplate>>(PacketLib194.QUEST_WINDOW_REWARDS_PROPERTY);
+							int index = objectId - 1;
 
-							ChatUtil.SendDebugMessage(client, $"Quest ID: {questID}");
-
-							if (questID == 0)
-								return;
-							questID = (ushort)(objectId >> 4);
-
-							DataQuest dq = null;
-							questID = (ushort)(objectId >> 4);
-							foreach (DbDataQuest d in GameObject.DataQuestCache)
-							{
-								if (d.ID == questID)
-								{
-									dq = new DataQuest(d);
-									break;
-								}
-							}
-
-							if (dq != null && dq.StartType == DataQuest.eStartType.RewardQuest)
-							{
-								List<DbItemTemplate> rewards = null;
-								if (index < 8)
-									rewards = dq.FinalRewards;
-								else
-								{
-									rewards = dq.OptionalRewards;
-									index -= 8;
-								}
-								if (rewards != null && index >= 0 && index < rewards.Count)
-								{
-									item = rewards[index];
-								}
-							}
+							if (rewards != null && index >= 0 && index < rewards.Count)
+								item = rewards[index];
 						}
 
 						if (item == null)
