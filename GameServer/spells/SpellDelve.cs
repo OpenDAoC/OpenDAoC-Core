@@ -31,7 +31,8 @@ namespace DOL.GS.Spells
                 .AddElement("Function", "light")
                 .AddElement("Index", unchecked((ushort) spell.InternalID))
                 .AddElement("Name", spell.Name)
-                .AddElementIf(spell.CastTime >= 2000, "cast_timer", spell.CastTime - 2000)
+                // The client shows cast_timer + 2000 ms, and 2.0 s when the field is missing, so casts under 2 s need a negative value.
+                .AddElementIf(spell.CastTime > 0, "cast_timer", spell.CastTime - 2000)
                 .AddElementIf(spell.CastTime == 0, "instant", "1")
                 .AddElement("damage_type", GetMagicTypeId(spell))
                 .AddElement("level", spell.Level)

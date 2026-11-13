@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Behaviour;
@@ -13,6 +14,12 @@ namespace DOL.GS.PacketHandler
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+		/// <summary>
+		/// Player temp property holding the rewards of the last quest window sent: the basic rewards, then the optional ones.
+		/// The client sends a reward's position back when the player delves its icon (DetailDisplayHandler, type 29).
+		/// </summary>
+		public const string QUEST_WINDOW_REWARDS_PROPERTY = "QuestWindowRewards";
 
 
 		public override void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
@@ -101,17 +108,7 @@ namespace DOL.GS.PacketHandler
 
 				pak.WriteInt((uint)quest.MoneyReward());
 				pak.WriteByte((byte)quest.ExperiencePercent(player));
-				pak.WriteByte((byte)quest.FinalRewards.Count);
-				foreach (DbItemTemplate reward in quest.FinalRewards)
-				{
-					WriteItemData(pak, GameInventoryItem.Create(reward));
-				}
-				pak.WriteByte(quest.NumOptionalRewardsChoice);
-				pak.WriteByte((byte)quest.OptionalRewards.Count);
-				foreach (DbItemTemplate reward in quest.OptionalRewards)
-				{
-					WriteItemData(pak, GameInventoryItem.Create(reward));
-				}
+				WriteQuestRewards(pak, player, quest.FinalRewards, quest.NumOptionalRewardsChoice, quest.OptionalRewards);
 				SendTCP(pak);
 			}
 		}
@@ -175,19 +172,44 @@ namespace DOL.GS.PacketHandler
 				}
 				pak.WriteInt((uint)(quest.Rewards.Money)); // unknown, new in 1.94
 				pak.WriteByte((byte)quest.Rewards.ExperiencePercent(player));
-				pak.WriteByte((byte)quest.Rewards.BasicItems.Count);
-				foreach (DbItemTemplate reward in quest.Rewards.BasicItems)
-				{
-					WriteItemData(pak, GameInventoryItem.Create(reward));
-				}
-				pak.WriteByte((byte)quest.Rewards.ChoiceOf);
-				pak.WriteByte((byte)quest.Rewards.OptionalItems.Count);
-				foreach (DbItemTemplate reward in quest.Rewards.OptionalItems)
-				{
-					WriteItemData(pak, GameInventoryItem.Create(reward));
-				}
+				WriteQuestRewards(pak, player, quest.Rewards.BasicItems, (byte)quest.Rewards.ChoiceOf, quest.Rewards.OptionalItems);
 				SendTCP(pak);
 			}
+		}
+
+		/// <summary>
+		/// Writes the basic and optional reward lists of a quest window.
+		/// The first u16 of each item block is echoed back by the client when the player delves that reward
+		/// (detail request type 29), so it is set to 1 + the reward's position: basic rewards first, then optional ones.
+		/// The rewards are kept on the player so the delve can find them.
+		/// </summary>
+		protected virtual void WriteQuestRewards(GSTCPPacketOut pak, GamePlayer player, IList<DbItemTemplate> basicRewards, byte optionalChoiceCount, IList<DbItemTemplate> optionalRewards)
+		{
+			List<DbItemTemplate> rewards = new(basicRewards.Count + optionalRewards.Count);
+
+			pak.WriteByte((byte) basicRewards.Count);
+
+			foreach (DbItemTemplate reward in basicRewards)
+				WriteQuestRewardItem(pak, reward, rewards);
+
+			pak.WriteByte(optionalChoiceCount);
+			pak.WriteByte((byte) optionalRewards.Count);
+
+			foreach (DbItemTemplate reward in optionalRewards)
+				WriteQuestRewardItem(pak, reward, rewards);
+
+			player.TempProperties.SetProperty(QUEST_WINDOW_REWARDS_PROPERTY, rewards);
+		}
+
+		private void WriteQuestRewardItem(GSTCPPacketOut pak, DbItemTemplate reward, List<DbItemTemplate> rewards)
+		{
+			rewards.Add(reward);
+			long start = pak.Position;
+			WriteItemData(pak, GameInventoryItem.Create(reward));
+			long end = pak.Position;
+			pak.Position = start;
+			pak.WriteShort((ushort) rewards.Count);
+			pak.Position = end;
 		}
 
 		/// <summary>
