@@ -85,15 +85,31 @@ namespace DOL.GS.Keeps
 
 				// open up the warmap window
 
-				eDialogCode code = eDialogCode.WarmapWindowAlbion;
-				switch (player.Realm)
+				if (player.Client.Version >= GameClient.eClientVersion.Version1127)
 				{
-					case eRealm.Albion: code = eDialogCode.WarmapWindowAlbion; break;
-					case eRealm.Midgard: code = eDialogCode.WarmapWindowMidgard; break;
-					case eRealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
-				}
+					// 1.127+ clients open a war map only for dialog code 0x26, with the map in data1.
+					// Other codes are shown as an ordinary (here empty) dialog.
+					ushort map = player.Realm switch
+					{
+						eRealm.Midgard => 2,
+						eRealm.Hibernia => 3,
+						_ => 1
+					};
 
-				player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, "");
+					player.Out.SendDialogBox(eDialogCode.WarmapWindow, map, 0, 0, 0, eDialogType.Warmap, false, "");
+				}
+				else
+				{
+					eDialogCode code = eDialogCode.WarmapWindowAlbion;
+					switch (player.Realm)
+					{
+						case eRealm.Albion: code = eDialogCode.WarmapWindowAlbion; break;
+						case eRealm.Midgard: code = eDialogCode.WarmapWindowMidgard; break;
+						case eRealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
+					}
+
+					player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, "");
+				}
 			}
 
 			//if no component assigned, teleport to the border keep
