@@ -403,6 +403,36 @@ namespace DOL.GS
 		/// </summary>
 		public bool AcceptTrade()
 		{
+			// Lock order: both inventories (stable order) -> trade window lock -> released -> player objects.
+			// Removing or moving an item holds that inventory's lock and then takes the trade window lock
+			// (GamePlayerInventory.RemoveItem / OnItemMove -> RemoveItemToTrade), so the accept path must not take
+			// the window lock first and an inventory lock second.
+			// CloseTrade locks the player objects, which ReceiveTradeItem/Money hold while adding to the window,
+			// so it runs after the window lock is released.
+			GamePlayer partner = m_partnerWindow?.Owner;
+			// Typed as Lock (not object) so `lock` uses Lock.EnterScope, the same as every other inventory lock.
+			Lock first = m_owner.Inventory.Lock;
+			Lock second = partner?.Inventory?.Lock ?? first;
+			if (partner != null && string.CompareOrdinal(m_owner.InternalID, partner.InternalID) > 0)
+				(first, second) = (second, first);
+
+			bool completed;
+			lock (first)
+			{
+				lock (second)
+				{
+					completed = AcceptTradeLocked();
+				}
+			}
+
+			if (completed)
+				CloseTrade(); // Close the Trade Window
+
+			return completed;
+		}
+
+		private bool AcceptTradeLocked()
+		{
 			lock (Lock)
 			{
 				m_tradeAccept = true;
@@ -699,8 +729,7 @@ namespace DOL.GS
 					partner.SaveIntoDatabase();
 				}
 
-				CloseTrade();// Close the Trade Window
-
+				// The caller closes the trade once the trade window lock is released.
 				return true;
 			}
 		}
