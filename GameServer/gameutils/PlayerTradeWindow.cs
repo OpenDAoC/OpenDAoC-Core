@@ -30,7 +30,7 @@ namespace DOL.GS
 			m_combine = false;
 			m_repair = false;
 			m_recipiant = isRecipiantWindow;
-			_lock = sync;
+			Lock = sync;
 		}
 
 		#region Fields
@@ -134,8 +134,7 @@ namespace DOL.GS
 			set { m_partnerWindow = value; }
 		}
 
-		private readonly Lock _lock = new();
-		public Lock Lock => _lock;
+		public Lock Lock { get; } = new();
 
 		/// <summary>
 		/// Gets the item count in trade window
@@ -397,26 +396,32 @@ namespace DOL.GS
 		#endregion	
 
 		#region AcceptTrade/CloseTraide
-		
+
 		/// <summary>
 		/// Called each time a player push the accept button to accept the trade
 		/// </summary>
 		public bool AcceptTrade()
 		{
-			// Lock order: both inventories (stable order) -> trade window lock -> released -> player objects.
-			// Removing or moving an item holds that inventory's lock and then takes the trade window lock
-			// (GamePlayerInventory.RemoveItem / OnItemMove -> RemoveItemToTrade), so the accept path must not take
-			// the window lock first and an inventory lock second.
-			// CloseTrade locks the player objects, which ReceiveTradeItem/Money hold while adding to the window,
-			// so it runs after the window lock is released.
+			// Lock order (must match the trade handlers):
+			// inventory lock(s) -> trade window lock -> release window -> player object lock.
+
+			// DropItem/UseSlot/selling take inventory then window (RemoveItem -> RemoveItemToTrade);
+			// ReceiveTradeItem/Money take lock(source) then window (AddItemToTrade/AddMoneyToTrade).
+			// Taking these in the opposite order deadlocks, so if those paths ever change their lock
+			// order, this method must change with them. CloseTrade takes player object locks, so it
+			// is called only after the window lock is released.
+
+			// Both inventories are held for the whole accept (including DB saves).
+
 			GamePlayer partner = m_partnerWindow?.Owner;
-			// Typed as Lock (not object) so `lock` uses Lock.EnterScope, the same as every other inventory lock.
 			Lock first = m_owner.Inventory.Lock;
 			Lock second = partner?.Inventory?.Lock ?? first;
+
 			if (partner != null && string.CompareOrdinal(m_owner.InternalID, partner.InternalID) > 0)
 				(first, second) = (second, first);
 
 			bool completed;
+
 			lock (first)
 			{
 				lock (second)
@@ -426,7 +431,7 @@ namespace DOL.GS
 			}
 
 			if (completed)
-				CloseTrade(); // Close the Trade Window
+				CloseTrade();
 
 			return completed;
 		}
@@ -739,15 +744,20 @@ namespace DOL.GS
 		/// </summary>
 		public void CloseTrade()
 		{
-			lock(Lock)
+			// Never call this while holding the trade window lock: it takes the player object
+			// locks, while ReceiveTradeItem/Money take those first and then the window lock.
+
+			lock (Lock)
 			{
 				m_owner.Out.SendCloseTradeWindow();
 				m_partnerWindow.Owner.Out.SendCloseTradeWindow();
 			}
+
 			lock (m_owner)
 			{
 				m_owner.TradeWindow = null;
 			}
+
 			lock (m_partnerWindow.Owner)
 			{
 				m_partnerWindow.Owner.TradeWindow = null;
