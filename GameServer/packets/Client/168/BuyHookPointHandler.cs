@@ -43,14 +43,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (component == null)
 				return;
 
-			HookPointInventory inventory = null;
-			if (hookpointID > 0x80) inventory = HookPointInventory.YellowHPInventory; // oil
-			else if (hookpointID > 0x60) inventory = HookPointInventory.GreenHPInventory; // big siege
-			else if (hookpointID > 0x40) inventory = HookPointInventory.LightGreenHPInventory; // small siege
-			else if (hookpointID > 0x20) inventory = HookPointInventory.BlueHPInventory; // npc
-			else inventory = HookPointInventory.RedHPInventory; // guard
-
-			HookPointItem item = inventory?.GetItem(itemslot);
+			HookPointItem item = HookPointInventory.GetInventory(hookpointID).GetItem(itemslot);
 			item?.Invoke(client.Player, payType, component.HookPoints[hookpointID], component);
 		}
 	}

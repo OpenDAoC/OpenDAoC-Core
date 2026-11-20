@@ -198,7 +198,7 @@ namespace DOL.GS.PacketHandler
 				ArrayList freeHookpoints = new ArrayList();
 				foreach (GameKeepHookPoint hookPt in component.HookPoints.Values)
 				{
-					if (hookPt.IsFree) freeHookpoints.Add(hookPt);
+					if (hookPt.IsFree && HookPointInventory.HasItems(hookPt.ID)) freeHookpoints.Add(hookPt);
 				}
 				pak.WriteByte((byte)freeHookpoints.Count);
 				pak.WriteByte((byte)selectedHookPointIndex);
@@ -230,18 +230,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)hookPoint.Component.ID);
 				pak.WriteShort((ushort)hookPoint.ID);
 				pak.Fill(0x01, 3);
-				HookPointInventory inventory;
-
-				if (hookPoint.ID > 0x80)
-					inventory = HookPointInventory.YellowHPInventory; //oil
-				else if (hookPoint.ID > 0x60)
-					inventory = HookPointInventory.GreenHPInventory; //big siege
-				else if (hookPoint.ID > 0x40)
-					inventory = HookPointInventory.LightGreenHPInventory; //small siege
-				else if (hookPoint.ID > 0x20)
-					inventory = HookPointInventory.BlueHPInventory; //npc
-				else
-					inventory = HookPointInventory.RedHPInventory; //guard
+				HookPointInventory inventory = HookPointInventory.GetInventory(hookPoint.ID);
 
 				pak.WriteByte((byte)inventory.GetAllItems().Count); //count
 				pak.WriteShort(0);
