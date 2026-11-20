@@ -195,14 +195,16 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
-				ArrayList freeHookpoints = new ArrayList();
+				List<GameKeepHookPoint> freeHookpoints = new List<GameKeepHookPoint>();
 				foreach (GameKeepHookPoint hookPt in component.HookPoints.Values)
 				{
 					if (hookPt.IsFree && HookPointInventory.HasItems(hookPt.ID)) freeHookpoints.Add(hookPt);
 				}
+				// by ID, not in the order the hookpoints were loaded
+				freeHookpoints.Sort((a, b) => a.ID.CompareTo(b.ID));
 				pak.WriteByte((byte)freeHookpoints.Count);
 				pak.WriteByte((byte)selectedHookPointIndex);
-				foreach (GameKeepHookPoint hookPt in freeHookpoints)//have to sort by index?
+				foreach (GameKeepHookPoint hookPt in freeHookpoints)
 				{
 					pak.WriteByte((byte)hookPt.ID);
 				}
