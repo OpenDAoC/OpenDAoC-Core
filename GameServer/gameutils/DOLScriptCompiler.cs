@@ -80,6 +80,7 @@ namespace DOL.GS
                 .Select(file => CSharpSyntaxTree.ParseText(File.ReadAllText(file.FullName)));
 
             Compile(outputFile, syntaxTrees);
+            if (HasErrors) return null;
             return Assembly.LoadFrom(outputFile.FullName);
         }
 
