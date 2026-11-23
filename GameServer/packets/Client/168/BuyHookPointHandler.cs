@@ -39,12 +39,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			AbstractGameKeep keep = GameServer.KeepManager.GetKeepByID(keepId);
 			if (keep == null)
 				return;
-			GameKeepComponent component = keep.KeepComponents[wallId] as GameKeepComponent;
-			if (component == null)
+			GameKeepComponent component = keep.GetComponent(wallId);
+			if (component == null || !component.HookPoints.TryGetValue(hookpointID, out GameKeepHookPoint hookPoint))
 				return;
 
 			HookPointItem item = HookPointInventory.GetInventory(hookpointID).GetItem(itemslot);
-			item?.Invoke(client.Player, payType, component.HookPoints[hookpointID], component);
+			item?.Invoke(client.Player, payType, hookPoint, component);
 		}
 	}
 }
