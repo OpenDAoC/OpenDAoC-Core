@@ -39,19 +39,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			AbstractGameKeep keep = GameServer.KeepManager.GetKeepByID(keepId);
 			if (keep == null)
 				return;
-			GameKeepComponent component = keep.KeepComponents[wallId] as GameKeepComponent;
-			if (component == null)
+			GameKeepComponent component = keep.GetComponent(wallId);
+			if (component == null || !component.HookPoints.TryGetValue(hookpointID, out GameKeepHookPoint hookPoint))
 				return;
 
-			HookPointInventory inventory = null;
-			if (hookpointID > 0x80) inventory = HookPointInventory.YellowHPInventory; // oil
-			else if (hookpointID > 0x60) inventory = HookPointInventory.GreenHPInventory; // big siege
-			else if (hookpointID > 0x40) inventory = HookPointInventory.LightGreenHPInventory; // small siege
-			else if (hookpointID > 0x20) inventory = HookPointInventory.BlueHPInventory; // npc
-			else inventory = HookPointInventory.RedHPInventory; // guard
-
-			HookPointItem item = inventory?.GetItem(itemslot);
-			item?.Invoke(client.Player, payType, component.HookPoints[hookpointID], component);
+			HookPointItem item = HookPointInventory.GetInventory(hookpointID).GetItem(itemslot);
+			item?.Invoke(client.Player, payType, hookPoint, component);
 		}
 	}
 }

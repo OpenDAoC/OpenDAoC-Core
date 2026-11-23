@@ -60,19 +60,7 @@ namespace DOL.GS.PacketHandler
         {
             using (var pak = GameLoop.GetObjectForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentHookpointStore)))
             {
-                HookPointInventory inventory;
-
-                if (hookPoint.ID > 0x80)
-                    inventory = HookPointInventory.YellowHPInventory; // oil
-                else if (hookPoint.ID > 0x60)
-                    inventory = HookPointInventory.GreenHPInventory; // big siege
-                else if (hookPoint.ID > 0x40)
-                    inventory = HookPointInventory.LightGreenHPInventory; // small siege
-                else if (hookPoint.ID > 0x20)
-                    inventory = HookPointInventory.BlueHPInventory; // npc
-                else
-                    inventory = HookPointInventory.RedHPInventory; // guard
-
+                HookPointInventory inventory = HookPointInventory.GetInventory(hookPoint.ID);
                 var items = inventory.GetAllItems();
                 int count = Math.Min(items.Count, 30); // client caps at 0x1e
 

@@ -133,6 +133,20 @@ namespace DOL.GS.Keeps
 		public List<GameKeepComponent> KeepComponents { get; set; } = new List<GameKeepComponent>();
 
 		/// <summary>
+		/// Get a component by its ID (the ID sent to the client), or null
+		/// </summary>
+		public GameKeepComponent GetComponent(int id)
+		{
+			foreach (GameKeepComponent component in KeepComponents)
+			{
+				if (component.ID == id)
+					return component;
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Keep components ( wall, tower, gate,...)
 		/// </summary>
 		public List<IGameKeepComponent> SentKeepComponents

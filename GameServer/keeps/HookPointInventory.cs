@@ -81,6 +81,26 @@ namespace DOL.GS.Keeps
 		public static HookPointInventory YellowHPInventory = new HookPointInventory();
 
 		/// <summary>
+		/// Get the inventory sold at a hookpoint, by the hookpoint's ID
+		/// </summary>
+		public static HookPointInventory GetInventory(int hookPointId)
+		{
+			if (hookPointId > 0x80) return YellowHPInventory; // oil
+			if (hookPointId > 0x60) return GreenHPInventory; // big siege
+			if (hookPointId > 0x40) return LightGreenHPInventory; // small siege
+			if (hookPointId > 0x20) return BlueHPInventory; // npc
+			return RedHPInventory; // guard
+		}
+
+		/// <summary>
+		/// Whether anything is sold at a hookpoint. Hookpoints with nothing to sell aren't offered to players
+		/// </summary>
+		public static bool HasItems(int hookPointId)
+		{
+			return GetInventory(hookPointId).GetAllItems().Count > 0;
+		}
+
+		/// <summary>
 		/// Get the item the slot
 		/// </summary>
 		/// <param name="slot">The item slot</param>
