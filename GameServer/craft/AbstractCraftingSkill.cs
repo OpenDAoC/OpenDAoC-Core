@@ -144,7 +144,7 @@ namespace DOL.GS
 				if (log.IsWarnEnabled)
 				{
 					string reason = recipe.Product.Realm == 0 && !ServerProperties.Properties.ALLOW_CRAFT_NOREALM_ITEMS ? ", allow_craft_norealm_items is off" : string.Empty;
-					log.Warn($"[CRAFTING] {player.Name} (realm {player.Realm}) isn't allowed to craft {recipe.Product.Id_nb} (realm {recipe.Product.Realm}){reason}");
+					log.Warn($"[CRAFTING] {player.Name} (realm {(int) player.Realm}) isn't allowed to craft {recipe.Product.Id_nb} (realm {recipe.Product.Realm}){reason}");
 				}
 
 				return false;
