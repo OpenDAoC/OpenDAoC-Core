@@ -1,4 +1,5 @@
 using DOL.Database;
+using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
@@ -60,6 +61,7 @@ namespace DOL.GS
             siegeWeapon.Z = player.Z;
             siegeWeapon.Realm = player.Realm;
             siegeWeapon.AddToWorld();
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SiegeCrafting.BuildCraftedItem.Successfully", product.Name), eChatType.CT_Action, eChatLoc.CL_SystemWindow);
         }
     }
 }

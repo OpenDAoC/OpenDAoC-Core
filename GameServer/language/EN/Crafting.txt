@@ -106,6 +106,7 @@ AbstractCraftingSkill.MakeItem.NotAllMaterials:		    You do not have all the ing
 AbstractCraftingSkill.BuildCraftedItem.BackpackFull:	Your backpack is full. {0} is created on the ground.
 AbstractCraftingSkill.BuildCraftedItem.Masterpiece:	    It's a masterpiece!
 AbstractCraftingSkill.BuildCraftedItem.Successfully:	You successfully make the {0}! ({1})
+SiegeCrafting.BuildCraftedItem.Successfully:	You successfully make the {0}!
 AbstractCraftingSkill.CheckRawMaterial.NoIngredients:	You do not have the ingredients to make the {0}.
 AbstractCraftingSkill.CheckRawMaterial.RawMaterial:	    Cannot find an item by the ID of {0}. Please report this!
 AbstractCraftingSkill.CheckRawMaterial.YouAreMissing:	You are missing:
