@@ -139,6 +139,14 @@ namespace DOL.GS
 			
 			if (!GameServer.ServerRules.IsAllowedToCraft(player, recipe.Product))
 			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.NotAllowed", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+				if (log.IsWarnEnabled)
+				{
+					string reason = recipe.Product.Realm == 0 && !ServerProperties.Properties.ALLOW_CRAFT_NOREALM_ITEMS ? ", allow_craft_norealm_items is off" : string.Empty;
+					log.Warn($"[CRAFTING] {player.Name} (realm {player.Realm}) isn't allowed to craft {recipe.Product.Id_nb} (realm {recipe.Product.Realm}){reason}");
+				}
+
 				return false;
 			}
 

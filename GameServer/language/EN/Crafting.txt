@@ -91,6 +91,7 @@ AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.Rawmaterial:			    Can
 
 ## Crafting
 GamePlayer.Attack.InterruptedCrafting:			You interrupt your crafting.
+AbstractCraftingSkill.CraftItem.NotAllowed:		You can't craft the {0}.
 AbstractCraftingSkill.CraftItem.CantCraftInCombat:      You can't craft while in combat!
 AbstractCraftingSkill.CraftItem.CantCraftCasting:       You can't craft while casting!
 AbstractCraftingSkill.CraftItem.BeginWork:		        You begin working on the {0}. ({1}%)
