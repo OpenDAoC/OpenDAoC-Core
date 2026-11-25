@@ -1286,6 +1286,13 @@ namespace DOL.GS
 		/// <param name="criticalAmount">the amount of critical damage</param>
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
+			if (source is GamePlayer playerSource)
+			{
+				double damageMultiplier = playerSource.GMPowers.DamageMultiplier;
+				damageAmount = ApplyDamageMultiplier(damageAmount, damageMultiplier);
+				criticalAmount = ApplyDamageMultiplier(criticalAmount, damageMultiplier);
+			}
+
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 
 			double damageDealt = damageAmount + criticalAmount;
@@ -1368,6 +1375,14 @@ namespace DOL.GS
 					_dieLock.Exit();
 				}
 			}
+		}
+
+		private static int ApplyDamageMultiplier(int damage, double multiplier)
+		{
+			if (damage <= 0 || multiplier == 1.0)
+				return damage;
+
+			return (int) Math.Min(int.MaxValue, damage * multiplier);
 		}
 
 		private readonly Lock _dieLock = new();
