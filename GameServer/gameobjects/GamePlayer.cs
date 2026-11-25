@@ -11880,7 +11880,7 @@ namespace DOL.GS
 
             lock (_craftingLock)
             {
-                if (m_craftingSkills.ContainsKey(skill))
+                if (!m_craftingSkills.ContainsKey(skill))
                 {
                     AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
                     if (craftingSkill != null)
