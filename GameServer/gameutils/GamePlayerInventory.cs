@@ -727,7 +727,7 @@ namespace DOL.GS
                 if (!int.TryParse(allowed, out int classId))
                 {
                     if (Log.IsErrorEnabled)
-                        Log.Error($"Invalid class ID '{allowed}' in {nameof(item.AllowedClasses)} (Item: {item}");
+                        Log.Error($"Invalid class ID '{allowed}' in {nameof(item.AllowedClasses)} (Item: {item})");
 
                     continue;
                 }
