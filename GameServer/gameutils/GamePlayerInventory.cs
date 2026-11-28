@@ -724,8 +724,13 @@ namespace DOL.GS
 
             foreach (string allowed in Util.SplitCSV(item.AllowedClasses, true))
             {
-                if (m_player.CharacterClass.ID == int.Parse(allowed))
-                    return true;
+                if (!int.TryParse(allowed, out int classId))
+                {
+                    if (Log.IsErrorEnabled)
+                        Log.Error($"Invalid class ID '{allowed}' in {nameof(item.AllowedClasses)} (Item: {item}");
+                    else if (m_player.CharacterClass.ID == classId)
+                        return true;
+                }
             }
 
             m_player.Out.SendMessage("Your class cannot use this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
